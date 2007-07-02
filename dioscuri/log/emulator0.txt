@@ -1,0 +1,1 @@
+Dummy file to ensure CVS creates the /log directory

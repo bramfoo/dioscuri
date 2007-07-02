@@ -1,0 +1,109 @@
+Changelog Dioscuri - Modular emulator for Digital Preservation
+==============================================================
+Date          : 21 June 2007
+Organisations : Koninklijke Bibliotheek,
+                Nationaal Archief of the Netherlands,
+                Tessella Support Services plc.
+
+
+0.0.9 : 01-07-2007 (Sourceforge launch)
+-------------------------------------------------------
+- Full IDE/ATA support for hard disk
+- Full graphics pixel mode
+- Added XML-based configuration functionality
+- Improved GUI
+- Added new CPU instructions
+- Fixed some CPU instructions
+- Improved floppy disk controller with write functionality (via DMA)
+- Improved RTC timer to set and get clock time and date
+- Improved logging structure (for debugging only)
+- Improved debug mode functionality
+
+
+
+0.0.8 : 15-05-2007
+-------------------------------------------------------
+- Improved IDE/ATA with HDD support (experimental)
+- Added new CPU instructions
+- Fixed some CPU instructions
+- Improved virtual screen output
+- Improved overall GUI
+- Added emulation process control
+- Added virtual floppy swapping
+
+
+
+0.0.7 : 26-04-2007 (MS-DOS 16-bit capable)
+-------------------------------------------------------
+- Added many new instructions in CPU
+- Fixed many bugs in several CPU instructions
+- Fixed bugs in floppy disk controller (read-only)
+- Added A20 address line support for memory wrapping
+- Introduced IDE/ATA support (partly)
+- Extended PIC support
+
+
+
+0.0.6 : 29-01-2007 (Launch at Planets meeting Pisa, Italy)
+-------------------------------------------------------
+- Created modules clock, FDC, IDE, keyboard, PIC
+- Introduced timing mechanism for devices video, keyboard, fdc
+- Introduced interrupt handling
+- Introduced DMA support
+- Introduced floppy disk support (floppy disk images only)
+- Introduced keyboard input
+- Added a lot of new instructions to 16 bit CPU instruction set
+- Instruction prefix support for segment selection
+- Added hack in memory for A20-address line
+
+
+
+0.0.5 : 20-10-2006 (Launch at Emulation Expert Meeting, The Hague, The Netherlands)
+-------------------------------------------------------
+- Created modules motherboard, screen, video, BIOS, CMOS, PIT, RTC and stubs for DMA, serialport, parallelport
+- Introduced subset of module -> module device
+- Introduced I/O address space for devices
+- Introduced reset function for modules
+- Introduced screen output to virtual screen (character display only)
+- Introduced memory mapped I/O
+- Added BIOS ROM and CMOS settings
+- Added VGA BIOS ROM
+- Load and execution of BIOS
+- Added instructions IN, OUT, MOV, REPZ, CALL, STOSW
+- Instruction prefix support for 32-bit computing
+- Fixed a lot of bugs in CPU instructions
+- Excluded observer/observable design pattern
+
+
+
+0.0.4 : 18-05-2006
+-------------------------------------------------------
+- Introduced debug mode for modules
+- Introduced observer/observable pattern 
+- Added arithmetic instructions ADD, SUB and logic instructions OR, CMP, etc.
+- Added class IO for communication emulator/environment
+- Added command-driven control in emulator
+- Moved UI out of CPU module into a separate IO class
+- Substituted Java.Util.logging instead of standard.out
+
+
+
+0.0.3 : 14-04-2006
+-------------------------------------------------------
+- Added some new single byte instructions to subset
+- extended UI to comply with debug.exe in MS DOS
+
+
+
+0.0.2
+-------------------------------------------------------
+- Added simple UI for CPU communication
+
+
+
+0.0.1 (Initial version of emulator)
+-------------------------------------------------------
+- Created modules CPU and memory
+- Introduced modular architecture
+- Introduced flat memory model
+- Added subset of CPU 8086 16 bit instructionset

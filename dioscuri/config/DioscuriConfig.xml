@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?><!--
+ * $Revision: 1.1 $ $Date: 2007-07-02 14:31:24 $ $Author: blohman $
+ * 
+ * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * For more information about this project, visit
+ * http://dioscuri.sourceforge.net/
+ * or contact us via email:
+ * jrvanderhoeven at users.sourceforge.net
+ * blohman at users.sourceforge.net
+ * 
+ * Developed by:
+ * Nationaal Archief               <www.nationaalarchief.nl>
+ * Koninklijke Bibliotheek         <www.kb.nl>
+ * Tessella Support Services plc   <www.tessella.com>
+ *
+ * Project Title: DIOSCURI
+--><!-- Defines Dioscuri Emulator modules and settings --><emulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" xsi:noNamespaceSchemaLocation="DioscuriConfig.xsd">
+   
+   <!-- Defines the boot sequence -->      
+   <boot>
+	   <bootdrives> 
+		  <bootdrive>floppy</bootdrive>
+		  <bootdrive>none</bootdrive>
+		  <bootdrive>none</bootdrive>
+	   </bootdrives>
+	   <floppycheckdisabled>false</floppycheckdisabled>
+   </boot>
+   
+   <!-- Defines the architecture required -->
+   <architecture name="Von Neumann">
+      
+      <modules>
+      
+         <!-- Defines the Bios module -->
+         <bios>
+            <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>        
+            <vgabiosfilepath>images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
+            <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec> 
+            <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>                   
+         </bios>
+            
+         <!-- Defines the cpu module -->
+         <cpu debug="false" speedmhz="5"/>
+         
+         <!-- Defines the memory module-->
+		 <ram debug="false" debugaddressdecimal="9295" sizemb="1"/>
+	
+         <!-- Defines the floppy drive module -->
+	 	 <floppydiskdrives debug="false" updateintervalmicrosecs="250"> <!-- normally 300 microseconds -->
+           <floppy>    
+             <enabled>true</enabled>           
+             <inserted>true</inserted>
+             <driveletter>A</driveletter>
+             <diskformat>1.44M</diskformat>
+             <writeprotected>false</writeprotected>
+	         <imagefilepath>images/floppy/Kbd2Scrn.bin</imagefilepath>
+	       </floppy> 
+        </floppydiskdrives>
+                 
+        <!-- Defines the PIT module -->
+ 		<pit clockrate="1" debug="false"/>      <!-- NOTE: A high value (> 1000) to avoid many interruption while debugging -->
+ 		
+          <!-- Defines the keyboard module -->
+         <keyboard debug="false" updateintervalmicrosecs="200"/>        
+          
+         <!-- Defines the ata module -->
+	    <atadrives debug="false" updateintervalmicrosecs="100000">
+	   	    <harddiskdrive>   
+               <enabled>false</enabled>
+               <channelindex>0</channelindex>
+               <master>true</master>       
+               <autodetectcylinders>true</autodetectcylinders>
+               <cylinders>0</cylinders>
+	   	       <heads>4</heads>
+               <sectorspertrack>17</sectorspertrack>
+               <imagefilepath>null</imagefilepath>
+            </harddiskdrive> 
+        </atadrives>
+        
+        <!-- Defines the video adapter module -->
+        <videoadapter debug="false" updateintervalmicrosecs="40000"/>
+              
+      </modules>
+           
+   </architecture>
+</emulator>
