@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:24 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-06 09:06:34 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -875,10 +875,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     */
    public String toString()
    {
-       String info = "\n" + EMULATOR_NAME + ": version " + EMULATOR_VERSION + "\r\n";
-       info += "Copyright (C) " + EMULATOR_DATE + " by\r\n";
-       info += EMULATOR_CREATOR + "\r\n";
-       info += "----------------------------------------------------------------";
+       String info = "-----------------------------------------------------------------------------" + "\n";
+       info += "| " + EMULATOR_NAME + ": version " + EMULATOR_VERSION + "       |" + "\r\n";
+       info += "| " + "Copyright (C) " + EMULATOR_DATE + "                                                  |" + "\r\n";
+       info += "| " + EMULATOR_CREATOR + " |" + "\r\n";
+       info += "-----------------------------------------------------------------------------" + "\n";
        return info;
    }
 }
