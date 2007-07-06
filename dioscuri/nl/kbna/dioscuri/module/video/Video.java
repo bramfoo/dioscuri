@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:46 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-06 09:05:13 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -730,8 +730,8 @@ public class Video extends ModuleVideo
             int cursorXPos;         // Cursor column position
             int cursorYPos;         // Cursor row position
             int cursorWidth = ((videocard.sequencer.clockingMode & 0x01) == 1) ? 8 : 9; // 8 or 9 pixel cursor width
-            int fullCursorAddress = 2 * ((videocard.crtControllerRegister.regArray[0x0E] << 8) 
-                                    + videocard.crtControllerRegister.regArray[0x0F]);  // Cursor location (byte number in vga memory) 
+            int fullCursorAddress = 2 * (((((int) videocard.crtControllerRegister.regArray[0x0E]) & 0xFF) << 8)  
+                    + (((int) videocard.crtControllerRegister.regArray[0x0F]) & 0xFF)); // Cursor location (byte number in vga memory) 
 
             // Screen attributes 
             int maxScanLine = videocard.crtControllerRegister.regArray[0x09] & 0x1F;    // Character height - 1
@@ -746,7 +746,7 @@ public class Video extends ModuleVideo
             logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " update() in progress; text mode");
             
             // Collect text features to be passed to screen update
-            textModeAttribs.fullStartAddress = (short) fullStartAddress;
+            textModeAttribs.fullStartAddress = (short) fullStartAddress;  
             textModeAttribs.cursorStartLine = (byte) (videocard.crtControllerRegister.regArray[0x0A] & 0x3F);
             textModeAttribs.cursorEndLine = (byte) (videocard.crtControllerRegister.regArray[0x0B] & 0x1F);
             textModeAttribs.lineOffset = (short) (videocard.crtControllerRegister.regArray[0x13] << 2);
