@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:29 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-09 15:25:09 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -3150,6 +3150,11 @@ public class CPU extends ModuleCPU
         int offset;
         byte[] tempCS, tempIP, newCS, newIP;
         
+        
+        // Discard current prefix stack; ensure jklthis is done even in a REP
+        // FIXME: Stack reload needed during IRET if prefixes are set prior to REP? (example: 66F36D, and INT occurs during REP)
+        repActive = false;
+        resetPrefixes(repActive, prefixInstructionStack);
         
         tempCS = new byte[2];
         tempIP = new byte[2];
