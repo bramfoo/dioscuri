@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-09 15:25:09 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-07-11 09:08:30 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -81,7 +81,6 @@ import java.util.logging.Logger;
  * 
  * Notes:
  * - Most instructions are implemented as 16 bit. However, a couple of them (including general purpose registers) allow 32-bit computing.
- * - CPU sends a pulse to clock every number of N instructions (user-defined)
  * 
  * General information about instruction format:
  * 8086 has instruction layout: <opcode byte><address byte>.
@@ -119,8 +118,6 @@ import java.util.logging.Logger;
  */
 public class CPU extends ModuleCPU
 {
-    private static int numcount;
-
 	// Attributes
 	
 	// Relations
@@ -137,9 +134,9 @@ public class CPU extends ModuleCPU
 	private boolean debugMode;
     private boolean irqPending;
     private boolean irqWaited;
-    private boolean holdReQuest;    // Bus hold request for CPU
+    private boolean holdReQuest;    	// Bus hold request for CPU
     protected boolean asyncEvent;       // Denotes an asynchronous event
-    private ModuleDevice hRQorigin; // ??????
+    private ModuleDevice hRQorigin; 	// Device generating a Hold Request
     private boolean breakpointSet;
 	
 	// Logging
@@ -147,13 +144,11 @@ public class CPU extends ModuleCPU
 
     // Instruction and timing
     private long instructionCounter;    // total number of executed instructions
-    public int ips;                    // instructions per second
-    public int ipus;                   // instructions per microsecond
+    public int ips;                     // instructions per second
+    public int ipus;                    // instructions per microsecond
     private int lowestUpdatePeriod;     // maximum suspend time in microseconds that clockpulse may given to clock
-    protected int b1;                   // Current instruction
-    protected int b2;                   // Double opcode instruction
-    protected int oldOpcode;
-    private int breakpointGap;
+    protected int currInstr;            // Current instruction
+    protected int currInstr2;           // Double opcode instruction
 
     // General variables
     private int tempByte;
@@ -209,6 +204,7 @@ public class CPU extends ModuleCPU
     // Instruction prefix settings
     protected int prefixInstruction;        // Indicating a prefix instruction is encountered
     protected Stack<Integer> prefixInstructionStack;   // Stack holding the prefix instructions that are in effect
+    protected Stack<Stack> prefixStackStack;// Stack holding prefixInstructionStacks that were in effect prior to interrupt
     protected boolean repActive;            // A REP/REPE/REPZ is active
     protected byte ipDec;                   // The amount to decrement IP by to return to the start of the REP
     protected boolean repeRepz;             // Temporary helper variable for rep/repz prefix
@@ -312,12 +308,12 @@ public class CPU extends ModuleCPU
         
         // Initialise prefix variables
         prefixInstructionStack = new Stack<Integer>();
+        prefixStackStack = new Stack<Stack>();
         repActive = false;
         repeRepz = false;
         
         // Set breakpoint (if necesarry)
-        breakpointGap = 0;   // Number of instructions to skip
-        breakpointSet = true;
+        breakpointSet = false;
        
 		logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " Module created successfully.");
 	}
@@ -474,7 +470,7 @@ public class CPU extends ModuleCPU
                 // Check for any breakpoints set
                 if (breakpointSet == true)
                 {
-                    if (instructionCounter > breakpointGap && ((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 91042478)
+                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 91042906)//31796 )
                     {
 //                            Config.CPU_INSTRUCTION_DEBUG = true;
                             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Breakpoint set at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + ", wait for prompt...");
@@ -494,8 +490,8 @@ public class CPU extends ModuleCPU
                 resetPrefixes(repActive, prefixInstructionStack);
                 
                 // Perform step-by-step execution, converting byte to unsigned integer to avoid lookup in instruction array out of bounds 
-                b1 = this.getByteFromCode() & 0xFF;
-                singleByteInstructions[b1].execute();
+                currInstr = this.getByteFromCode() & 0xFF;
+                singleByteInstructions[currInstr].execute();
                 instructionCounter++;
                  
                 handlePrefix();
@@ -510,14 +506,14 @@ public class CPU extends ModuleCPU
                     DecimalFormat myFormatter = new DecimalFormat("00000000000");
                     String instrCount = myFormatter.format(instructionCounter);
                     
-                    if (b1 == 0x0F)
+                    if (currInstr == 0x0F)
                     {
                         // Show the 2nd byte of the opcode here for 2-byte escapes
-                        logger.log(Level.CONFIG, instrCount + "i[" + MODULE_TYPE + "  ] $DEBUG$ 1" + dumpDebug(Integer.toHexString(b2).toUpperCase() + " "));
+                        logger.log(Level.CONFIG, instrCount + "i[" + MODULE_TYPE + "  ] $DEBUG$ 1" + dumpDebug(Integer.toHexString(currInstr2).toUpperCase() + " "));
                     }
                     else
                     {
-                        logger.log(Level.CONFIG, instrCount + "i[" + MODULE_TYPE + "  ] $DEBUG$ " + dumpDebug(Integer.toHexString(b1).toUpperCase() + " "));    
+                        logger.log(Level.CONFIG, instrCount + "i[" + MODULE_TYPE + "  ] $DEBUG$ " + dumpDebug(Integer.toHexString(currInstr).toUpperCase() + " "));    
                     }
                     
                 }
@@ -539,19 +535,16 @@ public class CPU extends ModuleCPU
                     // Reset any prefixes that were set previous instruction, unless we're in a REP, then they need to stay active
                     resetPrefixes(repActive, prefixInstructionStack);
                     
-                    // Preserve old opcode
-                    oldOpcode = b1;
-                    
                     // Perform step-by-step execution, converting byte to unsigned integer to avoid lookup in instruction array out of bounds 
-                    b1 = this.getByteFromCode() & 0xFF;
+                    currInstr = this.getByteFromCode() & 0xFF;
                     
                     try
                     {
-                        singleByteInstructions[b1].execute();
+                        singleByteInstructions[currInstr].execute();
                     }
                     catch (CPU_DE_Exception e2)
                     {
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem at instruction " + instructionCounter + " (opcode " + Integer.toHexString(b1) + "h): " + e2.getMessage());
+                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem at instruction " + instructionCounter + " (opcode " + Integer.toHexString(currInstr) + "h): " + e2.getMessage());
                     }
                     instructionCounter++;
                                      
@@ -582,23 +575,70 @@ public class CPU extends ModuleCPU
         catch (CPUInstructionException e2)
         {
             isRunning = false;
-            if (b1 == 0x0F)
+            if (currInstr == 0x0F)
             {
                 // Show the 2nd byte of the opcode here for 2-byte escapes
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction failure at instruction " + instructionCounter + " (opcode " + Integer.toHexString(b1) + " " + Integer.toHexString(b2) + "h): " + e2.getMessage());
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction failure at instruction " + instructionCounter + " (opcode " + Integer.toHexString(currInstr) + " " + Integer.toHexString(currInstr2) + "h): " + e2.getMessage());
             }
             else
             {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction failure at instruction " + instructionCounter + " (opcode " + Integer.toHexString(b1) + "h): " + e2.getMessage());
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction failure at instruction " + instructionCounter + " (opcode " + Integer.toHexString(currInstr) + "h): " + e2.getMessage());
             }
         }
 	}
 
     /**
+     * Set all prefixes in the given stack 
+     *
+     */
+	protected void setPrefixes(Stack prefixStack)
+	{
+		int pref;
+		Stack<Integer> helperStack = new Stack<Integer>();
+		
+        while (!prefixInstructionStack.empty())
+        {
+            pref = prefixInstructionStack.pop();
+            helperStack.push(pref);
+
+            switch (pref)
+            {
+                case 0x26: // ES segment override
+                case 0x2E: // CS segment override
+                case 0x36: // SS segment override
+                case 0x3E: // DS segment override
+                    // Set instruction prefix, override
+                    segmentOverride = true;
+                    break;
+
+                case 0x66: // Opd Size
+                    doubleWord = true;
+                    break;
+
+                case 0xF2: // REPNE
+                case 0xF3: // REP/REPE
+                	repActive = true;
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        
+        // Return all values to prefixStack
+        while (!helperStack.empty())
+        {
+        	prefixInstructionStack.push(helperStack.pop());
+        }
+
+	}
+
+	
+    /**
      * Reset all prefixes in the given stack 
      *
      */
-    private void resetPrefixes(boolean repeatActive, Stack prefixStack)
+    protected void resetPrefixes(boolean repeatActive, Stack prefixStack)
     {
         // If a repeat is active, do not reset the prefixes as they need to stay in effect
         if (repActive)
@@ -638,7 +678,7 @@ public class CPU extends ModuleCPU
     }
 
     /**
-     * Handle any instructions that have identified itself as a prefix
+     * Handle any instructions that have identified themself as a prefix
      * @throws CPUInstructionException
      */
     private void handlePrefix() throws CPUInstructionException
@@ -648,37 +688,37 @@ public class CPU extends ModuleCPU
             if (!repActive)
             {
                 // Non-REP prefix; push onto stack
-                prefixInstructionStack.push(b1);
+                prefixInstructionStack.push(currInstr);
 
                 // Reset prefixToggle
                 prefixInstruction = 0;
 
                 // Get next instruction and execute
-                b1 = this.getByteFromCode();
-                b1 &= 0xFF;
-                singleByteInstructions[b1].execute();
+                currInstr = this.getByteFromCode();
+                currInstr &= 0xFF;
+                singleByteInstructions[currInstr].execute();
             }
             else
             {
                 // REPeat prefix;
 
                 // Get next instruction
-                b1 = this.getByteFromCode();
-                b1 &= 0xFF;
+                currInstr = this.getByteFromCode();
+                currInstr &= 0xFF;
 
                 // Setup environment for REP
                 ipDec = 0x02;
                 // Handle segment override/operand size prefixes within REP first, before executing target instruction
                 // TODO: Add lock/address size prefixes
-                while (b1 == 0x26 || b1 == 0x2E || b1 == 0x36 || b1 == 0x3E || b1 == 0x66)
+                while (currInstr == 0x26 || currInstr == 0x2E || currInstr == 0x36 || currInstr == 0x3E || currInstr == 0x66)
                 {
                     // Push onto stack if not there already
-                    if (prefixInstructionStack.search(b1) == -1)
+                    if (prefixInstructionStack.search(currInstr) == -1)
                     {
-                        prefixInstructionStack.push(b1);
+                        prefixInstructionStack.push(currInstr);
                     }
-                    singleByteInstructions[b1].execute();
-                    b1 = this.getByteFromCode() & 0xFF;
+                    singleByteInstructions[currInstr].execute();
+                    currInstr = this.getByteFromCode() & 0xFF;
                     
                     // For each prefix we need to decrement IP by 1 to return to the start of the REP
                     ipDec++;
@@ -686,7 +726,7 @@ public class CPU extends ModuleCPU
                 }
 
                 // Check the type of REP and set it accordingly
-                if (b1 == 0xA6 || b1 == 0xA7 || b1 == 0xAE || b1 == 0xAF)
+                if (currInstr == 0xA6 || currInstr == 0xA7 || currInstr == 0xAE || currInstr == 0xAF)
                 {
                     repeRepz = true;
                 }
@@ -695,7 +735,7 @@ public class CPU extends ModuleCPU
                     repeRepz = false;
                 }
 
-                singleByteInstructions[b1].execute();
+                singleByteInstructions[currInstr].execute();
 
                 // Now return IP to start of REP
                 ip = Util.subtractWords(ip, new byte[] {0x00, ipDec}, 0);
@@ -3151,9 +3191,14 @@ public class CPU extends ModuleCPU
         byte[] tempCS, tempIP, newCS, newIP;
         
         
-        // Discard current prefix stack; ensure jklthis is done even in a REP
-        // FIXME: Stack reload needed during IRET if prefixes are set prior to REP? (example: 66F36D, and INT occurs during REP)
-        repActive = false;
+        // Discard current prefix stack; ensure this is done even in a REP
+        if(repActive)
+        {
+        	// Push the rep onto the stack as well
+        	prefixInstructionStack.push(0xF3);
+        	repActive = false;
+        }
+        prefixStackStack.push((Stack)prefixInstructionStack.clone());
         resetPrefixes(repActive, prefixInstructionStack);
         
         tempCS = new byte[2];
@@ -3247,6 +3292,5 @@ public class CPU extends ModuleCPU
     public void setCpuInstructionDebug(boolean cpuInstructionDebug)
     {
         this.cpuInstructionDebug = cpuInstructionDebug;
-    }
-    
+    }    
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-11 09:08:30 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,8 @@
 
 
 package nl.kbna.dioscuri.module.cpu;
+
+import java.util.Stack;
 
 /**
  * Intel opcode CF<BR>
@@ -105,5 +107,12 @@ public class Instruction_IRET implements Instruction
         
         // Convert flagbytes into booleans and store them in flags register
         cpu.flags = Util.bytesToBooleans(newFlags);
+        
+        // Restore previous prefix stack, if it exists
+        if (!cpu.prefixStackStack.empty())
+        {
+        	cpu.prefixInstructionStack = cpu.prefixStackStack.pop();
+			cpu.setPrefixes(cpu.prefixInstructionStack);
+        }
     }
 }

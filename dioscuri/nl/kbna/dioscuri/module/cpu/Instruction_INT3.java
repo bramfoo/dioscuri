@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-11 09:08:30 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,8 @@
 
 
 package nl.kbna.dioscuri.module.cpu;
+
+import java.util.Stack;
 
 /**
  * Intel opcode CC<BR>
@@ -93,6 +95,16 @@ public class Instruction_INT3 implements Instruction
         
         // Set index for IDT to 3
         index = 0x03;
+        
+        // Discard current prefix stack; ensure this is done even in a REP
+        if(cpu.repActive)
+        {
+        	// Push the rep onto the stack as well
+        	cpu.prefixInstructionStack.push(0xF3);
+        	cpu.repActive = false;
+        }
+        cpu.prefixStackStack.push((Stack)cpu.prefixInstructionStack.clone());
+        cpu.resetPrefixes(cpu.repActive, cpu.prefixInstructionStack);
         
         // Push flags register (16-bit) onto stack
         cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
