@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-11 09:10:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -152,11 +152,11 @@ public class Instruction_REPNE implements Instruction
     {
         // Move past target, checking for prefixes
         // TODO: Assuming all target instructions are single opcode here!
-        cpu.b1 = cpu.getByteFromCode() & 0xFF;
+        cpu.currInstr = cpu.getByteFromCode() & 0xFF;
         // TODO: Add lock/address size prefixes
-        while (cpu.b1 == 0x26 || cpu.b1 == 0x2E || cpu.b1 == 0x36 || cpu.b1 == 0x3E || cpu.b1 == 0x66)
+        while (cpu.currInstr == 0x26 || cpu.currInstr == 0x2E || cpu.currInstr == 0x36 || cpu.currInstr == 0x3E || cpu.currInstr == 0x66)
         {
-            cpu.b1 = cpu.getByteFromCode();
+            cpu.currInstr = cpu.getByteFromCode();
         }
         
         // Reset the prefix counter to continue execution in the CPU loop
@@ -171,19 +171,19 @@ public class Instruction_REPNE implements Instruction
     private void finalExecution() throws CPUInstructionException
     {
         // Execute target instruction the final time, including any prefixes
-        cpu.b1 = (cpu.getByteFromCode() & 0xFF);
-        while (cpu.b1 == 0x26 || cpu.b1 == 0x2E || cpu.b1 == 0x36 || cpu.b1 == 0x3E || cpu.b1 == 0x66)
+        cpu.currInstr = (cpu.getByteFromCode() & 0xFF);
+        while (cpu.currInstr == 0x26 || cpu.currInstr == 0x2E || cpu.currInstr == 0x36 || cpu.currInstr == 0x3E || cpu.currInstr == 0x66)
         {
             // Push prefix onto stack if not there already
-            if (cpu.prefixInstructionStack.search(cpu.b1) == -1)
+            if (cpu.prefixInstructionStack.search(cpu.currInstr) == -1)
             {
-                cpu.prefixInstructionStack.push(cpu.b1);
+                cpu.prefixInstructionStack.push(cpu.currInstr);
             }
-            cpu.singleByteInstructions[cpu.b1].execute();
-            cpu.b1 = cpu.getByteFromCode() & 0xFF;
+            cpu.singleByteInstructions[cpu.currInstr].execute();
+            cpu.currInstr = cpu.getByteFromCode() & 0xFF;
 
         }
-        cpu.singleByteInstructions[cpu.b1].execute();
+        cpu.singleByteInstructions[cpu.currInstr].execute();
         
         // Reset the prefix counter to continue execution in the CPU loop
         cpu.prefixInstruction = 0;
