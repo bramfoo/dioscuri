@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-24 14:41:36 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -100,7 +100,7 @@ public class Instruction_INT_Ib implements Instruction
         if (index <= 255)
         {
             // Turn off all prefixes
-        	cpu.doubleWord = cpu.segmentOverride = cpu.repActive = false;
+        	cpu.resetPrefixes();
         	
             // Push flags register (16-bit) onto stack
             cpu.setWordToStack(Util.booleansToBytes(cpu.flags));

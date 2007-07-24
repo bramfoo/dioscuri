@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-11 09:09:34 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -97,7 +97,7 @@ public class Instruction_ESC_FPU implements Instruction
     public void execute()
     {
         // Get opcode of current instruction
-        opCode = cpu.currInstr;
+        opCode = cpu.codeByte;
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch (opCode)

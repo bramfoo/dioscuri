@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-11 09:09:09 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -82,7 +82,7 @@ public class Instruction_2ByteEscape implements Instruction {
         
         // Temporary setting for debugging
 //        if(cpu.getCpuInstructionDebug())
-            cpu.currInstr2 = (instruction & 0xFF);
+            cpu.codeByte2 = (instruction & 0xFF);
         
         // Cast signed byte to integer to avoid invalid array lookup 
         // Jump to doubleByte instruction

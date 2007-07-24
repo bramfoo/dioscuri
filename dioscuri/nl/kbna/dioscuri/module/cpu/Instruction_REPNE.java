@@ -1,4 +1,4 @@
-/* $Revision: 1.2 $ $Date: 2007-07-11 09:10:04 $ $Author: blohman $
+/* $Revision: 1.3 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -79,115 +79,8 @@ public class Instruction_REPNE implements Instruction
      */
     public void execute() throws CPUInstructionException
     {
-        
-        // Check if this is the first call to REPNE
-        if (!cpu.repActive)
-        {
-            // Check the special case CX is zero before entering the REP
-            if (cpu.cx[CPU.REGISTER_GENERAL_LOW] == 0 && cpu.cx[CPU.REGISTER_GENERAL_HIGH] == 0)
-            {
-                // Skip the REP instruction completely; do this by incrementing the IP past the target instruction, including prefixes
-                skipInstruction();
-                return;
-            }
-            
-            // Indicate we're a prefix, and indicate it's a REP
-            cpu.prefixInstruction = 0xF3;
-            cpu.repActive = true;
-            
-            // Don't forget to decrement the CX register already, target will be executed straight after this!
-            cpu.cx = Util.subtractWords(cpu.cx, word0x01, 0);
-            
-            // Now we need to check for the border case where CX == 0 now, then end the loop right here...
-            if (cpu.cx[CPU.REGISTER_GENERAL_LOW] == 0 && cpu.cx[CPU.REGISTER_GENERAL_HIGH] == 0)
-            {
-                finalExecution();
-            }
-        }
-
-        else
-        {
-            // We're already in the repeat loop
-            // CPU has already executed the target instruction; all we need to do here is update and check the conditions
-
-            // Again indicate we're a prefix
-            cpu.prefixInstruction = 0xF3;
-            
-            // According to the Intel docs, REPNE should only be called in combination with a string instruction that sets the zero flag (ZF),
-            // such as CMPS and SCAS (A6, A7; AE, AF). However, not all programs follow this convention (*cough* MS-DOS *cough*), so in that case
-            // checking the ZF has no use. Hence the extra check here if ZF or CX is the condition to end on.
-            if (cpu.repeRepz)
-            {
-                // CMPS or SCAS has set ZF, so check it as extra terminating condition
-                if (cpu.flags[CPU.REGISTER_FLAGS_ZF])
-                {
-                    // Zero flag == 1, so terminate immediately
-
-                    skipInstruction();
-                    return;
-                }
-            }
-
-            // Check terminating condition CX == 0 (we check for 1, because the target is executed one last time below 
-            if (!(cpu.cx[CPU.REGISTER_GENERAL_LOW] == 1 && cpu.cx[CPU.REGISTER_GENERAL_HIGH] == 0))
-            {
-                cpu.cx = Util.subtractWords(cpu.cx, word0x01, 0);
-
-            }
-            else
-            {
-                // REP finished; execute target one last time, and update all counters as well
-                cpu.cx = Util.subtractWords(cpu.cx, word0x01, 0);
-                finalExecution();
-            }
-            
-        }
-    }
-    
-    /**
-     * Skip past the REP instruction without executing the instructions.<BR>
-     * Reset the prefixInstruction and repActive.
-     */
-    private void skipInstruction()
-    {
-        // Move past target, checking for prefixes
-        // TODO: Assuming all target instructions are single opcode here!
-        cpu.currInstr = cpu.getByteFromCode() & 0xFF;
-        // TODO: Add lock/address size prefixes
-        while (cpu.currInstr == 0x26 || cpu.currInstr == 0x2E || cpu.currInstr == 0x36 || cpu.currInstr == 0x3E || cpu.currInstr == 0x66)
-        {
-            cpu.currInstr = cpu.getByteFromCode();
-        }
-        
-        // Reset the prefix counter to continue execution in the CPU loop
-        cpu.prefixInstruction = 0;
-        cpu.repActive = false;
-    }
-
-    /**
-     * Perform the final REP execution<BR>
-     * Reset the prefixInstruction and repActive. 
-     */
-    private void finalExecution() throws CPUInstructionException
-    {
-        // Execute target instruction the final time, including any prefixes
-        cpu.currInstr = (cpu.getByteFromCode() & 0xFF);
-        while (cpu.currInstr == 0x26 || cpu.currInstr == 0x2E || cpu.currInstr == 0x36 || cpu.currInstr == 0x3E || cpu.currInstr == 0x66)
-        {
-            // Push prefix onto stack if not there already
-            if (cpu.prefixInstructionStack.search(cpu.currInstr) == -1)
-            {
-                cpu.prefixInstructionStack.push(cpu.currInstr);
-            }
-            cpu.singleByteInstructions[cpu.currInstr].execute();
-            cpu.currInstr = cpu.getByteFromCode() & 0xFF;
-
-        }
-        cpu.singleByteInstructions[cpu.currInstr].execute();
-        
-        // Reset the prefix counter to continue execution in the CPU loop
-        cpu.prefixInstruction = 0;
-        cpu.repActive = false;
-    }
-
+    	cpu.prefixRep = true;
+    	// Set type of prefix
+    	cpu.prefixRepType = 0xF2;
+    }        
 }
