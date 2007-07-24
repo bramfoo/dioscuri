@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-11 09:08:30 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-07-24 14:41:36 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -96,15 +96,8 @@ public class Instruction_INT3 implements Instruction
         // Set index for IDT to 3
         index = 0x03;
         
-        // Discard current prefix stack; ensure this is done even in a REP
-        if(cpu.repActive)
-        {
-        	// Push the rep onto the stack as well
-        	cpu.prefixInstructionStack.push(0xF3);
-        	cpu.repActive = false;
-        }
-        cpu.prefixStackStack.push((Stack)cpu.prefixInstructionStack.clone());
-        cpu.resetPrefixes(cpu.repActive, cpu.prefixInstructionStack);
+        // Turn off all prefixes
+    	cpu.doubleWord = cpu.segmentOverride = cpu.repActive = false;
         
         // Push flags register (16-bit) onto stack
         cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
