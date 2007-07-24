@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-11 09:08:30 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-07-24 14:37:39 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -468,12 +468,12 @@ public class CPU extends ModuleCPU
             {
                 
                 // Check for any breakpoints set
-                if (breakpointSet == true)
+                if (breakpointSet)
                 {
-                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 91042906)//31796 )
+                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 99681)//31796 )
                     {
-//                            Config.CPU_INSTRUCTION_DEBUG = true;
-                            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Breakpoint set at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + ", wait for prompt...");
+//                  	this.cpuInstructionDebug = true;
+                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Breakpoint set at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + ", wait for prompt...");
                         return;
                     }
                 }
@@ -1483,7 +1483,7 @@ public class CPU extends ModuleCPU
 		/* 7F */  singleByteInstructions[127] = new Instruction_JNLE_JG(this);	// Conditional short jump if zero and sign == overflow
 		/* 80 */  singleByteInstructions[128] = new Instruction_ImmGRP1_EbIb(this); // Immediate Group 1 opcode extension: ADD, OR, ADC, SBB, AND, SUB, XOR, CMP
         /* 81 */  singleByteInstructions[129] = new Instruction_ImmGRP1_EvIv(this); // Immediate Group 1 opcode extension: ADD, OR, ADC, SBB, AND, SUB, XOR, CMP
-		/* 82 */  singleByteInstructions[130] = new Instruction_ImmGRP1_EvIb(this); // Note: This instruction is actually similar to 0x83
+		/* 82 */  singleByteInstructions[130] = new Instruction_ImmGRP1_EbIb(this); // Note: This instruction is identical to 0x80
 		/* 83 */  singleByteInstructions[131] = new Instruction_ImmGRP1_EvIb(this); // Immediate Group 1 opcode extension: ADD, OR, ADC, SBB, AND, SUB, XOR, CMP
 		/* 84 */  singleByteInstructions[132] = new Instruction_TEST_EbGb(this);	// Logical byte-sized comparison (AND) of memory/register (destination) and register (source)
 		/* 85 */  singleByteInstructions[133] = new Instruction_TEST_EvGv(this);	// Logical word-sized comparison (AND) of memory/register (destination) and register (source)
@@ -3190,16 +3190,8 @@ public class CPU extends ModuleCPU
         int offset;
         byte[] tempCS, tempIP, newCS, newIP;
         
-        
-        // Discard current prefix stack; ensure this is done even in a REP
-        if(repActive)
-        {
-        	// Push the rep onto the stack as well
-        	prefixInstructionStack.push(0xF3);
-        	repActive = false;
-        }
-        prefixStackStack.push((Stack)prefixInstructionStack.clone());
         resetPrefixes(repActive, prefixInstructionStack);
+        doubleWord = repActive = segmentOverride = false;
         
         tempCS = new byte[2];
         tempIP = new byte[2];
