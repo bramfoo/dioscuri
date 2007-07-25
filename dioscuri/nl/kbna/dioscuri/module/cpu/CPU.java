@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,23 +34,22 @@
 
 package nl.kbna.dioscuri.module.cpu;
 
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.exception.CPUInstructionException;
 import nl.kbna.dioscuri.exception.CPU_DE_Exception;
 import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleCPU;
+import nl.kbna.dioscuri.module.ModuleClock;
 import nl.kbna.dioscuri.module.ModuleDMA;
 import nl.kbna.dioscuri.module.ModuleDevice;
-import nl.kbna.dioscuri.module.ModuleClock;
 import nl.kbna.dioscuri.module.ModuleMemory;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
-
-import java.text.DecimalFormat;
-import java.util.Stack;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * An implementation of an Intel 8086 hardware CPU module.
@@ -131,14 +130,14 @@ public class CPU extends ModuleCPU
 	// Toggles
 	private boolean isRunning;
 	private boolean isObserved;
-	private boolean debugMode;
-    private boolean irqPending;
-    private boolean irqWaited;
+	private boolean debugMode;			// Denotes if CPU module is in debug mode
+    private boolean irqPending;			// Denotes if an IRQ is pending
+    private boolean irqWaited;			// Denotes if CPU has waited an extra instruction before handling IRQ (as stated by Intel spec)
     private boolean holdReQuest;    	// Bus hold request for CPU
-    protected boolean asyncEvent;       // Denotes an asynchronous event
+    protected boolean asyncEvent;       // Denotes an asynchronous event (could be an IRQ or DMA)
     private ModuleDevice hRQorigin; 	// Device generating a Hold Request
-    private boolean breakpointSet;
-	private boolean cpuInstructionDebug;
+    private boolean breakpointSet;		// Denotes if a breakpoint is set at a particular address (CS:IP)
+	private boolean cpuInstructionDebug;// Used for outputting logging during bug trace
 	
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
@@ -149,8 +148,8 @@ public class CPU extends ModuleCPU
     public int ips;                     // instructions per second
     public int ipus;                    // instructions per microsecond
     private int lowestUpdatePeriod;     // maximum suspend time in microseconds that clockpulse may given to clock
-    protected int codeByte;            // Current instruction
-    protected int codeByte2;           // Double opcode instruction
+    protected int codeByte;             // Current single byte from code (prefix or instruction)
+    protected int codeByte2;            // Current double byte from code (prefix or instruction)
 
     // General variables
     private int tempByte;
@@ -208,17 +207,12 @@ public class CPU extends ModuleCPU
     protected int prefixInstruction;        // Indicating a prefix instruction is encountered
     protected boolean prefixRep;
     protected int prefixRepType;
-    protected Stack<Integer> prefixInstructionStack;   // Stack holding the prefix instructions that are in effect
-    protected Stack<Stack> prefixStackStack;// Stack holding prefixInstructionStacks that were in effect prior to interrupt
-    protected boolean repActive;            // A REP/REPE/REPZ is active
-    protected byte ipDec;                   // The amount to decrement IP by to return to the start of the REP
-    protected boolean repeRepz;             // Temporary helper variable for rep/repz prefix
     protected boolean doubleWord;           // Indicates if the extended registers are used (e.g. eax), this is set by instruction 66h
     protected boolean segmentOverride;      // Overrides the segment to be read from or written to by selected segment (see next variable)
     protected int segmentOverridePointer;   // Contains a pointer to: 0=CS, 1=DS, 2=ES, 3=SS
 
-    // Single byte opcode lookup array
-    // This array contains functions which implement the instructions
+    // Opcode lookup arrays
+    // These arrays contains functions which implement the instructions
     protected Instruction[] singleByteInstructions;
     protected Instruction[] doubleByteInstructions;
 
@@ -285,6 +279,8 @@ public class CPU extends ModuleCPU
     public final static int SEGMENT_OVERRIDE_ES     = 2;    // Override with segment ES
     public final static int SEGMENT_OVERRIDE_SS     = 3;    // Override with segment SS
 	
+    // Standard word values
+    public final static byte[] WORD_0X0001 			= new byte[] {0x00, 0x01};
 
 	// Constructors
 	
@@ -307,12 +303,6 @@ public class CPU extends ModuleCPU
         ips = 1000000;           // default value
         ipus = ips / 1000000;   // Assumed that ipus is always > 0
         lowestUpdatePeriod = 1; // default value
-        
-        // Initialise prefix variables
-        prefixInstructionStack = new Stack<Integer>();
-        prefixStackStack = new Stack<Stack>();
-        repActive = false;
-        repeRepz = false;
         
         // Set breakpoint (if necesarry)
         breakpointSet = false;
@@ -476,7 +466,7 @@ public class CPU extends ModuleCPU
                 // Check for any breakpoints set
                 if (breakpointSet)
                 {
-                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 1042906)
+                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 91042906)
                     {
 //                  	this.cpuInstructionDebug = true;
                         logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Breakpoint set at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + ", wait for prompt...");
@@ -489,7 +479,7 @@ public class CPU extends ModuleCPU
                 
                 try
                 {
-                    if (this.isPrefix())
+                    while (this.isPrefix())
                     {
                     	// PREFIX encountered
 
@@ -498,28 +488,28 @@ public class CPU extends ModuleCPU
 
                     	// Increment prefix counter
                     	prefixCounter++;
+
+                        // Retrieve one byte from code segment (converting byte to unsigned integer to avoid lookup in instruction array out of bounds) 
+                        codeByte = this.getByteFromCode() & 0xFF;
                     }
-                    else
+
+                    // INSTRUCTION encountered
+
+                	// Handle prefixes (if necesarry)
+                	this.executeInstruction();
+
+                	// Increment instruction counter
+                	instructionCounter++;
+                	
+                	// Reset prefixes
+                	this.resetPrefixes();
+
+                	// Handle asynchronous event (if any)
+                    if (asyncEvent)
                     {
-                    	// INSTRUCTION encountered
-//	                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction executed!");
-
-                    	// Handle prefixes (if necesarry)
-                    	this.executeInstruction();
-
-                    	// Increment instruction counter
-                    	instructionCounter++;
-                    	
-                    	// Reset prefixes
-                    	this.resetPrefixes();
-
-                    	// Handle asynchronous event (if any)
-                        if (asyncEvent)
+                        if(this.handleAsyncEvent() == true)  // Any event returning true stops CPU execution loop
                         {
-                            if(this.handleAsyncEvent() == true)  // Any event returning true stops CPU execution loop
-                            {
-                                return;
-                            }
+                            return;
                         }
                     }
                 }
@@ -561,7 +551,7 @@ public class CPU extends ModuleCPU
                     
                     try
                     {
-	                    if (this.isPrefix())
+	                    while (this.isPrefix())
 	                    {
 	                    	// PREFIX encountered
 
@@ -570,29 +560,30 @@ public class CPU extends ModuleCPU
 
 	                    	// Increment prefix counter
 	                    	prefixCounter++;
+
+	                        // Retrieve one byte from code segment (converting byte to unsigned integer to avoid lookup in instruction array out of bounds) 
+	                        codeByte = this.getByteFromCode() & 0xFF;
 	                    }
-	                    else
-	                    {
-	                    	// INSTRUCTION encountered
+	                    
+                    	// INSTRUCTION encountered
 
-	                    	// Handle prefixes (if necesarry)
-	                    	this.executeInstruction();
+                    	// Handle prefixes (if necesarry)
+                    	this.executeInstruction();
 
-	                    	// Increment instruction counter
-	                    	instructionCounter++;
-	                    	
-	                    	// Reset prefixes
-	                    	this.resetPrefixes();
+                    	// Increment instruction counter
+                    	instructionCounter++;
+                    	
+                    	// Reset prefixes
+                    	this.resetPrefixes();
 
-	                    	// Handle asynchronous event (if any)
-	                        if (asyncEvent)
-	                        {
-	                            if(this.handleAsyncEvent() == true)  // Any event returning true stops CPU execution loop
-	                            {
-	                                return;
-	                            }
-	                        }
-	                    }
+                    	// Handle asynchronous event (if any)
+                        if (asyncEvent)
+                        {
+                            if(this.handleAsyncEvent() == true)  // Any event returning true stops CPU execution loop
+                            {
+                                return;
+                            }
+                        }
                     }
                     catch (CPU_DE_Exception e)
                     {
@@ -635,106 +626,6 @@ public class CPU extends ModuleCPU
 	}
 
 	
-	private boolean isPrefix()
-	{
-		if (codeByte == 0xF2 || codeByte == 0xF3 || codeByte == 0x26 || codeByte == 0x2E || codeByte == 0x36 || codeByte == 0x3E || codeByte == 0x66)
-		{
-			return true;
-		}
-		return false;
-	}
-	
-	
-    /**
-     * Reset all prefixes in the given stack 
-     *
-     */
-    protected void resetPrefixes()
-    {
-        segmentOverride = false;
-        doubleWord = false;
-        prefixRep = false;
-        //...
-        
-        // Reset prefix counter
-        prefixCounter = 0;
-    }
-
-    
-    /**
-     * Handle prefixes
-     * @throws CPUInstructionException 
-     */
-    private void executeInstruction() throws CPUInstructionException
-    {
-        // Check prefix REP
-        if (prefixRep == true)
-        {
-        	// Check terminate condition 1: CX
-        	if (cx[CPU.REGISTER_GENERAL_LOW] == 0 && cx[CPU.REGISTER_GENERAL_HIGH] == 0)
-        	{
-        		// CX is zero, so terminate
-        		return;
-        	}
-        	else
-        	{
-                // Execute current instruction
-            	singleByteInstructions[codeByte].execute();
-
-            	// Decrement CX register with 1
-            	tempWord = Util.subtractWords(cx, new byte[] {0x00, 0x01}, 0);
-            	System.arraycopy(tempWord, 0, cx, 0, tempWord.length);
-            	
-            	// Check terminate condition 1: CX
-            	if (cx[CPU.REGISTER_GENERAL_LOW] == 0 && cx[CPU.REGISTER_GENERAL_HIGH] == 0)
-            	{
-            		return;
-            	}
-            	
-            	// Check ZF if necesarry (depending on type of rep)
-            	if (prefixRepType == (0xF3 & 0xFF))
-            	{
-            		// REPE/REPZ: 0xF3
-            		// Check if ZF has also been taken into account
-                    if (codeByte == (0xA6 & 0xFF) || codeByte == (0xA7 & 0xFF) || codeByte == (0xAE & 0xFF) || codeByte == (0xAF & 0xFF))
-    	            {
-    	            	// Terminate condition 2: ZF is zero
-    	                if (flags[CPU.REGISTER_FLAGS_ZF] == false)
-    	                {
-    	                    // ZF is zero, so terminate
-    	                    return;
-    	                }
-    	            }
-            	}
-            	else if (prefixRepType == (0xF2 & 0xFF))
-            	{
-            		// REPNE/REPNZ: 0xF2
-	            	// Terminate condition 2: ZF is not zero
-    	            // According to the Intel docs, REPNE should only be called in combination with a string instruction that sets the zero flag (ZF),
-    	            // such as CMPS and SCAS (A6, A7; AE, AF). However, not all programs follow this convention (*cough* MS-DOS *cough*), so in that case
-    	            // checking the ZF has no use. Hence the extra check here if ZF or CX is the condition to end on.
-                    if (flags[CPU.REGISTER_FLAGS_ZF] == true)
-                    {
-                        // ZF is not zero, so terminate
-                        return;
-                    }
-            	}
-            	
-            	// Rep has to be repeated, so set back IP pointer to position before ([prefix] [instruction])
-            	// Note: it is assumed (by Intel spec) that repeated instruction consists only of 1 byte (no operands following opcode)
-                tempWord = Util.subtractWords(ip, new byte[] {0x00, (byte)(prefixCounter + 1)}, 0);
-            	System.arraycopy(tempWord, 0, ip, 0, tempWord.length);
-        	}
-        }
-        else
-        {
-        	// Normal operation (no REP prefix)
-            // Execute current instruction
-        	singleByteInstructions[codeByte].execute();
-        }
-    }        
-    
-
     /**
 	 * Stops the execution of CPU
 	 * 
@@ -1323,8 +1214,6 @@ public class CPU extends ModuleCPU
         // Prefix settings
         doubleWord = false;
         segmentOverride = false;
-        repActive = false;
-        repeRepz = false;
         segmentOverridePointer = -1;
         
         return true;
@@ -2127,6 +2016,117 @@ public class CPU extends ModuleCPU
     //******************************************************************************
 	// Additional Methods
 	
+    /**
+     * Check prefix
+     * Find out if current codeByte is a prefix or not 
+     *
+     * @return boolean true if codeByte is a prefix, false otherwise
+     */
+	private boolean isPrefix()
+	{
+		if (codeByte == 0xF2 || codeByte == 0xF3 || codeByte == 0x26 || codeByte == 0x2E || codeByte == 0x36 || codeByte == 0x3E || codeByte == 0x66)
+		{
+			return true;
+		}
+		return false;
+	}
+	
+	
+    /**
+     * Reset all prefixes 
+     *
+     */
+    private void resetPrefixes()
+    {
+        segmentOverride = false;
+        doubleWord = false;
+        prefixRep = false;
+        //...
+        
+        // Reset prefix counter
+        prefixCounter = 0;
+    }
+
+    
+    /**
+     * Execute instruction
+     * Performs one instruction, taking prefixes into account (especially the repeat prefix)
+     * 
+     * @throws CPUInstructionException 
+     */
+    private void executeInstruction() throws CPUInstructionException
+    {
+        // Check prefix REP
+        if (prefixRep == true)
+        {
+        	// Check terminate condition 1: CX
+        	if (cx[CPU.REGISTER_GENERAL_LOW] == 0 && cx[CPU.REGISTER_GENERAL_HIGH] == 0)
+        	{
+        		// CX is zero, so terminate
+        		return;
+        	}
+        	else
+        	{
+                // Execute current instruction
+            	singleByteInstructions[codeByte].execute();
+
+            	// Decrement CX register with 1
+            	tempWord = Util.subtractWords(cx, WORD_0X0001, 0);
+            	System.arraycopy(tempWord, 0, cx, 0, tempWord.length);
+            	
+            	// Check terminate condition 1: CX
+            	if (cx[CPU.REGISTER_GENERAL_LOW] == 0 && cx[CPU.REGISTER_GENERAL_HIGH] == 0)
+            	{
+            		return;
+            	}
+            	
+            	// Check ZF if necesarry (depending on type of rep)
+            	if (prefixRepType == (0xF3 & 0xFF))
+            	{
+            		// REPE/REPZ: 0xF3
+            		// Check if ZF has also been taken into account
+                    if (codeByte == (0xA6 & 0xFF) || codeByte == (0xA7 & 0xFF) || codeByte == (0xAE & 0xFF) || codeByte == (0xAF & 0xFF))
+    	            {
+    	            	// Terminate condition 2: ZF is zero
+    	                if (flags[CPU.REGISTER_FLAGS_ZF] == false)
+    	                {
+    	                    // ZF is zero, so terminate
+    	                    return;
+    	                }
+    	            }
+            	}
+            	else if (prefixRepType == (0xF2 & 0xFF))
+            	{
+            		// REPNE/REPNZ: 0xF2
+	            	// Terminate condition 2: ZF is not zero
+    	            // NOTE: According to the Intel docs, REPNE should only be called in combination with a string instruction that sets the zero flag (ZF),
+    	            // such as CMPS and SCAS (A6, A7; AE, AF). However, not all programs follow this convention (*cough* MS-DOS *cough*), so in that case
+    	            // checking the ZF has no use and may harm the execution flow. Hence an extra check is necesarry to see if next instruction is CMPS or SCAS.
+                    if (codeByte == (0xA6 & 0xFF) || codeByte == (0xA7 & 0xFF) || codeByte == (0xAE & 0xFF) || codeByte == (0xAF & 0xFF))
+    	            {
+	                    if (flags[CPU.REGISTER_FLAGS_ZF] == true)
+	                    {
+	                        // ZF is not zero, so terminate
+	                        return;
+	                    }
+    	            }
+            	}
+            	
+            	// Rep has to be repeated, so set back IP pointer to position before ([prefix] [instruction])
+            	// Note: it is assumed (by Intel spec) that repeated instruction consists only of 1 byte (no operands following opcode)
+                tempWord = Util.subtractWords(ip, new byte[] {0x00, (byte)(prefixCounter + 1)}, 0);
+            	System.arraycopy(tempWord, 0, ip, 0, tempWord.length);
+        	}
+        }
+        else
+        {
+        	// Normal operation (no REP prefix)
+            // Execute current instruction
+        	singleByteInstructions[codeByte].execute();
+        }
+    }        
+    
+
 	/**
 	 * Retrieves a single byte from the code memory segment; updates the ip by one
 	 * Note: use this method only when next instruction/addressbyte/immediate is needed!

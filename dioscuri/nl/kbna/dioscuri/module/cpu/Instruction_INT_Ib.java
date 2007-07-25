@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,8 +34,6 @@
 
 
 package nl.kbna.dioscuri.module.cpu;
-
-import java.util.Stack;
 
 /**
  * Intel opcode CD<BR>
@@ -99,9 +97,6 @@ public class Instruction_INT_Ib implements Instruction
         // Check if index is in range of IDT (0 - 255)
         if (index <= 255)
         {
-            // Turn off all prefixes
-        	cpu.resetPrefixes();
-        	
             // Push flags register (16-bit) onto stack
             cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
             

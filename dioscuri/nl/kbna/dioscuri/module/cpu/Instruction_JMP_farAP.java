@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,6 +43,7 @@ public class Instruction_JMP_farAP implements Instruction {
 
 	// Attributes
 	private CPU cpu;
+	byte[] newCS = new byte[2];
 	byte[] newIP = new byte[2];
 	
 	// Constructors
@@ -74,12 +75,14 @@ public class Instruction_JMP_farAP implements Instruction {
 	public void execute()
 	{
 		// Get displacement words (immediate).
-        byte[] word_ip = cpu.getWordFromCode();
-        byte[] word_cs = cpu.getWordFromCode();
+        byte[] newIP = cpu.getWordFromCode();
+        byte[] newCS = cpu.getWordFromCode();
         
         // Assign words to ip and cs
         // NOTE: this cannot be done at once because it will influence the pointer directly
-        cpu.ip = word_ip;
-		cpu.cs = word_cs;
+        cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
+        cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
+        cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];
+        cpu.ip[CPU.REGISTER_HIGH] = newIP[CPU.REGISTER_HIGH];
 	}
 }

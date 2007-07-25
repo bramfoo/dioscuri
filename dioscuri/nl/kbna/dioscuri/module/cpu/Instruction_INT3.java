@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -95,9 +95,6 @@ public class Instruction_INT3 implements Instruction
         
         // Set index for IDT to 3
         index = 0x03;
-        
-        // Turn off all prefixes
-    	cpu.resetPrefixes();
         
         // Push flags register (16-bit) onto stack
         cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
