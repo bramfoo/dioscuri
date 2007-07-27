@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -191,7 +191,7 @@ public class DioscuriXmlReader
         timingParam = this.getTimingParam(emulator, ModuleType.PIT, pitNode);
         if(timingParam != -1)
         {
-            ((ModulePIT)emulator.getModules().getModule(ModuleType.PIT.toString())).setClockRate(timingParam); 
+            ((ModulePIT)emulator.getModules().getModule(ModuleType.PIT.toString())).setUpdateInterval(timingParam); 
         }
         
         // Module Keyboard: set update interval   

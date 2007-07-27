@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:29 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -50,7 +50,7 @@ import nl.kbna.dioscuri.module.ModuleMotherboard;
  * clock sends a pulse to the PIT-counters after sleeping.
  * 
  * Note:
- * - This clock imitates the system clock (crystal timer in hardware)
+ * - This clock imitates the crystal clock (crystal timer in hardware)
  * - The (maximum) operating frequency of this clock should be 1193181 Hz (0.00083809581 ms/cycle).
  * - This implementation can distinguish between real-time pulsing by host machine or CPU-pulsed by target machine.
  * - The actual frequency in real-time pulsing is 1 pulse each millisecond
@@ -390,7 +390,7 @@ public class Clock extends ModuleClock
      */
     public boolean registerDevice(ModuleDevice device, int intervalLength, boolean continuousOneShot)
     {
-        // Check if still timers available
+        // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE)
         {
             // Change the interval length from useconds to instructions

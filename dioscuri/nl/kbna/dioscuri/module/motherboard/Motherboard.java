@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:43 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -552,7 +552,7 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         } 
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
         throw new ModuleException("Requested I/O port (byte) is not used.");
 	}
     
@@ -621,7 +621,7 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
         throw new ModuleException("Requested I/O port range (word) is not in use.");
     }
 
@@ -688,7 +688,7 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
         throw new ModuleException("Requested I/O port range (double word) is not available.");
     }
 
@@ -753,5 +753,5 @@ public class Motherboard extends ModuleMotherboard
     }
 
 	//******************************************************************************
-	// Additional Methods
+	// Custom Methods
 }

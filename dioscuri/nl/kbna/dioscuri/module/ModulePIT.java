@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -48,14 +48,14 @@ public abstract class ModulePIT extends ModuleDevice
      * 
      * @return long milliseconds defining how long the clock sleeps before sending a pulse
      */
-    public abstract long getClockRate();
+//    public abstract long getClockRate();
 
     /**
      * Sets the clock rate for this PIT
      * 
      * @param long milliseconds, the time between two consequtive clock pulses
      */
-    public abstract void setClockRate(long milliseconds);
+//    public abstract void setClockRate(long milliseconds);
     
     /**
      * Requests a counter of the PIT.
