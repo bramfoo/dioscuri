@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:24 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:31:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,7 +34,7 @@
    <!-- Defines the boot sequence -->      
    <boot>
 	   <bootdrives> 
-		  <bootdrive>floppy</bootdrive>
+		  <bootdrive>harddrive</bootdrive>
 		  <bootdrive>none</bootdrive>
 		  <bootdrive>none</bootdrive>
 	   </bootdrives>
@@ -58,7 +58,7 @@
          <cpu debug="false" speedmhz="5"/>
          
          <!-- Defines the memory module-->
-		 <ram debug="false" debugaddressdecimal="9295" sizemb="1"/>
+		 <ram debug="false" debugaddressdecimal="1565" sizemb="1"/>
 	
          <!-- Defines the floppy drive module -->
 	 	 <floppydiskdrives debug="false" updateintervalmicrosecs="250"> <!-- normally 300 microseconds -->
@@ -68,12 +68,12 @@
              <driveletter>A</driveletter>
              <diskformat>1.44M</diskformat>
              <writeprotected>false</writeprotected>
-	         <imagefilepath>images/floppy/Kbd2Scrn.bin</imagefilepath>
+	         <imagefilepath>images/floppy/win30_installdisk1.ima</imagefilepath>
 	       </floppy> 
         </floppydiskdrives>
                  
         <!-- Defines the PIT module -->
- 		<pit clockrate="1" debug="false"/>      <!-- NOTE: A high value (> 1000) to avoid many interruption while debugging -->
+ 		<pit clockrate="10" debug="false"/>      <!-- NOTE: A high value (> 1000) to avoid many interruption while debugging -->
  		
           <!-- Defines the keyboard module -->
          <keyboard debug="false" updateintervalmicrosecs="200"/>        
@@ -81,14 +81,14 @@
          <!-- Defines the ata module -->
 	    <atadrives debug="false" updateintervalmicrosecs="100000">
 	   	    <harddiskdrive>   
-               <enabled>false</enabled>
+               <enabled>true</enabled>
                <channelindex>0</channelindex>
                <master>true</master>       
                <autodetectcylinders>true</autodetectcylinders>
                <cylinders>0</cylinders>
 	   	       <heads>4</heads>
                <sectorspertrack>17</sectorspertrack>
-               <imagefilepath>null</imagefilepath>
+               <imagefilepath>images/harddisk/MSDOS5_gms_masm.img</imagefilepath>
             </harddiskdrive> 
         </atadrives>
         
