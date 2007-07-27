@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:43 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -77,6 +77,7 @@ import nl.kbna.dioscuri.module.ModulePIC;
  * 
  * Notes:
  * - PIC is also an I/O device itself
+ * - All IRQ numbers are managed by PIC
  * 
  */
 public class PIC extends ModulePIC
@@ -126,9 +127,10 @@ public class PIC extends ModulePIC
     private final static int PIC_IRQ_SPACE      = 16;
     
     // IRQ numbers (fixed) for reserved devices
+    private final static int PIC_IRQ_NUMBER_PIT         = 0;        // PIT / system clock
     private final static int PIC_IRQ_NUMBER_KEYBOARD    = 1;        // Keyboard
     private final static int PIC_IRQ_NUMBER_FDC         = 6;        // FDC = Floppy Disk Controller
-    private final static int PIC_IRQ_NUMBER_RTC         = 8;        // RTC / system timer
+    private final static int PIC_IRQ_NUMBER_RTC         = 8;        // RTC / CMOS
         
     private final static int[] PIC_IRQ_NUMBER_ATA        = { 14, 15, 11, 9 };       // ATA controller
 
@@ -1360,7 +1362,14 @@ public class PIC extends ModulePIC
         
         // Check which device is requesting an IRQ number
         // If module is part of reserved IRQ-list, return fixed IRQ number
-        if (module.getType().equalsIgnoreCase("keyboard"))
+        if (module.getType().equalsIgnoreCase("pit"))
+        {
+            // Module PIT
+            irqNumber = PIC_IRQ_NUMBER_PIT;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("keyboard"))
         {
             // Module Keyboard
             irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
@@ -1383,7 +1392,7 @@ public class PIC extends ModulePIC
         }
         else if (module.getType().equalsIgnoreCase("ata"))
         {
-            // Module  controller
+            // Module ATA
             ModuleATA ata = (ModuleATA)module;
             int currentChannelIndex = ata.getCurrentChannelIndex();
             irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];

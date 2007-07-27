@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:44 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,6 +45,9 @@ import java.util.Calendar;
 /**
  * Implementation of the CMOS memory
  *
+ * Notes:
+ * - register information is taken from CMOS Reference by Padgett Peterson, 2001. See: http://moon.inf.uji.es/docs/interr/CMOS/CMOS.HTM
+ * 
  */
 public class CMOS
 {
@@ -69,18 +72,80 @@ public class CMOS
     protected final static int RTC_DATEOFMONTH    = 0x07; // BCD/hex format
     protected final static int RTC_MONTH          = 0x08; // BCD/hex format
     protected final static int RTC_YEAR           = 0x09; // BCD/hex format
+
+    // STATUS REGISTER A (read/write)
+    // Bitfields for Real-Time Clock status register A:
+    // Bit(s)  Description
+    //  7      =1 time update cycle in progress, data ouputs undefined
+    //         (bit 7 is read only)
+    //  6-4    22 stage divider
+    //         010 = 32768 Hz time base (default)
+    //  3-0    rate selection bits for interrupt
+    //         0000 none
+    //         0011 122 microseconds (minimum)
+    //         1111 500 milliseconds
+    //         0110 976.562 microseconds (default 1024 Hz)
     protected final static int STATUS_REGISTER_A  = 0x0A; // read/write
+    
+    // STATUS REGISTER B (read/write)
+    // Bitfields for Real-Time Clock status register B:
+    // Bit(s)  Description
+    //  7      enable cycle update
+    //  6      enable periodic interrupt
+    //  5      enable alarm interrupt
+    //  4      enable update-ended interrupt
+    //  3      enable square wave output
+    //  2      Data Mode - 0: BCD, 1: Binary
+    //  1      24/12 hour selection - 1 enables 24 hour mode
+    //  0      Daylight Savings Enable - 1 enables
     protected final static int STATUS_REGISTER_B  = 0x0B; // read/write
+    
+    // STATUS REGISTER C (Read only)
+    // Bitfields for Real-Time Clock status register C:
+    // Bit(s)  Description
+    //  7      Interrupt request flag
+    //         =1 when any or all of bits 6-4 are 1 and appropriate enables
+    //           (Register B) are set to 1. Generates IRQ 8 when triggered.
+    //  6      Periodic Interrupt flag
+    //  5      Alarm Interrupt flag
+    //  4      Update-Ended Interrupt Flag
+    //  3-0    unused???
     protected final static int STATUS_REGISTER_C  = 0x0C; // read only
+    
+    // STATUS REGISTER D (read only)
+    // Bitfields for Real-Time Clock status register D:
+    // Bit(s)  Description
+    //  7      Valid RAM - 1 indicates batery power good, 0 if dead or disconnected.
+    //  6-0    unused??? (0)
     protected final static int STATUS_REGISTER_D  = 0x0D; // read only
     
-    // CMOS register extensions
-    protected final static int SHUTDOWN_STATUS    = 0x0F; // read/write
+    
+    // CMOS REGISTER EXTENSIONS
+    // IBM - RESET CODE (IBM PS/2 "Shutdown Status Byte")
+    // Values for Reset Code / Shutdown Status Byte:
+    // 00h-03h perform power-on reset
+    //    00h  software reset or unexpected reset
+    //    01h  reset after memory size check in real/virtual mode
+    //         (or: chip set initialization for real mode reentry)
+    //    02h  reset after successful memory test in real/virtual mode
+    //    03h  reset after failed memory test in real/virtual mode
+    //    04h  INT 19h reboot
+    //    05h  flush keyboard (issue EOI) and jump via 40h:0067h
+    //    06h  reset (after successful test in virtual mode)
+    //         (or: jump via 40h:0067h without EOI)
+    //    07h  reset (after failed test in virtual mode)
+    //    08h  used by POST during protected-mode RAM test (return to POST)
+    //    09h  used for INT 15/87h (block move) support
+    //    0Ah  resume execution by jump via 40h:0067h
+    //    0Bh  resume execution via IRET via 40h:0067h
+    //    0Ch  resume execution via RETF via 40h:0067h
+    // 0Dh-FFh perform power-on reset
+     protected final static int SHUTDOWN_STATUS    = 0x0F; // read/write
+
     // Bitfields for floppy drives A/B types:
     //    Bit(s)  Description
     //     7-4    first floppy disk drive type
     //     3-0    second floppy disk drive type
-
     // Values for floppy drive type:
     //     00h    no drive
     //     01h    360 KB 5.25 Drive
@@ -152,46 +217,46 @@ public class CMOS
      */
     public CMOS()
     {
-        
-    // Create RAM array
-    ram = new byte[CMOS_SIZE];
-        
-    // Initialise CMOS memory with default values
-    Arrays.fill(ram, (byte) 0x00);
-    
-    // Set Status Register A to defaults:
-    //    0 - no time update cycle in progress
-    //  010 - 22 stage divider set at 32768 Hz time base (default)
-    // 0110 - interrupt rate selection: 976.562 microseconds (default 1024 Hz)
-    ram[STATUS_REGISTER_A] = (byte) 0x26;
-
-    // Set Status Register B to defaults:
-    // 0 - cycle update (disable)
-    // 0 - disable periodic interrupt (disable)
-    // 0 - disable alarm interrupt (disable)
-    // 0 - disable update-ended interrupt (disable)
-    // 0 - disable square wave output (disable)
-    // 0 - BCD data mode (not binary)
-    // 1 - 24 hour mode (not 12 hour)
-    // 0 - daylight savings (disable)
-    ram[STATUS_REGISTER_B] = (byte) 0x02;
-    
-    // Set Status Register C to defaults:
-    // 0 - Interrupt request flag 
-    // 0 - Periodic Interrupt flag
-    // 0 - Alarm Interrupt flag
-    // 0 - Update-Ended Interrupt Flag
-    // 000 - unused???
-    ram[STATUS_REGISTER_C] = (byte) 0x00;
-
-    // Set Status Register D to defaults:
-    // 1 - Valid RAM (battery power good)
-    // 000 0000 - unused???
-    ram[STATUS_REGISTER_D] = (byte) 0x80; 
-    
-    // Clear calendar
-    calendar = Calendar.getInstance();
+	    // Create RAM array
+	    ram = new byte[CMOS_SIZE];
+	        
+	    // Initialise CMOS memory with default values
+	    Arrays.fill(ram, (byte) 0x00);
+	    
+	    // Set Status Register A to defaults:
+	    //    0 - no time update cycle in progress
+	    //  010 - 22 stage divider set at 32768 Hz time base (default)
+	    // 0110 - interrupt rate selection: 976.562 microseconds (default 1024 Hz)
+	    ram[STATUS_REGISTER_A] = (byte) 0x26;
+	
+	    // Set Status Register B to defaults:
+	    // 0 - cycle update (disable)
+	    // 0 - disable periodic interrupt (disable)
+	    // 0 - disable alarm interrupt (disable)
+	    // 0 - disable update-ended interrupt (disable)
+	    // 0 - disable square wave output (disable)
+	    // 0 - BCD data mode (not binary)
+	    // 1 - 24 hour mode (not 12 hour)
+	    // 0 - daylight savings (disable)
+	    ram[STATUS_REGISTER_B] = (byte) 0x02;
+	    
+	    // Set Status Register C to defaults:
+	    // 0 - Interrupt request flag 
+	    // 0 - Periodic Interrupt flag
+	    // 0 - Alarm Interrupt flag
+	    // 0 - Update-Ended Interrupt Flag
+	    // 000 - unused???
+	    ram[STATUS_REGISTER_C] = (byte) 0x00;
+	
+	    // Set Status Register D to defaults:
+	    // 1 - Valid RAM (battery power good)
+	    // 000 0000 - unused???
+	    ram[STATUS_REGISTER_D] = (byte) 0x80; 
+	    
+	    // Clear calendar
+	    calendar = Calendar.getInstance();
     }
+
     
     protected void reset(boolean systemTime)
     {
@@ -228,6 +293,7 @@ public class CMOS
         checksum();
     }
 
+    
     /**
      *  Performs a byte-wise additive checksum of bytes of the values in locations 0x10-0x2D.<BR>
      *  Bytes 0x00-0x0F and 0x30-0x33 are omitted.<BR>
@@ -245,6 +311,7 @@ public class CMOS
           ram[CHECKSUM_HIGH_BYTE] = (byte) ((checksum >> 8) & 0xFF);
     }
 
+    
     /**
      * Performs a conversion of decimal value into Binary Code Decimal (BCD).
      * Note: results only in a one-byte-value. Large unsigned integers (> 255) will be cut off.

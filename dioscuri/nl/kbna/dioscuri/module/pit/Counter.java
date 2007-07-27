@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:44 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -71,6 +71,7 @@ public class Counter
     protected byte[] ol;            // Output Latch, holding a snapshot of the count of the counter
     
     // Toggles
+    private boolean isEnabled;		// Denotes if this counter is enabled or not
     private int parity;
     private boolean lsbWritten;
     private boolean lsbRead;
@@ -84,11 +85,11 @@ public class Counter
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.pit");
 
     // Constants
-    private final static int LSB = 1;
-    private final static int MSB = 0;
+    protected final static int LSB = 1;
+    protected final static int MSB = 0;
     
-    private final static int ODD = 1;
-    private final static int EVEN = 0;
+    protected final static int ODD = 1;
+    protected final static int EVEN = 0;
     
     private final static int RWMODE_0 = 0;       // Counter Latch Command
     private final static int RWMODE_1 = 1;       // R/W LSB only
@@ -132,6 +133,7 @@ public class Counter
         ol = new byte[] {0x00, 0x00};
         
         // Initialise toggles
+        isEnabled = false;
         parity = EVEN;
         lsbWritten = false;
         lsbRead = false;
@@ -175,7 +177,7 @@ public class Counter
     public void clockPulse()
     {
         // Check if this counter is used
-        if (user != null)
+        if (isEnabled == true)
         {
             // Check bcd setting
             if (bcd == BINARY)
@@ -214,7 +216,8 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x01}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -236,7 +239,8 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x01}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                         }
@@ -273,7 +277,8 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x01}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -295,7 +300,8 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x01}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                         }
@@ -332,8 +338,10 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    // Send notification to user (raise interrupt 0)
+                                    pit.pic.setIRQ(pit.irqNumber);
+                                    //user.setData(new byte[] {0x00}, pit);
+//                                    logger.log(Level.SEVERE, "pit counter r/wmode1 rings!!!! Send IRQ 0");
                                     
                                     newCount = true;
                                 }
@@ -349,15 +357,17 @@ public class Counter
                                 {
                                     // LSB passed by zero
                                     // MSB must be decremented
-                                    ce[MSB]--;
+                                    ce[MSB] = ce[MSB]--;
                                 }
                                 else if (ce[LSB] == 1 && ce[MSB] == 0)
                                 {
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    // Send notification to user (raise interrupt 0)
+                                    pit.pic.setIRQ(pit.irqNumber);
+                                    //user.setData(new byte[] {0x00}, pit);
+//                                    logger.log(Level.SEVERE, "pit counter r/wmode3 rings!!!! Send IRQ 0");
                                     
                                     newCount = true;
                                 }
@@ -370,11 +380,12 @@ public class Counter
                         // Mode 3: Square wave mode (periodic)
                         // OUT: initially high, turns low for when count has decremented to half of its value. Goes high again after half of the count.
                         // GATE: initially high. When turning low, counting is suspended.
-                        
+
                         // Check if a new count value should be loaded
                         if (newCount == true)
                         {
                             this.loadCounter();
+                        	logger.log(Level.SEVERE, "load new count: " + ((ce[Counter.MSB] & 0x000000FF) << 8) + ((ce[Counter.LSB]) & 0x000000FF));
                             
                             // Check parity of count element
                             if (parity == ODD)
@@ -382,14 +393,15 @@ public class Counter
                                 // Subtract one more to become even
                                 ce[LSB]--;
                                 
-                                // Check if OUT signal is still high and parity is ODD
+                                // Check if OUT signal is still high
                                 if (signalOut == true)
                                 {
                                     // OUT signal should be turned low one CLK signal AFTER ce has become zero!!
                                     signalOut = false;
 
                                     // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                             newCount = false;
@@ -415,7 +427,8 @@ public class Counter
                                         signalOut = false;
                                         
                                         // Send notification to user
-                                        user.setData(new byte[] {0x00}, pit);
+                                        pit.pic.setIRQ(pit.irqNumber);
+//                                        user.setData(new byte[] {0x00}, pit);
                                     }
                                     else if (signalOut == false) // this behaves the same for ODD and EVEN
                                     {
@@ -423,7 +436,8 @@ public class Counter
                                         signalOut = true;
 
                                         // Send notification to user
-                                        user.setData(new byte[] {0x01}, pit);
+                                        pit.pic.setIRQ(pit.irqNumber);
+//                                        user.setData(new byte[] {0x01}, pit);
                                     }
                                     
                                     // Indicate that counter must start counting from the start again
@@ -443,7 +457,7 @@ public class Counter
                                     // MSB must be decremented
                                     ce[MSB]--;
                                 }
-                                else if (ce[LSB] == 0 && ce[MSB] == 0 && parity == EVEN)
+                                else if (ce[LSB] == 0 && ce[MSB] == 0) //  && parity == EVEN
                                 {
                                     // Check state of OUT signal
                                     if (signalOut == true)
@@ -452,7 +466,9 @@ public class Counter
                                         signalOut = false;
                                         
                                         // Send notification to user
-                                        user.setData(new byte[] {0x00}, pit);
+                                        pit.pic.setIRQ(pit.irqNumber);
+//                                        user.setData(new byte[] {0x00}, pit);
+                                        logger.log(Level.SEVERE, "pit countermode3 r/wmode3 rings!!!! Send IRQ 0 sigout to low");
                                     }
                                     else if (signalOut == false)
                                     {
@@ -460,7 +476,9 @@ public class Counter
                                         signalOut = true;
 
                                         // Send notification to user
-                                        user.setData(new byte[] {0x01}, pit);
+                                        pit.pic.setIRQ(pit.irqNumber);
+//                                        user.setData(new byte[] {0x01}, pit);
+                                        logger.log(Level.SEVERE, "pit countermode3 r/wmode3 rings!!!! Send IRQ 0 sigout to high");
                                     }
                                     
                                     // Indicate that counter must start counting from the start again
@@ -503,7 +521,8 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x00}, pit);
                                     
                                     newCount = true;
                                 }
@@ -527,7 +546,8 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x00}, pit);
                                     
                                     newCount = true;
                                 }
@@ -570,7 +590,8 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -592,7 +613,8 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Send notification to user
-                                    user.setData(new byte[] {0x00}, pit);
+                                    pit.pic.setIRQ(pit.irqNumber);
+//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                         }
@@ -669,7 +691,7 @@ public class Counter
                     signalOut = true;
 
                     // Send notification to user
-                    user.setData(new byte[] {0x01}, pit);
+                    pit.pic.setIRQ(pit.irqNumber);
                 }
             }
         }
@@ -789,6 +811,7 @@ public class Counter
             {
                 // Store data in Count Register
                 cr[MSB] = data;
+//                cr[MSB] = 0x00;	// Just for testing!
                 lsbWritten = false;
                 newCount = true;
             }
@@ -796,6 +819,7 @@ public class Counter
             {
                 // Store LSB of count
                 cr[LSB] = data;
+//                cr[LSB] = 0x02;	// Just for testing!
                 lsbWritten = true;
             }
         }
@@ -901,9 +925,23 @@ public class Counter
     }
 
 
-    public int getParity()
+    protected int getParity()
     {
         // Returns the parity of counting element
         return parity;
     }
+
+
+	protected void setEnabled(boolean status)
+	{
+		// Set current counter in given state
+		isEnabled = status;
+	}
+	
+	
+	protected boolean isEnabled()
+	{
+		// Return status of this counter
+		return isEnabled;
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:44 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,8 +35,6 @@
 package nl.kbna.dioscuri.module.rtc;
 
 import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,11 +43,10 @@ import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 import nl.kbna.dioscuri.module.Module;
+import nl.kbna.dioscuri.module.ModuleDevice;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
-import nl.kbna.dioscuri.module.ModulePIT;
 import nl.kbna.dioscuri.module.ModuleRTC;
-import nl.kbna.dioscuri.module.rtc.CMOS;
 
 /**
  * An implementation of a Real Time  module.
@@ -83,9 +80,8 @@ public class RTC extends ModuleRTC
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "pit", "pic"}; 
+    private String[] moduleConnections = new String[] {"motherboard", "pic"}; 
     private ModuleMotherboard motherboard;
-    private ModulePIT pit;
     private ModulePIC pic;
     
     // Toggles
@@ -208,13 +204,6 @@ public class RTC extends ModuleRTC
             return true;
         }
         
-        // Set connection for pit
-        else if (mod.getType().equalsIgnoreCase("pit"))
-        {
-            this.pit = (ModulePIT)mod;
-            return true;
-        }
-        
         // Set connection for pic
         else if (mod.getType().equalsIgnoreCase("pic"))
         {
@@ -235,7 +224,7 @@ public class RTC extends ModuleRTC
     public boolean isConnected()
     {
         // Check if module is fully connected
-        if (this.motherboard != null && this.pit != null && this.pic != null)
+        if (this.motherboard != null && this.pic != null)
         {
             return true;
         }
@@ -282,16 +271,6 @@ public class RTC extends ModuleRTC
         else
         {
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Request of IRQ number failed.");
-        }
-        
-        // Register this RTC to a PIT counter
-        if (pit.requestCounter(this) == true)
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter of PIT requested successfully.");
-        }
-        else
-        {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter of PIT request failed.");
         }
         
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
@@ -544,7 +523,7 @@ public class RTC extends ModuleRTC
                 // 'data' sets the register for the next port instruction;
                 // Limited range to 127 to fit within CMOS array size
                 lookupRegister = data & 0x7F;
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": lookup byte set to 0x" + Integer.toHexString(lookupRegister).toUpperCase());
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": lookup byte set to 0x" + Integer.toHexString(lookupRegister).toUpperCase());
                 return;
                 
             case (IN_PORT):
@@ -557,7 +536,7 @@ public class RTC extends ModuleRTC
                 {
                     cmos.ram[lookupRegister] = data;
                 }
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port 0x" + Integer.toHexString(portAddress).toUpperCase() + " [0x" + Integer.toHexString(lookupRegister).toUpperCase() + "] set to: 0x" + Integer.toHexString(data).toUpperCase());
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port 0x" + Integer.toHexString(portAddress).toUpperCase() + " [0x" + Integer.toHexString(lookupRegister).toUpperCase() + "] set to: 0x" + Integer.toHexString(data).toUpperCase());
                 return;
                 
             default:
