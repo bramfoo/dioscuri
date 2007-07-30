@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -129,7 +129,7 @@ public class RTC extends ModuleRTC
         // Initialise realTime variable
         // TRUE = real calender values from host machine, FALSE = user-defined
         // TODO: this toggle can be used later for user defined time and date via configuration file
-        systemTime = true;
+        systemTime = false;
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + " Module created successfully.");
     }

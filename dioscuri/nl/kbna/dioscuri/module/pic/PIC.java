@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -268,10 +268,10 @@ public class PIC extends ModulePIC
         
         // Set custom setting for master and slave PICs
         thePIC[MASTER].interruptOffset = 0x08;  // IRQ0 = INT 0x08
-        thePIC[MASTER].master = true;     // master PIC
+        thePIC[MASTER].isMaster = true;     // master PIC
 
         thePIC[SLAVE].interruptOffset = 0x70;   // IRQ8 = INT 0x70
-        thePIC[SLAVE].master = false;     // slave PIC
+        thePIC[SLAVE].isMaster = false;     // slave PIC
         
         // Register I/O ports PORT 0x20, 0x21, 0xA0, 0xA1
         motherboard.setIOPort(MASTER_PIC_CMD_IRQ, this);
@@ -477,7 +477,7 @@ public class PIC extends ModulePIC
      */
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from " + portAddress);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from 0x" + Integer.toHexString(portAddress));
 
         if ((portAddress == 0x20 || portAddress == 0x21) && thePIC[MASTER].isPolled)
         {
@@ -485,7 +485,7 @@ public class PIC extends ModulePIC
             clearHighestInterrupt(MASTER);
             thePIC[MASTER].isPolled = false;
             serviceMasterPIC();
-            return thePIC[MASTER].irqNumber; // Return the current irq requested
+            return thePIC[MASTER].currentIrqNumber; // Return the current irq requested
         }
 
         if ((portAddress == 0xA0 || portAddress == 0xA1) && thePIC[SLAVE].isPolled)
@@ -494,7 +494,7 @@ public class PIC extends ModulePIC
             clearHighestInterrupt(SLAVE);
             thePIC[SLAVE].isPolled = false;
             serviceSlavePIC();
-            return thePIC[SLAVE].irqNumber; // Return the current irq requested
+            return thePIC[SLAVE].currentIrqNumber; // Return the current irq requested
         }
 
         switch (portAddress)
@@ -551,14 +551,14 @@ public class PIC extends ModulePIC
      */
     public void setIOPortByte(int portAddress, byte data)
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to " + portAddress + " = " + data);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x" + Integer.toHexString(portAddress) + " = 0x" + Integer.toHexString(data));
 
         switch (portAddress)
         {
             case 0x20:
                 if ((data & 0x10) != 0)
                 {
-                    // initialization command 1
+                    // initialization command 1: master
                     logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " master: init command 1 found");
                     logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + "         requires 4 = " + (data & 0x01));
                     logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + "         cascade mode: [0=cascade,1=single] " + ((data & 0x02) >> 1));
@@ -582,7 +582,7 @@ public class PIC extends ModulePIC
                     {
                         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " master: ICW1: edge triggered mode selected");
                     }
-                    setCPUInterruptReq(false);
+                    cpu.interruptRequest(false);
                     return;
                 }
 
@@ -638,16 +638,19 @@ public class PIC extends ModulePIC
                     case (byte) 0xA0: // Rotate on non-specific end of interrupt
                     case 0x20: // end of interrupt command
                         logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OCW2: Clear highest interrupt");
-                        clearHighestInterrupt(MASTER);
+                        this.clearHighestInterrupt(MASTER);
 
                         if (data == 0xA0)
-                        {// Rotate in Auto-EOI mode
+                        {
+                        	// Rotate in Auto-EOI mode
                             thePIC[MASTER].lowestPriorityIRQ++;
                             if (thePIC[MASTER].lowestPriorityIRQ > 7)
+                            {
                                 thePIC[MASTER].lowestPriorityIRQ = 0;
+                            }
                         }
 
-                        serviceMasterPIC();
+                        this.serviceMasterPIC();
                         break;
 
                     case 0x40: // Intel PIC spec-sheet seems to indicate this should be ignored
@@ -758,7 +761,7 @@ public class PIC extends ModulePIC
             case 0xA0:
                 if ((data & 0x10) != 0)
                 {
-                    // initialization command 1
+                    // initialization command 1: slave
                     logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " slave: init command 1 found");
                     logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + "        requires 4 = " + (data & 0x01));
                     logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + "        cascade mode: [0=cascade,1=single] " + ((data & 0x02) >> 1));
@@ -1021,6 +1024,182 @@ public class PIC extends ModulePIC
     // ModulePIC Methods
     
     /**
+     * Returns an IRQ number.
+     * Checks if requesting module has a fixed IRQ number.
+     * 
+     * @param module that would like to have an IRQ number
+     * @return int IRQ number from IRQ address space, or -1 if not allowed/possible
+     */
+    public int requestIRQNumber(Module module)
+    {
+        int irqNumber = -1;
+        
+        // Check which device is requesting an IRQ number
+        // If module is part of reserved IRQ-list, return fixed IRQ number
+        if (module.getType().equalsIgnoreCase("pit"))
+        {
+            // Module PIT
+            irqNumber = PIC_IRQ_NUMBER_PIT;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("keyboard"))
+        {
+            // Module Keyboard
+            irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("fdc"))
+        {
+            // Module FDC
+            irqNumber = PIC_IRQ_NUMBER_FDC;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("rtc"))
+        {
+            // Module RTC
+            irqNumber = PIC_IRQ_NUMBER_RTC;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("ata"))
+        {
+            // Module ATA
+            ModuleATA ata = (ModuleATA)module;
+            int currentChannelIndex = ata.getCurrentChannelIndex();
+            irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else
+        {
+            // FIXME: Return any of the free available IRQ numbers
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Should return free IRQ number, but is not implemented");
+        }
+        
+        return irqNumber;
+    }
+
+    
+    /**
+     * Raises an interrupt request (IRQ) of given IRQ number
+     * 
+     * @param int irqNumber the number of IRQ to be raised
+     */
+    public void setIRQ(int irqNumber)
+    {
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " high" + thePIC[MASTER].irqPins);
+
+        int mask = (1 << (irqNumber & 7));
+        // Check if IRQ should be handled by master or slave and check if irqPin was low
+        if ((irqNumber <= 7) && !((thePIC[MASTER].irqPins & mask) != 0))
+        {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now high");
+            thePIC[MASTER].irqPins |= mask;
+            thePIC[MASTER].interruptRequestRegister |= mask;
+            this.serviceMasterPIC();
+        }
+        else if ((irqNumber > 7) && (irqNumber <= 15) && !((thePIC[SLAVE].irqPins & mask) != 0))
+        {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now high");
+            thePIC[SLAVE].irqPins |= mask;
+            thePIC[SLAVE].interruptRequestRegister |= mask;
+            this.serviceSlavePIC();
+        }
+    }
+    
+    
+    /**
+     * Lowers an interrupt request (IRQ) of given IRQ number
+     * 
+     * @param int irqNumber the number of IRQ to be cleared
+     */
+    public void clearIRQ(int irqNumber)
+    {
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " low");
+
+        int mask = (1 << (irqNumber & 7));
+        if ((irqNumber <= 7) && ((thePIC[MASTER].irqPins & mask) != 0))
+        {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now low");
+            thePIC[MASTER].irqPins &= ~(mask);
+            thePIC[MASTER].interruptRequestRegister &= ~(mask);
+        }
+        else if ((irqNumber > 7) && (irqNumber <= 15) && ((thePIC[SLAVE].irqPins & mask) != 0))
+        {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now low");
+            thePIC[SLAVE].irqPins &= ~(mask);
+            thePIC[SLAVE].interruptRequestRegister &= ~(mask);
+        }
+    }
+    
+    /**
+     * Acknowledges an interrupt request from PIC by CPU
+     * Note: only the CPU can acknowledge an interrupt
+     * 
+     * @return int address defining the jump address for handling the IRQ by the CPU
+     */
+    public int interruptAcknowledge()
+    {
+        int vector;
+        int irq;
+
+        cpu.interruptRequest(false);
+        thePIC[MASTER].intRequestPin = false;
+        
+        // Check for spurious interrupt
+        if (thePIC[MASTER].interruptRequestRegister == 0)
+        {
+            return (byte) (thePIC[MASTER].interruptOffset + 7);
+        }
+        // In level sensitive mode don't clear the irr bit.
+        if (!((thePIC[MASTER].edgeLevel & (1 << thePIC[MASTER].currentIrqNumber)) != 0))
+            thePIC[MASTER].interruptRequestRegister &= ~(1 << thePIC[MASTER].currentIrqNumber);
+        // In autoeoi mode don't set the isr bit.
+        if (!thePIC[MASTER].autoEndOfInt)
+            thePIC[MASTER].inServiceRegister |= (1 << thePIC[MASTER].currentIrqNumber);
+        else if (thePIC[MASTER].rotateOnAutoEOI)
+            thePIC[MASTER].lowestPriorityIRQ = thePIC[MASTER].currentIrqNumber;
+
+        if (thePIC[MASTER].currentIrqNumber != 2)
+        {
+            irq = thePIC[MASTER].currentIrqNumber;
+            vector = irq + thePIC[MASTER].interruptOffset;
+        }
+        else
+        { /* IRQ2 = slave pic IRQ8..15 */
+            thePIC[SLAVE].intRequestPin = false;
+            thePIC[MASTER].irqPins &= ~(1 << 2);
+            // Check for spurious interrupt
+            if (thePIC[SLAVE].interruptRequestRegister == 0)
+            {
+                return (thePIC[SLAVE].interruptOffset + 7);
+            }
+            irq = thePIC[SLAVE].currentIrqNumber;
+            vector = irq + thePIC[SLAVE].interruptOffset;
+            // In level sensitive mode don't clear the irr bit.
+            if (!((thePIC[SLAVE].edgeLevel & (1 << thePIC[SLAVE].currentIrqNumber)) != 0))
+                thePIC[SLAVE].interruptRequestRegister &= ~(1 << thePIC[SLAVE].currentIrqNumber);
+            // In autoeoi mode don't set the isr bit.
+            if (!thePIC[SLAVE].autoEndOfInt)
+                thePIC[SLAVE].inServiceRegister |= (1 << thePIC[SLAVE].currentIrqNumber);
+            else if (thePIC[SLAVE].rotateOnAutoEOI)
+                thePIC[SLAVE].lowestPriorityIRQ = thePIC[SLAVE].currentIrqNumber;
+            serviceSlavePIC();
+        }
+
+        serviceMasterPIC();
+
+        return (vector);
+    }
+
+    
+    //******************************************************************************
+    // Custom Methods
+
+    /**
      * Handle interrupts on the slave PIC
      */
     private void serviceSlavePIC()
@@ -1090,7 +1269,7 @@ public class PIC extends ModulePIC
                         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " slave: signalling IRQ(" + 8 + irq + ")");
 
                         thePIC[SLAVE].intRequestPin = true;
-                        thePIC[SLAVE].irqNumber = (byte) irq;
+                        thePIC[SLAVE].currentIrqNumber = (byte) irq;
                         setIRQ(2);   // request IRQ 2 on master pic
                         return;
                     }
@@ -1118,8 +1297,10 @@ public class PIC extends ModulePIC
         int isr, maxIRQ;
         int highestPriority = thePIC[MASTER].lowestPriorityIRQ + 1;
         if (highestPriority > 7)
+        {
             highestPriority = 0;
-
+        }
+        
         if (thePIC[MASTER].intRequestPin)
         {
             // last interrupt still not acknowleged
@@ -1133,7 +1314,7 @@ public class PIC extends ModulePIC
         }
         else
         {
-            // normal mode
+            // Normal mode
             // Find the highest priority IRQ that is enabled due to current ISR
             isr = thePIC[MASTER].inServiceRegister;
             if (isr != 0)
@@ -1143,7 +1324,9 @@ public class PIC extends ModulePIC
                 {
                     maxIRQ++;
                     if (maxIRQ > 7)
+                    {
                         maxIRQ = 0;
+                    }
                 }
                 if (maxIRQ == highestPriority)
                 {
@@ -1174,8 +1357,8 @@ public class PIC extends ModulePIC
                     {
                         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " signalling IRQ(" + irq + ")");
                         thePIC[MASTER].intRequestPin = true;
-                        thePIC[MASTER].irqNumber = (byte) irq;
-                        setCPUInterruptReq(true);
+                        thePIC[MASTER].currentIrqNumber = (byte) irq;
+                        cpu.interruptRequest(true);
                         return;
                     }
                 }
@@ -1226,189 +1409,4 @@ public class PIC extends ModulePIC
         }
         while (irq != highestPriority);
     }
-    
-    /**
-     * Inform CPU of interrupt request
-     * 
-     * @param value Value of interrupt requested
-     */
-    private void setCPUInterruptReq(boolean value)
-    {
-        cpu.interruptRequest(value);
-    }
-
-    /**
-     * Lowers an interrupt request (IRQ) of given IRQ number
-     * 
-     * @param int irqNumber the number of IRQ to be cleared
-     */
-    public void clearIRQ(int irqNumber)
-    {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " low");
-
-        int mask = (1 << (irqNumber & 7));
-        if ((irqNumber <= 7) && ((thePIC[MASTER].irqPins & mask) != 0))
-        {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now low");
-            thePIC[MASTER].irqPins &= ~(mask);
-            thePIC[MASTER].interruptRequestRegister &= ~(mask);
-        }
-        else if ((irqNumber > 7) && (irqNumber <= 15) && ((thePIC[SLAVE].irqPins & mask) != 0))
-        {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now low");
-            thePIC[SLAVE].irqPins &= ~(mask);
-            thePIC[SLAVE].interruptRequestRegister &= ~(mask);
-        }
-    }
-    
-    /**
-     * Raises an interrupt request (IRQ) of given IRQ number
-     * 
-     * @param int irqNumber the number of IRQ to be raised
-     */
-    public void setIRQ(int irqNumber)
-    {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " high");
-
-        int mask = (1 << (irqNumber & 7));
-        if ((irqNumber <= 7) && !((thePIC[MASTER].irqPins & mask) != 0))
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now high");
-            thePIC[MASTER].irqPins |= mask;
-            thePIC[MASTER].interruptRequestRegister |= mask;
-            serviceMasterPIC();
-        }
-        else if ((irqNumber > 7) && (irqNumber <= 15) && !((thePIC[SLAVE].irqPins & mask) != 0))
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line " + irqNumber + " now high");
-            thePIC[SLAVE].irqPins |= mask;
-            thePIC[SLAVE].interruptRequestRegister |= mask;
-            serviceSlavePIC();
-        }
-    }
-    
-    
-    /**
-     * Acknowledges an interrupt request from PIC by CPU
-     * Note: only the CPU can acknowledge an interrupt
-     * 
-     * @return int address defining the jump address for handling the IRQ by the CPU
-     */
-    /* CPU handshakes with PIC after acknowledging interrupt */
-    public int interruptAcknowledge()
-    {
-        int vector;
-        int irq;
-
-        setCPUInterruptReq(false);
-        thePIC[MASTER].intRequestPin = false;
-        // Check for spurious interrupt
-        if (thePIC[MASTER].interruptRequestRegister == 0)
-        {
-            return (byte) (thePIC[MASTER].interruptOffset + 7);
-        }
-        // In level sensitive mode don't clear the irr bit.
-        if (!((thePIC[MASTER].edgeLevel & (1 << thePIC[MASTER].irqNumber)) != 0))
-            thePIC[MASTER].interruptRequestRegister &= ~(1 << thePIC[MASTER].irqNumber);
-        // In autoeoi mode don't set the isr bit.
-        if (!thePIC[MASTER].autoEndOfInt)
-            thePIC[MASTER].inServiceRegister |= (1 << thePIC[MASTER].irqNumber);
-        else if (thePIC[MASTER].rotateOnAutoEOI)
-            thePIC[MASTER].lowestPriorityIRQ = thePIC[MASTER].irqNumber;
-
-        if (thePIC[MASTER].irqNumber != 2)
-        {
-            irq = thePIC[MASTER].irqNumber;
-            vector = irq + thePIC[MASTER].interruptOffset;
-        }
-        else
-        { /* IRQ2 = slave pic IRQ8..15 */
-            thePIC[SLAVE].intRequestPin = false;
-            thePIC[MASTER].irqPins &= ~(1 << 2);
-            // Check for spurious interrupt
-            if (thePIC[SLAVE].interruptRequestRegister == 0)
-            {
-                return (thePIC[SLAVE].interruptOffset + 7);
-            }
-            irq = thePIC[SLAVE].irqNumber;
-            vector = irq + thePIC[SLAVE].interruptOffset;
-            // In level sensitive mode don't clear the irr bit.
-            if (!((thePIC[SLAVE].edgeLevel & (1 << thePIC[SLAVE].irqNumber)) != 0))
-                thePIC[SLAVE].interruptRequestRegister &= ~(1 << thePIC[SLAVE].irqNumber);
-            // In autoeoi mode don't set the isr bit.
-            if (!thePIC[SLAVE].autoEndOfInt)
-                thePIC[SLAVE].inServiceRegister |= (1 << thePIC[SLAVE].irqNumber);
-            else if (thePIC[SLAVE].rotateOnAutoEOI)
-                thePIC[SLAVE].lowestPriorityIRQ = thePIC[SLAVE].irqNumber;
-            serviceSlavePIC();
-        }
-
-        serviceMasterPIC();
-
-        return (vector);
-    }
-
-    
-    /**
-     * Returns an IRQ number.
-     * Checks if requesting module has a fixed IRQ number.
-     * 
-     * @param module that would like to have an IRQ number
-     * @return int IRQ number from IRQ address space, or -1 if not allowed/possible
-     */
-    public int requestIRQNumber(Module module)
-    {
-        int irqNumber = -1;
-        
-        // Check which device is requesting an IRQ number
-        // If module is part of reserved IRQ-list, return fixed IRQ number
-        if (module.getType().equalsIgnoreCase("pit"))
-        {
-            // Module PIT
-            irqNumber = PIC_IRQ_NUMBER_PIT;
-            irqList[irqNumber] = module;
-            irqEnabled[irqNumber] = false;
-        }
-        else if (module.getType().equalsIgnoreCase("keyboard"))
-        {
-            // Module Keyboard
-            irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
-            irqList[irqNumber] = module;
-            irqEnabled[irqNumber] = false;
-        }
-        else if (module.getType().equalsIgnoreCase("fdc"))
-        {
-            // Module FDC
-            irqNumber = PIC_IRQ_NUMBER_FDC;
-            irqList[irqNumber] = module;
-            irqEnabled[irqNumber] = false;
-        }
-        else if (module.getType().equalsIgnoreCase("rtc"))
-        {
-            // Module RTC
-            irqNumber = PIC_IRQ_NUMBER_RTC;
-            irqList[irqNumber] = module;
-            irqEnabled[irqNumber] = false;
-        }
-        else if (module.getType().equalsIgnoreCase("ata"))
-        {
-            // Module ATA
-            ModuleATA ata = (ModuleATA)module;
-            int currentChannelIndex = ata.getCurrentChannelIndex();
-            irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
-            irqList[irqNumber] = module;
-            irqEnabled[irqNumber] = false;
-        }
-        else
-        {
-            // FIXME: Return any of the free available IRQ numbers
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Should return free IRQ number, but is not implemented");
-        }
-        
-        return irqNumber;
-    }
-    
-    
-    //******************************************************************************
-    // Additional Methods
 }

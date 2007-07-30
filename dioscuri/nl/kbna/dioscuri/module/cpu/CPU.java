@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1020,17 +1020,16 @@ public class CPU extends ModuleCPU
             return true;
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - ext int");
         // INTERRUPTS
         // Sense if interrupt request is pending; also check it's properly executed on NEXT instruction boundary.
         // Also check if interrupt flag is enabled
         if (irqPending == true && irqWaited == true && flags[REGISTER_FLAGS_IF])
         {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - async int");
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - async int");
             // Handle IRQ; irqWaited has ensured this interrupt is executed one instruction after it was generated
-            int vector = pic.interruptAcknowledge();
+            this.handleIRQ(pic.interruptAcknowledge());
             
-            this.handleIRQ(vector);
+            // Reset irq variables
             irqPending = false;
             irqWaited = false;
         }
@@ -1038,9 +1037,11 @@ public class CPU extends ModuleCPU
         // Priority 5: External Interrupts
         //   NMI Interrupts
         //   Maskable Hardware Interrupts
+        
+        // DMA
         if (holdReQuest)
         {
-            //logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - DMA");
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
             if (hRQorigin.getType().equalsIgnoreCase("dma"))
             {
@@ -2698,7 +2699,7 @@ public class CPU extends ModuleCPU
             switch (segmentOverridePointer)
             {
                 case 0: // SEG=CS
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Writing to segment CS (may be dangerous!) [" + instructionCounter + "]");
+//                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Writing to segment CS (may be dangerous!) [" + instructionCounter + "]");
                     setByteToCode(disp, value);
                     break;
                 case 1: // SEG=DS
@@ -2758,7 +2759,7 @@ public class CPU extends ModuleCPU
             switch (segmentOverridePointer)
             {
                 case 0: // SEG=CS
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "] Writing to segment CS (may be dangerous!) [" + instructionCounter + "]");
+//                    logger.log(Level.FINE, "[" + MODULE_TYPE + "] Writing to segment CS (may be dangerous!) [" + instructionCounter + "]");
                     setWordToCode(disp, value);
                     break;
                 case 1: // SEG=DS

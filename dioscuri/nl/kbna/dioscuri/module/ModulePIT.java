@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,13 +56,5 @@ public abstract class ModulePIT extends ModuleDevice
      * @param long milliseconds, the time between two consequtive clock pulses
      */
 //    public abstract void setClockRate(long milliseconds);
-    
-    /**
-     * Requests a counter of the PIT.
-     * 
-     * @param module that would like to have a counter
-     * @return boolean true if request is acknowledged, false otherwise
-     */
-    public abstract boolean requestCounter(Module module);
     
 }

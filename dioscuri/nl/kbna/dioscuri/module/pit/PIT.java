@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -159,12 +159,8 @@ public class PIT extends ModulePIT
         counters = new Counter[3];
         for (int c = 0; c < counters.length; c++)
         {
-            counters[c] = new Counter(this);
+            counters[c] = new Counter(this, c);
         }
-        
-        // Create a clock and start it
-//        clock = new Clock(this, counters);
-//        clock.start();
         
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
@@ -463,7 +459,6 @@ public class PIT extends ModulePIT
         dump += "In total " + counters.length + " counters exist:" + ret;
         for (int i = 0; i < counters.length; i++)
         {
-            Module user = counters[i].getUser();
             if (counters[i].isEnabled() == true)
             {
                 dump += "Counter " + i + tab + ": mode " + counters[i].counterMode;
@@ -540,7 +535,7 @@ public class PIT extends ModulePIT
      */
     public byte getIOPortByte(int portAddress) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from address " + portAddress);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from address 0x" + Integer.toHexString(portAddress));
 
         // Handle data based on portAddress
         switch (portAddress)
@@ -580,7 +575,7 @@ public class PIT extends ModulePIT
      */
     public void setIOPortByte(int portAddress, byte data) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to " + portAddress + " = " + data);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x" + Integer.toHexString(portAddress) + " = 0x" + Integer.toHexString(data));
 
         // Handle writing data based on portAddress
         switch (portAddress)
@@ -720,38 +715,5 @@ public class PIT extends ModulePIT
         clock.setClockRate(milliseconds);
     }
 */
-
-    /**
-     * Requests a counter of the PIT.
-     * If the given module is registered to a counter, it receives a notice each time the OUT signal of a counter becomes high.
-     * 
-     * @param module that would like to have a counter
-     * @return boolean true if request is acknowledged, false otherwise
-     */
-    public boolean requestCounter(Module module)
-    {
-    	// Associate counter with requesting module (if still available)
-        if (counters[1].getUser() != null)
-        {
-            counters[0].setUser(module);
-        }
-        else if (counters[1].getUser() != null)
-        {
-            counters[1].setUser(module);
-        }
-        else if (counters[2].getUser() != null)
-        {
-            counters[2].setUser(module);
-        }
-        else
-        {
-            // Module could not be assigned to any counter
-            return false;
-        }
-        
-        // Module assigned successfully to counter
-        return true;
-    }
-
 
 }

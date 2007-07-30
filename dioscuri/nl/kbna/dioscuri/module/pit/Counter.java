@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,12 +53,12 @@ public class Counter
 {
     // Attributes
     private PIT pit;                // The owner of the counter
-    private Module user;            // Defines the module that uses this counter as counting mechanism
+    private int counterNumber;		// The number of the counter (ID)
     
     // Signals
     private boolean signalClock;   // Input signal CLK from the clock
     private boolean signalGate;    // Input signal GATE from other module
-    private boolean signalOut;     // Output signal OUT to notify user something happened
+    private boolean signalOut;     // Output signal OUT
     
     // Mode settings
     protected int rwMode;          // States the mode to R/W counter: 0 (latched), 1 (LSB), 2 (MSB), 3 (LSB -> MSB)
@@ -111,11 +111,11 @@ public class Counter
      * Constructor of the counter class
      * 
      */
-    public Counter(PIT pit)
+    public Counter(PIT pit, int counterNumber)
     {
         // Initialise relations
         this.pit = pit;
-        this.user = null;
+        this.counterNumber = counterNumber;
         
         // Initialise input/output signals
         signalClock = false;
@@ -146,30 +146,6 @@ public class Counter
     
     // Methods
     /**
-     * Retrieves the module (user) that uses this counter as counting mechanism
-     * 
-     *  @return Module user or null if no user has been set
-     */
-    protected Module getUser()
-    {
-        // Return the user of this counter
-        return user;
-    }
-    
-    
-    /**
-     * Sets the module (user) that uses this counter as counting mechanism
-     * 
-     *  @param Module user
-     */
-    protected void setUser(Module user)
-    {
-        // Set the module as user
-        this.user = user;
-    }
-
-    
-    /**
      * Performs counter action on one clockpulse.
      * The action depends on the mode the counter is set to, the GATE signal, R/W mode and BCD setting.
      * 
@@ -198,6 +174,9 @@ public class Counter
                         {
                             this.loadCounter();
                             newCount = false;
+
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
                         }
                         else if (signalGate == true)
                         {
@@ -215,9 +194,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = true;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -238,9 +216,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = true;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                         }
@@ -259,6 +236,9 @@ public class Counter
                             newCount = false;
                             isTriggered = true;
                             signalOut = false;
+
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
                         }
                         else if (isTriggered == true)
                         {
@@ -276,9 +256,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = true;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -299,9 +278,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = true;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x01}, pit);
                                 }
                             }
                         }
@@ -310,7 +288,7 @@ public class Counter
                     case COUNTERMODE_2:
                         // Mode 2: Rate generator (periodic)
                         // OUT: initially high, turns low for one clockcycle when count has decremented to one and goes high again.
-                        // GATE: initially high. When turning low, counting is suspended.
+                        // GATE: initially high. When turning low, counting is suspended. If OUT is low as well, OUT is set to high immediately
                         
                         // Reset OUT signal to make sure that when it's low, it will return high again
                         // Even when GATE is turned low, the OUT signal should become high again!
@@ -321,6 +299,9 @@ public class Counter
                         {
                             this.loadCounter();
                             newCount = false;
+                            
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
                         }
                         else if (signalGate == true)
                         {
@@ -338,11 +319,11 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user (raise interrupt 0)
-                                    pit.pic.setIRQ(pit.irqNumber);
-                                    //user.setData(new byte[] {0x00}, pit);
-//                                    logger.log(Level.SEVERE, "pit counter r/wmode1 rings!!!! Send IRQ 0");
+                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + " r/wmode1 rings!!!! Send IRQ 0");
                                     
+                                    // Raise interrupt
+                                    pit.pic.setIRQ(pit.irqNumber);
+
                                     newCount = true;
                                 }
                             }
@@ -364,11 +345,10 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user (raise interrupt 0)
+                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + " r/wmode3 rings!!!! Send IRQ 0");
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-                                    //user.setData(new byte[] {0x00}, pit);
-//                                    logger.log(Level.SEVERE, "pit counter r/wmode3 rings!!!! Send IRQ 0");
-                                    
+
                                     newCount = true;
                                 }
                             }
@@ -379,7 +359,7 @@ public class Counter
                     case COUNTERMODE_3:
                         // Mode 3: Square wave mode (periodic)
                         // OUT: initially high, turns low for when count has decremented to half of its value. Goes high again after half of the count.
-                        // GATE: initially high. When turning low, counting is suspended.
+                        // GATE: initially high. When turning low, counting is suspended. If OUT is low as well, OUT is set to high immediately
 
                         // Check if a new count value should be loaded
                         if (newCount == true)
@@ -387,6 +367,9 @@ public class Counter
                             this.loadCounter();
                         	logger.log(Level.SEVERE, "load new count: " + ((ce[Counter.MSB] & 0x000000FF) << 8) + ((ce[Counter.LSB]) & 0x000000FF));
                             
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
+
                             // Check parity of count element
                             if (parity == ODD)
                             {
@@ -398,10 +381,6 @@ public class Counter
                                 {
                                     // OUT signal should be turned low one CLK signal AFTER ce has become zero!!
                                     signalOut = false;
-
-                                    // Send notification to user
-                                    pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                             newCount = false;
@@ -420,24 +399,19 @@ public class Counter
                                 // LSB only
                                 if (ce[LSB] == 0)
                                 {
+                                    // Raise interrupt
+                                    pit.pic.setIRQ(pit.irqNumber);
+
                                     // Check state of OUT signal
                                     if (signalOut == true && parity == EVEN)
                                     {
                                         // Set OUT to low
                                         signalOut = false;
-                                        
-                                        // Send notification to user
-                                        pit.pic.setIRQ(pit.irqNumber);
-//                                        user.setData(new byte[] {0x00}, pit);
                                     }
                                     else if (signalOut == false) // this behaves the same for ODD and EVEN
                                     {
                                         // Set OUT to high
                                         signalOut = true;
-
-                                        // Send notification to user
-                                        pit.pic.setIRQ(pit.irqNumber);
-//                                        user.setData(new byte[] {0x01}, pit);
                                     }
                                     
                                     // Indicate that counter must start counting from the start again
@@ -457,33 +431,43 @@ public class Counter
                                     // MSB must be decremented
                                     ce[MSB]--;
                                 }
-                                else if (ce[LSB] == 0 && ce[MSB] == 0) //  && parity == EVEN
+                                else if (ce[LSB] == 0 && ce[MSB] == 0)
                                 {
-                                    // Check state of OUT signal
-                                    if (signalOut == true)
-                                    {
-                                        // Set OUT to low
-                                        signalOut = false;
-                                        
-                                        // Send notification to user
-                                        pit.pic.setIRQ(pit.irqNumber);
-//                                        user.setData(new byte[] {0x00}, pit);
-                                        logger.log(Level.SEVERE, "pit countermode3 r/wmode3 rings!!!! Send IRQ 0 sigout to low");
-                                    }
-                                    else if (signalOut == false)
-                                    {
-                                        // Set OUT to high
-                                        signalOut = true;
+                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + "  countermode3 r/wmode3 rings!!!! Send IRQ 0");
 
-                                        // Send notification to user
-                                        pit.pic.setIRQ(pit.irqNumber);
-//                                        user.setData(new byte[] {0x01}, pit);
-                                        logger.log(Level.SEVERE, "pit countermode3 r/wmode3 rings!!!! Send IRQ 0 sigout to high");
-                                    }
-                                    
+                                    // Raise interrupt
+                                    pit.pic.setIRQ(pit.irqNumber);
+
+                                    if (parity == EVEN)
+	                                {
+	                                    // Check state of OUT signal
+	                                    if (signalOut == true)
+	                                    {
+	                                        // Set OUT to low
+	                                        signalOut = false;
+	                                        
+	                                    }
+	                                    else if (signalOut == false)
+	                                    {
+	                                        // Set OUT to high
+	                                        signalOut = true;
+	                                    }
+	                                }
+                                	else // Parity is ODD
+                                	{
+                                		// Signal OUT should become high again.
+                                		// Note: if signal OUT is high, it will be set low after the NEXT clock cycle.
+                                        if (signalOut == false)
+                                        {
+                                            // Set OUT to high
+                                            signalOut = true;
+                                        }
+                                	}
+                                	
                                     // Indicate that counter must start counting from the start again
                                     newCount = true;
                                 }
+                                
                             }
                         }
                         break;
@@ -503,6 +487,9 @@ public class Counter
                         {
                             this.loadCounter();
                             newCount = false;
+
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
                         }
                         else if (signalGate == true)
                         {
@@ -520,9 +507,8 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x00}, pit);
                                     
                                     newCount = true;
                                 }
@@ -545,9 +531,8 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x00}, pit);
                                     
                                     newCount = true;
                                 }
@@ -572,6 +557,9 @@ public class Counter
                             this.loadCounter();
                             newCount = false;
                             isTriggered = true;
+
+                            // Lower interrupt
+                            pit.pic.clearIRQ(pit.irqNumber);
                         }
                         else if (isTriggered == true)
                         {
@@ -589,9 +577,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = false;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -612,9 +599,8 @@ public class Counter
                                     // Set OUT to high
                                     signalOut = false;
                                     
-                                    // Send notification to user
+                                    // Raise interrupt
                                     pit.pic.setIRQ(pit.irqNumber);
-//                                    user.setData(new byte[] {0x00}, pit);
                                 }
                             }
                         }
@@ -661,6 +647,7 @@ public class Counter
      */
     protected void setGateSignal(boolean status)
     {
+    	// FIXME: this method is never used!
         // Set the GATE to given status and determine if it is a rising or falling signal
         if (status == true)
         {
@@ -706,8 +693,8 @@ public class Counter
      */
     protected boolean getOutSignal()
     {
-        // Returns the GATE signal
-        return signalGate;
+        // Returns the OUT signal
+        return signalOut;
     }
 
     

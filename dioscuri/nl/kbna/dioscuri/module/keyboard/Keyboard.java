@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:42 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1010,22 +1010,28 @@ public class Keyboard extends ModuleKeyboard
      */    
     void enqueueInternalBuffer(byte scancode)
     {
-      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: 0x" + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase());
-
-      if (keyboard.internalBuffer.buffer.size() >= KeyboardInternalBuffer.NUM_ELEMENTS) {
-          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "internal keyboard buffer full, ignoring scancode " + scancode);
-        return;
-      }
-
-      // Add scancode to end of keyboard buffer queue
-      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: adding scancode " + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase() + "h to internal buffer");
-      keyboard.internalBuffer.buffer.add(scancode);
-      
-      if (!(keyboard.controller.outputBuffer != 0) && (keyboard.controller.kbdClockEnabled != 0)) {
-        activate_timer();
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Timer activated");
-        return;
-      }
+	  logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: 0x" + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase());
+	
+	  // Check if buffer is not full
+	  if (keyboard.internalBuffer.buffer.size() >= KeyboardInternalBuffer.NUM_ELEMENTS)
+	  {
+		  // Buffer full
+	      logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "internal keyboard buffer full, ignoring scancode " + scancode);
+	  }
+	  else
+	  {
+		  // Buffer not full
+		  // Add scancode to end of keyboard buffer queue
+		  logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: adding scancode " + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase() + "h to internal buffer");
+		  keyboard.internalBuffer.buffer.add(scancode);
+		  
+		  if (!(keyboard.controller.outputBuffer != 0) && (keyboard.controller.kbdClockEnabled != 0))
+		  {
+			activate_timer();
+			logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Timer activated");
+			return;
+		  }
+	  }
     }
 
     /**
@@ -1060,7 +1066,7 @@ public class Keyboard extends ModuleKeyboard
         // If no 'timers' are raised, no data is waiting so we can exit here
         if (keyboard.controller.timerPending == 0)
         {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): No timer pending");
+//            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): No timer pending");
             return (returnValue);
         }
 

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:43 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -41,51 +41,56 @@ package nl.kbna.dioscuri.module.pic;
  */
 public class TheProgrammableInterruptController
 {
-        boolean singleCascadedPIC;      // 0: cascaded PIC, 1: master only
-        int interruptOffset;            // INT <-> IRQ offset (ex. IRQ0 == INT8)
-        boolean specialFullyNestedMode; // specially fully nested mode: 0=no, 1=yes
-        boolean bufferedMode;           // 0: no buffered mode, 1: buffered mode
-        boolean master;                 // master/slave: 0: slave PIC, 1: master PIC
-        boolean autoEndOfInt;           // 0: manual EOI, 1: automatic EOI
-        byte interruptMaskRegister;     // interrupt mask register, 1: masked
-        byte inServiceRegister;         // in service register
-        byte interruptRequestRegister;  // interrupt request register
-        int readRegisterSelect;         // 0: IRR, 1: ISR
-        byte irqNumber;                 // current IRQ number
-        int lowestPriorityIRQ;          // current lowest priority irq
-        boolean intRequestPin;          // INT request pin of PIC
-        int irqPins;                    // IRQ pins of PIC
-        boolean specialMask;
-        boolean isPolled;               // Set when poll command is issued.
-        boolean rotateOnAutoEOI;        // Set when should rotate in auto-eoi mode.
-        int edgeLevel;                  // IRQ mode (0: edge, 1: level)
+	// PIC settings
+    boolean singleCascadedPIC;      // PIC is single or cascaded (true=master only, false=cascaded PIC)
+    int interruptOffset;            // INT routine <-> IRQ offset (ex. IRQ0 == INT8)
+    boolean specialFullyNestedMode; // Specially fully nested mode (true=yes, false=no)
+    boolean bufferedMode;           // Buffer mode (true=buffered mode, false=no buffered mode)
+    boolean isMaster;               // master/slave PIC (true=master PIC, false=slave PIC) 
+    boolean autoEndOfInt;           // true=automatic EOI, false=manual EOI
+    
+    // Registers
+    byte interruptRequestRegister;  // interrupt request register (irr)
+    byte inServiceRegister;         // in service register (isr)
+    byte interruptMaskRegister;     // interrupt mask register (imr), 1=masked
+    
+    // Other variables
+    int readRegisterSelect;         // 0: IRR, 1: ISR
+    byte currentIrqNumber;          // current IRQ number
+    int lowestPriorityIRQ;          // current lowest priority irq
+    boolean intRequestPin;          // INT request pin of PIC
+    int irqPins;                    // IRQ pins of PIC
+    boolean specialMask;
+    boolean isPolled;               // Set when poll command is issued.
+    boolean rotateOnAutoEOI;        // Set when should rotate in auto-eoi mode.
+    int edgeLevel;                  // IRQ mode (0=edge, 1=level)
+    
+    InitSequence initSequence = new InitSequence();
+    
+    /**
+     * Resets all common parameters to their default value
+     * NOTE: Not all parameters are reset! (interruptOffset, masterSlave, etc.) 
+     *
+     */
+    protected void reset()
+    {
+        singleCascadedPIC = false;
+        specialFullyNestedMode = false;         // normal nested mode
+        bufferedMode = false;                   // unbuffered mode
+        autoEndOfInt = false;                   // manual EOI from CPU
+        interruptMaskRegister = (byte) 0xFF;    // all IRQ's initially masked
+        inServiceRegister = 0x00;               // no IRQ's in service
+        interruptRequestRegister = 0x00;        // no IRQ's requested
+        readRegisterSelect = 0;                 // IRR
+        currentIrqNumber = 0;
+        lowestPriorityIRQ = 7;
+        intRequestPin = false;
+        irqPins = 0;
+        specialMask = false;
+        isPolled = false;
+        rotateOnAutoEOI = false;
+        edgeLevel = 0;
         
-        InitSequence initSequence = new InitSequence();
-        
-        /**
-         * Resets all common parameters to their default value
-         * NOTE: Not all parameters are reset! (interruptOffset, masterSlave, etc.) 
-         *
-         */
-        protected void reset()
-        {
-            singleCascadedPIC = false;
-            specialFullyNestedMode = false;         // normal nested mode
-            bufferedMode = false;                   // unbuffered mode
-            autoEndOfInt = false;                   // manual EOI from CPU
-            interruptMaskRegister = (byte) 0xFF;    // all IRQ's initially masked
-            inServiceRegister = 0x00;               // no IRQ's in service
-            interruptRequestRegister = 0x00;        // no IRQ's requested
-            readRegisterSelect = 0;                 // IRR
-            irqNumber = 0;
-            lowestPriorityIRQ = 7;
-            intRequestPin = false;
-            irqPins = 0;
-            specialMask = false;
-            isPolled = false;
-            rotateOnAutoEOI = false;
-            edgeLevel = 0;
-            
-            initSequence.reset();
-        }
+        initSequence.reset();
+    }
 }
