@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:34 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:39:31 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,7 +44,7 @@ public class Instruction_LOOP_Jb implements Instruction {
 	// Attributes
 	private CPU cpu;
 	byte displacement;
-    int intermediateResult;
+    byte[] decrement = new byte[]{0x00, 0x01};  // Decrement by one
 
 	// Constructors
 	/**
@@ -60,8 +60,6 @@ public class Instruction_LOOP_Jb implements Instruction {
 	 */
 	public Instruction_LOOP_Jb(CPU processor)
 	{
-		//this();
-		
 		// Create reference to cpu class
 		cpu = processor;
 	}
@@ -79,37 +77,14 @@ public class Instruction_LOOP_Jb implements Instruction {
 		displacement = cpu.getByteFromCode();
 
 		// Decrement the CX register
-		cpu.cx[CPU.REGISTER_GENERAL_LOW]--;
+		cpu.cx = Util.subtractWords(cpu.cx, decrement, 0);
 			
-        // Check for underflow in CL
-        // This has happened if CL is -1 now        
-        if ( cpu.cx[CPU.REGISTER_GENERAL_LOW] == -1 )
-        {
-            // Decrease CH
-            cpu.cx[CPU.REGISTER_GENERAL_HIGH]--;
-        }
-		
 		// Test LOOP condition, jump if CX is not zero
 		if (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00 || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00)
 		{
 			// Jump is relative to _next_ instruction, but by the time we change 
 			// the IP, it has already been incremented twice, so no extra arithmetic necessary 		
-
-            intermediateResult = (((int) (cpu.ip[CPU.REGISTER_GENERAL_LOW])) & 0xFF) + displacement;
-            // Need to check for possible overflow/underflow in IP[low]
-            if (intermediateResult < 0)
-            {
-                // Underflow
-                cpu.ip[CPU.REGISTER_GENERAL_HIGH]--;
-            }
-            else if (intermediateResult > 255)
-            {
-                // Overflow
-                cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
-            }
-
-            // Update IP[low] with displacement
-            cpu.ip[CPU.REGISTER_GENERAL_LOW] += displacement;
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
 		}
 	}
 }
