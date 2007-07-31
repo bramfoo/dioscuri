@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-07-31 14:52:57 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,8 +44,7 @@ public class Instruction_SAHF implements Instruction {
 
 	// Attributes
 	private CPU cpu;
-	int flagValue;
-	int flagsDec;
+    boolean[] tempFlags = new boolean[8];
 	
 	// Constructors
 	/**
@@ -75,6 +74,7 @@ public class Instruction_SAHF implements Instruction {
 	 */
 	public void execute()
 	{
-        cpu.flags = Util.bytesToBooleans(new byte[]{cpu.ax[CPU.REGISTER_GENERAL_HIGH]});
+        tempFlags = Util.bytesToBooleans(new byte[]{cpu.ax[CPU.REGISTER_GENERAL_HIGH]});
+        System.arraycopy(tempFlags, 0, cpu.flags, 0, tempFlags.length); 
 	}
 }
