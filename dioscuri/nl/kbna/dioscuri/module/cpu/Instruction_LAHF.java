@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:06:22 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -75,25 +75,7 @@ public class Instruction_LAHF implements Instruction
      */
     public void execute()
     {
-        // Reset variables
-        flagHex = 0;
-
-        // Build FLAGS register
-        for (int j = 0; j <= 7; j++)
-        {
-            // Convert flag boolean to integer value for low register,
-            // taking care of reserved bits according to Intel specs.
-            if (j == 1)
-                flagValue = 1;
-            else if (j == 3 || j == 5)
-                flagValue = 0;
-            else
-                flagValue = cpu.flags[j] ? 1 : 0;
-            // Multiply by corresponding power of 2, add to decimal representation
-            flagHex += flagValue * (int) Math.pow(2, j);
-        }
-
-        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = (byte) flagHex;
-
+        // Move LOW byte of flags into HIGH byte of AX 
+        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = Util.booleansToBytes(cpu.flags)[CPU.REGISTER_GENERAL_LOW];
     }
 }
