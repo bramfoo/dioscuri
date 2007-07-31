@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 09:05:45 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -74,7 +74,8 @@ public class Instruction_LOCK implements Instruction {
 	public void execute()
 	{
 		// Dummy commands...
-// FIXME: still to implement
+        // FIXME: still to implement
+        System.out.println("LOCK instruction (0x40) not yet implemented!");
         
 		// Increment the AX register
 		cpu.ax[CPU.REGISTER_GENERAL_LOW]++;
