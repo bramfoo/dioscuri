@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:20:32 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,6 @@ public class Instruction_JZ_JE implements Instruction
     // Attributes
     private CPU cpu;
     byte displacement;
-    int overFlowCheck;
 
     // Constructors
     /**
@@ -62,8 +61,6 @@ public class Instruction_JZ_JE implements Instruction
      */
     public Instruction_JZ_JE(CPU processor)
     {
-        // this();
-
         // Create reference to cpu class
         cpu = processor;
     }
@@ -84,17 +81,8 @@ public class Instruction_JZ_JE implements Instruction
         // IP has already been properly updated when bytes were retrieved
         if (cpu.flags[CPU.REGISTER_FLAGS_ZF])
         {
-            // Need to check for possible overflow/underflow in IP[low]
-            overFlowCheck = (((int) (cpu.ip[CPU.REGISTER_GENERAL_LOW])) & 0xFF) + (((int)displacement)&0xFF);
-            if (overFlowCheck > 0xFF)
-            {
-                cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
-            }
-            
-            // Add displacement to bytes           
-            cpu.ip[CPU.REGISTER_GENERAL_LOW] += displacement;
             // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte displacement is sign-extended and added. 
-            cpu.ip[CPU.REGISTER_GENERAL_HIGH] += Util.signExtend(displacement);
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
         }
     }
 }

@@ -1,4 +1,4 @@
-/* $Revision: 1.2 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
+/* $Revision: 1.3 $ $Date: 2007-07-31 09:20:32 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -60,8 +60,6 @@ public class Instruction_JMP_farAP implements Instruction {
 	 */
 	public Instruction_JMP_farAP(CPU processor)
 	{
-		//this();
-		
 		// Create reference to cpu class
 		cpu = processor;
 	}
@@ -79,7 +77,6 @@ public class Instruction_JMP_farAP implements Instruction {
         byte[] newCS = cpu.getWordFromCode();
         
         // Assign words to ip and cs
-        // NOTE: this cannot be done at once because it will influence the pointer directly
         cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
         cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
         cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];

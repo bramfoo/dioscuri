@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:20:32 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,6 @@ public class Instruction_JZ_JE_long implements Instruction
     // Attributes
     private CPU cpu;
     byte[] displacement;
-    int overFlowCheck;
 
     // Constructors
     /**
@@ -54,7 +53,6 @@ public class Instruction_JZ_JE_long implements Instruction
     public Instruction_JZ_JE_long()
     {
         displacement = new byte[2];
-        overFlowCheck = 0;
     }
 
     /**
@@ -86,16 +84,7 @@ public class Instruction_JZ_JE_long implements Instruction
         // IP has already been properly updated when bytes were retrieved
         if (cpu.flags[CPU.REGISTER_FLAGS_ZF])
         {
-            overFlowCheck = (((int) (cpu.ip[CPU.REGISTER_GENERAL_LOW])) & 0xFF) + (((int)displacement[CPU.REGISTER_GENERAL_LOW])&0xFF);
-            cpu.ip[CPU.REGISTER_GENERAL_LOW] += displacement[CPU.REGISTER_GENERAL_LOW];
-            // Need to check for possible overflow/underflow in IP[low]
-            if (overFlowCheck > 0xFF)
-            {
-                cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
-            }
-
-            // Update IP[high] with displacement
-            cpu.ip[CPU.REGISTER_GENERAL_HIGH] = (byte) (cpu.ip[CPU.REGISTER_GENERAL_HIGH] + displacement[CPU.REGISTER_GENERAL_HIGH]);
+            cpu.ip = Util.addWords(cpu.ip, displacement, 0);
         }
     }
 }

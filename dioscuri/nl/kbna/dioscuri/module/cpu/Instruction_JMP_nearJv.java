@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:20:32 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,8 +44,6 @@ public class Instruction_JMP_nearJv implements Instruction {
 	// Attributes
 	private CPU cpu;
     byte[] displacement;
-    int intermediateResult;
-
     
 	// Constructors
 	/**
@@ -55,7 +53,6 @@ public class Instruction_JMP_nearJv implements Instruction {
 	public Instruction_JMP_nearJv()
     {
         displacement = new byte[2];
-        intermediateResult = 0;
     }
 	
 	/**
@@ -82,20 +79,6 @@ public class Instruction_JMP_nearJv implements Instruction {
 		// Jump is relative to _next_ instruction, but by the time we change 
 		// the IP, it has already been incremented thrice, so no extra arithmetic necessary 		
         displacement = cpu.getWordFromCode();
-        
-		// Update IP with displacement
-        intermediateResult = (((int)(cpu.ip[CPU.REGISTER_GENERAL_LOW]))&0xFF) + (((int)displacement[CPU.REGISTER_GENERAL_LOW])&0xFF);
-        // Need to check for possible overflow/underflow in IP[low]
-        if (intermediateResult > 0xFF)
-        {
-            // Overflow
-            cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
-        }
-    
-        // Update IP[low] with displacement
-        cpu.ip[CPU.REGISTER_GENERAL_LOW] += displacement[CPU.REGISTER_GENERAL_LOW];
-        // Update IP[high] with displacement
-        cpu.ip[CPU.REGISTER_GENERAL_HIGH] += displacement[CPU.REGISTER_GENERAL_HIGH];
-
-	}
+        cpu.ip = Util.addWords(cpu.ip, displacement, 0);
+    }
 }

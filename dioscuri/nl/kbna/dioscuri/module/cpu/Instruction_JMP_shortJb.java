@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:33 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 09:20:32 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,9 +43,7 @@ public class Instruction_JMP_shortJb implements Instruction {
 
 	// Attributes
 	private CPU cpu;
-	
     byte displacement;
-    int intermediateResult;
 
 	// Constructors
 	/**
@@ -75,26 +73,11 @@ public class Instruction_JMP_shortJb implements Instruction {
 	 */
 	public void execute()
 	{
-        // FIXME: Check correct implementation of instruction, overflow
 		// Get displacement byte (immediate)
 		// Jump is relative to _next_ instruction, but by the time the displacement is added to 
 		// the IP, it has already been incremented twice, so no extra arithmetic necessary
 		displacement = cpu.getByteFromCode();
 
-        intermediateResult = (((int)(cpu.ip[CPU.REGISTER_GENERAL_LOW]))&0xFF) + displacement;
-        // Need to check for possible overflow/underflow in IP[low]
-        if (intermediateResult < 0)
-        {
-            // Underflow
-            cpu.ip[CPU.REGISTER_GENERAL_HIGH]--;
-        }
-        else if (intermediateResult > 255)
-        {
-            // Overflow
-            cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
-        }
-    
-        // Update IP[low] with displacement
-        cpu.ip[CPU.REGISTER_GENERAL_LOW] += displacement;
-	}
+        cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
+     }
 }
