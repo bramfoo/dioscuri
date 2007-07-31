@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -208,4 +208,13 @@ public abstract class ModuleCPU extends Module
     public abstract String getRegisterHex(int register);
     
     public abstract void setCpuInstructionDebug(boolean isDebugMode);
+
+    /**
+     * Returns if CPU halted abnormally or not
+     * 
+     *  @return boolean abnormalTermination true if abnormal, false otherwise
+     */
+    public abstract boolean isAbnormalTermination();
 }
+
+

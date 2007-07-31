@@ -1,4 +1,4 @@
-/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
+/* $Revision: 1.3 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,7 +43,8 @@ public class Instruction_INC_AX implements Instruction {
 	// Attributes
 	private CPU cpu;
     private byte[] temp;
-    private byte[] oldDest;
+    private byte[] oldDestWord;
+    private byte[] oldDestDoubleWord;
     private byte[] incWord;
 	
 	
@@ -66,7 +67,8 @@ public class Instruction_INC_AX implements Instruction {
 		// Create reference to cpu class
 		cpu = processor;
         temp = new byte[2];
-        oldDest = new byte[2];
+        oldDestWord = new byte[2];
+        oldDestDoubleWord = new byte[2];
         incWord = new byte[] {0x00,0x01};
 	}
 
@@ -78,25 +80,65 @@ public class Instruction_INC_AX implements Instruction {
 	 */
 	public void execute()
 	{
-        // Make copy of old value
-        System.arraycopy(cpu.ax, 0, oldDest, 0, cpu.ax.length);
-        
-        // Increment the ax register
-        temp = Util.addWords(cpu.ax, incWord, 0);
-        
-        // Assign result to ax
-        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
-        cpu.ax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
-        
-        // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDest[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;
-        // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, incWord, cpu.ax, 0);  
-        // Test ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
-        // Test SF (set when MSB of BH is 1. In Java can check signed byte)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
-        // Set PF, only applies to LSB
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+		if (cpu.doubleWord)
+		{
+			// 32-bit
+	        // Make copy of old value
+	        System.arraycopy(cpu.ax, 0, oldDestWord, 0, cpu.ax.length);
+	        System.arraycopy(cpu.eax, 0, oldDestDoubleWord, 0, cpu.eax.length);
+	        
+	        // Increment the ax register
+	        temp = Util.addWords(cpu.ax, incWord, 0);
+	        
+	        // Assign result to ax
+	        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
+	        cpu.ax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
+	        
+	        // Check for carry to higher 16 bits
+	        if (Util.test_CF_ADD(cpu.ax, incWord, 0))
+	        {
+	        	// Increment higher 16 bits
+		        temp = Util.addWords(cpu.eax, incWord, 0);
+
+		        // Assign result to eax
+		        cpu.eax[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
+		        cpu.eax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
+	        }
+	        
+	        // Test AF
+	        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDestWord[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;
+	        // Test OF
+	        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDestDoubleWord, incWord, cpu.eax, 0);  
+	        // Test ZF
+	        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
+	        // Test SF (set when MSB of BH is 1. In Java can check signed byte)
+	        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+	        // Set PF, only applies to LSB
+	        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+		}
+		else
+		{
+			// 16-bit
+	        // Make copy of old value
+	        System.arraycopy(cpu.ax, 0, oldDestWord, 0, cpu.ax.length);
+	        
+	        // Increment the ax register
+	        temp = Util.addWords(cpu.ax, incWord, 0);
+	        
+	        // Assign result to ax
+	        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
+	        cpu.ax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
+	        
+	        // Test AF
+	        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDestWord[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;
+	        // Test OF
+	        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDestWord, incWord, cpu.ax, 0);  
+	        // Test ZF
+	        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
+	        // Test SF (set when MSB of BH is 1. In Java can check signed byte)
+	        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+	        // Set PF, only applies to LSB
+	        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+		}
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.8 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -138,7 +138,7 @@ public class CPU extends ModuleCPU
     private ModuleDevice hRQorigin; 	// Device generating a Hold Request
     private boolean breakpointSet;		// Denotes if a breakpoint is set at a particular address (CS:IP)
 	private boolean cpuInstructionDebug;// Used for outputting logging during bug trace
-	
+	private boolean abnormalTermination;// Denotes if CPU halted due to an error during execution
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
 
@@ -298,6 +298,7 @@ public class CPU extends ModuleCPU
         debugMode = false;
         irqPending = false;
         irqWaited = false;
+        abnormalTermination = false;
         
         // Initialize timing variables
         ips = 1000000;           // default value
@@ -427,6 +428,7 @@ public class CPU extends ModuleCPU
         isRunning = true;
         irqPending = false;
         irqWaited = false;
+        abnormalTermination = false;
         
         // Initialise registers and tables
         this.initRegisters();
@@ -495,6 +497,15 @@ public class CPU extends ModuleCPU
 
                     // INSTRUCTION encountered
 
+                    // Check if operand size is 32 bit (based on prefix 0x66) and if instruction supports 32-bits
+                    if (doubleWord == true)
+                	{
+                    	if (this.is32BitSupported() == false)
+                    	{
+                            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + "h): 32-bit not supported!");
+                    	}
+                	}
+                    
                 	// Handle prefixes (if necesarry)
                 	this.executeInstruction();
 
@@ -608,11 +619,13 @@ public class CPU extends ModuleCPU
 		catch (ArrayIndexOutOfBoundsException e1)
 		{
 			isRunning = false;
+			abnormalTermination = true;
 			logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction failure at instruction " + instructionCounter + " (opcode " + Integer.toHexString(codeByte) + "h): (Array out of bounds)");
 		}
         catch (CPUInstructionException e2)
         {
             isRunning = false;
+			abnormalTermination = true;
             if (codeByte == 0x0F)
             {
                 // Show the 2nd byte of the opcode here for 2-byte escapes
@@ -985,6 +998,18 @@ public class CPU extends ModuleCPU
 	//******************************************************************************
 	// ModuleCPU Methods
 
+
+    /**
+     * Returns if CPU halted abnormally or not
+     * 
+     *  @return boolean abnormalTermination true if abnormal, false otherwise
+     */
+    public boolean isAbnormalTermination()
+    {
+    	return abnormalTermination;
+    }
+
+    
     /**
      * Sets the CPU hold mode by asserting a Hold Request.<BR>
      * This informs the CPU to avoid using the (non-existent) bus 
@@ -2046,6 +2071,46 @@ public class CPU extends ModuleCPU
         
         // Reset prefix counter
         prefixCounter = 0;
+    }
+
+    
+    /**
+     * Checks if 32-bit is supported by instruction
+     * Note: this instruction should only be used in debug mode, 
+     * because it unnecessarily slows down the execution.
+     * Checking is done based on a known 32-bit list. All instructions 
+     * that are not on the list are assumed to be 16 bit.
+     *
+     * @return boolean true if 32 bit is supported, false otherwise
+     */
+    private boolean is32BitSupported()
+    {
+    	// Current instructions that support 32 bit:
+        switch (codeByte)
+        {
+        	// Full 32-bit support
+            case 0x01: // ADD_EvGv
+            case 0x25: // AND_eAXIv
+            case 0x40: // INC_eAX
+            case 0x50: // Push_eAX
+            case 0x6D: // INSW_YvDX
+            case 0x89: // MOV_EvGv
+            case 0xA1: // MOV_eAxOv
+            case 0xF7: // UnaryGRP3_Ev
+            	break;
+            	
+            // Partly 32-bit support
+            case 0xD1: // ShiftGRP2_Ev1 (SHL, SHR, SAR only)
+            case 0xD3: // UnaryGRP2_EvCL (SHL, SHR only)
+            case 0xC1: // ShiftGRP2_EvIb (SHL, SHR only)
+            case 0x0F: // GRP7 (LGDT only)
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + "h): 32-bit not fully supported!");
+            	break;
+            
+            default: return false;
+        }
+        
+        return true;
     }
 
     

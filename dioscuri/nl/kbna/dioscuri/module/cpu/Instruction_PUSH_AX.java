@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -77,7 +77,7 @@ public class Instruction_PUSH_AX implements Instruction {
         if (cpu.doubleWord)
         {
             cpu.setWordToStack(cpu.eax);
-        }      
+        }
         
         // Get word at AX and assign to SS:SP 
 		cpu.setWordToStack(cpu.ax);

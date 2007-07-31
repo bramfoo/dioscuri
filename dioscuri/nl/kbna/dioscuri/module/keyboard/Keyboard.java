@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,9 +40,13 @@ package nl.kbna.dioscuri.module.keyboard;
  */
 
 /*
- * This class uses a lot (if not all) of Bochs source code from keyboard.{h,cc};
- * Conversions from C++ to Java have been made, and will need revising and/or updating
- * -Bram
+ * Notes:
+ * - This class uses a lot (if not all) of Bochs source code from keyboard.{h,cc};
+ * - Conversions from C++ to Java have been made, and will need revising and/or updating
+ * - Aside from handling keystrokes, the keyboard controller is responsible for:
+ *     + the status of the PC speaker via 0x61. This is not implemented yet.
+ *     + A20 address line (memory looping turned on or off).
+ *     
  */
 
 import java.awt.event.KeyEvent;

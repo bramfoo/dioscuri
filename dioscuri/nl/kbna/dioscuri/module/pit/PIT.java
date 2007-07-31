@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -629,6 +629,7 @@ public class PIT extends ModulePIT
                     if (rwmode == 0x00)
                     {
                         // Read operation: Counter latch command
+                		logger.log(Level.FINE, "[" + MODULE_TYPE + "] Counter " + c + " in latch mode.");
                         // Set specified counter in latch register
                         counters[c].latchCounter();
                     }

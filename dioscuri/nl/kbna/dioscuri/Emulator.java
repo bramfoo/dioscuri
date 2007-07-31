@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:24 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -156,6 +156,12 @@ public class Emulator implements Runnable
             if (((ModuleCPU)modules.getModule("cpu")).getDebugMode() == false)
             {
                 ((ModuleCPU)modules.getModule("cpu")).start();
+                if (((ModuleCPU)modules.getModule("cpu")).isAbnormalTermination() == true)
+                {
+                    logger.log(Level.SEVERE, "Emulation process halted due to error in CPU module.");
+                    this.stop();
+                    return;
+                }
             }
             else
             {

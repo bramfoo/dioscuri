@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:34 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,6 +43,8 @@ public class Instruction_MOV_AXOv implements Instruction {
 	// Attributes
 	private CPU cpu;
 	private byte[] displ = new byte[2];
+	private byte[] tempWord = new byte[2];
+    private byte[] word0x02 = new byte[] {0x00, 0x02};
     private byte dataSegmentAddressByte = 0;
 		
 	
@@ -76,7 +78,17 @@ public class Instruction_MOV_AXOv implements Instruction {
         // Get displacement within segment
 		// Honour Intel little-endian: first byte is LSB, followed by MSB. Order array [MSB, LSB]
 		displ = cpu.getWordFromCode();
-				
+		
+		if (cpu.doubleWord)
+		{
+			// Store upper 16 bits in eAX
+	        cpu.eax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
+	        
+	        // Increment displacement
+	        tempWord = Util.addWords(displ, word0x02, 0);
+	        System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
+		}
+		
         // Get word at DS:DISPL and place in AX
         // This memory segment defaults to DS:DISPL unless there is a segment override
         // Because getWordFromMemorySegment expects an address byte to determine the segment,
