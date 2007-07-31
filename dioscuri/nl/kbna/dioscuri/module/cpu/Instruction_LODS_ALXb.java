@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:34 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 09:05:16 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,7 +43,7 @@ public class Instruction_LODS_ALXb implements Instruction {
 	// Attributes
 	private CPU cpu;
     byte source;
-    int incrementSize = 1;  // Byte size increment for SI
+    byte[] incrementSize = new byte[]{0x00, 0x01};  // Byte size increment for SI
 	
 	// Constructors
 	/**
@@ -90,28 +90,12 @@ public class Instruction_LODS_ALXb implements Instruction {
         if (cpu.flags[CPU.REGISTER_FLAGS_DF])
         {
             // Decrement the SI register by byte size
-            cpu.si[CPU.REGISTER_GENERAL_LOW] -= incrementSize;
-
-            // Check for underflow in SI[low]
-            // This has happened if SI[low] is -1 now
-            if (cpu.si[CPU.REGISTER_GENERAL_LOW] == -1)
-            {
-                // Decrease SI[high]
-                cpu.si[CPU.REGISTER_GENERAL_HIGH]--;
-            }
+            cpu.si = Util.subtractWords(cpu.si, incrementSize, 0);
         }
         else
         {
             // Increment the SI register by byte size
-            cpu.si[CPU.REGISTER_GENERAL_LOW] += incrementSize;
-
-            // Check for overflow in SI[low]
-            // This has happened if SI[low] is 0 now
-            if (cpu.si[CPU.REGISTER_GENERAL_LOW] == 0)
-            {
-                // Increase SI[high]
-                cpu.si[CPU.REGISTER_GENERAL_HIGH]++;
-            }
+            cpu.si = Util.addWords(cpu.si, incrementSize, 0);
         }
 	}
 }

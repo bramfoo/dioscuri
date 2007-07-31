@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:34 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 09:05:16 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,7 @@ public class Instruction_LODS_AXXv implements Instruction
     // Attributes
     private CPU cpu;
     byte[] source;
-    int incrementSize;
+    byte[] incrementSize = new byte[]{0x00, 0x02};  // Word size increment for SI
 
     // Constructors
     /**
@@ -54,7 +54,6 @@ public class Instruction_LODS_AXXv implements Instruction
     public Instruction_LODS_AXXv()
     {
         source = new byte[2];
-        incrementSize = 2;
     }
 
     /**
@@ -93,29 +92,13 @@ public class Instruction_LODS_AXXv implements Instruction
         // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
         if (cpu.flags[CPU.REGISTER_FLAGS_DF])
         {
-            // Decrement the SI register by byte size
-            cpu.si[CPU.REGISTER_GENERAL_LOW] -= incrementSize;
-
-            // Check for underflow in SI[low]
-            // This has happened if SI[low] is -1 or -2 now
-            if (cpu.si[CPU.REGISTER_GENERAL_LOW] == -1 || cpu.si[CPU.REGISTER_GENERAL_LOW] == -2)
-            {
-                // Decrease SI[high]
-                cpu.si[CPU.REGISTER_GENERAL_HIGH]--;
-            }
+            // Decrement the SI register by word size
+            cpu.si = Util.subtractWords(cpu.si, incrementSize, 0);
         }
         else
         {
-            // Increment the SI register by byte size
-            cpu.si[CPU.REGISTER_GENERAL_LOW] += incrementSize;
-
-            // Check for overflow in SI[low]
-            // This has happened if SI[low] is 0 or 1 now
-            if (cpu.si[CPU.REGISTER_GENERAL_LOW] == 0 || cpu.si[CPU.REGISTER_GENERAL_LOW] == 1)
-            {
-                // Increase SI[high]
-                cpu.si[CPU.REGISTER_GENERAL_HIGH]++;
-            }
+            // Increment the SI register by word size
+            cpu.si = Util.addWords(cpu.si, incrementSize, 0);
         }
     }
 }
