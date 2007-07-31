@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -55,8 +55,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction
 
     byte addressByte;
     byte[] sourceValue;
-    byte sourceValue2;
-    byte[] oldValue;
+    byte[] oldSource;
     byte registerHighLow = 0;
 
     // Logging
@@ -76,8 +75,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction
         
         addressByte = 0;
         sourceValue = new byte[2];
-        sourceValue2 = 0;
-        oldValue = new byte[2];
+        oldSource = new byte[2];
     }
 
     /**
@@ -102,6 +100,9 @@ public class Instruction_INCDEC_GRP4 implements Instruction
     {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
+        
+        // Re-initialise source to get rid of pointers
+        sourceValue = new byte[2];
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3)
@@ -130,7 +131,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction
                 }
                 
                 // Store old value
-                System.arraycopy(sourceValue, 0, oldValue, 0, sourceValue.length);
+                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
                 
                 // Increment the source (= destination) register
                 sourceValue[registerHighLow]++;
@@ -145,9 +146,9 @@ public class Instruction_INCDEC_GRP4 implements Instruction
                 }
                 
                 // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[registerHighLow], sourceValue[registerHighLow]);  
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldSource[registerHighLow], sourceValue[registerHighLow]);  
                 // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
+                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldSource[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
                 // Test ZF
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true : false;
                 // Test SF (set when MSB of AH is 1. In Java can check signed byte)
@@ -180,7 +181,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction
                 }
                 
                 // Store old value
-                System.arraycopy(sourceValue, 0, oldValue, 0, sourceValue.length);
+                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
                 
                 // Decrement the source (= destination) register
                 sourceValue[registerHighLow]--;
@@ -195,9 +196,9 @@ public class Instruction_INCDEC_GRP4 implements Instruction
                 }
                 
                 // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[registerHighLow], sourceValue[registerHighLow]);  
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldSource[registerHighLow], sourceValue[registerHighLow]);  
                 // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
+                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldSource[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
                 // Test ZF
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true : false;
                 // Test SF (set when MSB of AH is 1. In Java can check signed byte)

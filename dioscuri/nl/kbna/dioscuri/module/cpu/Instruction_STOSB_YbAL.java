@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:39 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,6 +43,7 @@ public class Instruction_STOSB_YbAL implements Instruction {
 
 	// Attributes
 	private CPU cpu;
+    byte[] transition = new byte[]{0x00, 0x01};  // Increment/decrement value
 	
 	// Constructors
 	/**
@@ -80,28 +81,12 @@ public class Instruction_STOSB_YbAL implements Instruction {
         if (cpu.flags[CPU.REGISTER_FLAGS_DF])
         {
             // Decrement the DI register by byte size
-            cpu.di[CPU.REGISTER_GENERAL_LOW] -= 1;
-
-            // Check for underflow in DI[low]
-            // This has happened if DI[low] is -1 now
-            if (cpu.di[CPU.REGISTER_GENERAL_LOW] == -1)
-            {
-                // Decrease DI[high]
-                cpu.di[CPU.REGISTER_GENERAL_HIGH]--;
-            }
+            cpu.di = Util.subtractWords(cpu.di, transition, 0);
         }
         else
         {
             // Increment the DI register by byte size
-            cpu.di[CPU.REGISTER_GENERAL_LOW] += 1;
-
-            // Check for overflow in DI[low]
-            // This has happened if DI[low] is 0now
-            if (cpu.di[CPU.REGISTER_GENERAL_LOW] == 0)
-            {
-                // Increase DI[high]
-                cpu.di[CPU.REGISTER_GENERAL_HIGH]++;
-            }
+            cpu.di = Util.addWords(cpu.di, transition, 0);
         }
 	}
 }

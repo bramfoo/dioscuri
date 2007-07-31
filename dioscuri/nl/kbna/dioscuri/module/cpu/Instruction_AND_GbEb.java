@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -124,17 +124,14 @@ public class Instruction_AND_GbEb implements Instruction
         registerHighLow = ((addressByte & 0x20) >> 5) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
         destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
 
-        // Logical AND of source and destination, store result in destination
-        // register
+        // Logical AND of source and destination, store result in destination register
         destinationRegister[registerHighLow] &= sourceValue;
 
         // Test ZF on particular byte of destinationRegister
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
-        // Test SF on particular byte of destinationRegister (set when MSB is 1,
-        // occurs when destReg >= 0x80)
+        // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
         cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[registerHighLow] < 0 ? true : false;
         // Set PF on particular byte of destinationRegister
         cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationRegister[registerHighLow]);
-
     }
 }

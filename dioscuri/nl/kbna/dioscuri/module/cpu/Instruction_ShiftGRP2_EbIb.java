@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,15 +56,11 @@ public class Instruction_ShiftGRP2_EbIb implements Instruction
     byte registerHighLow;
 
     byte[] sourceValue;
-    int overFlowCheck;
     int bitShift;
     int carryBit;
     int newCarryBit;
     long shiftResult;
 
-    byte[] tempResult;
-
-    
     // Constructors
     /**
      * Class constructor
@@ -79,13 +75,10 @@ public class Instruction_ShiftGRP2_EbIb implements Instruction
         registerHighLow = 0;
 
         sourceValue = new byte[2];
-        overFlowCheck = 0;
         bitShift = 0;
         carryBit = 0;
         newCarryBit = 0;
         shiftResult = 0;
-        
-        tempResult = new byte[2];
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:39 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -65,7 +65,6 @@ public class Instruction_UnaryGrp3_Ev implements Instruction
     byte[] destinationRegister2;
     byte[] eDestinationRegister;
     byte[] eDestinationRegister2;
-    int overFlowCheck;
 
     long result;
     byte[] tempResult;
@@ -94,7 +93,6 @@ public class Instruction_UnaryGrp3_Ev implements Instruction
         destinationRegister2 = new byte[2];
         eDestinationRegister = new byte[2];
         eDestinationRegister2 = new byte[2];
-        overFlowCheck = 0;
 
         result = 0;
         tempResult = new byte[2];
@@ -123,6 +121,7 @@ public class Instruction_UnaryGrp3_Ev implements Instruction
     {
         // Clear sourceValue for previous pointers
         sourceValue = new byte[2];
+        sourceValue2 = new byte[2];
         
         // Get addresByte
         addressByte = cpu.getByteFromCode();

@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:36 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -71,8 +71,6 @@ public class Instruction_OUT_DXAL implements Instruction
      */
     public Instruction_OUT_DXAL(CPU processor)
     {
-        // this();
-
         // Create reference to cpu class
         cpu = processor;
     }

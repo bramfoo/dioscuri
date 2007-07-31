@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -55,7 +55,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction
     byte[] memoryReferenceLocation;
     byte[] memoryReferenceDisplacement;
     byte[] sourceValue;
-    byte[] oldValue;
+    byte[] oldSource;
     byte[] incWord;
     byte[] newCS;
     byte[] newIP;
@@ -84,7 +84,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction
         memoryReferenceLocation = new byte[2];
         memoryReferenceDisplacement = new byte[2];
         sourceValue = new byte[2];
-        oldValue = new byte[2];
+        oldSource = new byte[2];
         newCS = new byte[2];
         newIP = new byte[2];
 
@@ -120,6 +120,9 @@ public class Instruction_INCDEC_GRP5 implements Instruction
     {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
+        
+        // Re-initialise source to get rid of pointers
+        sourceValue = new byte[2];
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3)
@@ -144,7 +147,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction
                 }
                 
                 // Store initial value
-                System.arraycopy(sourceValue, 0, oldValue, 0, sourceValue.length);
+                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
                 
                 // Increment the source (= destination) register
                 temp = Util.addWords(sourceValue, incWord, 0);
@@ -158,9 +161,9 @@ public class Instruction_INCDEC_GRP5 implements Instruction
                 
                 // Set appropriate flags
                 // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], sourceValue[CPU.REGISTER_GENERAL_LOW]);  
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldSource[CPU.REGISTER_GENERAL_LOW], sourceValue[CPU.REGISTER_GENERAL_LOW]);  
                 // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, incWord, sourceValue, 0);
+                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldSource, incWord, sourceValue, 0);
                 // Test ZF
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = (sourceValue[CPU.REGISTER_GENERAL_HIGH] == 0x00 && sourceValue[CPU.REGISTER_GENERAL_LOW] == 0x00) ? true : false;
                 // Test SF (set when MSB of BH is 1. In Java can check signed byte)
@@ -189,7 +192,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction
                 }
                 
                 // Store initial value
-                System.arraycopy(sourceValue, 0, oldValue, 0, sourceValue.length);
+                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
                 
                 // Increment the source (= destination) register
                 temp = Util.subtractWords(sourceValue, incWord, 0);
@@ -203,9 +206,9 @@ public class Instruction_INCDEC_GRP5 implements Instruction
                 
                 // Set appropriate flags
                 // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], sourceValue[CPU.REGISTER_GENERAL_LOW]);  
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldSource[CPU.REGISTER_GENERAL_LOW], sourceValue[CPU.REGISTER_GENERAL_LOW]);  
                 // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, incWord, sourceValue, 0);
+                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldSource, incWord, sourceValue, 0);
                 // Test ZF
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = (sourceValue[CPU.REGISTER_GENERAL_HIGH] == 0x00 && sourceValue[CPU.REGISTER_GENERAL_LOW] == 0x00) ? true : false;
                 // Test SF (set when MSB of BH is 1. In Java can check signed byte)

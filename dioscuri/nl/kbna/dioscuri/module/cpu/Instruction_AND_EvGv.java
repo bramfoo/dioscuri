@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -112,7 +112,6 @@ public class Instruction_AND_EvGv implements Instruction
             destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
 
             // AND source and destination, storing result in destination.
-            // registerHighLow is re-used here.
             destinationRegister[CPU.REGISTER_GENERAL_HIGH] &= sourceValue[CPU.REGISTER_GENERAL_HIGH];
             destinationRegister[CPU.REGISTER_GENERAL_LOW] &= sourceValue[CPU.REGISTER_GENERAL_LOW];
 
@@ -139,8 +138,7 @@ public class Instruction_AND_EvGv implements Instruction
             cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, logicalANDResult);
 
             // Test ZF on result
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] == 0 && logicalANDResult[CPU.REGISTER_GENERAL_LOW] == 0 ? true
-                    : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] == 0 && logicalANDResult[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF on result (set when MSB is 1, occurs when result >= 0x80)
             cpu.flags[CPU.REGISTER_FLAGS_SF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
             // Set PF on lower byte of result

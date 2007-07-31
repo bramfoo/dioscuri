@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,7 +56,6 @@ public class Instruction_ShiftGRP2_EbCL implements Instruction
     byte registerHighLow;
 
     byte[] sourceValue;
-    int overFlowCheck;
 
     int bitShift;
     long shiftResult;
@@ -79,7 +78,6 @@ public class Instruction_ShiftGRP2_EbCL implements Instruction
         registerHighLow = 0;
 
         sourceValue = new byte[2];
-        overFlowCheck = 0;
 
         bitShift = 0;
         shiftResult = 0;

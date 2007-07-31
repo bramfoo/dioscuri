@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,8 +53,9 @@ public class Instruction_SBB_EvGv implements Instruction {
 
     byte[] sourceValue = new byte[2];
     byte[] sourceValue2 = new byte[2];
-    byte[] oldValue = new byte[2];
+    byte[] oldSource = new byte[2];
     byte[] destinationRegister = new byte[2];
+    byte[] oldDest = new byte[2];
     int intermediateResult;
 
 	byte iCarryFlag;
@@ -99,7 +100,8 @@ public class Instruction_SBB_EvGv implements Instruction {
 		
 		// Determine source value using addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
 		sourceValue = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
-		
+        System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
+        
 		// Execute SBB on reg,reg or mem,reg. Determine this from mm bits of addressbyte
         if (((addressByte >> 6) & 0x03) == 3)
 		{
@@ -108,18 +110,18 @@ public class Instruction_SBB_EvGv implements Instruction {
 			destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
 			
 			// Store initial value
-			System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+			System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
 
 			// SBB source and destination plus carry, storing result in destination.
 			temp = Util.subtractWords(destinationRegister, sourceValue, iCarryFlag);
             System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
 			
             // Test AF
-            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
             // Test CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, sourceValue, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, oldSource, iCarryFlag);
             // Test OF
-            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, sourceValue, destinationRegister, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, oldSource, destinationRegister, iCarryFlag);
             // Test ZF on particular byte of destinationRegister
             cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -137,7 +139,7 @@ public class Instruction_SBB_EvGv implements Instruction {
 			sourceValue2 = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
 			
             // Store initial value 
-            System.arraycopy(sourceValue2, 0, oldValue, 0, sourceValue2.length);
+            System.arraycopy(sourceValue2, 0, oldDest, 0, sourceValue2.length);
 
 			// SBB source from destination plus carry
 			temp = Util.subtractWords(sourceValue2, sourceValue, iCarryFlag);
@@ -147,11 +149,11 @@ public class Instruction_SBB_EvGv implements Instruction {
             cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
 
             // Test AF
-            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], tempResult[CPU.REGISTER_GENERAL_LOW]);  
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], tempResult[CPU.REGISTER_GENERAL_LOW]);  
             // Test CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(sourceValue2, sourceValue, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(sourceValue2, oldSource, iCarryFlag);
             // Test OF
-            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(sourceValue2, sourceValue, tempResult, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(sourceValue2, oldSource, tempResult, iCarryFlag);
             // Test ZF on result
             cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult[CPU.REGISTER_GENERAL_HIGH] == 0 && tempResult[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF on result (set when MSB is 1, occurs when result >= 0x80)

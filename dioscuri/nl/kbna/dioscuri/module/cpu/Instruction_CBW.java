@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -75,7 +75,6 @@ public class Instruction_CBW implements Instruction
     public void execute()
     {
         // Change AH to 0x00 if AL < 0x80, or 0xFF if AL >= 0x80
-        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.ax[CPU.REGISTER_GENERAL_LOW] >= 0 ? (byte) 0x00
-                : (byte) 0xFF;
+        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.ax[CPU.REGISTER_GENERAL_LOW] >= 0 ? (byte) 0x00 : (byte) 0xFF;
     }
 }

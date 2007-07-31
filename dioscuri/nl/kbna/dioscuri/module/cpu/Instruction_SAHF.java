@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -71,32 +71,10 @@ public class Instruction_SAHF implements Instruction {
 	// Methods
 	
 	/**
-	 * Move AH register  into low byte of FLAGS register.
+	 * Move AH register into low byte of FLAGS register.
 	 */
 	public void execute()
 	{
-		// Convert to decimal
-		flagsDec = Integer.parseInt(Integer.toHexString(cpu.ax[CPU.REGISTER_GENERAL_HIGH] & 0xFF), 16);
-		
-		// Build FLAGS register
-		for (int j = 0; j <= 7; j++)
-		{
-			// Ensure flags decimal value isn't negative
-			if (flagsDec > 0 )
-			{
-				// Determine bit values via division by 2,
-				// ignoring reserved bits according to Intel specs
-				if (j == 1)
-					flagValue = 1;
-				else if (j == 3 || j == 5)
-					flagValue = 0;
-				else
-					cpu.flags[j] = flagsDec % 2 == 0 ? false : true;
-				// Halve flagsHex decimal value, setting it to next lower even number 
-				flagsDec = flagsDec / 2;
-			}
-			else
-				cpu.flags[j] = false;
-		}	
+        cpu.flags = Util.bytesToBooleans(new byte[]{cpu.ax[CPU.REGISTER_GENERAL_HIGH]});
 	}
 }

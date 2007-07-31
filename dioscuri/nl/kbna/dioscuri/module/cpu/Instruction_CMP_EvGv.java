@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -55,7 +55,6 @@ public class Instruction_CMP_EvGv implements Instruction {
 	byte[] destinationValue = new byte[2];
 
 	byte[] tempResult = new byte[2];
-    byte[] temp = new byte[2];
 	
 	// Constructors
 	/**
@@ -112,8 +111,7 @@ public class Instruction_CMP_EvGv implements Instruction {
 		// Proceed with compare
 		
 		// Perform substraction
-		temp = Util.subtractWords(destinationValue, sourceValue, 0);
-        System.arraycopy(temp, 0, tempResult, 0, temp.length);
+		tempResult = Util.subtractWords(destinationValue, sourceValue, 0);
 
         // Test AF
         cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(destinationValue[CPU.REGISTER_GENERAL_LOW], tempResult[CPU.REGISTER_GENERAL_LOW]);  

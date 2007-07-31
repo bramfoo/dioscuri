@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,7 +44,7 @@ public class Instruction_SBB_AXIv implements Instruction {
 	// Attributes
 	private CPU cpu;
 	byte[] immediateWord;
-    byte[] oldValue;
+    byte[] oldDest;
 	int iCarryFlag;
 
     byte[] temp;
@@ -57,7 +57,7 @@ public class Instruction_SBB_AXIv implements Instruction {
 	public Instruction_SBB_AXIv()
     {
 	    immediateWord = new byte[2];
-        oldValue = new byte[2];
+        oldDest = new byte[2];
         iCarryFlag = 0;
         
         temp = new byte[2];
@@ -91,18 +91,18 @@ public class Instruction_SBB_AXIv implements Instruction {
 		immediateWord = cpu.getWordFromCode();
 		
         // Copy old value of AX
-        System.arraycopy(cpu.ax, 0, oldValue, 0, cpu.ax.length);
+        System.arraycopy(cpu.ax, 0, oldDest, 0, cpu.ax.length);
 		
 		// Subtract (immediate word + CF) from register AX
 		temp = Util.subtractWords(cpu.ax, immediateWord, iCarryFlag);
         System.arraycopy(temp, 0, cpu.ax, 0, temp.length);
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_LOW]);  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_LOW]);  
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, immediateWord, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, immediateWord, iCarryFlag);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, immediateWord, cpu.ax, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, immediateWord, cpu.ax, iCarryFlag);
         // Test ZF
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
         // Test SF (set when MSB of AL is 1. In Java can check signed byte)

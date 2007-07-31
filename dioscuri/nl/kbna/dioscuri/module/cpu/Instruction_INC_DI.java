@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -43,7 +43,7 @@ public class Instruction_INC_DI implements Instruction {
 	// Attributes
 	private CPU cpu;
     private byte[] temp;
-    private byte[] oldWord;
+    private byte[] oldDest;
     private byte[] incWord;
 
 	
@@ -65,7 +65,7 @@ public class Instruction_INC_DI implements Instruction {
 		// Create reference to cpu class
 		cpu = processor;
         temp = new byte[2];
-        oldWord = new byte[2];
+        oldDest = new byte[2];
         incWord = new byte[] {0x00,0x01};
 	}
 
@@ -78,7 +78,7 @@ public class Instruction_INC_DI implements Instruction {
     public void execute()
     {
         // Make copy of old value
-        System.arraycopy(cpu.di, 0, oldWord, 0, cpu.di.length);
+        System.arraycopy(cpu.di, 0, oldDest, 0, cpu.di.length);
         
         // Increment the di register
         temp = Util.addWords(cpu.di, incWord, 0);
@@ -88,9 +88,9 @@ public class Instruction_INC_DI implements Instruction {
         cpu.di[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
         
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldWord[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDest[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;  
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldWord, incWord, cpu.di, 0);  
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, incWord, cpu.di, 0);  
         // Test ZF
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.di[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.di[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
         // Test SF (set when MSB of BH is 1. In Java can check signed byte)

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:40 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -83,7 +83,11 @@ public class Instruction_XCHG_EvGv implements Instruction {
 	 */
 	public void execute()
 	{
-		
+		// Reset pointers
+        sourceRegister = new byte[2];
+        destinationRegister = new byte[2];
+        tempValue = new byte[2];
+        
 		// Get addresByte
 		addressByte = cpu.getByteFromCode();
 

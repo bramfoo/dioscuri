@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -54,11 +54,9 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
     byte[] memoryReferenceLocation;
     byte[] memoryReferenceDisplacement;
 
-    byte sourceValue;
-    byte sourceValue2;
     byte sourceByte;
-    byte oldByte;
     byte destByte;
+    byte oldDest;
     byte[] destinationRegister;
     byte registerHighLow;
 
@@ -79,11 +77,9 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
         memoryReferenceLocation = new byte[2];
         memoryReferenceDisplacement = new byte[2];
 
-        sourceValue = 0;
-        sourceValue2 = 0;
         sourceByte = 0;
-        oldByte = 0;
         destByte = 0;
+        oldDest = 0;
         destinationRegister = new byte[2];
         
         registerHighLow = 0;
@@ -120,13 +116,13 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
         // Determine displacement of memory location (if any)
         memoryReferenceDisplacement = cpu.decodeMM(addressByte);
 
+        // Get immediate byte
+        sourceByte = cpu.getByteFromCode();
+        
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3)
         {
             case 0: // ADD
-                
-                // Get immediate byte
-                sourceValue = cpu.getByteFromCode();
                 
                 // Execute ADD on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
@@ -140,17 +136,17 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
                     // Store initial value for use in OF check
-                    oldByte = destinationRegister[registerHighLow];
+                    oldDest = destinationRegister[registerHighLow];
     
                     // ADD source and destination, storing result in destination.
-                    destinationRegister[registerHighLow] += sourceValue;
+                    destinationRegister[registerHighLow] += sourceByte;
                     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldByte, destinationRegister[registerHighLow]);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest, destinationRegister[registerHighLow]);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldByte, sourceValue, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, sourceByte, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldByte, sourceValue, destinationRegister[registerHighLow], 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, sourceByte, destinationRegister[registerHighLow], 0);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -164,21 +160,21 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // Determine memory location
                     memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
     
-                    // Get word from memory and ADD source register
-                    sourceValue2 = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
+                    // Get byte from memory and ADD source register
+                    oldDest = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
     
                     // Add source to destination
-                    tempResult = (byte) (sourceValue + sourceValue2);
+                    tempResult = (byte) (sourceByte + oldDest);
     
                     // Store result in memory
                     cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(sourceValue2, tempResult);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest, tempResult);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(sourceValue2, sourceValue, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, sourceByte, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(sourceValue2, sourceValue, tempResult, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, sourceByte, tempResult, 0);
                     // Test ZF on result
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult == 0 ? true : false;
                     // Test SF on result (set when MSB is 1, occurs when result >= 0x80)
@@ -193,8 +189,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
-                
-                sourceByte = cpu.getByteFromCode();
                 
                 // Execute OR on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
@@ -243,9 +237,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 // Determine value of carry flag before reset
                 iCarryFlag = (byte) (cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0);
 
-                // Get source value from immediate byte.
-                sourceByte = cpu.getByteFromCode();
-
                 // Execute ADC on reg,imm or mem,imm. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -256,17 +247,17 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
 
                     // Store initial value
-                    oldByte = destinationRegister[registerHighLow];
+                    oldDest = destinationRegister[registerHighLow];
 
                     // ADC (source + CF) and destination, storing result in destination.
                     destinationRegister[registerHighLow] += sourceByte + iCarryFlag;
 
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldByte, destinationRegister[registerHighLow]);
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest, destinationRegister[registerHighLow]);
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldByte, sourceByte, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, sourceByte, iCarryFlag);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldByte, sourceByte, destinationRegister[registerHighLow], iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, sourceByte, destinationRegister[registerHighLow], iCarryFlag);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -306,9 +297,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 // Determine value of carry flag before reset
                 iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 
-                // Get immediate byte
-                sourceByte = cpu.getByteFromCode();
-
                 // Execute SBB on reg,imm or mem,imm. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -319,17 +307,17 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
                     // Store old value
-                    oldByte = destinationRegister[registerHighLow];
+                    oldDest = destinationRegister[registerHighLow];
 
                     // Subtract (immediate byte + CF) from destination register
                     destinationRegister[registerHighLow] -= (sourceByte + iCarryFlag);
 
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldByte, destinationRegister[registerHighLow]);
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, destinationRegister[registerHighLow]);
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldByte, sourceByte, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceByte, iCarryFlag);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldByte, sourceByte, destinationRegister[registerHighLow], iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceByte, destinationRegister[registerHighLow], iCarryFlag);
                     // Test ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
                     // Test SF. In Java can check signed byte)
@@ -342,20 +330,20 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // SBB mem,imm
                     // Determine memory location
                     memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
-                    oldByte = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
+                    oldDest = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
                     
                     // Subtract (immediate byte + CF) from destination register
-                    destByte = (byte) ((oldByte - (sourceByte + iCarryFlag)) & 0xFF);
+                    destByte = (byte) ((oldDest - (sourceByte + iCarryFlag)) & 0xFF);
 
                     // Store result in memory
                     cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, destByte);
 
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldByte, destByte);
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, destByte);
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldByte, sourceByte, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceByte, iCarryFlag);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldByte, sourceByte, destByte, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceByte, destByte, iCarryFlag);
                     // Test ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destByte == 0 ? true : false;
                     // Test SF. In Java can check signed byte)
@@ -373,9 +361,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 // Bochs is always right (even if it clashes with the Intel docs) ;-)
                 cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
     
-                // Get immediate byte
-                sourceValue = cpu.getByteFromCode();
-    
                 // Execute AND on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -387,7 +372,7 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // Determine destination register from addressbyte, ANDing it with 0000 0111
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
-                    destinationRegister[registerHighLow] &= sourceValue;
+                    destinationRegister[registerHighLow] &= sourceByte;
                     
                     // Set ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
@@ -404,7 +389,7 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
     
                     // Get byte from memory and AND source register
                     tempResult = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                    tempResult &= sourceValue;
+                    tempResult &= sourceByte;
                     
                     // Store result back in memory reference location 
                     cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
@@ -419,9 +404,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 break;
                 
             case 5: // SUB
-                // Get immediate byte
-                sourceByte = cpu.getByteFromCode();
-
                 // Execute SUB on reg,imm or mem,imm. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -432,17 +414,17 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
                     // Store old value
-                    oldByte = destinationRegister[registerHighLow];
+                    oldDest = destinationRegister[registerHighLow];
 
                     // Subtract immediate byte from destination register
                     destinationRegister[registerHighLow] -= sourceByte;
 
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldByte, destinationRegister[registerHighLow]);
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, destinationRegister[registerHighLow]);
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldByte, sourceByte, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceByte, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldByte, sourceByte, destinationRegister[registerHighLow], 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceByte, destinationRegister[registerHighLow], 0);
                     // Test ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
                     // Test SF. In Java can check signed byte)
@@ -455,20 +437,20 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // SUB mem,imm
                     // Determine memory location
                     memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
-                    oldByte = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
+                    oldDest = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
                     
                     // Subtract immediate byte from destination register
-                    destByte = (byte) (oldByte - sourceByte);
+                    destByte = (byte) (oldDest - sourceByte);
 
                     // Store result in memory
                     cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, destByte);
 
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldByte, destByte);
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, destByte);
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldByte, sourceByte, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceByte, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldByte, sourceByte, destByte, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceByte, destByte, 0);
                     // Test ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destByte == 0 ? true : false;
                     // Test SF. In Java can check signed byte)
@@ -484,9 +466,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
                 
-                // Get immediate byte
-                sourceValue = cpu.getByteFromCode();
-                
                 // Execute XOR on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -498,7 +477,7 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // Determine destination register from addressbyte, ANDing it with 0000 0111
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
-                    destinationRegister[registerHighLow] ^= sourceValue;
+                    destinationRegister[registerHighLow] ^= sourceByte;
                     
                     // Test ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
@@ -515,7 +494,7 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
     
                     // Get byte from memory and XOR source register
                     tempResult = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                    tempResult ^= sourceValue;
+                    tempResult ^= sourceByte;
                     
                     // Store result back in memory reference location 
                     cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
@@ -530,9 +509,6 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                 break;  // XOR
                 
             case 7: // CMP
-                // Get immediate byte
-                sourceValue = cpu.getByteFromCode();
-                
                 // Determine source2 value from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -542,7 +518,7 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
                     
                     // Determine "destination" value from addressbyte, ANDing it with 0000 0111
-                    sourceValue2 = cpu.decodeRegister(operandWordSize, addressByte & 0x07)[registerHighLow];
+                    oldDest = cpu.decodeRegister(operandWordSize, addressByte & 0x07)[registerHighLow];
                 }
                 else
                 {
@@ -553,22 +529,22 @@ public class Instruction_ImmGRP1_EbIb implements Instruction
                     // Define registerHighLow standard on LOW
                     registerHighLow = CPU.REGISTER_GENERAL_LOW;
 
-                    // Get word from memory
-                    sourceValue2 = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
+                    // Get byte from memory
+                    oldDest = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
                 }
                 
                 // Proceed with compare
                 
                 // Perform substraction
                 // Subtract source byte from tempResult (which contains "destination" byte)
-                tempResult = (byte) (sourceValue2 - sourceValue);
+                tempResult = (byte) (oldDest - sourceByte);
                 
                 // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(sourceValue2, tempResult);  
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, tempResult);  
                 // Test CF
-                cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(sourceValue2, sourceValue, 0);
+                cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceByte, 0);
                 // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(sourceValue2, sourceValue, tempResult, 0);
+                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceByte, tempResult, 0);
                 // Test ZF, is tested against tempResult
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult == 0x00 ? true : false;
                 // Test SF, only applies to highest bit (set when most significant bit is 1, occurs when tempResult >= 0x80)

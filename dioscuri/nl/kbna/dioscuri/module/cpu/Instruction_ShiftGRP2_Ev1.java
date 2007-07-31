@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:39 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,17 +56,12 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction
 
     byte[] sourceValue;
     byte[] eSourceValue;
-    int overFlowCheck;
 
     int bitShift;
-    int byteShift;
     long shiftResult;
     int carryBit;
     int newCarryBit;
 
-    byte[] tempResult;
-
-    
     // Constructors
     /**
      * Class constructor
@@ -81,15 +76,11 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction
 
         sourceValue = new byte[2];
         eSourceValue = new byte[2];
-        overFlowCheck = 0;
 
         bitShift = 0;
-        byteShift = 0;
         shiftResult = 0;
         carryBit = 0;
         newCarryBit = 0;
-
-        tempResult = new byte[2];
     }
 
     /**

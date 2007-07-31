@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:32 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -94,7 +94,6 @@ public class Instruction_INSB_YbDX implements Instruction {
         // Read byte from I/O space; write to ES:DI; ES segment override is not allowed
         try
         {
-            // Check if the destination is a word or doubleword
             portByte = cpu.getIOPortByte(portAddress);
             cpu.setByteToExtra(cpu.di, portByte);
         }

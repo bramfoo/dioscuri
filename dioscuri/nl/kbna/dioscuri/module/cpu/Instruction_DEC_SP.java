@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -42,7 +42,7 @@ public class Instruction_DEC_SP implements Instruction {
 
 	// Attributes
 	private CPU cpu;
-    private byte[] oldValue;
+    private byte[] oldDest;
     private byte[] decWord;
     private byte[] temp;
 	
@@ -65,7 +65,7 @@ public class Instruction_DEC_SP implements Instruction {
 		
 		// Create reference to cpu class
 		cpu = processor;
-        oldValue = new byte[2];
+        oldDest = new byte[2];
         temp = new byte[2];
 
         // Set decrement word to 1
@@ -81,16 +81,16 @@ public class Instruction_DEC_SP implements Instruction {
     public void execute()
     {
         // Store old value
-        System.arraycopy(cpu.sp, 0, oldValue, 0, cpu.sp.length);
+        System.arraycopy(cpu.sp, 0, oldDest, 0, cpu.sp.length);
         
         // Decrement the sp register
         temp = Util.subtractWords(cpu.sp, decWord, 0);
         System.arraycopy(temp, 0, cpu.sp, 0, temp.length);
         
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], cpu.sp[CPU.REGISTER_GENERAL_LOW]);  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], cpu.sp[CPU.REGISTER_GENERAL_LOW]);  
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, decWord, cpu.sp, 0);  
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, decWord, cpu.sp, 0);  
         // Test ZF
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.sp[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.sp[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
         // Test SF (set when MSB of AH is 1. In Java can check signed byte)

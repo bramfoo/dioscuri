@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-24 14:41:36 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -107,7 +107,5 @@ public class Instruction_IRET implements Instruction
         
         // Convert flagbytes into booleans and store them in flags register
         cpu.flags = Util.bytesToBooleans(newFlags);
-        
-        // TODO: Set IF flag?
     }
 }

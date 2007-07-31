@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,7 +56,7 @@ public class Instruction_GRP6 implements Instruction
 
     byte[] sourceValue;
     byte[] sourceValue2;
-    byte[] oldValue;
+    byte[] oldDest;
     byte[] destinationRegister;
     int intermediateResult;
 
@@ -79,7 +79,7 @@ public class Instruction_GRP6 implements Instruction
 
         sourceValue = new byte[2];
         sourceValue2 = new byte[2];
-        oldValue = new byte[2];
+        oldDest = new byte[2];
         destinationRegister = new byte[2];
         intermediateResult = 0;
 

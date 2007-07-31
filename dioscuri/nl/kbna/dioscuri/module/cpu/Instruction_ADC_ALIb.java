@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:29 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,7 @@ public class Instruction_ADC_ALIb implements Instruction
     // Attributes
     private CPU cpu;
     byte immediateByte;
-    byte oldByte;
+    byte oldDest;
     int iCarryFlag;
 
     // Constructors
@@ -83,17 +83,17 @@ public class Instruction_ADC_ALIb implements Instruction
         immediateByte = cpu.getByteFromCode();
 
         // Store old value of AL
-        oldByte = cpu.ax[CPU.REGISTER_GENERAL_LOW];
+        oldDest = cpu.ax[CPU.REGISTER_GENERAL_LOW];
 
         // Add (immediate byte + CF) to register AL
         cpu.ax[CPU.REGISTER_GENERAL_LOW] += immediateByte + iCarryFlag;
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldByte, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldByte, immediateByte, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, immediateByte, iCarryFlag);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldByte, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
         // Test ZF, only applies to AL
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
         // Test SF (set when MSB of AL is 1. In Java can check signed byte)

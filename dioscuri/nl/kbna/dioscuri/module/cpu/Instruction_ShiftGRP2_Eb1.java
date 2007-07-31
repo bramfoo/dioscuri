@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -57,7 +57,6 @@ public class Instruction_ShiftGRP2_Eb1 implements Instruction
 
     byte[] sourceValue;
     int tempValue;
-    int overFlowCheck;
     int bitShift;
     int carryBit;
     int newCarryBit;
@@ -79,7 +78,6 @@ public class Instruction_ShiftGRP2_Eb1 implements Instruction
 
         sourceValue = new byte[2];
         tempValue = 0;
-        overFlowCheck = 0;
 
         bitShift = 0;
         carryBit = 0;

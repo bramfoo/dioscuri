@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:29 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -59,7 +59,8 @@ public class Instruction_ADC_EvGv implements Instruction {
 
     byte iCarryFlag;
     byte[] temp = new byte[2];
-    byte[] oldValue = new byte[2];
+    byte[] oldDest = new byte[2];
+    byte[] oldSource = new byte[2];
     
     
     // Constructors
@@ -108,19 +109,20 @@ public class Instruction_ADC_EvGv implements Instruction {
             // Determine destination register from addressbyte, ANDing it with 0000 0111
             destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
             
-            // Store initial value for use in OF check
-            System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
-
+    		// Store old values for flag checks
+    		System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
+    		System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
+            
             // ADC source and destination plus carry, storing result in destination.
             temp = Util.addWords(destinationRegister, sourceValue, iCarryFlag);
             System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
             
             // Test AF
-            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
             // Test CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldValue, sourceValue, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, oldSource, iCarryFlag);
             // Test OF
-            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, sourceValue, destinationRegister, iCarryFlag);
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, oldSource, destinationRegister, iCarryFlag);
             // Test ZF on particular byte of destinationRegister
             cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -155,6 +157,7 @@ public class Instruction_ADC_EvGv implements Instruction {
             // Test SF on result (set when MSB is 1, occurs when result >= 0x80)
             cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationValue[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
             // Set PF on result
-            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationValue[CPU.REGISTER_GENERAL_LOW]);        }
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationValue[CPU.REGISTER_GENERAL_LOW]);
+       }
     }
 }

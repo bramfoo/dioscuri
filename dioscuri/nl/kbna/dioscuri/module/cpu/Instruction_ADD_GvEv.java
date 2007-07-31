@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,8 +53,9 @@ public class Instruction_ADD_GvEv implements Instruction
     byte[] memoryReferenceDisplacement;
 
     byte[] sourceValue;
-    byte[] oldValue;
+    byte[] oldSource;
     byte[] destinationRegister;
+    byte[] oldDest;
     int internalCarry;
 
     byte[] temp;
@@ -73,8 +74,9 @@ public class Instruction_ADD_GvEv implements Instruction
         memoryReferenceDisplacement = new byte[2];
 
         sourceValue = new byte[2];
-        oldValue = new byte[2];
+        oldSource = new byte[2];
         destinationRegister = new byte[2];
+        oldDest = new byte[2];
         internalCarry = 0;
 
         temp = new byte[2];
@@ -126,19 +128,20 @@ public class Instruction_ADD_GvEv implements Instruction
         // Determine destination register using addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
         destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
         
-        // Store initial value for use in OF check
-        System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+		// Store old values
+		System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
+		System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
         
         // ADD source and destination, storing result in destination.
         temp = Util.addWords(destinationRegister, sourceValue, 0);
         System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
         
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldValue, sourceValue, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, oldSource, 0);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, sourceValue, destinationRegister, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, oldSource, destinationRegister, 0);
         // Test ZF on particular byte of destinationRegister
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
         // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:39 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -59,10 +59,9 @@ public class Instruction_UnaryGrp3_Eb implements Instruction
     byte resultByte  = 0;
     byte[] sourceValue = new byte[2];
     byte[] destinationRegister = new byte[2];
-    int overFlowCheck;
     byte registerHighLow = 0;
-
-    byte[] tempResult = new byte[2];
+    
+    int overFlowCheck = 0;
 
     // Constructors
     /**

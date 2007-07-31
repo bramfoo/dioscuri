@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:40 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -77,8 +77,8 @@ public class Instruction_XCHG_SIAX implements Instruction {
 	public void execute()
 	{
 		// Swap registers, using temp as a go-between
-		temp = cpu.si;
-		cpu.si =cpu.ax;
-		cpu.ax = temp;
+        System.arraycopy(cpu.si, 0, temp, 0 , cpu.si.length);
+        System.arraycopy(cpu.ax, 0, cpu.si, 0 , cpu.ax.length);
+        System.arraycopy(temp, 0, cpu.ax, 0 , temp.length);
 	}
 }

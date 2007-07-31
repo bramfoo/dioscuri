@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,8 +53,9 @@ public class Instruction_SBB_GvEv implements Instruction {
 
     int intermediateResult;
     byte[] sourceValue = new byte[2];
-    byte[] oldValue = new byte[2];
+    byte[] oldSource = new byte[2];
     byte[] destinationRegister = new byte[2];
+    byte[] oldDest = new byte[2];
 
 	int iCarryFlag = 0;
     byte[] tempResult = new byte[2];
@@ -116,18 +117,19 @@ public class Instruction_SBB_GvEv implements Instruction {
 		destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
 		
 		// Store old value
-		System.arraycopy(destinationRegister, 0, oldValue, 0, sourceValue.length);
+		System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
+        System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
 		
 		// SBB source and destination plus carry, storing result in destination.
 		temp = Util.subtractWords(destinationRegister, sourceValue, iCarryFlag);
         System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
 		
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, sourceValue, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, oldSource, iCarryFlag);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, sourceValue, destinationRegister, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, oldSource, destinationRegister, iCarryFlag);
         // Test ZF on particular byte of destinationRegister
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
         // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,7 @@ public class Instruction_SBB_ALIb implements Instruction
     // Attributes
     private CPU cpu;
     byte immediateByte;
-    byte oldValue;
+    byte oldDest;
     int iCarryFlag;
 
     
@@ -56,7 +56,7 @@ public class Instruction_SBB_ALIb implements Instruction
     public Instruction_SBB_ALIb()
     {
         immediateByte = 0;
-        oldValue = 0;
+        oldDest = 0;
         iCarryFlag = 0;
     }
 
@@ -88,17 +88,17 @@ public class Instruction_SBB_ALIb implements Instruction
         immediateByte = cpu.getByteFromCode();
 
         // Copy initial value of AL
-        oldValue = cpu.ax[CPU.REGISTER_GENERAL_LOW];
+        oldDest = cpu.ax[CPU.REGISTER_GENERAL_LOW];
 
         // Subtract (immediate byte + CF) from register AL
         cpu.ax[CPU.REGISTER_GENERAL_LOW] -= (immediateByte + iCarryFlag);
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, immediateByte, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, immediateByte, iCarryFlag);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
         // Test ZF, only applies to AL
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
         // Test SF (set when MSB of AL is 1. In Java can check signed byte)

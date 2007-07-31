@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:36 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -125,8 +125,8 @@ public class Instruction_OR_EvGv implements Instruction {
 
 			// Get byte from memory and OR with source register
 			byte[] memVal = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-			logicalORResult[0] = (byte) (memVal[0] | sourceValue[0]);
-			logicalORResult[1] = (byte) (memVal[1] | sourceValue[1]);
+			logicalORResult[0] = (byte) (memVal[CPU.REGISTER_GENERAL_HIGH] | sourceValue[CPU.REGISTER_GENERAL_HIGH]);
+			logicalORResult[1] = (byte) (memVal[CPU.REGISTER_GENERAL_LOW] | sourceValue[CPU.REGISTER_GENERAL_LOW]);
             
 			// Store result in memory
 			cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, logicalORResult);

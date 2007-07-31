@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -111,7 +111,7 @@ public class Instruction_OUTSW_DXXv implements Instruction {
                 memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte, Util.addWords(cpu.si, new byte[]{0x00, 0x02}, 0));
                 
                 // Write the doubleword to the I/O port
-                cpu.setIOPortDoubleWord(portAddress, new byte[]{eMemoryValue[1], eMemoryValue[0], memoryValue[1], memoryValue[0]});
+                cpu.setIOPortDoubleWord(portAddress, new byte[]{eMemoryValue[CPU.REGISTER_GENERAL_LOW], eMemoryValue[CPU.REGISTER_GENERAL_HIGH], memoryValue[CPU.REGISTER_GENERAL_LOW], memoryValue[CPU.REGISTER_GENERAL_HIGH]});
                 
                 // Note: SI is updated by word-size here, the other word-size is done below
                 // Update SI according to DF flag

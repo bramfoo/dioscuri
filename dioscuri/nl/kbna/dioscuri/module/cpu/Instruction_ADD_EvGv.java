@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:30 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -54,11 +54,14 @@ public class Instruction_ADD_EvGv implements Instruction
     byte[] memoryReferenceDisplacement = new byte[2];
 
     byte[] sourceValue = new byte[2];
-    byte[] destinationRegister = new byte[2];
     byte[] eSourceValue = new byte[2];
+    byte[] oldSource = new byte[2];
+    byte[] eOldSource = new byte[2];
+    
+    byte[] destinationRegister = new byte[2];
     byte[] eDestinationRegister = new byte[2];
-    byte[] oldValue = new byte[2];
-    byte[] eOldValue = new byte[2];
+    byte[] oldDest = new byte[2];
+    byte[] eOldDest = new byte[2];
 
     int internalCarry = 0;
     byte[] temp = new byte[2];
@@ -98,7 +101,8 @@ public class Instruction_ADD_EvGv implements Instruction
         
         // Determine source value using addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
         sourceValue = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
-
+		System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
+        
         // Execute ADD on reg,reg or mem,reg. Determine this from mm bits of addressbyte
         if (((addressByte >> 6) & 0x03) == 3)
         {
@@ -106,8 +110,8 @@ public class Instruction_ADD_EvGv implements Instruction
             // Determine destination register from addressbyte, ANDing it with 0000 0111
             destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
 
-            // Store initial value for use in OF check
-            System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+    		// Store old values for flag checks
+    		System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
             
             if (cpu.doubleWord) // 32 bit registers
             {
@@ -115,7 +119,8 @@ public class Instruction_ADD_EvGv implements Instruction
                 eSourceValue = (cpu.decodeExtraRegister((addressByte & 0x38) >> 3));
                 eDestinationRegister = (cpu.decodeExtraRegister(addressByte & 0x07));
                 // Store initial value for use in OF check
-                System.arraycopy(eDestinationRegister, 0, eOldValue, 0, eDestinationRegister.length);
+                System.arraycopy(eDestinationRegister, 0, eOldDest, 0, eDestinationRegister.length);
+        		System.arraycopy(eSourceValue, 0, eOldSource, 0, eSourceValue.length);
             }
         }
         else
@@ -128,7 +133,7 @@ public class Instruction_ADD_EvGv implements Instruction
             destinationRegister = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
 
             // Store initial value for use in OF check
-            System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+            System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
 
             if (cpu.doubleWord) // 32 bit registers
             {
@@ -136,17 +141,12 @@ public class Instruction_ADD_EvGv implements Instruction
                 eSourceValue = (cpu.decodeExtraRegister((addressByte & 0x38) >> 3));
                 
                 // Increment memory location
-                memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] += 2;
-                if (memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] == 0 || memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] ==1)
-                {
-                    // Overflow
-                    memoryReferenceLocation[CPU.REGISTER_GENERAL_HIGH]++;
-                }
-                
+                memoryReferenceLocation = Util.addWords(memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
                 eDestinationRegister = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
                 
                 // Store initial value for use in OF check
-                System.arraycopy(eDestinationRegister, 0, eOldValue, 0, eDestinationRegister.length);
+                System.arraycopy(eDestinationRegister, 0, eOldDest, 0, eDestinationRegister.length);
+        		System.arraycopy(eSourceValue, 0, eOldSource, 0, eSourceValue.length);
             }
         }
         
@@ -157,16 +157,16 @@ public class Instruction_ADD_EvGv implements Instruction
         if (cpu.doubleWord) // 32 bit registers
         {
             // For CF, check for overflow in high register which may be used when 32-bit regs are used (see later)
-            internalCarry = Util.test_CF_ADD(oldValue, sourceValue, 0) == true ? 1 : 0;
+            internalCarry = Util.test_CF_ADD(oldDest, oldSource, 0) == true ? 1 : 0;
             
             // ADD double word
             temp = Util.addWords(eDestinationRegister, eSourceValue, internalCarry);
             System.arraycopy(temp, 0, eDestinationRegister, 0, temp.length);
 
             // Test CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(eOldValue, eSourceValue, internalCarry);
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(eOldDest, eOldSource, internalCarry);
             // Test OF
-            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(eOldValue, eSourceValue, eDestinationRegister, internalCarry);
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(eOldDest, eOldSource, eDestinationRegister, internalCarry);
             // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
             cpu.flags[CPU.REGISTER_FLAGS_SF] = eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
             // Test ZF on particular byte of destinationRegister 
@@ -175,9 +175,9 @@ public class Instruction_ADD_EvGv implements Instruction
         else    // 16 bit registers
         {
             // Test CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldValue, sourceValue, 0);
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, oldSource, 0);
             // Test OF
-            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, sourceValue, destinationRegister, 0);
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, oldSource, destinationRegister, 0);
             // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
             cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
             // Test ZF on particular byte of destinationRegister 
@@ -185,7 +185,7 @@ public class Instruction_ADD_EvGv implements Instruction
         }
         
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
         // Test PF on particular byte of destinationRegister
         cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationRegister[CPU.REGISTER_GENERAL_LOW]);
         
@@ -198,12 +198,7 @@ public class Instruction_ADD_EvGv implements Instruction
                 // Do this in reverse order because memlocation was incremented
                 cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, eDestinationRegister);
                 // Decrement memlocation
-                memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] -= 2;
-                if (memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] == -1 || memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] == -2)
-                {
-                    // Underflow
-                    memoryReferenceLocation[CPU.REGISTER_GENERAL_HIGH]--;
-                }
+                memoryReferenceLocation = Util.subtractWords(memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
             }
             cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, destinationRegister);
         }

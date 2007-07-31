@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,9 +56,8 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
 
     byte[] sourceValue;
     byte[] sourceValue2;
-    byte[] oldValue;
     byte[] destinationRegister;
-    int intermediateResult;
+    byte[] oldDest;
 
     int iCarryFlag;
     byte[] tempResult;
@@ -79,9 +78,8 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
 
         sourceValue = new byte[2];
         sourceValue2 = new byte[2];
-        oldValue = new byte[2];
         destinationRegister = new byte[2];
-        intermediateResult = 0;
+        oldDest = new byte[2];
         
         iCarryFlag = 0;
         tempResult = new byte[2];
@@ -112,22 +110,22 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
-        // Reset sourceValue words (to lose pointer to earlier words)
+        // Re-initialise sourceValue words (to lose pointer to earlier words)
         sourceValue = new byte[2];
         sourceValue2 = new byte[2];
 
         // Determine displacement of memory location (if any)
         memoryReferenceDisplacement = cpu.decodeMM(addressByte);
 
+        // Get immediate byte
+        sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
+        // Sign-extend HIGH register with sign from LOW register
+        sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
+        
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3)
         {
             case 0: // ADD
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Execute ADD on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -136,18 +134,18 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
     
                     // Store initial value for use in OF check
-                    System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+                    System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
     
                     // ADD source and destination, storing result in destination.
                     byte[] temp = Util.addWords(destinationRegister, sourceValue, 0);
                     System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
                     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldValue, sourceValue, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, sourceValue, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, sourceValue, destinationRegister, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, sourceValue, destinationRegister, 0);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -186,11 +184,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 break;  // ADD
 
             case 1: // OR
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-    
                 // Clear appropriate flags
                 cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
@@ -244,11 +237,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 // Determine value of carry flag before reset
                 iCarryFlag = (byte) (cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0);
 
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Execute ADC on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -257,18 +245,18 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
     
                     // Store initial value for use in OF check
-                    System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+                    System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
     
                     // ADD source and destination, storing result in destination.
                     byte[] temp = Util.addWords(destinationRegister, sourceValue, iCarryFlag);
                     System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
                     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldValue, sourceValue, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, sourceValue, iCarryFlag);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldValue, sourceValue, destinationRegister, iCarryFlag);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, sourceValue, destinationRegister, iCarryFlag);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -311,11 +299,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 // Determine value of carry flag before reset
                 iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Execute SBB on reg,imm or mem,imm. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -324,18 +307,18 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
                     // Store old value
-                    System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+                    System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
 
                     // SBB source2 - (source1 + carry)
                     temp = Util.subtractWords(destinationRegister, sourceValue, iCarryFlag);
                     System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
                     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, sourceValue, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceValue, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, sourceValue, destinationRegister, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceValue, destinationRegister, 0);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -381,11 +364,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 // Bochs is always right (even if it clashes with the Intel docs) ;-)
                 cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
     
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-    
                 // Execute AND on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -428,12 +406,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 break;  // AND
             
             case 5: // SUB; flags modified: OF, SF, ZF, AF, PF, CF
-
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Execute SUB on reg,imm or mem,imm. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -442,18 +414,18 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                     destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
                     
                     // Store old value
-                    System.arraycopy(destinationRegister, 0, oldValue, 0, destinationRegister.length);
+                    System.arraycopy(destinationRegister, 0, oldDest, 0, destinationRegister.length);
 
                     // SUB source and destination, storing result in destination.
                     temp = Util.subtractWords(destinationRegister, sourceValue, 0);
                     System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
                     
                     // Test AF
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
+                    cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest[CPU.REGISTER_GENERAL_LOW], destinationRegister[CPU.REGISTER_GENERAL_LOW]);  
                     // Test CF
-                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, sourceValue, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceValue, 0);
                     // Test OF
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, sourceValue, destinationRegister, 0);
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceValue, destinationRegister, 0);
                     // Test ZF on particular byte of destinationRegister
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)
@@ -497,11 +469,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
                 
-                // Get immediate byte
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                // Sign-extend HIGH register with sign from LOW register
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Execute XOR on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {
@@ -544,10 +511,6 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 break;  // XOR
                 
             case 7: // CMP
-                // Get source1 value from immediate byte and sign extend it in higher register.
-                sourceValue[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-                sourceValue[CPU.REGISTER_GENERAL_HIGH] = Util.signExtend(sourceValue[CPU.REGISTER_GENERAL_LOW]);
-                
                 // Determine source2 value from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
                 {

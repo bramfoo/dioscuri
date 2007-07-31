@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:39 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-07-31 14:27:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,8 +53,8 @@ public class Instruction_SUB_EbGb implements Instruction {
 
 	byte sourceValue = 0;
     byte sourceValue2 = 0;
-    byte oldValue = 0;
 	byte[] destinationRegister = new byte[2];
+    byte oldDest = 0;
 	byte registerHighLow = 0;
 
 	byte tempResult = 0;
@@ -107,17 +107,17 @@ public class Instruction_SUB_EbGb implements Instruction {
 			destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
 			
 			// Store old value
-			oldValue = destinationRegister[registerHighLow];
+			oldDest = destinationRegister[registerHighLow];
 
 			// SUB source and destination, storing result in destination. registerHighLow is re-used here.
 			destinationRegister[registerHighLow] -= sourceValue;
 		
             // Test AF
-            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldValue, destinationRegister[registerHighLow]);
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, destinationRegister[registerHighLow]);
 			// Test CF
-			cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldValue, sourceValue, 0);
+			cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, sourceValue, 0);
 			// Test OF
-			cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldValue, sourceValue, destinationRegister[registerHighLow], 0);
+			cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, sourceValue, destinationRegister[registerHighLow], 0);
 			// Test ZF on particular byte of destinationRegister
 			cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[registerHighLow] == 0 ? true : false;
 			// Test SF on particular byte of destinationRegister (set when MSB is 1, occurs when destReg >= 0x80)

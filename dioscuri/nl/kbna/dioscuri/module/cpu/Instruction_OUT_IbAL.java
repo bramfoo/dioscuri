@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:36 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -64,8 +64,6 @@ public class Instruction_OUT_IbAL implements Instruction
      */
     public Instruction_OUT_IbAL(CPU processor)
     {
-        // this();
-
         // Create reference to cpu class
         cpu = processor;
     }
@@ -82,7 +80,7 @@ public class Instruction_OUT_IbAL implements Instruction
             // Fetch immediate byte from memory and convert to unsigned integer,
             // to prevent lookup table out of bounds
             // and set data to appropriate port
-            cpu.setIOPortByte((cpu.getByteFromCode() & 0xFF), cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+            cpu.setIOPortByte(((int)(cpu.getByteFromCode()) & 0xFF), cpu.ax[CPU.REGISTER_GENERAL_LOW]);
         }
         catch (ModuleException e)
         {
