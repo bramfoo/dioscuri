@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:35 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,6 +44,8 @@ public class Instruction_MOV_OvAX implements Instruction {
 	// Attributes
 	private CPU cpu;
 	private byte[] displ = new byte[2];
+	private byte[] tempWord = new byte[2];
+    private byte[] word0x02 = new byte[] {0x00, 0x02};
     private byte dataSegmentAddressByte = 0;
 	
 	// Constructors
@@ -76,7 +78,17 @@ public class Instruction_MOV_OvAX implements Instruction {
 	{
 		// Get displacement within segment
 		displ = cpu.getWordFromCode();		
-				
+		
+		if (cpu.doubleWord)
+		{
+			// Store upper 16 bits of eAX in memory
+			cpu.setWordInMemorySegment(dataSegmentAddressByte, displ, cpu.eax);
+	        
+	        // Increment displacement
+	        tempWord = Util.addWords(displ, word0x02, 0);
+	        System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
+		}
+		
 		// Get word at AX and assign to memory segment
         // This memory segment defaults to DS:DISPL unless there is a segment override
         // Because setWordInMemorySegment expects an address byte to determine the segment,

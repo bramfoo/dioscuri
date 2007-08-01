@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-01 14:48:57 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -370,7 +370,7 @@ public class IO
     void showHelp()
     {
         // Show helpfile
-        logger.log(Level.INFO, this.toString());
+        logger.log(Level.SEVERE, this.toString());
     }
 
     /**

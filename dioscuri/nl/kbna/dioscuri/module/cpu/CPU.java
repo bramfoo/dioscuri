@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.9 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -2091,14 +2091,28 @@ public class CPU extends ModuleCPU
         	// Full 32-bit support
             case 0x01: // ADD_EvGv
             case 0x25: // AND_eAXIv
+            case 0x31: // XOR_EvGv
+            case 0x3D: // CMP_eAXIv
             case 0x40: // INC_eAX
-            case 0x50: // Push_eAX
+            case 0x50: // PUSH_eAX
+            case 0x58: // POP_eAX
             case 0x6D: // INSW_YvDX
             case 0x89: // MOV_EvGv
             case 0xA1: // MOV_eAxOv
+            case 0xA3: // MOV_OVeAX
+            case 0xB8: // MOV_eAX
+            case 0xB9: // MOV_eCX
+            case 0xBA: // MOV_eDX
+            case 0xBB: // MOV_eBX
+            case 0xBC: // MOV_eSP
+            case 0xBD: // MOV_eBP
+            case 0xBE: // MOV_eSI
+            case 0xBF: // MOV_eDI
+            case 0xED: // IN_eAXDX
+            case 0xEF: // OUT_DXeAX
             case 0xF7: // UnaryGRP3_Ev
             	break;
-            	
+            
             // Partly 32-bit support
             case 0xD1: // ShiftGRP2_Ev1 (SHL, SHR, SAR only)
             case 0xD3: // UnaryGRP2_EvCL (SHL, SHR only)

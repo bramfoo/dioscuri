@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -466,7 +466,8 @@ public class PIT extends ModulePIT
                 dump += ", current="+ (((counters[i].ce[Counter.MSB] & 0x000000FF) << 8) + ((counters[i].ce[Counter.LSB]) & 0x000000FF));
                 dump += ", R/W-mode=" + counters[i].rwMode;
                 dump += ", signals: OUT=" + counters[i].getGateSignal() + " GATE=" + counters[i].getOutSignal();
-                dump += ", parity: " + counters[i].getParity() + ret;
+                dump += ", parity: " + (counters[i].getParity() == true ? "EVEN" : "ODD");
+                dump += ", bcd: " + (counters[i].getBCD() == true ? "BCD mode" : "Decimal mode") + ret;
             }
             else
             {
@@ -639,7 +640,7 @@ public class PIT extends ModulePIT
                         counters[c].setCounterMode((data >> 1) & 0x00000007);
                         
                         // Binary or Binary Code Decimal (BCD)
-                        counters[c].bcd = data & 0x00000001;
+                        counters[c].bcd = (data & 0x00000001) == 0x00000001 ? true : false;
                     }
             		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter " + c + " has been set.");
                 }
@@ -689,7 +690,7 @@ public class PIT extends ModulePIT
         return;
     }
 
-    
+
     //******************************************************************************
     // ModulePIT Methods
     
@@ -717,4 +718,19 @@ public class PIT extends ModulePIT
     }
 */
 
+    
+    //******************************************************************************
+    // Custom Methods
+    
+	protected void raiseIRQ(Counter counter)
+	{
+		pic.setIRQ(irqNumber);
+	}
+
+    
+	protected void lowerIRQ(Counter counter)
+	{
+		pic.clearIRQ(irqNumber);
+	}
+    
 }

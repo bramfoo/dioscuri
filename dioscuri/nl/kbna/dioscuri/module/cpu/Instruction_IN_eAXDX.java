@@ -1,4 +1,4 @@
-/* $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
+/* $Revision: 1.3 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -37,8 +37,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.exception.ModuleException;
-import nl.kbna.dioscuri.exception.ModuleUnknownPort;
-import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 
 /**
  * Intel opcode ED<BR>

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-01 14:48:57 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -259,7 +259,7 @@ public class Emulator implements Runnable
                 }
                 
                 // Show dump of next CPU instruction
-                logger.log(Level.INFO, cpu.getNextInstructionInfo());
+                logger.log(Level.SEVERE, cpu.getNextInstructionInfo());
                 break;
     
             case CMD_DEBUG_SHOWREG:
@@ -267,7 +267,7 @@ public class Emulator implements Runnable
                 CPU cpu1 = (CPU)modules.getModule("cpu");
     
                 // Show simple view of CPU registers and flags
-                logger.log(Level.INFO, cpu1.dumpRegisters());
+                logger.log(Level.SEVERE, cpu1.dumpRegisters());
                 break;
                 
             case CMD_DEBUG_DUMP:
@@ -284,11 +284,11 @@ public class Emulator implements Runnable
                     if (mod != null)
                     {
                         // Show dump of module
-                        logger.log(Level.INFO, mod.getDump());
+                        logger.log(Level.SEVERE, mod.getDump());
                     }
                     else
                     {
-                        logger.log(Level.WARNING, "Module not recognised.");
+                        logger.log(Level.SEVERE, "Module not recognised.");
                     }
                 }
                 break;
@@ -313,13 +313,13 @@ public class Emulator implements Runnable
                 
                 for (int n = 0; n < numBytes; n++)
                 {
-                        logger.log(Level.INFO, "Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
+                        logger.log(Level.SEVERE, "Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
                 }
                 break;
     
             default:
                 // No command match
-                logger.log(Level.WARNING, "No command match. Enter a correct emulator command.");
+                logger.log(Level.SEVERE, "No command match. Enter a correct emulator command.");
                 break;
         }
     }

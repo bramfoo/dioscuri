@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:35 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -79,7 +79,6 @@ public class Instruction_MOV_Imm_DX implements Instruction {
             {
                 // 32 bit instruction, so move one extra word into eDX
                 cpu.edx = cpu.getWordFromCode();
-            }            
-
+            }
 	}
 }

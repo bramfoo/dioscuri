@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -63,7 +63,7 @@ public class Counter
     // Mode settings
     protected int rwMode;          // States the mode to R/W counter: 0 (latched), 1 (LSB), 2 (MSB), 3 (LSB -> MSB)
     protected int counterMode;     // States the counter mode: 0,1,2,3,4,5
-    protected int bcd;             // 0 = Binary counter, 1 = Binary Code Decimal counter
+    protected boolean bcd;         // false = Binary counter, true = Binary Code Decimal counter
     
     // Registers
     protected byte[] ce;            // Counting element, the actual counter
@@ -72,7 +72,7 @@ public class Counter
     
     // Toggles
     private boolean isEnabled;		// Denotes if this counter is enabled or not
-    private int parity;
+    private boolean parity;			// Denotes the parity of the count value: false=ODD, true=EVEN
     private boolean lsbWritten;
     private boolean lsbRead;
     private boolean isLatched;
@@ -88,8 +88,11 @@ public class Counter
     protected final static int LSB = 1;
     protected final static int MSB = 0;
     
-    protected final static int ODD = 1;
-    protected final static int EVEN = 0;
+    private final static boolean ODD = false;
+    private final static boolean EVEN = true;
+    
+    private final static boolean BINARY = false;
+    private final static boolean BCD = true;
     
     private final static int RWMODE_0 = 0;       // Counter Latch Command
     private final static int RWMODE_1 = 1;       // R/W LSB only
@@ -102,9 +105,6 @@ public class Counter
     private final static int COUNTERMODE_3 = 3;
     private final static int COUNTERMODE_4 = 4;
     private final static int COUNTERMODE_5 = 5;
-    
-    private final static int BINARY = 0;
-    private final static int BCD = 1;
     
     // Constructor
     /**
@@ -176,7 +176,7 @@ public class Counter
                             newCount = false;
 
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
                         }
                         else if (signalGate == true)
                         {
@@ -195,7 +195,7 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -217,7 +217,7 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                         }
@@ -238,7 +238,7 @@ public class Counter
                             signalOut = false;
 
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
                         }
                         else if (isTriggered == true)
                         {
@@ -257,7 +257,7 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -279,7 +279,7 @@ public class Counter
                                     signalOut = true;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                         }
@@ -301,7 +301,7 @@ public class Counter
                             newCount = false;
                             
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
                         }
                         else if (signalGate == true)
                         {
@@ -319,10 +319,10 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + " r/wmode1 rings!!!! Send IRQ 0");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " r/wmode1 expired.");
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
 
                                     newCount = true;
                                 }
@@ -345,9 +345,9 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + " r/wmode3 rings!!!! Send IRQ 0");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " r/wmode3 expired.");
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
 
                                     newCount = true;
                                 }
@@ -365,10 +365,9 @@ public class Counter
                         if (newCount == true)
                         {
                             this.loadCounter();
-                        	logger.log(Level.SEVERE, "load new count: " + ((ce[Counter.MSB] & 0x000000FF) << 8) + ((ce[Counter.LSB]) & 0x000000FF));
                             
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
 
                             // Check parity of count element
                             if (parity == ODD)
@@ -400,7 +399,7 @@ public class Counter
                                 if (ce[LSB] == 0)
                                 {
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
 
                                     // Check state of OUT signal
                                     if (signalOut == true && parity == EVEN)
@@ -433,10 +432,10 @@ public class Counter
                                 }
                                 else if (ce[LSB] == 0 && ce[MSB] == 0)
                                 {
-                                    logger.log(Level.SEVERE, "pit counter " + counterNumber + "  countermode3 r/wmode3 rings!!!! Send IRQ 0");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + "  countermode3 r/wmode3 expired.");
 
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
 
                                     if (parity == EVEN)
 	                                {
@@ -489,7 +488,7 @@ public class Counter
                             newCount = false;
 
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
                         }
                         else if (signalGate == true)
                         {
@@ -508,7 +507,7 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                     
                                     newCount = true;
                                 }
@@ -532,7 +531,7 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                     
                                     newCount = true;
                                 }
@@ -559,7 +558,7 @@ public class Counter
                             isTriggered = true;
 
                             // Lower interrupt
-                            pit.pic.clearIRQ(pit.irqNumber);
+                            pit.lowerIRQ(this);
                         }
                         else if (isTriggered == true)
                         {
@@ -578,7 +577,7 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                             else if (rwMode == RWMODE_2)
@@ -600,7 +599,7 @@ public class Counter
                                     signalOut = false;
                                     
                                     // Raise interrupt
-                                    pit.pic.setIRQ(pit.irqNumber);
+                                    pit.raiseIRQ(this);
                                 }
                             }
                         }
@@ -678,7 +677,7 @@ public class Counter
                     signalOut = true;
 
                     // Send notification to user
-                    pit.pic.setIRQ(pit.irqNumber);
+                    pit.raiseIRQ(this);
                 }
             }
         }
@@ -798,7 +797,6 @@ public class Counter
             {
                 // Store data in Count Register
                 cr[MSB] = data;
-//                cr[MSB] = 0x00;	// Just for testing!
                 lsbWritten = false;
                 newCount = true;
             }
@@ -806,12 +804,17 @@ public class Counter
             {
                 // Store LSB of count
                 cr[LSB] = data;
-//                cr[LSB] = 0x02;	// Just for testing!
                 lsbWritten = true;
             }
         }
     }
+
     
+    /**
+     * Set counter mode
+     * 
+     * @param int mode ranging from 0 to 5
+     */
     protected void setCounterMode(int mode)
     {
         counterMode = mode;
@@ -866,6 +869,12 @@ public class Counter
     }
 
 
+    /**
+     * Latch this counter (read back current count value)
+     * Note: this function only works if the counter is in latchmode.
+     * The latched value is stored in register ol.
+     * 
+     */
     protected void latchCounter()
     {
         if (isLatched == false)
@@ -878,6 +887,11 @@ public class Counter
     }
 
     
+    /**
+     * Load counter with new value
+     * Note: new value is stored in register cr.
+     * 
+     */
     private void loadCounter()
     {
         // Load new count from cr to ce, based on RW mode
@@ -912,13 +926,35 @@ public class Counter
     }
 
 
-    protected int getParity()
+    /**
+     * Return the parity of the count value
+     * 
+     * @return boolean true=EVEN, false=ODD
+     */
+    protected boolean getParity()
     {
         // Returns the parity of counting element
         return parity;
     }
 
 
+    /**
+     * Return if this counter is in BCD mode
+     * 
+     * @return boolean true=BCD, false=decimal
+     */
+    protected boolean getBCD()
+    {
+        // Returns the parity of counting element
+        return bcd;
+    }
+
+
+    /**
+     * Enable/disable the counter
+     * 
+     * @param boolean status defining the status of this counter (true=enabled, false=disabled)
+     */
 	protected void setEnabled(boolean status)
 	{
 		// Set current counter in given state
@@ -926,9 +962,26 @@ public class Counter
 	}
 	
 	
+    /**
+     * Return if this counter has been enabled
+     * 
+     * @return true if enabled, false otherwise
+     */
 	protected boolean isEnabled()
 	{
 		// Return status of this counter
 		return isEnabled;
+	}
+
+
+    /**
+     * Return the counter number (ID)
+     * 
+     * @return int counternumber
+     */
+	protected int getCounterNumber()
+	{
+		// Return the number of the counter
+		return counterNumber;
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:34 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,7 +35,7 @@
 package nl.kbna.dioscuri.module.cpu;
 
 	/**
-	 * Intel opcode <BR>
+	 * Intel opcode B9<BR>
 	 * Copy immediate word to register CX.<BR>
 	 * Flags modified: none
 	 */
@@ -73,5 +73,11 @@ public class Instruction_MOV_Imm_CX implements Instruction {
 	public void execute()
 	{
 		cpu.cx = cpu.getWordFromCode();
+
+        if (cpu.doubleWord)
+        {
+            // 32 bit instruction, so move one extra word into eCX
+            cpu.ecx = cpu.getWordFromCode();
+        }            
 	}
 }
