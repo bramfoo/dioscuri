@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:31:28 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-03 14:21:42 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -268,7 +268,7 @@ public class CMOS
             // calendar.set(1995,4,5,0,0,5);
 
             // Custom date: Fri May 05 1995 11:59:59 (Unix ticks: 799667999)
-            calendar.set(1995,4,5,11,59,59);
+            calendar.set(1995,4,5,1,0,1);
         }
 
         ram[RTC_SECONDS] = decToBcd(calendar.get(Calendar.SECOND));

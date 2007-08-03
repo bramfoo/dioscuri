@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-08-03 14:21:41 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -201,6 +201,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode0 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -263,6 +264,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode1 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -319,7 +321,7 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " r/wmode1 expired.");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode1 expired.");
                                     
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
@@ -330,6 +332,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -345,7 +348,7 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " r/wmode3 expired.");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode3 expired.");
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
 
@@ -420,6 +423,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -432,7 +436,7 @@ public class Counter
                                 }
                                 else if (ce[LSB] == 0 && ce[MSB] == 0)
                                 {
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + "  countermode3 r/wmode3 expired.");
+                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode3 expired.");
 
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
@@ -515,6 +519,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode4 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -583,6 +588,7 @@ public class Counter
                             else if (rwMode == RWMODE_2)
                             {
                                 // FIXME: not sure what to do
+                                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " countermode5 r/wmode2 not implemented.");
                             }
                             else if (rwMode == RWMODE_3)
                             {
@@ -608,14 +614,14 @@ public class Counter
 
                     default:
                         // FIXME: throw exception. No countermode match
-                        logger.log(Level.WARNING, "No countermode match");
+                        logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " no countermode match.");
                 }
             }
             else
             {
                 // BCD countdown
                 // FIXME: implement BCD counting
-                logger.log(Level.WARNING, "BCD counting not implemented");
+                logger.log(Level.WARNING, "[" + pit.getType() + "] counter " + counterNumber + " BCD counting not implemented.");
             }
         }
         

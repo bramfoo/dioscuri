@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-03 14:21:42 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -480,14 +480,14 @@ public class RTC extends ModuleRTC
         {
             case (OUT_PORT):
                 // Undefined
-                logger.log(Level.FINE,  "[" + MODULE_TYPE + "]" + " IN command (byte) from port 0x" + Integer.toHexString(portAddress).toUpperCase() + "; Returned 0xFF");
+                logger.log(Level.SEVERE,  "[" + MODULE_TYPE + "]" + " IN command (byte) from port 0x" + Integer.toHexString(portAddress).toUpperCase() + "; Returned 0xFF");
 //              throw new ModuleWriteOnlyPortException(MODULE_TYPE + " -> port " + Integer.toHexString(portAddress).toUpperCase() + " is write-only and cannot be read");
                 return (byte) 0xFF; 
 
             
             case (IN_PORT):
                 // Return data from previously indicated CMOS register
-                logger.log(Level.FINE,  "[" + MODULE_TYPE + "]" + " IN command (byte) from register 0x" + Integer.toHexString(lookupRegister).toUpperCase() + ": 0x" + Integer.toHexString(cmos.ram[lookupRegister]).toUpperCase());
+                logger.log(Level.SEVERE,  "[" + MODULE_TYPE + "]" + " IN command (byte) from register 0x" + Integer.toHexString(lookupRegister).toUpperCase() + ": 0x" + Integer.toHexString(cmos.ram[lookupRegister]).toUpperCase());
 
                 if (lookupRegister == CMOS.STATUS_REGISTER_C)
                 {
