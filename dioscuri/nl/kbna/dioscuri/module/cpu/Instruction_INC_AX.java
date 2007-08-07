@@ -1,4 +1,4 @@
-/* $Revision: 1.3 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+/* $Revision: 1.4 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -104,11 +104,11 @@ public class Instruction_INC_AX implements Instruction {
 		        cpu.eax[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
 		        cpu.eax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
 	        }
-	        
+
 	        // Test AF
-	        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDestWord[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;
+	        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDestWord[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_LOW]);
 	        // Test OF
-	        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDestDoubleWord, incWord, cpu.eax, 0);  
+	        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDestDoubleWord, incWord, cpu.eax, 0);
 	        // Test ZF
 	        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
 	        // Test SF (set when MSB of BH is 1. In Java can check signed byte)
@@ -130,7 +130,7 @@ public class Instruction_INC_AX implements Instruction {
 	        cpu.ax[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
 	        
 	        // Test AF
-	        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDestWord[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;
+	        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDestWord[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_LOW]);
 	        // Test OF
 	        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDestWord, incWord, cpu.ax, 0);  
 	        // Test ZF

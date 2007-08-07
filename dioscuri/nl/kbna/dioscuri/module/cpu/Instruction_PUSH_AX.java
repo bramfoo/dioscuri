@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -74,6 +74,7 @@ public class Instruction_PUSH_AX implements Instruction {
 	public void execute()
 	{
         // Push extra register first, if 32 bit instruction
+		// Double word will be stored as [ax[LSB][MSB] eax[LSB][MSB]] because stack is counting backwards in memory
         if (cpu.doubleWord)
         {
             cpu.setWordToStack(cpu.eax);

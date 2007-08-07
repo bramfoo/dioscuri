@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -74,10 +74,11 @@ public class Instruction_PUSH_DX implements Instruction {
 	public void execute()
 	{
         // Push extra register first, if 32 bit instruction
+		// Double word will be stored as [dx[LSB][MSB] edx[LSB][MSB]] because stack is counting backwards in memory
         if (cpu.doubleWord)
         {
             cpu.setWordToStack(cpu.edx);
-        }      
+        }
 
 		// Get word at DX and assign to SS:SP 
 		cpu.setWordToStack(cpu.dx);

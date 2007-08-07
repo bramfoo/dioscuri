@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.9 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
+ * $Revision: 1.10 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -139,6 +139,7 @@ public class CPU extends ModuleCPU
     private boolean breakpointSet;		// Denotes if a breakpoint is set at a particular address (CS:IP)
 	private boolean cpuInstructionDebug;// Used for outputting logging during bug trace
 	private boolean abnormalTermination;// Denotes if CPU halted due to an error during execution
+
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
 

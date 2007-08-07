@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:40 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -111,6 +111,7 @@ public class Instruction_XOR_EvGv implements Instruction {
 			// XOR reg,reg
 			// Determine destination register from addressbyte, ANDing it with 0000 0111
 			destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
+			
             if (cpu.doubleWord) // Dealing with extra registers
             {
                 eDestinationRegister = (cpu.decodeExtraRegister(addressByte & 0x07));
@@ -119,6 +120,7 @@ public class Instruction_XOR_EvGv implements Instruction {
 			// XOR source and destination, storing result in destination. registerHighLow is re-used here.
 			destinationRegister[CPU.REGISTER_GENERAL_HIGH] ^= sourceValue[CPU.REGISTER_GENERAL_HIGH];
 			destinationRegister[CPU.REGISTER_GENERAL_LOW] ^= sourceValue[CPU.REGISTER_GENERAL_LOW];
+			
             if (cpu.doubleWord) // Dealing with extra registers
             {
                 eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] ^= eSourceValue[CPU.REGISTER_GENERAL_HIGH];
@@ -128,6 +130,7 @@ public class Instruction_XOR_EvGv implements Instruction {
             
             if (!cpu.doubleWord) // Not dealing with extra registers
             {
+            	// 16 bit
                 // Test ZF on particular byte of destinationRegister
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0x00
                         && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
@@ -136,6 +139,7 @@ public class Instruction_XOR_EvGv implements Instruction {
             }
             else
             {
+            	// 32 bit
                 // Test ZF on particular byte of destinationRegister
                 cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0x00
                         && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0x00
@@ -168,13 +172,8 @@ public class Instruction_XOR_EvGv implements Instruction {
             
             if (cpu.doubleWord) // Dealing with extra registers
             {
-                // Increase memory location by 2
-                int overFlowCheck = (((int) memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW]) & 0xFF) + 2;
-                if (overFlowCheck > 0xFF)
-                {
-                    memoryReferenceLocation[CPU.REGISTER_GENERAL_HIGH]++;
-                }
-                memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW] += 2;
+                // Increment memory location
+                memoryReferenceLocation = Util.addWords(memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
                 memVal = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
                 
                 logicalXORResult[0] = (byte) (memVal[0] ^ eSourceValue[0]);

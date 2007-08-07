@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,9 @@
 
 package nl.kbna.dioscuri.module.cpu;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 	/**
 	 * Intel opcode 0E<BR>
 	 * Push general register CS onto stack SS:SP.<BR>
@@ -44,6 +47,9 @@ public class Instruction_PUSH_CS implements Instruction {
 	// Attributes
 	private CPU cpu;
 	
+	// Logging
+	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
+
 	
 	// Constructors
 	/**
@@ -76,7 +82,7 @@ public class Instruction_PUSH_CS implements Instruction {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord)
         {
-            System.out.println("PUSH_CS: 32-bits not supported");
+        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_CS: 32-bits not supported");
         }      
 
 		// Get word at CS and assign to SS:SP 

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,9 @@
 
 package nl.kbna.dioscuri.module.cpu;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 	/**
 	 * Intel opcode 60<BR>
 	 * Push all general purpose registers onto stack SS:SP.<BR>
@@ -45,7 +48,11 @@ public class Instruction_PUSHA implements Instruction {
 	// Attributes
 	private CPU cpu;
     byte[] tempSP;
-		
+
+	// Logging
+	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
+
+	
 	// Constructors
 	/**
 	 * Class constructor 
@@ -81,8 +88,8 @@ public class Instruction_PUSHA implements Instruction {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord)
         {
-            System.out.println("PUSHA: 32-bits not supported");
-        }      
+        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSHA: 32-bits not supported");
+        }
         
         // Get words in register and assign to stack
         System.arraycopy(cpu.sp, 0, tempSP, 0,cpu.sp.length);
