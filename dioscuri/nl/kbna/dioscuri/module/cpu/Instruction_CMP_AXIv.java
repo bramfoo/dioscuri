@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-07 14:36:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -83,8 +83,8 @@ public class Instruction_CMP_AXIv implements Instruction {
 		if (cpu.doubleWord)
 		{
 			// 32-bit
-			immediateDoubleWord = cpu.getWordFromCode();
 			immediateWord = cpu.getWordFromCode();
+			immediateDoubleWord = cpu.getWordFromCode();
 			
 			// Subtract lower 16 bits
 			resultWord = Util.subtractWords(cpu.ax, immediateWord, 0);
