@@ -1,4 +1,4 @@
-/* $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+/* $Revision: 1.3 $ $Date: 2007-08-07 15:03:55 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -79,22 +79,21 @@ public class Instruction_MOV_AXOv implements Instruction {
 		// Honour Intel little-endian: first byte is LSB, followed by MSB. Order array [MSB, LSB]
 		displ = cpu.getWordFromCode();
 		
-		if (cpu.doubleWord)
-		{
-			// Store upper 16 bits in eAX
-	        cpu.eax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
-	        
-	        // Increment displacement
-	        tempWord = Util.addWords(displ, word0x02, 0);
-	        System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
-		}
-		
         // Get word at DS:DISPL and place in AX
         // This memory segment defaults to DS:DISPL unless there is a segment override
         // Because getWordFromMemorySegment expects an address byte to determine the segment,
         // a default of 0 is used here to end up in the Data Segment (unless of course there is an override,
         // but that is handled in getWord[..])
         cpu.ax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
-		
+
+        if (cpu.doubleWord)
+        {
+            // Increment displacement
+            tempWord = Util.addWords(displ, word0x02, 0);
+            System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
+            
+            // Store upper 16 bits in eAX
+            cpu.eax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
+        }
 	}
 }
