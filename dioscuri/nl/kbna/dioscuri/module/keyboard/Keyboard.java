@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-07 09:42:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,8 @@ package nl.kbna.dioscuri.module.keyboard;
  * - Conversions from C++ to Java have been made, and will need revising and/or updating
  * - Aside from handling keystrokes, the keyboard controller is responsible for:
  *     + the status of the PC speaker via 0x61. This is not implemented yet.
- *     + A20 address line (memory looping turned on or off).
+ *     + A20 address line (memory looping turned on or off) to be enabled/disabled.
+ *     + mouse support
  *     
  */
 
