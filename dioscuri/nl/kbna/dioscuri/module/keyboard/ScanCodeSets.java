@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:42 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-08 14:21:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,10 +34,22 @@
 
 package nl.kbna.dioscuri.module.keyboard;
 
+
+/**
+ * Class ScanCodeSets
+ * Defines three basic sets of scancodes: XT, AT and PS/2. By default scancode set AT is used.
+ * Notes:
+ * - Not all scancodes are filled in.
+ * - Difference between XT and AT is that they use different codes
+ * - Difference between XT/AT and PS/2 is that the latter doesn't use make/break codes but rather one code.
+ * 
+ */
 public class ScanCodeSets
 {
-    //  The 8042 translation table used when command byte bit 6 (scancodeTranslate) is set
-    char[] translate8042 = new char[]
+    // 8042 translation table
+	// Translates scancodes to XT scancode set (for compatibility)
+	// Used when command byte bit 6 (scancodeTranslate) is set
+    protected char[] translate8042 = new char[]
                 {
                 0xff,0x43,0x41,0x3f,0x3d,0x3b,0x3c,0x58,0x64,0x44,0x42,0x40,0x3e,0x0f,0x29,0x59,
                 0x65,0x38,0x2a,0x70,0x1d,0x10,0x02,0x5a,0x66,0x71,0x2c,0x1f,0x1e,0x11,0x03,0x5b,
@@ -57,7 +69,8 @@ public class ScanCodeSets
                 0xf0,0xf1,0xf2,0xf3,0xf4,0xf5,0xf6,0xf7,0xf8,0xf9,0xfa,0xfb,0xfc,0xfd,0xfe,0xff
                 };
         
-    //  VK <-> scancode conversion map; contains scancodes for 3 scancode sets (XT, AT, PS/2)
+    // VK <-> scancode conversion map
+    // Contains scancodes for 3 scancode sets (XT, AT, PS/2)
     String[][][] scancodes = new String[][][]
         {
         // Set 1: XT 
@@ -193,8 +206,8 @@ public class ScanCodeSets
                     /* 125: nothing (filler)        */ {"",  ""},
                     /* 126: nothing (filler)        */ {"",  ""},
                     /* 127: VK_DELETE      (IBM 76) */ {"E0 53",  "E0 D3"},
-                    /* 128: VK_DEAD_GRAVE           */ {"",  ""},
-                    /* 129: VK_DEAD_ACUTE           */ {"",  ""},
+                    /* 128: VK_DEAD_GRAVE           */ {"29",  "A9"},	// Set similar as 192
+                    /* 129: VK_DEAD_ACUTE           */ {"28",  "A8"},	// Set similar as 222
                     /* 130: VK_DEAD_CIRCUMFLEX      */ {"",  ""},
                     /* 131: VK_DEAD_TILDE           */ {"",  ""},
                     /* 132: VK_DEAD_MACRON          */ {"",  ""},
@@ -501,8 +514,8 @@ public class ScanCodeSets
                     /* 125: nothing (filler)        */ {"",  ""},
                     /* 126: nothing (filler)        */ {"",  ""},
                     /* 127: VK_DELETE      (IBM 76) */ {"E0 71",  "E0 F0 71"},
-                    /* 128: VK_DEAD_GRAVE           */ {"",  ""},
-                    /* 129: VK_DEAD_ACUTE           */ {"",  ""},
+                    /* 128: VK_DEAD_GRAVE           */ {"0E",  "F0 0E"},	// Set similar as 192
+                    /* 129: VK_DEAD_ACUTE           */ {"52",  "F0 52"},	// Set similar as 222
                     /* 130: VK_DEAD_CIRCUMFLEX      */ {"",  ""},
                     /* 131: VK_DEAD_TILDE           */ {"",  ""},
                     /* 132: VK_DEAD_MACRON          */ {"",  ""},
@@ -809,8 +822,8 @@ public class ScanCodeSets
                     /* 125: nothing (filler)        */ {"",  ""},
                     /* 126: nothing (filler)        */ {"",  ""},
                     /* 127: VK_DELETE      (IBM 76) */ {"64",  "F0 64"},
-                    /* 128: VK_DEAD_GRAVE           */ {"",  ""},
-                    /* 129: VK_DEAD_ACUTE           */ {"",  ""},
+                    /* 128: VK_DEAD_GRAVE           */ {"0E",  "F0 0E"},	// Set similar as 192
+                    /* 129: VK_DEAD_ACUTE           */ {"52",  "F0 52"},	// Set similar as 222
                     /* 130: VK_DEAD_CIRCUMFLEX      */ {"",  ""},
                     /* 131: VK_DEAD_TILDE           */ {"",  ""},
                     /* 132: VK_DEAD_MACRON          */ {"",  ""},
