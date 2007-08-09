@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-09 14:00:55 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -468,6 +468,7 @@ public class Instruction_ImmGRP1_EvIb implements Instruction
                 // Clear appropriate flags
                 cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
                 cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
                 
                 // Execute XOR on reg,reg or mem,reg. Determine this from mm bits of addressbyte
                 if (((addressByte >> 6) & 0x03) == 3)
