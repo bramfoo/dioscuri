@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-08-01 14:48:58 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-08-10 14:56:53 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -582,17 +582,17 @@ public class PIT extends ModulePIT
         switch (portAddress)
         {
             case PORT_PIT_COUNTER0:  // Counter 0
-            	logger.log(Level.SEVERE,  "[" + MODULE_TYPE + "] PIT counter0: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter0: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[0].setCounterValue(data);
                 break;
                 
             case PORT_PIT_COUNTER1:  // Counter 1
-            	logger.log(Level.SEVERE,  "[" + MODULE_TYPE + "] PIT counter1: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter1: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[1].setCounterValue(data);
                 break;
                 
             case PORT_PIT_COUNTER2:  // Counter 2
-            	logger.log(Level.SEVERE,  "[" + MODULE_TYPE + "] PIT counter2: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter2: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[2].setCounterValue(data);
                 break;
                 

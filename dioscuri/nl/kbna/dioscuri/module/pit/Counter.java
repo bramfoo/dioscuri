@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-08-03 14:21:41 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-08-10 14:56:53 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -321,7 +321,7 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode1 expired.");
+                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode1 expired.");
                                     
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
@@ -348,7 +348,7 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode3 expired.");
+                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode3 expired.");
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
 
@@ -436,7 +436,7 @@ public class Counter
                                 }
                                 else if (ce[LSB] == 0 && ce[MSB] == 0)
                                 {
-                                    logger.log(Level.SEVERE, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode3 expired.");
+                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode3 expired.");
 
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
