@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-06 09:06:34 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-10 14:57:33 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,16 +34,9 @@
 package nl.kbna.dioscuri;
 
 import java.awt.BorderLayout;
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Label;
-import java.awt.Menu;
-import java.awt.MenuBar;
-import java.awt.MenuComponent;
-import java.awt.MenuItem;
-import java.awt.ScrollPane;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -63,11 +56,16 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 
@@ -83,40 +81,40 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private Emulator emu;
    
    // Panels
-   private ScrollPane screenPanel = null;
+   private JScrollPane screenPane = null;
    private JPanel statusPanel = null;
-   private JPanel scrollPanel = null;
-   private JPanel numPanel = null;
-   private JPanel capsPanel = null;
+   private JPanel scrolllockPanel = null;
+   private JPanel numlockPanel = null;
+   private JPanel capslockPanel = null;
    private JPanel floppyAPanel = null;
    private JPanel hd1Panel = null;
    
    // Menus
-   MenuBar menuBar;
-   Menu menuEmulator;
-   Menu menuEdit;
-   Menu menuSource;
-   Menu menuConfig;
-   Menu menuHelp;
+   JMenuBar menuBar;
+   JMenu menuEmulator;
+   JMenu menuEdit;
+   JMenu menuSource;
+   JMenu menuConfig;
+   JMenu menuHelp;
 
    // Menu items
-   MenuItem miEmulatorStart;
-   MenuItem miEmulatorStop;
-   MenuItem miEmulatorReset;
-   MenuItem miEmulatorQuit;
-   MenuItem miEditCopyText;
-   MenuItem miEditCopyImage;
-   MenuItem miEditPasteText;
-   MenuItem miEditPasteImage;
+   JMenuItem miEmulatorStart;
+   JMenuItem miEmulatorStop;
+   JMenuItem miEmulatorReset;
+   JMenuItem miEmulatorQuit;
+   JMenuItem miEditCopyText;
+   JMenuItem miEditCopyImage;
+   JMenuItem miEditPasteText;
+   JMenuItem miEditPasteImage;
  
-   MenuItem miEditConfig;
+   JMenuItem miEditConfig;
    
-   MenuItem miSourceEjectA;
-   MenuItem miSourceInsertA;
-   MenuItem miHelpAbout;
+   JMenuItem miSourceEjectA;
+   JMenuItem miSourceInsertA;
+   JMenuItem miHelpAbout;
    
-   // Screen canvas
-   private Canvas screenCanvas;     // Defines the screen of the emulator
+   // Screen
+   private JPanel screen;     // Defines the screen of the emulator
    
    // File selection
    private JFileChooser fcFloppy;
@@ -132,8 +130,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.0.9";
-   protected final static String EMULATOR_DATE = "July, 2007";
+   protected final static String EMULATOR_VERSION = "0.1.0";
+   protected final static String EMULATOR_DATE = "August, 2007";
    protected final static String EMULATOR_CREATOR = "National Library of the Netherlands, Nationaal Archief of the Netherlands";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
    private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen.gif";
@@ -212,17 +210,12 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
        // Add handlers and listeners
        // Window closing listener
-       addWindowListener(new WindowAdapter(){
+       this.addWindowListener(new WindowAdapter(){
            public void windowClosing(WindowEvent event)
            {
                exitViewer();
            }
        });
-
-       // Key handler to the GUI, disabling focus traversal so Tab events are available
-       // KeyEvents will be handled here in screen
-       this.addKeyListener(this);
-       this.setFocusTraversalKeysEnabled(false);
 
        // Set native look and feel
        try
@@ -236,13 +229,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        
        // Set icon image
        this.setIconImage(this.getImageFromFile(EMULATOR_ICON_IMAGE));
-           
+       
        // Create menubar
        this.initMenuBar();
 
        // Create panel: screen (canvas)
-       screenPanel = new ScrollPane();
-       screenPanel.setBackground(Color.gray);
+       screenPane = new JScrollPane();
+       screenPane.setBackground(Color.gray);
        this.setScreen(this.getStartupScreen());
        
        // Create panel: statusbar (including panels w/ borders for Num Lock, Caps Lock and Scroll Lock status)
@@ -250,16 +243,22 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        this.initStatusBar();
 
        // Add panels to frame (arranged in borderlayout)
-       this.getContentPane().add(screenPanel, BorderLayout.CENTER);
+       this.getContentPane().add(screenPane, BorderLayout.CENTER);
        this.getContentPane().add(statusPanel, BorderLayout.SOUTH);
        
        // Create file choosers
        fcFloppy = new JFileChooser();
        
        // Set dimensions
-       guiWidth = screenCanvas.getWidth() + 90; // screen width + a random extra value
-       guiHeight = screenCanvas.getHeight() + 2 * 38; // screen height + 2 * menu & statusbar height
-     
+       guiWidth = screenPane.getWidth() + 10; // screen width + a random extra value
+       guiHeight = screenPane.getHeight() + 2 * 38; // screen height + 2 * menu & statusbar height
+
+       // Key handler to the GUI, disabling focus traversal so Tab events are available
+       // KeyEvents will be handled here in screen
+       this.addKeyListener(this);
+       // Disable moving focus to the next component in the focus cycle root
+       this.setFocusTraversalKeysEnabled(false);
+       
        // Build frame
        this.setLocation(GUI_X_LOCATION, GUI_Y_LOCATION);
        this.setSize(guiWidth, guiHeight);
@@ -279,45 +278,45 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private void initMenuBar()
    {
        // Create a menubar
-       menuBar = new MenuBar();
+       menuBar = new JMenuBar();
        
        // Create menu: emulator
-       menuEmulator = new Menu("Emulator");
-       miEmulatorStart = new MenuItem("Start process (power on)");
-       miEmulatorStop = new MenuItem("Stop process (shutdown)");
-       miEmulatorReset = new MenuItem("Reset process (warm reset)");
-       miEmulatorQuit = new MenuItem("Quit");
+       menuEmulator = new JMenu("Emulator");
+       miEmulatorStart = new JMenuItem("Start process (power on)");
+       miEmulatorStop = new JMenuItem("Stop process (shutdown)");
+       miEmulatorReset = new JMenuItem("Reset process (warm reset)");
+       miEmulatorQuit = new JMenuItem("Quit");
        menuEmulator.add(miEmulatorStart);
        menuEmulator.add(miEmulatorStop);
        menuEmulator.add(miEmulatorReset);
        menuEmulator.add(miEmulatorQuit);
 
        // Create menu: edit
-       menuEdit = new Menu("Edit");
-       miEditCopyText = new MenuItem("Copy text");
-       miEditCopyImage = new MenuItem("Copy image");
-       miEditPasteText = new MenuItem("Paste text");
-       miEditPasteImage = new MenuItem("Paste image");
+       menuEdit = new JMenu("Edit");
+       miEditCopyText = new JMenuItem("Copy text");
+       miEditCopyImage = new JMenuItem("Copy image");
+       miEditPasteText = new JMenuItem("Paste text");
+       miEditPasteImage = new JMenuItem("Paste image");
        menuEdit.add(miEditCopyText);
        menuEdit.add(miEditCopyImage);
        menuEdit.add(miEditPasteText);
        menuEdit.add(miEditPasteImage);
        
        // Create menu: source
-       menuSource = new Menu("Media");
-       miSourceEjectA = new MenuItem("Eject floppy A:");
-       miSourceInsertA = new MenuItem("Insert floppy A:");
+       menuSource = new JMenu("Media");
+       miSourceEjectA = new JMenuItem("Eject floppy A:");
+       miSourceInsertA = new JMenuItem("Insert floppy A:");
        menuSource.add(miSourceEjectA);
        menuSource.add(miSourceInsertA);
        
        // Create menu: config        
-       menuConfig = new Menu("Configure");           
-       miEditConfig = new MenuItem("Edit Config");  
+       menuConfig = new JMenu("Configure");           
+       miEditConfig = new JMenuItem("Edit Config");  
        menuConfig.add(miEditConfig);
        
        // Create menu: help
-       menuHelp = new Menu("Help");
-       miHelpAbout = new MenuItem("About..");
+       menuHelp = new JMenu("Help");
+       miHelpAbout = new JMenuItem("About..");
        menuHelp.add(miHelpAbout);
        
        // Assign all menus to the menubar
@@ -327,9 +326,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        menuBar.add(menuConfig);
        menuBar.add(menuHelp);
        
-       // Assign menubar to frame
-       this.setMenuBar(menuBar);
-
        // Add action listeners for tracing events
        miEmulatorStart.addActionListener(this);
        miEmulatorStop.addActionListener(this);
@@ -339,6 +335,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        miSourceInsertA.addActionListener(this);    
        miEditConfig.addActionListener(this);       
        miHelpAbout.addActionListener(this);
+
+       // Assign menubar to frame
+       this.setJMenuBar(menuBar);
    }
 
 
@@ -350,49 +349,49 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        Border blackline;
        blackline = BorderFactory.createLineBorder(Color.black);
 
-       numPanel = new JPanel();
-       numPanel.setLayout(new BoxLayout(numPanel, BoxLayout.X_AXIS));
-       Label numPanelLabel = new Label("1");
-       numPanelLabel.setAlignment(Label.CENTER);
-       numPanel.add(numPanelLabel);
-       numPanel.setBorder(blackline);
-       numPanel.setSize(20, 20);
+       numlockPanel = new JPanel();
+//       numlockPanel.setLayout(new BoxLayout(numlockPanel, BoxLayout.X_AXIS));
+       JLabel numlockPanelLabel = new JLabel("1");
+       numlockPanelLabel.setAlignmentX(JLabel.CENTER);
+       numlockPanel.add(numlockPanelLabel);
+       numlockPanel.setBorder(blackline);
+       numlockPanel.setSize(20, 20);
 
-       capsPanel = new JPanel();
-       capsPanel.setLayout(new BoxLayout(capsPanel, BoxLayout.X_AXIS));
-       Label capsPanelLabel = new Label("A");
-       capsPanelLabel.setAlignment(Label.CENTER);
-       capsPanel.add(capsPanelLabel);
-       capsPanel.setBorder(blackline);
+       capslockPanel = new JPanel();
+//       capslockPanel.setLayout(new BoxLayout(capslockPanel, BoxLayout.X_AXIS));
+       JLabel capslockPanelLabel = new JLabel("A");
+       capslockPanelLabel.setHorizontalAlignment(JLabel.CENTER);
+       capslockPanel.add(capslockPanelLabel);
+       capslockPanel.setBorder(blackline);
 
-       scrollPanel = new JPanel();
-       scrollPanel.setLayout(new BoxLayout(scrollPanel, BoxLayout.X_AXIS));
-       Label scrollPanelLabel = new Label("S");
-       scrollPanelLabel.setAlignment(Label.CENTER);
-       scrollPanel.add(scrollPanelLabel);
-       scrollPanel.setBorder(blackline);
+       scrolllockPanel = new JPanel();
+//       scrolllockPanel.setLayout(new BoxLayout(scrolllockPanel, BoxLayout.X_AXIS));
+       JLabel scrolllockPanelLabel = new JLabel("S");
+       scrolllockPanelLabel.setHorizontalAlignment(JLabel.CENTER);
+       scrolllockPanel.add(scrolllockPanelLabel);
+       scrolllockPanel.setBorder(blackline);
        
        floppyAPanel = new JPanel();
-       floppyAPanel.setLayout(new BoxLayout(floppyAPanel, BoxLayout.X_AXIS));
-       Label floppyAPanelLabel = new Label("A:");
-       floppyAPanelLabel.setAlignment(Label.CENTER);
+//       floppyAPanel.setLayout(new BoxLayout(floppyAPanel, BoxLayout.X_AXIS));
+       JLabel floppyAPanelLabel = new JLabel("A:");
+       floppyAPanelLabel.setHorizontalAlignment(JLabel.CENTER);
        floppyAPanel.add(floppyAPanelLabel);
        floppyAPanel.setBorder(blackline);
        
        hd1Panel = new JPanel();
-       hd1Panel.setLayout(new BoxLayout(hd1Panel, BoxLayout.X_AXIS));
-       Label hd1PanelLabel = new Label("HD1");
-       hd1PanelLabel.setAlignment(Label.CENTER);
+//       hd1Panel.setLayout(new BoxLayout(hd1Panel, BoxLayout.X_AXIS));
+       JLabel hd1PanelLabel = new JLabel("HD1");
+       hd1PanelLabel.setHorizontalAlignment(JLabel.CENTER);
        hd1Panel.add(hd1PanelLabel);
        hd1Panel.setBorder(blackline);
 
-       // Add panels to statusbar
+       // Add panels to statusbar (with spaces inbetween)
        statusPanel.add(Box.createHorizontalGlue());
-       statusPanel.add(numPanel);
+       statusPanel.add(numlockPanel);
        statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
-       statusPanel.add(capsPanel);
+       statusPanel.add(capslockPanel);
        statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
-       statusPanel.add(scrollPanel);
+       statusPanel.add(scrolllockPanel);
        statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
        statusPanel.add(floppyAPanel);
        statusPanel.add(Box.createRigidArea(new Dimension(5,0)));
@@ -438,12 +437,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     * 
     * @return Canvas startup screen
     */
-   private Canvas getStartupScreen()
+   private JPanel getStartupScreen()
    {
        // Create startup screen
-       StartupCanvas startup = new StartupCanvas();
-       startup.setSize(640, 400);
-       startup.setBackground(Color.white);
+       StartupPanel startup = new StartupPanel();
+       startup.setSize(720, 400);
        startup.setImage(this.getImageFromFile(EMULATOR_SPLASHSCREEN_IMAGE));
        
        return startup;
@@ -456,14 +454,14 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     * @param Canvas screen containing a reference to canvas of module screen
     * 
     */
-   public void setScreen(Canvas screen)
+   public void setScreen(JPanel screen)
    {
        // Replace current canvas with new one
-       screenPanel.removeAll();
-       screenPanel.add(screen);
+       screenPane.removeAll();
+       screenPane.add(screen);
        
-       // Attach given canvas to existing canvas
-       screenCanvas = screen;
+       // Attach current screen to given screen
+       this.screen = screen;
        
        // Update panel
        this.updateScreenPanel();
@@ -497,14 +495,14 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    protected void updateScreenPanel()
    {
        // Repaint canvas
-       screenPanel.setSize(screenCanvas.getWidth(), screenCanvas.getHeight());
+       screenPane.setSize(screen.getWidth(), screen.getHeight());
        // FIXME: notice when canvas of screen has changed (different size) and update screenPanel.setSize(width, height);
 //       guiWidth = width + 10; // width + 2 * 5 px sidebars
 //       guiHeight = height + 2 * panelHeight; // height + menu & statuspanels
 //       this.setSize(guiWidth, guiHeight);
 //       this.repaint();
        
-       screenCanvas.repaint();
+       screen.repaint();
    }
    
   
@@ -585,12 +583,14 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
            case EMU_FLOPPYA_TRANSFER_START:
                // Highlight A: in statusbar
-               floppyAPanel.getComponent(0).setBackground(Color.GREEN);
+        	   // NOTE: Used to use floppyAPanel.getComponent(0) to retrieve comp, 
+        	   // but as it is not part of layout anymore it is not necesarry
+               floppyAPanel.setBackground(Color.GREEN);
                break;
                
            case EMU_FLOPPYA_TRANSFER_STOP:
                // Shadow A: in statusbar
-               floppyAPanel.getComponent(0).setBackground(Color.LIGHT_GRAY);
+               floppyAPanel.setBackground(Color.LIGHT_GRAY);
                break;
                
            case EMU_HD1_INSERT:
@@ -605,36 +605,36 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
            case EMU_HD1_TRANSFER_START:
                // Highlight HD1 in statusbar
-               hd1Panel.getComponent(0).setBackground(Color.GREEN);
+               hd1Panel.setBackground(Color.GREEN);
                break;
                
            case EMU_HD1_TRANSFER_STOP:
                // Shadow HD1 in statusbar
-               hd1Panel.getComponent(0).setBackground(Color.LIGHT_GRAY);
+               hd1Panel.setBackground(Color.LIGHT_GRAY);
                break;
                
            case EMU_KEYBOARD_NUMLOCK_ON:
-               scrollPanel.getComponent(0).setBackground(Color.YELLOW);
+               scrolllockPanel.setBackground(Color.YELLOW);
                break;
                
            case EMU_KEYBOARD_NUMLOCK_OFF:
-               scrollPanel.getComponent(0).setBackground(Color.LIGHT_GRAY);
+               scrolllockPanel.setBackground(Color.LIGHT_GRAY);
                break;
 
            case EMU_KEYBOARD_CAPSLOCK_ON:
-               capsPanel.getComponent(0).setBackground(Color.YELLOW);
+               capslockPanel.setBackground(Color.YELLOW);
                break;
                
            case EMU_KEYBOARD_CAPSLOCK_OFF:
-               capsPanel.getComponent(0).setBackground(Color.LIGHT_GRAY);
+               capslockPanel.setBackground(Color.LIGHT_GRAY);
                break;
 
            case EMU_KEYBOARD_SCROLLLOCK_ON:
-               scrollPanel.getComponent(0).setBackground(Color.YELLOW);
+               scrolllockPanel.setBackground(Color.YELLOW);
                break;
                
            case EMU_KEYBOARD_SCROLLLOCK_OFF:
-               scrollPanel.getComponent(0).setBackground(Color.LIGHT_GRAY);
+               scrolllockPanel.setBackground(Color.LIGHT_GRAY);
                break;
                
            case GUI_RESET:
@@ -667,27 +667,27 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     */
    public void actionPerformed(ActionEvent e)
    {
-       MenuComponent c = (MenuComponent) e.getSource();
-       if (c == (MenuComponent) miEmulatorStart)
+       JComponent c = (JComponent) e.getSource();
+       if (c == (JComponent) miEmulatorStart)
        {
            // Start emulation process
            emu = new Emulator(this);
            new Thread(emu).start();
            this.updateGUI(EMU_PROCESS_START);
        }
-       else if (c == (MenuComponent) miEmulatorStop)
+       else if (c == (JComponent) miEmulatorStop)
        {
            // Stop emulation process
            emu.stop();
            this.updateGUI(EMU_PROCESS_STOP);
        }
-       else if (c == (MenuComponent) miEmulatorReset)
+       else if (c == (JComponent) miEmulatorReset)
        {
            // Reset emulation process
            emu.reset();
            this.updateGUI(EMU_PROCESS_RESET);
        }
-       else if (c == (MenuComponent) miEmulatorQuit)
+       else if (c == (JComponent) miEmulatorQuit)
        {
            // Quit application
            dispose();
@@ -698,7 +698,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
            }
            System.exit(0);
        }
-       else if (c == (MenuComponent) miSourceEjectA)
+       else if (c == (JComponent) miSourceEjectA)
        {
            // Eject floppy in drive A
            if (emu.ejectFloppy("A") == true)
@@ -706,7 +706,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                this.updateGUI(EMU_FLOPPYA_EJECT);
            }
        }
-       else if (c == (MenuComponent) miSourceInsertA)
+       else if (c == (JComponent) miSourceInsertA)
        {
            // Insert floppy in drive A
            // Open file select dialog box
@@ -727,12 +727,12 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                JOptionPane.showMessageDialog(this, "Could not select image from file system.");
            }
        }
-       else if (c == (MenuComponent) miEditConfig)
+       else if (c == (JComponent) miEditConfig)
        {
                      
           new SelectionConfigDialog(this);
        }     
-       else if (c == (MenuComponent) miHelpAbout)
+       else if (c == (JComponent) miHelpAbout)
        {
            // Show About dialog
            JOptionPane.showMessageDialog(this, this.getEmulatorName() + "\n"

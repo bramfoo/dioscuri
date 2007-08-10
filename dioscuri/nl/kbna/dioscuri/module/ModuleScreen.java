@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-10 14:57:34 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,7 +34,7 @@
 
 package nl.kbna.dioscuri.module;
 
-import java.awt.Canvas;
+import javax.swing.JPanel;
 
 /**
  * Abstract class representing a generic hardware module.
@@ -46,9 +46,9 @@ public abstract class ModuleScreen extends Module
 {
     // Methods
     /**
-     * Return a reference to the actual canvas screen
+     * Return a reference to the actual screen
      */
-    public abstract Canvas getScreen();
+    public abstract JPanel getScreen();
     
     /**
      * Clear screen from any output

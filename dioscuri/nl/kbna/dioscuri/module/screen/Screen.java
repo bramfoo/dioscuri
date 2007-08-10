@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:44 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-10 14:57:33 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,7 +34,6 @@
 
 package nl.kbna.dioscuri.module.screen;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.awt.image.ColorModel;
@@ -48,6 +47,8 @@ import java.awt.image.WritableRaster;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import javax.swing.JPanel;
 
 import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.module.Module;
@@ -85,7 +86,7 @@ public class Screen extends ModuleScreen
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] {"video"};
-    private ScreenCanvas screenCanvas;
+    private ScreenPanel screenPanel;
     protected ModuleVideo video;
 
     // Toggles
@@ -187,7 +188,7 @@ public class Screen extends ModuleScreen
         
         
         // Create creen canvas
-        screenCanvas = new ScreenCanvas();
+        screenPanel = new ScreenPanel();
         
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " . Module created successfully.");
     }
@@ -411,9 +412,9 @@ public class Screen extends ModuleScreen
     // ******************************************************************************
     // ModuleScreen Methods
     
-    public Canvas getScreen()
+    public JPanel getScreen()
     {
-        return screenCanvas;
+        return screenPanel;
     }
 
     
@@ -430,8 +431,8 @@ public class Screen extends ModuleScreen
         // Update screen size
         screenWidth = width;
         screenHeight = height;
-        screenCanvas.setSize(width, height);
-        screenCanvas.setBackground(Color.black);
+        screenPanel.setSize(width, height);
+        screenPanel.setBackground(Color.black);
         
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Size of screen has been set.");
     }
@@ -862,7 +863,7 @@ public class Screen extends ModuleScreen
         cursorPosPrevY = (int) cursorYPos;
         
         // Refresh screen
-        screenCanvas.repaint();
+        screenPanel.repaint();
     }
     
     
@@ -901,7 +902,7 @@ public class Screen extends ModuleScreen
         }
         // Draw tile at current location
         this.image.setData(raster.createTranslatedChild(x0, y0));
-        screenCanvas.repaint();
+        screenPanel.repaint();
     }
 
     
@@ -933,7 +934,7 @@ public class Screen extends ModuleScreen
         image = new BufferedImage(colourModel, raster, false, null);
 
         // Display image (will be automatically refreshed)
-        screenCanvas.setImage(image);
+        screenPanel.setImage(image);
     }
 
     
@@ -944,7 +945,7 @@ public class Screen extends ModuleScreen
     private void updateImage()
     {
         image = new BufferedImage(colourModel, raster, false, null);
-        screenCanvas.setImage(image);
+        screenPanel.setImage(image);
     }
 
     

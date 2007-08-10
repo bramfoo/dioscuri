@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:44 $ $Author: blohman $
+ * $Revision: 1.1 $ $Date: 2007-08-10 14:57:33 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,17 +34,18 @@
 
 package nl.kbna.dioscuri.module.screen;
 
-import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+
+import javax.swing.JPanel;
 
 
 /**
  * Class ImageCanvas draws a buffered image on a canvas.
  * 
  */
-public class ScreenCanvas extends Canvas
+public class ScreenPanel extends JPanel
 {
     // Attributes
     private Image image = null;
@@ -52,7 +53,7 @@ public class ScreenCanvas extends Canvas
 
     
     // Constructor
-    public ScreenCanvas()
+    public ScreenPanel()
     {
     }
 
@@ -76,7 +77,7 @@ public class ScreenCanvas extends Canvas
      * @param Graphics g - standard graphics component
      * 
      */
-    public void paint(Graphics g)
+    public void paintComponent(Graphics g)
     {
         // Paint image on canvas
         if (paint)
