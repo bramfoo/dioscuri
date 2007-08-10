@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 14:27:02 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-10 15:32:10 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -310,13 +310,9 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction
                 
             case 4: // SHL/SAL;
                 // Flags affected: OF, while CF, SF, ZF, PF, AF are undefined
-                // To shift, mainly 2 approaches can be taken:
-                // A. Shifting using a long
-                // B. Shifting by shifting each byte individually (first on byte level, than on bit level)
-                
-                // Below, approach A is chosen. Part of approach B is also implemented and included as comment.
-                // Approach A:
-                
+                // Clear AF (although is undefined by specs, hardware seems to clear it)
+                cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
+
                 // Check if 16 or 32-bit
                 if (cpu.doubleWord)
                 {
@@ -380,12 +376,10 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction
                     }
     
                     // Set appropriate flags
-                    // Set AF (although is undefined by specs, hardware seems to clear it)
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
                     // Set CF; this is equal to the last bit shifted out of the high register
                     cpu.flags[CPU.REGISTER_FLAGS_CF] = carryBit == 1? true : false;
-                    // Clear OF if the most significant bit of the result is the same as the CF flag (only for 1-bitshifts)
-                    cpu.flags[CPU.REGISTER_FLAGS_OF] = (cpu.flags[CPU.REGISTER_FLAGS_CF] && ((eSourceValue[CPU.REGISTER_GENERAL_HIGH])>>7) == 1) || (!(cpu.flags[CPU.REGISTER_FLAGS_CF]) && ((eSourceValue[CPU.REGISTER_GENERAL_HIGH])>>7) == 0) ? false : true;
+                    // Clear OF if the most significant bit of the result is the same as the CF flag
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = ((cpu.flags[CPU.REGISTER_FLAGS_CF] && ((eSourceValue[CPU.REGISTER_GENERAL_HIGH] & 0x80) == 0x80)) || ((!cpu.flags[CPU.REGISTER_FLAGS_CF]) && ((eSourceValue[CPU.REGISTER_GENERAL_HIGH] & 0x80) == 0x00))) ? false : true;
                     // Set ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[CPU.REGISTER_GENERAL_HIGH] == 0 && sourceValue[CPU.REGISTER_GENERAL_LOW] == 0 && eSourceValue[CPU.REGISTER_GENERAL_HIGH] == 0 && eSourceValue[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Set SF on particular byte of sourceValue (set when MSB is 1, occurs when destReg >= 0x80)
@@ -433,15 +427,8 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction
                     // Set CF; this is equal to the last bit shifted out of the high register
                     cpu.flags[CPU.REGISTER_FLAGS_CF] = carryBit == 1? true : false;
                     
-                    // Set OF only if 1-bit shift occurred
-                    if (bitShift == 1)
-                    {
-                        // Clear OF if the most significant bit of the result is the same as the CF flag
-                        cpu.flags[CPU.REGISTER_FLAGS_OF] = (cpu.flags[CPU.REGISTER_FLAGS_CF] && ((sourceValue[CPU.REGISTER_GENERAL_HIGH])>>7) == 1) || (!(cpu.flags[CPU.REGISTER_FLAGS_CF]) && ((sourceValue[CPU.REGISTER_GENERAL_HIGH])>>7) == 0) ? false : true;
-                    }
-                    
-                    // Set AF (although is undefined by specs, hardware seems to clear it)
-                    cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
+                    // Clear OF if the most significant bit of the result is the same as the CF flag
+                    cpu.flags[CPU.REGISTER_FLAGS_OF] = ((cpu.flags[CPU.REGISTER_FLAGS_CF] && ((sourceValue[CPU.REGISTER_GENERAL_HIGH] & 0x80) == 0x80)) || ((!cpu.flags[CPU.REGISTER_FLAGS_CF]) && ((sourceValue[CPU.REGISTER_GENERAL_HIGH] & 0x80) == 0x00))) ? false : true;
                     // Set ZF
                     cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[CPU.REGISTER_GENERAL_HIGH] == 0 && sourceValue[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
                     // Set SF on particular byte of sourceValue (set when MSB is 1, occurs when destReg >= 0x80)
