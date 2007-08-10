@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 14:27:03 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-10 15:31:57 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -142,6 +142,8 @@ public class Instruction_ShiftGRP2_EvCL implements Instruction
                 shiftResult = (((((long)sourceValue[CPU.REGISTER_GENERAL_HIGH]) << 8) & 0xFF00) + 
                         ((((long)sourceValue[CPU.REGISTER_GENERAL_LOW]) & 0xFF)));
                 
+
+                // FIXME: For a ROL of 0 w/ MSB == 1, does the carry flag come out correct?
                 // Determine result of carry; this is the MSB
                 carryBit = (shiftResult & 0x8000) == 0x8000 ? 1 : 0;
 
@@ -204,8 +206,8 @@ public class Instruction_ShiftGRP2_EvCL implements Instruction
                 shiftResult = (((((long)sourceValue[CPU.REGISTER_GENERAL_HIGH]) << 8) & 0xFF00) + 
                         ((((long)sourceValue[CPU.REGISTER_GENERAL_LOW]) & 0xFF)));
                 
-                // Determine result of carry; this is the LSB
-                carryBit = (shiftResult & 0x01) == 0x01 ? 1 : 0;
+                // Set the carryBit to 0 (for RORs of length 0)
+                carryBit = 0;
 
                 // Rotate right
                 for (int s = 0; s < bitShift; s++)
