@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:41 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-10 15:30:22 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1843,11 +1843,19 @@ public class FDC extends ModuleFDC
                 
                 // Perform some necessary checks
                 ableToTransfer = true;
-                
+
                 // Check if motor is running
                 if (!(drives[drive].isMotorRunning()))
                 {
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> drive motor of drive " + drive + " is not running.");
+                    msr = FDC_CMD_BUSY;
+                    ableToTransfer = false;
+                }
+                
+                // Check drive type
+                if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE)
+                {
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> incorrect drive type if drive " + drive + ".");
                     msr = FDC_CMD_BUSY;
                     ableToTransfer = false;
                 }
@@ -1862,14 +1870,6 @@ public class FDC extends ModuleFDC
                     enterResultPhase();
 
                 }
-                
-                // Check drive type
-                if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE)
-                {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> incorrect drive type if drive " + drive + ".");
-                    msr = FDC_CMD_BUSY;
-                    ableToTransfer = false;
-                }
                 // Check if floppy is present
                 if (!drives[drive].containsFloppy())
                 {
@@ -1883,12 +1883,6 @@ public class FDC extends ModuleFDC
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> sector size (bytes per sector) not supported.");
                     ableToTransfer = false;
                 }
-                // Check if cylinder does not differ from drive parameter
-                if (cylinder != drives[drive].cylinder)
-                {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
-                    drives[drive].resetChangeline();
-                }
                 // Check if cylinder is not higher than highest available cylinder on disk 
                 if (cylinder >= drives[drive].tracks)
                 {
@@ -1898,8 +1892,22 @@ public class FDC extends ModuleFDC
                 // Check if sector number is not higher than maximum available sectors per track
                 if (sector > drives[drive].sectorsPerTrack)
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> sector number exceeds sectors per track.");
-                    ableToTransfer = false;
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> sector number (" + sector + ") exceeds sectors per track (" + drives[drive].sectorsPerTrack + ").");
+                    drives[drive].cylinder = cylinder;
+                    drives[drive].hds = hds;
+                    drives[drive].sector = sector;
+                    
+                    statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive;
+                    statusRegister1 = 0x04;
+                    statusRegister2 = 0x00;
+                    enterResultPhase();
+                    return;
+                }
+                // Check if cylinder does not differ from drive parameter
+                if (cylinder != drives[drive].cylinder)
+                {
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
+                    drives[drive].resetChangeline();
                 }
 
                 // Compute logical sector
