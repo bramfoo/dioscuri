@@ -1,9 +1,22 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 21 June 2007
+Date          : 13 August 2007
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
+
+
+0.1.0 : 13-08-2007 (MS-DOS 16-bit stable)
+-------------------------------------------------------
+- Fixed CPU/PIC problem (context switch interrupting repeat prefix handling)
+- Fixed cursor problem
+- Fixed minor bugs in CPU instructions
+- Fixed VGA screen update (sometimes buffer got scrambled)
+- Improved PIT timer functionality
+- Improved keyboard support for extra characters
+- Improved GUI with crossplatform Java Swing interface
+- Added support for system clock based on PIT interrupts
+
 
 
 0.0.9 : 01-07-2007 (Sourceforge launch)
