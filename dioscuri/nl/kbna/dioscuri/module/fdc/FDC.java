@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-10 15:30:22 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-13 13:35:35 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1602,7 +1602,7 @@ public class FDC extends ModuleFDC
                 try
                 {
                     drives[driveIndex].insertFloppy(carrierType, imageFile, writeProtected);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Floppy \"" + imageFile.getName() + "\" is inserted in drive " + driveIndex);
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Floppy \"" + imageFile.getName() + "\" is inserted in drive " + driveIndex);
                     return true;
                 }
                 catch (StorageDeviceException e)
