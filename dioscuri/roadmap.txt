@@ -1,16 +1,14 @@
 Roadmap Dioscuri - Modular emulator for Digital Preservation
 ============================================================
 Date             : 29 January 2007
-Date last update : 18 June 2007
+Date last update : 13 August 2007
 Organisations    : Koninklijke Bibliotheek,
                    Nationaal Archief of the Netherlands,
-                   Tessella Support Services plc.
 
 
 Roadmap
 ------------------------------------------------------------
 - Finalise Intel 8086 CPU (Windows 3.0 capable)
-- Reorganise PIT and clock functionality
 - Mouse support
 - CD-ROM support
 - Sound support

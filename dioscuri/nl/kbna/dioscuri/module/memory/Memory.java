@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:42 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-13 13:30:44 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -131,8 +131,8 @@ public class Memory extends ModuleMemory
 		ram = new byte[this.ramSize];
 
         // Debugging functionality
-        watchValue = false;
-        watchAddress = 6968;
+        watchValue = true;
+        watchAddress = 22;
 		
 		logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " Module created successfully.");
 	}
@@ -517,10 +517,13 @@ public class Memory extends ModuleMemory
     
 	/**
 	 * Returns the value of a word at a specific address
+	 * Note: words in memory are stored in Little Endian order (LSB, MSB), 
+	 * but this method returns a word in Big Endian order (MSB, LSB) because
+	 * this is the common way words are used by instructions.
 	 * 
 	 * @param address	Flat-address where data can be found
 	 * 
-	 * @return	int[]	Integer array [MSB, LSB] containing data, NULL if address outside RAM_SIZE range 
+	 * @return	byte[]	array [MSB, LSB] containing data, 0xFFFF if address outside RAM_SIZE range 
 	 */
 	public byte[] getWord(int address)
 	{
@@ -559,9 +562,13 @@ public class Memory extends ModuleMemory
 	
 	/**
 	 * Stores the value of a word at a specific address
+	 * Note: words in memory are stored in Little Endian order (LSB, MSB), 
+	 * but this method assumes that a word is given in Big Endian order (MSB, LSB) because
+	 * this is the common way words are used by instructions. However, storage takes place 
+	 * in Little Endian order.
 	 * 
-	 * @param address	Flat-address where data is stored 
-	 * @param value	Integer array (size 2), [MSB, LSB]
+	 * @param int address where data is stored 
+	 * @param byte[] array containing word [MSB, LSB]
 	 */
 	public void setWord(int address, byte[] value)
 	{
