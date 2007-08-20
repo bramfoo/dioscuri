@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,21 +44,24 @@ public class DioscuriXmlParams
     public final static String BOOT_DRIVES_NODE = "bootdrives";
     public final static String FLOPPY_CHECK_DISABLED_NODE = "floppycheckdisabled";
 
-    
+    // Nodes
     private final static String BOOT_NODE = "boot";
     private final static String BIOS_NODE = "bios";
     private final static String CPU_NODE = "cpu";
     private final static String RAM_NODE = "ram";
     private final static String KEYBOARD_NODE = "keyboard";
+    private final static String MOUSE_NODE = "mouse";
     private final static String PIT_NODE = "pit";
     private final static String FLOPPY_DISK_DRIVES_NODE = "floppydiskdrives";
     private final static String ATA_DRIVES_NODE = "atadrives";
     private final static String VIDEO_ADAPTER_NODE = "videoadapter";
 
+    // Node variables
     public final static String UPDATE_INTERVAL_TEXT = "updateintervalmicrosecs";
     public final static String CPU_SPEED_MHZ_TEXT = "speedmhz";
     public final static String PIT_CLOCKRATE_TEXT = "clockrate";
     public final static String RAM_SIZE_TEXT = "sizemb";
+    public final static String MOUSE_TYPE_TEXT = "mousetype";
     public final static String DEBUG_TEXT = "debug";
 
     public final static String RAM_ADDRESS_TEXT = "debugaddressdecimal";
@@ -95,6 +98,11 @@ public class DioscuriXmlParams
         else if (moduleType == ModuleType.KEYBOARD)
         {
             theNode = document.getElementsByTagName(KEYBOARD_NODE).item(0);
+
+        }
+        else if (moduleType == ModuleType.MOUSE)
+        {
+            theNode = document.getElementsByTagName(MOUSE_NODE).item(0);
 
         }
         else if (moduleType == ModuleType.FDC)

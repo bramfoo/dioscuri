@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-01 14:48:57 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -467,6 +467,22 @@ public class Emulator implements Runnable
             
             case MODULE_KEYBOARD_NUMLOCK_OFF:
                 gui.updateGUI(GUI.EMU_KEYBOARD_NUMLOCK_OFF);
+                break;
+
+            case MODULE_KEYBOARD_CAPSLOCK_ON:
+                gui.updateGUI(GUI.EMU_KEYBOARD_CAPSLOCK_ON);
+                break;
+            
+            case MODULE_KEYBOARD_CAPSLOCK_OFF:
+                gui.updateGUI(GUI.EMU_KEYBOARD_CAPSLOCK_OFF);
+                break;
+
+            case MODULE_KEYBOARD_SCROLLLOCK_ON:
+                gui.updateGUI(GUI.EMU_KEYBOARD_SCROLLLOCK_ON);
+                break;
+            
+            case MODULE_KEYBOARD_SCROLLLOCK_OFF:
+                gui.updateGUI(GUI.EMU_KEYBOARD_SCROLLLOCK_OFF);
                 break;
 
             default:

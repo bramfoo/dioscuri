@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -93,6 +93,10 @@ public class DioscuriXmlWriter
                 int ramSizeMb = ((Integer)(params[0])).intValue();
                 success = this.saveRamParams(document, ramSizeMb);
                 
+            } else if(moduleType == ModuleType.MOUSE)
+            {
+              success = this.saveMouseParams(document, params);
+              
             } else if(moduleType == ModuleType.KEYBOARD
                     || moduleType == ModuleType.PIT
                     || moduleType == ModuleType.VGA)
@@ -454,6 +458,26 @@ public class DioscuriXmlWriter
         Node ramSizeNode = attributes.getNamedItem(DioscuriXmlParams.RAM_SIZE_TEXT);
         String ramSpeedString = (new Integer(ramSpeedMhz)).toString();
         ramSizeNode.setTextContent(ramSpeedString);
+      
+        return true;
+    }
+
+    /**
+     * Save Mouse params to XML.
+     * 
+     * @param document
+     * @param type
+     * @return true if successful
+     */
+    private boolean saveMouseParams(Document document, Object[] params)
+    {
+            
+        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
+        NamedNodeMap attributes = mouseNode.getAttributes();
+        
+        Node mouseTypeNode = attributes.getNamedItem(DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        String mouseTypeString = (String)params[0];
+        mouseTypeNode.setTextContent(mouseTypeString);
       
         return true;
     }

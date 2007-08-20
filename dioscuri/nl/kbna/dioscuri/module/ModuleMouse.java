@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.1 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,21 +34,21 @@
 
 package nl.kbna.dioscuri.module;
 
-import java.awt.event.KeyEvent;
-
 /**
  * Interface representing a generic hardware module.
  *  
  */
 
-public abstract class ModuleKeyboard extends ModuleDevice
+public abstract class ModuleMouse extends ModuleDevice
 {
     // Methods
+	public abstract boolean isBufferEmpty();
+	
+	
+	public abstract byte getDataFromBuffer(); // returns the head of the buffer FIFO, data is automatically removed from buffer
+	
+    public abstract void prepareBufferData(boolean force_enq);
 
-    public abstract void generateScancode(KeyEvent keyEvent, int i);
-
-    public abstract void enqueueControllerBuffer(byte data, int source);
-    
-    public abstract void setTimeOut(byte status);
+    public abstract void controlMouse(byte value);
     
 }

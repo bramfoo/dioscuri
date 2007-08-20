@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.1 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -32,23 +32,29 @@
  *
  */
 
-package nl.kbna.dioscuri.module;
+package nl.kbna.dioscuri.module.mouse;
 
-import java.awt.event.KeyEvent;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Interface representing a generic hardware module.
- *  
+ * Mouse buffer
+ * Virtual buffer - located in the mouse hardware 
+ * Contains data intended for controller
+ *
  */
-
-public abstract class ModuleKeyboard extends ModuleDevice
+public class MouseBuffer extends ArrayList
 {
-    // Methods
-
-    public abstract void generateScancode(KeyEvent keyEvent, int i);
-
-    public abstract void enqueueControllerBuffer(byte data, int source);
+      protected final static int NUM_ELEMENTS = 16;
     
-    public abstract void setTimeOut(byte status);
-    
+      List<Byte>  buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data elements
+      byte   keyPressDelay;                     // Delay between keypresses
+      byte   keyRepeatRate;                     // Key repeat rate
+      byte   scanningEnabled;                   // Keyboard enabled
+
+      
+  	public MouseBuffer(int capacity)
+	{
+		super(capacity);
+	}
 }

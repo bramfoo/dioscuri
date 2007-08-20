@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,6 +53,7 @@ import nl.kbna.dioscuri.module.ModuleCPU;
 import nl.kbna.dioscuri.module.ModuleFDC;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMemory;
+import nl.kbna.dioscuri.module.ModuleMouse;
 import nl.kbna.dioscuri.module.ModulePIT;
 import nl.kbna.dioscuri.module.ModuleVideo;
 import nl.kbna.dioscuri.module.ata.ATA;
@@ -67,6 +68,7 @@ import nl.kbna.dioscuri.module.keyboard.Keyboard;
 import nl.kbna.dioscuri.module.memory.Memory;
 import nl.kbna.dioscuri.module.motherboard.DeviceDummy;
 import nl.kbna.dioscuri.module.motherboard.Motherboard;
+import nl.kbna.dioscuri.module.mouse.Mouse;
 import nl.kbna.dioscuri.module.parallelport.ParallelPort;
 import nl.kbna.dioscuri.module.pic.PIC;
 import nl.kbna.dioscuri.module.pit.PIT;
@@ -97,13 +99,15 @@ public class DioscuriXmlReader
         Node pitNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.PIT);
         Node keyboardNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.KEYBOARD);     
         Node floppyDiskDrivesNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.FDC);         
+        Node mouseNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
         Node ataDrivesNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.ATA); 
         Node videoNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.VGA);
         
         // Create modules
         // TODO: Maybe using Generics in Java (1.5) is better than "modules" container
+        // optional modules are in if-clause, mandatory modules are expected to be there
         logger.log(Level.INFO, "=================== CREATE MODULES ===================");
-           
+        
         Modules modules = new Modules(20);
         
         if(cpuNode != null)
@@ -143,6 +147,10 @@ public class DioscuriXmlReader
         if (keyboardNode != null)
         {
             modules.addModule(new Keyboard(emulator));
+        }
+        if (mouseNode != null)
+        {
+            modules.addModule(new Mouse(emulator));		// Mouse always requires a keyboard (controller)
         }
         
         modules.addModule(new ParallelPort(emulator));      
@@ -286,7 +294,7 @@ public class DioscuriXmlReader
         String sysBiosFilePath = null;
         String vgaBiosFilePath = null;
         int ramAddressSysBiosStart = 0;
-        int ramAddressVgaBiosStart = 0;      
+        int ramAddressVgaBiosStart = 0;
         
         for (int i = 0; i < biosChildNodes.getLength(); i++)
         {
@@ -450,6 +458,10 @@ public class DioscuriXmlReader
             boolean isDebug = this.getDebug(keyboardNode);
             ((ModuleKeyboard)emulator.getModules().getModule(ModuleType.KEYBOARD.toString())).setDebugMode(isDebug);   
             
+            Node mouseNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE); 
+            isDebug = this.getDebug(mouseNode);
+            ((ModuleMouse)emulator.getModules().getModule(ModuleType.MOUSE.toString())).setDebugMode(isDebug);   
+
             Node pitNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.PIT); 
             isDebug = this.getDebug(pitNode);
             ((ModulePIT)emulator.getModules().getModule(ModuleType.PIT.toString())).setDebugMode(isDebug);   

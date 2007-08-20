@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -79,6 +79,7 @@ public class ModuleType
     public final static ModuleType DMA = new ModuleType("dma");    
     public final static ModuleType FDC = new ModuleType("fdc");
     public final static ModuleType KEYBOARD = new ModuleType("keyboard");
+    public final static ModuleType MOUSE = new ModuleType("mouse");
     public final static ModuleType MEMORY = new ModuleType("memory"); 
     public final static ModuleType MOTHERBOARD = new ModuleType("motherboard");
     public final static ModuleType PIC = new ModuleType("pic");
@@ -96,6 +97,7 @@ public class ModuleType
                                                     DMA,
                                                     FDC,
                                                     KEYBOARD,
+                                                    MOUSE,
                                                     MEMORY,
                                                     MOTHERBOARD,
                                                     PIC,

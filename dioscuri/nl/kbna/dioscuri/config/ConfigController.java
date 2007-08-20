@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -125,7 +125,7 @@ public class ConfigController
             
             // Set other settings
             logger.log(Level.INFO, "=================== OTHER STUFF ===================");
-            dioscuriXmlReader.readBootParams(document, ata);              
+            dioscuriXmlReader.readBootParams(document, ata);
             dioscuriXmlReader.readDebugMode(document, emulator);
             
             // Print ready status

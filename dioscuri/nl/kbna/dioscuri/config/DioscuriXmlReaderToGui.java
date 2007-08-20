@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -89,6 +89,10 @@ public class DioscuriXmlReaderToGui
             } else if (moduleType == ModuleType.MEMORY)
             { 
                 params = this.getRamParams(document);   
+                
+            } else if (moduleType == ModuleType.MOUSE)
+            { 
+                params = this.getMouseParams(document);   
                 
             } else if (moduleType == ModuleType.KEYBOARD
                     || moduleType == ModuleType.PIT
@@ -506,7 +510,27 @@ public class DioscuriXmlReaderToGui
         params[0] = ramSize;
         
         return params;
-        
-        
     }
+
+    /**
+     * Get the Mouse params from XML Config.
+     * @param document
+     * @return
+     */
+    private Object[] getMouseParams(Document document)
+    {
+        Object[] params = new Object[1];
+        
+        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
+        NamedNodeMap attributes = mouseNode.getAttributes();
+        
+        Node mouseTypeNode = attributes.getNamedItem(DioscuriXmlParams.MOUSE_TYPE_TEXT);
+
+        String mouseType = mouseTypeNode.getTextContent();
+        
+        params[0] = mouseType;
+        
+        return params;
+    }
+    
 }

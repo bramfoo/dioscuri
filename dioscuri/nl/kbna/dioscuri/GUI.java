@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-13 14:10:16 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -614,11 +614,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                break;
                
            case EMU_KEYBOARD_NUMLOCK_ON:
-               scrolllockPanel.setBackground(Color.YELLOW);
+               numlockPanel.setBackground(Color.YELLOW);
                break;
                
            case EMU_KEYBOARD_NUMLOCK_OFF:
-               scrolllockPanel.setBackground(Color.LIGHT_GRAY);
+        	   numlockPanel.setBackground(Color.LIGHT_GRAY);
                break;
 
            case EMU_KEYBOARD_CAPSLOCK_ON:

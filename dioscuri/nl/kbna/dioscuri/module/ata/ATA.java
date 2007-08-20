@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:28 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -147,7 +147,7 @@ public class ATA extends ModuleATA
 
         curChannelIndex = 0;
 
-        logger.log(Level.INFO, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> Module created successfully.");
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module created successfully.");
 
     }
 

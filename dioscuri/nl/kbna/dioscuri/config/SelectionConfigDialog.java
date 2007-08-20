@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -126,6 +126,10 @@ public class SelectionConfigDialog extends ConfigurationDialog
         {
             RamConfigDialog ramConfigDialog = new RamConfigDialog(parent);
             
+        } else if (selectedModule.equals(ModuleType.MOUSE)) 
+        {
+            MouseConfigDialog mouseConfigDialog = new MouseConfigDialog(parent);
+            
         } else if (selectedModule.equals(ModuleType.PIT) 
                 || selectedModule.equals(ModuleType.KEYBOARD)
                 || selectedModule.equals(ModuleType.VGA)) 
@@ -149,14 +153,15 @@ public class SelectionConfigDialog extends ConfigurationDialog
             listModel.addElement(moduleTypes[i]);        
         }
 */
-        listModel.addElement(moduleType.ATA); 
-        listModel.addElement(moduleType.BIOS);       
+        listModel.addElement(moduleType.ATA);
+        listModel.addElement(moduleType.BIOS);
         listModel.addElement(moduleType.BOOT); 
-        listModel.addElement(moduleType.CPU);  
+        listModel.addElement(moduleType.CPU);
         listModel.addElement(moduleType.FDC);
         listModel.addElement(moduleType.KEYBOARD);
+        listModel.addElement(moduleType.MOUSE);
         listModel.addElement(moduleType.MEMORY); 
-        listModel.addElement(moduleType.PIT);        
+        listModel.addElement(moduleType.PIT);
         listModel.addElement(moduleType.VGA);
         
         modulesList = new JList(listModel);

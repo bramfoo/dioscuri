@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:42 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -42,7 +42,7 @@ package nl.kbna.dioscuri.module.keyboard;
  */
 public class KeyBoardController
 {
-      /* status bits matching the status port*/
+      // Status bits matching the status port
       byte parityError; // Bit 7: Parity error
                         // 0: OK; 1: Parity error with last byte from keyboard/mouse (ignored)
       byte timeOut;     // Bit 6: Timeout
@@ -59,9 +59,8 @@ public class KeyBoardController
                         // 0: Input empty, write enabled; 1: Input full, write disabled
       byte outputBuffer;// Bit 0: Output buffer status
                         // 0: Output empty, read disabled; 1: Output full, read enabled
-      // This keyboard does not provide mouse support 
 
-      // Keyboard variables
+      // Keyboard and mouse controller variables
       byte translateScancode;   // Command byte Bit 6: Translate
                                 // 0: No translation; 1: Translate keyboard scancodes using translation table 
       byte auxClockEnabled;     // Mouse clock enabled - 0: No; 1: Yes. This is the negation of:
@@ -81,6 +80,7 @@ public class KeyBoardController
       int  timerPending;        // timer is activated - essentially, data from keyboard is waiting to be processed
       byte irq1Requested;       // Raise IRQ1 (keyboard) - if allowed by allow_irq1  
       byte irq12Requested;      // Raise IRQ12 (mouse) - if allowed by allow_irq12
+      byte expectingMouseParameter; // 
       byte currentScancodeSet;
       byte batInProgress;       // Selft test (Basic Assurance Test) in progress
 }
