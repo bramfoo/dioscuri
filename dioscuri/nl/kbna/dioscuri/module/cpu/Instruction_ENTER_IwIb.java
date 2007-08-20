@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -48,11 +48,14 @@ public class Instruction_ENTER_IwIb implements Instruction
     boolean operandWordSize;
 
     byte addressByte;
-    byte stackSize;
     byte nestingLevel;
     byte[] frameTemp;
     byte[] eFrameTemp;
-    byte[] transition;
+    byte[] stackSizeWord;
+    
+    byte[] word0x0001;
+    byte[] word0x0002;
+    byte[] word0x0004;
     
     byte[] memoryReferenceLocation;
     byte[] memoryReferenceDisplacement;
@@ -63,6 +66,7 @@ public class Instruction_ENTER_IwIb implements Instruction
     int internalCarry;
 
     byte[] temp;
+    byte[] eTemp;
 
     
     // Constructors
@@ -74,11 +78,14 @@ public class Instruction_ENTER_IwIb implements Instruction
         operandWordSize = true;
 
         addressByte = 0;
-        stackSize = 0;
         nestingLevel = 0;
         frameTemp = new byte[2];
         eFrameTemp = new byte[2];
-        transition = new byte[2];
+        stackSizeWord = new byte[2];
+        
+        word0x0001 = new byte[] {0x00, 0x01};
+        word0x0002 = new byte[] {0x00, 0x02};
+        word0x0004 = new byte[] {0x00, 0x04};
         
         memoryReferenceLocation = new byte[2];
         memoryReferenceDisplacement = new byte[2];
@@ -89,6 +96,7 @@ public class Instruction_ENTER_IwIb implements Instruction
         internalCarry = 0;
 
         temp = new byte[2];
+        eTemp = new byte[2];
     }
     
     /**
@@ -109,19 +117,20 @@ public class Instruction_ENTER_IwIb implements Instruction
 
     /**
      * ENTER — Make Stack Frame for Procedure Parameters.<BR>
+     * Takes care of nesting level (0, 1 or higher)
      */
     public void execute()
     {
         System.out.println("CPU -> instruction ENTER");
 
         // Get stack-size operand
-        stackSize = cpu.getByteFromCode();
+        cpu.stackSize = cpu.getByteFromCode();
 
         // Get nesting level operand and limit it to 32
         nestingLevel = (byte) ((cpu.getByteFromCode()) % 32);
         
         // Check if stacksize is 32 or 16 bit
-        if (stackSize == 32)
+        if (cpu.stackSize == 32)
         {
             System.out.println("CPU -> instruction ENTER in 32-bit stacksize not implemented completely");
             // Copy eBP on stack
@@ -157,28 +166,25 @@ public class Instruction_ENTER_IwIb implements Instruction
             // Repeat for number of nesting levels
             if (nestingLevel > 0)
             {
-                if (stackSize == 32)
+                if (cpu.stackSize == 32)
                 {
                     // Stack size is 32
                     // Set amount of subtraction from BP to 4
-                    transition = new byte[] {0x00, 0x04};
+
                     //TODO: implement
                 }
                 else
                 {
                     // Stack size is 16
-                    // Set amount of subtraction from BP to 2
-                    transition = new byte[] {0x00, 0x02};
-                    
-                    for (int i = 1; i < nestingLevel; i++)
+                    for (int i = 1; i < nestingLevel - 1; i++)
                     {
-                        temp = Util.subtractWords(cpu.bp, transition, 0);
+                        temp = Util.subtractWords(cpu.bp, word0x0002, 0);
                         System.arraycopy(temp, 0, cpu.bp, 0, temp.length);
 
                         // Stack size 16 bit
                         System.out.println("CPU -> instruction ENTER in 16-bit stacksize in nesting " + i);
                         
-                        // Copy BP on stack
+                        // Push BP on stack
                         cpu.setWordToStack(cpu.bp);
                     }
                     
@@ -188,24 +194,39 @@ public class Instruction_ENTER_IwIb implements Instruction
             }
         }
         
-        if (stackSize == 32)
+        if (cpu.stackSize == 32)
         {
             // Stack size is 32
-            // Copy frameTemp to eBP
+            // Copy eFrameTemp to eBP
             System.arraycopy(frameTemp, 0, cpu.bp, 0, frameTemp.length);
             System.arraycopy(eFrameTemp, 0, cpu.ebp, 0, eFrameTemp.length);
-            // Decrement stack pointer
-//FIXME:            temp = Util.subtractDoubleWords(cpu.bp, new byte[] {0x00, (byte)stackSize}, 0);
-//            System.arraycopy(temp, 0, cpu.sp, 0, temp.length);
-//            System.arraycopy(eTemp, 0, cpu.esp, 0, eTemp.length);
+            
+            // Decrement eBP with stacksize
+            stackSizeWord = new byte[] { 0x00, (byte)cpu.stackSize };
+			temp = Util.subtractWords(cpu.bp, stackSizeWord, 0);
+			if (Util.test_CF_SUB(cpu.bp, stackSizeWord, 0) == true)
+			{
+				eTemp = Util.subtractWords(cpu.ebp, word0x0001, 0);
+			}
+			else
+			{
+				eTemp = cpu.ebp;
+			}
+			
+			// Assign eBP to eSP
+            System.arraycopy(temp, 0, cpu.sp, 0, temp.length);
+            System.arraycopy(eTemp, 0, cpu.esp, 0, eTemp.length);
         }
         else
         {
             // Stack size is 16
             // Copy frameTemp to BP
             System.arraycopy(frameTemp, 0, cpu.bp, 0, frameTemp.length);
+            
             // Decrement stack pointer
-            temp = Util.subtractWords(cpu.bp, new byte[] {0x00, (byte)stackSize}, 0);
+            temp = Util.subtractWords(cpu.bp, stackSizeWord, 0);
+            
+            // Assign BP to SP
             System.arraycopy(temp, 0, cpu.sp, 0, temp.length);
         }
     }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.10 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
+ * $Revision: 1.11 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -217,6 +217,8 @@ public class CPU extends ModuleCPU
     protected Instruction[] singleByteInstructions;
     protected Instruction[] doubleByteInstructions;
 
+    // Extra variables
+    byte stackSize;							// Used for ENTER and LEAVE instructions to denote the stack address size (32 / 16 bit)
     
 	// Constants
 
@@ -444,7 +446,10 @@ public class CPU extends ModuleCPU
         // Initialise temporary values
         tempByte = 0;
         tempWord = new byte[2];
-
+        
+        // Initialise extra variables
+        stackSize = 0;
+        
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
         return true;
     }
@@ -1357,13 +1362,13 @@ public class CPU extends ModuleCPU
 		/* 60 */  singleByteInstructions[96] = new Instruction_PUSHA(this); 	// Push all general purpose registers onto stack SS:SP
 		/* 61 */  singleByteInstructions[97] = new Instruction_POPA(this);		// Pop top 8 words off stack into general purpose registers
 		/* 62 */  singleByteInstructions[98] = new Instruction_BOUND_GvMa(this);// Check array index against bounds
-		/* 63 */  singleByteInstructions[99] = new Instruction_NULL(this); 
+		/* 63 */  singleByteInstructions[99] = new Instruction_ARPL_EwGw(this); // Adjust RPL Field of Segment Selector
 		/* 64 */  singleByteInstructions[100] = new Instruction_SEG_FS(this);   // Segment selector FS. Override the segment selector for the next opcode. 
 		/* 65 */  singleByteInstructions[101] = new Instruction_SEG_GS(this);   // Segment selector GS. Override the segment selector for the next opcode.
 		/* 66 */  singleByteInstructions[102] = new Instruction_Opd_Size(this); // Instruction prefix, indicating the next instruction should work with doublewords 
 		/* 67 */  singleByteInstructions[103] = new Instruction_NULL(this); 
 		/* 68 */  singleByteInstructions[104] = new Instruction_PUSH_Iv(this);	// Push immediate word onto stack top SS:SP 
-		/* 69 */  singleByteInstructions[105] = new Instruction_NULL(this); 
+		/* 69 */  singleByteInstructions[105] = new Instruction_IMUL_GvEvIv(this);	// Signed multiply 
 		/* 6A */  singleByteInstructions[106] = new Instruction_PUSH_Ib(this);	// Push immediate byte onto stack top SS:SP 
 		/* 6B */  singleByteInstructions[107] = new Instruction_NULL(this); 
 		/* 6C */  singleByteInstructions[108] = new Instruction_INSB_YbDX(this); // Copy byte from I/O port to ES:DI; update DI register according to DF.
@@ -1459,7 +1464,7 @@ public class CPU extends ModuleCPU
 		/* C6 */  singleByteInstructions[198] = new Instruction_GRP11_MOV_EbIb(this); // Group 11 opcode extension: MOV immediate byte (source) into memory/register (destination) 
 		/* C7 */  singleByteInstructions[199] = new Instruction_GRP11_MOV_EvIv(this); // Group 11 opcode extension: MOV immediate word (source) into memory/register (destination)  
 		/* C8 */  singleByteInstructions[200] = new Instruction_ENTER_IwIb(this);     // Make stack frame for procedure parameters
-		/* C9 */  singleByteInstructions[201] = new Instruction_NULL(this); 
+		/* C9 */  singleByteInstructions[201] = new Instruction_LEAVE(this); 		  // High Level Procedure Exit
 		/* CA */  singleByteInstructions[202] = new Instruction_RETF_Iw(this);    // Far (intersegment) return to calling procedure and pop bytes from stack 
 		/* CB */  singleByteInstructions[203] = new Instruction_RETF(this);       // Far (intersegment) return to calling procedure
 		/* CC */  singleByteInstructions[204] = new Instruction_INT3(this);       // Call to Interrupt 3 - trap to debugger  
@@ -2109,6 +2114,7 @@ public class CPU extends ModuleCPU
             case 0xBD: // MOV_eBP
             case 0xBE: // MOV_eSI
             case 0xBF: // MOV_eDI
+            case 0xC9: // LEAVE
             case 0xED: // IN_eAXDX
             case 0xEF: // OUT_DXeAX
             case 0xF7: // UnaryGRP3_Ev

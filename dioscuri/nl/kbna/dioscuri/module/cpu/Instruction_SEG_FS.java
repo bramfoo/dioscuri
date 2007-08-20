@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:38 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -73,8 +73,8 @@ public class Instruction_SEG_FS implements Instruction {
 	 */
 	public void execute() throws CPUInstructionException
 	{
-        // FIXME: FS and GS are undefined for the 80186. So do nothing here,
+        // FS and GS are undefined for the 80186. So do nothing here,
         // which is likely to lead to disastrous results...
-        throw new CPUInstructionException("Segment FS override not implemented (not part of 8086 instruction set");
+        throw new CPUInstructionException("Segment FS override not implemented (not part of 8086 instruction set)");
 	}
 }

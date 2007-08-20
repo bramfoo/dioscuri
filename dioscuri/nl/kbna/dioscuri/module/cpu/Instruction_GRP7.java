@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -62,7 +62,7 @@ public class Instruction_GRP7 implements Instruction
     byte[] oldValue;
     byte[] destinationRegister;
     int intermediateResult;
-    byte[] transitionWord;
+    byte[] word0x0001;
 
     int iCarryFlag;
     byte[] tempResult;
@@ -89,7 +89,7 @@ public class Instruction_GRP7 implements Instruction
         oldValue = new byte[2];
         destinationRegister = new byte[2];
         intermediateResult = 0;
-        transitionWord = new byte[2];
+        word0x0001 = new byte[] {0x00, 0x01};
 
         iCarryFlag = 0;
         tempResult = new byte[2];
@@ -129,8 +129,46 @@ public class Instruction_GRP7 implements Instruction
         switch ((addressByte & 0x38) >> 3)
         {
             case 0: // SGDT
-                throw new CPUInstructionException("Group 7 (0x0F01) instruction SGDT not implemented.");
-                
+                // Stores the limit (16 bits) and base (32/24 bits) values in memory.
+                // Limit = size of GDT, base = start of GDT
+                // Flags affected: none
+            
+                // Determine memory location
+                memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+
+                // Store limit (16 bits) in memory
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[5]);
+                Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[4]);
+
+                if (cpu.doubleWord)
+                {
+                    // 32 bit: all 4 bytes of base are used
+                    // Get base (32 bits) from memory
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[3]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[2]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[1]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[0]);
+                }
+                else
+                {
+                    // 16 bit: only 3 bytes of base are used, highest byte is set to zero
+                    // Get base (32 bits from which high-order byte is not used) from memory
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[3]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[2]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[1]);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
+                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, (byte)0x00);
+                }
+                break;
+
             case 1: // SIDT
                 throw new CPUInstructionException("Group 7 (0x0F01) instruction SIDT not implemented.");
 
@@ -139,41 +177,38 @@ public class Instruction_GRP7 implements Instruction
                     // Limit = size of GDT, base = start of GDT
                     // Flags affected: none
                 
-                    // Set transition word (increment by 1)
-                    transitionWord = new byte[] {0x00, 0x01};
-
                     // Determine memory location
                     memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
 
                     // Get limit (16 bits) from memory
                     cpu.gdtr[5] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                    Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                    Util.addWords(memoryReferenceLocation, word0x0001, 0);
                     cpu.gdtr[4] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
 
                     if (cpu.doubleWord)
                     {
                         // 32 bit: all 4 bytes of base are used
                         // Get base (32 bits) from memory
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[3] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[2] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[1] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[0] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
                     }
                     else
                     {
                         // 16 bit: only 3 bytes of base are used, highest byte is set to zero
                         // Get base (32 bits from which high-order byte is not used) from memory
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[3] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[2] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         cpu.gdtr[1] = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-                        Util.addWords(memoryReferenceLocation, transitionWord, 0);
+                        Util.addWords(memoryReferenceLocation, word0x0001, 0);
                         byte notUsed = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
                         cpu.gdtr[0] = 0x00;
                     }

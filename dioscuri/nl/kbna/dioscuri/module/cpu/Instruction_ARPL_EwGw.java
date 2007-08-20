@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:20:21 $ $Author: jrvanderhoeven $
+ * $Revision: 1.1 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -31,50 +31,56 @@
  * Project Title: DIOSCURI
  *
  */
+
 package nl.kbna.dioscuri.module.cpu;
 
-import nl.kbna.dioscuri.exception.CPUInstructionException;
-
-/**
- * Intel opcode 65<BR>
- * Segment selector GS. Override the segment selector for the next opcode.<BR>
- * Flags modified: none
- */
-public class Instruction_SEG_GS implements Instruction {
+	/**
+	 * Intel opcode 63<BR>
+	 * Adjust RPL Field of Segment Selector.<BR>
+	 * This instruction can be used by operating systems to check the privilege level of an application in protected mode.<BR>
+	 * Flags modified: ZF
+	 */
+public class Instruction_ARPL_EwGw implements Instruction {
 
 	// Attributes
 	private CPU cpu;
+
+	byte addressByte;
 	
-    
 	// Constructors
 	/**
-	 * Construct class
+	 * Class constructor 
+	 * 
 	 */
-	public Instruction_SEG_GS()	{}
+	public Instruction_ARPL_EwGw()	{}
 	
 	/**
-	 * Construct class
-	 * @param processor
+	 * Class constructor specifying processor reference
+	 * 
+	 * @param processor	Reference to CPU class
 	 */
-	public Instruction_SEG_GS(CPU processor)
+	public Instruction_ARPL_EwGw(CPU processor)
 	{
-		this();
+		//this();
 		
 		// Create reference to cpu class
 		cpu = processor;
+
+        addressByte = 0;
 	}
 
 	
 	// Methods
 	
 	/**
-	 * Execute instruction
-	 * @throws CPUInstructionException 
+	 * Adjust RPL Field of Segment Selector.
 	 */
-	public void execute() throws CPUInstructionException
+	public void execute()
 	{
-        // FS and GS are undefined for the 80186. So do nothing here,
-        // which is likely to lead to disastrous results...
-        throw new CPUInstructionException("Segment GS override not implemented (not part of 8086 instruction set)");
+		// FIXME: this instruction is not implemented. Just a dummy!
+		System.out.println("[" + cpu.getType() + "] Instruction ARPL_EwGw not implemented! Should only be used in protected mode!");
+
+        // Get addresByte (eat it to keep cpu in line if instructions)
+        addressByte = cpu.getByteFromCode();
 	}
 }

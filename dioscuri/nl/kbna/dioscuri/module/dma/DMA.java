@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:41 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-20 15:20:21 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -230,11 +230,12 @@ public class DMA extends ModuleDMA
         Arrays.fill(ext_page_reg, (byte) 0);
 
         // Cascade controllers via channel 4. 
-        setCascadeChannel();
+        this.setCascadeChannel();
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module created successfully.");
     }
 
+    
     //******************************************************************************
     // Module Methods
     
@@ -1051,8 +1052,9 @@ public class DMA extends ModuleDMA
         return;
     }
 
+
     //******************************************************************************
-    // Custom methods
+    // ModuleDMA methods
     
     /**
      * Allows a device to register an 8-bit DMA Handler providing implementations for the ReadFromMem and WriteToMem
@@ -1074,7 +1076,7 @@ public class DMA extends ModuleDMA
             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " registerDMA8Channel: channel " + chanNum + " already in use.");
             return false; // Fail
         }
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Channel " + chanNum + " (8-bit) used by " + dma8handler.owner);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Channel " + chanNum + " (8-bit) used by " + dma8handler.owner);
         dma8Handler[chanNum] = dma8handler;
         controller[0].channel[chanNum].channelUsed = true;
         return true; // OK
@@ -1099,7 +1101,7 @@ public class DMA extends ModuleDMA
             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " registerDMA16Channel: channel " + chanNum + " already in use.");
             return false; // Fail
         }
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Channel " + chanNum + " (16-bit) used by " + dma16handler.owner);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Channel " + chanNum + " (16-bit) used by " + dma16handler.owner);
         dma16Handler[chanNum - 4] = dma16handler;
         controller[1].channel[chanNum - 4].channelUsed = true;
         return true; // OK
@@ -1223,6 +1225,10 @@ public class DMA extends ModuleDMA
         controlHoldRequest(ctrlNum);
     }
     
+
+    //******************************************************************************
+    // Custom methods
+    
     /**
      * Handles the Hold Request (HRQ)<BR>
      * Based on the controller origin (ctrlNum), the Hold request is passed to the CPU (if the
@@ -1231,7 +1237,7 @@ public class DMA extends ModuleDMA
      *  
      * @param ctrlNum   Controller (master [0] /slave [1]) from where the Hold Request originated
      */    
-    void controlHoldRequest(int ctrlNum)
+    private void controlHoldRequest(int ctrlNum)
     {
         int chanNum;
 
