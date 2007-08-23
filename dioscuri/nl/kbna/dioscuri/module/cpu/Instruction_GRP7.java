@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:20:20 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -132,7 +132,7 @@ public class Instruction_GRP7 implements Instruction
                 // Stores the limit (16 bits) and base (32/24 bits) values in memory.
                 // Limit = size of GDT, base = start of GDT
                 // Flags affected: none
-            
+            	
                 // Determine memory location
                 memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
 

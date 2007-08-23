@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:35 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -48,7 +48,8 @@ public class Instruction_MOVS_XvYv implements Instruction {
     boolean operandWordSize;
     
     byte[] source1;
-	byte[] transition;
+	byte[] word0x0002;
+	byte[] word0x0004;
     byte[] temp;
 
     
@@ -62,7 +63,8 @@ public class Instruction_MOVS_XvYv implements Instruction {
 
         source1 = new byte[2];
         // Set transition that holds the amount si and di should be altered (word = 2)
-        transition = new byte[] { 0x00, 0x02 };
+        word0x0002 = new byte[] { 0x00, 0x02 };
+        word0x0004 = new byte[] { 0x00, 0x04 };
         temp = new byte[2];
     }
 	
@@ -82,41 +84,66 @@ public class Instruction_MOVS_XvYv implements Instruction {
 	// Methods
 	
 	/**
-     * Move byte at address DS:(E)SI to address ES:(E)DI and increment/decrement both depending on DF flag.<BR>
+     * Move string word at address DS:(E)SI to address ES:(E)DI and increment/decrement both depending on DF flag.<BR>
 	 * Flags modified: none
 	 */
 	public void execute()
 	{
-        // Move word at DS:SI to ES:DI; DS segment override is allowed, ES segment isn't.
-        if (cpu.segmentOverride)
-        {
-            // Note: the addressbyte passed here is a value chosen so if the segmentOverride fails (which it shouldn't!),
-            // the DS segment is still chosen. 
-            source1 = cpu.getWordFromMemorySegment((byte) 0, cpu.si);
-        }
-        else
-        {
-            source1 = cpu.getWordFromData(cpu.si);
-        }
-        
-        cpu.setWordToExtra(cpu.di, source1);
-        
-        // Increment or decrement SI and DI depending on DF flag
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true)
-        {
-            // Decrement registers
-            temp = Util.subtractWords(cpu.si, transition, 0);
-            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
-            temp = Util.subtractWords(cpu.di, transition, 0);
-            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
-        }
-        else
-        {
-            // Increment registers
-            temp = Util.addWords(cpu.si, transition, 0);
-            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
-            temp = Util.addWords(cpu.di, transition, 0);
-            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
-        }
+		if (cpu.doubleWord)
+		{
+			// 32-bit
+	        // Move doubleword at DS:eSI to ES:eDI; DS segment override is allowed, ES segment isn't.
+	        // Note: the addressbyte (0) passed here is a value chosen so if the segmentOverride fails 
+			// (which it shouldn't!), the DS segment is still chosen.
+/*	        source1 = cpu.getWordFromMemorySegment((byte) 0, cpu.si);
+	        
+	        cpu.setWordToExtra(cpu.di, source1);
+	        
+	        // Increment or decrement SI and DI depending on DF flag
+	        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true)
+	        {
+	            // Decrement registers
+	            temp = Util.subtractWords(cpu.si, word0x0004, 0);
+	            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
+	            temp = Util.subtractWords(cpu.di, word0x0004, 0);
+	            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
+	        }
+	        else
+	        {
+	            // Increment registers
+	            temp = Util.addWords(cpu.si, word0x0004, 0);
+	            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
+	            temp = Util.addWords(cpu.di, word0x0004, 0);
+	            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
+	        }
+*/		}
+		else
+		{
+			// 16-bit
+	        // Move word at DS:SI to ES:DI; DS segment override is allowed, ES segment isn't.
+	        // Note: the addressbyte (0) passed here is a value chosen so if the segmentOverride fails 
+			// (which it shouldn't!), the DS segment is still chosen. 
+	        source1 = cpu.getWordFromMemorySegment((byte) 0, cpu.si);
+	        
+	        cpu.setWordToExtra(cpu.di, source1);
+	        
+	        // Increment or decrement SI and DI depending on DF flag
+	        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true)
+	        {
+	            // Decrement registers
+	            temp = Util.subtractWords(cpu.si, word0x0002, 0);
+	            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
+	            temp = Util.subtractWords(cpu.di, word0x0002, 0);
+	            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
+	        }
+	        else
+	        {
+	            // Increment registers
+	            temp = Util.addWords(cpu.si, word0x0002, 0);
+	            System.arraycopy(temp, 0, cpu.si, 0, temp.length);
+	            temp = Util.addWords(cpu.di, word0x0002, 0);
+	            System.arraycopy(temp, 0, cpu.di, 0, temp.length);
+	        }
+		}
 	}
 }

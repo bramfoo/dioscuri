@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-24 15:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,9 @@
 
 package nl.kbna.dioscuri.module.cpu;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import nl.kbna.dioscuri.exception.CPUInstructionException;
 
 	/**
@@ -49,6 +52,10 @@ public class Instruction_2ByteEscape implements Instruction {
     
     int instruction;
 	
+	// Logging
+	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
+
+
 	// Constructors
 	/**
 	 * Class constructor 
@@ -83,6 +90,11 @@ public class Instruction_2ByteEscape implements Instruction {
         // Temporary setting for debugging
 //        if(cpu.getCpuInstructionDebug())
             cpu.codeByte2 = (instruction & 0xFF);
+
+    	if (cpu.doubleWord && cpu.isDoubleByte32BitSupported() == false)
+    	{
+            logger.log(Level.SEVERE, "[" + cpu.getType() + "] Instruction problem (opcode " + Integer.toHexString(cpu.codeByte) + " " + Integer.toHexString(cpu.codeByte2) + "h): 32-bit not supported!");
+    	}
         
         // Cast signed byte to integer to avoid invalid array lookup 
         // Jump to doubleByte instruction

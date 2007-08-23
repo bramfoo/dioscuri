@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
+ * $Revision: 1.1 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,12 +35,12 @@
 package nl.kbna.dioscuri.module.cpu;
 
 	/**
-	 * Intel opcode 8B<BR>
-	 * Word-sized copy of register (destination) from memory/register (source).<BR>
+	 * Intel opcode F0 B7<BR>
+	 * Move with zero extend. Word-sized copy of register (destination) from memory/register (source).<BR>
 	 * The addressbyte determines the source (sss bits) and destination (rrr bits).<BR>
 	 * Flags modified: none
 	 */
-public class Instruction_MOV_GvEv implements Instruction {
+public class Instruction_MOVZX_GvEw implements Instruction {
 
 	// Attributes
 	private CPU cpu;
@@ -58,14 +58,14 @@ public class Instruction_MOV_GvEv implements Instruction {
 	/**
 	 * Class constructor
 	 */
-	public Instruction_MOV_GvEv()	{}
+	public Instruction_MOVZX_GvEw()	{}
 	
 	/**
 	 * Class constructor specifying processor reference
 	 * 
 	 * @param processor	Reference to CPU class
 	 */
-	public Instruction_MOV_GvEv(CPU processor)
+	public Instruction_MOVZX_GvEw(CPU processor)
 	{
 		this();
 		
@@ -76,7 +76,7 @@ public class Instruction_MOV_GvEv implements Instruction {
 	// Methods
 
 	/**
-	 * Word-sized copy of register (destination) from memory/register (source).<BR>
+	 * Move with zero extend. Word-sized copy of register (destination) from memory/register (source).<BR>
 	 * Flags modified: none
 	 */
 	public void execute()
@@ -107,6 +107,8 @@ public class Instruction_MOV_GvEv implements Instruction {
         
 		// Determine destination register using addressbyte, ANDing it with 0011 1000 and right-shift 3 to get rrr bits
 		destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
+		// FIXME: this instruction should zero-extend the higher 16 bits of the 32 bit destination register
+		// However, in 8086 32-bit registers do not exist so this is not implemented here.
 		
 		// MOV source to destination
 		System.arraycopy(sourceWord, 0, destinationRegister, 0, sourceWord.length);

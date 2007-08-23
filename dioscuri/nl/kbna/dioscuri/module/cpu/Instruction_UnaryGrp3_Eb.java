@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 14:27:05 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -61,8 +61,11 @@ public class Instruction_UnaryGrp3_Eb implements Instruction
     byte[] destinationRegister = new byte[2];
     byte registerHighLow = 0;
     
+    int quotient = 0;
+    int remainder = 0;
     int overFlowCheck = 0;
 
+    
     // Constructors
     /**
      * Class constructor
@@ -346,11 +349,11 @@ public class Instruction_UnaryGrp3_Eb implements Instruction
                 }
                 
                 // Calculate quotient
-                int quotient = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]) & 0xFF)<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
+                quotient = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]) & 0xFF)<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
                                  / (((int)sourceByte1) & 0xFF));
 
                 // Calculate remainder
-                int remainder = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]) & 0xFF)<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
+                remainder = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]) & 0xFF)<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
                                 % (((int)sourceByte1) & 0xFF));
                 
                 // Move quotient into AL
@@ -361,7 +364,47 @@ public class Instruction_UnaryGrp3_Eb implements Instruction
                 break;  // DIV
                 
             case 7: // IDIV
-                throw new CPUInstructionException("Unary Group 3 (0xF6|7) instruction not implemented!!");
+                // Flags: OF, CF, SF, ZF, AF, PF are undefined.
+                // FIXME: IDIV by 0 not handled (#DE)
+                // FIXME: IDIV result exceeding register size not handled (#DE)
+            	// FIXME: difference DIV and IDIV not clear!
+                // Set destination to AX
+                destinationRegister = cpu.ax;
+                
+                // Execute IDIV on reg or mem. Determine this from mm bits of addressbyte
+                if (((addressByte & 0xC0) >> 6) == 3)
+                {
+                    // IDIV AX, reg
+                    // Determine high/low part of register based on bit 3 (leading sss bit)
+                    registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
+
+                    // Determine source byte from addressbyte, ANDing it with 0000 0111
+                    sourceByte1 = cpu.decodeRegister(operandWordSize, addressByte & 0x07)[registerHighLow];
+                }
+                else
+                {
+                    // IDIV AX, mem
+                    // Determine memory location
+                    memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+
+                    // Get byte from memory
+                    sourceByte1 = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
+                }
+                
+                // Calculate quotient
+                quotient = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]))<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
+                                 / (((int)sourceByte1) & 0xFF));
+
+                // Calculate remainder
+                remainder = ( (((((int)destinationRegister[CPU.REGISTER_GENERAL_HIGH]))<<8) + (((int) destinationRegister[CPU.REGISTER_GENERAL_LOW]) & 0xFF)) 
+                                % (((int)sourceByte1) & 0xFF));
+                
+                // Move quotient into AL
+                destinationRegister[CPU.REGISTER_GENERAL_LOW] = (byte) (quotient);
+
+                // Move remainder into AH
+                destinationRegister[CPU.REGISTER_GENERAL_HIGH] = (byte) ((remainder));
+                break;  // IDIV
                 
             default:
                 // Throw exception for illegal nnn bits

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-07 15:07:50 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,6 +47,8 @@ public class Instruction_PUSH_Iv implements Instruction {
 	// Attributes
 	private CPU cpu;
 	
+	private byte[] word;
+	
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
 
@@ -69,6 +71,8 @@ public class Instruction_PUSH_Iv implements Instruction {
 		
 		// Create reference to cpu class
 		cpu = processor;
+		
+		word = new byte[2];
 	}
 
 	
@@ -80,12 +84,22 @@ public class Instruction_PUSH_Iv implements Instruction {
 	 */
 	public void execute()
 	{
-        // Push extra register first, if 32 bit instruction
+		// Push extra register first, if 32 bit instruction
         if (cpu.doubleWord)
         {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_Iv: 32-bits not supported");
-        }      
-		// Get immediate word and assign to SS:SP 
-		cpu.setWordToStack(cpu.getWordFromCode());
+        	// 32-bit: note that lower and higher words need to be interchanged!
+    		// Get lower 16-bit immediate word 
+    		word = cpu.getWordFromCode();
+    		// Get higher 16-bit immediate word and store it on stack
+    		cpu.setWordToStack(cpu.getWordFromCode());
+    		// Store lower 16-bits
+    		cpu.setWordToStack(word);
+        }
+        else
+        {
+        	// 16-bit
+    		// Get immediate word and assign to SS:SP 
+    		cpu.setWordToStack(cpu.getWordFromCode());
+        }
 	}
 }
