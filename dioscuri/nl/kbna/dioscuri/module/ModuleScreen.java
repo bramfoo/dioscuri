@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-10 14:57:34 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -54,6 +54,33 @@ public abstract class ModuleScreen extends Module
      * Clear screen from any output
      */
     public abstract void clearScreen();
+
+    /**
+     * Return the number of rows on screen (text based)
+     */
+    public abstract int getScreenRows();
+
+    /**
+     * Return the number of columns on screen (text based)
+     */
+    public abstract int getScreenColumns();
+
+    /**
+     * Return width of screen in number of pixels
+     */
+    public abstract int getScreenWidth();
+
+    /**
+     * Return height of screen in number of pixels
+     */
+    public abstract int getScreenHeight();
+
+    /**
+     * Set the screen size in number of pixels
+     * @param int width New width of the screen in pixels
+     * @param int height New height of the screen in pixels
+     */
+    public abstract void setScreenSize(int width, int height);
 
     /**
      * Update screen size

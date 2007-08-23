@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:46 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -106,7 +106,8 @@ public class VideoCard
     // Video memory variables
     public byte[] vgaMemory = new byte[256 * 1024];     // VGA memory contents 2 * [A0000 - BFFFF] (??)
     boolean vgaMemReqUpdate;                            // Indicates if the vga memory has been updated, and a redraw is necessary
-    public byte[] textSnapshot = new byte[128 * 1024];  // Current text snapshot
+    public byte[] textSnapshot = new byte[128 * 1024];  // Current text snapshot, is used to compare current screen characters with newly arrived characters.
+    													// If no differences are found, do not draw anything again. Else, only redraw changed character.
     
     // Helper variables
     int lineOffset;                 // Specifies address difference between consecutive scanlines/character lines

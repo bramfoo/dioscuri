@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:46 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -58,4 +58,5 @@ public class TextModeAttributes
     {
         return new short[] {fullStartAddress, cursorStartLine, cursorEndLine, lineOffset, lineCompare, horizPanning, vertPanning, lineGraphics, splitHorizPanning};
     }
+    
 }

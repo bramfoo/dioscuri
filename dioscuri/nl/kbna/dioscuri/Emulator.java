@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,17 +35,19 @@
 package nl.kbna.dioscuri;
 
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.config.ConfigController;
+import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleCPU;
 import nl.kbna.dioscuri.module.ModuleFDC;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
-import nl.kbna.dioscuri.module.cpu.CPU;
-import nl.kbna.dioscuri.module.memory.Memory;
+import nl.kbna.dioscuri.module.ModuleMemory;
+import nl.kbna.dioscuri.module.ModuleVideo;
 
 
 /**
@@ -166,7 +168,7 @@ public class Emulator implements Runnable
             else
             {
                 // Show first upcoming instruction
-                CPU cpu = (CPU)modules.getModule("cpu");
+                ModuleCPU cpu = (ModuleCPU)modules.getModule("cpu");
                 logger.log(Level.INFO, cpu.getNextInstructionInfo());
                 while (isAlive == true)
                 {
@@ -240,7 +242,7 @@ public class Emulator implements Runnable
                 
             case CMD_DEBUG_STEP:
                 // Debug command STEP -> execute 1 or n instructions
-                CPU cpu = (CPU)modules.getModule("cpu");
+                ModuleCPU cpu = (ModuleCPU)modules.getModule("cpu");
                 
                 // Execute n number of instructions (or else 1 if no argument supplied)
                 String[] sNumber = io.getArguments();
@@ -264,7 +266,7 @@ public class Emulator implements Runnable
     
             case CMD_DEBUG_SHOWREG:
                 // Debug command SHOWREG -> show CPU registers 
-                CPU cpu1 = (CPU)modules.getModule("cpu");
+                ModuleCPU cpu1 = (ModuleCPU)modules.getModule("cpu");
     
                 // Show simple view of CPU registers and flags
                 logger.log(Level.SEVERE, cpu1.dumpRegisters());
@@ -295,7 +297,7 @@ public class Emulator implements Runnable
     
             case CMD_DEBUG_MEM_DUMP:
                 // Debug command MEMORY_DUMP -> show contents of n bytes at memory location y
-                Memory mem = (Memory)modules.getModule("memory");
+                ModuleMemory mem = (ModuleMemory)modules.getModule("memory");
                 
                 // Show n bytes at memory x (or else 2 if no number of bytes is supplied)
                 String[] sArg = io.getArguments();
@@ -309,12 +311,19 @@ public class Emulator implements Runnable
                 {
                     // Retrieve only 2 byte
                     numBytes = 2;
-                    }
-                
-                for (int n = 0; n < numBytes; n++)
-                {
-                        logger.log(Level.SEVERE, "Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
                 }
+                
+                try
+                {
+	                for (int n = 0; n < numBytes; n++)
+	                {
+						logger.log(Level.SEVERE, "Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
+	                }
+				}
+                catch (ModuleException e)
+                {
+					e.printStackTrace();
+				}
                 break;
     
             default:
@@ -489,4 +498,22 @@ public class Emulator implements Runnable
                     break;
         }
     }
+
+
+	public String getScreenText()
+	{
+		// Request characters on screen from video module (if available)
+		ModuleVideo video = (ModuleVideo)modules.getModule("video");
+		if (video != null)
+		{
+			return video.getVideoBufferCharacters();
+		}
+		return null;
+	}
+
+	public BufferedImage getScreenImage()
+	{
+		// TODO: implement
+		return null;
+	}
 }

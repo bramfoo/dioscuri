@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -79,6 +79,13 @@ public abstract class ModuleVideo extends ModuleDevice
     public abstract void setVideoBufferByte(int index, byte data);
 
     /**
+     * Returns all characters (as Unicode) that are currently in buffer
+     * 
+     * @return String containing all characters in the buffer or null when no characters exist
+     */
+	public abstract String getVideoBufferCharacters();
+
+    /**
      * Returns a byte from text snapshot at position index
      * 
      * @param int index
@@ -103,4 +110,5 @@ public abstract class ModuleVideo extends ModuleDevice
      * @return byte from register
      */
     public abstract byte getAttributePaletteRegister(int index);
+
 }

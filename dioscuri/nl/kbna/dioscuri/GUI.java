@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -70,6 +70,7 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 
 import nl.kbna.dioscuri.config.SelectionConfigDialog;
+import nl.kbna.dioscuri.datatransfer.TextTransfer;
 
 /**
 *
@@ -79,6 +80,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 {
    // Attributes
    private Emulator emu;
+   private TextTransfer textTransfer;
    
    // Panels
    private JScrollPane screenPane = null;
@@ -204,7 +206,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    public GUI()
    {
        // Print startup information of modular emulator
-       logger.log(Level.SEVERE, toString());
+       logger.log(Level.SEVERE, this.toString());
        
        // Create graphical user interface
 
@@ -267,6 +269,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        this.updateGUI(GUI_RESET);
        this.setVisible(true);
        this.requestFocus();
+       
+       // Create clipboard functionality
+       textTransfer = new TextTransfer(this);
    }
 
    
@@ -331,6 +336,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        miEmulatorStop.addActionListener(this);
        miEmulatorReset.addActionListener(this);
        miEmulatorQuit.addActionListener(this);
+       miEditCopyText.addActionListener(this);
        miSourceEjectA.addActionListener(this);
        miSourceInsertA.addActionListener(this);    
        miEditConfig.addActionListener(this);       
@@ -533,7 +539,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                miEmulatorStop.setEnabled(true);
                miEmulatorReset.setEnabled(true);               
                miEditConfig.setEnabled(false);
-               
+               miEditCopyText.setEnabled(true);
                break;
                
            case EMU_PROCESS_STOP:
@@ -544,6 +550,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                miEmulatorReset.setEnabled(false);
                miSourceEjectA.setEnabled(false);
                miSourceInsertA.setEnabled(false);
+               miEditCopyText.setEnabled(false);
                
                // Redefine statusbar
                floppyAPanel.setVisible(false);
@@ -697,6 +704,22 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                emu.stop();
            }
            System.exit(0);
+       }
+       else if (c == (JComponent) miEditCopyText)
+       {
+    	   // Copy text from screen to clipboard
+    	   if (emu != null)
+    	   {
+    		   String text = emu.getScreenText();
+    		   if (text != null)
+    		   {
+    			   // Text has been extracted from emulation process
+    			   // Send text to clipboard
+        		   textTransfer.setClipboardContents(text);
+        		   
+        		   // TODO: update GUI to allow pasting text
+    		   }
+    	   }
        }
        else if (c == (JComponent) miSourceEjectA)
        {

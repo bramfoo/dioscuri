@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-06 09:05:13 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -50,7 +50,6 @@ import nl.kbna.dioscuri.module.ModuleVideo;
 
 /**
  * An implementation of a video (VGA) module.
- * Based on Bochs code (http://bochs.sourceforge.net/)
  * 
  * @see Module 
  * 
@@ -68,23 +67,16 @@ import nl.kbna.dioscuri.module.ModuleVideo;
  * general.yearOfEnding       : 
  * general.ancestor           : 
  * general.successor          :
+ * 
+ * Notes:
+ * - This code is based on Bochs code which has been ported to Java.
+ * 
  */
 
 public class Video extends ModuleVideo
 {
-    // Instance
-    public VideoCard videocard = new VideoCard();
-    
-    // Constants
-    private final static int MAX_TEXT_LINES = 100;
-
     // Attributes
-    private int initialScreenWidth = 640;
-    private int initialScreenHeight = 480;
-    int oldScreenWidth = 0;
-    int oldScreenHeight = 0;
-    int oldMaxScanLine = 0;
-    
+	
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "cpu", "screen", "rtc"};
@@ -92,6 +84,9 @@ public class Video extends ModuleVideo
     private ModuleCPU cpu;
     private ModuleScreen screen;
     private ModuleRTC rtc;
+    private VideoCard videocard;
+    private TextModeAttributes textModeAttribs;
+    private TextTranslation textTranslation;
 
     // Toggles
     private boolean isObserved;
@@ -100,13 +95,25 @@ public class Video extends ModuleVideo
     // Timing
     private int updateInterval;
     
+    // Buffer variables
+    private int initialScreenWidth = 640;
+    private int initialScreenHeight = 480;
+    int oldScreenWidth = 0;
+    int oldScreenHeight = 0;
+    int oldMaxScanLine = 0;
+    
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.video");
 
+    
+    // Constants
+    
     // Module specifics
     public final static int MODULE_ID = 1;
     public final static String MODULE_TYPE = "video";
     public final static String MODULE_NAME = "Video Graphics Array (VGA) adapter";
+
+    private final static int MAX_TEXT_LINES = 100;
 
     
     // Constructor
@@ -117,10 +124,19 @@ public class Video extends ModuleVideo
     {
         emu = owner;
         
+        // Create new videocard
+        videocard = new VideoCard();
+        
         // Initialise variables
         videocard.vgaMemReqUpdate = false;
         
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module created successfully.");
+        // Create textModeAttributes collection for use in text mode
+        textModeAttribs = new TextModeAttributes();
+        
+        // Create text translation for converting textmode data into modern characters
+        textTranslation = new TextTranslation();
+        
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
 
     
@@ -737,7 +753,6 @@ public class Video extends ModuleVideo
             int maxScanLine = videocard.crtControllerRegister.regArray[0x09] & 0x1F;    // Character height - 1
             int numColumns = videocard.crtControllerRegister.regArray[0x01] + 1;        // (Char. clocks - 1) + 1 , i.e. number of columns
             int numRows;                                                                // Number of text rows in screen 
-            TextModeAttributes textModeAttribs = new TextModeAttributes();              // Collection of text mode features
             screenWidth = cursorWidth * numColumns;                                     // Screen width in pixels
             screenHeight = videocard.verticalDisplayEnd + 1;                            // Screen height in pixels
             int fullStartAddress = 2 * ((videocard.crtControllerRegister.regArray[0x0C] << 8) 
@@ -775,8 +790,7 @@ public class Video extends ModuleVideo
                 logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " character height = 1, skipping text update");
                 return;
             }
-
-            if ((maxScanLine == 1) && (videocard.verticalDisplayEnd == 399))
+            else if ((maxScanLine == 1) && (videocard.verticalDisplayEnd == 399))
             {
                 // emulated CGA graphics mode 160x100x16 colours
                 maxScanLine = 3;
@@ -1795,31 +1809,106 @@ public class Video extends ModuleVideo
     // ******************************************************************************
     // ModuleVideo methods
 
+    /**
+     * Returns a pointer to the whole video buffer
+     * 
+     * @return byte[] containing the video buffer
+     */
     public byte[] getVideoBuffer()
     {
         return this.videocard.vgaMemory;
     }
 
+    /**
+     * Returns a byte from video buffer at position index
+     * 
+     * @param int index
+     * 
+     * @return byte from video buffer
+     */
     public byte getVideoBufferByte(int index)
     {
         return this.videocard.vgaMemory[index];
     }
 
+    /**
+     * Stores a byte in video buffer at position index
+     * 
+     * @param int index
+     * @param byte data
+     */
     public void setVideoBufferByte(int index, byte data)
     {
         this.videocard.vgaMemory[index] = data;
     }
 
-    public byte getTextSnapshot(int index)
+    /**
+     * Returns all characters (as Unicode) that are currently in buffer
+     * 
+     * @return String containing all characters in the buffer or null when no characters exist
+     */
+	public String getVideoBufferCharacters()
+	{
+		int maxRows, maxCols, index;
+		StringBuffer text;
+		
+		// Retrieve screen dimension in text mode
+		maxRows = screen.getScreenRows();
+		maxCols = screen.getScreenColumns();
+		
+		// Create initial stringbuffer
+		text = new StringBuffer(maxRows * maxCols);
+		
+		// Convert each character in textSnapshot into Unicode character
+		for (int row = 0; row < maxRows; row++)
+		{
+			for (int col = 0; col < maxCols; col++)
+			{
+				index = videocard.textSnapshot[(row * maxCols * 2) + (col * 2)] & 0xFF;
+				if (index < 255)
+				{
+					text.append(textTranslation.asciiToUnicode[index]);
+				}
+			}
+			
+			// Add a newline at the end of row
+			text.append("\n");
+		}
+		
+		return text.toString();
+	}
+
+    /**
+     * Returns a byte from text snapshot at position index
+     * 
+     * @param int index
+     * 
+     * @return byte from textsnapshot
+     */
+	public byte getTextSnapshot(int index)
     {
         return this.videocard.textSnapshot[index];
     }
 
+    /**
+     * Stores a byte in text snapshot at position index
+     * 
+     * @param int index
+     * @param byte data
+     */
     public void setTextSnapshot(int index, byte data)
     {
         this.videocard.textSnapshot[index] = data;
     }
     
+    /**
+     *  Translate the text attribute/graphic colour input value into the CRT display colour
+     */
+    public byte getAttributePaletteRegister(int index)
+    {
+      return videocard.attributeController.paletteRegister[index];
+    }
+
     
     // ******************************************************************************
     // Custom methods
@@ -1891,14 +1980,6 @@ public class Video extends ModuleVideo
         return new int[] {heightInPixels, widthInPixels};
     }
 
-
-    /**
-     *  Translate the text attribute/graphic colour input value into the CRT display colour
-     */
-    public byte getAttributePaletteRegister(int index)
-    {
-      return videocard.attributeController.paletteRegister[index];
-    }
 
     /**
      * VGA memory Read Modes 0 and 1 functionality
@@ -2369,5 +2450,7 @@ public class Video extends ModuleVideo
             }
         }
     }
+
+
 
 }

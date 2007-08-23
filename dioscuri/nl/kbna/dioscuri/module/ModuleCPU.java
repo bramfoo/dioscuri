@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-31 15:06:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -91,6 +91,13 @@ public abstract class ModuleCPU extends Module
      */
     protected abstract void incrementInstructionCounter();
 
+    /**
+     * Returns a dump of the current registers with their value
+     * 
+     * @return String containing a register dump
+     */
+    public abstract String dumpRegisters();
+    
     /**
 	 * Initialise registers
 	 * 
@@ -204,9 +211,19 @@ public abstract class ModuleCPU extends Module
     public abstract void interruptRequest(boolean value);
     
     public abstract void setHoldRequest(boolean value, ModuleDevice origin);
+
+   /**
+    * Get CPU instruction debug.
+    * 
+    * @return cpuInstructionDebug.
+    */
+    public abstract boolean getCpuInstructionDebug();
     
-    public abstract String getRegisterHex(int register);
-    
+   /**
+    *  Set the CPU instruction debug.
+    *  
+    *  @param boolean status of instructionDebug (on/off)
+    */
     public abstract void setCpuInstructionDebug(boolean isDebugMode);
 
     /**

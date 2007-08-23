@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-10 14:57:33 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -419,9 +419,41 @@ public class Screen extends ModuleScreen
 
     
     /**
-     * Set the GUI size (not including panels and sidebars)
-     * @param width New width of the GUI in pixels
-     * @param height    New height of the GUI in pixels
+     * Return the number of rows on screen (text based)
+     */
+    public int getScreenRows()
+    {
+    	return textRows;
+    }
+
+    /**
+     * Return the number of columns on screen (text based)
+     */
+    public int getScreenColumns()
+    {
+    	return textColumns;
+    }
+
+    /**
+     * Return width of screen in number of pixels
+     */
+    public int getScreenWidth()
+    {
+    	return screenWidth;
+    }
+
+    /**
+     * Return height of screen in number of pixels
+     */
+    public int getScreenHeight()
+    {
+    	return screenHeight;
+    }
+
+    /**
+     * Set the screen size in number of pixels
+     * @param int width New width of the screen in pixels
+     * @param int height New height of the screen in pixels
      */
     public void setScreenSize(int width, int height)
     {
@@ -579,7 +611,7 @@ public class Screen extends ModuleScreen
         // Check if all character fonts are up to date
         if (codePageReqsUpdate)
         {
-            logger.log(Level.CONFIG, "Character map update. New font height: " + fontHeight + "; width: " + fontWidth);
+            logger.log(Level.CONFIG, "[" + this.getType() + "] Character map update. New font height: " + fontHeight + "; width: " + fontWidth);
             for (int c = 0; c < 256; c++)
             {
                 if (codePageUpdateIndex[c])
@@ -609,6 +641,7 @@ public class Screen extends ModuleScreen
             horizPanning = newHorizPanning;
             vertPanning = newVertPanning;
         }
+        
         if (newLineCompare != lineCompare)
         {
             forceUpdate = 1;
@@ -623,6 +656,7 @@ public class Screen extends ModuleScreen
             oldCursorPos = cursorPosPrevY * newLineOffset + cursorPosPrevX * 2;
             video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video.getVideoBufferByte(newText + oldCursorPos));
         }
+        
         if ((newCursorStartLine <= newCursorEndLine) && (newCursorStartLine < fontHeight) && (cursorYPos < textRows) && (cursorXPos < textColumns))
         {
             // Current cursor is on screen and needs to be displayed, so invalidate its position in the array
