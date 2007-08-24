@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-13 13:30:44 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-24 15:40:38 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -131,8 +131,8 @@ public class Memory extends ModuleMemory
 		ram = new byte[this.ramSize];
 
         // Debugging functionality
-        watchValue = true;
-        watchAddress = 22;
+        watchValue = false;
+        watchAddress = -1;
 		
 		logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " Module created successfully.");
 	}
@@ -446,11 +446,11 @@ public class Memory extends ModuleMemory
         try
         {
             // Watch certain memory address
-/*            if (watchValue == true && address == watchAddress)
+            if (watchValue == true && address == watchAddress)
             {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched BYTE at address " + watchAddress + " is read: [" + ram[address] + "]");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched BYTE at address " + watchAddress + " is read: [" + Integer.toHexString(ram[address]).toUpperCase() + "]");
             }
-*/
+
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF)
             {
@@ -485,11 +485,11 @@ public class Memory extends ModuleMemory
         try  
         {
             // Watch certain memory address
-/*            if (watchValue == true && address == watchAddress)
+            if (watchValue == true && address == watchAddress)
             {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched BYTE at address " + watchAddress + " is written: [" + value + "]");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched BYTE at address " + watchAddress + " is written: [" + Integer.toHexString(value).toUpperCase() + "]");
             }
-*/
+
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF)
             {
@@ -534,11 +534,11 @@ public class Memory extends ModuleMemory
         try  
         {
             // Watch certain memory address
-/*            if (watchValue == true && (address == watchAddress || address + 1 == watchAddress))
+            if (watchValue == true && (address == watchAddress || address + 1 == watchAddress))
             {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched WORD at address " + watchAddress + " is read: [" + ram[address + 1] + "] [" + ram[address] + "]");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched WORD at address " + watchAddress + " is read: [" + Integer.toHexString(ram[address + 1]).toUpperCase() + "] [" + Integer.toHexString(ram[address]).toUpperCase() + "]");
             }
-*/
+
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF)
             {
@@ -578,11 +578,11 @@ public class Memory extends ModuleMemory
         try  
         {
             // Watch certain memory address
-/*            if (watchValue == true && (address == watchAddress || address + 1 == watchAddress))
+            if (watchValue == true && (address == watchAddress || address + 1 == watchAddress))
             {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched WORD at address " + watchAddress + " is written: [" + value[0] + "][" + value[1] + "]");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + " Watched WORD at address " + watchAddress + " is written: [" + Integer.toHexString(value[0]).toUpperCase() + "][" + Integer.toHexString(value[1]).toUpperCase() + "]");
             }
-*/
+
 
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF)
