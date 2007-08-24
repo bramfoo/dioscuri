@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:45 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-24 15:47:05 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -41,6 +41,15 @@ package nl.kbna.dioscuri.module.serialport;
  * - http://mudlist.eorbit.net/~adam/pickey/ports.html
  */
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -146,13 +155,19 @@ public class SerialPort extends ModuleSerialPort
     private final static int MSR4 = 0x2EE;            // Read-only port
     private final static int SCR4 = 0x2EF;            // Read/Write port
     
-    
-    
     // Module specifics
     public final static int MODULE_ID       = 1;
     public final static String MODULE_TYPE  = "serialport";
     public final static String MODULE_NAME  = "RS232 serial port";
+
+    // Helper variables
+    private String[] cmd;
+    int lastReadPort;
+    int lastReadReturn;
+    int lastWritePort;
+    int lastWriteData;
     
+    Stack<Integer> readPortQ = new Stack<Integer>();
     
     // Constructor
 
@@ -167,6 +182,32 @@ public class SerialPort extends ModuleSerialPort
         // Initialise variables
         isObserved = false;
         debugMode = false;
+        
+        // ELKS boot replies:
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0xFF);
+        readPortQ.push(0xFF);
+        readPortQ.push(0xFF);
+        readPortQ.push(0xFF);
+        readPortQ.push(0x60);
+        readPortQ.push(0x00);
+        readPortQ.push(0xC1);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        readPortQ.push(0x00);
+        // Bochs BIOS replies:
+        readPortQ.push(0xFF);
+        readPortQ.push(0xFF);
+        readPortQ.push(0xFF);
+        readPortQ.push(0x02);
+        readPortQ.push(0x02);
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
@@ -472,7 +513,7 @@ public class SerialPort extends ModuleSerialPort
     
 
     /**
-     * IN instruction to parallel port<BR>
+     * IN instruction to serial port<BR>
      * @param portAddress   the target port; can be any of 0x03F[8-F], 0x02F[8-F], 0x03E[8-F], or 2E[8-F]<BR>
      * 
      * IN to portAddress 378h does ...<BR>
@@ -484,53 +525,55 @@ public class SerialPort extends ModuleSerialPort
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort, ModuleWriteOnlyPortException
     {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from " + portAddress);
-
-        switch (portAddress)
+        int returnValue = 0x00;
+        
+/* 
+ * Interactive mode
+ */
+//        logger.log(Level.WARNING, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " Last port write: [0x" + Integer.toHexString(lastWritePort).toUpperCase() + "] = 0x" + Integer.toHexString(lastWriteData).toUpperCase());
+//        
+//        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
+//        String input;
+//        
+//        // Flush streams before printing
+//        
+//        System.out.print("[" + MODULE_TYPE + "]" + " Return value (byte) for port [0x" + Integer.toHexString(portAddress).toUpperCase() + "] read: 0x");
+//        try
+//        {
+//            input = stdin.readLine();
+//            returnValue = Integer.parseInt(input, 16);
+//        }
+//        catch (IOException e)
+//        {
+//            logger.log(Level.SEVERE, "Unable to read input; returning default value 0x00");
+//            returnValue = 0x00;
+//        }
+//        catch (NumberFormatException e2)
+//        {
+//            logger.log(Level.SEVERE, "Unable to parse input to integer value; returning default value 0x00");
+//            returnValue = 0x00;
+//        }
+//        
+//        lastReadPort = portAddress;
+//        lastReadReturn = returnValue;
+//        return (byte) returnValue;
+/*
+ * Queue mode
+ */      
+        if (!readPortQ.isEmpty())
         {
-            // Return identical values to Bochs during BIOS boot:
-            case (DLM):
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 'available'");
-            return (byte) 0x02;
-
-            case (DLM2):
-            case (DLM3):
-                     logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 'not available'");
-            return (byte) 0xFF;
-
-            case (DLM4):                
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 'not available (2)'");
-            return (byte) 0x00;
-
-            
-            case (IIR):
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 'available'");
-            return (byte) 0x02;
-
-            case (IIR2):
-            case (IIR3):
-            case (IIR4):                
-                     logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 'not available'");
-            return (byte) 0xFF;
-            
-            case (LCR):
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 0x00");
-            return (byte) 0x00;
-            
-            case (LSR):
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 0x60");
-            return (byte) 0x60;
-            
-            case (MSR):
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] returning default value 0x30");
-            return (byte) 0x30;
-            
-            default:
-                    throw new ModuleUnknownPort("[" + MODULE_TYPE + "] Unknown I/O port requested");
+            return readPortQ.pop().byteValue();
         }
+        else
+        {
+            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Queue empty, returning default value 0x00");
+            return (byte) 0x00;
+        }
+        
     }
 
     /**
-     * OUT instruction to parallel port<BR>
+     * OUT instruction to serial port<BR>
      * @param portAddress   the target port; can be any of 0x027[8-A], 0x037[8-A], or 0x03B[C-E]<BR>
      * 
      * OUT to portAddress 378h does ...<BR>
@@ -544,18 +587,18 @@ public class SerialPort extends ModuleSerialPort
         switch (portAddress)
         {
            case (DLM):
-               logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port " + Integer.toHexString(DLM).toUpperCase() + " received, not handled");
-               return;
-
             case (DLM2):
             case (DLM3):
             case (DLM4):                
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port " + Integer.toHexString(portAddress).toUpperCase() + " received, not handled");
-                return;
+                break;
             
             default:
                     throw new ModuleUnknownPort("[" + MODULE_TYPE + "] Unknown I/O port requested");
         }
+        
+        lastWritePort = portAddress;
+        lastWriteData = data;
     }
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
