@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-24 15:41:57 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,6 +47,7 @@ import nl.kbna.dioscuri.module.ModuleClock;
 import nl.kbna.dioscuri.module.ModuleDevice;
 import nl.kbna.dioscuri.module.ModuleMemory;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
+import nl.kbna.dioscuri.module.cpu.CPU;
 
 /**
  * An implementation of a motherboard module.
@@ -100,7 +101,7 @@ public class Motherboard extends ModuleMotherboard
     public ModuleDevice[] ioAddressSpace;   // Using signed bytes as both signed/unsigned
 
     // Logging
-	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.motherboard");
+	private static Logger logger = Logger.getLogger(Motherboard.class.getPackage().getName());
 	
     
 	// Constants
@@ -543,8 +544,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e1)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
             catch (ModuleWriteOnlyPortException e2)
             {
@@ -553,7 +554,7 @@ public class Motherboard extends ModuleMotherboard
             }
         } 
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
-        throw new ModuleException("Requested I/O port (byte) is not used.");
+        throw new ModuleException("Requested I/O port " + Integer.toHexString(portAddress) + " (byte) is not used.");
 	}
     
     
@@ -580,8 +581,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } 
         else 
@@ -612,8 +613,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e1)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
             catch (ModuleWriteOnlyPortException e2)
             {
@@ -647,8 +648,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } 
         else 
@@ -679,8 +680,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e1)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
             catch (ModuleWriteOnlyPortException e2)
             {
@@ -715,8 +716,8 @@ public class Motherboard extends ModuleMotherboard
             catch (ModuleUnknownPort e)
             {
                 // Print warning
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested.");
-                throw new ModuleException("Unknown I/O port requested.");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
+                throw new ModuleException("Unknown I/O port requested (0x" + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } 
         else 
@@ -754,4 +755,16 @@ public class Motherboard extends ModuleMotherboard
 
 	//******************************************************************************
 	// Custom Methods
+    
+    /**
+     * Retrieve current number of instruction (instructions executed so far)
+     * 
+     * @return long containing number of instructions
+     * 
+     */
+    public long getCurrentInstructionNumber()
+    {
+        return cpu.getCurrentInstructionNumber();
+    }
+    
 }
