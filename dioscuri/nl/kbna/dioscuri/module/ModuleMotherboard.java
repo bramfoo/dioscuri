@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-24 16:01:23 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -167,4 +167,12 @@ public abstract class ModuleMotherboard extends Module
      * @param a20   true to set, false to clear
      */
     public abstract void setA20(boolean a20);
+
+
+    /**
+     * Retrieve current number of instruction (instructions executed so far)
+     * 
+     * @return long containing number of instructions
+     */
+    public abstract long getCurrentInstructionNumber();
 }
