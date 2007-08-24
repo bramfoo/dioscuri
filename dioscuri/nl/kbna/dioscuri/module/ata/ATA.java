@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-24 15:20:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -105,7 +105,7 @@ public class ATA extends ModuleATA
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.ide");
+    private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.ata");
 
     // Timing
     private int updateInterval;
@@ -147,7 +147,7 @@ public class ATA extends ModuleATA
 
         curChannelIndex = 0;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module created successfully.");
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module created successfully.");
 
     }
 
@@ -272,11 +272,11 @@ public class ATA extends ModuleATA
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true)
         {
-            logger.log(Level.CONFIG, this.getType() + " -> Timer requested successfully.");
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Timer requested successfully.");
         }
         else
         {
-            logger.log(Level.WARNING, this.getType() + " -> Failed to request a timer.");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Failed to request a timer.");
         }
 
         /*
@@ -657,7 +657,7 @@ public class ATA extends ModuleATA
 
         if ((numHeads == 0) || (numSectorsPerTrack == 0))
         {
-            logger.log(Level.SEVERE, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> cannot have zero heads, or sectors/track");
+            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " cannot have zero heads, or sectors/track");
 
         }
 
@@ -666,7 +666,7 @@ public class ATA extends ModuleATA
             if (drive.getDiskImageSize() != drive.getDiskCapacity())
             {
 
-                logger.log(Level.SEVERE, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> Image size doesn't match specified geometry.");
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Image size doesn't match specified geometry.");
             }
         }
 
@@ -681,7 +681,7 @@ public class ATA extends ModuleATA
             drive.setTotalNumCylinders(numCylinders);
 
             // BX_INFO(("ata%d-%d: autodetect geometry: CHS=%d/%d/%d", channel, device, cyl, heads, spt));
-            logger.log(Level.CONFIG, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> Autodetect geometry: Number Cylinders set to " + numCylinders);
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Autodetect geometry: Number Cylinders set to " + numCylinders);
         }
     }
 
@@ -841,7 +841,7 @@ public class ATA extends ModuleATA
                             translationType = ATATranslationType.LBA;
                         }
 
-                        logger.log(Level.CONFIG, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> Translation on IDE drive, channel = " + channelIndex
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Translation on IDE drive, channel = " + channelIndex
                                 + " , drive index " + driveIndex + " , set to " + translationType.toString());
 
                         // BX_INFO(("translation on ata%d-%d set to '%s'",channel, device,
@@ -922,7 +922,7 @@ public class ATA extends ModuleATA
 
         // BX_INFO(("Floppy boot signature check is %sabled", bx_options.OfloppySigCheck->get() ? "dis" : "en"));
 
-        logger.log(Level.INFO, MODULE_TYPE.toString() + " " + MODULE_TYPE.getName() + " -> Floppy boot signature check is set to " + floppySigCheckDisabled);
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Floppy boot signature check is set to " + floppySigCheckDisabled);
 
     }
 
@@ -985,7 +985,7 @@ public class ATA extends ModuleATA
             File imageFile = new File(imageFilePath);
             drive.loadImage(imageFile);
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + "  Disk \"" + imageFile.getName() + "\" is successfully loaded.");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Disk \"" + imageFile.getName() + "\" is successfully loaded.");
             return true;
 
         }
