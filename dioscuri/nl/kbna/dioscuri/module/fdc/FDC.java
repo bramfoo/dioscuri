@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-13 13:35:35 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-08-24 15:37:28 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -565,7 +565,7 @@ public class FDC extends ModuleFDC
 
 
     /**
-     * Reset all parameters of module
+     * Default inherited reset. Calls specific reset(int)
      * 
      * @return boolean true if module has been reset successfully, false otherwise
      */
@@ -586,11 +586,6 @@ public class FDC extends ModuleFDC
         if (irqNumber > -1)
         {
             logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + irqNumber);
-
-            // Make sure no interrupt is pending
-            pic.clearIRQ(irqNumber);
-            pendingIRQ = false;
-            resetSenseInterrupt = 0; // No reset result present
         }
         else
         {
@@ -623,17 +618,53 @@ public class FDC extends ModuleFDC
         // Enable FDC in CMOS
         rtc.setCMOSRegister(0x14, (byte)(rtc.getCMOSRegister(0x14) | 0x01));
 
-        // Reset all FDC registers and parameters
-        dor = 0x0C; // motor off, drive 3..0, DMA/INT enabled, normal operation, drive select 0
+        // Initiate cold reset
+        return reset(1);
+    }
+
+    /**
+     * FDC specific reset, with value to indicate reset type
+     * 
+     * @param resetType Type of reset passed to FDC<BR>
+     *                  0: Warm reset (SW reset)<BR>
+     *                  1: Cold reset (HW reset)
+     * 
+     * @return boolean true if module has been reset successfully, false otherwise
+     */
+    public boolean reset(int resetType)
+    {
+        pendingIRQ = false;
+        resetSenseInterrupt = 0; // No reset result present
+        
         msr = 0;
         statusRegister0 = 0;
         statusRegister1 = 0;
         statusRegister2 = 0;
         statusRegister3 = 0;
-        dataRate = 2; // 250 Kbps
-        lock = 0;
-        config = 0;
-        preTrack = 0;
+
+        if (resetType == 1)
+        {
+            // Reset all FDC registers and parameters
+            dor = 0x0C; // motor off, drive 3..0, DMA/INT enabled, normal operation, drive select 0
+            
+            for (int i = 0; i < drives.length; i++)
+            {
+                drives[i].dir |= 0x80;
+            }
+            dataRate = 2; // 250 Kbps
+            lock = 0;
+        }
+        else
+        {
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " FDC controller reset (software)");
+        }
+
+        if (lock == 0)
+        {
+            config = 0;
+            preTrack = 0;
+        }
+
         perpMode = 0;
 
         // Reset drives
@@ -641,14 +672,21 @@ public class FDC extends ModuleFDC
         {
             drives[i].reset();
         }
-        
+
+        // Make sure no interrupt is pending
+        pic.clearIRQ(irqNumber);
+        dma.setDMARequest(FDC_DMA_CHANNEL, false);
+
         // Go into idle phase
         this.enterIdlePhase();
-        
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
+
+        if (resetType == 1)
+        {
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
+        }
+
         return true;
     }
-
     
     /**
      * Starts the module
@@ -852,7 +890,7 @@ public class FDC extends ModuleFDC
     public void update()
     {
         // Perform an update on FDC
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
+        logger.log(Level.FINE, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
         
         // Check if there is a command pending (= zero if nothing to do)
         if (commandPending != 0x00)
@@ -928,7 +966,7 @@ public class FDC extends ModuleFDC
                   break;
         
                 case 0xFE: // (contrived) RESET
-                  this.reset(); // Performs a warm reset
+                  this.reset(0); // Performs a warm reset
                   commandPending = 0;
                   statusRegister0 = 0xC0;
                   this.setInterrupt();
@@ -952,7 +990,7 @@ public class FDC extends ModuleFDC
      */
     public byte getIOPortByte(int portAddress) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IN command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IN command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
         
         byte value = 0;
         
@@ -1085,7 +1123,7 @@ public class FDC extends ModuleFDC
      */
     public void setIOPortByte(int portAddress, byte value) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)value) & 0xFF).toUpperCase());
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)value) & 0xFF).toUpperCase());
 
         // Check which I/O port is addressed
         switch (portAddress)
@@ -1906,13 +1944,15 @@ public class FDC extends ModuleFDC
                 // Check if cylinder does not differ from drive parameter
                 if (cylinder != drives[drive].cylinder)
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
                     drives[drive].resetChangeline();
                 }
 
                 // Compute logical sector
                 logicalSector = (cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) +
                                (hds * drives[drive].sectorsPerTrack) + (sector - 1);
+
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Logical sectors calculated: " + logicalSector);
                 
                 // Check if logical sector does not exceed total number of available sectors on disk
                 if (logicalSector >= drives[drive].sectors)
@@ -2379,6 +2419,7 @@ public class FDC extends ModuleFDC
                 
                 // Activate timer to be ready for the next read
                 sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                logger.log(Level.CONFIG, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " Activating floppy time to sector time of " + sectorTime + "("+sectorTime*5+")");
                 motherboard.resetTimer(this, sectorTime);
                 motherboard.setTimerActiveState(this, true);
             }
@@ -2559,4 +2600,30 @@ public class FDC extends ModuleFDC
       return (numSteps * oneStepDelayTime);
     }
 
+    /**
+     * Unregisters all registered devices (IRQ, timer, DMA)
+     * 
+     * @return boolean true if succesfully, false otherwise
+     */
+    private boolean unregisterDevices()
+    {
+        boolean result = false;
+        
+        // Unregister IRQ number
+        // Make sure no interrupt is pending
+        pic.clearIRQ(irqNumber);
+//        result = pic.unregisterIRQNumber(this);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ unregister result: " + result);
+
+        // Unregister timer
+//        result = motherboard.unregisterTimer(this);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Timer unregister result: " + result);
+
+        // Unregister DMA channel
+//        result = dma.unregisterDMAChannel(FDC_DMA_CHANNEL);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " DMA unregister result: " + result);
+        
+        return result;
+    }
+    
 }

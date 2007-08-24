@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:41 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-24 15:37:49 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -36,6 +36,7 @@ package nl.kbna.dioscuri.module.fdc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 import nl.kbna.dioscuri.exception.StorageDeviceException;
 
@@ -351,7 +352,31 @@ public class Drive
         // Copy bytes from floppy to buffer
         if (this.containsFloppy())
         {
-            System.arraycopy(floppy.bytes, offset, floppyBuffer, 0, totalBytes);
+            // Check if full amount of bytes can be read
+            try
+            {
+                System.arraycopy(floppy.bytes, offset, floppyBuffer, 0, totalBytes);
+            }
+            catch (ArrayIndexOutOfBoundsException e1)
+            {
+                // Not the full array could be copied, so do a partial read if possible
+                if (offset < floppy.bytes.length)
+                {
+                    int partialBytes = floppy.bytes.length - offset;
+                    System.arraycopy(floppy.bytes, offset, floppyBuffer, 0, partialBytes);
+                    // Fill the rest of the read with zeroes
+                    Arrays.fill(floppyBuffer, partialBytes, totalBytes,(byte) 0);
+//                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Calculated step delay: " + numSteps * oneStepDelayTime);
+                }
+                else
+                {
+                    // No read possible at all, fill zeroes
+                    Arrays.fill(floppyBuffer, 0, totalBytes,(byte) 0);
+//                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Calculated step delay: " + numSteps * oneStepDelayTime);
+                }
+                
+            }
+            
             
             // TODO: Increment sector can also taken care of here instead of in FDC (may be better in OO-terms)
         }
