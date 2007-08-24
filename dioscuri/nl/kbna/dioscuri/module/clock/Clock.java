@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-27 15:30:36 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-24 15:20:45 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -421,7 +421,8 @@ public class Clock extends ModuleClock
         {
             if (timers[t].user.getType().equalsIgnoreCase(device.getType()))
             {
-                timers[t].reset(updateInterval);
+                timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer reset to " + timers[t].intervalLength + " instructions");
                 return true;
             }
             t++;
@@ -446,6 +447,7 @@ public class Clock extends ModuleClock
             if (timers[t].user.getType().equalsIgnoreCase(device.getType()))
             {
                 timers[t].active = runState;
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer active state set to to " + runState);
                 return true;
             }
             t++;
