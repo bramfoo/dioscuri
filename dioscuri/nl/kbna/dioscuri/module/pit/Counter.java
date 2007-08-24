@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-08-10 14:56:53 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2007-08-24 15:44:21 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -37,8 +37,6 @@ package nl.kbna.dioscuri.module.pit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import nl.kbna.dioscuri.module.Module;
-
 /**
  * A single counter of the PIT based on the Intel 82C54 chipset.
  *  
@@ -61,8 +59,8 @@ public class Counter
     private boolean signalOut;     // Output signal OUT
     
     // Mode settings
-    protected int rwMode;          // States the mode to R/W counter: 0 (latched), 1 (LSB), 2 (MSB), 3 (LSB -> MSB)
     protected int counterMode;     // States the counter mode: 0,1,2,3,4,5
+    protected int rwMode;          // States the mode to R/W counter: 0 (latched), 1 (LSB), 2 (MSB), 3 (LSB -> MSB)
     protected boolean bcd;         // false = Binary counter, true = Binary Code Decimal counter
     
     // Registers
@@ -99,10 +97,10 @@ public class Counter
     private final static int RWMODE_2 = 2;       // R/W MSB only
     private final static int RWMODE_3 = 3;       // R/W LSB first, then MSB
 
-    private final static int COUNTERMODE_0 = 0;
-    private final static int COUNTERMODE_1 = 1;
-    private final static int COUNTERMODE_2 = 2;
-    private final static int COUNTERMODE_3 = 3;
+    private final static int COUNTERMODE_0 = 0; // Interrupt on terminal count
+    private final static int COUNTERMODE_1 = 1; // Hardware retriggerable one-shot
+    private final static int COUNTERMODE_2 = 2; // Period rate generator
+    private final static int COUNTERMODE_3 = 3; 
     private final static int COUNTERMODE_4 = 4;
     private final static int COUNTERMODE_5 = 5;
     
@@ -120,11 +118,11 @@ public class Counter
         // Initialise input/output signals
         signalClock = false;
         signalGate = true;
-        signalOut = false;
+        signalOut = true;
         
         // Initialise mode settings
         rwMode = RWMODE_0;
-        counterMode = COUNTERMODE_0;
+        counterMode = COUNTERMODE_2;
         bcd = BINARY;
         
         // Initialise internal registers
@@ -321,7 +319,7 @@ public class Counter
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode1 expired.");
+                                    logger.log(Level.CONFIG, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode1 expired.");
                                     
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
@@ -341,14 +339,14 @@ public class Counter
                                 {
                                     // LSB passed by zero
                                     // MSB must be decremented
-                                    ce[MSB] = ce[MSB]--;
+                                    ce[MSB]--;
                                 }
                                 else if (ce[LSB] == 1 && ce[MSB] == 0)
                                 {
                                     // Set OUT to low
                                     signalOut = false;
                                     
-                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode3 expired.");
+                                    logger.log(Level.CONFIG, "[" + pit.getType() + "] counter " + counterNumber + " countermode2 r/wmode3 expired.");
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
 
@@ -436,7 +434,7 @@ public class Counter
                                 }
                                 else if (ce[LSB] == 0 && ce[MSB] == 0)
                                 {
-                                    logger.log(Level.FINE, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode3 expired.");
+                                    logger.log(Level.CONFIG, "[" + pit.getType() + "] counter " + counterNumber + " countermode3 r/wmode3 expired.");
 
                                     // Raise interrupt
                                     pit.raiseIRQ(this);
@@ -788,12 +786,24 @@ public class Counter
             // Write operation: LSB only
             cr[LSB] = data;
             newCount = true;
+            // Enable counter
+            if (isEnabled)
+            {
+                logger.log(Level.CONFIG, "[" + PIT.MODULE_TYPE + "] Counter is already in use. Resetting may cause timing issues.");
+            }
+            isEnabled = true;
         }
         else if (rwMode == RWMODE_2)
         {
             // Write operation: MSB only
             cr[MSB] = data;
             newCount = true;
+            // Enable counter
+            if (isEnabled)
+            {
+                logger.log(Level.CONFIG, "[" + PIT.MODULE_TYPE + "] Counter is already in use. Resetting may cause timing issues.");
+            }
+            isEnabled = true;            
         }
         else if (rwMode == RWMODE_3)
         {
@@ -812,6 +822,12 @@ public class Counter
                 cr[LSB] = data;
                 lsbWritten = true;
             }
+            // Enable counter
+            if (isEnabled)
+            {
+                logger.log(Level.CONFIG, "[" + PIT.MODULE_TYPE + "] Counter is already in use. Resetting may cause timing issues.");
+            }
+            isEnabled = true;
         }
     }
 
@@ -883,7 +899,11 @@ public class Counter
      */
     protected void latchCounter()
     {
-        if (isLatched == false)
+        if (isLatched)
+        {
+            logger.log(Level.WARNING, "[" + pit.getType() + "] Counter already latched, cannot latch");
+        }
+        else
         {
             // Copy ce value to Output Latch register
             ol[LSB] = ce[LSB];
@@ -900,6 +920,8 @@ public class Counter
      */
     private void loadCounter()
     {
+        
+        logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter " + counterNumber + " loaded with new values");
         // Load new count from cr to ce, based on RW mode
         if (rwMode == RWMODE_1)
         {
@@ -918,6 +940,7 @@ public class Counter
             // Write operation: LSB first, then MSB
             ce[LSB] = cr[LSB];
             ce[MSB] = cr[MSB];
+            logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter  " + counterNumber + " (in rwMode " + rwMode + ") loaded with [" +ce[MSB] + "][" +ce[LSB] + "]");
         }
 
         // Check parity of ce value
