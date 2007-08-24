@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.13 $ $Date: 2007-08-24 15:32:20 $ $Author: blohman $
+ * $Revision: 1.14 $ $Date: 2007-08-24 15:55:51 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -2162,6 +2162,34 @@ public class CPU extends ModuleCPU
         return true;
     }
 
+    /**
+     * Checks if 32-bit is supported by the double byte instruction
+     * Note: this instruction should only be used in debug mode, 
+     * because it unnecessarily slows down the execution.
+     * Checking is done based on a known 32-bit list. All instructions 
+     * that are not on the list are assumed to be 16 bit.
+     *
+     * @return boolean true if 32 bit is supported, false otherwise
+     */
+    protected boolean isDoubleByte32BitSupported()
+    {
+        // Current instructions that support 32 bit:
+        switch (codeByte2)
+        {
+            // Full 32-bit support
+            
+//              break;
+            
+            // Partly 32-bit support
+            case 0x01: // 01 GRP7 (LGDT, SGDT only)
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + " " + Integer.toHexString(codeByte2) + "h): 32-bit not fully supported!");
+                break;
+
+            default: return false;
+        }
+        
+        return true;
+    }
     
     /**
      * Execute instruction
@@ -3356,7 +3384,7 @@ public class CPU extends ModuleCPU
         return result;
     }
     
-    protected String getRegisterHex(int register)
+    public String getRegisterHex(int register)
     {
         switch (register)
         {

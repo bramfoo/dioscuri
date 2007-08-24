@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-08-24 15:56:16 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -212,6 +212,8 @@ public abstract class ModuleCPU extends Module
     
     public abstract void setHoldRequest(boolean value, ModuleDevice origin);
 
+    public abstract String getRegisterHex(int register);
+    
    /**
     * Get CPU instruction debug.
     * 
