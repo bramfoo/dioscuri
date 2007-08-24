@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-08-10 14:56:53 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2007-08-24 15:45:18 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -48,7 +48,6 @@ import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleCPU;
-import nl.kbna.dioscuri.module.ModuleClock;
 import nl.kbna.dioscuri.module.ModuleDevice;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
@@ -101,7 +100,7 @@ public class PIT extends ModulePIT
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "cpu", "pic"}; 
-    private ModuleMotherboard motherboard;
+    protected ModuleMotherboard motherboard;
     private ModuleCPU cpu;
     protected ModulePIC pic;
     private Counter[] counters;
@@ -136,6 +135,8 @@ public class PIT extends ModulePIT
     private final static int PORT_PIT_TIMER2            = 0x049;    // ?? - timer 2 (not used)
     private final static int PORT_PIT_EISA_PIT2A        = 0x04A;    // ?? - EISA PIT 2
     private final static int PORT_PIT_EISA_PIT2B        = 0x04B;    // ?? - EISA PIT 2
+    private final static int PORT_KB_CTRL_B             = 0x61;     // Keyboard Controller Port B, in Bochs assigned to PIT (PC speaker??)
+    
 
 
     // Constructor
@@ -536,25 +537,34 @@ public class PIT extends ModulePIT
      */
     public byte getIOPortByte(int portAddress) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from address 0x" + Integer.toHexString(portAddress));
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " I/O read from address 0x" + Integer.toHexString(portAddress));
 
+        byte returnValue = 0x00;
+        
         // Handle data based on portAddress
         switch (portAddress)
         {
             case PORT_PIT_COUNTER0:  // Counter 0
-                counters[0].getCounterValue();
+                returnValue = counters[0].getCounterValue();
                 break;
                 
             case PORT_PIT_COUNTER1:  // Counter 1
-                counters[1].getCounterValue();
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Attempted read of Counter 1 [0x41]");
+                returnValue = counters[1].getCounterValue();
                 break;
                 
             case PORT_PIT_COUNTER2:  // Counter 2
-                counters[2].getCounterValue();
+                returnValue =  counters[2].getCounterValue();
                 break;
                 
             case PORT_PIT_CONTROLWORD1:  // Control word
                 // Do nothing as reading from control word register is not possible
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Attempted read of control word port [0x43]");
+                break;
+
+            case PORT_KB_CTRL_B:  // Port 0x61
+                // Report reading from port
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Attempted read of KB_CTRL_B [0x61]");
                 break;
                 
             default:
@@ -562,7 +572,7 @@ public class PIT extends ModulePIT
         }
         
         // Return dummy value 0
-        return 0;
+        return returnValue;
     }
 
 
@@ -576,23 +586,23 @@ public class PIT extends ModulePIT
      */
     public void setIOPortByte(int portAddress, byte data) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x" + Integer.toHexString(portAddress) + " = 0x" + Integer.toHexString(data));
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " I/O write to 0x" + Integer.toHexString(portAddress) + " = 0x" + Integer.toHexString(data));
 
         // Handle writing data based on portAddress
         switch (portAddress)
         {
             case PORT_PIT_COUNTER0:  // Counter 0
-            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter0: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.CONFIG,  "[" + MODULE_TYPE + "] Counter 0: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[0].setCounterValue(data);
                 break;
                 
             case PORT_PIT_COUNTER1:  // Counter 1
-            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter1: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.CONFIG,  "[" + MODULE_TYPE + "] Counter 1: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[1].setCounterValue(data);
                 break;
                 
             case PORT_PIT_COUNTER2:  // Counter 2
-            	logger.log(Level.FINE,  "[" + MODULE_TYPE + "] PIT counter2: value set to 0x" + Integer.toHexString(data & 0xFF));
+            	logger.log(Level.CONFIG,  "[" + MODULE_TYPE + "] Counter 2: value set to 0x" + Integer.toHexString(data & 0xFF));
                 counters[2].setCounterValue(data);
                 break;
                 
@@ -603,48 +613,80 @@ public class PIT extends ModulePIT
                 // SC1 SC0 RW1 RW0 M2  M1  M0  BCD
                 
                 // Counter select (SC1/SC0)
-                int c = (data >> 6) & 0x00000003;
+                int cNum = (data >> 6);
+                // Read/Write mode (RW1/RW0)
+                int rwMode = (data >> 4) & 0x03;
+                int counterMode = (data >> 1) & 0x07;
+                int bcd = data & 0x01;
                 
-                // check if c is a read-back command
-                if (c == 0x03)
+                // Check for valid data
+                if ((counterMode > 6) || (rwMode > 4))
+                {
+                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] ControlWord counterMode (" + counterMode + ") / rwMode (" + rwMode + ") out of range");
+                    break;
+                }
+                
+                // check if ControlWord is a read-back command
+                if (cNum == 0x03)
                 {
                     // Read-back command: set appropriate counter in read-back mode
                     // TODO: implement this following Intel 82C54 specs
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Read-Back Command is not implemented");
+                    break;
                 }
-                else
-                {
-                    // Perform counter setup (c denotes counter 0, 1 or 2)
 
-                	// Enable counter
-                	if (counters[c].isEnabled() == true)
-                	{
-                		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter " + c + " is already in use. Resetting may cause timing issues.");
-                	}
-                	counters[c].setEnabled(true);
-                	
-                    // Read/Write mode (RW1/RW0)
-                    int rwmode = (data >> 4) & 0x00000003;
-                    counters[c].rwMode = rwmode;
-                    
-                    if (rwmode == 0x00)
-                    {
+                // Perform counter setup, where cNum denotes counter 0, 1 or 2
+                switch (rwMode)
+                {
+                    case 0x00:  // Counter latch
                         // Read operation: Counter latch command
-                		logger.log(Level.FINE, "[" + MODULE_TYPE + "] Counter " + c + " in latch mode.");
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter " + cNum + " in latch mode.");
                         // Set specified counter in latch register
-                        counters[c].latchCounter();
-                    }
-                    else
-                    {
-                        // Mode of operation (M2/M1/M0)
-                        counters[c].setCounterMode((data >> 1) & 0x00000007);
+                        counters[cNum].latchCounter();
+                        break;
+                    
+                    case 0x01:  // LSB mode
+                    case 0x02:  // MSB mode
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] LSB/MSB command not implemented");
+                        break;
                         
-                        // Binary or Binary Code Decimal (BCD)
-                        counters[c].bcd = (data & 0x00000001) == 0x00000001 ? true : false;
-                    }
-            		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter " + c + " has been set.");
+                    case 0x03:  // 16-bit mode
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter " + cNum + " in 16-bit mode.");
+                        counters[cNum].setCounterMode(counterMode);
+                        counters[cNum].rwMode = rwMode;
+                        break;
+                        
+                    default:
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] rwMode [" + rwMode + "] not recognised");
+                            break;
+                        
                 }
                 break;
+                    
+//
+//                	// Enable counter
+//                	if (counters[cNum].isEnabled() == true)
+//                	{
+//                		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter " + cNum + " is already in use. Resetting may cause timing issues.");
+//                	}
+//                	counters[cNum].setEnabled(true);
+//                	
+//                    counters[cNum].rwMode = rwMode;
+//                    
+//                    {
+//
+//                    }
+//                    else
+//                    {
+//                        // Mode of operation (M2/M1/M0)
+//                        counters[cNum].setCounterMode((data >> 1) & 0x00000007);
+//                        
+//                        // Binary or Binary Code Decimal (BCD)
+//                        counters[cNum].bcd = (data & 0x00000001) == 0x00000001 ? true : false;
+//                    }
+//            		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter " + cNum + " has been set.");
+//                }
+//                break;
                 
             default:
                 throw new ModuleUnknownPort("[" + MODULE_TYPE + "] Unknown I/O port requested");
