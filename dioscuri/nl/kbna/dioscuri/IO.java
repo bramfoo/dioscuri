@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-01 14:48:57 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-08-24 15:15:15 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -131,7 +131,6 @@ public class IO
         BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
         try
         {
-            // logger.log(Level.SEVERE, ">");
             System.out.print(">"); // This avoids a CR at end of line of input
             return stdin.readLine();
         }
