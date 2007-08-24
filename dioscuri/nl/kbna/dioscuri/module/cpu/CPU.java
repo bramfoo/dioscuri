@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.12 $ $Date: 2007-08-23 15:40:39 $ $Author: jrvanderhoeven $
+ * $Revision: 1.13 $ $Date: 2007-08-24 15:32:20 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -142,7 +142,7 @@ public class CPU extends ModuleCPU
 	private boolean abnormalTermination;// Denotes if CPU halted due to an error during execution
 
 	// Logging
-	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.cpu");
+	private static Logger logger = Logger.getLogger(CPU.class.getPackage().getName());
 
     // Instruction and timing
     private long instructionCounter;    // total number of executed instructions
@@ -310,7 +310,7 @@ public class CPU extends ModuleCPU
         lowestUpdatePeriod = 1; // default value
         
         // Set breakpoint (if necesarry)
-        breakpointSet = true;
+        breakpointSet = false;
         waitMessageShown = false;
         
 		logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " Module created successfully.");
@@ -476,15 +476,15 @@ public class CPU extends ModuleCPU
                 // Check for any breakpoints set
                 if (breakpointSet)
                 {
-                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 9629901)
+                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 9105850)
                     {
-//                  	this.cpuInstructionDebug = true;
+//		              	this.cpuInstructionDebug = true;
                     	if (waitMessageShown == false)
                     	{
                             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Breakpoint set at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + ", wait for prompt...");
                             waitMessageShown = true;
                     	}
-                        return;
+                    return;
                     }
                 }
 
@@ -1062,7 +1062,7 @@ public class CPU extends ModuleCPU
         // Also check if interrupt flag is enabled
         if (irqPending == true && irqWaited == true && flags[REGISTER_FLAGS_IF])
         {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - async int");
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - async int");
             // Handle IRQ; irqWaited has ensured this interrupt is executed one instruction after it was generated
             this.handleIRQ(pic.interruptAcknowledge());
             
@@ -1078,7 +1078,7 @@ public class CPU extends ModuleCPU
         // DMA
         if (holdReQuest)
         {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - DMA");
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
             if (hRQorigin.getType().equalsIgnoreCase("dma"))
             {
@@ -2074,7 +2074,7 @@ public class CPU extends ModuleCPU
      * Reset all prefixes 
      *
      */
-    private void resetPrefixes()
+    protected void resetPrefixes()
     {
         segmentOverride = false;
         doubleWord = false;
@@ -2087,7 +2087,7 @@ public class CPU extends ModuleCPU
 
     
     /**
-     * Checks if 32-bit is supported by the single byte instruction
+     * Checks if 32-bit is supported by instruction
      * Note: this instruction should only be used in debug mode, 
      * because it unnecessarily slows down the execution.
      * Checking is done based on a known 32-bit list. All instructions 
@@ -2095,16 +2095,16 @@ public class CPU extends ModuleCPU
      *
      * @return boolean true if 32 bit is supported, false otherwise
      */
-    protected boolean isSingleByte32BitSupported()
+    private boolean isSingleByte32BitSupported()
     {
     	// Current instructions that support 32 bit:
         switch (codeByte)
         {
-        	// Single byte instructions
         	// Full 32-bit support
             case 0x01: // ADD_EvGv
             case 0x25: // AND_eAXIv
             case 0x31: // XOR_EvGv
+            case 0x35: // XOR_AxIv
             case 0x3D: // CMP_eAXIv
             case 0x40: // INC_eAX
             case 0x50: // PUSH_eAX
@@ -2126,6 +2126,8 @@ public class CPU extends ModuleCPU
             case 0x68: // PUSH_Iv
             case 0x6D: // INSW_YvDX
             case 0x89: // MOV_EvGv
+            case 0x9C: // PUSHF
+            case 0x9D: // POPF
             case 0xA1: // MOV_eAxOv
             case 0xA3: // MOV_OVeAX
             case 0xB8: // MOV_eAX
@@ -2136,53 +2138,24 @@ public class CPU extends ModuleCPU
             case 0xBD: // MOV_eBP
             case 0xBE: // MOV_eSI
             case 0xBF: // MOV_eDI
-            case 0xC9: // LEAVE
             case 0xED: // IN_eAXDX
             case 0xEF: // OUT_DXeAX
             case 0xF7: // UnaryGRP3_Ev
             	break;
             
-            // Partly 32-bit support
+            // Part 32-bit support
+            case 0x81: // ImmGRP1_EvIv (AND only)
+            case 0x83: // ImmGRP1_EvIb (AND only)
             case 0xD1: // ShiftGRP2_Ev1 (SHL, SHR, SAR only)
             case 0xD3: // UnaryGRP2_EvCL (SHL, SHR only)
             case 0xC1: // ShiftGRP2_EvIb (SHL, SHR only)
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + "h): 32-bit not fully supported!");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + "h, at " + Integer.toHexString(convertWordToInt(cs)).toUpperCase() + ":" + Integer.toHexString(convertWordToInt(ip)).toUpperCase() + "): 32-bit not fully supported!");
             	break;
 
             // Double byte instruction encountered
             case 0x0F: // 2-byte escape, do nothing
             	break;
             
-            default: return false;
-        }
-        
-        return true;
-    }
-
-    
-    /**
-     * Checks if 32-bit is supported by the double byte instruction
-     * Note: this instruction should only be used in debug mode, 
-     * because it unnecessarily slows down the execution.
-     * Checking is done based on a known 32-bit list. All instructions 
-     * that are not on the list are assumed to be 16 bit.
-     *
-     * @return boolean true if 32 bit is supported, false otherwise
-     */
-    protected boolean isDoubleByte32BitSupported()
-    {
-    	// Current instructions that support 32 bit:
-        switch (codeByte2)
-        {
-        	// Full 32-bit support
-        	
-//            	break;
-            
-            // Partly 32-bit support
-	        case 0x01: // 01 GRP7 (LGDT, SGDT only)
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Instruction problem (opcode " + Integer.toHexString(codeByte) + " " + Integer.toHexString(codeByte2) + "h): 32-bit not fully supported!");
-            	break;
-
             default: return false;
         }
         
