@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2007-08-27 08:17:42 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -33,11 +33,6 @@
  */
 
 package nl.kbna.dioscuri.module.keyboard;
-/*
- * Information used in this module was taken from:
- * - http://mudlist.eorbit.net/~adam/pickey/ports.html
- * - http://homepages.cwi.nl/~aeb/linux/kbd/scancodes.html
- */
 
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
@@ -84,6 +79,9 @@ import nl.kbna.dioscuri.module.ModuleRTC;
  *     + the status of the PC speaker via 0x61. This is not implemented yet.
  *     + A20 address line (memory looping turned on or off) to be enabled/disabled.
  *     + mouse support
+ * - Information used in this module was taken from:
+ *     + http://mudlist.eorbit.net/~adam/pickey/ports.html
+ *     + http://homepages.cwi.nl/~aeb/linux/kbd/scancodes.html
  */
 
 public class Keyboard extends ModuleKeyboard
@@ -1400,7 +1398,7 @@ public class Keyboard extends ModuleKeyboard
         {
             keyboard.internalBuffer.expectingLEDWrite = 0; // Reset variable
             keyboard.internalBuffer.ledStatus = value;
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Status of LEDs set to " + Integer.toHexString(keyboard.internalBuffer.ledStatus));
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Status of LEDs set to " + Integer.toHexString(keyboard.internalBuffer.ledStatus));
             
             // Toggle lights in statusbar according to values
             // value | N C S
@@ -1518,7 +1516,6 @@ public class Keyboard extends ModuleKeyboard
 
             case (byte) 0xED: // Set/Reset Mode Indicators
                 keyboard.internalBuffer.expectingLEDWrite = 1; // Next byte will be data indicating settings
-                // TODO: Bochs uses separate enqueue function here, why?
                 enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
                 break;
 
