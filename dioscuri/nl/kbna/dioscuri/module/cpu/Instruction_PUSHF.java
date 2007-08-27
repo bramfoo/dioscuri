@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-27 07:45:37 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -73,6 +73,14 @@ public class Instruction_PUSHF implements Instruction {
 	 */
 	public void execute()
 	{
+        
+        // Push EFLAGS first, if 32 bit instruction
+        if (cpu.doubleWord)
+        {
+            // Since we don't use EFLAGS, push 0x0000 onto stack
+            cpu.setWordToStack(new byte[]{0x00, 0x00});
+        }
+        
 		// Push flags register (16-bit) onto stack
 		cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
 	}

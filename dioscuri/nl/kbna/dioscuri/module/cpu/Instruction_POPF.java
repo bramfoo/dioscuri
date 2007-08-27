@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:37 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-27 07:45:22 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -87,5 +87,12 @@ public class Instruction_POPF implements Instruction {
         cpu.flags[3] = false;
         cpu.flags[5] = false;
         cpu.flags[15] = false;
+        
+        // Pop EFLAGS, if 32 bit instruction
+        if (cpu.doubleWord)
+        {
+            // We don't support 32-bits flags, so just pop word into a big, empty void...
+            cpu.getWordFromStack();
+        }
 	}
 }

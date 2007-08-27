@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:40 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-27 07:47:13 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -83,6 +83,14 @@ public class Instruction_XOR_AXIv implements Instruction {
 		cpu.ax[CPU.REGISTER_GENERAL_LOW] ^= cpu.getByteFromCode();
 		// Get immediate byte and XOR with AH, storing result in AH.
 		cpu.ax[CPU.REGISTER_GENERAL_HIGH] ^= cpu.getByteFromCode();
+
+        if (cpu.doubleWord)
+        {
+            // Get immediate byte and XOR with eAL, storing result in eAL.
+            cpu.eax[CPU.REGISTER_GENERAL_LOW] ^= cpu.getByteFromCode();
+            // Get immediate byte and XOR with eAH, storing result in eAH.
+            cpu.eax[CPU.REGISTER_GENERAL_HIGH] ^= cpu.getByteFromCode();
+        }
 		
 		// Test ZF
 		cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
@@ -90,5 +98,14 @@ public class Instruction_XOR_AXIv implements Instruction {
 		cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
 		// Set PF, only applies to AL
 		cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        
+        if (cpu.doubleWord)
+        {
+            // Need to check extended registers with flags
+            // Test ZF
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF] && cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+            // Test SF (set when MSB is 1, occurs when AH >= 0x80)
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+        }
 	}
 }

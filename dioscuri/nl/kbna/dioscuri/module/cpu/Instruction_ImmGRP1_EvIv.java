@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-09 14:00:55 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-08-27 07:42:30 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -55,9 +55,12 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
     byte[] memoryReferenceDisplacement;
 
     byte[] sourceValue;
+    byte[] eSourceValue;
     byte[] sourceValue2;
     byte[] destinationRegister;
+    byte[] eDestinationRegister;
     byte[] oldDest;
+    byte[] oldEDest;
     int intermediateResult;
 
     int iCarryFlag;
@@ -78,9 +81,12 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
         memoryReferenceDisplacement = new byte[2];
 
         sourceValue = new byte[2];
+        eSourceValue = new byte[2];
         sourceValue2 = new byte[2];
         destinationRegister = new byte[2];
+        eDestinationRegister = new byte[2];
         oldDest = new byte[2];
+        oldEDest = new byte[2];
         intermediateResult = 0;
 
         iCarryFlag = 0;
@@ -123,6 +129,11 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
         
         // Get immediate word
         sourceValue = cpu.getWordFromCode();
+        
+        if (cpu.doubleWord)
+        {
+            eSourceValue = cpu.getWordFromCode();
+        }
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3)
@@ -381,6 +392,20 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
                     cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
                     // Set PF, only applies to LOW
                     cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationRegister[CPU.REGISTER_GENERAL_LOW]);
+                    
+                    if (cpu.doubleWord)
+                    {
+                        eDestinationRegister = cpu.decodeExtraRegister(addressByte & 0x07);
+                        eDestinationRegister[CPU.REGISTER_GENERAL_LOW] &= eSourceValue[CPU.REGISTER_GENERAL_LOW];
+                        eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] &= eSourceValue[CPU.REGISTER_GENERAL_HIGH];
+
+                        // Need to check extended registers with flags
+                        // Test ZF
+                        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF] && eDestinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 && eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0? true : false;
+                        // Test SF (set when MSB is 1, occurs when AH >= 0x80)
+                        cpu.flags[CPU.REGISTER_FLAGS_SF] = eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+                    }
+                    
                 }
                 else
                 {
@@ -394,6 +419,7 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
                     tempResult[CPU.REGISTER_GENERAL_LOW] &= sourceValue[CPU.REGISTER_GENERAL_LOW];
                     tempResult[CPU.REGISTER_GENERAL_HIGH] &= sourceValue[CPU.REGISTER_GENERAL_HIGH];
                     
+                                                           
                     // Store result back in memory reference location 
                     cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
     
@@ -403,6 +429,26 @@ public class Instruction_ImmGRP1_EvIv implements Instruction
                     cpu.flags[CPU.REGISTER_FLAGS_SF] = tempResult[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
                     // Set PF, only applies to LOW
                     cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(tempResult[CPU.REGISTER_GENERAL_LOW]);
+                    
+                    if (cpu.doubleWord)
+                    {
+                        // Get byte from memory and AND source register
+                        memoryReferenceLocation = Util.addWords(memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
+                        tempResult = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
+                        
+                        tempResult[CPU.REGISTER_GENERAL_LOW] &= eSourceValue[CPU.REGISTER_GENERAL_LOW];
+                        tempResult[CPU.REGISTER_GENERAL_HIGH] &= eSourceValue[CPU.REGISTER_GENERAL_HIGH];
+                                                               
+                        // Store result back in memory reference location 
+                        cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, tempResult);
+
+                        // Need to check extended registers with flags
+                        // Test ZF
+                        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF] && tempResult[CPU.REGISTER_GENERAL_LOW] == 0 && tempResult[CPU.REGISTER_GENERAL_HIGH] == 0? true : false;
+                        // Test SF (set when MSB is 1, occurs when AH >= 0x80)
+                        cpu.flags[CPU.REGISTER_FLAGS_SF] = tempResult[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+                    }
+                    
                 }
                 break;  // AND
                 
