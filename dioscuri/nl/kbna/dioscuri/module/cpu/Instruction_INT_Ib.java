@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-07-25 13:51:00 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-08-27 07:43:34 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -49,7 +49,7 @@ public class Instruction_INT_Ib implements Instruction
 
     boolean operandWordSize;
     
-    byte index;
+    int index;
     int offset;
 
     byte[] newCS;
@@ -92,7 +92,7 @@ public class Instruction_INT_Ib implements Instruction
     public void execute()
     {
         // Retrieve immediate byte (index for IDT) from memory
-        index = cpu.getByteFromCode();
+        index = (((int) cpu.getByteFromCode()) & 0xFF);
         
         // Check if index is in range of IDT (0 - 255)
         if (index <= 255)
