@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?><!--
- * $Revision: 1.3 $ $Date: 2007-08-27 07:18:08 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-08-27 07:39:55 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -62,8 +62,8 @@
 	
          <!-- Defines the floppy drive module -->
 	 	 <floppydiskdrives debug="false" updateintervalmicrosecs="250"> <!-- normally 300 microseconds -->
-           <floppy>    
-             <enabled>true</enabled>           
+           <floppy>
+             <enabled>true</enabled>
              <inserted>true</inserted>
              <driveletter>A</driveletter>
              <diskformat>1.44M</diskformat>
@@ -71,25 +71,28 @@
 	         <imagefilepath>images/floppy/Kbd2Scrn.bin</imagefilepath>
 	       </floppy> 
         </floppydiskdrives>
-                 
+        
         <!-- Defines the PIT module -->
  		<pit clockrate="5" debug="false"/>
  		
-          <!-- Defines the keyboard module -->
-         <keyboard debug="false" updateintervalmicrosecs="200"/>        
-          
-         <!-- Defines the ata module -->
+        <!-- Defines the keyboard module -->
+        <keyboard debug="false" updateintervalmicrosecs="200"/>
+        
+         <!-- Defines the Mouse module -->
+         <mouse debug="false" mousetype="ps2"/>
+
+        <!-- Defines the ata module -->
 	    <atadrives debug="false" updateintervalmicrosecs="100000">
-	   	    <harddiskdrive>   
+	   	    <harddiskdrive>
                <enabled>false</enabled>
                <channelindex>0</channelindex>
-               <master>true</master>       
+               <master>true</master>
                <autodetectcylinders>true</autodetectcylinders>
                <cylinders>0</cylinders>
 	   	       <heads>4</heads>
                <sectorspertrack>17</sectorspertrack>
                <imagefilepath>null</imagefilepath>
-            </harddiskdrive> 
+            </harddiskdrive>
         </atadrives>
         
         <!-- Defines the video adapter module -->

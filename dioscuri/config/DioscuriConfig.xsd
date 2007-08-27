@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:24 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-27 07:39:55 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -109,6 +109,12 @@
 											<xs:complexType>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
 												<xs:attribute name="updateintervalmicrosecs" type="xs:positiveInteger" use="required"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="mouse" minOccurs="0">
+											<xs:complexType>
+												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
+												<xs:attribute name="mousetype" type="xs:string" use="optional"/>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="atadrives" minOccurs="0">
