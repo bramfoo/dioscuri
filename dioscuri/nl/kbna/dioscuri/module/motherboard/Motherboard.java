@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-24 15:41:57 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2007-08-27 08:26:56 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,7 +47,6 @@ import nl.kbna.dioscuri.module.ModuleClock;
 import nl.kbna.dioscuri.module.ModuleDevice;
 import nl.kbna.dioscuri.module.ModuleMemory;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
-import nl.kbna.dioscuri.module.cpu.CPU;
 
 /**
  * An implementation of a motherboard module.
@@ -753,8 +752,6 @@ public class Motherboard extends ModuleMotherboard
         memory.setA20AddressLine(a20);
     }
 
-	//******************************************************************************
-	// Custom Methods
     
     /**
      * Retrieve current number of instruction (instructions executed so far)
@@ -766,5 +763,8 @@ public class Motherboard extends ModuleMotherboard
     {
         return cpu.getCurrentInstructionNumber();
     }
+    
+	//******************************************************************************
+	// Custom Methods
     
 }
