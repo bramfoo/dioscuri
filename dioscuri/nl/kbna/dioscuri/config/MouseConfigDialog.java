@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.2 $ $Date: 2007-08-30 15:43:45 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -70,7 +70,7 @@ public class MouseConfigDialog extends ConfigurationDialog
     {
         DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
 //        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
-        String type = "hallo";
+        String type = "not available yet";
         this.sizeField.setText(type);
     }
 
