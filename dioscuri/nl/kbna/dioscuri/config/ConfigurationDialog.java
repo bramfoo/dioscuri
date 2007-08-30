@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -118,17 +118,17 @@ public abstract class ConfigurationDialog extends JDialog
             dialogWidth -= 200;
         }
         
-        dialogHeight = 315; 
-           
+        dialogHeight = 315;
+        
         dialogXPosition = 250;
         dialogYPosition = 250;
         
         if(!isMainConfigScreen)
         {
             dialogXPosition += 100;
-            dialogYPosition += 100;           
+            dialogYPosition += 100;
         }
-                
+        
         // Build frame
         this.setLocation(0, 0);
         
@@ -141,13 +141,13 @@ public abstract class ConfigurationDialog extends JDialog
    
         mainEntryPanel = new JPanel();     
         statusPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0, 0)); 
-          
+        
         Dimension statusDim = new Dimension (dialogWidth, 50);
         statusPanel.setSize(statusDim);
         statusPanel.setPreferredSize(statusDim);
 
-        Border blackline = BorderFactory.createLineBorder(Color.black);
-        statusPanel.setBorder(blackline);
+//        Border blackline = BorderFactory.createLineBorder(Color.black);
+//        statusPanel.setBorder(blackline);
         
         this.initBottomButtonPanel(); 
         this.initMainEntryPanel();
@@ -156,7 +156,7 @@ public abstract class ConfigurationDialog extends JDialog
         {
             this.readInParams();
         }
-                
+        
         // Add panels to dialog (arranged in borderlayout) 
         this.getContentPane().add(mainEntryPanel, BorderLayout.CENTER);  
         this.getContentPane().add(statusPanel, BorderLayout.SOUTH);
@@ -167,7 +167,7 @@ public abstract class ConfigurationDialog extends JDialog
     
     
     protected void initMainEntryPanel()
-    {     
+    {
     }
     
     
@@ -175,9 +175,9 @@ public abstract class ConfigurationDialog extends JDialog
     {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener()
-        {         
+        {
             public void actionPerformed(ActionEvent e)
-            { 
+            {
                 saveParams();
             }
         });
@@ -297,9 +297,9 @@ public abstract class ConfigurationDialog extends JDialog
         statusPanel.setSize(statusDim);
         statusPanel.setPreferredSize(statusDim);
         
-        Border blackline;
-        blackline = BorderFactory.createLineBorder(Color.black);
-        statusPanel.setBorder(blackline);
+//        Border blackline;
+//        blackline = BorderFactory.createLineBorder(Color.black);
+//        statusPanel.setBorder(blackline);
         
         JPanel innerStatusPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING, 0, 0));
           
@@ -344,9 +344,20 @@ public abstract class ConfigurationDialog extends JDialog
             
             String filePath = selectedfile.getName();
 
-            imageFilePathLabel.setText("   " + filePath);
-                      
-        } else {
+            // Check if length of filepath is longer than 30 characters
+            if (filePath.length() > 30)
+            {
+            	// Trail off the beginning of the string
+            	filePath = filePath.substring(filePath.length() - 30);
+                imageFilePathLabel.setText("..." + filePath);
+            }
+            else
+            {
+                imageFilePathLabel.setText(filePath);
+            }
+        }
+        else
+        {
    
         }
     }

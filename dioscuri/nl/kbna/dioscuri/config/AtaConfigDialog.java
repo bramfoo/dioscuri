@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,7 +40,10 @@
 package nl.kbna.dioscuri.config;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -101,10 +104,20 @@ public class AtaConfigDialog extends ConfigurationDialog
         this.autodetectCheckBox.setSelected(autoDetect);     
         this.cylindersFTextField.setValue(new Integer(cylinders));   
         this.headsFTextField.setValue(new Integer(heads));
-        this.sectorsFTextField.setValue(new Integer(sectors));       
-        this.imageFilePathLabel.setText("   " + imageFormatPath);
-        this.selectedfile = new File(imageFormatPath);
+        this.sectorsFTextField.setValue(new Integer(sectors));
+
+        // Check if length of filepath is longer than 30 characters
+        if (imageFormatPath.length() > 30)
+        {
+        	// Trail off the beginning of the string
+        	this.imageFilePathLabel.setText("..." + imageFormatPath.substring(imageFormatPath.length() - 30));
+        }
+        else
+        {
+            this.imageFilePathLabel.setText(imageFormatPath);
+        }
         
+        this.selectedfile = new File(imageFormatPath);
     }
     
     /**
@@ -112,67 +125,111 @@ public class AtaConfigDialog extends ConfigurationDialog
      */
     protected void initMainEntryPanel()
     {
-               
-        JLabel updateIntLabel = new JLabel("  Update Int (microSecs)");     
-        JLabel enabledLabel = new JLabel("  Enabled");
-        JLabel channelIndexLabel = new JLabel("  Channel Index");  
-        JLabel masterLabel = new JLabel("  Master");
-        JLabel autodetectLabel = new JLabel("  Auto Detect");        
-        JLabel cylindersLabel = new JLabel("  Cylinders");    
-        JLabel headsLabel = new JLabel("  Heads");
-        JLabel sectorsLabel  = new JLabel("  Sectors");
-        JLabel imageFileLabel = new JLabel("  Image File");
+    	// Create labels
+        JLabel updateIntLabel = new JLabel("Update Interval");
+        JLabel updateIntUnitLabel = new JLabel("microseconds");
+        JLabel enabledLabel = new JLabel("Enabled");
+        JLabel channelIndexLabel = new JLabel("Channel Index");
+        JLabel masterLabel = new JLabel("Master");
+        JLabel autodetectLabel = new JLabel("Auto Detect");
+        JLabel cylindersLabel = new JLabel("Cylinders");
+        JLabel headsLabel = new JLabel("Heads");
+        JLabel sectorsLabel  = new JLabel("Sectors");
+        JLabel imageFileLabel = new JLabel("Image File");
         
+        // Create controls
         this.populateControls();
-             
+        
         //Lay out the labels in a panel.
-                  
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
-        mainEntryPanel.setBorder(blackline);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        mainEntryPanel = new JPanel(gridbag);
         
-        //Fill start blanks in grid  
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
+        // Makeup layout with contraints
+        // General layout contraints
+        c.fill = GridBagConstraints.BOTH; // Make the component fill its display area entirely
+        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
         
-        mainEntryPanel.add(updateIntLabel); 
+        // Row 1
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        gridbag.setConstraints(updateIntLabel, c);
+        mainEntryPanel.add(updateIntLabel);
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(updateIntField, c);
         mainEntryPanel.add(updateIntField);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(enabledLabel); 
+        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        gridbag.setConstraints(updateIntUnitLabel, c);
+        mainEntryPanel.add(updateIntUnitLabel);
+
+        // Row 2
+        c.weightx = 0.1;
+        c.gridwidth = 1;
+        gridbag.setConstraints(enabledLabel, c);
+        mainEntryPanel.add(enabledLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(enabledCheckBox, c);
         mainEntryPanel.add(enabledCheckBox);
-        mainEntryPanel.add(new JLabel("")); 
-        
+
+        // Row 3
+        c.gridwidth = 1;
+        gridbag.setConstraints(channelIndexLabel, c);
         mainEntryPanel.add(channelIndexLabel);
-        mainEntryPanel.add(channelIndexFTextField);  
-        mainEntryPanel.add(new JLabel("")); 
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(channelIndexFTextField, c);
+        mainEntryPanel.add(channelIndexFTextField);
         
-        mainEntryPanel.add(masterLabel);  
-        mainEntryPanel.add(masterCheckBox);  
-        mainEntryPanel.add(new JLabel("")); 
-            
+        // Row 4
+        c.gridwidth = 1;
+        gridbag.setConstraints(masterLabel, c);
+        mainEntryPanel.add(masterLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(masterCheckBox, c);
+        mainEntryPanel.add(masterCheckBox);
+
+        // Row 5
+        c.gridwidth = 1;
+        gridbag.setConstraints(autodetectLabel, c);
         mainEntryPanel.add(autodetectLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(autodetectCheckBox, c);
         mainEntryPanel.add(autodetectCheckBox);
-        mainEntryPanel.add(new JLabel(""));       
-        
+
+        // Row 6
+        c.gridwidth = 1;
+        gridbag.setConstraints(cylindersLabel, c);
         mainEntryPanel.add(cylindersLabel);
-        mainEntryPanel.add(cylindersFTextField);  
-        mainEntryPanel.add(new JLabel("")); 
-        
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(cylindersFTextField, c);
+        mainEntryPanel.add(cylindersFTextField);
+
+        // Row 7
+        c.gridwidth = 1;
+        gridbag.setConstraints(headsLabel, c);
         mainEntryPanel.add(headsLabel);
-        mainEntryPanel.add(headsFTextField);  
-        mainEntryPanel.add(new JLabel(""));    
-        
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(headsFTextField, c);
+        mainEntryPanel.add(headsFTextField);
+
+        // Row 8
+        c.gridwidth = 1;
+        gridbag.setConstraints(sectorsLabel, c);
         mainEntryPanel.add(sectorsLabel);
-        mainEntryPanel.add(sectorsFTextField);  
-        mainEntryPanel.add(new JLabel(""));
-        
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(sectorsFTextField, c);
+        mainEntryPanel.add(sectorsFTextField);
+
+        // Row 9
+        c.gridwidth = 1;
+        gridbag.setConstraints(imageFileLabel, c);
         mainEntryPanel.add(imageFileLabel);
-        mainEntryPanel.add(imageBrowseButton); 
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(imageFilePathLabel, c);
         mainEntryPanel.add(imageFilePathLabel);
-            
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(imageBrowseButton, c);
+        mainEntryPanel.add(imageBrowseButton);
+
     }
     
     /**

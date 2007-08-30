@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -83,13 +83,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private TextTransfer textTransfer;
    
    // Panels
-   private JScrollPane screenPane = null;
-   private JPanel statusPanel = null;
-   private JPanel scrolllockPanel = null;
-   private JPanel numlockPanel = null;
-   private JPanel capslockPanel = null;
-   private JPanel floppyAPanel = null;
-   private JPanel hd1Panel = null;
+   private JScrollPane screenPane;
+   private JPanel statusPanel;
+   private JPanel scrolllockPanel;
+   private JPanel numlockPanel;
+   private JPanel capslockPanel;
+   private JPanel floppyAPanel;
+   private JPanel hd1Panel;
    
    // Menus
    JMenuBar menuBar;
@@ -132,8 +132,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.1.0";
-   protected final static String EMULATOR_DATE = "August, 2007";
+   protected final static String EMULATOR_VERSION = "0.2.0";
+   protected final static String EMULATOR_DATE = "September, 2007";
    protected final static String EMULATOR_CREATOR = "National Library of the Netherlands, Nationaal Archief of the Netherlands";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
    private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen.gif";
@@ -900,7 +900,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    {
        String info = "-----------------------------------------------------------------------------" + "\n";
        info += "| " + EMULATOR_NAME + ": version " + EMULATOR_VERSION + "       |" + "\r\n";
-       info += "| " + "Copyright (C) " + EMULATOR_DATE + "                                                |" + "\r\n";
+       info += "| " + "Copyright (C) " + EMULATOR_DATE + "                                             |" + "\r\n";
        info += "| " + EMULATOR_CREATOR + " |" + "\r\n";
        info += "-----------------------------------------------------------------------------" + "\n";
        return info;

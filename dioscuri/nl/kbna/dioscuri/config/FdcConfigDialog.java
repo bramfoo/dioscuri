@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,8 +40,10 @@
 package nl.kbna.dioscuri.config;
 
 import java.awt.Color;
-import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -72,7 +74,6 @@ public class FdcConfigDialog extends ConfigurationDialog
     public FdcConfigDialog(JFrame parent)
     {               
         super (parent, "FDC Configuration", false, ModuleType.FDC); 
-                    
     }
     
     /**
@@ -98,7 +99,18 @@ public class FdcConfigDialog extends ConfigurationDialog
         this.driveLetterComboxBox.setSelectedIndex(driveLetterIndex);
         this.diskFormatComboBox.setSelectedIndex(diskFormatIndex);   
         this.writeProtectedCheckBox.setSelected(writeProtected);
-        this.imageFilePathLabel.setText("   " + imageFormatPath);
+
+        // Check if length of filepath is longer than 30 characters
+        if (imageFormatPath.length() > 30)
+        {
+        	// Trail off the beginning of the string
+        	this.imageFilePathLabel.setText("..." + imageFormatPath.substring(imageFormatPath.length() - 30));
+        }
+        else
+        {
+            this.imageFilePathLabel.setText(imageFormatPath);
+        }
+
         this.selectedfile = new File(imageFormatPath);
         
     }
@@ -109,63 +121,91 @@ public class FdcConfigDialog extends ConfigurationDialog
     protected void initMainEntryPanel()
     {
         
-        JLabel updateIntLabel = new JLabel("  Update Int (microSecs)");
-        JLabel enabledLabel = new JLabel("  Enabled");
-        JLabel insertedLabel = new JLabel("  Inserted");
-        JLabel driveLetterLabel = new JLabel("  Drive Letter");      
-        JLabel diskFormatLabel = new JLabel("  Disk Format");    
-        JLabel writeProtectedLabel = new JLabel("  Write Protected");
-        JLabel imageFileLabel = new JLabel("  Image File");
+        JLabel updateIntLabel = new JLabel("Update Interval");
+        JLabel updateIntUnitLabel = new JLabel("microseconds");
+        JLabel enabledLabel = new JLabel("Enabled");
+        JLabel insertedLabel = new JLabel("Inserted");
+        JLabel driveLetterLabel = new JLabel("Drive Letter");      
+        JLabel diskFormatLabel = new JLabel("Disk Format");    
+        JLabel writeProtectedLabel = new JLabel("Write Protected");
+        JLabel imageFileLabel = new JLabel("Image File");
         
         this.populateControls();
              
         //Lay out the labels in a panel.
                   
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
-        mainEntryPanel.setBorder(blackline);
+        //Lay out the labels in a panel.
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        mainEntryPanel = new JPanel(gridbag);
         
-        //Fill start blanks in grid  
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
-        
-        mainEntryPanel.add(updateIntLabel); 
-        mainEntryPanel.add(updateIntField);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(enabledLabel); 
-        mainEntryPanel.add(enabledCheckBox);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(insertedLabel);
-        mainEntryPanel.add(insertedCheckBox);  
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(driveLetterLabel);  
-        mainEntryPanel.add(driveLetterComboxBox);  
-        mainEntryPanel.add(new JLabel("")); 
-            
-        mainEntryPanel.add(diskFormatLabel);
-        mainEntryPanel.add(diskFormatComboBox);
-        mainEntryPanel.add(new JLabel(""));       
-        
-        mainEntryPanel.add(writeProtectedLabel);
-        mainEntryPanel.add(writeProtectedCheckBox);  
-        mainEntryPanel.add(new JLabel(""));   
-        
-        mainEntryPanel.add(imageFileLabel);
-        mainEntryPanel.add(imageBrowseButton); 
-        mainEntryPanel.add(imageFilePathLabel);
-            
-        //Fill end blanks in grid    
-        for (int i = 0; i < 6; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
+        // Makeup layout with contraints
+        // General layout contraints
+        c.fill = GridBagConstraints.BOTH; // Make the component fill its display area entirely
+        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
 
+        // Row 1
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        gridbag.setConstraints(updateIntLabel, c);
+        mainEntryPanel.add(updateIntLabel);
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(updateIntField, c);
+        mainEntryPanel.add(updateIntField);
+        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        gridbag.setConstraints(updateIntUnitLabel, c);
+        mainEntryPanel.add(updateIntUnitLabel);
+
+        // Row 2
+        c.gridwidth = 1;
+        gridbag.setConstraints(enabledLabel, c);
+        mainEntryPanel.add(enabledLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(enabledCheckBox, c);
+        mainEntryPanel.add(enabledCheckBox);
+
+        // Row 3
+        c.gridwidth = 1;
+        gridbag.setConstraints(insertedLabel, c);
+        mainEntryPanel.add(insertedLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(insertedCheckBox, c);
+        mainEntryPanel.add(insertedCheckBox);
         
+        // Row 4
+        c.gridwidth = 1;
+        gridbag.setConstraints(driveLetterLabel, c);
+        mainEntryPanel.add(driveLetterLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(driveLetterComboxBox, c);
+        mainEntryPanel.add(driveLetterComboxBox);
+
+        // Row 5
+        c.gridwidth = 1;
+        gridbag.setConstraints(diskFormatLabel, c);
+        mainEntryPanel.add(diskFormatLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(diskFormatComboBox, c);
+        mainEntryPanel.add(diskFormatComboBox);
+
+        // Row 6
+        c.gridwidth = 1;
+        gridbag.setConstraints(writeProtectedLabel, c);
+        mainEntryPanel.add(writeProtectedLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(writeProtectedCheckBox, c);
+        mainEntryPanel.add(writeProtectedCheckBox);
+
+        // Row 7
+        c.gridwidth = 1;
+        gridbag.setConstraints(imageFileLabel, c);
+        mainEntryPanel.add(imageFileLabel);
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(imageFilePathLabel, c);
+        mainEntryPanel.add(imageFilePathLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(imageBrowseButton, c);
+        mainEntryPanel.add(imageBrowseButton);
     }
     
     /**
@@ -233,9 +273,9 @@ public class FdcConfigDialog extends ConfigurationDialog
         
         params[1] = enabledCheckBox.isSelected();    
         params[2] = insertedCheckBox.isSelected();
-        params[3] =  driveLetterComboxBox.getSelectedItem().toString();
-        params[4] =diskFormatComboBox.getSelectedItem().toString();
-        params[5]  = writeProtectedCheckBox.isSelected();   
+        params[3] = driveLetterComboxBox.getSelectedItem().toString();
+        params[4] = diskFormatComboBox.getSelectedItem().toString();
+        params[5] = writeProtectedCheckBox.isSelected();   
         params[6] = selectedfile.getAbsoluteFile().toString();
         
         return params;

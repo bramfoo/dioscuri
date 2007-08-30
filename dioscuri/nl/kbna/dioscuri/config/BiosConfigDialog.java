@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,7 +40,10 @@
 package nl.kbna.dioscuri.config;
 
 import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -93,11 +96,27 @@ public class BiosConfigDialog extends ConfigurationDialog
         this.selectedfile = new File(sysPath);
         this.selectedVgaFile = new File(vgaPath);
         
-        this.imageFilePathLabel.setText("   " + selectedfile.getName());
-        this.imageFilePathVgaLabel.setText("   " + selectedVgaFile.getName());      
-        
+        // Check if length of System BIOS file is longer than 30 characters
+        if (selectedfile.getName().length() > 30)
+        {
+        	// Trail off the beginning of the string
+        	this.imageFilePathLabel.setText("..." + selectedfile.getName().substring(selectedfile.getName().length() - 30));
+        }
+        else
+        {
+            this.imageFilePathLabel.setText(selectedfile.getName());
+        }
 
-        
+        // Check if length of Video BIOS file is longer than 30 characters
+        if (selectedVgaFile.getName().length() > 30)
+        {
+        	// Trail off the beginning of the string
+        	this.imageFilePathVgaLabel.setText("..." + selectedVgaFile.getName().substring(selectedVgaFile.getName().length() - 30));
+        }
+        else
+        {
+            this.imageFilePathVgaLabel.setText(selectedVgaFile.getName());
+        }
     }
     
     /**
@@ -106,47 +125,61 @@ public class BiosConfigDialog extends ConfigurationDialog
     protected void initMainEntryPanel()
     {
                  
-        JLabel sysBiosFileLabel = new JLabel("  Sys Bios File");  
-        JLabel vgaBiosFileLabel = new JLabel("  Vga Bios File"); 
-        JLabel sysBiosStartLabel = new JLabel("  Sys Bios Start");
-        JLabel vgaBiosStartLabel = new JLabel("  Vga Bios Start");   
+        JLabel sysBiosFileLabel = new JLabel("Sys Bios File");  
+        JLabel vgaBiosFileLabel = new JLabel("Vga Bios File"); 
+        JLabel sysBiosStartLabel = new JLabel("Sys Bios Start");
+        JLabel vgaBiosStartLabel = new JLabel("Vga Bios Start");   
         
         this.populateControls();
              
         //Lay out the labels in a panel.
-                  
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
-        mainEntryPanel.setBorder(blackline);
+        GridBagLayout gridbag = new GridBagLayout();
+        GridBagConstraints c = new GridBagConstraints();
+        mainEntryPanel = new JPanel(gridbag);
         
-        //Fill start blanks in grid  
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
+        // Makeup layout with contraints
+        // General layout contraints
+        c.fill = GridBagConstraints.HORIZONTAL; // Make the component fill its display area entirely
+        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
         
+        // Row 1
+        c.weightx = 1.0;
+        c.gridwidth = 1;
+        gridbag.setConstraints(sysBiosFileLabel, c);
         mainEntryPanel.add(sysBiosFileLabel);
-        mainEntryPanel.add(this.sysBiosBrowseButton);  
-        mainEntryPanel.add(this.imageFilePathLabel); 
-        
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(this.imageFilePathLabel, c);
+        mainEntryPanel.add(this.imageFilePathLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        gridbag.setConstraints(this.sysBiosBrowseButton, c);
+        mainEntryPanel.add(this.sysBiosBrowseButton);
+
+        // Row 2
+        c.gridwidth = 1;
+        gridbag.setConstraints(vgaBiosFileLabel, c);
         mainEntryPanel.add(vgaBiosFileLabel);
-        mainEntryPanel.add(this.vgaBiosBrowseButton);  
-        mainEntryPanel.add(this.imageFilePathVgaLabel); 
+        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
+        gridbag.setConstraints(this.imageFilePathVgaLabel, c);
+        mainEntryPanel.add(this.imageFilePathVgaLabel);
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(this.vgaBiosBrowseButton, c);
+        mainEntryPanel.add(this.vgaBiosBrowseButton);
         
+        // Row 3
+        c.gridwidth = 1;
+        gridbag.setConstraints(sysBiosStartLabel, c);
         mainEntryPanel.add(sysBiosStartLabel);
-        mainEntryPanel.add(this.sysBiosStartsFTextField); 
-        mainEntryPanel.add(new JLabel(""));
-        
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(this.sysBiosStartsFTextField, c);
+        mainEntryPanel.add(this.sysBiosStartsFTextField);
+
+        // Row 4
+        c.gridwidth = 1;
+        gridbag.setConstraints(vgaBiosStartLabel, c);
         mainEntryPanel.add(vgaBiosStartLabel);
-        mainEntryPanel.add(this.vgaBiosStartFTextField); 
-        mainEntryPanel.add(new JLabel(""));
-                    
-        //Fill end blanks in grid    
-        for (int i = 0; i < 15; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
-  
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
+        gridbag.setConstraints(this.vgaBiosStartFTextField, c);
+        mainEntryPanel.add(this.vgaBiosStartFTextField);
     }
     
     /**
