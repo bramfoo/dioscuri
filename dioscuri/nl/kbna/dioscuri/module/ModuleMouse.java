@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.2 $ $Date: 2007-08-30 15:42:52 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,7 +47,7 @@ public abstract class ModuleMouse extends ModuleDevice
 	
 	public abstract byte getDataFromBuffer(); // returns the head of the buffer FIFO, data is automatically removed from buffer
 	
-    public abstract void prepareBufferData(boolean force_enq);
+    public abstract void storeBufferData(boolean forceEnqueue);
 
     public abstract void controlMouse(byte value);
     

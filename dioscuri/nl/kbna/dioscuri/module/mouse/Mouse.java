@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.2 $ $Date: 2007-08-30 15:42:52 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,6 @@ import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModuleMouse;
-import nl.kbna.dioscuri.module.ModulePIC;
 
 /**
  * An implementation of a mouse module.
@@ -55,21 +54,23 @@ import nl.kbna.dioscuri.module.ModulePIC;
  * Metadata module
  * ********************************************
  * general.type                : mouse
- * general.name                : PS2 compatible Mouse
+ * general.name                : PS/2 compatible Mouse
  * general.architecture        : Von Neumann
  * general.description         : Models a PS2 compatible mouse 
  * general.creator             : Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
  * general.version             : 1.0
  * general.keywords            : Mouse, Keyboard, PS/2
  * general.relations           : Motherboard, Keyboard
- * general.yearOfIntroduction  : 
+ * general.yearOfIntroduction  : 1987
  * general.yearOfEnding        : 
- * general.ancestor            : 
- * general.successor           : 
+ * general.ancestor            : DE-9 RS-232 serial mouse
+ * general.successor           : USB mouse
  * 
  * Notes:
  * - mouse uses keyboard controller. Therefore, a keyboard controller is always required when using this mouse.
- * - all controller aspects are implemented in keyboard, so mouse is only pointing device but not controller.
+ * - all controller aspects are implemented in keyboard: (mouse is only pointing device but not controller)
+ * 		+ I/O ports
+ * 		+ IRQ handling
  * 
  */
 
@@ -229,7 +230,7 @@ public class Mouse extends ModuleMouse
             this.motherboard = (ModuleMotherboard)mod;
             return true;
         }
-        // Set connection for pic
+        // Set connection for keyboard
         else if (mod.getType().equalsIgnoreCase("keyboard"))
         {
             this.keyboard = (ModuleKeyboard)mod;
@@ -507,12 +508,12 @@ public class Mouse extends ModuleMouse
 		return buffer.isEmpty();
 	}
     
-    public void prepareBufferData(boolean force_enq)
+    public void storeBufferData(boolean forceEnqueue)
     {
-    	byte b1, b2, b3, b4, buttonState;
+    	byte b1, b2, b3, b4;
     	int delta_x, delta_y;
 
-    	if(buffer.isEmpty() && !force_enq)
+    	if(buffer.isEmpty() && !forceEnqueue)
     	{
 			// Mouse has nothing in buffer or value is 0
 			return;
@@ -521,7 +522,7 @@ public class Mouse extends ModuleMouse
     	delta_x = delayed_dx;
     	delta_y = delayed_dy;
 
-    	if(!force_enq && delta_x == 0 && delta_y == 0)
+    	if(!forceEnqueue && delta_x == 0 && delta_y == 0)
     	{
     		// No mouse movement, so no changes
     		return;
@@ -588,67 +589,20 @@ public class Mouse extends ModuleMouse
     	// Byte b4
     	b4 = (byte) -delayed_dz;
 
-//    	this.enqueueData(b1, b2, b3, b4);
+    	if (this.enqueueData(b1, b2, b3, b4) == true)
+    	{
+    		logger.log(Level.FINE, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer");
+    	}
+    	else
+    	{
+    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data could not be stored in mouse buffer");
+    	}
     }
 
 	public byte getDataFromBuffer()
 	{
 		return ((Byte) buffer.remove(0)).byteValue();
 	}
-    
-    private boolean mouse_enQ_packet(byte b1, byte b2, byte b3, byte b4)
-    {
-    	return true;
-    }
-/*    private boolean mouse_enQ_packet(Bit8u b1, Bit8u b2, Bit8u b3, Bit8u b4)
-    {
-    	int bytes = 3;
-    	if (BX_KEY_THIS s.mouse.im_mode)
-    	{
-    	  	bytes = 4;
-    	}
-
-    	if ((mouse_internal_buffer.num_elements + bytes) >= BX_MOUSE_BUFF_SIZE)
-    	{
-    		return false; // buffer doesn't have the space
-    	}
-
-    	mouse_enQ(b1);
-    	mouse_enQ(b2);
-    	mouse_enQ(b3);
-      
-    	if (mouse.im_mode)
-    	{
-    		mouse_enQ(b4);
-    	}
-
-    	return true;
-    }
-
-    private void mouse_enQ(Bit8u mouse_data)
-    {
-      int tail;
-
-      BX_DEBUG(("mouse_enQ(%02x)", (unsigned) mouse_data));
-
-      if (BX_KEY_THIS s.mouse_internal_buffer.num_elements >= BX_MOUSE_BUFF_SIZE) {
-        BX_ERROR(("[mouse] internal mouse buffer full, ignoring mouse data.(%02x)",
-          (unsigned) mouse_data));
-        return;
-      }
-
-      // enqueue mouse data in multibyte internal mouse buffer
-      tail = (BX_KEY_THIS s.mouse_internal_buffer.head + BX_KEY_THIS s.mouse_internal_buffer.num_elements) %
-       BX_MOUSE_BUFF_SIZE;
-      BX_KEY_THIS s.mouse_internal_buffer.buffer[tail] = mouse_data;
-      BX_KEY_THIS s.mouse_internal_buffer.num_elements++;
-
-      if (!BX_KEY_THIS s.kbd_controller.outb && BX_KEY_THIS s.kbd_controller.aux_clock_enabled) {
-        activate_timer();
-        return;
-      }
-    }
-*/
     
     public void controlMouse(byte value)
 	{
@@ -799,8 +753,8 @@ public class Mouse extends ModuleMouse
 
 				case (byte)0xEB: // Read Data (send a packet when in Remote Mode)
 					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					// TODO: perhaps we should be adding some movement here.
-					mouse_enQ_packet((byte)((buttonStatus & 0x0F) | 0x08), (byte)0x00, (byte)0x00, (byte)0x00); // bit3 of first byte always set
+					// FIXME: unsure if we should send a packet to mouse buffer. Bochs does so:
+					this.enqueueData((byte)((buttonStatus & 0x0F) | 0x08), (byte)0x00, (byte)0x00, (byte)0x00); // bit3 of first byte always set
 					// FIXME: assumed we really aren't in polling mode, a rather odd assumption.
 					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Read Data command partially supported");
 					break;
@@ -923,74 +877,8 @@ public class Mouse extends ModuleMouse
 		}
 	}
 
-
-/*	void bx_keyb_c::create_mouse_packet(bool force_enq)
-	{
-	  Bit8u b1, b2, b3, b4;
-
-	  if(BX_KEY_THIS s.mouse_internal_buffer.num_elements && !force_enq)
-	    return;
-
-	  Bit16s delta_x = BX_KEY_THIS s.mouse.delayed_dx;
-	  Bit16s delta_y = BX_KEY_THIS s.mouse.delayed_dy;
-	  Bit8u button_state=BX_KEY_THIS s.mouse.button_status | 0x08;
-
-	  if(!force_enq && !delta_x && !delta_y) {
-	    return;
-	  }
-
-	  if(delta_x>254) delta_x=254;
-	  if(delta_x<-254) delta_x=-254;
-	  if(delta_y>254) delta_y=254;
-	  if(delta_y<-254) delta_y=-254;
-
-	  b1 = (button_state & 0x0f) | 0x08; // bit3 always set
-
-	  if ( (delta_x>=0) && (delta_x<=255) ) {
-	    b2 = (Bit8u) delta_x;
-	    BX_KEY_THIS s.mouse.delayed_dx-=delta_x;
-	  }
-	  else if ( delta_x > 255 ) {
-	    b2 = (Bit8u) 0xff;
-	    BX_KEY_THIS s.mouse.delayed_dx-=255;
-	  }
-	  else if ( delta_x >= -256 ) {
-	    b2 = (Bit8u) delta_x;
-	    b1 |= 0x10;
-	    BX_KEY_THIS s.mouse.delayed_dx-=delta_x;
-	  }
-	  else {
-	    b2 = (Bit8u) 0x00;
-	    b1 |= 0x10;
-	    BX_KEY_THIS s.mouse.delayed_dx+=256;
-	  }
-
-	  if ( (delta_y>=0) && (delta_y<=255) ) {
-	    b3 = (Bit8u) delta_y;
-	    BX_KEY_THIS s.mouse.delayed_dy-=delta_y;
-	  }
-	  else if ( delta_y > 255 ) {
-	    b3 = (Bit8u) 0xff;
-	    BX_KEY_THIS s.mouse.delayed_dy-=255;
-	  }
-	  else if ( delta_y >= -256 ) {
-	    b3 = (Bit8u) delta_y;
-	    b1 |= 0x20;
-	    BX_KEY_THIS s.mouse.delayed_dy-=delta_y;
-	  }
-	  else {
-	    b3 = (Bit8u) 0x00;
-	    b1 |= 0x20;
-	    BX_KEY_THIS s.mouse.delayed_dy+=256;
-	  }
-
-	  b4 = (Bit8u) -BX_KEY_THIS s.mouse.delayed_dz;
-
-	  mouse_enQ_packet(b1, b2, b3, b4);
-	}
-
-
-	void bx_keyb_c::mouse_enabled_changed(bx_bool enabled)
+    // FOLLOWING METHOD FROM BOCHS IS ONLY NECESSARY WHEN MOUSE IS ENABLED
+/*	void bx_keyb_c::mouse_enabled_changed(bx_bool enabled)
 	{
 	#if BX_SUPPORT_PCIUSB
 	  // if type == usb, connect or disconnect the USB mouse
@@ -1009,96 +897,67 @@ public class Mouse extends ModuleMouse
 	  BX_KEY_THIS s.mouse.delayed_dz=0;
 	  BX_DEBUG(("PS/2 mouse %s", enabled?"enabled":"disabled"));
 	}
-
-	void bx_keyb_c::mouse_motion(int delta_x, int delta_y, int delta_z, unsigned button_state)
+*/
+    
+	public void mouseMotion(int delta_x, int delta_y, int delta_z, byte buttonState)
 	{
-	  bool force_enq=0;
+	  boolean force_enq = false;
 
 	  // If mouse events are disabled on the GUI headerbar, don't
 	  // generate any mouse data
-	  if (SIM->get_param_bool(BXPN_MOUSE_ENABLED)->get() == 0)
-	    return;
+//	  if (SIM->get_param_bool(BXPN_MOUSE_ENABLED)->get() == 0)
+//	    return;
 
 	  // if type == serial, redirect mouse data to the serial device
-	  if ((BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_SERIAL) ||
+/*	  if ((BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_SERIAL) ||
 	      (BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_SERIAL_WHEEL)) {
 	    DEV_serial_mouse_enq(delta_x, delta_y, delta_z, button_state);
 	    return;
 	  }
-
-	#if BX_SUPPORT_BUSMOUSE
-	  // if type == bus, redirect mouse data to the bus device
-	  if (BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_BUS) {
-	    DEV_bus_mouse_enq(delta_x, delta_y, 0, button_state);
-	    return;
-	  }
-	#endif
-
-	#if BX_SUPPORT_PCIUSB
-	  // if an usb mouse is connected redirect mouse data to the usb device
-	  if (DEV_usb_mouse_connected()) {
-	    DEV_usb_mouse_enq(delta_x, delta_y, delta_z, button_state);
-	    return;
-	  }
-	#endif
-
-	  // don't generate interrupts if we are in remote mode.
-	  if ( BX_KEY_THIS s.mouse.mode == MOUSE_MODE_REMOTE)
-	    // is there any point in doing any work if we don't act on the result
-	    // so go home.
-	    return;
-
-	  // Note: enable only applies in STREAM MODE.
-	  if ( BX_KEY_THIS s.mouse.enable==0 )
-	    return;
-
-	  // scale down the motion
+*/
+	  // Scale down the motion
 	  if ( (delta_x < -1) || (delta_x > 1) )
 	    delta_x /= 2;
 	  if ( (delta_y < -1) || (delta_y > 1) )
 	    delta_y /= 2;
 
-	  if (!BX_KEY_THIS s.mouse.im_mode)
-	    delta_z = 0;
+	  if (imMode == false)
+	  {
+		  delta_z = 0;
+	  }
 
-	#ifdef VERBOSE_KBD_DEBUG
 	  if (delta_x != 0 || delta_y != 0 || delta_z != 0)
-	    BX_DEBUG(("[mouse] Dx=%d Dy=%d Dz=%d", delta_x, delta_y, delta_z));
-	#endif  // ifdef VERBOSE_KBD_DEBUG
-
-	  if( (delta_x==0) && (delta_y==0) && (delta_z==0) && (BX_KEY_THIS s.mouse.button_status == (button_state & 0x7) ) ) {
-	    BX_DEBUG(("Ignoring useless mouse_motion call:"));
-	    BX_DEBUG(("This should be fixed in the gui code."));
-	    return;
+	  {
+		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
 	  }
 
-	  if ((BX_KEY_THIS s.mouse.button_status != (button_state & 0x7)) || delta_z) {
-	    force_enq=1;
+	  if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0)
+	  {
+		  force_enq = true;
 	  }
 
-	  BX_KEY_THIS s.mouse.button_status = button_state & 0x7;
+	  buttonStatus = (byte) (buttonState & 0x07);
 
-	  if(delta_x>255) delta_x=255;
-	  if(delta_y>255) delta_y=255;
-	  if(delta_x<-256) delta_x=-256;
-	  if(delta_y<-256) delta_y=-256;
+	  if(delta_x > 255) delta_x = 255;
+	  if(delta_y > 255) delta_y = 255;
+	  if(delta_x < -256) delta_x = -256;
+	  if(delta_y < -256) delta_y = -256;
 
-	  BX_KEY_THIS s.mouse.delayed_dx+=delta_x;
-	  BX_KEY_THIS s.mouse.delayed_dy+=delta_y;
-	  BX_KEY_THIS s.mouse.delayed_dz = delta_z;
+	  delayed_dx += delta_x;
+	  delayed_dy += delta_y;
+	  delayed_dz = delta_z;
 
-	  if((BX_KEY_THIS s.mouse.delayed_dx>255)||
-	     (BX_KEY_THIS s.mouse.delayed_dx<-256)||
-	     (BX_KEY_THIS s.mouse.delayed_dy>255)||
-	     (BX_KEY_THIS s.mouse.delayed_dy<-256)) {
-	    force_enq=1;
+	  // TODO: why is this check necessary?
+	  if((delayed_dx > 255) || (delayed_dx<-256) || (delayed_dy > 255) || (delayed_dy < -256))
+	  {
+		  force_enq = true;
 	  }
 
-	  create_mouse_packet(force_enq);
+	  this.storeBufferData(force_enq);
 	}
 
-*/	
-    //******************************************************************************
+
+	//******************************************************************************
     // Custom Methods
 
     private byte getStatusByte()
@@ -1142,4 +1001,29 @@ public class Mouse extends ModuleMouse
 	  
 	  return resolution;
 	}
+
+    
+    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4)
+    {
+    	if (imMode == true)
+    	{
+    		// Wheel mouse enabled, store 4 bytes
+        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3) && buffer.add(b4))
+        	{
+        		return true;
+        	}
+    	}
+    	else
+    	{
+    		// Wheel mouse disabled, store 3 bytes
+        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3))
+        	{
+        		return true;
+        	}
+    	}
+
+    	return false;
+    }
+
+    
 }
