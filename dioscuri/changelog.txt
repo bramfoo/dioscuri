@@ -1,9 +1,20 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 13 August 2007
+Date          : 30 August 2007
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
+
+
+0.2.0 : 03-09-2007 (FreeDOS and ELKS capable)
+-------------------------------------------------------
+- Fixed minor bugs in CPU instructions and added some new instructions
+- Fixed keyboard status LEDs on GUI
+- Improved GUI for image file selection
+- Improved keyboard controller for mouse/keyboard control
+- Added text extraction via clipboard
+- Added functionality to copy text to clipboard (text mode only)
+
 
 
 0.1.0 : 13-08-2007 (MS-DOS 16-bit stable)
