@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2007-08-24 15:45:18 $ $Author: blohman $
+ * $Revision: 1.8 $ $Date: 2007-08-31 16:22:58 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -612,12 +612,13 @@ public class PIT extends ModulePIT
                 // D7  D6  D5  D4  D3  D2  D1  D0
                 // SC1 SC0 RW1 RW0 M2  M1  M0  BCD
                 
+                int iData = (((int) data) & 0xFF);
                 // Counter select (SC1/SC0)
-                int cNum = (data >> 6);
+                int cNum = (iData >> 6);
                 // Read/Write mode (RW1/RW0)
-                int rwMode = (data >> 4) & 0x03;
-                int counterMode = (data >> 1) & 0x07;
-                int bcd = data & 0x01;
+                int rwMode = (iData >> 4) & 0x03;
+                int counterMode = (iData >> 1) & 0x07;
+                int bcd = iData & 0x01;
                 
                 // Check for valid data
                 if ((counterMode > 6) || (rwMode > 4))
