@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2007-08-30 15:42:52 $ $Author: jrvanderhoeven $
+ * $Revision: 1.9 $ $Date: 2007-09-03 12:54:52 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1012,62 +1012,69 @@ public class Keyboard extends ModuleKeyboard
         if (keyboard.controller.kbdClockEnabled == 0 || keyboard.internalBuffer.scanningEnabled == 0)
             return;
 
-        // Switch between make and break code
-        scancode = scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode()][eventType].split(" ");
+        try
+        {
+            // Switch between make and break code
+            scancode = scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode()][eventType].split(" ");
 
-        // Check if scancode is a number, if not key is not in scancode set and will be discarded
-    	if (scancode[0].equalsIgnoreCase("") == false)
-    	{
-            // Distuinguish between left and right Ctrl, Alt and Shift
-            if (keyEvent.getKeyCode() == KeyEvent.VK_CONTROL || keyEvent.getKeyCode() == KeyEvent.VK_ALT || keyEvent.getKeyCode() == KeyEvent.VK_SHIFT)
-            {
-                if (keyEvent.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT) // Left side is located 3 earlier in the array for ctrl/alt/shift
-                    scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode() - 3][eventType].split(" ");
-            }
-
-            // Distuinguish between normal ENTER and numpad ENTER
-            if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
-            {
-                if (keyEvent.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) // Next in array
-                    scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode() + 1][eventType].split(" ");
-            }
-            // Check if the scancode generated needs to be translated by the 8042 controller or send as raw data
-            if (keyboard.controller.translateScancode != 0)
-            {
-                // Translation necessary; each F0 prefix is turned into an OR with 0x80 with the next byte (e.g. break code F0 c is turned into c+0x80)
-                int valueOR = 0x00;
-
-                // Parse scancode (array) from String to hex
-                for (i = 0; i < scancode.length; i++)
+            // Check if scancode is a number, if not key is not in scancode set and will be discarded
+        	if (scancode[0].equalsIgnoreCase("") == false)
+        	{
+                // Distuinguish between left and right Ctrl, Alt and Shift
+                if (keyEvent.getKeyCode() == KeyEvent.VK_CONTROL || keyEvent.getKeyCode() == KeyEvent.VK_ALT || keyEvent.getKeyCode() == KeyEvent.VK_SHIFT)
                 {
-                    parsedInt = Integer.parseInt(scancode[i], 16);  // Cast to integer in hexadecimal 
-                    if (parsedInt == 0xF0)
+                    if (keyEvent.getKeyLocation() == KeyEvent.KEY_LOCATION_LEFT) // Left side is located 3 earlier in the array for ctrl/alt/shift
+                        scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode() - 3][eventType].split(" ");
+                }
+
+                // Distuinguish between normal ENTER and numpad ENTER
+                if (keyEvent.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    if (keyEvent.getKeyLocation() == KeyEvent.KEY_LOCATION_NUMPAD) // Next in array
+                        scanCodeSet.scancodes[keyboard.controller.currentScancodeSet][keyEvent.getKeyCode() + 1][eventType].split(" ");
+                }
+                // Check if the scancode generated needs to be translated by the 8042 controller or send as raw data
+                if (keyboard.controller.translateScancode != 0)
+                {
+                    // Translation necessary; each F0 prefix is turned into an OR with 0x80 with the next byte (e.g. break code F0 c is turned into c+0x80)
+                    int valueOR = 0x00;
+
+                    // Parse scancode (array) from String to hex
+                    for (i = 0; i < scancode.length; i++)
                     {
-                        valueOR = 0x80;  // Current byte is a prefix, so prepare to OR with 0x80  
-                    }
-                    else
-                    {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " generateScancode(): Translated scancode to " + (scanCodeSet.translate8042[parsedInt] | valueOR));
-                        enqueueInternalBuffer((byte) (scanCodeSet.translate8042[parsedInt] | valueOR));
-                        valueOR = 0x00;     // Reset OR value to 0
+                        parsedInt = Integer.parseInt(scancode[i], 16);  // Cast to integer in hexadecimal 
+                        if (parsedInt == 0xF0)
+                        {
+                            valueOR = 0x80;  // Current byte is a prefix, so prepare to OR with 0x80  
+                        }
+                        else
+                        {
+                            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " generateScancode(): Translated scancode to " + (scanCodeSet.translate8042[parsedInt] | valueOR));
+                            enqueueInternalBuffer((byte) (scanCodeSet.translate8042[parsedInt] | valueOR));
+                            valueOR = 0x00;     // Reset OR value to 0
+                        }
                     }
                 }
-            }
-            else
-            {
-                // Send raw data
-                for (i = 0; i < scancode.length; i++)
+                else
                 {
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " generateScancode(): Writing raw " + scancode[i]);
-                    enqueueInternalBuffer((byte) Integer.parseInt(scancode[i], 16));
+                    // Send raw data
+                    for (i = 0; i < scancode.length; i++)
+                    {
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " generateScancode(): Writing raw " + scancode[i]);
+                        enqueueInternalBuffer((byte) Integer.parseInt(scancode[i], 16));
+                    }
                 }
-            }
-    	}
-    	else
-    	{
-    		// Scancode not recognised, so will be discarded
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Key not recognised (scancode not found).");
-    	}
+        	}
+        	else
+        	{
+        		// Scancode not recognised, so will be discarded
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Key not recognised (scancode not found).");
+        	}
+        }
+        catch (ArrayIndexOutOfBoundsException e)
+        {
+            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Illegal keystroke (scancode table out of bounds).");
+        }
     }
     
     
