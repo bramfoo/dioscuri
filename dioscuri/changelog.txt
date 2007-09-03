@@ -1,6 +1,6 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 30 August 2007
+Date          : 3 September 2007
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
@@ -10,9 +10,9 @@ Organisations : Koninklijke Bibliotheek,
 -------------------------------------------------------
 - Fixed minor bugs in CPU instructions and added some new instructions
 - Fixed keyboard status LEDs on GUI
+- Improved system timer and PIT
 - Improved GUI for image file selection
 - Improved keyboard controller for mouse/keyboard control
-- Added text extraction via clipboard
 - Added functionality to copy text to clipboard (text mode only)
 
 
