@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.9 $ $Date: 2007-09-03 12:54:52 $ $Author: jrvanderhoeven $
+ * $Revision: 1.10 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -590,7 +590,7 @@ public class Keyboard extends ModuleKeyboard
 
                     clearInterrupt(irqNumberMouse);
                     activateTimer();
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "] (mouse)" + " Port 0x" + Integer.toHexString(portAddress).toUpperCase() + " read: " + Integer.toHexString(0x100 | value & 0xFF).substring(1).toUpperCase() + "h");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] (mouse)" + " Port 0x" + Integer.toHexString(portAddress).toUpperCase() + " read: " + Integer.toHexString(0x100 | value & 0xFF).substring(1).toUpperCase() + "h");
                     return value;
                 }
                 else if (keyboard.controller.outputBuffer != 0)    // Keyboard byte available
@@ -614,7 +614,7 @@ public class Keyboard extends ModuleKeyboard
 
                     clearInterrupt(irqNumberKeyboard);
                     activateTimer();
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Port 0x" + Integer.toHexString(portAddress).toUpperCase() + " read: " + Integer.toHexString(0x100 | value & 0xFF).substring(1).toUpperCase() + "h");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] (keyboard)" + " Port 0x" + Integer.toHexString(portAddress).toUpperCase() + " read: " + Integer.toHexString(0x100 | value & 0xFF).substring(1).toUpperCase() + "h");
                     return value;
                 }
                 else    // Nothing to read available
@@ -674,8 +674,8 @@ public class Keyboard extends ModuleKeyboard
                             disableAux                       	  = (byte) ((value >> 5) & 0x01);
                             disableKeyboard                       = (byte) ((value >> 4) & 0x01);
                             keyboard.controller.systemFlag        = (byte) ((value >> 2) & 0x01);
-                            keyboard.controller.allowIRQ1         = (byte) ((value >> 0) & 0x01);
                             keyboard.controller.allowIRQ12        = (byte) ((value >> 1) & 0x01);
+                            keyboard.controller.allowIRQ1         = (byte) ((value >> 0) & 0x01);
                             
                             // Enable/disable keyboard and mouse according to command byte.
                             // Note: negating variable because these are expressed in negatives compared to clock setting 
@@ -683,7 +683,7 @@ public class Keyboard extends ModuleKeyboard
                             this.setAuxClock(disableAux == 0 ? true : false);
                             
                             // Raise mouse IRQ if allowed (and data available)
-                            if ((keyboard.controller.allowIRQ12 != 0) && (keyboard.controller.auxBuffer != 0))
+                            if ((keyboard.controller.allowIRQ12 != 0)&& (keyboard.controller.auxBuffer != 0))
                             {
                                 keyboard.controller.irq12Requested = 1;
                                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IRQ12 (mouse) allowance set to " + keyboard.controller.allowIRQ12);
@@ -1125,20 +1125,25 @@ public class Keyboard extends ModuleKeyboard
     {
         byte oldKBDClock;
 
-        if (state == false) // Disable the keyboard clock, effectively disabling the keyboard
+        if (state == false)
         {
+        	// Disable the keyboard clock, effectively disabling the keyboard
             keyboard.controller.kbdClockEnabled = 0;
         }
-        else            // Activate keyboard clock 
+        else 
         {
+            // Activate keyboard clock
             oldKBDClock= keyboard.controller.kbdClockEnabled;
             keyboard.controller.kbdClockEnabled = 1;
 
-            if (oldKBDClock == 0 && keyboard.controller.outputBuffer == 0); // If there is more data in the queue, activate the timer for it to be processed
+            // If there is more data in the queue, activate the timer for it to be processed
+            if (oldKBDClock == 0 && keyboard.controller.outputBuffer == 0);
             {
                 activateTimer();
             }
         }
+        
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Keyboard clock " + (state == true ? "enabled" : "disabled"));
     }
     
     /**
@@ -1154,7 +1159,7 @@ public class Keyboard extends ModuleKeyboard
 
         if (state == false)
         {
-        	 // Disable aux device clock, effectively disabling the device
+        	// Disable aux device clock, effectively disabling the device
             keyboard.controller.auxClockEnabled = 0;
         }
         else 
@@ -1163,11 +1168,14 @@ public class Keyboard extends ModuleKeyboard
         	oldAuxClock = keyboard.controller.auxClockEnabled;
             keyboard.controller.auxClockEnabled = 1;
 
-            if (oldAuxClock == 0 && keyboard.controller.outputBuffer == 0); // If there is more data in the queue, activate the timer for it to be processed
+            // If there is more data in the queue, activate the timer for it to be processed
+            if (oldAuxClock == 0 && keyboard.controller.outputBuffer == 0);
             {
                 activateTimer();
             }
         }
+
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Aux clock " + (state == true ? "enabled" : "disabled"));
     }
     
     public void setTimeOut(byte status)
@@ -1246,6 +1254,8 @@ public class Keyboard extends ModuleKeyboard
 		  logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: adding scancode " + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase() + "h to internal buffer");
 		  keyboard.internalBuffer.buffer.add(scancode);
 		  
+		  // Activate timer if outputbuffer = 0 and clockEnabled = false
+		  // This means that controller is ready to process next scancode from keyboard
 		  if (!(keyboard.controller.outputBuffer != 0) && (keyboard.controller.kbdClockEnabled != 0))
 		  {
 			activateTimer();
@@ -1287,6 +1297,7 @@ public class Keyboard extends ModuleKeyboard
         // If no 'timers' are raised, no data is waiting so we can exit here
         if (keyboard.controller.timerPending == 0)
         {
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " no timer raised, do nothing");
             return (returnValue);
         }
 
@@ -1296,7 +1307,7 @@ public class Keyboard extends ModuleKeyboard
         // There is data on the output port, so it is sufficient to raise the IRQs found and exit
         if (keyboard.controller.outputBuffer != 0)
         {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): output buffer is not empty");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): output buffer is not empty");
             return (returnValue);
         }
 
@@ -1304,7 +1315,7 @@ public class Keyboard extends ModuleKeyboard
         if (!keyboard.internalBuffer.buffer.isEmpty() && (keyboard.controller.kbdClockEnabled != 0 || keyboard.controller.batInProgress != 0))
         {
         	// Keyboard buffer
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): key in internal buffer waiting");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): key in internal buffer waiting" + this.getDump());
 
             // Get data byte from keyboard buffer
             keyboard.controller.kbdOutputBuffer = keyboard.internalBuffer.buffer.remove(0);
@@ -1326,7 +1337,7 @@ public class Keyboard extends ModuleKeyboard
             
             if (keyboard.controller.auxClockEnabled == 1 && !mouse.isBufferEmpty())
             {
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): mouse event waiting");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): mouse event waiting");
                 
                 // Get data byte from mouse buffer
                 keyboard.controller.auxOutputBuffer = mouse.getDataFromBuffer();
@@ -1344,7 +1355,7 @@ public class Keyboard extends ModuleKeyboard
         }
         else
         {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " poll(): no keys or mouse events waiting");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): no keys or mouse events waiting");
         }
         return (returnValue);
     }

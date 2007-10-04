@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
+ * $Revision: 1.8 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,12 +35,15 @@ package nl.kbna.dioscuri;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -56,6 +59,7 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -68,6 +72,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
+import javax.swing.event.MouseInputListener;
 
 import nl.kbna.dioscuri.config.SelectionConfigDialog;
 import nl.kbna.dioscuri.datatransfer.TextTransfer;
@@ -132,8 +137,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.2.0";
-   protected final static String EMULATOR_DATE = "September, 2007";
+   protected final static String EMULATOR_VERSION = "0.2.1";
+   protected final static String EMULATOR_DATE = "October, 2007";
    protected final static String EMULATOR_CREATOR = "National Library of the Netherlands, Nationaal Archief of the Netherlands";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
    private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen.gif";
@@ -193,9 +198,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
            // TODO Auto-generated catch block
            e.printStackTrace();
        }
-         
+       
        // Create GUI
-       new GUI();
+       new GUI(args);
    }
 
    
@@ -238,7 +243,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        // Create panel: screen (canvas)
        screenPane = new JScrollPane();
        screenPane.setBackground(Color.gray);
-       this.setScreen(this.getStartupScreen());
+       this.setScreen(this.getStartupScreen(), false);
        
        // Create panel: statusbar (including panels w/ borders for Num Lock, Caps Lock and Scroll Lock status)
        statusPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
@@ -255,6 +260,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        guiWidth = screenPane.getWidth() + 10; // screen width + a random extra value
        guiHeight = screenPane.getHeight() + 2 * 38; // screen height + 2 * menu & statusbar height
 
+       // Actions
        // Key handler to the GUI, disabling focus traversal so Tab events are available
        // KeyEvents will be handled here in screen
        this.addKeyListener(this);
@@ -274,6 +280,24 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        textTransfer = new TextTransfer(this);
    }
 
+   public GUI(String[] arguments)
+   {
+	   this();
+	   
+	   // Check arguments
+	   if (arguments.length > 0)
+	   {
+		   // Argument run
+		   if (arguments[0].equalsIgnoreCase("autorun"))
+		   {
+			   // Automatically start emulation process
+	           // Start emulation process
+	           emu = new Emulator(this);
+	           new Thread(emu).start();
+	           this.updateGUI(EMU_PROCESS_START);
+		   }
+	   }
+   }
    
    // Methods
    
@@ -458,9 +482,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     * Set given screen to existing screen of GUI
     * 
     * @param Canvas screen containing a reference to canvas of module screen
+    * @param boolean mouseEnabled to denote if emulated mouse can be used in screen
     * 
     */
-   public void setScreen(JPanel screen)
+   public void setScreen(JPanel screen, boolean mouseEnabled)
    {
        // Replace current canvas with new one
        screenPane.removeAll();
@@ -468,6 +493,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        
        // Attach current screen to given screen
        this.screen = screen;
+       
+       if (mouseEnabled == true)
+       {
+           // Mouse handler to the GUI
+           screen.addMouseListener(new MouseHandler());
+           screen.addMouseMotionListener(new MouseHandler());
+       }
        
        // Update panel
        this.updateScreenPanel();
@@ -556,7 +588,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                floppyAPanel.setVisible(false);
                hd1Panel.setVisible(false);                
                miEditConfig.setEnabled(true);
-               
                break;
 
            case EMU_PROCESS_RESET:
@@ -799,7 +830,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        logger.log(Level.FINE, displayInfo(keyEvent, "KEY PRESSED: "));
        if (emu != null)
        {
-           emu.generateScancode(keyEvent , KEY_PRESSED);
+           emu.notifyKeyboard(keyEvent , KEY_PRESSED);
        }
    }
 
@@ -814,7 +845,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        logger.log(Level.FINE, displayInfo(keyEvent, "KEY RELEASED: "));
        if (emu != null)
        {
-           emu.generateScancode(keyEvent, KEY_RELEASED);
+           emu.notifyKeyboard(keyEvent, KEY_RELEASED);
        }
    }
    
@@ -905,5 +936,73 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        info += "-----------------------------------------------------------------------------" + "\n";
        return info;
    }
+
+
+   /**
+    * Inner class MouseHandler
+    * Takes care of any mouse action (motion, clicking)
+    * 
+    */
+   private class MouseHandler implements MouseInputListener
+   {
+	   // Attributes
+	   Cursor invisibleCursor;
+	   
+	   public MouseHandler()
+	   {
+		   // Create invisible cursor
+		   ImageIcon emptyIcon = new ImageIcon(new byte[0]);
+		   invisibleCursor = getToolkit().createCustomCursor(emptyIcon.getImage(), new Point(0,0), "Invisible");
+	   }
+	   
+	   
+		public void mouseClicked(MouseEvent mouseEvent)
+		{
+			// Probably not needed
+		}
+		
+		
+		public void mousePressed(MouseEvent mouseEvent)
+		{
+			// Probably not needed
+		}
+		
+		
+		public void mouseReleased(MouseEvent mouseEvent)
+		{
+		       if (emu != null)
+		       {
+		           emu.notifyMouse(mouseEvent);
+		       }
+		}
+		
+		
+		public void mouseEntered(MouseEvent mouseEvent)
+		{
+	        screen.setCursor(invisibleCursor);
+		}
+		
+		
+		public void mouseExited(MouseEvent mouseEvent)
+		{
+			// Probably not needed
+		}
+		
+		
+		public void mouseDragged(MouseEvent mouseEvent)
+		{
+			// Probably not needed
+		}
+		
+		
+		public void mouseMoved(MouseEvent mouseEvent)
+		{
+	       if (emu != null)
+	       {
+	           emu.notifyMouse(mouseEvent);
+	       }
+		}
+   }
+   
 }
 

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-08-10 14:57:33 $ $Author: jrvanderhoeven $
+ * $Revision: 1.2 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -37,8 +37,10 @@ package nl.kbna.dioscuri.module.screen;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
+import javax.swing.event.MouseInputListener;
 
 
 /**
@@ -118,4 +120,6 @@ public class ScreenPanel extends JPanel
         image = i;
         this.repaint();
     }
+
+
 }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -88,11 +88,16 @@ public class ConfigController
                 return false;
             }
     
+            // Check how to reset emulator
             if (emulator.getColdStart() == true)
             {
+            	// Cold start (hard reset)
                 logger.log(Level.INFO, "=================== COLD START ===================");
                 
-                dioscuriXmlReader.createModules(emulator, document);              
+                // Create modules
+                dioscuriXmlReader.createModules(emulator, document);
+                
+                // Connect modules
                 this.connectModules(emulator);
                 
                 // Set corresponding timers in all modules
@@ -100,18 +105,30 @@ public class ConfigController
                  
                 dioscuriXmlReader.readTimingParams(document, emulator);
     
-            } else
+            }
+            else
             {
+            	// Warm start (soft reset)
                 logger.log(Level.INFO, "=================== WARM START ===================");
+                
+                // Make sure next time cold start will happen (FIXME: why?)
                 emulator.setColdStart(true);
             }
-                   
+            
+            // Reset all modules (equals a soft reset)
             this.resetModules(emulator);
     
+            logger.log(Level.INFO, "=================== INIT OUTPUT DEVICES ===================");
+            // Initialise screen (if available)
             this.initScreenOutputDevice(emulator);
             
-            boolean success = dioscuriXmlReader.loadBios(document,emulator);
-            if (!success)
+            logger.log(Level.INFO, "=================== INIT INPUT DEVICES ===================");
+            // Initialise mouse (if available)
+            dioscuriXmlReader.readMouseParams(document, emulator);         
+
+            logger.log(Level.INFO, "=================== LOAD BIOS ===================");
+            // Load system and video BIOS
+            if (!dioscuriXmlReader.loadBios(document,emulator))
             {
                 return false;
             }
@@ -119,13 +136,12 @@ public class ConfigController
             // Set storage device settings
             logger.log(Level.INFO, "=================== LOAD STORAGE MEDIA ===================");
             
-            dioscuriXmlReader.readFloppyParams(document, emulator);         
-            ATA ata = (ATA)emulator.getModules().getModule(ModuleType.ATA.toString());
-            dioscuriXmlReader.readHardDriveParams(document, emulator, ata);   
+            dioscuriXmlReader.readFloppyParams(document, emulator);
+            dioscuriXmlReader.readHardDriveParams(document, emulator);
             
             // Set other settings
             logger.log(Level.INFO, "=================== OTHER STUFF ===================");
-            dioscuriXmlReader.readBootParams(document, ata);
+            dioscuriXmlReader.readBootParams(document, emulator);
             dioscuriXmlReader.readDebugMode(document, emulator);
             
             // Print ready status
@@ -186,16 +202,15 @@ public class ConfigController
     {
     
         // Set screen output
-        logger.log(Level.INFO, "=================== INIT SCREEN OUTPUT DEVICE ===================");
         // Connect screen (check if screen is available)
         ModuleScreen screen = (ModuleScreen)emulator.getModules().getModule(ModuleType.SCREEN.toString());
         if (screen != null)
         {
-            emulator.getGui().setScreen(screen.getScreen());
+            emulator.getGui().setScreen(screen.getScreen(), true);
         }
         else
         {
-            logger.log(Level.WARNING, "No screen available.");
+            logger.log(Level.WARNING, "[CONFIG]" + " No screen available.");
         }
     }
         

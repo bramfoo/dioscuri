@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -129,6 +129,7 @@ public class PIC extends ModulePIC
     // IRQ numbers (fixed) for reserved devices
     private final static int PIC_IRQ_NUMBER_PIT         = 0;        // PIT / system clock
     private final static int PIC_IRQ_NUMBER_KEYBOARD    = 1;        // Keyboard
+    private final static int PIC_IRQ_NUMBER_SERIALPORT  = 4;        // Serial ports COM1 - 4
     private final static int PIC_IRQ_NUMBER_FDC         = 6;        // FDC = Floppy Disk Controller
     private final static int PIC_IRQ_NUMBER_RTC         = 8;        // RTC / CMOS
     private final static int PIC_IRQ_NUMBER_MOUSE       = 12;       // Mouse
@@ -1048,6 +1049,13 @@ public class PIC extends ModulePIC
         {
             // Module Keyboard
             irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("serialport"))
+        {
+            // Module Serialport
+            irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
         }

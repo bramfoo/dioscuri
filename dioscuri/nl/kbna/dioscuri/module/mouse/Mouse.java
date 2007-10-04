@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-30 15:42:52 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,7 @@
 
 package nl.kbna.dioscuri.module.mouse;
 
+import java.awt.event.MouseEvent;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -45,6 +46,7 @@ import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModuleMouse;
+import nl.kbna.dioscuri.module.ModuleSerialPort;
 
 /**
  * An implementation of a mouse module.
@@ -56,10 +58,10 @@ import nl.kbna.dioscuri.module.ModuleMouse;
  * general.type                : mouse
  * general.name                : PS/2 compatible Mouse
  * general.architecture        : Von Neumann
- * general.description         : Models a PS2 compatible mouse 
+ * general.description         : Models a serial or PS/2 compatible mouse 
  * general.creator             : Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
  * general.version             : 1.0
- * general.keywords            : Mouse, Keyboard, PS/2
+ * general.keywords            : Mouse, Keyboard, serial, PS/2
  * general.relations           : Motherboard, Keyboard
  * general.yearOfIntroduction  : 1987
  * general.yearOfEnding        : 
@@ -78,9 +80,10 @@ public class Mouse extends ModuleMouse
 {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "keyboard"}; 
+    private String[] moduleConnections = new String[] {"motherboard", "keyboard", "serialport"}; 
     private ModuleMotherboard motherboard;
     private ModuleKeyboard keyboard;
+    private ModuleSerialPort serialPort;
     private MouseBuffer buffer;
 
     // Toggles
@@ -91,21 +94,21 @@ public class Mouse extends ModuleMouse
     private int updateInterval;
     
     // Variables
-    boolean mouseEnabled;					// Defines if this mouse if enabled
-    int mouseType;							// Defines the type of mouse (PS/2, ...)
-    int mouseMode;							// Defines the mode of mouse (wrap, stream, remote, ...) (default=stream)
-    int mousePreviousMode;					// Remembers the previous mode (only set when going into wrap mode)
-    byte lastMouseCommand;					// Remembers the last mouse command
-    boolean expectingMouseParameter;		// Denotes if mouse expects another mouse parameter
-    int imRequest;							// Wheel mouse mode request
-    boolean imMode;							// Wheel mouse mode
-    byte sampleRate;						// Defines the sample rate of the mouse (default=100)
-    int resolutionCpmm;						// Defines the resolution of the mouse (default=4)
-    int scaling;							// Defines the scaling of the mouse (default=1 (1:1))
-    int delayed_dx      = 0;
-    int delayed_dy      = 0;
-    int delayed_dz      = 0;
-    byte buttonStatus;
+    private boolean mouseEnabled;					// Defines if this mouse if enabled
+    private int mouseType;							// Defines the type of mouse (PS/2, serial)
+    private int mouseMode;							// Defines the mode of mouse (wrap, stream, remote, ...) (default=stream)
+    private int mousePreviousMode;					// Remembers the previous mode (only set when going into wrap mode)
+    private byte lastMouseCommand;					// Remembers the last mouse command
+    private boolean expectingMouseParameter;		// Denotes if mouse expects another mouse parameter
+    private int imRequest;							// Wheel mouse mode request
+    private boolean imMode;							// Wheel mouse mode
+    private byte sampleRate;						// Defines the sample rate of the mouse (default=100)
+    private int resolutionCpmm;						// Defines the resolution of the mouse (default=4)
+    private int scaling;							// Defines the scaling of the mouse (default=1 (1:1))
+    private int delayed_dx      = 0;
+    private int delayed_dy      = 0;
+    private int delayed_dz      = 0;
+    private byte buttonStatus;
     
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.mouse");
@@ -114,28 +117,30 @@ public class Mouse extends ModuleMouse
     // Constants
     
     // Module specifics
-    public final static int MODULE_ID       = 1;
-    public final static String MODULE_TYPE  = "mouse";
-    public final static String MODULE_NAME  = "PS/2 compatible mouse";
+    public final static int MODULE_ID       			= 1;
+    public final static String MODULE_TYPE  			= "mouse";
+    public final static String MODULE_NAME  			= "Serial or PS/2 compatible mouse";
     
     // Mouse type
-    private final static int MOUSE_TYPE_PS2 		= 1;			// PS/2 mouse
-    private final static int MOUSE_TYPE_IMPS2		= 2;			// PS/2 wheel mouse
+    private final static int MOUSE_TYPE_PS2 			= 1;			// PS/2 mouse
+    private final static int MOUSE_TYPE_IMPS2			= 2;			// PS/2 wheel mouse
+    private final static int MOUSE_TYPE_SERIAL 			= 3;			// Serial mouse
+    private final static int MOUSE_TYPE_SERIAL_WHEEL	= 4;			// Serial wheel mouse
     
     // Mouse mode
-    private final static int MOUSE_MODE_WRAP 		= 1;
-    private final static int MOUSE_MODE_STREAM		= 2;
-    private final static int MOUSE_MODE_REMOTE		= 3;
-    private final static int MOUSE_MODE_RESET		= 4;
+    private final static int MOUSE_MODE_WRAP 			= 1;
+    private final static int MOUSE_MODE_STREAM			= 2;
+    private final static int MOUSE_MODE_REMOTE			= 3;
+    private final static int MOUSE_MODE_RESET			= 4;
     
     // Mouse commands
-    private final static byte MOUSE_CMD_ACK			= (byte) 0xFA;
-    private final static byte MOUSE_CMD_COMPLETION	= (byte) 0xAA;	// Completion code
-    private final static byte MOUSE_CMD_ID			= (byte) 0x00;	// ID code
-    private final static byte MOUSE_CMD_RESEND		= (byte) 0xFE;	// Also a NACK
+    private final static byte MOUSE_CMD_ACK				= (byte) 0xFA;
+    private final static byte MOUSE_CMD_COMPLETION		= (byte) 0xAA;	// Completion code
+    private final static byte MOUSE_CMD_ID				= (byte) 0x00;	// ID code
+    private final static byte MOUSE_CMD_RESEND			= (byte) 0xFE;	// Also a NACK
     
     // Mouse buffer capacity
-    private final static int MOUSE_BUFFER_INITSIZE	= 16;
+    private final static int MOUSE_BUFFER_SIZE		= 16;
     
     
     // Constructor
@@ -149,7 +154,7 @@ public class Mouse extends ModuleMouse
         emu = owner;
         
         // Create mouse buffer
-        buffer = new MouseBuffer(MOUSE_BUFFER_INITSIZE);
+        buffer = new MouseBuffer(MOUSE_BUFFER_SIZE);
         
         // Initialise variables
         isObserved = false;
@@ -237,6 +242,13 @@ public class Mouse extends ModuleMouse
             this.keyboard.setConnection(this);	// Set connection to keyboard
             return true;
         }
+        // Set connection for serialport
+        else if (mod.getType().equalsIgnoreCase("serialport"))
+        {
+            this.serialPort = (ModuleSerialPort)mod;
+            this.serialPort.setConnection(this);	// Set connection to serialport
+            return true;
+        }
         return false;
     }
 
@@ -249,7 +261,7 @@ public class Mouse extends ModuleMouse
     public boolean isConnected()
     {
         // Check if module if connected
-        if (motherboard != null&& keyboard != null)
+        if (motherboard != null && keyboard != null && serialPort != null)
         {
             return true;
         }
@@ -266,7 +278,6 @@ public class Mouse extends ModuleMouse
     {
     	// Reset variables
     	// TODO: add all of them
-    	mouseType = 0;
     	lastMouseCommand = 0;
     	
         // Request a timer
@@ -276,6 +287,8 @@ public class Mouse extends ModuleMouse
         }
         motherboard.setTimerActiveState(this, true);
         
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
+
         return true;
     }
 
@@ -503,6 +516,29 @@ public class Mouse extends ModuleMouse
     //******************************************************************************
     // ModuleMouse Methods
 	
+	public void setMouseType(String type)
+	{
+		// Check the type of mouse by matching string
+		if (type.equalsIgnoreCase("serial"))
+		{
+			// Serial mouse
+			mouseType = MOUSE_TYPE_SERIAL;
+    		logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
+		}
+		else if (type.equalsIgnoreCase("ps/2"))
+		{
+			// PS/2 mouse
+			mouseType = MOUSE_TYPE_PS2;
+    		logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to PS/2");
+		}
+		else
+		{
+			// Unknown mouse type
+    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse type not recognised: set to default (serial)");
+			mouseType = MOUSE_TYPE_SERIAL;
+		}
+	}
+
 	public boolean isBufferEmpty()
 	{
 		return buffer.isEmpty();
@@ -591,7 +627,7 @@ public class Mouse extends ModuleMouse
 
     	if (this.enqueueData(b1, b2, b3, b4) == true)
     	{
-    		logger.log(Level.FINE, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer");
+    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer");
     	}
     	else
     	{
@@ -877,20 +913,22 @@ public class Mouse extends ModuleMouse
 		}
 	}
 
-    // FOLLOWING METHOD FROM BOCHS IS ONLY NECESSARY WHEN MOUSE IS ENABLED
+    // FOLLOWING METHOD FROM BOCHS IS ONLY NECESSARY WHEN MOUSE IS SET TO ENABLED/DISABLED
 /*	void bx_keyb_c::mouse_enabled_changed(bx_bool enabled)
 	{
 	#if BX_SUPPORT_PCIUSB
 	  // if type == usb, connect or disconnect the USB mouse
-	  if (BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_USB) {
+	  if (BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_USB)
+	  {
 	    DEV_usb_mouse_enable(enabled);
 	    return;
 	  }
 	#endif
 
 	  if (BX_KEY_THIS s.mouse.delayed_dx || BX_KEY_THIS s.mouse.delayed_dy ||
-	      BX_KEY_THIS s.mouse.delayed_dz) {
-	    create_mouse_packet(1);
+	      BX_KEY_THIS s.mouse.delayed_dz)
+	      {
+	      	create_mouse_packet(1);
 	  }
 	  BX_KEY_THIS s.mouse.delayed_dx=0;
 	  BX_KEY_THIS s.mouse.delayed_dy=0;
@@ -899,61 +937,64 @@ public class Mouse extends ModuleMouse
 	}
 */
     
-	public void mouseMotion(int delta_x, int delta_y, int delta_z, byte buttonState)
-	{
-	  boolean force_enq = false;
+    
+    public void mouseMotion(MouseEvent event)
+    {
+    	// TODO: handle event here!!!!!!!!!!
+  	  delayed_dx = event.getX();
+	  delayed_dy = event.getY();
+	  delayed_dz = event.getButton();
 
-	  // If mouse events are disabled on the GUI headerbar, don't
-	  // generate any mouse data
-//	  if (SIM->get_param_bool(BXPN_MOUSE_ENABLED)->get() == 0)
-//	    return;
+	  boolean force_enq = true;
 
-	  // if type == serial, redirect mouse data to the serial device
-/*	  if ((BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_SERIAL) ||
-	      (BX_KEY_THIS s.mouse.type == BX_MOUSE_TYPE_SERIAL_WHEEL)) {
-	    DEV_serial_mouse_enq(delta_x, delta_y, delta_z, button_state);
-	    return;
-	  }
-*/
-	  // Scale down the motion
-	  if ( (delta_x < -1) || (delta_x > 1) )
-	    delta_x /= 2;
-	  if ( (delta_y < -1) || (delta_y > 1) )
-	    delta_y /= 2;
-
-	  if (imMode == false)
+	  // If serial mouse, redirect data to serial port
+	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
-		  delta_z = 0;
+		serialPort.setData(new byte[] {(byte) delayed_dx, (byte) delayed_dy, (byte) delayed_dz, buttonStatus}, this);
 	  }
-
-	  if (delta_x != 0 || delta_y != 0 || delta_z != 0)
+	  else
 	  {
-		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
+		  // PS/2 mouse
+		  // Scale down the motion
+		  /*	  if ( (delta_x < -1) || (delta_x > 1) )
+		  	    delta_x /= 2;
+		  	  if ( (delta_y < -1) || (delta_y > 1) )
+		  	    delta_y /= 2;
+
+		  	  if (imMode == false)
+		  	  {
+		  		  delta_z = 0;
+		  	  }
+
+		  	  if (delta_x != 0 || delta_y != 0 || delta_z != 0)
+		  	  {
+		  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
+		  	  }
+
+		  	  if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0)
+		  	  {
+		  		  force_enq = true;
+		  	  }
+
+		  	  buttonStatus = (byte) (buttonState & 0x07);
+
+		  	  if(delta_x > 255) delta_x = 255;
+		  	  if(delta_y > 255) delta_y = 255;
+		  	  if(delta_x < -256) delta_x = -256;
+		  	  if(delta_y < -256) delta_y = -256;
+
+		  	  delayed_dx += delta_x;
+		  	  delayed_dy += delta_y;
+		  	  delayed_dz = delta_z;
+
+		  	  // TODO: why is this check necessary?
+		  	  if((delayed_dx > 255) || (delayed_dx<-256) || (delayed_dy > 255) || (delayed_dy < -256))
+		  	  {
+		  		  force_enq = true;
+		  	  }
+		  */
+		  	  this.storeBufferData(force_enq);
 	  }
-
-	  if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0)
-	  {
-		  force_enq = true;
-	  }
-
-	  buttonStatus = (byte) (buttonState & 0x07);
-
-	  if(delta_x > 255) delta_x = 255;
-	  if(delta_y > 255) delta_y = 255;
-	  if(delta_x < -256) delta_x = -256;
-	  if(delta_y < -256) delta_y = -256;
-
-	  delayed_dx += delta_x;
-	  delayed_dy += delta_y;
-	  delayed_dz = delta_z;
-
-	  // TODO: why is this check necessary?
-	  if((delayed_dx > 255) || (delayed_dx<-256) || (delayed_dy > 255) || (delayed_dy < -256))
-	  {
-		  force_enq = true;
-	  }
-
-	  this.storeBufferData(force_enq);
 	}
 
 
@@ -1024,6 +1065,8 @@ public class Mouse extends ModuleMouse
 
     	return false;
     }
+
+
 
     
 }

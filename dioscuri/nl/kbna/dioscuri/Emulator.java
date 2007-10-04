@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,6 +35,7 @@
 package nl.kbna.dioscuri;
 
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.logging.Level;
@@ -47,6 +48,7 @@ import nl.kbna.dioscuri.module.ModuleCPU;
 import nl.kbna.dioscuri.module.ModuleFDC;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMemory;
+import nl.kbna.dioscuri.module.ModuleMouse;
 import nl.kbna.dioscuri.module.ModuleVideo;
 
 
@@ -418,12 +420,22 @@ public class Emulator implements Runnable
     }
 
     
-    protected void generateScancode(KeyEvent keyEvent, int keyEventType)
+    protected void notifyKeyboard(KeyEvent keyEvent, int keyEventType)
     {
         ModuleKeyboard keyboard = (ModuleKeyboard) modules.getModule("keyboard");
         if (keyboard != null)
         {
             keyboard.generateScancode(keyEvent , keyEventType);
+        }
+    }
+
+    
+    protected void notifyMouse(MouseEvent mouseEvent)
+    {
+        ModuleMouse mouse = (ModuleMouse) modules.getModule("mouse");
+        if (mouse != null)
+        {
+        	mouse.mouseMotion(mouseEvent);
         }
     }
 

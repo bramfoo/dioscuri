@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-30 15:43:45 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -45,7 +45,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -55,30 +57,38 @@ import javax.swing.border.Border;
 
 public class MouseConfigDialog extends ConfigurationDialog
 {
-
-    private JTextField sizeField;
-        
+	// Attributes
+    private JLabel sizeLabel;
+    private JComboBox mouseTypeComboxBox;
+    
+    
+    // Constructor
+    
     public MouseConfigDialog(JFrame parent)
     {               
         super (parent, "Mouse Configuration", false, ModuleType.MOUSE);                    
     }
     
+    
+    // Methods
     /**
      * Read in params from XML.
      */
     protected void readInParams()
     {
         DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
-//        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
-        String type = "not available yet";
-        this.sizeField.setText(type);
+        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
+        
+        // Set mouse type
+        mouseTypeComboxBox.setSelectedItem((String)params[0]);
     }
 
+    
     protected void initDoButton()
     {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener()
-        {         
+        {
             public void actionPerformed(ActionEvent e)
             { 
                 saveParams();
@@ -91,34 +101,38 @@ public class MouseConfigDialog extends ConfigurationDialog
      */
     protected void initMainEntryPanel()
     {
-                   
-        JLabel sizeLabel = new JLabel("  Type");
+        sizeLabel = new JLabel("  Type");
         
-        //Formats to format and parse numbers
-        sizeField = new JFormattedTextField();
-        sizeField.setText("");
-        sizeField.setColumns(10);
-  
+        // Create mouse type selection
+        DefaultComboBoxModel mouseTypeModel = new DefaultComboBoxModel();
+        mouseTypeModel.addElement("ps/2");
+        mouseTypeModel.addElement("serial");
+        mouseTypeComboxBox = new JComboBox(mouseTypeModel);
+        mouseTypeComboxBox.setSelectedIndex(0);
+
+        // Layout components
         mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
         Border blackline = BorderFactory.createLineBorder(Color.black);    
         mainEntryPanel.setBorder(blackline);
         
-        //Fill first blanks in grid
+        // Fill first blanks in grid
         for (int i = 0; i < 3; i++)
         {
             mainEntryPanel.add(new JLabel("")); 
         }
         
+        // Add components to panel
         mainEntryPanel.add(sizeLabel); 
-        mainEntryPanel.add(sizeField);
+        mainEntryPanel.add(mouseTypeComboxBox);
         mainEntryPanel.add(new JLabel("")); 
         
-        //Fill end blanks in grid     
+        // Fill end blanks in grid     
         for (int i = 0; i < 24; i++)
         {
             mainEntryPanel.add(new JLabel("")); 
-        }       
+        }
     }
+    
     
     /**
      * Get the params from the GUI.
@@ -127,13 +141,10 @@ public class MouseConfigDialog extends ConfigurationDialog
      */    
     protected Object[] getParamsFromGui()
     {
-              
         Object[] params = new Object[1];
         
-        String type = sizeField.getText();      
-        params[0] = new Integer(type);
+        params[0] = mouseTypeComboxBox.getSelectedItem();
         
         return params;
     }
-        
 }

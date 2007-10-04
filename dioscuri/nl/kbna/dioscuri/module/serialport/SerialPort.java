@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-24 15:47:05 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -33,13 +33,6 @@
  */
 
 package nl.kbna.dioscuri.module.serialport;
-/*
- * "Some of my readers ask me what a 'Serial Port' is. The answer is: 
- * I don't know. Is it some kind of wine you have with breakfast?"
- * 
- * Information used in this module was taken from:
- * - http://mudlist.eorbit.net/~adam/pickey/ports.html
- */
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -55,6 +48,7 @@ import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.module.Module;
+import nl.kbna.dioscuri.module.ModulePIC;
 import nl.kbna.dioscuri.module.ModuleSerialPort;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.exception.ModuleException;
@@ -81,11 +75,49 @@ import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
  * general.ancestor            : 
  * general.successor           : 
  * 
+ * Notes:
+ * "Some of my readers ask me what a 'Serial Port' is. The answer is: 
+ * I don't know. Is it some kind of wine you have with breakfast?"
+ * - Module serial port supports up to 4 COM ports
+ * - Information used in this module was taken from: http://mudlist.eorbit.net/~adam/pickey/ports.html
+ * 
+ * PORT 03F8-03FF - serial port (8250,8250A,8251,16450,16550,16550A,etc.) COM1
+ * Range:	PORT 02E8h-02EFh (COM2), PORT 02F8h-02FFh (typical non-PS/2 COM3), and PORT 03E8h-03EFh (typical non-PS/2 COM4)
+ * Note:	chips overview:
+ * 	 8250  original PC, specified up to 56Kbd, but mostly runs
+ *	       only 9600Bd, no scratchregister, bug: sometimes shots
+ *	       ints without reasons
+ *	 8250A, 16450, 16C451: ATs, most chips run up to 115KBd,
+ *	       no bug: shots no causeless ints
+ *	 8250B: PC,XT,AT, pseudo bug: shots one causeless int for
+ *		compatibility with 8250, runs up to 56KBd
+ *	 16550, 16550N, 16550V: early PS/2, FIFO bugs
+ *	 16550A,16550AF,16550AFN,16550C,16C551,16C552: PS/2, FIFO ok
+ *	 82510: laptops & industry, multi emulation mode
+ *		(default=16450), special-FIFO.
+ *	 8251: completely different synchronous SIO chip, not compatible!
+ *
+ * 03F8   W  serial port, transmitter holding register (THR), which contains the character to be sent. Bit 0 is sent first.
+ *		bit 7-0	  data bits when DLAB=0 (Divisor Latch Access Bit)
+ * 03F8  R	  receiver buffer register (RBR), which contains the received character. Bit 0 is received first
+ *      bit 7-0   data bits when DLAB=0 (Divisor Latch Access Bit)
+ * 03F8  RW  divisor latch low byte (DLL) when DLAB=1 (see #P189)
+ * 03F9  RW  divisor latch high byte (DLM) when DLAB=1 (see #P189)
+ * 03F9  RW  interrupt enable register (IER) when DLAB=0 (see #P190)
+ * 03FA  R	  interrupt identification register (see #P191)
+ * 	Information about a pending interrupt is stored here. When the ID
+ * 	  register is addressed, thehighest priority interrupt is held, and
+ * 	  no other interrupts are acknowledged until the CPU services that interrupt.
+ * 03FA   W  16650 FIFO Control Register (FCR) (see #P192)
+ * 03FB  RW  line control register (LCR) (see #P193)
+ * 03FC  RW  modem control register (see #P194)
+ * 03FD  R	  line status register (LSR) (see #P195)
+ * 03FE  R	  modem status register (MSR) (see #P196)
+ * 03FF  RW  scratch register (SCR)
+ * 	(not used for serial I/O; available to any application using 16450, 16550) (not present on original 8250)
  * 
  */
 
-
-// TODO: Class is (mostly) a stub to return requested values to the BIOS
 public class SerialPort extends ModuleSerialPort
 {
 
@@ -93,8 +125,9 @@ public class SerialPort extends ModuleSerialPort
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard"}; 
+    private String[] moduleConnections = new String[] {"motherboard", "pic"}; 
     private ModuleMotherboard motherboard;
+    private ModulePIC pic;
 
     // Toggles
     private boolean isObserved;
@@ -103,8 +136,32 @@ public class SerialPort extends ModuleSerialPort
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.serialport");
     
+    // IRQ
+    private int irqNumber;                  // Interrupt number assigned by PIC
+
+    // Helper variables
+    private String[] cmd;
+    private int lastReadPort;
+    private int lastReadReturn;
+    private int lastWritePort;
+    private int lastWriteData;
+    
+    // COM-ports
+    private ComPort[] ports;
+    
+    // Data queue
+    private Stack<Integer> readPortQ = new Stack<Integer>();
+
+    
     // Constants
-    // FIXME: Separate ports into different serial devices
+    // Module specifics
+    public final static int MODULE_ID       = 1;
+    public final static String MODULE_TYPE  = "serialport";
+    public final static String MODULE_NAME  = "RS232 serial port";
+    
+    public final static int SERIALPORT_TOTALPORTS = 4;	// Defines the total number of COM ports
+
+    // COM1
     private final static int THR = 0x3F8;            // Write-only port
     private final static int RBR = 0x3F8;            // Read-only port
     private final static int DLL = 0x3F8;            // Read/Write port
@@ -118,6 +175,7 @@ public class SerialPort extends ModuleSerialPort
     private final static int MSR = 0x3FE;            // Read-only port
     private final static int SCR = 0x3FF;            // Read/Write port
     
+    // COM2
     private final static int THR2 = 0x2F8;            // Write-only port
     private final static int RBR2 = 0x2F8;            // Read-only port
     private final static int DLL2 = 0x2F8;            // Read/Write port
@@ -130,6 +188,8 @@ public class SerialPort extends ModuleSerialPort
     private final static int LSR2 = 0x2FD;            // Read-only port
     private final static int MSR2 = 0x2FE;            // Read-only port
     private final static int SCR2 = 0x2FF;            // Read/Write port
+    
+    // COM3
     private final static int THR3 = 0x3E8;            // Write-only port
     private final static int RBR3 = 0x3E8;            // Read-only port
     private final static int DLL3 = 0x3E8;            // Read/Write port
@@ -142,6 +202,8 @@ public class SerialPort extends ModuleSerialPort
     private final static int LSR3 = 0x3ED;            // Read-only port
     private final static int MSR3 = 0x3EE;            // Read-only port
     private final static int SCR3 = 0x3EF;            // Read/Write port
+    
+    // COM4
     private final static int THR4 = 0x2E8;            // Write-only port
     private final static int RBR4 = 0x2E8;            // Read-only port
     private final static int DLL4 = 0x2E8;            // Read/Write port
@@ -155,19 +217,6 @@ public class SerialPort extends ModuleSerialPort
     private final static int MSR4 = 0x2EE;            // Read-only port
     private final static int SCR4 = 0x2EF;            // Read/Write port
     
-    // Module specifics
-    public final static int MODULE_ID       = 1;
-    public final static String MODULE_TYPE  = "serialport";
-    public final static String MODULE_NAME  = "RS232 serial port";
-
-    // Helper variables
-    private String[] cmd;
-    int lastReadPort;
-    int lastReadReturn;
-    int lastWritePort;
-    int lastWriteData;
-    
-    Stack<Integer> readPortQ = new Stack<Integer>();
     
     // Constructor
 
@@ -183,6 +232,12 @@ public class SerialPort extends ModuleSerialPort
         isObserved = false;
         debugMode = false;
         
+        // Initialise IRQ
+        irqNumber = -1;
+        
+        // Init ports
+        ports = new ComPort[SERIALPORT_TOTALPORTS];
+
         // ELKS boot replies:
         readPortQ.push(0x00);
         readPortQ.push(0x00);
@@ -280,6 +335,12 @@ public class SerialPort extends ModuleSerialPort
             this.motherboard = (ModuleMotherboard)mod;
             return true;
         }
+        // Set connection for pic
+        else if (mod.getType().equalsIgnoreCase("pic"))
+        {
+            this.pic = (ModulePIC)mod;
+            return true;
+        }
         return false;
     }
 
@@ -292,7 +353,7 @@ public class SerialPort extends ModuleSerialPort
     public boolean isConnected()
     {
         // Check if module if connected
-        if (motherboard != null)
+        if (motherboard != null && pic != null)
         {
             return true;
         }
@@ -325,6 +386,7 @@ public class SerialPort extends ModuleSerialPort
         motherboard.setIOPort(LSR2, this);
         motherboard.setIOPort(MSR2, this);
         motherboard.setIOPort(SCR2, this);
+        
         motherboard.setIOPort(DLL3, this);
         motherboard.setIOPort(DLM3, this);
         motherboard.setIOPort(IIR3, this);
@@ -333,6 +395,7 @@ public class SerialPort extends ModuleSerialPort
         motherboard.setIOPort(LSR3, this);
         motherboard.setIOPort(MSR3, this);
         motherboard.setIOPort(SCR3, this);
+        
         motherboard.setIOPort(DLL4, this);
         motherboard.setIOPort(DLM4, this);
         motherboard.setIOPort(IIR4, this);
@@ -341,6 +404,19 @@ public class SerialPort extends ModuleSerialPort
         motherboard.setIOPort(LSR4, this);
         motherboard.setIOPort(MSR4, this);
         motherboard.setIOPort(SCR4, this);
+        
+        // Request IRQ number
+        irqNumber = pic.requestIRQNumber(this);
+        if (irqNumber > -1)
+        {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + irqNumber);
+        }
+        else
+        {
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Request of IRQ number failed.");
+        }
+
+        // TODO: reset COM-ports
         
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
 
@@ -447,7 +523,16 @@ public class SerialPort extends ModuleSerialPort
      */
     public boolean setData(byte[] data, Module sender)
     {
-        return false;
+    	// Push all bytes in queue
+    	if (data != null)
+    	{
+        	for (int i = 0; i < data.length; i++)
+        	{
+        		readPortQ.push((int)data[i] & 0xFF);
+        	}
+            return true;
+    	}
+		return false;
     }
 
 

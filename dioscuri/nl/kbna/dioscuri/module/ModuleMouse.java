@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-30 15:42:52 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,8 @@
 
 package nl.kbna.dioscuri.module;
 
+import java.awt.event.MouseEvent;
+
 /**
  * Interface representing a generic hardware module.
  *  
@@ -42,8 +44,9 @@ package nl.kbna.dioscuri.module;
 public abstract class ModuleMouse extends ModuleDevice
 {
     // Methods
-	public abstract boolean isBufferEmpty();
+	public abstract void setMouseType(String type);
 	
+	public abstract boolean isBufferEmpty();
 	
 	public abstract byte getDataFromBuffer(); // returns the head of the buffer FIFO, data is automatically removed from buffer
 	
@@ -51,4 +54,5 @@ public abstract class ModuleMouse extends ModuleDevice
 
     public abstract void controlMouse(byte value);
     
+    public abstract void mouseMotion(MouseEvent mouseEvent);
 }

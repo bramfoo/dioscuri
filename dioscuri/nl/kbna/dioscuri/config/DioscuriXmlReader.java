@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -148,6 +148,7 @@ public class DioscuriXmlReader
         {
             modules.addModule(new Keyboard(emulator));
         }
+        
         if (mouseNode != null)
         {
             modules.addModule(new Mouse(emulator));		// Mouse always requires a keyboard (controller)
@@ -163,6 +164,8 @@ public class DioscuriXmlReader
         
         modules.addModule(new DeviceDummy(emulator));
         modules.addModule(new Screen(emulator));
+        
+        // Assign array of modules to that of emulator
         emulator.setModules(modules);
         
         logger.log(Level.INFO, "All modules are created.");
@@ -276,7 +279,7 @@ public class DioscuriXmlReader
     }
     
     /**
-     * Load the Bios into RAM.
+     * Load the system and video BIOS into RAM.
      * 
      * @param emulator
      * @return success flag
@@ -694,25 +697,26 @@ public class DioscuriXmlReader
     }
     
     /**
-     * REad from config and set the hard drive params.
+     * Read from config and set the hard drive params.
      * 
-     * @param emulator
-     * @param ide
+     * @param Document document
+     * @param Emulator emulator
      */
-    public void readHardDriveParams(Document document, Emulator emulator, ATA ide)
+    public void readHardDriveParams(Document document, Emulator emulator)
     {
-        
+        // TODO: replace ATA reference by ModuleATA
+
+    	ATA ata = (ATA)emulator.getModules().getModule(ModuleType.ATA.toString());
 
         // Module ATA: set drive params, disk image and set update interval
-        // TODO: replace IDE reference by ModuleIDE
         Node ataDrivesNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.ATA); 
         NodeList hardDrives = ataDrivesNode.getChildNodes();
         
         
         for (int i = 0; i < hardDrives.getLength(); i++)
         {
-            this.addHardDrive(emulator, ide, hardDrives.item(i));
-        }     
+            this.addHardDrive(emulator, ata, hardDrives.item(i));
+        }
     }
     
     /**
@@ -817,9 +821,11 @@ public class DioscuriXmlReader
      * 
      * @param ide
      */
-    public void readBootParams(Document document, ATA ide)
+    public void readBootParams(Document document, Emulator emulator)
     {
         
+        ATA ata = (ATA)emulator.getModules().getModule(ModuleType.ATA.toString());
+
         Node bootDrivesNode = XmlConnect.getFirstNode(document, DioscuriXmlParams.BOOT_DRIVES_NODE);      
         NodeList bootDriveNodes = bootDrivesNode.getChildNodes();
 
@@ -896,9 +902,29 @@ public class DioscuriXmlReader
             }
          }
         
-//      control CMOS settings
-        ide.setCmosSettings(bootDrives, floppyCheckDisabled);
+        // Control CMOS settings
+        ata.setCmosSettings(bootDrives, floppyCheckDisabled);
         
+    }
+
+    /**
+     * Read from config and set mouse params.
+     * 
+     * @param Document document containing XML config
+     * @param Emulator emulator
+     */
+    public void readMouseParams(Document document, Emulator emulator)
+    {
+        Mouse mouse = (Mouse)emulator.getModules().getModule(ModuleType.MOUSE.toString());
+
+        Node mouseNode =   DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
+        
+        if(mouse != null && mouseNode != null)
+        {
+            NamedNodeMap attributes = mouseNode.getAttributes();
+            Node mouseTypeNode = attributes.getNamedItem(DioscuriXmlParams.MOUSE_TYPE_TEXT);
+            mouse.setMouseType(mouseTypeNode.getTextContent());
+        }
     }
     
 }
