@@ -1,9 +1,16 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 3 September 2007
+Date          : 4 October 2007
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
+
+
+0.3.0 : 04-10-2007
+-------------------------------------------------------
+- Added command line interface (start emulator automatically)
+- Added support for mouse
+- Added support for serial port (COM-ports 1 to 4)
 
 
 0.2.0 : 03-09-2007 (FreeDOS and ELKS capable)
