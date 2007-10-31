@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.14 $ $Date: 2007-08-24 15:55:51 $ $Author: blohman $
+ * $Revision: 1.15 $ $Date: 2007-10-31 09:10:02 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -476,7 +476,7 @@ public class CPU extends ModuleCPU
                 // Check for any breakpoints set
                 if (breakpointSet)
                 {
-                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 9105850)
+                    if (((convertWordToInt(cs) << 4) + convertWordToInt(ip)) == 9336542)
                     {
 //		              	this.cpuInstructionDebug = true;
                     	if (waitMessageShown == false)
@@ -1662,7 +1662,7 @@ public class CPU extends ModuleCPU
         /* 83 */  doubleByteInstructions[131] = new Instruction_JNB_JAE_JNC_long(this); // Conditional long jump on not carry
         /* 84 */  doubleByteInstructions[132] = new Instruction_JZ_JE_long(this);       // Conditional long jump on zero
         /* 85 */  doubleByteInstructions[133] = new Instruction_JNZ_JNE_long(this);     // Conditional long jump not zero
-        /* 86 */  doubleByteInstructions[134] = new Instruction_NULL(this); 
+        /* 86 */  doubleByteInstructions[134] = new Instruction_JBE_JNA_long(this);     // Conditional long jump on carry or zero 
         /* 87 */  doubleByteInstructions[135] = new Instruction_NULL(this);
         /* 88 */  doubleByteInstructions[136] = new Instruction_NULL(this);
         /* 89 */  doubleByteInstructions[137] = new Instruction_NULL(this);
