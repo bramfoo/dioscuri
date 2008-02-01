@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2008-02-01 14:38:23 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1086,6 +1086,13 @@ public class PIC extends ModulePIC
             ModuleATA ata = (ModuleATA)module;
             int currentChannelIndex = ata.getCurrentChannelIndex();
             irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
+            irqList[irqNumber] = module;
+            irqEnabled[irqNumber] = false;
+        }
+        else if (module.getType().equalsIgnoreCase("serialport"))
+        {
+            // Module SerialPort
+            irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
         }
