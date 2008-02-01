@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-01 14:37:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -69,7 +69,9 @@ import nl.kbna.dioscuri.module.ModuleSerialPort;
  * general.successor           : USB mouse
  * 
  * Notes:
- * - mouse uses keyboard controller. Therefore, a keyboard controller is always required when using this mouse.
+ * - mouse can use one of the following connection types:
+ * 		+ serial port
+ * 		+ PS/2 via keyboard controller
  * - all controller aspects are implemented in keyboard: (mouse is only pointing device but not controller)
  * 		+ I/O ports
  * 		+ IRQ handling
@@ -642,7 +644,7 @@ public class Mouse extends ModuleMouse
     
     public void controlMouse(byte value)
 	{
-		// if we are not using a ps2 mouse, some of the following commands need to return different values
+//FIXME:		// if we are not using a ps2 mouse, some of the following commands need to return different values
 		boolean isMousePS2;
 		isMousePS2 = false;
 		if ((mouseType == MOUSE_TYPE_PS2) || (mouseType == MOUSE_TYPE_IMPS2))
@@ -753,7 +755,7 @@ public class Mouse extends ModuleMouse
 			{
 
 				case (byte)0xBB: // OS/2 Warp 3 uses this command
-					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] ignoring 0xBB command");
+					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Ignoring command 0xBB");
 					break;
 	
 				case (byte)0xE6: // Set Mouse Scaling to 1:1
@@ -941,16 +943,20 @@ public class Mouse extends ModuleMouse
     public void mouseMotion(MouseEvent event)
     {
     	// TODO: handle event here!!!!!!!!!!
-  	  delayed_dx = event.getX();
-	  delayed_dy = event.getY();
-	  delayed_dz = event.getButton();
+    	delayed_dx = event.getX();
+    	delayed_dy = event.getY();
+    	delayed_dz = event.getButton();
 
 	  boolean force_enq = true;
 
 	  // If serial mouse, redirect data to serial port
 	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
-		serialPort.setData(new byte[] {(byte) delayed_dx, (byte) delayed_dy, (byte) delayed_dz, buttonStatus}, this);
+  		  serialPort.rx_fifo_enq(0, (byte) delayed_dx);
+  		  serialPort.rx_fifo_enq(0, (byte) delayed_dy);
+  		  serialPort.rx_fifo_enq(0, (byte) delayed_dz);
+  		  serialPort.rx_fifo_enq(0, (byte) buttonStatus);
+  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data sent to serialport");
 	  }
 	  else
 	  {
