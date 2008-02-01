@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:27 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2008-02-01 14:37:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -42,5 +42,8 @@ package nl.kbna.dioscuri.module;
 public abstract class ModuleSerialPort extends ModuleDevice
 {
     // Methods
+    public abstract void setBytes(byte[] data);
+    
+    public abstract void rx_fifo_enq(int port, byte data);
     
 }

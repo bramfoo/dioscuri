@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-01 14:37:42 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,26 +34,18 @@
 
 package nl.kbna.dioscuri.module.serialport;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Queue;
 import java.util.Stack;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.Emulator;
-import nl.kbna.dioscuri.module.Module;
-import nl.kbna.dioscuri.module.ModulePIC;
-import nl.kbna.dioscuri.module.ModuleSerialPort;
-import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
+import nl.kbna.dioscuri.module.Module;
+import nl.kbna.dioscuri.module.ModuleMotherboard;
+import nl.kbna.dioscuri.module.ModulePIC;
+import nl.kbna.dioscuri.module.ModuleSerialPort;
 
 /**
  * An implementation of a parallel port module.
@@ -78,12 +70,23 @@ import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
  * Notes:
  * "Some of my readers ask me what a 'Serial Port' is. The answer is: 
  * I don't know. Is it some kind of wine you have with breakfast?"
+ * 
+ * 
  * - Module serial port supports up to 4 COM ports
- * - Information used in this module was taken from: http://mudlist.eorbit.net/~adam/pickey/ports.html
+ * - It is based on the UART 16550A interface (including FIFO)
+ * - Data is transmitted in little-endian order (least significant bit first)
+ * 
+ * References:
+ * - I/O Port information:
+ * 		http://mudlist.eorbit.net/~adam/pickey/ports.html
+ * - UART register information from PC16550D UART with FIFOs (National Semiconductor):
+ * 		http://www.national.com/mpf/PC/PC16550D.html
+ * 
  * 
  * PORT 03F8-03FF - serial port (8250,8250A,8251,16450,16550,16550A,etc.) COM1
  * Range:	PORT 02E8h-02EFh (COM2), PORT 02F8h-02FFh (typical non-PS/2 COM3), and PORT 03E8h-03EFh (typical non-PS/2 COM4)
- * Note:	chips overview:
+ * 
+ * Chips overview:
  * 	 8250  original PC, specified up to 56Kbd, but mostly runs
  *	       only 9600Bd, no scratchregister, bug: sometimes shots
  *	       ints without reasons
@@ -97,22 +100,21 @@ import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
  *		(default=16450), special-FIFO.
  *	 8251: completely different synchronous SIO chip, not compatible!
  *
- * 03F8   W  serial port, transmitter holding register (THR), which contains the character to be sent. Bit 0 is sent first.
+ * Each COM-port uses 8 I/O ports and 12 UART interface registers:
+ * 03F8   W  transmitter holding register (THR), which contains the character to be sent. Bit 0 is sent first.
  *		bit 7-0	  data bits when DLAB=0 (Divisor Latch Access Bit)
  * 03F8  R	  receiver buffer register (RBR), which contains the received character. Bit 0 is received first
  *      bit 7-0   data bits when DLAB=0 (Divisor Latch Access Bit)
  * 03F8  RW  divisor latch low byte (DLL) when DLAB=1 (see #P189)
  * 03F9  RW  divisor latch high byte (DLM) when DLAB=1 (see #P189)
  * 03F9  RW  interrupt enable register (IER) when DLAB=0 (see #P190)
- * 03FA  R	  interrupt identification register (see #P191)
- * 	Information about a pending interrupt is stored here. When the ID
- * 	  register is addressed, thehighest priority interrupt is held, and
- * 	  no other interrupts are acknowledged until the CPU services that interrupt.
+ * 03FA  R	 interrupt identification register (IIR)
+ * 	Information about a pending interrupt is stored here. When the ID register is addressed, the highest priority interrupt is held, and no other interrupts are acknowledged until the CPU services that interrupt.
  * 03FA   W  16650 FIFO Control Register (FCR) (see #P192)
  * 03FB  RW  line control register (LCR) (see #P193)
  * 03FC  RW  modem control register (see #P194)
- * 03FD  R	  line status register (LSR) (see #P195)
- * 03FE  R	  modem status register (MSR) (see #P196)
+ * 03FD  R	 line status register (LSR) (see #P195)
+ * 03FE  R	 modem status register (MSR) (see #P196)
  * 03FF  RW  scratch register (SCR)
  * 	(not used for serial I/O; available to any application using 16450, 16550) (not present on original 8250)
  * 
@@ -123,6 +125,10 @@ public class SerialPort extends ModuleSerialPort
 
     // Attributes
 
+	// TODO: some parameters should be set by configuration management, like
+	// - Total number of COM-ports
+	// - 
+	
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "pic"}; 
@@ -139,15 +145,8 @@ public class SerialPort extends ModuleSerialPort
     // IRQ
     private int irqNumber;                  // Interrupt number assigned by PIC
 
-    // Helper variables
-    private String[] cmd;
-    private int lastReadPort;
-    private int lastReadReturn;
-    private int lastWritePort;
-    private int lastWriteData;
-    
     // COM-ports
-    private ComPort[] ports;
+    private ComPort[] comPorts;
     
     // Data queue
     private Stack<Integer> readPortQ = new Stack<Integer>();
@@ -159,63 +158,34 @@ public class SerialPort extends ModuleSerialPort
     public final static String MODULE_TYPE  = "serialport";
     public final static String MODULE_NAME  = "RS232 serial port";
     
-    public final static int SERIALPORT_TOTALPORTS = 4;	// Defines the total number of COM ports
+    public final static int TOTALCOMPORTS = 4;	// Defines the total number of COM ports
 
-    // COM1
-    private final static int THR = 0x3F8;            // Write-only port
-    private final static int RBR = 0x3F8;            // Read-only port
-    private final static int DLL = 0x3F8;            // Read/Write port
-    private final static int DLM = 0x3F9;            // Read/Write port
-    private final static int IER = 0x3F9;            // Read/Write port
-    private final static int IIR = 0x3FA;            // Read-only port
-    private final static int FCR = 0x3FA;            // Write-only port
-    private final static int LCR = 0x3FB;            // Read/Write port
-    private final static int MCR = 0x3FC;            // Read/Write port    
-    private final static int LSR = 0x3FD;            // Read-only port
-    private final static int MSR = 0x3FE;            // Read-only port
-    private final static int SCR = 0x3FF;            // Read/Write port
+    // I/O ports COM1 - 4
+    private final static int[] IOPORTS = 	new int[]{0x3F8, 0x2F8, 0x3E8, 0x2E8};
     
-    // COM2
-    private final static int THR2 = 0x2F8;            // Write-only port
-    private final static int RBR2 = 0x2F8;            // Read-only port
-    private final static int DLL2 = 0x2F8;            // Read/Write port
-    private final static int DLM2 = 0x2F9;            // Read/Write port
-    private final static int IER2 = 0x2F9;            // Read/Write port
-    private final static int IIR2 = 0x2FA;            // Read-only port
-    private final static int FCR2 = 0x2FA;            // Write-only port
-    private final static int LCR2 = 0x2FB;            // Read/Write port
-    private final static int MCR2 = 0x2FC;            // Read/Write port    
-    private final static int LSR2 = 0x2FD;            // Read-only port
-    private final static int MSR2 = 0x2FE;            // Read-only port
-    private final static int SCR2 = 0x2FF;            // Read/Write port
+    // Offset UART registers (in conjunction with I/O port addresses)
+    private final static int THR = 0;            // Write-only port
+    private final static int RBR = 0;            // Read-only port
+    private final static int DLL = 0;            // Read/Write port
+    private final static int DLM = 1;            // Read/Write port
+    private final static int IER = 1;            // Read/Write port
+    private final static int IIR = 2;            // Read-only port
+    private final static int FCR = 2;            // Write-only port
+    private final static int LCR = 3;            // Read/Write port
+    private final static int MCR = 4;            // Read/Write port    
+    private final static int LSR = 5;            // Read-only port
+    private final static int MSR = 6;            // Read-only port
+    private final static int SCR = 7;            // Read/Write port
+
+    private final static int INTERRUPT_IER		= 0;
+    private final static int INTERRUPT_RXDATA	= 1;
+    private final static int INTERRUPT_TXHOLD	= 2;
+    private final static int INTERRUPT_RXLSTAT	= 3;
+    private final static int INTERRUPT_MODSTAT	= 4;
+    private final static int INTERRUPT_FIFO		= 5;
     
-    // COM3
-    private final static int THR3 = 0x3E8;            // Write-only port
-    private final static int RBR3 = 0x3E8;            // Read-only port
-    private final static int DLL3 = 0x3E8;            // Read/Write port
-    private final static int DLM3 = 0x3E9;            // Read/Write port
-    private final static int IER3 = 0x3E9;            // Read/Write port
-    private final static int IIR3 = 0x3EA;            // Read-only port
-    private final static int FCR3 = 0x3EA;            // Write-only port
-    private final static int LCR3 = 0x3EB;            // Read/Write port
-    private final static int MCR3 = 0x3EC;            // Read/Write port    
-    private final static int LSR3 = 0x3ED;            // Read-only port
-    private final static int MSR3 = 0x3EE;            // Read-only port
-    private final static int SCR3 = 0x3EF;            // Read/Write port
+    private final static int BUFFERSIZE = 16;	// Maximum allowable FIFO buffer size
     
-    // COM4
-    private final static int THR4 = 0x2E8;            // Write-only port
-    private final static int RBR4 = 0x2E8;            // Read-only port
-    private final static int DLL4 = 0x2E8;            // Read/Write port
-    private final static int DLM4 = 0x2E9;            // Read/Write port
-    private final static int IER4 = 0x2E9;            // Read/Write port
-    private final static int IIR4 = 0x2EA;            // Read-only port
-    private final static int FCR4 = 0x2EA;            // Write-only port
-    private final static int LCR4 = 0x2EB;            // Read/Write port
-    private final static int MCR4 = 0x2EC;            // Read/Write port    
-    private final static int LSR4 = 0x2ED;            // Read-only port
-    private final static int MSR4 = 0x2EE;            // Read-only port
-    private final static int SCR4 = 0x2EF;            // Read/Write port
     
     
     // Constructor
@@ -224,8 +194,10 @@ public class SerialPort extends ModuleSerialPort
      * Class constructor
      * 
      */
-    public SerialPort(Emulator owner)
+	public SerialPort(Emulator owner)
     {
+    	Object put;
+    	
         emu = owner;
         
         // Initialise variables
@@ -235,8 +207,19 @@ public class SerialPort extends ModuleSerialPort
         // Initialise IRQ
         irqNumber = -1;
         
-        // Init ports
-        ports = new ComPort[SERIALPORT_TOTALPORTS];
+        // Create COM-ports
+        comPorts = new ComPort[TOTALCOMPORTS];
+        for (int c = 0; c < TOTALCOMPORTS; c++)
+        {
+           	comPorts[c] = new ComPort();
+        }
+        
+        // ALTERNATIVE: using HashMap instead of array...
+//      comPorts = new HashMap(4);
+//        put = comPorts.put(0x3F8, new ComPort());
+//        put = comPorts.put(0x2F8, new ComPort());
+//        put = comPorts.put(0x3E8, new ComPort());
+//        put = comPorts.put(0x2E8, new ComPort());
 
         // ELKS boot replies:
         readPortQ.push(0x00);
@@ -378,46 +361,41 @@ public class SerialPort extends ModuleSerialPort
         motherboard.setIOPort(MSR, this);
         motherboard.setIOPort(SCR, this);
 
-        motherboard.setIOPort(DLL2, this);
-        motherboard.setIOPort(DLM2, this);
-        motherboard.setIOPort(IIR2, this);
-        motherboard.setIOPort(LCR2, this);
-        motherboard.setIOPort(MCR2, this);
-        motherboard.setIOPort(LSR2, this);
-        motherboard.setIOPort(MSR2, this);
-        motherboard.setIOPort(SCR2, this);
         
-        motherboard.setIOPort(DLL3, this);
-        motherboard.setIOPort(DLM3, this);
-        motherboard.setIOPort(IIR3, this);
-        motherboard.setIOPort(LCR3, this);
-        motherboard.setIOPort(MCR3, this);
-        motherboard.setIOPort(LSR3, this);
-        motherboard.setIOPort(MSR3, this);
-        motherboard.setIOPort(SCR3, this);
-        
-        motherboard.setIOPort(DLL4, this);
-        motherboard.setIOPort(DLM4, this);
-        motherboard.setIOPort(IIR4, this);
-        motherboard.setIOPort(LCR4, this);
-        motherboard.setIOPort(MCR4, this);
-        motherboard.setIOPort(LSR4, this);
-        motherboard.setIOPort(MSR4, this);
-        motherboard.setIOPort(SCR4, this);
-        
-        // Request IRQ number
-        irqNumber = pic.requestIRQNumber(this);
-        if (irqNumber > -1)
+        // Reset COM-ports
+        for (int c = 0; c < comPorts.length; c++)
         {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + irqNumber);
-        }
-        else
-        {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Request of IRQ number failed.");
+        	// Register I/O ports
+        	for (int i = 0; i < 8; i++)
+        	{
+        		// Register range of ports per COM port
+        		motherboard.setIOPort(IOPORTS[c] + i, this);
+        	}
+        	
+        	// Reset UART registers
+        	comPorts[c].reset();
+        	
+            // Request IRQ number (only for COM 3 and 4)
+        	// FIXME: check if more than 1 IRQ number is needed (1 for each port?)
+//            comPorts[c].irq = 4 - (c & 0x01);
+            if (c < 1)
+            {
+            	irqNumber = pic.requestIRQNumber(this);
+
+            	if (irqNumber > -1)
+                {
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + irqNumber);
+                }
+                else
+                {
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Request of IRQ number failed.");
+                }
+            }
+
+            
+            
         }
 
-        // TODO: reset COM-ports
-        
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
 
         return true;
@@ -523,16 +501,7 @@ public class SerialPort extends ModuleSerialPort
      */
     public boolean setData(byte[] data, Module sender)
     {
-    	// Push all bytes in queue
-    	if (data != null)
-    	{
-        	for (int i = 0; i < data.length; i++)
-        	{
-        		readPortQ.push((int)data[i] & 0xFF);
-        	}
-            return true;
-    	}
-		return false;
+    	return false;
     }
 
 
@@ -601,17 +570,214 @@ public class SerialPort extends ModuleSerialPort
      * IN instruction to serial port<BR>
      * @param portAddress   the target port; can be any of 0x03F[8-F], 0x02F[8-F], 0x03E[8-F], or 2E[8-F]<BR>
      * 
-     * IN to portAddress 378h does ...<BR>
-     * IN to portAddress 379h does ...<BR>
-     * IN to portAddress 37Ah does ...<BR>
-     * 
-     * @return byte of data from ...
+     * @return byte of data from COM-port register
      */
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort, ModuleWriteOnlyPortException
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from " + portAddress);
-        int returnValue = 0x00;
+    	int offset, port;
+    	byte value = 0x00;
+
+        // Offset for UART registers
+        offset = portAddress & 0x07;
         
+        // Select COM-port
+        switch (portAddress & 0x03F8)
+        {
+			case 0x03F8:
+					port = 0;
+					break;
+					
+			case 0x02F8:
+					port = 1;
+					break;
+					
+			case 0x03E8:
+					port = 2;
+					break;
+					
+			case 0x02E8:
+					port = 3;
+					break;
+			
+			default:
+					port = 0;
+					logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown COM-port. Selected default (COM1)");
+        }
+
+        switch (offset)
+        {
+	        case RBR: // DLAB = 0: Receive buffer, DLAB = 1: divisor latch LSB
+	          if (comPorts[port].lcr_dlab == 1)
+	          {
+	        	  // DLAB = 1: DLL
+	        	  value = (byte) comPorts[port].dll;
+	          }
+	          else
+	          {
+	        	  // DLAB = 0: RBR
+	        	  if (comPorts[port].fcr_enable == 1)
+	        	  {
+	        		  // FIFO buffer active
+	        		  value = comPorts[port].rcvrFIFO.getByte();
+	              
+		              if (comPorts[port].rcvrFIFO.isEmpty())
+		              {
+		            	  // FIFO buffer is empty, reset registers
+		            	  comPorts[port].lsr_rxdata_ready = 0;
+		            	  comPorts[port].rx_interrupt = 0;
+		            	  comPorts[port].rx_ipending = 0;
+		            	  comPorts[port].fifo_interrupt = 0;
+		            	  comPorts[port].fifo_ipending = 0;
+		            	  this.clearIRQ(port);
+		              }
+		          }
+	        	  else
+		          {
+	        		  // FIFO buffer not active
+		              value = comPorts[port].rbr;
+		              comPorts[port].lsr_rxdata_ready = 0;
+		              comPorts[port].rx_interrupt = 0;
+		              comPorts[port].rx_ipending = 0;
+		              this.clearIRQ(port);
+		          }
+	          }
+	          break;
+
+        case IER: // DLAB = 0: Interrupt Enable register, DLAB = 1: Divisor Latch MSB
+          if (comPorts[port].lcr_dlab == 1)
+          {
+        	  // DLAB = 1: DLM
+        	  value = (byte) comPorts[port].dlm;
+          }
+          else
+          {
+        	  // DLAB = 0: IER
+        	  value = (byte) (comPorts[port].ier_rxdata_enable | 
+        	  	(comPorts[port].ier_txhold_enable  << 1) |
+                (comPorts[port].ier_rxlstat_enable << 2) |
+                (comPorts[port].ier_modstat_enable << 3));
+          }
+          break;
+
+        case IIR: // Interrupt Identification register
+           // Set the interrupt ID based on interrupt source
+          if (comPorts[port].ls_interrupt == 1)
+          {
+        	  comPorts[port].iir_int_ID = 0x3;
+        	  comPorts[port].iir_ipending = 0;
+          }
+          else if (comPorts[port].fifo_interrupt == 1)
+          {
+        	  comPorts[port].iir_int_ID = 0x6;
+        	  comPorts[port].iir_ipending = 0;
+          }
+          else if (comPorts[port].rx_interrupt == 1)
+          {
+        	  comPorts[port].iir_int_ID = 0x2;
+        	  comPorts[port].iir_ipending = 0;
+          }
+          else if (comPorts[port].tx_interrupt == 1)
+          {
+        	  comPorts[port].iir_int_ID = 0x1;
+        	  comPorts[port].iir_ipending = 0;
+          }
+          else if (comPorts[port].ms_interrupt == 1)
+          {
+        	  comPorts[port].iir_int_ID = 0x0;
+        	  comPorts[port].iir_ipending = 0;
+          }
+          else
+          {
+        	  comPorts[port].iir_int_ID = 0x0;
+        	  comPorts[port].iir_ipending = 1;
+          }
+          comPorts[port].tx_interrupt = 0;
+          this.clearIRQ(port);
+
+          value = (byte) (comPorts[port].iir_ipending  | 
+                (comPorts[port].iir_int_ID << 1) | 
+                (comPorts[port].fcr_enable == 1? 0xC0 : 0x00));
+          break;
+
+        case LCR: // Line Control register
+          // Return LCR
+          value = (byte) (comPorts[port].lcr_wordlen_sel |
+                (comPorts[port].lcr_stopbits       << 2) |
+                (comPorts[port].lcr_parity_enable  << 3) |
+                (comPorts[port].lcr_evenparity_sel << 4) |
+                (comPorts[port].lcr_stick_parity   << 5) |
+                (comPorts[port].lcr_break_cntl     << 6) |
+                (comPorts[port].lcr_dlab           << 7));
+          break;
+
+        case MCR: // MODEM Control register
+            // Return LCR
+          value = (byte) (comPorts[port].mcr_dtr |
+                (comPorts[port].mcr_rts << 1) |
+                (comPorts[port].mcr_out1 << 2) |
+                (comPorts[port].mcr_out2 << 3) |
+                (comPorts[port].mcr_local_loopback << 4));
+          break;
+
+        case LSR: // Line Status register
+            // Return LSR
+          value = (byte) (comPorts[port].lsr_rxdata_ready |
+                (comPorts[port].lsr_overrun_error  << 1) |
+                (comPorts[port].lsr_parity_error   << 2) |
+                (comPorts[port].lsr_framing_error  << 3) |
+                (comPorts[port].lsr_break_int      << 4) |
+                (comPorts[port].lsr_thr_empty      << 5) |
+                (comPorts[port].lsr_tsr_empty      << 6) |
+                (comPorts[port].lsr_fifo_error     << 7));
+
+          // Reset LSR variables and interrupts
+          comPorts[port].lsr_overrun_error = 0;
+          comPorts[port].lsr_parity_error = 0;
+          comPorts[port].lsr_framing_error = 0;
+          comPorts[port].lsr_break_int = 0;
+          comPorts[port].lsr_fifo_error = 0;
+          comPorts[port].ls_interrupt = 0;
+          comPorts[port].ls_ipending = 0;
+          this.clearIRQ(port);
+          break;
+
+        case MSR: // MODEM Status register
+        	// Return MSR
+          value = (byte) (comPorts[port].msr_delta_cts |
+                (comPorts[port].msr_delta_dsr    << 1) |
+                (comPorts[port].msr_ri_trailedge << 2) |
+                (comPorts[port].msr_delta_dcd    << 3) |
+                (comPorts[port].msr_cts          << 4) |
+                (comPorts[port].msr_dsr          << 5) |
+                (comPorts[port].msr_ri           << 6) |
+                (comPorts[port].msr_dcd          << 7));
+          
+          // Reset MSR
+          comPorts[port].msr_delta_cts = 0;
+          comPorts[port].msr_delta_dsr = 0;
+          comPorts[port].msr_ri_trailedge = 0;
+          comPorts[port].msr_delta_dcd = 0;
+          
+          // Clear interrupt
+          comPorts[port].ms_interrupt = 0;
+          comPorts[port].ms_ipending = 0;
+          this.clearIRQ(port);
+          break;
+
+        case SCR: // Scratch register
+          value = (byte) comPorts[port].scr;
+          break;
+
+        default:
+          value = -1;
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Error while reading I/O port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": no case match");
+        break;
+      }
+
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Read (byte) from port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)value) & 0xFF).toUpperCase());
+        
+        return value;
+
 /* 
  * Interactive mode
  */
@@ -645,7 +811,7 @@ public class SerialPort extends ModuleSerialPort
 /*
  * Queue mode
  */      
-        if (!readPortQ.isEmpty())
+/*        if (!readPortQ.isEmpty())
         {
             return readPortQ.pop().byteValue();
         }
@@ -654,7 +820,7 @@ public class SerialPort extends ModuleSerialPort
             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Queue empty, returning default value 0x00");
             return (byte) 0x00;
         }
-        
+*/        
     }
 
     /**
@@ -667,23 +833,477 @@ public class SerialPort extends ModuleSerialPort
      */
     public void setIOPortByte(int portAddress, byte data) throws ModuleUnknownPort
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to " + portAddress + " = " + data);
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Write (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)data) & 0xFF).toUpperCase());
         
-        switch (portAddress)
+        int new_b0, new_b1, new_b2, new_b3;
+        int new_b4, new_b5, new_b6, new_b7;
+        boolean raiseInterrupt = false;
+        int prev_cts, prev_dsr, prev_ri, prev_dcd;
+        int offset, new_wordlen;
+        int port = 0;
+
+        // Sort out each bit of new data
+        new_b0 = data & 0x01;
+        new_b1 = (data & 0x02) >> 1;
+        new_b2 = (data & 0x04) >> 2;
+        new_b3 = (data & 0x08) >> 3;
+        new_b4 = (data & 0x10) >> 4;
+        new_b5 = (data & 0x20) >> 5;
+        new_b6 = (data & 0x40) >> 6;
+        new_b7 = ((data & 0x80) >> 7) & 0x01;	// to ensure data is unsigned
+
+        // Offset for UART registers
+        offset = portAddress & 0x07;
+        
+        // Select COM-port
+        switch (portAddress & 0x03F8)
         {
-           case (DLM):
-            case (DLM2):
-            case (DLM3):
-            case (DLM4):                
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port " + Integer.toHexString(portAddress).toUpperCase() + " received, not handled");
-                break;
-            
-            default:
-                    throw new ModuleUnknownPort("[" + MODULE_TYPE + "] Unknown I/O port requested");
+			case 0x03F8:
+					port = 0;
+					break;
+					
+			case 0x02F8:
+					port = 1;
+					break;
+					
+			case 0x03E8:
+					port = 2;
+					break;
+					
+			case 0x02E8:
+					port = 3;
+					break;
+			
+			default:
+					port = 0;
+					logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown COM-port. Selected default (COM1)");
         }
-        
-        lastWritePort = portAddress;
-        lastWriteData = data;
+
+        switch (offset)
+        {
+          case THR: // DLAB = 0: Transmit buffer, DLAB = 1: Divisor Latch LSB
+            if (comPorts[port].lcr_dlab == 1)
+            {
+            	// DLAB = 1: DLL
+            	comPorts[port].dll = data;
+
+            	if ((comPorts[port].dll != 0) || (comPorts[port].dlm != 0))
+            	{
+//FIXME:            		comPorts[port].baudrate = (int) (BX_PC_CLOCK_XTL / (16 * ((comPorts[port].dlm << 8) | comPorts[port].dll)));
+            	}
+            }
+            else
+            {
+            	// DLAB = 0: THR
+            	byte bitmask = (byte) (0xFF >> (3 - comPorts[port].lcr_wordlen_sel));
+                
+                // Check if THR is empty or not
+                if (comPorts[port].lsr_thr_empty == 1)
+                {
+                	// Check if FIFO is active
+                	if (comPorts[port].fcr_enable == 1)
+                	{
+                		// FIFO active: set data
+                		comPorts[port].xmitFIFO.setByte((byte) (data & bitmask));
+                	}
+                	else
+                	{
+                		// FIFO not active: set THR
+                		comPorts[port].thr = (byte) (data & bitmask);
+                	}
+                	
+                	// THR no longer empty
+                	comPorts[port].lsr_thr_empty = 0;
+                	
+                	// Check if both THR and TSR were empty
+                	if (comPorts[port].lsr_tsr_empty == 1)
+                	{
+                		if (comPorts[port].fcr_enable == 1)
+                		{
+                			// FIFO active: set TSR with data
+                			comPorts[port].tsr = comPorts[port].xmitFIFO.getByte();
+                			comPorts[port].lsr_thr_empty = comPorts[port].xmitFIFO.isEmpty()? 1 : 0;
+                		}
+                		else
+                		{
+                			// FIFO not active: copy THR to TSR
+                			comPorts[port].tsr = comPorts[port].thr;
+                			comPorts[port].lsr_thr_empty = 1;
+                		}
+                		
+                		// TSR is not empty anymore
+                		comPorts[port].lsr_tsr_empty = 0;
+                		this.setIRQ(port, INTERRUPT_TXHOLD);
+//FIXME:                		bx_pc_system.activate_timer(comPorts[port].tx_timer_index, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].line_cntl.wordlen_sel + 5)), 0); /* not continuous */
+                	}
+                	else
+                	{
+                		// No changes to TSR
+                		comPorts[port].tx_interrupt = 0;
+                		this.clearIRQ(port);
+                	}
+                }
+                else
+                {
+                	// THR is not empty, already contains character
+                	if (comPorts[port].fcr_enable == 1)
+                	{
+                		// Check if FIFO does not exceed BUFFERSIZE
+                		if (comPorts[port].xmitFIFO.size() < BUFFERSIZE)
+                		{
+                			comPorts[port].xmitFIFO.setByte((byte) (data & bitmask));
+                		}
+                		else
+                		{
+                			// FIFO buffer overflow
+        					logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Error: FIFO buffer overflow");
+        					comPorts[port].lsr_overrun_error = 1;
+                		}
+                	}
+                	else
+                	{
+    					logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Error: THR buffer overflow. Can not write to buffer while not empty");
+    					comPorts[port].lsr_overrun_error = 1;
+                	}
+                }
+            }
+            break;
+
+          case IER: // DLAB = 0: Interrupt Enable register, DLAB = 1: Divisor Latch MSB
+            if (comPorts[port].lcr_dlab == 1)
+            {
+            	// DLAB = 1: set dlm
+            	comPorts[port].dlm = data;
+
+            	if ((comPorts[port].dlm != 0) || (comPorts[port].dll != 0))
+            	{
+//FIXME:            		comPorts[port].baudrate = (int) (BX_PC_CLOCK_XTL / (16 * ((comPorts[port].divisor_msb << 8) | comPorts[port].divisor_lsb)));
+            	}
+            }
+            else
+            {
+            	// Check if MODEM Status interrupt should change
+            	if (new_b3 != comPorts[port].ier_modstat_enable)
+            	{
+            		// Update MODEM Status interrupt
+            		comPorts[port].ier_modstat_enable = new_b3;
+                
+            		if (comPorts[port].ier_modstat_enable == 1)
+            		{
+            			// MS int enabled
+            			if (comPorts[port].ms_ipending == 1)
+            			{
+            				comPorts[port].ms_interrupt = 1;
+            				comPorts[port].ms_ipending = 0;
+            				raiseInterrupt = true;
+            			}
+            		}
+            		else
+            		{
+            			// MS int disabled
+            			if (comPorts[port].ms_interrupt == 1)
+            			{
+            				comPorts[port].ms_interrupt = 0;
+            				comPorts[port].ms_ipending = 1;
+            				this.clearIRQ(port);
+            			}
+            		}
+            	}
+            	
+            	// Check if Received Data Available interrupt should change
+            	if (new_b0 != comPorts[port].ier_rxdata_enable)
+            	{
+        			// Update RDA interrupt
+            		comPorts[port].ier_rxdata_enable = new_b0;
+            		if (comPorts[port].ier_rxdata_enable == 1)
+            		{
+            			// RDA int enabled
+            			if (comPorts[port].fifo_ipending == 1)
+            			{
+            				comPorts[port].fifo_interrupt = 1;
+            				comPorts[port].fifo_ipending = 0;
+            				raiseInterrupt = true;
+            			}
+            			
+            			if (comPorts[port].rx_ipending == 1)
+            			{
+            				comPorts[port].rx_interrupt = 1;
+            				comPorts[port].rx_ipending = 0;
+            				raiseInterrupt = true;
+            			}
+            		}
+            		else
+            		{
+            			// RDA int disabled
+            			if (comPorts[port].rx_interrupt == 1)
+            			{
+            				comPorts[port].rx_interrupt = 0;
+            				comPorts[port].rx_ipending = 1;
+            				this.clearIRQ(port);
+            			}
+            			
+            			if (comPorts[port].fifo_interrupt == 1)
+            			{
+            				comPorts[port].fifo_interrupt = 0;
+            				comPorts[port].fifo_ipending = 1;
+            				this.clearIRQ(port);
+            			}
+            		}
+            	}
+
+            	// Check if Transmitter Holding Register Empty interrupt should change
+            	if (new_b1 != comPorts[port].ier_txhold_enable)
+            	{
+            		// Update THRE interrupt
+            		comPorts[port].ier_txhold_enable = new_b1;
+            		
+            		if (comPorts[port].ier_txhold_enable == 1)
+            		{
+            			// Set transfer interrupt if THR/FIFO is empty (can receive new byte)
+            			comPorts[port].tx_interrupt = comPorts[port].lsr_thr_empty;
+            			
+            			if (comPorts[port].tx_interrupt == 1)
+            			{
+            				raiseInterrupt = true;
+            			}
+            		}
+            		else
+            		{
+            			comPorts[port].tx_interrupt = 0;
+            			this.clearIRQ(port);
+            		}
+            	}
+            	
+            	// Check if Receiver Line Status interrupt should change
+            	if (new_b2 != comPorts[port].ier_rxlstat_enable)
+            	{
+            		// Update RLS interrupt
+            		comPorts[port].ier_rxlstat_enable  = new_b2;
+            		if (comPorts[port].ier_rxlstat_enable == 1)
+            		{
+            			// RLS int enabled
+            			if (comPorts[port].ls_ipending == 1)
+            			{
+            				comPorts[port].ls_interrupt = 1;
+            				comPorts[port].ls_ipending = 0;
+            				raiseInterrupt = true;
+            			}
+            		}
+            		else
+            		{
+            			// RLS int disabled
+            			if (comPorts[port].ls_interrupt == 1)
+            			{
+            				comPorts[port].ls_interrupt = 0;
+            				comPorts[port].ls_ipending = 1;
+            				this.clearIRQ(port);
+            			}
+            		}
+            	}
+            	
+            	// Check if interrupt should be raised (do it once)
+            	if (raiseInterrupt == true)
+        		{
+            		this.setIRQ(port, INTERRUPT_IER);
+        		}
+            }
+            break;
+
+          	case FCR: // FIFO Control register
+          		if (new_b0 == 1 && !(comPorts[port].fcr_enable == 1))
+          		{
+          			// Activate FIFO buffers
+          			comPorts[port].rcvrFIFO.clear();
+          			comPorts[port].xmitFIFO.clear();
+					logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " FIFO buffer enabled");
+          		}
+          		
+          		comPorts[port].fcr_enable = new_b0;
+          		
+          		if (new_b1 == 1)
+          		{
+          			comPorts[port].rcvrFIFO.clear();
+          		}
+          		
+          		if (new_b2 == 1)
+          		{
+          			comPorts[port].xmitFIFO.clear();
+          		}
+          		
+          		// Set RCVR FIFO trigger level (range is 1,4,8,14 bytes)
+          		comPorts[port].fcr_rxtrigger = (data & 0xC0) >> 6;
+            break;
+
+          case LCR: // Line Control register
+            new_wordlen = data & 0x03;
+            comPorts[port].lcr_wordlen_sel = new_wordlen;
+            comPorts[port].lcr_stopbits = new_b2;
+            comPorts[port].lcr_parity_enable = new_b3;
+            comPorts[port].lcr_evenparity_sel = new_b4;
+            comPorts[port].lcr_stick_parity = new_b5;
+            comPorts[port].lcr_break_cntl = new_b6;
+            
+            // Check if spacing character should be queued
+            if (comPorts[port].mcr_local_loopback == 1 && comPorts[port].lcr_break_cntl == 1)
+            {
+            	comPorts[port].lsr_break_int = 1;
+            	comPorts[port].lsr_framing_error = 1;
+            	rx_fifo_enq(port, (byte) 0x00);
+            }
+            
+//FIXME:            // used when doing future writes
+/*            if (!new_b7 && comPorts[port].lcr_dlab)
+            {
+            	// Start the receive polling process if not already started
+            	// and there is a valid baudrate.
+            	if (comPorts[port].rx_pollstate == BX_SER_RXIDLE && comPorts[port].baudrate != 0)
+            	{
+            		comPorts[port].rx_pollstate = BX_SER_RXPOLL;
+            		bx_pc_system.activate_timer(comPorts[port].rx_timer_index,
+                                            (int) (1000000.0 / comPorts[port].baudrate *
+                                            (comPorts[port].lcr_wordlen_sel + 5)),
+                                            0); // not continuous
+            	}
+            	
+            	BX_DEBUG(("com%d: baud rate set - %d", port+1, comPorts[port].baudrate));
+            }
+*/            
+            // Set DLAB
+            comPorts[port].lcr_dlab = new_b7;
+            break;
+
+          case MCR: // MODEM control register
+/*            if ((comPorts[port].io_mode == BX_SER_MODE_MOUSE) && (comPorts[port].lcr_wordlen_sel == 2))
+            {
+            	if (new_b0 && !new_b1) BX_SER_THIS detect_mouse = 1;
+            	if (new_b0 && new_b1 && (BX_SER_THIS detect_mouse == 1)) BX_SER_THIS detect_mouse = 2;
+            }
+*/            
+            comPorts[port].mcr_dtr  = new_b0;
+            comPorts[port].mcr_rts  = new_b1;
+            comPorts[port].mcr_out1 = new_b2;
+            comPorts[port].mcr_out2 = new_b3;
+
+            if (new_b4 != comPorts[port].mcr_local_loopback)
+            {
+            	comPorts[port].mcr_local_loopback = new_b4;
+            	if (comPorts[port].mcr_local_loopback == 1)
+            	{
+            		// Transition to loopback mode
+            		if (comPorts[port].lcr_break_cntl == 1)
+            		{
+            			comPorts[port].lsr_break_int = 1;
+            			comPorts[port].lsr_framing_error = 1;
+            			rx_fifo_enq(port, (byte) 0x00);
+            		}
+            	}
+            	else
+            	{
+            		// Transition to normal mode
+            		// TODO:...
+            	}
+            }
+
+            // Check if UART should be put into local loopback mode
+            if (comPorts[port].mcr_local_loopback == 1)
+            {
+            	// Local loopback enabled: shortcut output of TSR to input of RSR
+            	// Disconnect SOUT from SIN
+            	
+            	// Preserve former values
+            	prev_cts = comPorts[port].msr_cts;
+            	prev_dsr = comPorts[port].msr_dsr;
+            	prev_ri  = comPorts[port].msr_ri;
+            	prev_dcd = comPorts[port].msr_dcd;
+            	
+            	comPorts[port].msr_cts = comPorts[port].mcr_rts;
+            	comPorts[port].msr_dsr = comPorts[port].mcr_dtr;
+            	comPorts[port].msr_ri  = comPorts[port].mcr_out1;
+            	comPorts[port].msr_dcd = comPorts[port].mcr_out2;
+            	
+            	if (comPorts[port].msr_cts != prev_cts)
+            	{
+            		comPorts[port].msr_delta_cts = 1;
+            		comPorts[port].ms_ipending = 1;
+            	}
+              
+            	if (comPorts[port].msr_dsr != prev_dsr)
+            	{
+            		comPorts[port].msr_delta_dsr = 1;
+            		comPorts[port].ms_ipending = 1;
+            	}
+            	
+            	if (comPorts[port].msr_ri != prev_ri)
+            	{
+                    comPorts[port].ms_ipending = 1;
+            	}
+            	
+            	if ((comPorts[port].msr_ri == 0) && (prev_ri == 1))
+            	{
+                    comPorts[port].msr_ri_trailedge = 1;
+            	}
+            	
+            	if (comPorts[port].msr_dcd != prev_dcd)
+            	{
+            		comPorts[port].msr_delta_dcd = 1;
+            		comPorts[port].ms_ipending = 1;
+            	}
+            	
+            	this.setIRQ(port, INTERRUPT_MODSTAT);
+            }
+            else
+            {
+/*            	if (comPorts[port].io_mode == BX_SER_MODE_MOUSE)
+            	{
+            		if (BX_SER_THIS detect_mouse == 2)
+            		{
+            			if (SIM->get_param_enum(BXPN_MOUSE_TYPE)->get() == BX_MOUSE_TYPE_SERIAL)
+            			{
+		                    BX_SER_THIS mouse_internal_buffer.head = 0;
+		                    BX_SER_THIS mouse_internal_buffer.num_elements = 1;
+		                    BX_SER_THIS mouse_internal_buffer.buffer[0] = 'M';
+	                    }
+	                    
+	                    if (SIM->get_param_enum(BXPN_MOUSE_TYPE)->get() == BX_MOUSE_TYPE_SERIAL_WHEEL)
+	                    {
+		                    BX_SER_THIS mouse_internal_buffer.head = 0;
+		                    BX_SER_THIS mouse_internal_buffer.num_elements = 6;
+		                    BX_SER_THIS mouse_internal_buffer.buffer[0] = 'M';
+		                    BX_SER_THIS mouse_internal_buffer.buffer[1] = 'Z';
+		                    BX_SER_THIS mouse_internal_buffer.buffer[2] = '@';
+		                    BX_SER_THIS mouse_internal_buffer.buffer[3] = '\0';
+		                    BX_SER_THIS mouse_internal_buffer.buffer[4] = '\0';
+		                    BX_SER_THIS mouse_internal_buffer.buffer[5] = '\0';
+                        }
+                        BX_SER_THIS detect_mouse = 0;
+                    }
+                }
+*/
+            }
+
+            // Simulate device connected
+            comPorts[port].msr_cts = 1;
+            comPorts[port].msr_dsr = 1;
+            comPorts[port].msr_ri  = 0;
+            comPorts[port].msr_dcd = 0;
+            break;
+
+          case LSR: // Line Status register
+          	logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Not allowed to write to line status register (LSR) on port 0x" + Integer.toHexString(portAddress).toUpperCase());
+            break;
+
+          case MSR: // MODEM Status register
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Not allowed to write to modem status register (MSR) on port 0x" + Integer.toHexString(portAddress).toUpperCase());
+            break;
+
+          case SCR: // Scratch register
+            comPorts[port].scr = data;
+            break;
+
+          default:
+        	logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Error while writing I/O port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": no case match");
+          	break;
+        }
     }
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
@@ -723,6 +1343,181 @@ public class SerialPort extends ModuleSerialPort
         return;
     }
 
+    
+    //******************************************************************************
+    // ModuleSerialPort methods
+
+    public void setBytes(byte[] data)
+    {
+		// Push all bytes in queue
+		if (data != null)
+		{
+	    	for (int i = 0; i < data.length; i++)
+	    	{
+	    		readPortQ.push((int)data[i] & 0xFF);
+	    	}
+		}
+    }
+    
+	
     //******************************************************************************
     // Custom methods
+    
+    private void setIRQ(int port, int type)
+    {
+    	boolean raiseInterrupt = false;
+
+    	switch (type)
+    	{
+    		case INTERRUPT_IER: // IER has changed
+    	      raiseInterrupt = true;
+    	      break;
+    	      
+    	    case INTERRUPT_RXDATA: // Received data available interrupt
+    	      if (comPorts[port].ier_rxdata_enable == 1)
+    	      {
+    	    	  comPorts[port].rx_interrupt = 1;
+        	      raiseInterrupt = true;
+    	      }
+    	      else
+    	      {
+    	    	  comPorts[port].rx_ipending = 1;
+    	      }
+    	      break;
+    	      
+    	    case INTERRUPT_TXHOLD: // Transmitter Holding Register Empty interrupt
+    	      if (comPorts[port].ier_txhold_enable == 1)
+    	      {
+    	    	  comPorts[port].tx_interrupt = 1;
+    	    	  raiseInterrupt = true;
+    	      }
+    	      break;
+    	      
+    	    case INTERRUPT_RXLSTAT: // Receiver Line Status interrupt
+    	      if (comPorts[port].ier_rxlstat_enable == 1)
+    	      {
+    	    	  comPorts[port].ls_interrupt = 1;
+    	    	  raiseInterrupt = true;
+    	      }
+    	      else
+    	      {
+    	    	  comPorts[port].ls_ipending = 1;
+    	      }
+    	      break;
+    	      
+    	    case INTERRUPT_MODSTAT: // MODEM Status interrupt
+    	      if ((comPorts[port].ier_modstat_enable == 1) && (comPorts[port].ms_ipending == 1))
+    	      {
+    	    	  comPorts[port].ms_interrupt = 1;
+    	    	  comPorts[port].ms_ipending = 0;
+    	    	  raiseInterrupt = true;
+    	      }
+    	      break;
+    	      
+    	    case INTERRUPT_FIFO:
+    	      if (comPorts[port].ier_rxdata_enable == 1)
+    	      {
+    	    	  comPorts[port].fifo_interrupt = 1;
+    	    	  raiseInterrupt = true;
+    	      }
+    	      else
+    	      {
+    	    	  comPorts[port].fifo_ipending = 1;
+    	      }
+    	      break;
+    	  }
+    	  
+    	  if (raiseInterrupt && (comPorts[port].mcr_out2 == 1))
+    	  {
+    		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Interrupt raised");
+    		  pic.setIRQ(comPorts[port].irq);
+    	  }
+    }
+    
+    private void clearIRQ(int port)
+    {
+    	// Check pending interrupts. If none, clear interrupt at PIC
+    	if ((comPorts[port].rx_interrupt == 0) &&
+    			(comPorts[port].tx_interrupt == 0) &&
+    			(comPorts[port].ls_interrupt == 0) &&
+    			(comPorts[port].ms_interrupt == 0) &&
+    			(comPorts[port].fifo_interrupt == 0))
+    	{
+    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Interrupt lowered");
+    		pic.clearIRQ(comPorts[port].irq);
+    	}
+    }
+    
+    public void rx_fifo_enq(int port, byte data)
+    {
+    	boolean raiseInterrupt = false;
+
+    	// Check if FIFO is active
+    	if (comPorts[port].fcr_enable == 1)
+    	{
+    		// Check if FIFO buffer is full
+    		if (comPorts[port].rcvrFIFO.size() == 16)
+    		{
+    			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] FIFO buffer overflow");
+    			comPorts[port].lsr_overrun_error = 1;
+    			this.setIRQ(port, INTERRUPT_RXLSTAT);
+    		}
+    		else
+    		{
+    			// Add data byte to FIFO buffer
+    			comPorts[port].rcvrFIFO.setByte(data);
+    			
+    			switch (comPorts[port].fcr_rxtrigger)
+    			{
+    				case 1:
+    					if (comPorts[port].rcvrFIFO.size() == 4)
+    						raiseInterrupt = true;
+    					break;
+    					
+    				case 2:
+    					if (comPorts[port].rcvrFIFO.size() == 8)
+							raiseInterrupt = true;
+    					break;
+    					
+    				case 3:
+    					if (comPorts[port].rcvrFIFO.size() == 14)
+    						raiseInterrupt = true;
+    					break;
+    					
+    				default:
+    					raiseInterrupt = true;
+    			}
+    			
+    			if (raiseInterrupt)
+    			{
+//FIXME:    				bx_pc_system.deactivate_timer(BX_SER_THIS s[port].fifo_timer_index);
+    				comPorts[port].lsr_rxdata_ready = 1;
+    				this.setIRQ(port, INTERRUPT_RXDATA);
+    			}
+    			else
+    			{
+//FIXME:    				bx_pc_system.activate_timer(BX_SER_THIS s[port].fifo_timer_index,
+/*                                        (int) (1000000.0 / BX_SER_THIS s[port].baudrate *
+                                        (BX_SER_THIS s[port].line_cntl.wordlen_sel + 5) * 16),
+                                        0); // not continuous
+*/    			}
+    		}
+    	}
+    	else
+    	{
+    		// FIFO buffer is not active
+    		if (comPorts[port].lsr_rxdata_ready == 1)
+    		{
+    			// Unread data still exists in receive buffer
+    			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Overflow in receive buffer");
+    			comPorts[port].lsr_overrun_error = 1;
+    			this.setIRQ(port, INTERRUPT_RXLSTAT);
+    		}
+    		
+    		comPorts[port].rbr = data;
+    		comPorts[port].lsr_rxdata_ready = 1;
+			this.setIRQ(port, INTERRUPT_RXDATA);
+    	}
+    }
+
 }
