@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-23 15:39:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-11 14:35:33 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,6 +47,11 @@ import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModuleRTC;
 import nl.kbna.dioscuri.module.ModuleScreen;
 import nl.kbna.dioscuri.module.ModuleVideo;
+import nl.kbna.dioscuri.module.cpu32.CodeBlock;
+import nl.kbna.dioscuri.module.cpu32.HardwareComponent;
+import nl.kbna.dioscuri.module.cpu32.Memory;
+import nl.kbna.dioscuri.module.cpu32.PhysicalAddressSpace;
+import nl.kbna.dioscuri.module.cpu32.Processor;
 
 /**
  * An implementation of a video (VGA) module.
@@ -73,7 +78,7 @@ import nl.kbna.dioscuri.module.ModuleVideo;
  * 
  */
 
-public class Video extends ModuleVideo
+public class Video extends ModuleVideo 
 {
     // Attributes
 	
@@ -88,6 +93,8 @@ public class Video extends ModuleVideo
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
 
+    public DiosJPCVideoConnect vidMemConnect = new DiosJPCVideoConnect();
+    
     // Toggles
     private boolean isObserved;
     private boolean debugMode;
@@ -2451,6 +2458,171 @@ public class Video extends ModuleVideo
         }
     }
 
+    /*
+     * This class is based on VGALowMemoryRegion, found in JPC's VGAcard, and is used
+     * to connect the memory range A0000 - C0000 to the vgaMemory array in VideoCard
+     */
+    public class DiosJPCVideoConnect extends Memory
+    {
+        // Added because needed - need to check if used elsewhere in JPC
+        private int bankOffset = 0;
+        private int latch = 0;
+        private final int[] mask16 = new int[]{
+            0x00000000,
+            0x000000ff,
+            0x0000ff00,
+            0x0000ffff,
+            0x00ff0000,
+            0x00ff00ff,
+            0x00ffff00,
+            0x00ffffff,
+            0xff000000,
+            0xff0000ff,
+            0xff00ff00,
+            0xff00ffff,
+            0xffff0000,
+            0xffff00ff,
+            0xffffff00,
+            0xffffffff
+            };
+        private int planeUpdated;
+        
+        public boolean isCacheable() {return false;}
+        public boolean isVolatile() {return true;}
+        public void copyContentsInto(int address, byte[] buffer, int off, int len) {
+            throw new IllegalStateException("copyContentsInto: Invalid Operation for VGA Card");
+        }
+        public void copyContentsFrom(int address, byte[] buffer, int off, int len) {
+            throw new IllegalStateException("copyContentsFrom: Invalid Operation for VGA Card");
+        }
+        public long getSize()
+        {
+            return 0x20000;
+        }
+        
+            public boolean isAllocated()
+            {
+                return false;
+            }
+
+        public byte getByte(int offset)
+        {
+            // All functionality already implemented. Just need to call with correct parameters.
+            return readMode(offset + 0xA0000);
+        }
+        
+        public short getWord(int offset)
+        {
+            int v = 0xFF & getByte(offset);
+            v |= getByte(offset + 1) << 8;
+            return (short) v;
+        }
+        
+        public int getDoubleWord(int offset)
+        {
+            int v = 0xFF & getByte(offset);
+            v |= (0xFF & getByte(offset + 1)) << 8;
+            v |= (0xFF & getByte(offset + 2)) << 16;
+            v |= (0xFF & getByte(offset + 3)) << 24;       
+            return v;
+        }
+        
+        public long getQuadWord(int offset)
+        {
+            long v = 0xFFl & getByte(offset);
+            v |= (0xFFl & getByte(offset + 1)) << 8;
+            v |= (0xFFl & getByte(offset + 2)) << 16;
+            v |= (0xFFl & getByte(offset + 3)) << 24; 
+            v |= (0xFFl & getByte(offset + 4)) << 32; 
+            v |= (0xFFl & getByte(offset + 5)) << 40; 
+            v |= (0xFFl & getByte(offset + 6)) << 48; 
+            v |= (0xFFl & getByte(offset + 7)) << 56;       
+            return v;
+        }
+        
+        public long getLowerDoubleQuadWord(int offset)
+        {
+            return getQuadWord(offset);
+        }
+        
+        public long getUpperDoubleQuadWord(int offset)
+        {
+            return getQuadWord(offset+8);
+        }
+        
+        public void setByte(int offset, byte data)
+        {
+            // All functionality already implemented. Just need to call with correct parameters.
+            writeMode(offset + 0xA0000, data);
+        }
+        
+        public void setWord(int offset, short data)
+        {
+            setByte(offset++, (byte)data);
+            data >>>= 8;
+            setByte(offset, (byte)data);
+        }
+        
+        public void setDoubleWord(int offset, int data)
+        {
+            setByte(offset++, (byte)data);
+            data >>>= 8;
+            setByte(offset++, (byte)data);
+            data >>>= 8;
+            setByte(offset++, (byte)data);
+            data >>>= 8;
+            setByte(offset, (byte)data);    
+        }
+        
+        public void setQuadWord(int offset, long data)
+        {
+            setDoubleWord(offset, (int) data);
+            setDoubleWord(offset+4, (int) (data >> 32));
+        }
+        
+        public void setLowerDoubleQuadWord(int offset, long data)
+        {
+            setDoubleWord(offset, (int) data);
+            setDoubleWord(offset+4, (int) (data >> 32));
+        }
+        
+        public void setUpperDoubleQuadWord(int offset, long data)
+        {
+            offset += 8;
+            setDoubleWord(offset, (int) data);
+            setDoubleWord(offset+4, (int) (data >> 32));
+        }
+        
+        public void clear()
+        {
+            // Do we need this?
+//            internalReset();
+        }
+        
+        public void clear(int start, int length)
+        {
+            clear();
+        }
+        
+        public int execute(Processor cpu, int offset)
+        {
+            throw new IllegalStateException("Invalid Operation");
+        }
+            
+        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
+        {
+            throw new IllegalStateException("Invalid Operation");
+        }
+        
+    }
+    
+    public void acceptComponent(HardwareComponent component)
+    {
+    if ((component instanceof PhysicalAddressSpace) && component.initialised()) 
+        {
+        ((PhysicalAddressSpace)component).mapMemoryRegion(vidMemConnect, 0xa0000, 0x20000);
+    }
+    }
 
 
 }
