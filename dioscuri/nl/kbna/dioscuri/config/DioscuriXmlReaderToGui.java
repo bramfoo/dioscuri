@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 15:26:43 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -41,7 +41,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -171,18 +170,26 @@ public class DioscuriXmlReaderToGui
         Object[] params= new Object[1];
         
         Node moduleNode = DioscuriXmlParams.getModuleNode(document, moduleType);
-        
-        NamedNodeMap attributes = moduleNode.getAttributes();
-        
+
         String timingParamText = DioscuriXmlParams.UPDATE_INTERVAL_TEXT;
         if (moduleType == ModuleType.PIT)
         {
             timingParamText = DioscuriXmlParams.PIT_CLOCKRATE_TEXT;
         }
         
-        Node upateIntNode = attributes.getNamedItem(timingParamText);
-
-        int upateInt= Integer.parseInt(upateIntNode.getTextContent());
+        Node subNode = null;
+        for (int i = 0; i < moduleNode.getChildNodes().getLength(); i++)
+        {
+            subNode = moduleNode.getChildNodes().item(i);
+            if (subNode.getNodeName().equals(timingParamText))
+                break;
+        }
+        
+        int upateInt = 0;
+        if (subNode != null)
+        {
+            upateInt = Integer.parseInt(subNode.getChildNodes().item(0).getNodeValue());
+        }
         
         params[0] = new Integer(upateInt);
            
@@ -195,39 +202,28 @@ public class DioscuriXmlReaderToGui
         Object[] params = new Object[4];
 
         Node bootDrivesNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
-                       
-        NodeList eachBootDriveNode = bootDrivesNode.getChildNodes();
+        NodeList biosParamsNodes = bootDrivesNode.getChildNodes();
         
         int bootCount = 0;
-                       
-        for (int i = 0; i < eachBootDriveNode.getLength(); i++)
+        
+        for (int i = 0; i < biosParamsNodes.getLength(); i++)
         {
-            Node theNode = eachBootDriveNode.item(i);         
-            String name = theNode.getNodeName();
-            Node currentNode = theNode.getChildNodes().item(0);
+            Node theNode = biosParamsNodes.item(i);         
+            Node biosSubSubNode = theNode.getChildNodes().item(0);
             
             String theValue;
                      
-            if(currentNode != null)
+            if(biosSubSubNode != null)
             {
-                theValue = currentNode.getNodeValue();
+                theValue = biosSubSubNode.getNodeValue();
                 
-                if (name.equals("bootdrive"))
-                {
                    int bootIndex = 0; 
                    
-                   if(theValue.equalsIgnoreCase("Floppy") 
-                           || theValue.equalsIgnoreCase("FloppyDrive")
-                           || theValue.equalsIgnoreCase("a:")
-                           || theValue.equalsIgnoreCase("a"))
+                   if(theValue.equalsIgnoreCase("Floppy")) 
                    {
                        bootIndex = 0;
                        
-                   } else if(theValue.equalsIgnoreCase("HARDDRIVE")
-                           || theValue.equalsIgnoreCase("HD") 
-                           || theValue.equalsIgnoreCase("C:")
-                           || theValue.equalsIgnoreCase("C")
-                           || theValue.equalsIgnoreCase("DISKC"))
+                   } else if(theValue.equalsIgnoreCase("HARDDRIVE"))
                         {
                        bootIndex = 1;
                        
@@ -239,10 +235,9 @@ public class DioscuriXmlReaderToGui
                    params[bootCount] = bootIndex; 
                    
                    bootCount++;
-                }
             }
-        }
-        
+        }    
+                       
         Node floppyCheckDisabledNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY_CHECK_DISABLED_NODE);
                 
         String name = floppyCheckDisabledNode.getNodeName();
@@ -271,16 +266,31 @@ public class DioscuriXmlReaderToGui
      */
     private Object[] getCpuParams(Document document)
     {
-        Object[] params = new Object[1];
+        Object[] params = new Object[2];
                
-        Node cpuNode = DioscuriXmlParams.getModuleNode(document, ModuleType.CPU);
-        NamedNodeMap attributes = cpuNode.getAttributes();
-        
-        Node cpuSpeedNode = attributes.getNamedItem(DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
-
-        int cpuSpeed = Integer.parseInt(cpuSpeedNode.getTextContent());
+        Node cpuSpeedNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
+        Node subNode = cpuSpeedNode.getChildNodes().item(0);
+                         
+        int cpuSpeed = 0;
+        if (subNode != null)
+        {
+            
+            cpuSpeed = Integer.parseInt(subNode.getNodeValue());
+        }
         
         params[0] = cpuSpeed;
+        
+        Node cpu32bitNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
+        subNode = cpu32bitNode.getChildNodes().item(0);
+        
+        boolean cpu32bit = true;
+        if (subNode != null)
+        {
+            
+            cpu32bit = Boolean.parseBoolean(subNode.getNodeValue());
+        }
+        
+        params[1] = cpu32bit;
         
         return params;
         
@@ -294,19 +304,9 @@ public class DioscuriXmlReaderToGui
         
         params[0] = this.getTimingParam(document, ModuleType.FDC)[0]; 
 
-        Node floppyDiskDrivesNode = DioscuriXmlParams.getModuleNode(document, ModuleType.FDC);
-        Node floppyDriveNode = null;
-        for (int i = 0; i < floppyDiskDrivesNode.getChildNodes().getLength(); i++)
-        {
-            floppyDriveNode = floppyDiskDrivesNode.getChildNodes().item(i);
-            
-            if(floppyDriveNode.getChildNodes() != null && floppyDriveNode.getChildNodes().getLength() > 0 )
-            {
-                break;
-            }
-        }
-            
-        NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
+        
+       Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
+       NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
                        
         for (int i = 0; i < floppyParamsNodes.getLength(); i++)
         {
@@ -432,7 +432,7 @@ public class DioscuriXmlReaderToGui
         {
             hardDriveNode = ataNode.getChildNodes().item(i);
             
-            if(hardDriveNode.getChildNodes() != null && hardDriveNode.getChildNodes().getLength() > 0 )
+            if (hardDriveNode.getNodeName().equals(DioscuriXmlParams.HARDDISKDRIVE))
             {
                 break;
             }
@@ -499,13 +499,16 @@ public class DioscuriXmlReaderToGui
     private Object[] getRamParams(Document document)
     {
         Object[] params = new Object[1];
-               
-        Node ramNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MEMORY);
-        NamedNodeMap attributes = ramNode.getAttributes();
         
-        Node ramSizeNode = attributes.getNamedItem(DioscuriXmlParams.RAM_SIZE_TEXT);
+        Node ramNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
+        Node ramSubNode = ramNode.getChildNodes().item(0);
 
-        int ramSize = Integer.parseInt(ramSizeNode.getTextContent());
+        int ramSize = 0;
+        if (ramSubNode != null)
+        {
+            
+            ramSize  = Integer.parseInt(ramSubNode.getNodeValue());
+        }
         
         params[0] = ramSize;
         
@@ -521,12 +524,15 @@ public class DioscuriXmlReaderToGui
     {
         Object[] params = new Object[1];
         
-        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
-        NamedNodeMap attributes = mouseNode.getAttributes();
-        
-        Node mouseTypeNode = attributes.getNamedItem(DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        Node mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        Node mouseSubNode = mouseNode.getChildNodes().item(0);
 
-        String mouseType = mouseTypeNode.getTextContent();
+        String mouseType = "";
+        if (mouseSubNode != null)
+        {
+            
+            mouseType  = (String) mouseSubNode.getNodeValue();
+        }
         
         params[0] = mouseType;
         
