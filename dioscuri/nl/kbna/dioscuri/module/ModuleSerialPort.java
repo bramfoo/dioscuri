@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2008-02-01 14:37:27 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 14:03:07 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,6 +34,8 @@
 
 package nl.kbna.dioscuri.module;
 
+import nl.kbna.dioscuri.interfaces.UART;
+
 /**
  * Interface representing a generic hardware module.
  *  
@@ -44,6 +46,5 @@ public abstract class ModuleSerialPort extends ModuleDevice
     // Methods
     public abstract void setBytes(byte[] data);
     
-    public abstract void rx_fifo_enq(int port, byte data);
-    
+    public abstract boolean setUARTDevice(UART device, int comPort);
 }
