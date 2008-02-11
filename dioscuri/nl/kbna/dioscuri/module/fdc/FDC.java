@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-24 15:37:28 $ $Author: blohman $
+ * $Revision: 1.5 $ $Date: 2008-02-11 14:51:45 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -37,6 +37,7 @@
  * - http://bochs.sourceforge.net/techspec/CMOS-reference.txt
  * - 
  */
+
 package nl.kbna.dioscuri.module.fdc;
 
 import java.io.File;
@@ -55,6 +56,9 @@ import nl.kbna.dioscuri.module.ModuleATA;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
 import nl.kbna.dioscuri.module.ModuleRTC;
+import nl.kbna.dioscuri.module.cpu32.DMAController;
+import nl.kbna.dioscuri.module.cpu32.DMATransferCapable;
+import nl.kbna.dioscuri.module.cpu32.HardwareComponent;
 
 /**
  * An implementation of a Floppy disk controller module.
@@ -78,7 +82,7 @@ import nl.kbna.dioscuri.module.ModuleRTC;
  * 
  * Issues:
  * - check all fixme statements
- * - sometimes MSR register is set to busy, but I am not sure if it is done the right way as it looses all previous bits:
+ * - sometimes MSR register is set to busy, but I am not sure if it is done the right way as it loses all previous bits:
  *                 // Data register not ready, drive busy
  *                MSR = (byte) (1 << drive);
  *                
@@ -156,81 +160,80 @@ import nl.kbna.dioscuri.module.ModuleRTC;
  *      conflict bit 0     FIXED DISK drive 0 select 
  */
 
-
-public class FDC extends ModuleFDC
+public class FDC extends ModuleFDC implements DMATransferCapable
 {
 
     // Attributes
-    
+
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "rtc", "pic", "dma", "ata"}; 
+    private String[] moduleConnections = new String[] {"motherboard", "rtc", "pic", "dma", "ata"};
     private ModuleMotherboard motherboard;
     private ModuleRTC rtc;
     private ModulePIC pic;
     private ModuleDMA dma;
-    private ModuleATA ata;  // TODO: implement alternative for using ata (prefer no ref to ata directly)
-    
+    private DMAController dma32;
+    private ModuleATA ata; // TODO: implement alternative for using ata (prefer no ref to ata directly)
+
     // Toggles
     private boolean isObserved;
     private boolean debugMode;
-    
+
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.fdc");
-    
+
     // IRQ and DMA variables
-    private int irqNumber;                  // Interrupt number assigned by PIC
-    private boolean pendingIRQ;             // IRQ is still in progress
-    private int resetSenseInterrupt;        // TODO: Maybe this variable has to be extended for multiple drives
-    public DMA8Handler dma8Handler;         // 8-bit DMA handler for transfer of bytes
-    private boolean tc;                     // TC, Terminal Count status from DMA controller
-    private boolean dmaAndInterruptEnabled; // DMA and IRQ are both enabled
-    
+    private int irqNumber;					// Interrupt number assigned by PIC
+    private boolean pendingIRQ;				// IRQ is still in progress
+    private int resetSenseInterrupt;		// TODO: Maybe this variable has to be extended for multiple drives
+    public DMA8Handler dma8Handler;			// 8-bit DMA handler for transfer of bytes
+    private boolean tc;						// TC, Terminal Count status from DMA controller
+    private boolean dmaAndInterruptEnabled;	// DMA and IRQ are both enabled
+
     // Timing
-    private int updateInterval;             // Denotes the update interval for the clock timer
-    
+    private int updateInterval; 			// Denotes the update interval for the clock timer
+
     // Controller variables
-    private Drive[] drives;                 // Array containing 4 drives at maximum
-    private int numberOfDrives;             // Denotes the total number of available drives of FDC (<= 4)
-    private int[] dataRates;                // Array containing 4 possible datarates in Kilobytes per second
-    private int dataRate;                   // Index to dataRates-array (0,1,2,3) denoting a specific datarate
-    private boolean fdcEnabled;             // Denotes if FDC is operating normally
-    private boolean fdcEnabledPrevious;     // Denotes if previous state of FDC was operating normally (state change means reset has occurred)
-    private int drive;                      // Denotes the currently selected drive
-    
-    private int formatCount;                // Number of sectors in track
-    private byte formatFillbyte;            // Filler byte for formatting tracks with this value
-    
+    private Drive[] drives;					// Array containing 4 drives at maximum
+    private int numberOfDrives;				// Denotes the total number of available drives of FDC (<= 4)
+    private int[] dataRates;				// Array containing 4 possible datarates in Kilobytes per second
+    private int dataRate;					// Index to dataRates-array (0,1,2,3) denoting a specific datarate
+    private boolean fdcEnabled;				// Denotes if FDC is operating normally
+    private boolean fdcEnabledPrevious;		// Denotes if previous state of FDC was operating normally (state change means reset has occurred)
+    private int drive;						// Denotes the currently selected drive
+
+    private int formatCount;				// Number of sectors in track
+    private byte formatFillbyte;			// Filler byte for formatting tracks with this value
+
     // Buffer for DMA transfer
-    protected byte[] floppyBuffer;          // Buffer for data transfer between DMA and floppy
-    private int floppyBufferIndex;          // Index for floppy buffer
-    private byte floppyBufferCurrentByte;   // Contains the current byte of the floppy buffer
-    
+    protected byte[] floppyBuffer; // Buffer for data transfer between DMA and floppy
+    private int floppyBufferIndex; // Index for floppy buffer
+    private byte floppyBufferCurrentByte; // Contains the current byte of the floppy buffer
+
     // Command variables
-    private byte[] command;                 // Array containing bytes that form a command
-    private int commandIndex;               // Pointer to current byte in command array
-    private int commandSize;                // Total size of command (in number of bytes)
-    private int commandPending;             // Denotes if command is pending or not
-    private boolean commandComplete;        // Denotes if all bytes of command have been received
-    
+    private byte[] command; // Array containing bytes that form a command
+    private int commandIndex; // Pointer to current byte in command array
+    private int commandSize; // Total size of command (in number of bytes)
+    private int commandPending; // Denotes if command is pending or not
+    private boolean commandComplete; // Denotes if all bytes of command have been received
+
     // Result variables
-    private byte[] result;                  // Array containing bytes that form result
-    private int resultIndex;                // Pointer to current byte in result array
-    private int resultSize;                 // Total size of result (in number of bytes)
+    private byte[] result; // Array containing bytes that form result
+    private int resultIndex; // Pointer to current byte in result array
+    private int resultSize; // Total size of result (in number of bytes)
 
     // Status and control bits
-    byte    nonDMA;    // non-DMA mode
-    byte    lock;      // FDC lock status
-    byte    srt;       // step rate time, defines the stepping rate in milliseconds (1 - 16) for all drives
-    byte    hut;       // head unload time
-    byte    hlt;       // head load time
-    
+    byte nonDMA; // non-DMA mode
+    byte lock; // FDC lock status
+    byte srt; // step rate time, defines the stepping rate in milliseconds (1 - 16) for all drives
+    byte hut; // head unload time
+    byte hlt; // head load time
+
     // Enhanced drive command bits
     // TODO: as enhanced commands are not tested, maybe this needs improvement
-    byte    config;    // configure byte
-    byte    preTrack;  // precompensation track
-    byte    perpMode;  // perpendicular mode
-
+    byte config; // configure byte
+    byte preTrack; // precompensation track
+    byte perpMode; // perpendicular mode
 
     // Registers
     // DIGITAL OUTPUT REGISTER (DOR)
@@ -283,7 +286,7 @@ public class FDC extends ModuleFDC
     //          2  head number at interrupt
     //        1-0  unit select (0=A 1=B .. ) (on PS/2: 01=A  10=B
     private int statusRegister0;
-    
+
     // DISKETTE STATUS REGISTER 1
     // Bitfields for diskette status register 1 (ST1):
     // Bit(s)  Description
@@ -321,56 +324,54 @@ public class FDC extends ModuleFDC
     //   2  side select (head select)
     //   1-0 unit select (0=A 1=B .. )
     private int statusRegister3;
-    
-    
+
     // Constants
     // Module specifics
-    public final static int MODULE_ID       = 1;
-    public final static String MODULE_TYPE  = "fdc";
-    public final static String MODULE_NAME  = "Floppy Disk Controller";
-    
+    public final static int MODULE_ID = 1;
+    public final static String MODULE_TYPE = "fdc";
+    public final static String MODULE_NAME = "Floppy Disk Controller";
+
     // I/O ports 03F0-03F7 - Floppy Disk Controller
-    private final static int PORT_FLOPPY_STATUS_A       = 0x03F0;       // R  Status register A
-    private final static int PORT_FLOPPY_STATUS_B       = 0x03F1;       // R  Status register B
-    private final static int PORT_FLOPPY_DOR            = 0x03F2;       //  W Digital Output Register
-    private final static int PORT_FLOPPY_TAPEDRIVE      = 0x03F3;       // ?W Tape drive register
-    private final static int PORT_FLOPPY_MAIN_DATARATE  = 0x03F4;       // RW Main status register / data rate select register: used by DMA-transfer
-    private final static int PORT_FLOPPY_CMD_DATA       = 0x03F5;       // RW Command/data register: used by non-DMA transfer
-    private final static int PORT_FLOPPY_RESERVED_FIXED = 0x03F6;       // -- Reserved. Probably used to check for available Harddisk
-    private final static int PORT_FLOPPY_HD_CONTROLLER  = 0x03F7;       // RW DIR/hard disk controller
+    private final static int PORT_FLOPPY_STATUS_A = 0x03F0; // R  Status register A
+    private final static int PORT_FLOPPY_STATUS_B = 0x03F1; // R  Status register B
+    private final static int PORT_FLOPPY_DOR = 0x03F2; //  W Digital Output Register
+    private final static int PORT_FLOPPY_TAPEDRIVE = 0x03F3; // ?W Tape drive register
+    private final static int PORT_FLOPPY_MAIN_DATARATE = 0x03F4; // RW Main status register / data rate select register: used by DMA-transfer
+    private final static int PORT_FLOPPY_CMD_DATA = 0x03F5; // RW Command/data register: used by non-DMA transfer
+    private final static int PORT_FLOPPY_RESERVED_FIXED = 0x03F6; // -- Reserved. Probably used to check for available Harddisk
+    private final static int PORT_FLOPPY_HD_CONTROLLER = 0x03F7; // RW DIR/hard disk controller
 
     // Floppy drive types
-    private final static byte FLOPPY_DRIVETYPE_NONE  = 0x00;
+    private final static byte FLOPPY_DRIVETYPE_NONE = 0x00;
     private final static byte FLOPPY_DRIVETYPE_525DD = 0x01;
     private final static byte FLOPPY_DRIVETYPE_525HD = 0x02;
     private final static byte FLOPPY_DRIVETYPE_350DD = 0x03;
     private final static byte FLOPPY_DRIVETYPE_350HD = 0x04;
     private final static byte FLOPPY_DRIVETYPE_350ED = 0x05;
-    
+
     // Floppy disk types
-    private final static byte FLOPPY_DISKTYPE_NONE  = 0x00;
-    private final static byte FLOPPY_DISKTYPE_360K  = 0x01;
-    private final static byte FLOPPY_DISKTYPE_1_2   = 0x02;
-    private final static byte FLOPPY_DISKTYPE_720K  = 0x03;
-    private final static byte FLOPPY_DISKTYPE_1_44  = 0x04;
-    private final static byte FLOPPY_DISKTYPE_2_88  = 0x05;
-    private final static byte FLOPPY_DISKTYPE_160K  = 0x06;
-    private final static byte FLOPPY_DISKTYPE_180K  = 0x07;
-    private final static byte FLOPPY_DISKTYPE_320K  = 0x08;
+    private final static byte FLOPPY_DISKTYPE_NONE = 0x00;
+    private final static byte FLOPPY_DISKTYPE_360K = 0x01;
+    private final static byte FLOPPY_DISKTYPE_1_2 = 0x02;
+    private final static byte FLOPPY_DISKTYPE_720K = 0x03;
+    private final static byte FLOPPY_DISKTYPE_1_44 = 0x04;
+    private final static byte FLOPPY_DISKTYPE_2_88 = 0x05;
+    private final static byte FLOPPY_DISKTYPE_160K = 0x06;
+    private final static byte FLOPPY_DISKTYPE_180K = 0x07;
+    private final static byte FLOPPY_DISKTYPE_320K = 0x08;
 
     // FDC commands
-    private final static int FDC_CMD_MRQ    = 0x080;
-    private final static int FDC_CMD_DIO    = 0x040;
-    private final static int FDC_CMD_NDMA   = 0x020;
-    private final static int FDC_CMD_BUSY   = 0x010;
-    private final static int FDC_CMD_ACTD   = 0x008;
-    private final static int FDC_CMD_ACTC   = 0x004;
-    private final static int FDC_CMD_ACTB   = 0x002;
-    private final static int FDC_CMD_ACTA   = 0x001;
-    
+    private final static int FDC_CMD_MRQ = 0x80;
+    private final static int FDC_CMD_DIO = 0x40;
+    private final static int FDC_CMD_NDMA = 0x20;
+    private final static int FDC_CMD_BUSY = 0x10;
+    private final static int FDC_CMD_ACTD = 0x08;
+    private final static int FDC_CMD_ACTC = 0x04;
+    private final static int FDC_CMD_ACTB = 0x02;
+    private final static int FDC_CMD_ACTA = 0x01;
+
     // DMA channel
-    private final static int FDC_DMA_CHANNEL    = 2;
-    
+    private final static int FDC_DMA_CHANNEL = 2;
 
     // Constructor
 
@@ -381,42 +382,42 @@ public class FDC extends ModuleFDC
     public FDC(Emulator owner)
     {
         emu = owner;
-        
+
         // Initialise module variables
         isObserved = false;
         debugMode = false;
-        
+
         // Initialise timing
         updateInterval = -1;
-        
+
         // Initialise IRQ and DMA
         irqNumber = -1;
         pendingIRQ = false;
         resetSenseInterrupt = 0;
         dma8Handler = null;
         dmaAndInterruptEnabled = false;
-        
+
         // Initialise controller variables
-        drives = new Drive[1];  // set number of drives to default (1), can be overruled by setNumberOfDrives
+        drives = new Drive[1]; // set number of drives to default (1), can be overruled by setNumberOfDrives
         drives[0] = new Drive();
-        dataRates = new int[] { 500, 300, 250, 1000 };
+        dataRates = new int[] {500, 300, 250, 1000};
 
         dataRate = 0;
         fdcEnabled = false;
         fdcEnabledPrevious = false;
         drive = 0;
-        
+
         // Initialise command variables
         command = new byte[10];
         commandIndex = 0;
         commandSize = 0;
         commandPending = 0;
         commandComplete = false;
-        
+
         formatCount = 0;
         formatFillbyte = 0;
         tc = false;
-        
+
         // Buffering
         floppyBuffer = new byte[512 + 2]; // 2 extra for good measure
         floppyBufferIndex = 0;
@@ -437,20 +438,19 @@ public class FDC extends ModuleFDC
 
         // Initialise registers
         dor = 0;
-        msr = 0;
+        msr = 0 | FDC_CMD_DIO;  // Set to data direction to read - undocumented feature for DMA (bram)
         tdr = 0;
         statusRegister0 = 0;
         statusRegister1 = 0;
         statusRegister2 = 0;
         statusRegister3 = 0;
-        
+
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
 
-    
     //******************************************************************************
     // Module Methods
-    
+
     /**
      * Returns the ID of the module
      * 
@@ -462,7 +462,6 @@ public class FDC extends ModuleFDC
         return MODULE_ID;
     }
 
-    
     /**
      * Returns the type of the module
      * 
@@ -473,7 +472,6 @@ public class FDC extends ModuleFDC
     {
         return MODULE_TYPE;
     }
-
 
     /**
      * Returns the name of the module
@@ -486,7 +484,6 @@ public class FDC extends ModuleFDC
         return MODULE_NAME;
     }
 
-    
     /**
      * Returns a String[] with all names of modules it needs to be connected to
      * 
@@ -498,7 +495,6 @@ public class FDC extends ModuleFDC
         return moduleConnections;
     }
 
-    
     /**
      * Sets up a connection with another module
      * 
@@ -513,38 +509,37 @@ public class FDC extends ModuleFDC
         // Set connection for motherboard
         if (mod.getType().equalsIgnoreCase("motherboard"))
         {
-            this.motherboard = (ModuleMotherboard)mod;
+            this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
         // Set connection for rtc
         else if (mod.getType().equalsIgnoreCase("rtc"))
         {
-            this.rtc = (ModuleRTC)mod;
+            this.rtc = (ModuleRTC) mod;
             return true;
         }
         // Set connection for pic
         else if (mod.getType().equalsIgnoreCase("pic"))
         {
-            this.pic = (ModulePIC)mod;
+            this.pic = (ModulePIC) mod;
             return true;
         }
         // Set connection for dma
         else if (mod.getType().equalsIgnoreCase("dma"))
         {
-            this.dma = (ModuleDMA)mod;
+            this.dma = (ModuleDMA) mod;
             return true;
         }
         // Set connection for ata
         else if (mod.getType().equalsIgnoreCase("ata"))
         {
-            this.ata = (ModuleATA)mod;
+            this.ata = (ModuleATA) mod;
             return true;
         }
-        
+
         // No connection has been established
         return false;
     }
-
 
     /**
      * Checks if this module is connected to operate normally
@@ -558,11 +553,10 @@ public class FDC extends ModuleFDC
         {
             return true;
         }
-        
+
         // One or more connections may be missing
         return false;
     }
-
 
     /**
      * Default inherited reset. Calls specific reset(int)
@@ -580,7 +574,7 @@ public class FDC extends ModuleFDC
         motherboard.setIOPort(PORT_FLOPPY_CMD_DATA, this);
         motherboard.setIOPort(PORT_FLOPPY_RESERVED_FIXED, this);
         motherboard.setIOPort(PORT_FLOPPY_HD_CONTROLLER, this);
-        
+
         // Request IRQ number
         irqNumber = pic.requestIRQNumber(this);
         if (irqNumber > -1)
@@ -591,7 +585,7 @@ public class FDC extends ModuleFDC
         {
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Request of IRQ number failed.");
         }
-        
+
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true)
         {
@@ -602,21 +596,24 @@ public class FDC extends ModuleFDC
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Failed to request a timer.");
         }
 
-        // Request DMA channel
-        dma8Handler = new DMA8Handler(this);
-        if (dma.registerDMAChannel(FDC_DMA_CHANNEL, dma8Handler) == true)
+        if (!emu.isCpu32bit())
         {
-            // Request successful
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " DMA channel registered to line: " + FDC_DMA_CHANNEL);
+            // Request DMA channel
+            dma8Handler = new DMA8Handler(this);
+            if (dma.registerDMAChannel(FDC_DMA_CHANNEL, dma8Handler) == true)
+            {
+                // Request successful
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " DMA channel registered to line: " + FDC_DMA_CHANNEL);
+            }
+            else
+            {
+                // Request failed
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Failed to register DMA channel " + FDC_DMA_CHANNEL);
+            }
         }
-        else
-        {
-            // Request failed
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Failed to register DMA channel " + FDC_DMA_CHANNEL);
-        }
-        
+
         // Enable FDC in CMOS
-        rtc.setCMOSRegister(0x14, (byte)(rtc.getCMOSRegister(0x14) | 0x01));
+        rtc.setCMOSRegister(0x14, (byte) (rtc.getCMOSRegister(0x14) | 0x01));
 
         // Initiate cold reset
         return reset(1);
@@ -635,8 +632,8 @@ public class FDC extends ModuleFDC
     {
         pendingIRQ = false;
         resetSenseInterrupt = 0; // No reset result present
-        
-        msr = 0;
+
+        msr = 0 | FDC_CMD_DIO;  // Set to data direction to read - undocumented feature for DMA (bram);
         statusRegister0 = 0;
         statusRegister1 = 0;
         statusRegister2 = 0;
@@ -646,7 +643,7 @@ public class FDC extends ModuleFDC
         {
             // Reset all FDC registers and parameters
             dor = 0x0C; // motor off, drive 3..0, DMA/INT enabled, normal operation, drive select 0
-            
+
             for (int i = 0; i < drives.length; i++)
             {
                 drives[i].dir |= 0x80;
@@ -675,7 +672,10 @@ public class FDC extends ModuleFDC
 
         // Make sure no interrupt is pending
         pic.clearIRQ(irqNumber);
-        dma.setDMARequest(FDC_DMA_CHANNEL, false);
+        if (!emu.isCpu32bit())
+        {
+            dma.setDMARequest(FDC_DMA_CHANNEL, false);
+        }
 
         // Go into idle phase
         this.enterIdlePhase();
@@ -687,7 +687,7 @@ public class FDC extends ModuleFDC
 
         return true;
     }
-    
+
     /**
      * Starts the module
      * @see Module
@@ -696,7 +696,6 @@ public class FDC extends ModuleFDC
     {
         // Nothing to start
     }
-    
 
     /**
      * Stops the module
@@ -717,8 +716,7 @@ public class FDC extends ModuleFDC
             }
         }
     }
-    
-    
+
     /**
      * Returns the status of observed toggle
      * 
@@ -730,7 +728,6 @@ public class FDC extends ModuleFDC
     {
         return isObserved;
     }
-
 
     /**
      * Sets the observed toggle
@@ -744,7 +741,6 @@ public class FDC extends ModuleFDC
         isObserved = status;
     }
 
-
     /**
      * Returns the status of the debug mode toggle
      * 
@@ -756,7 +752,6 @@ public class FDC extends ModuleFDC
     {
         return debugMode;
     }
-
 
     /**
      * Sets the debug mode toggle
@@ -770,7 +765,6 @@ public class FDC extends ModuleFDC
         debugMode = status;
     }
 
-
     /**
      * Returns data from this module
      *
@@ -783,7 +777,6 @@ public class FDC extends ModuleFDC
     {
         return null;
     }
-
 
     /**
      * Set data for this module
@@ -800,7 +793,6 @@ public class FDC extends ModuleFDC
         return false;
     }
 
-
     /**
      * Set String[] data for this module
      * 
@@ -816,7 +808,6 @@ public class FDC extends ModuleFDC
         return false;
     }
 
-    
     /**
      * Returns a dump of this module
      * 
@@ -830,16 +821,16 @@ public class FDC extends ModuleFDC
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
-        
+
         dump = "FDC dump:" + ret;
-        
+
         dump += "In total " + drives.length + " floppy drives exist:" + ret;
         for (int i = 0; i < drives.length; i++)
         {
             if (drives[i] != null)
             {
                 dump += "Drive " + i + tab + ":" + tab + drives[i].toString() + ret;
-                
+
             }
             else
             {
@@ -849,10 +840,9 @@ public class FDC extends ModuleFDC
         return dump;
     }
 
-
     //******************************************************************************
     // ModuleDevice Methods
-    
+
     /**
      * Retrieve the interval between subsequent updates
      * 
@@ -882,7 +872,6 @@ public class FDC extends ModuleFDC
         motherboard.resetTimer(this, updateInterval);
     }
 
-
     /**
      * Update device
      * 
@@ -890,95 +879,116 @@ public class FDC extends ModuleFDC
     public void update()
     {
         // Perform an update on FDC
-        logger.log(Level.FINE, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
-        
+        // Cannot guarantee the following instruction since 32-bit update:
+        //        logger.log(Level.FINE, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
+
         // Check if there is a command pending (= zero if nothing to do)
         if (commandPending != 0x00)
         {
-              drive = dor & 0x03;
-              
-              switch (commandPending)
-              {
+            drive = dor & 0x03;
+
+            switch (commandPending)
+            {
                 case 0x07: // recalibrate
-                  statusRegister0 = 0x20 | drive;
-                  
-                  // Check if drive is set and motor running
-                  if ((drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE) || (drives[drive].isMotorRunning() == false))
-                  {
-                      // Command terminated abnormally
-                      statusRegister0 |= 0x50;
-                  }
-                  
-                  this.enterIdlePhase();
-                  this.setInterrupt();
-                  break;
-        
+                    statusRegister0 = 0x20 | drive;
+
+                    // Check if drive is set and motor running
+                    if ((drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE) || (drives[drive].isMotorRunning() == false))
+                    {
+                        // Command terminated abnormally
+                        statusRegister0 |= 0x50;
+                    }
+
+                    this.enterIdlePhase();
+                    this.setInterrupt();
+                    break;
+
                 case 0x0F: // seek
-                  statusRegister0 = 0x20 | (drives[drive].hds << 2) | drive;
-                  this.enterIdlePhase();
-                  this.setInterrupt();
-                  break;
-        
+                    statusRegister0 = 0x20 | (drives[drive].hds << 2) | drive;
+                    this.enterIdlePhase();
+                    this.setInterrupt();
+                    break;
+
                 case 0x4A: // read ID
-                  this.enterResultPhase();
-                  break;
+                    this.enterResultPhase();
+                    break;
 
                 case 0x45: // write normal data
                 case 0xC5:
-                  if (tc)
-                  {
-                      // Terminal Count line, done and reset status registers
-                      statusRegister0 = (drives[drive].hds << 2) | drive;
-                      statusRegister1 = 0;
-                      statusRegister2 = 0;
-        
-//                      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " WRITE DONE: drive=" + drive + ", hds=" + drives[drive].hds + ", cylinder=" + drives[drive].cylinder + ", sector=" + drives[drive].sector);
-        
-                      this.enterResultPhase();
-                  }
-                  else
-                  {
-                      // request transfer next sector by DMA
-                      dma.setDMARequest(FDC_DMA_CHANNEL, true);
-                  }
-                  break;
-        
+                    if (tc)
+                    {
+                        // Terminal Count line, done and reset status registers
+                        statusRegister0 = (drives[drive].hds << 2) | drive;
+                        statusRegister1 = 0;
+                        statusRegister2 = 0;
+
+                        //                      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " WRITE DONE: drive=" + drive + ", hds=" + drives[drive].hds + ", cylinder=" + drives[drive].cylinder + ", sector=" + drives[drive].sector);
+
+                        this.enterResultPhase();
+                    }
+                    else
+                    {
+                        // request transfer next sector by DMA
+                        if (emu.isCpu32bit())
+                        {
+                            dma32.holdDREQ(FDC_DMA_CHANNEL & 3);
+                        }
+                        else
+                        {
+                            dma.setDMARequest(FDC_DMA_CHANNEL, true);
+                        }
+                    }
+                    break;
+
                 case 0x46: // read normal data
                 case 0x66:
                 case 0xC6:
                 case 0xE6:
-                  // request transfer next sector by DMA
-                  dma.setDMARequest(FDC_DMA_CHANNEL, true);
-                  break;
-        
+                    // request transfer next sector by DMA
+                    if (emu.isCpu32bit())
+                    {
+                        dma32.holdDREQ(FDC_DMA_CHANNEL & 3);
+                    }
+                    else
+                    {
+                        dma.setDMARequest(FDC_DMA_CHANNEL, true);
+                    }
+                    break;
+
                 case 0x4D: // format track
-                  if ((formatCount == 0) || tc)
-                  {
-                      formatCount = 0;
-                      statusRegister0 = (drives[drive].hds << 2) | drive;
-                      this.enterResultPhase();
-                  }
-                  else
-                  {
-                      // request transfer next sector by DMA
-                      dma.setDMARequest(FDC_DMA_CHANNEL, true);
-                  }
-                  break;
-        
+                    if ((formatCount == 0) || tc)
+                    {
+                        formatCount = 0;
+                        statusRegister0 = (drives[drive].hds << 2) | drive;
+                        this.enterResultPhase();
+                    }
+                    else
+                    {
+                        // request transfer next sector by DMA
+                        if (emu.isCpu32bit())
+                        {
+                            dma32.holdDREQ(FDC_DMA_CHANNEL & 3);
+                        }
+                        else
+                        {
+                            dma.setDMARequest(FDC_DMA_CHANNEL, true);
+                        }
+                    }
+                    break;
+
                 case 0xFE: // (contrived) RESET
-                  this.reset(0); // Performs a warm reset
-                  commandPending = 0;
-                  statusRegister0 = 0xC0;
-                  this.setInterrupt();
-                  resetSenseInterrupt = 4;
-                  break;
+                    this.reset(0); // Performs a warm reset
+                    commandPending = 0;
+                    statusRegister0 = 0xC0;
+                    this.setInterrupt();
+                    resetSenseInterrupt = 4;
+                    break;
 
                 default:
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: unknown command during update.");
-              }
-          }
+            }
+        }
     }
-
 
     /**
      * Return a byte from I/O address space at given port
@@ -991,9 +1001,9 @@ public class FDC extends ModuleFDC
     public byte getIOPortByte(int portAddress) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException
     {
         logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IN command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-        
+
         byte value = 0;
-        
+
         // Check which port is addressed
         switch (portAddress)
         {
@@ -1001,7 +1011,7 @@ public class FDC extends ModuleFDC
             case 0x03F1: // Read diskette controller status B
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Reading ports 0x3F0 and 0x3F1 not implemented");
                 break;
-                
+
             case 0x03F2: // Digital output register (DMA mode)
                 logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Is reading allowed of port 0x3F2? Returned DOR");
                 value = dor;
@@ -1011,36 +1021,36 @@ public class FDC extends ModuleFDC
                 int drive = dor & 0x03;
                 if (drives[drive].containsFloppy())
                 {
-                  switch (drives[drive].getFloppyType())
-                  {
-                    case FLOPPY_DISKTYPE_160K:
-                    case FLOPPY_DISKTYPE_180K:
-                    case FLOPPY_DISKTYPE_320K:
-                    case FLOPPY_DISKTYPE_360K:
-                    case FLOPPY_DISKTYPE_1_2:
-                      value = 0x00;
-                      break;
-                    case FLOPPY_DISKTYPE_720K:
-                      value = (byte) 0xc0;
-                      break;
-                    case FLOPPY_DISKTYPE_1_44:
-                      value = (byte) 0x80;
-                      break;
-                    case FLOPPY_DISKTYPE_2_88:
-                      value = 0x40;
-                      break;
-                      
-                    default: // FLOPPY_DISKTYPE_NONE
-                      value = 0x20;
-                      break;
-                  }
+                    switch (drives[drive].getFloppyType())
+                    {
+                        case FLOPPY_DISKTYPE_160K:
+                        case FLOPPY_DISKTYPE_180K:
+                        case FLOPPY_DISKTYPE_320K:
+                        case FLOPPY_DISKTYPE_360K:
+                        case FLOPPY_DISKTYPE_1_2:
+                            value = 0x00;
+                            break;
+                        case FLOPPY_DISKTYPE_720K:
+                            value = (byte) 0xc0;
+                            break;
+                        case FLOPPY_DISKTYPE_1_44:
+                            value = (byte) 0x80;
+                            break;
+                        case FLOPPY_DISKTYPE_2_88:
+                            value = 0x40;
+                            break;
+
+                        default: // FLOPPY_DISKTYPE_NONE
+                            value = 0x20;
+                            break;
+                    }
                 }
                 else
                 {
-                  value = 0x20;
+                    value = 0x20;
                 }
                 break;
-                
+
             case 0x03F4: // Main status register (DMA mode)
                 value = msr;
                 break;
@@ -1050,7 +1060,7 @@ public class FDC extends ModuleFDC
                 {
                     logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Port 0x3F5: no results to read");
                     // Clear whole MSR to reset its status
-                    msr = 0;
+                    msr = 0 | FDC_CMD_DIO;  // Set to data direction to read - undocumented feature for DMA (bram);
                     value = result[0];
                 }
                 else
@@ -1061,33 +1071,33 @@ public class FDC extends ModuleFDC
                     msr &= 0xF0;
                     // Clear interrupt
                     this.clearInterrupt();
-                    
+
                     if (resultIndex >= resultSize)
                     {
                         this.enterIdlePhase();
                     }
                 }
                 break;
-            
+
             case 0x03F6: // Reserved for future floppy controllers
                 // This address is shared with the hard drive controller
-               
+
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " IN (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": reserved port.");
-                
+
                 //this links to ata               
                 value = ata.getIOPortByte(portAddress);
-                
+
                 break;
 
             case 0x03F7: // Diskette controller digital input register
                 // This address is shared with the hard drive controller:
                 //   Bit  7   : floppy
                 //   Bits 6..0: hard drive
-                             
+
                 //  A link to the ata                
                 value = ata.getIOPortByte(portAddress);
                 value &= 0x7f;
-                
+
                 // Add in diskette change line if motor is on
                 drive = dor & 0x03;
                 if ((dor & (1 << (drive + 4))) == 1)
@@ -1098,12 +1108,13 @@ public class FDC extends ModuleFDC
                     }
                     else
                     {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Non-existing drive requested at port " + Integer.toHexString(portAddress).toUpperCase());
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Non-existing drive requested at port "
+                                + Integer.toHexString(portAddress).toUpperCase());
                     }
                 }
                 break;
 
-          default:
+            default:
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown port address encountered: " + Integer.toHexString(portAddress).toUpperCase());
                 break;
         }
@@ -1111,7 +1122,6 @@ public class FDC extends ModuleFDC
         // Return value
         return value;
     }
-
 
     /**
      * Set a byte in I/O address space at given port
@@ -1123,16 +1133,18 @@ public class FDC extends ModuleFDC
      */
     public void setIOPortByte(int portAddress, byte value) throws ModuleException, ModuleUnknownPort
     {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)value) & 0xFF).toUpperCase());
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
+                + Integer.toHexString(((int) value) & 0xFF).toUpperCase());
 
         // Check which I/O port is addressed
         switch (portAddress)
         {
             case 0x03F0:
             case 0x03F1:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Port address is read only and cannot be written to: " + Integer.toHexString(portAddress).toUpperCase());
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Port address is read only and cannot be written to: "
+                        + Integer.toHexString(portAddress).toUpperCase());
                 break;
-                
+
             case 0x03F2: // Digital output register (DMA mode)
                 // Set new FDC and drive parameters based on new DOR value
                 // Motor settings of drives
@@ -1155,29 +1167,31 @@ public class FDC extends ModuleFDC
                                 drives[3].setMotor((value & 0x80) > 0 ? true : false);
                                 break;
                             default:
-                                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown drive selected at port " + Integer.toHexString(portAddress).toUpperCase());
+                                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown drive selected at port "
+                                        + Integer.toHexString(portAddress).toUpperCase());
                                 break;
                         }
                     }
                     else
                     {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Non-existing drive selected at port " + Integer.toHexString(portAddress).toUpperCase());
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Non-existing drive selected at port "
+                                + Integer.toHexString(portAddress).toUpperCase());
                     }
                 }
-                
+
                 // DMA and interrupt setting
                 dmaAndInterruptEnabled = ((value & 0x08) > 0) ? true : false;
-                
+
                 // FDC enabled (normal operation) or reset
                 fdcEnabled = ((value & 0x04) > 0) ? true : false;
-                
+
                 // Select drive to operate on
                 drive = value & 0x03;
-                
+
                 // Store previous condition and update DOR
                 fdcEnabledPrevious = ((dor & 0x04) > 0) ? true : false;
                 dor = value;
-                
+
                 // Check state change of FDC
                 if (!fdcEnabledPrevious && fdcEnabled)
                 {
@@ -1188,17 +1202,14 @@ public class FDC extends ModuleFDC
                 else if (fdcEnabledPrevious && !fdcEnabled)
                 {
                     // Transition from NORMAL to RESET
-                    msr = 0;
-                    commandPending = 0xFE;  // is reset command, see update()
+                    msr = 0 | FDC_CMD_DIO;  // Set to data direction to read - undocumented feature for DMA (bram);
+                    commandPending = 0xFE; // is reset command, see update()
                 }
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + 
-                        ", DMA/IRQ=" + dmaAndInterruptEnabled + 
-                        ", FDC=" + fdcEnabled + 
-                        ", drive=" + drive + 
-                        ", motorRunning=" + drives[drive].isMotorRunning());
+                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ", DMA/IRQ="
+                        + dmaAndInterruptEnabled + ", FDC=" + fdcEnabled + ", drive=" + drive + ", motorRunning=" + drives[drive].isMotorRunning());
                 break;
-                
+
             case 0x03F4: // Main status / data rate select register (DMA mode)
                 // MAIN STATUS REGISTER (MSR)
                 // Bit(s)  Description
@@ -1214,10 +1225,10 @@ public class FDC extends ModuleFDC
                 // 0  drive 0 busy (= drive is in seek mode)
                 // Set data rate
                 dataRate = value & 0x03;
-                
+
                 if ((value & 0x80) > 0)
                 {
-                    msr = 0;
+                    msr = 0 | FDC_CMD_DIO;  // Set to data direction to read - undocumented feature for DMA (bram);
                     commandPending = 0xFE; // RESET pending
                     motherboard.resetTimer(this, updateInterval);
                     motherboard.setTimerActiveState(this, true);
@@ -1225,7 +1236,8 @@ public class FDC extends ModuleFDC
                 if ((value & 0x7C) > 0)
                 {
                     // Drive(s) are busy, but FDC is in non-DMA mode, which is not supported!
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": drive is busy, but in non-DMA mode which is not supported.");
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase()
+                            + ": drive is busy, but in non-DMA mode which is not supported.");
                 }
                 break;
 
@@ -1234,199 +1246,202 @@ public class FDC extends ModuleFDC
                 //  1. command phase: FDC receives all info required to perform operation
                 //  2. execution phase: FDC performs the operation
                 //  3. result phase: operation is completed and result is made available to the processor
-                
+
                 // Phase 1: command phase
                 // Check current state of command
-              if (commandComplete)
-              {
-                  if (commandPending != 0)
-                  {
-                      logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " new command received while old command is still pending.");
-                  }
-                  
-                  // Create new command
-                  command[0] = value;
-                  commandComplete = false;
-                  commandIndex = 1;
-                  
-                  // Set registers that read/write command is in progress
-                  msr &= 0x0f; // leave drive status untouched, clear bits 7 - 4: 0000 = no access permitted, transfer system -> FDC, DMA mode, FDC busy
-                  // Set bits MRQ ready (0x80), FDC busy (0x10)
-                  msr |= FDC_CMD_MRQ | FDC_CMD_BUSY;
-                  
-                  // Check the size of command (number of bytes to be expected)
-                  int command = value & 0xFF;
-                  // Also based on values for diskette commands:
-                  //    MFM = MFM (Modified Frequency Mode) selected, opposite to FM mode. Assumed to be 1 all times
-                  //    HDS = head select
-                  //    DS  = drive select
-                  //    MT  = multi track operation
-                  //    SK  = skip deleted data address mark
-                  switch (command)
-                  {
-                      case 0x03: // Specify
-                          commandSize = 3;
-                          break;
-                        
-                      case 0x04: // Sense drive status
-                          commandSize = 2;
-                          break;
-                        
-                      case 0x07: // Recalibrate
-                          commandSize = 2;
-                          break;
-                        
-                      case 0x08: // Sense interrupt status
-                          commandSize = 1;
-                          break;
+                if (commandComplete)
+                {
+                    if (commandPending != 0)
+                    {
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " new command received while old command is still pending.");
+                    }
 
-                      case 0x0F: // Seek
-                          commandSize = 3;
-                          break;
+                    // Create new command
+                    command[0] = value;
+                    commandComplete = false;
+                    commandIndex = 1;
 
-                      case 0x4A: // MFM selected
-                          commandSize = 2;
-                          break;
+                    // Set registers that read/write command is in progress
+                    msr &= 0x0f; // leave drive status untouched, clear bits 7 - 4: 0000 = no access permitted, transfer system -> FDC, DMA mode, FDC busy
+                    // Set bits MRQ ready (0x80), FDC busy (0x10)
+                    msr |= FDC_CMD_MRQ | FDC_CMD_BUSY;
 
-                      case 0x4D: // MFM selected
-                          commandSize = 10;
-                          break;
-                        
-                      case 0x45: // MFM selected
-                      case 0xC5: // MT + MFM selected
-                          commandSize = 9;
-                          break;
+                    // Check the size of command (number of bytes to be expected)
+                    int command = value & 0xFF;
+                    // Also based on values for diskette commands:
+                    //    MFM = MFM (Modified Frequency Mode) selected, opposite to FM mode. Assumed to be 1 all times
+                    //    HDS = head select
+                    //    DS  = drive select
+                    //    MT  = multi track operation
+                    //    SK  = skip deleted data address mark
+                    switch (command)
+                    {
+                        case 0x03: // Specify
+                            commandSize = 3;
+                            break;
 
-                      case 0x46: // MFM selected
-                      case 0x66: // SK + MFM selected
-                      case 0xC6: // MFM + MT selected
-                      case 0xE6: // SK + MFM + MT selected
-                          commandSize = 9;
-                          break;
-                          
-                          // Enhanced drives (EHD) commands
-                      case 0x0E: // Dump registers (Enhanced)
-                      case 0x10: // Version (Enhanced)
-                      case 0x14: // Unlock command (Enhanced)
-                      case 0x94: // Lock command (Enhanced)
-                        commandSize = 0;
-                        commandPending = command;
-                        this.enterResultPhase();
-                        break;
+                        case 0x04: // Sense drive status
+                            commandSize = 2;
+                            break;
 
+                        case 0x07: // Recalibrate
+                            commandSize = 2;
+                            break;
 
-                      case 0x12: // Perpendicular mode (Enhanced)
-                        commandSize = 2;
-                        break;
-                        
-                      case 0x13: // Configure (Enhanced)
-                        commandSize = 4;
-                        break;
-    
-                      case 0x18: // National Semiconductor version command; return 80h
-                          commandSize = 0;
-                          statusRegister0 = 0x80; // Status: invalid command
-                          this.enterResultPhase();
-                          break;
+                        case 0x08: // Sense interrupt status
+                            commandSize = 1;
+                            break;
 
-                      case 0x8F: // Relative seek (Enhanced)
-                      case 0xCF: // DIR selected
-                          commandSize = 3;
-                          break;
-                          
-                      default:
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": invalid FDC command.");
-                        commandSize = 0;
-                        statusRegister0 = 0x80; // Status: invalid command
-                        this.enterResultPhase();
-                        break;
-                  }
-              }
-              else
-              {
-                  command[commandIndex++] = value;
-              }
-              
-              // Phase 2: execution phase
-              if (commandIndex == commandSize)
-              {
-                  // Command phase ready, jump to execution phase
-                  this.executeCommand();
-                  commandComplete = true;
-              }
-              break;
+                        case 0x0F: // Seek
+                            commandSize = 3;
+                            break;
+
+                        case 0x4A: // MFM selected
+                            commandSize = 2;
+                            break;
+
+                        case 0x4D: // MFM selected
+                            commandSize = 10;
+                            break;
+
+                        case 0x45: // MFM selected
+                        case 0xC5: // MT + MFM selected
+                            commandSize = 9;
+                            break;
+
+                        case 0x46: // MFM selected
+                        case 0x66: // SK + MFM selected
+                        case 0xC6: // MFM + MT selected
+                        case 0xE6: // SK + MFM + MT selected
+                            commandSize = 9;
+                            break;
+
+                        // Enhanced drives (EHD) commands
+                        case 0x0E: // Dump registers (Enhanced)
+                        case 0x10: // Version (Enhanced)
+                        case 0x14: // Unlock command (Enhanced)
+                        case 0x94: // Lock command (Enhanced)
+                            commandSize = 0;
+                            commandPending = command;
+                            this.enterResultPhase();
+                            break;
+
+                        case 0x12: // Perpendicular mode (Enhanced)
+                            commandSize = 2;
+                            break;
+
+                        case 0x13: // Configure (Enhanced)
+                            commandSize = 4;
+                            break;
+
+                        case 0x18: // National Semiconductor version command; return 80h
+                            commandSize = 0;
+                            statusRegister0 = 0x80; // Status: invalid command
+                            this.enterResultPhase();
+                            break;
+
+                        case 0x8F: // Relative seek (Enhanced)
+                        case 0xCF: // DIR selected
+                            commandSize = 3;
+                            break;
+
+                        default:
+                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase()
+                                    + ": invalid FDC command.");
+                            commandSize = 0;
+                            statusRegister0 = 0x80; // Status: invalid command
+                            this.enterResultPhase();
+                            break;
+                    }
+                }
+                else
+                {
+                    command[commandIndex++] = value;
+                }
+
+                // Phase 2: execution phase
+                if (commandIndex == commandSize)
+                {
+                    // Command phase ready, jump to execution phase
+                    this.executeCommand();
+                    commandComplete = true;
+                }
+                break;
 
             case 0x03F6: // Reserved I/O address
-                
+
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + ": reserved port.");
-                
+
                 // I/O address is shared with the ATA controller
                 ata.setIOPortByte(portAddress, value);
                 break;
 
             case 0x03F7: // Diskette controller configuration control register
-                
-                  dataRate = value & 0x03;
-                  switch (dataRate)
-                  {
-                    case 0: logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 500 Kbps");
-                        break;
-                    case 1: logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 300 Kbps");
-                        break;
-                    case 2: logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 250 Kbps");
-                        break;
-                    case 3: logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 1 Mbps");
-                        break;
-                  }
-                  break;
 
-           default:
-                  logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown port address encountered: " + Integer.toHexString(portAddress).toUpperCase());
-                  break;
+                dataRate = value & 0x03;
+                switch (dataRate)
+                {
+                    case 0:
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 500 Kbps");
+                        break;
+                    case 1:
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 300 Kbps");
+                        break;
+                    case 2:
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 250 Kbps");
+                        break;
+                    case 3:
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Datarate is set to 1 Mbps");
+                        break;
+                }
+                break;
+
+            default:
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unknown port address encountered: " + Integer.toHexString(portAddress).toUpperCase());
+                break;
         }
-        
+
         return;
     }
-
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
     {
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " IN command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Returned default value 0xFFFF");
-        
-        // Return dummy value 0xFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
-    }
 
+        // Return dummy value 0xFFFF
+        return new byte[] {(byte) 0x0FF, (byte) 0x0FF};
+    }
 
     public void setIOPortWord(int portAddress, byte[] dataWord) throws ModuleException
     {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received. No action taken.");
-        
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (word) to port " + Integer.toHexString(portAddress).toUpperCase()
+                + " received. No action taken.");
+
         // Do nothing and just return okay
         return;
     }
-
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
     {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " IN command (double word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
+        logger
+                .log(Level.WARNING, "[" + MODULE_TYPE + "]" + " IN command (double word) to port " + Integer.toHexString(portAddress).toUpperCase()
+                        + " received");
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Returned default value 0xFFFFFFFF");
-        
-        // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF };
-    }
 
+        // Return dummy value 0xFFFFFFFF
+        return new byte[] {(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF};
+    }
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) throws ModuleException
     {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (double word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received. No action taken.");
-        
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (double word) to port " + Integer.toHexString(portAddress).toUpperCase()
+                + " received. No action taken.");
+
         // Do nothing and just return okay
         return;
     }
 
-    
     /**
      * Raise interrupt signal
      * 
@@ -1439,7 +1454,6 @@ public class FDC extends ModuleFDC
         resetSenseInterrupt = 0;
     }
 
-    
     /**
      * Clear interrupt signal
      * 
@@ -1455,10 +1469,9 @@ public class FDC extends ModuleFDC
         }
     }
 
-
     //******************************************************************************
     // FDC Methods
-    
+
     /**
      * Defines the total number of available drives
      * Note: total number may not exceed 4, but must be more than 0
@@ -1473,37 +1486,36 @@ public class FDC extends ModuleFDC
         {
             numberOfDrives = totalDrives;
             drives = new Drive[numberOfDrives];
-            
+
             // Create new drives
             for (int i = 0; i < drives.length; i++)
             {
                 drives[i] = new Drive();
             }
-            
+
             // Set CMOS register 0x14 (bit 7,6) to total number of available drives
             if (numberOfDrives == 1)
             {
-                rtc.setCMOSRegister(0x14, (byte)((rtc.getCMOSRegister(0x14) & 0x3F) | 0x00));
+                rtc.setCMOSRegister(0x14, (byte) ((rtc.getCMOSRegister(0x14) & 0x3F) | 0x00));
             }
             else if (numberOfDrives == 2)
             {
-                rtc.setCMOSRegister(0x14, (byte)((rtc.getCMOSRegister(0x14) & 0x3F) | 0x40));
+                rtc.setCMOSRegister(0x14, (byte) ((rtc.getCMOSRegister(0x14) & 0x3F) | 0x40));
             }
             else if (numberOfDrives == 3)
             {
-                rtc.setCMOSRegister(0x14, (byte)((rtc.getCMOSRegister(0x14) & 0x3F) | 0x80));
+                rtc.setCMOSRegister(0x14, (byte) ((rtc.getCMOSRegister(0x14) & 0x3F) | 0x80));
             }
             else if (numberOfDrives == 4)
             {
-                rtc.setCMOSRegister(0x14, (byte)((rtc.getCMOSRegister(0x14) & 0x3F) | 0xC0));
+                rtc.setCMOSRegister(0x14, (byte) ((rtc.getCMOSRegister(0x14) & 0x3F) | 0xC0));
             }
-            
+
             return true;
         }
         return false;
     }
 
-    
     /**
      * Inserts a new carrier into a selected drive
      * 
@@ -1526,12 +1538,11 @@ public class FDC extends ModuleFDC
         {
             driveIndex = 1;
         }
-        
+
         // Perform operation
         return insertCarrier(driveIndex, carrierType, imageFile, writeProtected);
     }
 
-    
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
@@ -1551,12 +1562,11 @@ public class FDC extends ModuleFDC
         {
             driveIndex = 1;
         }
-        
+
         // Perform operation
         return ejectCarrier(driveIndex);
     }
-    
-    
+
     /**
      * Inserts a new carrier into a selected drive
      * 
@@ -1574,7 +1584,7 @@ public class FDC extends ModuleFDC
         {
             // Drive A
             String driveLetter = "A";
-            
+
             // Check if drive A exists and if drive is empty
             if (drives.length > 0 && !(drives[driveIndex].containsFloppy()))
             {
@@ -1582,58 +1592,58 @@ public class FDC extends ModuleFDC
                 switch (carrierType)
                 {
                     case FLOPPY_DISKTYPE_NONE:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x00));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_NONE);
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x00));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_NONE);
+                        break;
+
                     case FLOPPY_DISKTYPE_360K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x10));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x10));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        break;
+
                     case FLOPPY_DISKTYPE_1_2:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x20));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525HD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x20));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525HD);
+                        break;
+
                     case FLOPPY_DISKTYPE_720K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x30));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350DD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x30));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350DD);
+                        break;
+
                     case FLOPPY_DISKTYPE_1_44:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x40));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350HD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x40));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350HD);
+                        break;
+
                     case FLOPPY_DISKTYPE_2_88:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x50));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350ED);
-                          break;
-    
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x50));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350ED);
+                        break;
+
                     // CMOS reserved drive types
                     case FLOPPY_DISKTYPE_160K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x60));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 6");
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x60));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 6");
+                        break;
+
                     case FLOPPY_DISKTYPE_180K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x70));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 7");
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x70));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 7");
+                        break;
+
                     case FLOPPY_DISKTYPE_320K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0x0f) | 0x80));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 8");
-                          break;
-    
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0x0f) | 0x80));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 8");
+                        break;
+
                     default:
-                          // Unknown floppy drive type
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported floppy drive type.");
-                          break;
+                        // Unknown floppy drive type
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported floppy drive type.");
+                        break;
                 }
 
                 // Insert new floppy
@@ -1651,14 +1661,15 @@ public class FDC extends ModuleFDC
             else
             {
                 // Alert that floppy drive is not empty
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " does not exist or already contains a floppy. Eject floppy first!");
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter
+                        + " does not exist or already contains a floppy. Eject floppy first!");
             }
         }
         else if (driveIndex == 1)
         {
             // Drive B
             String driveLetter = "B";
-            
+
             // Check if drive B exists and if drive is empty
             if (drives.length > 1 && !(drives[driveIndex].containsFloppy()))
             {
@@ -1666,58 +1677,58 @@ public class FDC extends ModuleFDC
                 switch (carrierType)
                 {
                     case FLOPPY_DISKTYPE_NONE:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x00));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_NONE);
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x00));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_NONE);
+                        break;
+
                     case FLOPPY_DISKTYPE_360K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x01));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x01));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        break;
+
                     case FLOPPY_DISKTYPE_1_2:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x02));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525HD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x02));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525HD);
+                        break;
+
                     case FLOPPY_DISKTYPE_720K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x03));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350DD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x03));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350DD);
+                        break;
+
                     case FLOPPY_DISKTYPE_1_44:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x04));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350HD);
-                          break;
-                      
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x04));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350HD);
+                        break;
+
                     case FLOPPY_DISKTYPE_2_88:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x05));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350ED);
-                          break;
-    
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x05));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_350ED);
+                        break;
+
                     // CMOS reserved drive types
                     case FLOPPY_DISKTYPE_160K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x06));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 6");
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x06));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 6");
+                        break;
+
                     case FLOPPY_DISKTYPE_180K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x07));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 7");
-                          break;
-                          
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x07));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 7");
+                        break;
+
                     case FLOPPY_DISKTYPE_320K:
-                          rtc.setCMOSRegister(0x10, (byte)((rtc.getCMOSRegister(0x10) & 0xf0) | 0x08));
-                          drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 8");
-                          break;
-    
+                        rtc.setCMOSRegister(0x10, (byte) ((rtc.getCMOSRegister(0x10) & 0xf0) | 0x08));
+                        drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " set to reserved CMOS floppy drive type 8");
+                        break;
+
                     default:
-                          // Unknown floppy drive type
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported floppy drive type.");
-                          break;
+                        // Unknown floppy drive type
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported floppy drive type.");
+                        break;
                 }
 
                 // Insert new floppy
@@ -1735,19 +1746,19 @@ public class FDC extends ModuleFDC
             else
             {
                 // Alert that floppy drive is not empty
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter + " does not exist or already contains a floppy. Eject floppy first!");
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Drive " + driveLetter
+                        + " does not exist or already contains a floppy. Eject floppy first!");
             }
         }
         else
         {
             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Can not insert floppy because additional drives are not implemented.");
         }
-        
+
         // Inserting floppy was not successful
         return false;
     }
-    
-    
+
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
@@ -1764,9 +1775,9 @@ public class FDC extends ModuleFDC
             {
                 boolean writeProtected = drives[driveIndex].writeProtected;
                 drives[driveIndex].ejectFloppy();
-                
+
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Floppy is ejected from drive " + drive + ".");
-                
+
                 if (writeProtected == false)
                 {
                     logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Floppy data is stored to image file.");
@@ -1784,14 +1795,13 @@ public class FDC extends ModuleFDC
             logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + e.getMessage());
             return false;
         }
-        
+
         return false;
     }
-    
 
     //******************************************************************************
     // Additional Methods
-    
+
     /**
      * Execute command of FDC
      * Note: assumed is that all bytes of the command are fetched.
@@ -1805,13 +1815,13 @@ public class FDC extends ModuleFDC
         int sectorSize, sectorTime, logicalSector, dataLength;
         boolean ableToTransfer;
 
-/*        String commandString = "";
-        for (int i = 0; i < commandSize; i++)
-        {
-            commandString += "[" + Integer.toHexString(0x100 | command[i] & 0xFF).substring(1) + "] ";
-        }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " COMMAND: " + commandString);
-*/        
+        /*        String commandString = "";
+         for (int i = 0; i < commandSize; i++)
+         {
+         commandString += "[" + Integer.toHexString(0x100 | command[i] & 0xFF).substring(1) + "] ";
+         }
+         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " COMMAND: " + commandString);
+         */
         // Get first part of command
         commandPending = command[0] & 0xFF;
         switch (commandPending)
@@ -1856,7 +1866,7 @@ public class FDC extends ModuleFDC
                 // Execution    : data transfer between the FDD and CPU/memory
                 // Result       : status info (st0,st1,st2) + sector ID
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: Read/write data");
-                
+
                 // Update status to emulator
                 emu.statusChanged(Emulator.MODULE_FDC_TRANSFER_START);
 
@@ -1871,14 +1881,14 @@ public class FDC extends ModuleFDC
                 dor |= drive;
 
                 // Set drive parameters
-                drives[drive].multiTrack  = (((command[0] >> 7) & 0x01) == 0x01 ? true : false);
-                cylinder    = command[2]; // 0..79 depending
-                hds         = command[3] & 0x01;
-                sector      = command[4];   // 1..36 depending
-                sectorSize  = command[5];
-                eot         = command[6];      // 1..36 depending
-                dataLength  = command[8];
-                
+                drives[drive].multiTrack = (((command[0] >> 7) & 0x01) == 0x01 ? true : false);
+                cylinder = command[2]; // 0..79 depending
+                hds = command[3] & 0x01;
+                sector = command[4]; // 1..36 depending
+                sectorSize = command[5];
+                eot = command[6]; // 1..36 depending
+                dataLength = command[8];
+
                 // Perform some necessary checks
                 ableToTransfer = true;
 
@@ -1889,7 +1899,7 @@ public class FDC extends ModuleFDC
                     msr = FDC_CMD_BUSY;
                     ableToTransfer = false;
                 }
-                
+
                 // Check drive type
                 if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE)
                 {
@@ -1930,11 +1940,12 @@ public class FDC extends ModuleFDC
                 // Check if sector number is not higher than maximum available sectors per track
                 if (sector > drives[drive].sectorsPerTrack)
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> sector number (" + sector + ") exceeds sectors per track (" + drives[drive].sectorsPerTrack + ").");
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> sector number (" + sector
+                            + ") exceeds sectors per track (" + drives[drive].sectorsPerTrack + ").");
                     drives[drive].cylinder = cylinder;
                     drives[drive].hds = hds;
                     drives[drive].sector = sector;
-                    
+
                     statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive;
                     statusRegister1 = 0x04;
                     statusRegister2 = 0x00;
@@ -1944,20 +1955,21 @@ public class FDC extends ModuleFDC
                 // Check if cylinder does not differ from drive parameter
                 if (cylinder != drives[drive].cylinder)
                 {
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
                     drives[drive].resetChangeline();
                 }
 
                 // Compute logical sector
-                logicalSector = (cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) +
-                               (hds * drives[drive].sectorsPerTrack) + (sector - 1);
+                logicalSector = (cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) + (hds * drives[drive].sectorsPerTrack) + (sector - 1);
 
                 logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Logical sectors calculated: " + logicalSector);
-                
+
                 // Check if logical sector does not exceed total number of available sectors on disk
                 if (logicalSector >= drives[drive].sectors)
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: read/write normal data -> logical sectors exceeds total number of sectors on disk.");
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                            + " CMD: read/write normal data -> logical sectors exceeds total number of sectors on disk.");
                     ableToTransfer = false;
                 }
 
@@ -1969,49 +1981,64 @@ public class FDC extends ModuleFDC
                     {
                         eot = drives[drive].sectorsPerTrack;
                     }
-                    
+
                     // Now that parameters are validated, assign them to drive
-                    drives[drive].cylinder    = cylinder;
-                    drives[drive].hds         = hds;
-                    drives[drive].sector      = sector;
-                    drives[drive].eot         = eot;
+                    drives[drive].cylinder = cylinder;
+                    drives[drive].hds = hds;
+                    drives[drive].sector = sector;
+                    drives[drive].eot = eot;
 
                     if ((command[0] & 0x4F) == 0x46)
-                      {
-                          // Read data from floppy
-                          try
-                          {
-                              drives[drive].readData(logicalSector * 512, 512, floppyBuffer);
-                          }
-                          catch (StorageDeviceException e)
-                          {
-                              logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
-                          }
+                    {
+                        // Read data from floppy
+                        try
+                        {
+                            drives[drive].readData(logicalSector * 512, 512, floppyBuffer);
+                        }
+                        catch (StorageDeviceException e)
+                        {
+                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
+                        }
 
-                          // data register not ready yet, controller set to busy
-                          msr = FDC_CMD_BUSY;
+                        // data register not ready yet, controller set to busy
+                        msr = FDC_CMD_BUSY;
+                        
+                        // NOTE (bram): Added this undocumented msr feature for DMA: Set data direction to read
+                        msr |= FDC_CMD_DIO; 
 
-                          // Activate timer
-                          sectorTime = 200000 / drives[drive].sectorsPerTrack;
-                          motherboard.resetTimer(this, sectorTime);
-                          motherboard.setTimerActiveState(this, true);
+                        // Activate timer
+                        sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                        motherboard.resetTimer(this, sectorTime);
+                        motherboard.setTimerActiveState(this, true);
 
-                      }
-                      else if ((command[0] & 0x7F) == 0x45)
-                      {
-                          // Write data to floppy
-                          // data register not ready yet, controller set to busy
-                          msr = FDC_CMD_BUSY;
-                          
-                          // Set a request to perform DMA transfer
-                          dma.setDMARequest(FDC_DMA_CHANNEL, true);
-                          
-                          // FIXME: is the distinction between read/write correct? No timer is used here, but it seems to work
-                      }
-                      else
-                      {
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: unknown read/write command");
-                      }
+                    }
+                    else if ((command[0] & 0x7F) == 0x45)
+                    {
+                        // Write data to floppy
+                        // data register not ready yet, controller set to busy
+                        msr = FDC_CMD_BUSY;
+
+                        // NOTE (bram): Added this undocumented msr feature for DMA: Set data direction to write
+                        msr &= ~FDC_CMD_DIO; 
+
+                        // Set a request to perform DMA transfer
+                        if (emu.isCpu32bit())
+                        {
+                            dma32.holdDREQ(FDC_DMA_CHANNEL & 3);
+                        }
+                        else
+                        {
+                            dma.setDMARequest(FDC_DMA_CHANNEL, true);
+                        }
+
+                        // FIXME: is the distinction between read/write correct? No timer is used here, but it seems to work
+                    }
+                    else
+                    {
+                        // NOTE (bram): Added this undocumented msr feature for DMA: Set data direction to read; for safety.
+                        msr |= FDC_CMD_DIO; 
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: unknown read/write command");
+                    }
                 }
                 else
                 {
@@ -2023,16 +2050,16 @@ public class FDC extends ModuleFDC
                 // Execution    : head retracked to track 0
                 // Result       : none, no interrupt
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: recalibrate drive");
-                
+
                 drive = (command[1] & 0x03);
                 // Make sure FDC parameters in DOR are all enabled
                 dor &= 0xFC;
                 dor |= drive;
-                
+
                 // Delay calibration
                 motherboard.resetTimer(this, calculateStepDelay(drive, 0));
                 motherboard.setTimerActiveState(this, true);
-            
+
                 // Head retracked to track 0
                 drives[drive].cylinder = 0;
                 // Controller set to non-busy
@@ -2044,7 +2071,7 @@ public class FDC extends ModuleFDC
                 // Execution    : get status
                 // Result       : status information (status reg0 + current cylinder number) at the end of each seek operation about the FDC, no interrupt
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: sense interrupt status");
-                
+
                 // Set status register 0 based on interrupt
                 if (resetSenseInterrupt > 0)
                 {
@@ -2064,7 +2091,7 @@ public class FDC extends ModuleFDC
                 // Execution    : the first correct ID information on the cylinder is stored in data register
                 // Result       : status info + sector ID
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: read ID");
-                
+
                 drive = command[1] & 0x03;
                 drives[drive].hds = (command[1] >> 2) & 0x01;
                 dor &= 0xFC;
@@ -2091,10 +2118,10 @@ public class FDC extends ModuleFDC
                     msr = FDC_CMD_BUSY;
                     return; // Hang controller
                 }
-                
+
                 statusRegister0 = (drives[drive].hds << 2) | drive;
                 // time to read one sector at 300 rpm
-                
+
                 // Activate timer
                 sectorTime = 200000 / drives[drive].sectorsPerTrack;
                 motherboard.resetTimer(this, sectorTime);
@@ -2109,7 +2136,7 @@ public class FDC extends ModuleFDC
                 // Execution    : FDC formats an entire cylinder
                 // Result       : status info + sector ID
                 logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: format track");
-                
+
                 drive = command[1] & 0x03;
                 dor &= 0xFC;
                 dor |= drive;
@@ -2121,7 +2148,7 @@ public class FDC extends ModuleFDC
                     msr = FDC_CMD_BUSY;
                     return; // Hang controller
                 }
-                
+
                 // Determine head
                 drives[drive].hds = (command[1] >> 2) & 0x01;
 
@@ -2146,7 +2173,7 @@ public class FDC extends ModuleFDC
                 formatCount = command[3];
                 // Determine filler byte
                 formatFillbyte = command[5];
-                
+
                 // Check sector size
                 if (sectorSize != 0x02) // 512 bytes
                 {
@@ -2172,7 +2199,14 @@ public class FDC extends ModuleFDC
                 // 4 header bytes per sector are required
                 formatCount = formatCount * 4;
                 // Format a track
-                dma.setDMARequest(FDC.FDC_DMA_CHANNEL, true);
+                if (emu.isCpu32bit())
+                {
+                    dma32.holdDREQ(FDC_DMA_CHANNEL & 3);
+                }
+                else
+                {
+                    dma.setDMARequest(FDC_DMA_CHANNEL, true);
+                }
 
                 // Data register not ready, controller busy
                 msr = FDC_CMD_BUSY;
@@ -2186,17 +2220,17 @@ public class FDC extends ModuleFDC
                 drive = command[1] & 0x03;
                 dor &= 0xFC;
                 dor |= drive;
-                
+
                 // Set current head number
                 drives[drive].hds = (command[1] >> 2) & 0x01;
 
                 // Activate timer
                 motherboard.resetTimer(this, calculateStepDelay(drive, command[2]));
                 motherboard.setTimerActiveState(this, true);
-                
+
                 // Go to the specified cylinder
                 drives[drive].cylinder = command[2];
-                
+
                 // Data register not ready, drive busy
                 msr = (byte) (1 << drive);
                 break;
@@ -2220,12 +2254,10 @@ public class FDC extends ModuleFDC
                 this.enterIdlePhase();
                 break;
 
-                
-          default: // invalid or unsupported command; these are captured in write() above
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported FDC command 0x" + command[0]);
+            default: // invalid or unsupported command; these are captured in write() above
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Unsupported FDC command 0x" + command[0]);
         }
     }
-    
 
     /**
      * Store result after execution phase
@@ -2233,98 +2265,96 @@ public class FDC extends ModuleFDC
      */
     private void enterResultPhase()
     {
-      int drive;
-    
-      // Init variables
-      drive = dor & 0x03;
-      resultIndex = 0;
-      msr &= 0x0f; // leave drive status untouched
-      msr |= FDC_CMD_MRQ | FDC_CMD_DIO | FDC_CMD_BUSY;
-    
-      // invalid command
-      if ((statusRegister0 & 0xc0) == 0x80)
-      {
-        resultSize = 1;
-        result[0] = (byte) statusRegister0;
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " result phase: invalid command.");
-        return;
-      }
-      
-      // Set result depending on type of command
-      switch (commandPending)
-      {
-        case 0x04: // Sense drive status
-          resultSize = 1;
-          result[0] = (byte) statusRegister3;
-          break;
-          
-        case 0x08: // Sense interrupt status
-          resultSize = 2;
-          result[0] = (byte) statusRegister0;
-          result[1] = (byte) drives[drive].cylinder;
-          break;
-        
-        case 0x45:
-        case 0x46:
-        case 0x4A: // Read ID            
-        case 0x4D: // Format a track
-        case 0x66:
-        case 0xC5:
-        case 0xC6:
-        case 0xE6:            
-          resultSize = 7;
-          result[0] = (byte) statusRegister0;
-          result[1] = (byte) statusRegister1;
-          result[2] = (byte) statusRegister2;
-          result[3] = (byte) drives[drive].cylinder;
-          result[4] = (byte) drives[drive].hds;
-          result[5] = (byte) drives[drive].sector;
-          result[6] = 2;    // Sector size code
-          // Raise interrupt
-          this.setInterrupt();
-          break;
+        int drive;
 
-          
-        // Enhanced FDC commands
-        case 0x0E: // Dump registers
-          resultSize = 10;
-          // Dump number of cylinders from drives (only 2 drives, fill other 2 with 0)
-          for (int i = 0; i < 2; i++)
-          {
-              result[i] = (byte) drives[i].cylinders;
-          }
-          result[2] = 0;
-          result[3] = 0;
-          // Dump other FDC variables
-          result[4] = (byte) (((srt << 4) & 0xF0) | hut);
-          result[5] = (byte) (((hlt << 1) & 0xFE) | nonDMA);
-          result[6] = (byte) drives[drive].eot;
-          result[7] = (byte) ((lock << 7) | (perpMode & 0x7f));
-          result[8] = config;
-          result[9] = preTrack;
-          break;
+        // Init variables
+        drive = dor & 0x03;
+        resultIndex = 0;
+        msr &= 0x0f; // leave drive status untouched
+        msr |= FDC_CMD_MRQ | FDC_CMD_DIO | FDC_CMD_BUSY;
 
-        case 0x10: // Version
+        // invalid command
+        if ((statusRegister0 & 0xc0) == 0x80)
+        {
             resultSize = 1;
-            result[0] = (byte) 0x90;
-            break;
-            
-        case 0x14: // Unlock
-        case 0x94: // Lock
-            lock = (byte) (commandPending >> 7);
-            resultSize = 1;
-            result[0] = (byte) (lock << 4);
-            break;
+            result[0] = (byte) statusRegister0;
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " result phase: invalid command.");
+            return;
+        }
 
-        default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: no command match");
-            break;
-      }
+        // Set result depending on type of command
+        switch (commandPending)
+        {
+            case 0x04: // Sense drive status
+                resultSize = 1;
+                result[0] = (byte) statusRegister3;
+                break;
 
-      // Send ready message to emulator
-      emu.statusChanged(Emulator.MODULE_FDC_TRANSFER_STOP);
+            case 0x08: // Sense interrupt status
+                resultSize = 2;
+                result[0] = (byte) statusRegister0;
+                result[1] = (byte) drives[drive].cylinder;
+                break;
+
+            case 0x45:
+            case 0x46:
+            case 0x4A: // Read ID            
+            case 0x4D: // Format a track
+            case 0x66:
+            case 0xC5:
+            case 0xC6:
+            case 0xE6:
+                resultSize = 7;
+                result[0] = (byte) statusRegister0;
+                result[1] = (byte) statusRegister1;
+                result[2] = (byte) statusRegister2;
+                result[3] = (byte) drives[drive].cylinder;
+                result[4] = (byte) drives[drive].hds;
+                result[5] = (byte) drives[drive].sector;
+                result[6] = 2; // Sector size code
+                // Raise interrupt
+                this.setInterrupt();
+                break;
+
+            // Enhanced FDC commands
+            case 0x0E: // Dump registers
+                resultSize = 10;
+                // Dump number of cylinders from drives (only 2 drives, fill other 2 with 0)
+                for (int i = 0; i < 2; i++)
+                {
+                    result[i] = (byte) drives[i].cylinders;
+                }
+                result[2] = 0;
+                result[3] = 0;
+                // Dump other FDC variables
+                result[4] = (byte) (((srt << 4) & 0xF0) | hut);
+                result[5] = (byte) (((hlt << 1) & 0xFE) | nonDMA);
+                result[6] = (byte) drives[drive].eot;
+                result[7] = (byte) ((lock << 7) | (perpMode & 0x7f));
+                result[8] = config;
+                result[9] = preTrack;
+                break;
+
+            case 0x10: // Version
+                resultSize = 1;
+                result[0] = (byte) 0x90;
+                break;
+
+            case 0x14: // Unlock
+            case 0x94: // Lock
+                lock = (byte) (commandPending >> 7);
+                resultSize = 1;
+                result[0] = (byte) (lock << 4);
+                break;
+
+            default:
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " CMD: no command match");
+                break;
+        }
+
+        // Send ready message to emulator
+        emu.statusChanged(Emulator.MODULE_FDC_TRANSFER_STOP);
     }
-
 
     /**
      * Reset parameters after result or execution phase
@@ -2333,22 +2363,21 @@ public class FDC extends ModuleFDC
     private void enterIdlePhase()
     {
         // Reset registers
-        msr &= 0x0F;              // leave drive status untouched
-        msr |= FDC_CMD_MRQ;       // data register ready
-        
+        msr &= 0x0F; // leave drive status untouched
+        msr |= FDC_CMD_MRQ; // data register ready
+
         // Reset command variables
         commandComplete = true;
         commandIndex = 0;
         commandSize = 0;
         commandPending = 0;
-        
+
         // Reset buffer index
         floppyBufferIndex = 0;
-        
+
         logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " idle phase finished");
     }
 
-    
     /**
      * Get byte from floppy buffer for DMA transfer
      * This method is used for DMA transfer a byte from FDC to memory
@@ -2358,23 +2387,23 @@ public class FDC extends ModuleFDC
     protected byte getDMAByte()
     {
         int drive, logicalSector, sectorTime;
-        
-//        if (floppyBufferIndex > 500)
-//            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " MEM(DMA) byte: " + floppyBufferIndex + "=" + Integer.toHexString(floppyBuffer[floppyBufferIndex] & 0xFF).toUpperCase());
+
+        //        if (floppyBufferIndex > 500)
+        //            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " MEM(DMA) byte: " + floppyBufferIndex + "=" + Integer.toHexString(floppyBuffer[floppyBufferIndex] & 0xFF).toUpperCase());
 
         floppyBufferCurrentByte = floppyBuffer[floppyBufferIndex];
 
         // Increment buffer index
         floppyBufferIndex++;
-        
+
         // Get Terminal Count from DMA
         tc = dma.isTerminalCountReached();
 
         if ((floppyBufferIndex >= 512) || tc == true)
         {
-            
+
             drive = dor & 0x03;
-            
+
             if (floppyBufferIndex >= 512)
             {
                 // Increment the sector
@@ -2401,9 +2430,9 @@ public class FDC extends ModuleFDC
                 // Still data remaining to transfer (while floppyBuffer has to be reloaded)
 
                 // Recompute logical sector
-                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) +
-                (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
-                
+                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
+                        + (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+
                 // Read new data into floppy buffer
                 try
                 {
@@ -2413,22 +2442,22 @@ public class FDC extends ModuleFDC
                 {
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
                 }
-                
+
                 // Clear DMA request - it is enabled directly again via timer and update
                 dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
-                
+
                 // Activate timer to be ready for the next read
                 sectorTime = 200000 / drives[drive].sectorsPerTrack;
-                logger.log(Level.CONFIG, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " Activating floppy time to sector time of " + sectorTime + "("+sectorTime*5+")");
+                logger.log(Level.CONFIG, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]"
+                        + " Activating floppy time to sector time of " + sectorTime + "(" + sectorTime * 5 + ")");
                 motherboard.resetTimer(this, sectorTime);
                 motherboard.setTimerActiveState(this, true);
             }
 
         }
-        
+
         return floppyBufferCurrentByte;
     }
-
 
     /**
      * Set byte in floppy buffer for DMA transfer
@@ -2442,7 +2471,7 @@ public class FDC extends ModuleFDC
 
         // Get Terminal Count from DMA
         tc = dma.isTerminalCountReached();
-        
+
         // Select drive
         drive = dor & 0x03;
 
@@ -2451,66 +2480,67 @@ public class FDC extends ModuleFDC
             // Format track in progress
             // Lower number of sectors in track to format
             formatCount--;
-            
+
             switch (3 - (formatCount & 0x03))
             {
                 case 0: // Set cylinder
-                  drives[drive].cylinder = data;
-                  break;
-                  
+                    drives[drive].cylinder = data;
+                    break;
+
                 case 1: // Check head number
-                  if (data != drives[drive].hds)
-                  {
-                      logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: head number does not match head field.");
-                  }
-                  break;
-                  
+                    if (data != drives[drive].hds)
+                    {
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: head number does not match head field.");
+                    }
+                    break;
+
                 case 2: // Set sector
-                  drives[drive].sector = data;
-                  break;
-                  
+                    drives[drive].sector = data;
+                    break;
+
                 case 3: // Format buffer
-                  if (data != 2)
-                  {
-                      logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: sector size is not supported.");
-                  }
-                  else
-                  {
-                      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: cyl=" + drives[drive].cylinder + ", head=" + drives[drive].hds + ", sector=" + drives[drive].sector);
-                      
-                      // Format buffer with given fillbyte (set earlier with command)
-                      for (int i = 0; i < 512; i++)
-                      {
-                          floppyBuffer[i] = formatFillbyte;
-                      }
-                      
-                      // Recompute logical sector
-                      logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) +
-                      (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+                    if (data != 2)
+                    {
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: sector size is not supported.");
+                    }
+                    else
+                    {
+                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track: cyl=" + drives[drive].cylinder + ", head="
+                                + drives[drive].hds + ", sector=" + drives[drive].sector);
 
-                      // Write new data from buffer to floppy
-                      try
-                      {
-                          drives[drive].writeData(logicalSector * 512, 512, floppyBuffer);
-                      }
-                      catch (StorageDeviceException e)
-                      {
-                          logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
-                      }
+                        // Format buffer with given fillbyte (set earlier with command)
+                        for (int i = 0; i < 512; i++)
+                        {
+                            floppyBuffer[i] = formatFillbyte;
+                        }
 
-                      // Clear DMA request - it is enabled directly again via timer and update
-                      dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
-                      
-                      // Activate timer to be ready for the next read
-                      sectorTime = 200000 / drives[drive].sectorsPerTrack;
-                      motherboard.resetTimer(this, sectorTime);
-                      motherboard.setTimerActiveState(this, true);
-                  }
-                  break;
-                  
+                        // Recompute logical sector
+                        logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
+                                + (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+
+                        // Write new data from buffer to floppy
+                        try
+                        {
+                            drives[drive].writeData(logicalSector * 512, 512, floppyBuffer);
+                        }
+                        catch (StorageDeviceException e)
+                        {
+                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
+                        }
+
+                        // Clear DMA request - it is enabled directly again via timer and update
+                        dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
+
+                        // Activate timer to be ready for the next read
+                        sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                        motherboard.resetTimer(this, sectorTime);
+                        motherboard.setTimerActiveState(this, true);
+                    }
+                    break;
+
                 default:
-                  logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track failed.");
-                  break;
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " DMA transfer formatting track failed.");
+                    break;
             }
         }
         else
@@ -2523,8 +2553,8 @@ public class FDC extends ModuleFDC
             if ((floppyBufferIndex >= 512) || (tc == true))
             {
                 // Recompute logical sector
-                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack) +
-                (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
+                        + (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
 
                 if (drives[drive].writeProtected == true)
                 {
@@ -2539,7 +2569,7 @@ public class FDC extends ModuleFDC
                     this.enterResultPhase();
                     return;
                 }
-                
+
                 // Write new data from buffer to floppy
                 try
                 {
@@ -2556,7 +2586,7 @@ public class FDC extends ModuleFDC
 
                 // Clear DMA request - it is enabled directly again via timer and update
                 dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
-                
+
                 // Activate timer to be ready for the next read
                 sectorTime = 200000 / drives[drive].sectorsPerTrack;
                 motherboard.resetTimer(this, sectorTime);
@@ -2565,7 +2595,6 @@ public class FDC extends ModuleFDC
         }
     }
 
-    
     /**
      * Calculate the delay for timer
      * This method makes an approximation of the delay in the drive
@@ -2576,28 +2605,28 @@ public class FDC extends ModuleFDC
      */
     protected int calculateStepDelay(int drive, int newCylinder)
     {
-      int numSteps;
-      int oneStepDelayTime;
+        int numSteps;
+        int oneStepDelayTime;
 
-      // Check if current cylinder is already the same as desired cylinder
-      if (newCylinder == drives[drive].cylinder)
-      {
-          numSteps = 1;
-      }
-      else
-      {
-          // Calculate the number of steps to make
-          numSteps = Math.abs(newCylinder - drives[drive].cylinder);
-          // Notify drive that floppy has changed
-          drives[drive].resetChangeline();
-      }
-      
-      // Calculate the delay for one step (this value is based on Bochs)
-      oneStepDelayTime = ((srt ^ 0x0f) + 1) * 500000 / dataRates[dataRate];
-      
-      logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Calculated step delay: " + numSteps * oneStepDelayTime);
-      
-      return (numSteps * oneStepDelayTime);
+        // Check if current cylinder is already the same as desired cylinder
+        if (newCylinder == drives[drive].cylinder)
+        {
+            numSteps = 1;
+        }
+        else
+        {
+            // Calculate the number of steps to make
+            numSteps = Math.abs(newCylinder - drives[drive].cylinder);
+            // Notify drive that floppy has changed
+            drives[drive].resetChangeline();
+        }
+
+        // Calculate the delay for one step (this value is based on Bochs)
+        oneStepDelayTime = ((srt ^ 0x0f) + 1) * 500000 / dataRates[dataRate];
+
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Calculated step delay: " + numSteps * oneStepDelayTime);
+
+        return (numSteps * oneStepDelayTime);
     }
 
     /**
@@ -2608,22 +2637,120 @@ public class FDC extends ModuleFDC
     private boolean unregisterDevices()
     {
         boolean result = false;
-        
+
         // Unregister IRQ number
         // Make sure no interrupt is pending
         pic.clearIRQ(irqNumber);
-//        result = pic.unregisterIRQNumber(this);
+        //        result = pic.unregisterIRQNumber(this);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ unregister result: " + result);
 
         // Unregister timer
-//        result = motherboard.unregisterTimer(this);
+        //        result = motherboard.unregisterTimer(this);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Timer unregister result: " + result);
 
         // Unregister DMA channel
-//        result = dma.unregisterDMAChannel(FDC_DMA_CHANNEL);
+        //        result = dma.unregisterDMAChannel(FDC_DMA_CHANNEL);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " DMA unregister result: " + result);
-        
+
         return result;
     }
-    
+
+    public int transferHandler(int nchan, int pos, int size)
+    {
+        final int SECTOR_LENGTH = 512; // Standard length of a sector
+
+        // Determine max size of one DMA transfer 
+        int dmaSize = Math.min(size, SECTOR_LENGTH);
+
+        if (drives[drive] == null)
+        {
+            // Check if this ever occurs:
+            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " no floppy in DMA transfer, aborting"); 
+            return 0;
+        }
+
+        int startOffset;
+        for (startOffset = floppyBufferIndex; startOffset < size; startOffset += SECTOR_LENGTH)
+        {
+            int relativeOffset = startOffset % SECTOR_LENGTH;
+            
+            // Determine DMA direction, based on bit 6 of msr. NOTE (bram): Added this undocumented msr feature for DMA.  
+            if ((msr & FDC_CMD_DIO) == FDC_CMD_DIO)
+            {
+                // From floppy to memory
+                dma32.writeMemory(nchan, floppyBuffer, relativeOffset, startOffset, dmaSize);
+            }
+            else
+            {
+                // From memory to floppy
+                dma32.readMemory(nchan, floppyBuffer, relativeOffset, startOffset, dmaSize);
+            }
+            
+            // Update the current sector if completely read/written
+            if (relativeOffset == 0)
+            {
+              // Read new data from/to floppy buffer
+              try
+                {
+                    if ((msr & FDC_CMD_DIO) == FDC_CMD_DIO)
+                    {   // Read new data from disk into buffer
+                        drives[drive].incrementSector();
+
+                        // Reset the bufferindex to 0;
+                        floppyBufferIndex = 0;
+
+                        // Recompute logical sector
+                        int logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
+                                + (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+
+                        drives[drive].readData(logicalSector * 512, 512, floppyBuffer);
+                    }
+                    else
+                    {   // Write data from buffer to disk
+                        // Recompute logical sector
+                        int logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
+                                + (drives[drive].hds * drives[drive].sectorsPerTrack) + (drives[drive].sector - 1);
+
+                        drives[drive].writeData(logicalSector * 512, 512, floppyBuffer);
+
+                        drives[drive].incrementSector();
+
+                        // Reset the bufferindex to 0;
+                        floppyBufferIndex = 0;
+                    }
+                }
+              catch (StorageDeviceException e)
+              {
+                  logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " " + e.getMessage());
+              }
+            }
+
+        }
+        // DMA transfer completed
+        statusRegister0 = ((drives[drive].hds) << 2) | drive;
+        statusRegister1 = 0;
+        statusRegister2 = 0;
+
+        // TODO: Is this the only place for a DREQ release?
+        dma32.releaseDREQ(FDC_DMA_CHANNEL & 3);
+        this.enterResultPhase();
+
+        return startOffset;
+    }
+
+    public void acceptComponent(HardwareComponent component)
+    {
+        if ((component instanceof DMAController) && component.initialised())
+        {
+            if (((DMAController) component).isFirst())
+            {
+                if (FDC_DMA_CHANNEL != -1)
+                {
+                    dma32 = (DMAController) component;
+                    dma32.registerChannel(FDC_DMA_CHANNEL & 3, this);
+                }
+            }
+        }
+    }
+
 }
