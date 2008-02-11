@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2008-02-11 15:30:22 $ $Author: blohman $
+ * $Revision: 1.8 $ $Date: 2008-02-11 16:23:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -198,7 +198,7 @@ public class Emulator implements Runnable
 
             // Get the module settings from the configuration file
             moduleSettings = configController.getSettings("modules");
-            System.out.println("Retrieved the following settings:\n" + moduleSettings);
+            logger.log(Level.INFO, "Retrieved the following settings:\n" + moduleSettings);
 
             // Module creation
             boolean success = setupEmu();
