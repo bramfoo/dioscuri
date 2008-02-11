@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-27 08:26:56 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2008-02-11 15:08:17 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -206,25 +206,22 @@ public class Motherboard extends ModuleMotherboard
 	 */
 	public boolean setConnection(Module module)
 	{
-		// Set connection for CPU
-        if (module.getType().equalsIgnoreCase("cpu"))
+        
+        if (!emu.isCpu32bit())
         {
-            this.cpu = (ModuleCPU)module;
-            return true;
-        }
-        // Set connection for memory
-        else if (module.getType().equalsIgnoreCase("memory"))
+            // Set connection for memory
+        if (module.getType().equalsIgnoreCase("memory"))
         {
             this.memory = (ModuleMemory)module;
             return true;
         }
-        // Set connection for clock
-//        else if (module.getType().equalsIgnoreCase("clock"))
-//        {
-//            this.clock = (ModuleClock)module;
-//            return true;
-//        }
-        
+        // Set connection for CPU
+        else if (module.getType().equalsIgnoreCase("cpu"))
+        {
+            this.cpu = (ModuleCPU)module;
+            return true;
+        }
+        }
         // Else, module may be a device
         try
         {
@@ -247,14 +244,18 @@ public class Motherboard extends ModuleMotherboard
 	 */
 	public boolean isConnected()
 	{
+        if (!emu.isCpu32bit())
+        {
 		// Check all connections
-        if (this.cpu != null && this.memory != null)
+        if (this.memory != null && this.cpu != null)
         {
             return true;
         }
-        
         // Else, one or more connections may be missing
-        return false;
+      return false;
+        }
+        else    // 32-bit CPU requires no connections
+            return true;
 	}
 
 	
@@ -265,11 +266,12 @@ public class Motherboard extends ModuleMotherboard
      */
     public boolean reset()
     {
-        // Reset I/O address space: set all ports to null
-        for (int port = 0; port < ioAddressSpace.length; port++)
-        {
-            ioAddressSpace[port] = null;
-        }
+        // FIXME: Reset I/O address space: set all ports to null
+        // Doing this in 32-bit mode resets all ports _after_ they have been set...
+//        for (int port = 0; port < ioAddressSpace.length; port++)
+//        {
+//            ioAddressSpace[port] = null;
+//        }
 
         // Disable memory wrapping for BIOS mem check
         A20Enabled = true;
@@ -553,7 +555,8 @@ public class Motherboard extends ModuleMotherboard
             }
         } 
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
-        throw new ModuleException("Requested I/O port " + Integer.toHexString(portAddress) + " (byte) is not used.");
+        return (byte) 0xFF;
+//        throw new ModuleException("Requested I/O port " + Integer.toHexString(portAddress) + " (byte) is not used.");
 	}
     
     
@@ -567,6 +570,31 @@ public class Motherboard extends ModuleMotherboard
      */
     public void setIOPortByte(int portAddress, byte dataByte) throws ModuleException
     {
+        // Check for Bochs BIOS ports first:
+        if (portAddress == 0x400 || portAddress == 0x401)
+        {
+            System.err.println("BIOS panic at rombios.c, line " + dataByte);
+            return;
+        }
+        
+        if (portAddress == 0x402 || portAddress == 0x403)
+        {
+            try 
+                {
+                System.out.print(new String(new byte[]{(byte)dataByte},"US-ASCII"));
+                } 
+                catch (Exception e) 
+                {
+                System.out.print(new String(new byte[]{(byte)dataByte}));                
+                }
+                return;
+        }
+        if (portAddress == 0x8900)
+        {
+            System.out.println("Attempt to call Shutdown");
+            return;
+        }
+        
         // check if port is available
         if (ioAddressSpace[portAddress] != null)
         {
@@ -586,7 +614,8 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
-            throw new ModuleException("Requested I/O port (byte) is not available.");
+            System.out.println("[" + MODULE_TYPE + "] Requested I/O port [" + portAddress  + "] (setByte) is not available.");
+//            throw new ModuleException("Requested I/O port [" + portAddress  + "] (byte) is not available.");
         }
     }
 
@@ -622,7 +651,8 @@ public class Motherboard extends ModuleMotherboard
             }
         }
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
-        throw new ModuleException("Requested I/O port range (word) is not in use.");
+        return new byte[]{(byte)0xFF, (byte)0xFF};
+//        throw new ModuleException("Requested I/O port range [" + portAddress  + "] (word) is not in use.");
     }
 
     
@@ -653,7 +683,7 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
-            throw new ModuleException("Requested I/O port range (word) is not available.");
+//            throw new ModuleException("Requested I/O port range [" + portAddress  + "] (word) is not available.");
         }
     }
 
@@ -689,7 +719,8 @@ public class Motherboard extends ModuleMotherboard
             }
         }
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
-        throw new ModuleException("Requested I/O port range (double word) is not available.");
+        return new byte[]{(byte)0xFF, (byte)0xFF,(byte)0xFF, (byte)0xFF};
+//        throw new ModuleException("Requested I/O port range [" + portAddress  + "] (double word) is not available.");
     }
 
     
@@ -749,7 +780,14 @@ public class Motherboard extends ModuleMotherboard
         // Set status of A20 address line
         // False = memory wrapping turned off
         A20Enabled = a20;
-        memory.setA20AddressLine(a20);
+        if(emu.isCpu32bit())
+        {
+            System.out.println("[" + MODULE_TYPE + "]" + "Attempting to set memory A20 line in 32-bit mode (unsupported)");
+        }
+        else
+        {
+        	memory.setA20AddressLine(a20);
+        }
     }
 
     
@@ -761,10 +799,18 @@ public class Motherboard extends ModuleMotherboard
      */
     public long getCurrentInstructionNumber()
     {
-        return cpu.getCurrentInstructionNumber();
+
+        if (emu.isCpu32bit())
+        {
+            System.out.println("[" + MODULE_TYPE + "]" + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
+            return 0x1;
+        }
+        else
+          return cpu.getCurrentInstructionNumber();
     }
     
 	//******************************************************************************
 	// Custom Methods
+    
     
 }
