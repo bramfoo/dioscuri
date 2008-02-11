@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-01 14:37:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2008-02-11 14:02:10 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -42,6 +42,7 @@ import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
+import nl.kbna.dioscuri.interfaces.UART;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
@@ -78,7 +79,7 @@ import nl.kbna.dioscuri.module.ModuleSerialPort;
  * 
  */
 
-public class Mouse extends ModuleMouse
+public class Mouse extends ModuleMouse implements UART
 {
     // Relations
     private Emulator emu;
@@ -279,16 +280,9 @@ public class Mouse extends ModuleMouse
     public boolean reset()
     {
     	// Reset variables
-    	// TODO: add all of them
+    	// TODO: add all vars
     	lastMouseCommand = 0;
     	
-        // Request a timer
-        if (motherboard.requestTimer(this, updateInterval, true) == false)
-        {
-            return false;
-        }
-        motherboard.setTimerActiveState(this, true);
-        
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
 
         return true;
@@ -438,7 +432,7 @@ public class Mouse extends ModuleMouse
      */
     public int getUpdateInterval()
     {
-        return updateInterval;
+        return -1;
     }
 
     /**
@@ -448,19 +442,6 @@ public class Mouse extends ModuleMouse
      */
     public void setUpdateInterval(int interval)
     {
-        // Check if interval is > 0
-        if (interval > 0)
-        {
-            updateInterval = interval;
-        }
-        else
-        {
-            updateInterval = 200; // default is 200 ms
-        }
-        
-        // Notify motherboard that interval has changed
-        // (only if motherboard contains a clock, which may not be the case at startup, but may be during execution)
-        motherboard.resetTimer(this, updateInterval);
     }
 
 
@@ -526,6 +507,15 @@ public class Mouse extends ModuleMouse
 			// Serial mouse
 			mouseType = MOUSE_TYPE_SERIAL;
     		logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
+			// Connect mouse to serialport on COM 1 (port 0)
+			if (serialPort.setUARTDevice(this, 0) == true)
+			{
+	    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse connected to COM port 1");
+			}
+			else
+			{
+	    		logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Could not connect mouse to COM port 1");
+			}
 		}
 		else if (type.equalsIgnoreCase("ps/2"))
 		{
@@ -629,7 +619,7 @@ public class Mouse extends ModuleMouse
 
     	if (this.enqueueData(b1, b2, b3, b4) == true)
     	{
-    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer");
+    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
     	}
     	else
     	{
@@ -639,7 +629,11 @@ public class Mouse extends ModuleMouse
 
 	public byte getDataFromBuffer()
 	{
-		return ((Byte) buffer.remove(0)).byteValue();
+		if (buffer.isEmpty() == false)
+		{
+			return buffer.getByte();
+		}
+		return -1;
 	}
     
     public void controlMouse(byte value)
@@ -952,11 +946,15 @@ public class Mouse extends ModuleMouse
 	  // If serial mouse, redirect data to serial port
 	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
+/*		  
   		  serialPort.rx_fifo_enq(0, (byte) delayed_dx);
   		  serialPort.rx_fifo_enq(0, (byte) delayed_dy);
   		  serialPort.rx_fifo_enq(0, (byte) delayed_dz);
   		  serialPort.rx_fifo_enq(0, (byte) buttonStatus);
   		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data sent to serialport");
+*/
+	  	  this.storeBufferData(force_enq);
+		  
 	  }
 	  else
 	  {
@@ -1000,7 +998,7 @@ public class Mouse extends ModuleMouse
 		  	  }
 		  */
 		  	  this.storeBufferData(force_enq);
-	  }
+	  	}
 	}
 
 
@@ -1072,7 +1070,28 @@ public class Mouse extends ModuleMouse
     	return false;
     }
 
-
-
     
+    //******************************************************************************
+    // UART interface
+
+    public boolean isDataAvailable()
+    {
+    	return !(buffer.isEmpty());
+    }
+    
+	public byte getSerialData()
+	{
+		if (buffer.isEmpty() == false)
+		{
+			return buffer.getByte();
+		}
+		return -1;
+	}
+
+	public void setSerialData(byte data)
+	{
+		buffer.setByte(data);
+	}
+	
+
 }
