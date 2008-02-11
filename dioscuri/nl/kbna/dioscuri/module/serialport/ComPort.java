@@ -1,11 +1,14 @@
 package nl.kbna.dioscuri.module.serialport;
 
-import java.util.Queue;
+import nl.kbna.dioscuri.interfaces.UART;
 
 public class ComPort
 {
 
 	// Attributes
+	// UART port user
+	protected UART uartDevice;
+	
     // Interrupt variables
     protected int ls_ipending = 0;
     protected int ms_ipending = 0;				// MODEM status interrupt pending: 1 if interrupt pending
@@ -16,6 +19,8 @@ public class ComPort
     protected int rx_interrupt = 0;				// Receive buffer transfer interrupt
     protected int fifo_interrupt = 0;			// FIFO interrupt
     protected int tx_interrupt = 0;				// Transfer interrupt
+    
+    protected int rx_pollstate = 0;
 
     // COM-port registers
     
@@ -96,11 +101,17 @@ public class ComPort
     protected int baudrate;		// Baudrate is amount of symbols per second
 	
     
+    // Constants
+    protected final static int RX_IDLE = 0;
+    protected final static int RX_POLL = 1;
+    protected final static int RX_WAIT = 2;
     
     
     // constructor
     public ComPort()
     {
+    	uartDevice = null;
+    	
     	rbr = 0;
     	thr = 0;
     	scr = 0;
@@ -132,7 +143,9 @@ public class ComPort
 		
 		// Baudrate
 		baudrate = 115200;
-		
+
+		rx_pollstate = RX_IDLE;
+
 	}
 	
 }

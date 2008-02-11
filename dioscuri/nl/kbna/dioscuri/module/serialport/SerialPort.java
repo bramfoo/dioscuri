@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-01 14:37:42 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2008-02-11 14:02:37 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -34,7 +34,6 @@
 
 package nl.kbna.dioscuri.module.serialport;
 
-import java.util.Stack;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,6 +41,7 @@ import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
+import nl.kbna.dioscuri.interfaces.UART;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
@@ -142,15 +142,14 @@ public class SerialPort extends ModuleSerialPort
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.module.serialport");
     
-    // IRQ
-    private int irqNumber;                  // Interrupt number assigned by PIC
+    // Timing
+    private int updateInterval;
 
+    // IRQ -> See each COM port
+    
     // COM-ports
     private ComPort[] comPorts;
     
-    // Data queue
-    private Stack<Integer> readPortQ = new Stack<Integer>();
-
     
     // Constants
     // Module specifics
@@ -186,7 +185,7 @@ public class SerialPort extends ModuleSerialPort
     
     private final static int BUFFERSIZE = 16;	// Maximum allowable FIFO buffer size
     
-    
+    private final static double CLOCKSPEED = 1843200.0;
     
     // Constructor
 
@@ -196,16 +195,11 @@ public class SerialPort extends ModuleSerialPort
      */
 	public SerialPort(Emulator owner)
     {
-    	Object put;
-    	
         emu = owner;
         
         // Initialise variables
         isObserved = false;
         debugMode = false;
-        
-        // Initialise IRQ
-        irqNumber = -1;
         
         // Create COM-ports
         comPorts = new ComPort[TOTALCOMPORTS];
@@ -222,7 +216,7 @@ public class SerialPort extends ModuleSerialPort
 //        put = comPorts.put(0x2E8, new ComPort());
 
         // ELKS boot replies:
-        readPortQ.push(0x00);
+/*        readPortQ.push(0x00);
         readPortQ.push(0x00);
         readPortQ.push(0x00);
         readPortQ.push(0x00);
@@ -246,7 +240,7 @@ public class SerialPort extends ModuleSerialPort
         readPortQ.push(0xFF);
         readPortQ.push(0x02);
         readPortQ.push(0x02);
-
+*/
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
 
@@ -380,21 +374,27 @@ public class SerialPort extends ModuleSerialPort
 //            comPorts[c].irq = 4 - (c & 0x01);
             if (c < 1)
             {
-            	irqNumber = pic.requestIRQNumber(this);
+            	comPorts[c].irq = pic.requestIRQNumber(this);
 
-            	if (irqNumber > -1)
+            	if (comPorts[c].irq > -1)
                 {
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + irqNumber);
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ number set to: " + comPorts[c].irq);
                 }
                 else
                 {
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Request of IRQ number failed.");
                 }
             }
-
-            
-            
         }
+
+        // Request a timer
+        if (motherboard.requestTimer(this, updateInterval, true) == false)
+        {
+            return false;
+        }
+        
+        // Keep timer passive
+        motherboard.setTimerActiveState(this, false);
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
 
@@ -548,7 +548,7 @@ public class SerialPort extends ModuleSerialPort
      */
     public int getUpdateInterval()
     {
-        return -1;
+        return updateInterval;
     }
 
     /**
@@ -556,14 +556,93 @@ public class SerialPort extends ModuleSerialPort
      * 
      * @param int interval in microseconds
      */
-    public void setUpdateInterval(int interval) {}
+    public void setUpdateInterval(int interval)
+    {
+        // Check if interval is > 0
+        if (interval > 0)
+        {
+            updateInterval = interval;
+        }
+        else
+        {
+            updateInterval = 200; // default is 200 ms
+        }
+        
+        // Notify motherboard that interval has changed
+        // (only if motherboard contains a clock, which may not be the case at startup, but may be during execution)
+        motherboard.resetTimer(this, updateInterval);
+    }
 
 
     /**
      * Update device
      * 
      */
-    public void update() {}
+    public void update()
+    {
+    	  int port = 0;
+    	  int timer_id, baudrate;
+    	  boolean isDataReady = false;
+
+    	  // FIXME: assuming here that it is always COM 1
+/*    	  timer_id = bx_pc_system.triggeredTimerID();
+    	  
+    	  if (timer_id == comPorts[0].rx_timer_index)
+    	  {
+    		  port = 0;
+    	  }
+    	  else if (timer_id == BX_SER_THIS s[1].rx_timer_index)
+    	  {
+    		  port = 1;
+    	  }
+    	  else if (timer_id == BX_SER_THIS s[2].rx_timer_index)
+    	  {
+    		  port = 2;
+    	  }
+    	  else if (timer_id == BX_SER_THIS s[3].rx_timer_index)
+    	  {
+    		  port = 3;
+    	  }
+*/
+    	  baudrate = comPorts[port].baudrate / (comPorts[port].lcr_wordlen_sel + 5);
+    	  byte chbuf = 0;
+
+    	  // Check if no data is still waiting and if FIFO is enabled 
+    	  if ((comPorts[port].lsr_rxdata_ready == 0) || (comPorts[port].fcr_enable == 1))
+    	  {
+    		  // Check if data is available to put into FIFO buffer
+	        if (comPorts[port].uartDevice.isDataAvailable() == true)
+	        {
+	        	chbuf = comPorts[port].uartDevice.getSerialData();
+	        	isDataReady = true;
+	        }
+    	    
+    	    if (isDataReady == true)
+    	    {
+    	    	// Data ready, enqueue data if local loopback if off
+    	    	if (!(comPorts[port].mcr_local_loopback == 1))
+    	    	{
+    	    		this.rx_fifo_enq(port, chbuf);
+    	    	}
+    	    }
+    	    else
+    	    {
+    	    	// Data was not ready, if FIFO is not active adjust baudrate
+    	    	if (!(comPorts[port].fcr_enable == 1))
+    	    	{
+    	    		baudrate = (int) (1000000.0 / 100000); // Poll frequency is 100ms
+    	    	}
+    	    }
+    	  }
+    	  else
+    	  {
+    		  // Poll at 4x baud rate to see if the next-char can be read
+    		  baudrate *= 4;
+    	  }
+
+    	  motherboard.setTimerActiveState(this, true);
+//FIXME:    	  (BX_SER_THIS s[port].rx_timer_index, (int) (1000000.0 / bdrate), 0); /* not continuous */
+    }
     
 
     /**
@@ -889,7 +968,7 @@ public class SerialPort extends ModuleSerialPort
 
             	if ((comPorts[port].dll != 0) || (comPorts[port].dlm != 0))
             	{
-//FIXME:            		comPorts[port].baudrate = (int) (BX_PC_CLOCK_XTL / (16 * ((comPorts[port].dlm << 8) | comPorts[port].dll)));
+            		comPorts[port].baudrate = (int) (CLOCKSPEED / (16 * ((comPorts[port].dlm << 8) | comPorts[port].dll)));
             	}
             }
             else
@@ -934,7 +1013,9 @@ public class SerialPort extends ModuleSerialPort
                 		// TSR is not empty anymore
                 		comPorts[port].lsr_tsr_empty = 0;
                 		this.setIRQ(port, INTERRUPT_TXHOLD);
-//FIXME:                		bx_pc_system.activate_timer(comPorts[port].tx_timer_index, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].line_cntl.wordlen_sel + 5)), 0); /* not continuous */
+                		
+                		// FIXME: make sure this timer starts again and is one shot
+                		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
                 	}
                 	else
                 	{
@@ -977,7 +1058,7 @@ public class SerialPort extends ModuleSerialPort
 
             	if ((comPorts[port].dlm != 0) || (comPorts[port].dll != 0))
             	{
-//FIXME:            		comPorts[port].baudrate = (int) (BX_PC_CLOCK_XTL / (16 * ((comPorts[port].divisor_msb << 8) | comPorts[port].divisor_lsb)));
+            		comPorts[port].baudrate = (int) (CLOCKSPEED / (16 * ((comPorts[port].dlm << 8) | comPorts[port].dll)));
             	}
             }
             else
@@ -1151,23 +1232,19 @@ public class SerialPort extends ModuleSerialPort
             	rx_fifo_enq(port, (byte) 0x00);
             }
             
-//FIXME:            // used when doing future writes
-/*            if (!new_b7 && comPorts[port].lcr_dlab)
+            // TODO: find out why this is...
+            if ((new_b7 == 0) && comPorts[port].lcr_dlab == 1)
             {
             	// Start the receive polling process if not already started
-            	// and there is a valid baudrate.
-            	if (comPorts[port].rx_pollstate == BX_SER_RXIDLE && comPorts[port].baudrate != 0)
+            	if (comPorts[port].rx_pollstate == ComPort.RX_IDLE && comPorts[port].baudrate != 0)
             	{
-            		comPorts[port].rx_pollstate = BX_SER_RXPOLL;
-            		bx_pc_system.activate_timer(comPorts[port].rx_timer_index,
-                                            (int) (1000000.0 / comPorts[port].baudrate *
-                                            (comPorts[port].lcr_wordlen_sel + 5)),
-                                            0); // not continuous
+            		comPorts[port].rx_pollstate = ComPort.RX_POLL;
+            		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
             	}
             	
-            	BX_DEBUG(("com%d: baud rate set - %d", port+1, comPorts[port].baudrate));
+				logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " baud rate of COM1 set to " + comPorts[port].baudrate);
             }
-*/            
+            
             // Set DLAB
             comPorts[port].lcr_dlab = new_b7;
             break;
@@ -1349,17 +1426,29 @@ public class SerialPort extends ModuleSerialPort
 
     public void setBytes(byte[] data)
     {
-		// Push all bytes in queue
-		if (data != null)
-		{
-	    	for (int i = 0; i < data.length; i++)
-	    	{
-	    		readPortQ.push((int)data[i] & 0xFF);
-	    	}
-		}
     }
     
+    public boolean setUARTDevice(UART device, int comPort)
+    {
+    	// Check if valid com port
+    	if (comPort >= 0 && comPort < comPorts.length)
+    	{
+    		// Check if device is not already connected
+    		if (comPorts[comPort].uartDevice == null)
+    		{
+            	comPorts[comPort].uartDevice = device;
+            	return true;
+    		}
+    		else
+    		{
+    	        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] COM port " + (comPort + 1) + " already occupied.");
+    		}
+    	}
+    	return false;
+    }
 	
+    
+    
     //******************************************************************************
     // Custom methods
     
@@ -1448,7 +1537,7 @@ public class SerialPort extends ModuleSerialPort
     	}
     }
     
-    public void rx_fifo_enq(int port, byte data)
+    private void rx_fifo_enq(int port, byte data)
     {
     	boolean raiseInterrupt = false;
 
