@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 15:26:57 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -80,9 +80,7 @@ public class DioscuriXmlWriter
             
             } else if(moduleType == ModuleType.CPU)
             {
-                
-                int cpuSpeedMhz = ((Integer)(params[0])).intValue();               
-                success = this.saveCpuParams(document, cpuSpeedMhz);
+                success = this.saveCpuParams(document, params);
                 
             } else if(moduleType == ModuleType.FDC)
             {
@@ -90,8 +88,7 @@ public class DioscuriXmlWriter
               
             } else if(moduleType == ModuleType.MEMORY)
             {
-                int ramSizeMb = ((Integer)(params[0])).intValue();
-                success = this.saveRamParams(document, ramSizeMb);
+                success = this.saveRamParams(document, params);
                 
             } else if(moduleType == ModuleType.MOUSE)
             {
@@ -199,7 +196,7 @@ public class DioscuriXmlWriter
         {
             hardDriveNode = ataNode.getChildNodes().item(i);
             
-            if(hardDriveNode.getChildNodes() != null && hardDriveNode.getChildNodes().getLength() > 0 )
+            if (hardDriveNode.getNodeName().equals(DioscuriXmlParams.HARDDISKDRIVE))
             {
                 break;
             }
@@ -271,7 +268,6 @@ public class DioscuriXmlWriter
     
     private boolean saveBootParams(Document document, Object[] params)
     {
-
         Node bootDrivesNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
                        
         NodeList eachBootDriveNode = bootDrivesNode.getChildNodes();
@@ -287,7 +283,7 @@ public class DioscuriXmlWriter
             if(currentNode != null)
             {
 
-                if (name.equals("bootdrive"))
+                if (name.contains("bootdrive"))
                 {
                    
                    int curDriveIndex = ((Integer)params[bootCount]).intValue();
@@ -337,18 +333,7 @@ public class DioscuriXmlWriter
     private boolean saveFdcParams(Document document, Object[] params)
     {
            
-        Node floppyDiskDrivesNode = DioscuriXmlParams.getModuleNode(document, ModuleType.FDC);
-        Node floppyDriveNode = null;
-        for (int i = 0; i < floppyDiskDrivesNode.getChildNodes().getLength(); i++)
-        {
-            floppyDriveNode = floppyDiskDrivesNode.getChildNodes().item(i);
-            
-            if(floppyDriveNode.getChildNodes() != null && floppyDriveNode.getChildNodes().getLength() > 0 )
-            {
-                break;
-            }
-        }
-             
+        Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
         NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
              
         int updateInt = ((Integer)params[0]);
@@ -415,10 +400,20 @@ public class DioscuriXmlWriter
             timingNodeText = DioscuriXmlParams.PIT_CLOCKRATE_TEXT;
         }
         
-        Node timingNode = attributes.getNamedItem(timingNodeText);     
+        Node subNode = null;
+        for (int i = 0; i < moduleNode.getChildNodes().getLength(); i++)
+        {
+            subNode = moduleNode.getChildNodes().item(i);
+            if (subNode.getNodeName().equals(timingNodeText))
+                break;
+        }
+
         String timingParamString = (new Integer(timingParam)).toString();
-        timingNode.setTextContent(timingParamString);
-      
+        if (subNode != null)
+        {
+            subNode.getChildNodes().item(0).setNodeValue(timingParamString);
+        }
+        
         return true;
     }
         
@@ -429,16 +424,37 @@ public class DioscuriXmlWriter
      * @param cpuSpeedMhz
      * @return true if successful
      */
-    private boolean saveCpuParams(Document document, int cpuSpeedMhz)
+    private boolean saveCpuParams(Document document, Object[] params)
     {
-            
-        Node cpuNode = DioscuriXmlParams.getModuleNode(document, ModuleType.CPU);
-        NamedNodeMap attributes = cpuNode.getAttributes();
         
-        Node cpuSpeedNode = attributes.getNamedItem(DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
-        String cpuSpeedString = (new Integer(cpuSpeedMhz)).toString();
-        cpuSpeedNode.setTextContent(cpuSpeedString);
-      
+        Node cpuSpeedNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
+        
+        String name = cpuSpeedNode.getNodeName();
+        Node currentNode = cpuSpeedNode.getChildNodes().item(0);
+                         
+        if(currentNode != null)
+        {
+         
+            if (name.equals("speedmhz"))
+            {
+                currentNode.setNodeValue(((Integer)params[0]).toString());
+            }
+        }
+        
+        Node cpu32bitNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
+        
+        name = cpu32bitNode.getNodeName();
+        currentNode = cpu32bitNode.getChildNodes().item(0);
+                         
+        if(currentNode != null)
+        {
+         
+            if (name.equals("cpu32bit"))
+            {
+                currentNode.setNodeValue(((Boolean)params[1]).toString());
+            }
+        }
+        
         return true;
     }
     
@@ -449,15 +465,16 @@ public class DioscuriXmlWriter
      * @param cpuSpeedMhz
      * @return true if successful
      */
-    private boolean saveRamParams(Document document, int ramSpeedMhz)
+    private boolean saveRamParams(Document document, Object[] params)
     {
-            
-        Node ramNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MEMORY);
-        NamedNodeMap attributes = ramNode.getAttributes();
+
+        int ramSizeMb = ((Integer)(params[0])).intValue();
+
+        Node ramNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
+        Node ramSubNode = ramNode.getChildNodes().item(0);
         
-        Node ramSizeNode = attributes.getNamedItem(DioscuriXmlParams.RAM_SIZE_TEXT);
-        String ramSpeedString = (new Integer(ramSpeedMhz)).toString();
-        ramSizeNode.setTextContent(ramSpeedString);
+        String ramSpeedString = (new Integer(ramSizeMb)).toString();
+        ramSubNode.setNodeValue(ramSpeedString);
       
         return true;
     }
@@ -471,13 +488,12 @@ public class DioscuriXmlWriter
      */
     private boolean saveMouseParams(Document document, Object[] params)
     {
-            
-        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
-        NamedNodeMap attributes = mouseNode.getAttributes();
-        
-        Node mouseTypeNode = attributes.getNamedItem(DioscuriXmlParams.MOUSE_TYPE_TEXT);
+
+        Node mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        Node mouseSubNode = mouseNode.getChildNodes().item(0);
+
         String mouseTypeString = (String)params[0];
-        mouseTypeNode.setTextContent(mouseTypeString);
+        mouseSubNode.setNodeValue(mouseTypeString);
       
         return true;
     }
