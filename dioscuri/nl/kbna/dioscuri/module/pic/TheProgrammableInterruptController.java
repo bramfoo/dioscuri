@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 16:24:35 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -59,7 +59,7 @@ public class TheProgrammableInterruptController
     byte currentIrqNumber;          // current IRQ number
     int lowestPriorityIRQ;          // current lowest priority irq
     boolean intRequestPin;          // INT request pin of PIC
-    int irqPins;                    // IRQ pins of PIC
+    int irqPins;                    // IRQ pins of PIC. Each pin is a bit in irqPins. If pin is high, bit is 1: IRQ 4 high = 0000.0100
     boolean specialMask;
     boolean isPolled;               // Set when poll command is issued.
     boolean rotateOnAutoEOI;        // Set when should rotate in auto-eoi mode.

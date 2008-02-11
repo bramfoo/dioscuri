@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.10 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.11 $ $Date: 2008-02-11 16:24:24 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -485,7 +485,7 @@ public class Keyboard extends ModuleKeyboard
         String keyboardDump ="Keyboard status:\n";
        
         keyboardDump += "Internal buffer contents:";
-        keyboardDump += keyboard.internalBuffer.buffer + "\n";
+        keyboardDump += keyboard.internalBuffer.buffer.toString() + "\n";
         keyboardDump += "Controller queue contents:";
         keyboardDump += keyboard.controllerQueue + "\n";
         

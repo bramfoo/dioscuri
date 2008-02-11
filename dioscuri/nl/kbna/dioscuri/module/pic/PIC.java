@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2008-02-01 14:38:23 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2008-02-11 16:24:35 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -129,7 +129,7 @@ public class PIC extends ModulePIC
     // IRQ numbers (fixed) for reserved devices
     private final static int PIC_IRQ_NUMBER_PIT         = 0;        // PIT / system clock
     private final static int PIC_IRQ_NUMBER_KEYBOARD    = 1;        // Keyboard
-    private final static int PIC_IRQ_NUMBER_SERIALPORT  = 4;        // Serial ports COM1 - 4
+    private final static int PIC_IRQ_NUMBER_SERIALPORT  = 4;        // Serial port COM1
     private final static int PIC_IRQ_NUMBER_FDC         = 6;        // FDC = Floppy Disk Controller
     private final static int PIC_IRQ_NUMBER_RTC         = 8;        // RTC / CMOS
     private final static int PIC_IRQ_NUMBER_MOUSE       = 12;       // Mouse
@@ -1113,7 +1113,7 @@ public class PIC extends ModulePIC
      */
     public void setIRQ(int irqNumber)
     {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " high" + thePIC[MASTER].irqPins);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Attempting to set IRQ line " + irqNumber + " high");
 
         int mask = (1 << (irqNumber & 7));
         // Check if IRQ should be handled by master or slave and check if irqPin was low

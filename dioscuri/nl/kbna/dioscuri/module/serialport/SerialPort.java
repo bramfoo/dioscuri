@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2008-02-11 16:24:24 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -585,67 +585,71 @@ public class SerialPort extends ModuleSerialPort
     	  int timer_id, baudrate;
     	  boolean isDataReady = false;
 
-    	  // FIXME: assuming here that it is always COM 1
-/*    	  timer_id = bx_pc_system.triggeredTimerID();
-    	  
-    	  if (timer_id == comPorts[0].rx_timer_index)
+    	  // Check if serial port is being used (UART device)
+    	  if (comPorts[port].uartDevice != null)
     	  {
-    		  port = 0;
-    	  }
-    	  else if (timer_id == BX_SER_THIS s[1].rx_timer_index)
-    	  {
-    		  port = 1;
-    	  }
-    	  else if (timer_id == BX_SER_THIS s[2].rx_timer_index)
-    	  {
-    		  port = 2;
-    	  }
-    	  else if (timer_id == BX_SER_THIS s[3].rx_timer_index)
-    	  {
-    		  port = 3;
-    	  }
-*/
-    	  baudrate = comPorts[port].baudrate / (comPorts[port].lcr_wordlen_sel + 5);
-    	  byte chbuf = 0;
+        	  // FIXME: assuming here that it is always COM 1
+    		  /*    	  timer_id = bx_pc_system.triggeredTimerID();
+    		      	  
+    		      	  if (timer_id == comPorts[0].rx_timer_index)
+    		      	  {
+    		      		  port = 0;
+    		      	  }
+    		      	  else if (timer_id == BX_SER_THIS s[1].rx_timer_index)
+    		      	  {
+    		      		  port = 1;
+    		      	  }
+    		      	  else if (timer_id == BX_SER_THIS s[2].rx_timer_index)
+    		      	  {
+    		      		  port = 2;
+    		      	  }
+    		      	  else if (timer_id == BX_SER_THIS s[3].rx_timer_index)
+    		      	  {
+    		      		  port = 3;
+    		      	  }
+    		  */
+    		      	  baudrate = comPorts[port].baudrate / (comPorts[port].lcr_wordlen_sel + 5);
+    		      	  byte chbuf = 0;
 
-    	  // Check if no data is still waiting and if FIFO is enabled 
-    	  if ((comPorts[port].lsr_rxdata_ready == 0) || (comPorts[port].fcr_enable == 1))
-    	  {
-    		  // Check if data is available to put into FIFO buffer
-	        if (comPorts[port].uartDevice.isDataAvailable() == true)
-	        {
-	        	chbuf = comPorts[port].uartDevice.getSerialData();
-	        	isDataReady = true;
-	        }
-    	    
-    	    if (isDataReady == true)
-    	    {
-    	    	// Data ready, enqueue data in serial buffer (FIFO) if local loopback if off
-    	    	if (!(comPorts[port].mcr_local_loopback == 1))
-    	    	{
-    	    		this.enqueueReceivedData(port, chbuf);
-    	    	}
-    	    }
-    	    else
-    	    {
-    	    	// Data is not ready
-    	    	// If FIFO is not active adjust baudrate
-    	    	if (comPorts[port].fcr_enable == 0)
-    	    	{
-    	    		// Set update frequency to 100ms
-    	    		baudrate = (int) (1000000.0 / 100000);
-    	    	}
-    	    }
-    	  }
-    	  else
-    	  {
-    		  // Poll at 4x baud rate to see if the next-char can be read
-    		  baudrate *= 4;
-    	  }
+    		      	  // Check if no data is still waiting and if FIFO is enabled 
+    		      	  if ((comPorts[port].lsr_rxdata_ready == 0) || (comPorts[port].fcr_enable == 1))
+    		      	  {
+    		      		  // Check if data is available to put into FIFO buffer
+    		  	        if (comPorts[port].uartDevice.isDataAvailable() == true)
+    		  	        {
+    		  	        	chbuf = comPorts[port].uartDevice.getSerialData();
+    		  	        	isDataReady = true;
+    		  	        }
+    		      	    
+    		      	    if (isDataReady == true)
+    		      	    {
+    		      	    	// Data ready, enqueue data in serial buffer (FIFO) if local loopback if off
+    		      	    	if (!(comPorts[port].mcr_local_loopback == 1))
+    		      	    	{
+    		      	    		this.enqueueReceivedData(port, chbuf);
+    		      	    	}
+    		      	    }
+    		      	    else
+    		      	    {
+    		      	    	// Data is not ready
+    		      	    	// If FIFO is not active adjust baudrate
+    		      	    	if (comPorts[port].fcr_enable == 0)
+    		      	    	{
+    		      	    		// Set update frequency to 100ms
+    		      	    		baudrate = (int) (1000000.0 / 100000);
+    		      	    	}
+    		      	    }
+    		      	  }
+    		      	  else
+    		      	  {
+    		      		  // Poll at 4x baud rate to see if the next-char can be read
+    		      		  baudrate *= 4;
+    		      	  }
 
-    	  // Activate timer as one shot
-    	  motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
-    	  motherboard.setTimerActiveState(this, true);
+    		      	  // Activate timer as one shot
+    		      	  motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
+    		      	  motherboard.setTimerActiveState(this, true);
+    	  }
     }
     
 
