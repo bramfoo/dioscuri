@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-11 15:24:53 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -35,15 +35,13 @@ package nl.kbna.dioscuri.config;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.w3c.dom.Document;
-
-import nl.kbna.dioscuri.Emulator;
-import nl.kbna.dioscuri.module.Module;
-import nl.kbna.dioscuri.module.ModuleScreen;
-import nl.kbna.dioscuri.module.ata.ATA;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 public class ConfigController
 {
@@ -54,222 +52,98 @@ public class ConfigController
     public final static String CONFIG_FILE_PATH            = "config/DioscuriConfig.xml"; 
     public final static String SCHEMA_FILE_PATH            = "config/DioscuriConfig.xsd";
   
-    
     /**
-     * Initiate the Modules -
-     * Loading and initialising modules is done based on the 
-     * Emulator Specification Document (ESD)
-     * Which is an XML based configuration file.
+     * Creates a recursive HashMap from a given node in a xml document
+     * Iterates over all subnodes adding key-value pairs as either
+     * nodeName=nodeValue for simple elements, or 
+     * nodeName=HashMap for complex elements, recursing into these elements in turn
+     * Ignores TEXT and COMMENT node fields
      * 
-     * @param emulator
-     */
-    public boolean initModules(Emulator emulator)
-    {
-        
-        File configFile = new File(CONFIG_FILE_PATH);
-        File schemaFile = new File(SCHEMA_FILE_PATH);   
-        Document document = null;
-        FileInputStream xmlConfigInputStream = null;  
-        
-        DioscuriXmlReader dioscuriXmlReader = new DioscuriXmlReader();
-        
-        try 
-        {
-            
-            try 
-            {
-                xmlConfigInputStream = new FileInputStream(configFile);                      
-                document = XmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
-           
-            } catch (Exception e)
-            {
-                logger.log(Level.SEVERE, e.getMessage());
-                
-                return false;
-            }
-    
-            // Check how to reset emulator
-            if (emulator.getColdStart() == true)
-            {
-            	// Cold start (hard reset)
-                logger.log(Level.INFO, "=================== COLD START ===================");
-                
-                // Create modules
-                dioscuriXmlReader.createModules(emulator, document);
-                
-                // Connect modules
-                this.connectModules(emulator);
-                
-                // Set corresponding timers in all modules
-                logger.log(Level.INFO, "=================== INIT TIMERS ===================");
-                 
-                dioscuriXmlReader.readTimingParams(document, emulator);
-    
-            }
-            else
-            {
-            	// Warm start (soft reset)
-                logger.log(Level.INFO, "=================== WARM START ===================");
-                
-                // Make sure next time cold start will happen (FIXME: why?)
-                emulator.setColdStart(true);
-            }
-            
-            // Reset all modules (equals a soft reset)
-            this.resetModules(emulator);
-    
-            logger.log(Level.INFO, "=================== INIT OUTPUT DEVICES ===================");
-            // Initialise screen (if available)
-            this.initScreenOutputDevice(emulator);
-            
-            logger.log(Level.INFO, "=================== INIT INPUT DEVICES ===================");
-            // Initialise mouse (if available)
-            dioscuriXmlReader.readMouseParams(document, emulator);         
-
-            logger.log(Level.INFO, "=================== LOAD BIOS ===================");
-            // Load system and video BIOS
-            if (!dioscuriXmlReader.loadBios(document,emulator))
-            {
-                return false;
-            }
-        
-            // Set storage device settings
-            logger.log(Level.INFO, "=================== LOAD STORAGE MEDIA ===================");
-            
-            dioscuriXmlReader.readFloppyParams(document, emulator);
-            dioscuriXmlReader.readHardDriveParams(document, emulator);
-            
-            // Set other settings
-            logger.log(Level.INFO, "=================== OTHER STUFF ===================");
-            dioscuriXmlReader.readBootParams(document, emulator);
-            dioscuriXmlReader.readDebugMode(document, emulator);
-            
-            // Print ready status
-            logger.log(Level.CONFIG, "Modules initialisation done.");
-            logger.log(Level.INFO, "=================== READY FOR EXECUTION ===================");
-        
-        } catch (Exception e)
-        {
-            logger.log(Level.SEVERE, "An error occurred initializing the configuration.");
-            return false;
-            
-        } finally 
-        {       
-            XmlConnect.closeXmlDocument(document, xmlConfigInputStream);
-
-        }
-        
-        return true;
-    }
-     
-    /**
-     * Reset all modules.
+     * @param node The starting node
+     * @param HashMap The HashMap to add the node attributes to
      * 
-     * @param emulator
+     * @return HashMap A recursively filled HashMap consisting of node attributes 
      */
-    public void resetModules(Emulator emulator)
+    private HashMap nodeToHashMap(Node node, HashMap hm)
     {
+        //FIXME: A HashMap can only contain unique keys, so multiple instances of e.g. floppy will result in one being added
         
-        // Reset all modules
-        logger.log(Level.INFO, "=================== RESET MODULES ===================");
+        logger.log(Level.INFO, "Creating hashmap for: " + node.getNodeName());
         
-        boolean isReset = true;
-        for (int i = 0; i < emulator.getModules().size(); i++)
+        // Loop through the attribute of the current node
+        NamedNodeMap nodeAttr = node.getAttributes();
+        if (nodeAttr.getLength() > 0)
         {
-            if (!(emulator.getModules().getModule(i).reset()))
+            for (int j = 0; j < nodeAttr.getLength(); j++)
             {
-                isReset = false;
-                logger.log(Level.SEVERE, "Could not reset module: " + emulator.getModules().getModule(i).getType() + ".");
+                logger.log(Level.INFO, "\tAdding attribute: " + nodeAttr.item(j).getNodeName() + "=" + nodeAttr.item(j).getNodeValue());
+                hm.put(nodeAttr.item(j).getNodeName(), nodeAttr.item(j).getNodeValue());
             }
         }
-        if (isReset == false)
-        {
-            logger.log(Level.SEVERE, "Not all modules are reset. Emulator may be unstable.");
-        }
-        else
-        {
-            logger.log(Level.INFO, "All modules are successfully reset.");
-        }
-        return;
-    }
-    
-    /**
-     * Init Screen Output Device.
-     * 
-     * @param emulator
-     */
-    public void initScreenOutputDevice(Emulator emulator)
-    {
-    
-        // Set screen output
-        // Connect screen (check if screen is available)
-        ModuleScreen screen = (ModuleScreen)emulator.getModules().getModule(ModuleType.SCREEN.toString());
-        if (screen != null)
-        {
-            emulator.getGui().setScreen(screen.getScreen(), true);
-        }
-        else
-        {
-            logger.log(Level.WARNING, "[CONFIG]" + " No screen available.");
-        }
-    }
         
-    /**
-     * Connect the modules together.
-     * 
-     * @param emulator
-     */
-    public void connectModules(Emulator emulator)
-    {
-        // Connect modules with each other
-        logger.log(Level.INFO, "=================== CONNECT MODULES ===================");
-        Module mod1, mod2;
-        for (int i = 0; i < emulator.getModules().size(); i++)
+        // Recurse through each of the child nodes
+        for (int i = 0; i < node.getChildNodes().getLength(); i++)
         {
-            mod1 = emulator.getModules().getModule(i);
-            String[] connections = mod1.getConnection();
-            for (int c = 0; c < connections.length; c++)
+            Node childNode = node.getChildNodes().item(i); 
+            if (childNode.getNodeType() != Node.TEXT_NODE && childNode.getNodeType() != Node.COMMENT_NODE )
             {
-                mod2 = emulator.getModules().getModule(connections[c]);
-                if (mod2 != null)
+                // A complex node should be have its own subHashMap, added to the parent HashMap
+                if (childNode.getChildNodes().getLength() > 1)
                 {
-                    if (mod1.setConnection(mod2))
-                    {
-                        logger.log(Level.CONFIG, "Successfully established connection between " + mod1.getType() + " and " + mod2.getType());
-                    }
-                    else
-                    {
-                        logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and " + mod2.getType());
-                    }
+                    logger.log(Level.INFO, "Found subMap: " + childNode.getNodeName());
+                    HashMap childHashMap = new HashMap();
+                    hm.put(childNode.getNodeName(), childHashMap);
+                    
+                    // Recursion
+                    nodeToHashMap(childNode, childHashMap);
                 }
+                // Simple elements can be added straight to the parent HashMap
                 else
                 {
-                    logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and unknown module " + connections[c]);
+                    logger.log(Level.INFO, "\tAdding element: " + childNode.getNodeName() + "=" + childNode.getFirstChild().getNodeValue());
+                    hm.put(childNode.getNodeName(), childNode.getFirstChild().getNodeValue());
                 }
             }
         }
         
-        // Check if all modules are connected
-        boolean isConnected = true;
-        for (int i = 0; i < emulator.getModules().size(); i++)
-        {
-            if (!(emulator.getModules().getModule(i).isConnected()))
-            {
-                isConnected = false;
-                logger.log(Level.SEVERE, "Could not connect module: " + emulator.getModules().getModule(i).getType() + ".");
-            }
-        }
-        if (isConnected == false)
-        {
-            logger.log(Level.SEVERE, "Not all modules are connected. Emulator may be unstable.");
-        }
-        else
-        {
-            logger.log(Level.INFO, "All modules are successfully connected.");
-        }
-        
-        return;
+        return hm;
     }
-      
+    
+    /**
+     * Temporary interface for the xml2hm function
+     * @param nodeName string representation for the starting node
+     * @return Hashmap containing all the emulator settings
+     */
+    public HashMap getSettings(String nodeName)
+    {
+        HashMap hm = new HashMap();
+        
+        File configFile = new File(CONFIG_FILE_PATH);
+        File schemaFile = new File(SCHEMA_FILE_PATH);
+        Document document = null;
+        FileInputStream xmlConfigInputStream = null;
+
+        try
+        {
+            xmlConfigInputStream = new FileInputStream(configFile);
+            document = XmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
+
+        }
+        catch (Exception e)
+        {
+            logger.log(Level.SEVERE, e.getMessage());
+            return null;
+        }
+
+        // Translate the string
+        Node modNode = document.getElementsByTagName(nodeName).item(0);
+
+        nodeToHashMap(modNode, hm);
+        
+        XmlConnect.closeXmlDocument(document, xmlConfigInputStream);
+        
+        return hm;
+
+    }
     
 }
