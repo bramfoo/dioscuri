@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:20:21 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 14:53:00 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -101,7 +101,7 @@ public class DMA extends ModuleDMA
     
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "memory", "cpu"}; 
+    private String[] moduleConnections = new String[] {"motherboard", "cpu", "memory"};
     private ModuleMotherboard motherboard;
     private Memory memory;
     private ModuleCPU cpu;
@@ -331,7 +331,7 @@ public class DMA extends ModuleDMA
     public boolean isConnected()
     {
         // Check if module if connected
-        if (this.motherboard != null && this.memory != null && this.cpu != null)
+        if (this.motherboard != null && this.cpu != null) // && this.memory != null 
         {
             return true;
         }
@@ -1400,7 +1400,7 @@ public class DMA extends ModuleDMA
                 if (dma8Handler[chanNum] != null)
                 {
                     dataByte = dma8Handler[chanNum].dma8WriteToMem();
-                        memory.setByte(memoryAddress, dataByte);
+                         memory.setByte(memoryAddress, dataByte);
                 }
                 else
                     logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " no dma8 write handler for channel " + chanNum);
@@ -1426,7 +1426,7 @@ public class DMA extends ModuleDMA
             }
             else                // 16-bit transfer
             {
-                    dataWord = memory.getWord(memoryAddress);
+                dataWord = memory.getWord(memoryAddress);
                     if (dma16Handler[chanNum] != null)
                         dma16Handler[chanNum].dma16ReadFromMem(dataWord);
             }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-24 15:20:04 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2008-02-11 14:53:54 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -52,7 +52,7 @@ import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 import nl.kbna.dioscuri.exception.StorageDeviceException;
 import nl.kbna.dioscuri.module.Module;
-import nl.kbna.dioscuri.module.ModuleCPU;
+//import nl.kbna.dioscuri.module.ModuleCPU;
 import nl.kbna.dioscuri.module.ModuleATA;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModulePIC;
@@ -87,18 +87,19 @@ public class ATA extends ModuleATA
     // Constants
     // Module specifics
     public final static int MODULE_ID = 1;
-    public final static ModuleType MODULE_TYPE = ModuleType.ATA;
+    public final static String MODULE_TYPE = "ata";
 
     // Attributes
 
     // Relations
     private Emulator emu;
-    private ModuleType[] moduleConnections = new ModuleType[] {ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC, ModuleType.CPU};
+//  BRAM: Removed CPU connection, as it was unnecessary    
+    private ModuleType[] moduleConnections = new ModuleType[] {ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC};//, ModuleType.CPU};
 
     private ModuleMotherboard motherboard;
     private ModuleRTC rtc;
     private ModulePIC pic;
-    private ModuleCPU cpu;
+//    private ModuleCPU cpu;
 
     // Toggles
     private boolean isObserved;
@@ -174,7 +175,7 @@ public class ATA extends ModuleATA
      */
     public String getType()
     {
-        return MODULE_TYPE.toString();
+        return MODULE_TYPE;
     }
 
     /**
@@ -185,7 +186,7 @@ public class ATA extends ModuleATA
      */
     public String getName()
     {
-        return MODULE_TYPE.getName();
+        return MODULE_TYPE;
     }
 
     /**
@@ -234,11 +235,12 @@ public class ATA extends ModuleATA
             return true;
         }
         // Set connection for cpu
-        else if (mod.getType().equalsIgnoreCase(ModuleType.CPU.toString()))
-        {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
+//  BRAM: Removed CPU connection, as it was unnecessary
+//        else if (mod.getType().equalsIgnoreCase(ModuleType.CPU.toString()))
+//        {
+//            this.cpu = (ModuleCPU) mod;
+//            return true;
+//        }
 
         // No connection has been established
         return false;
@@ -252,7 +254,8 @@ public class ATA extends ModuleATA
     public boolean isConnected()
     {
         // Check if module if connected
-        if (this.motherboard != null && this.pic != null && this.rtc != null && this.cpu != null)
+//      BRAM: Removed CPU connection, as it was unnecessary        
+        if (this.motherboard != null && this.pic != null && this.rtc != null )//&& this.cpu != null)
         {
             return true;
         }
