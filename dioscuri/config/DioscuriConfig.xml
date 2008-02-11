@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
- * $Revision: 1.4 $ $Date: 2007-08-27 07:39:55 $ $Author: jrvanderhoeven $
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+ * $Revision: 1.5 $ $Date: 2008-02-11 15:28:10 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -30,16 +30,7 @@
  *
  * Project Title: DIOSCURI
 --><!-- Defines Dioscuri Emulator modules and settings --><emulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" xsi:noNamespaceSchemaLocation="DioscuriConfig.xsd">
-   
-   <!-- Defines the boot sequence -->      
-   <boot>
-	   <bootdrives> 
-		  <bootdrive>floppy</bootdrive>
-		  <bootdrive>none</bootdrive>
-		  <bootdrive>none</bootdrive>
-	   </bootdrives>
-	   <floppycheckdisabled>false</floppycheckdisabled>
-   </boot>
+   <!-- Devines the boot sequence -->
    
    <!-- Defines the architecture required -->
    <architecture name="Von Neumann">
@@ -48,56 +39,76 @@
       
          <!-- Defines the Bios module -->
          <bios>
-            <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>        
-            <vgabiosfilepath>images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
-            <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec> 
-            <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>                   
-         </bios>
+			 <sysbiosfilepath>/share/Bram/dioscuri_SF_dev/images/bios/BIOS-bochs-latest</sysbiosfilepath>        
+            <vgabiosfilepath>/share/Bram/dioscuri_SF_dev/images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
+            <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
+            <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
+			<bootdrives> 
+				<bootdrive0>harddrive</bootdrive0>
+				<bootdrive1>none</bootdrive1>
+				<bootdrive2>none</bootdrive2>
+			</bootdrives>
+			<floppycheckdisabled>true</floppycheckdisabled>
+		</bios>
             
          <!-- Defines the cpu module -->
-         <cpu debug="false" speedmhz="5"/>
-         
-         <!-- Defines the memory module-->
-		 <ram debug="false" debugaddressdecimal="9295" sizemb="1"/>
+         <cpu debug="false">
+		 	<cpu32bit>true</cpu32bit>
+			<speedmhz>5</speedmhz>
+		</cpu> 
+		 <!-- Defines the memory module-->
+		 <memory debug="false" debugaddressdecimal="9295">
+			 <sizemb>1</sizemb>
+		 </memory>
 	
-         <!-- Defines the floppy drive module -->
-	 	 <floppydiskdrives debug="false" updateintervalmicrosecs="250"> <!-- normally 300 microseconds -->
-           <floppy>
-             <enabled>true</enabled>
-             <inserted>true</inserted>
-             <driveletter>A</driveletter>
-             <diskformat>1.44M</diskformat>
-             <writeprotected>false</writeprotected>
-	         <imagefilepath>images/floppy/Kbd2Scrn.bin</imagefilepath>
-	       </floppy> 
-        </floppydiskdrives>
+         <!-- Defines the floppy drive controller module -->
+	 	 <fdc debug="false"> <!-- normally 300 microseconds -->
+			 <updateintervalmicrosecs>250</updateintervalmicrosecs>
+			 <floppy>
+             	<enabled>true</enabled>
+             	<inserted>true</inserted>
+             	<driveletter>A</driveletter>
+             	<diskformat>1.44M</diskformat>
+             	<writeprotected>false</writeprotected>
+	         	<imagefilepath>/home/bram/shareBram/dioscuri_SF_dev/images/floppy/games1.ima</imagefilepath>
+	       </floppy>
+        </fdc>
         
         <!-- Defines the PIT module -->
- 		<pit clockrate="5" debug="false"/>
+ 		<pit debug="false">
+			<clockrate>5</clockrate>
+		</pit>
  		
         <!-- Defines the keyboard module -->
-        <keyboard debug="false" updateintervalmicrosecs="200"/>
+        <keyboard debug="false">
+			<updateintervalmicrosecs>200</updateintervalmicrosecs>
+		</keyboard>
         
          <!-- Defines the Mouse module -->
-         <mouse debug="false" mousetype="ps2"/>
+         <mouse debug="false">
+			 <mousetype>ps/2</mousetype>
+		 </mouse>
 
         <!-- Defines the ata module -->
-	    <atadrives debug="false" updateintervalmicrosecs="100000">
-	   	    <harddiskdrive>
-               <enabled>false</enabled>
+	    <ata debug="false">
+			<updateintervalmicrosecs>100000</updateintervalmicrosecs>
+			<harddiskdrive>
+               <enabled>true</enabled>
                <channelindex>0</channelindex>
                <master>true</master>
                <autodetectcylinders>true</autodetectcylinders>
                <cylinders>0</cylinders>
 	   	       <heads>4</heads>
                <sectorspertrack>17</sectorspertrack>
-               <imagefilepath>null</imagefilepath>
+               <imagefilepath>/share/Bram/dioscuri_SF_dev/images/floppy/MSDOS5_gms_masm_wp51.img</imagefilepath>
             </harddiskdrive>
-        </atadrives>
+        </ata>
         
-        <!-- Defines the video adapter module -->
-        <videoadapter debug="false" updateintervalmicrosecs="40000"/>
-              
+        <!-- Defines the video module -->
+        <video debug="false">
+			<updateintervalmicrosecs>40000</updateintervalmicrosecs>
+		</video>
+		
       </modules>
            
    </architecture>

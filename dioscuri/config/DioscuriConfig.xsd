@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!--
- * $Revision: 1.2 $ $Date: 2007-08-27 07:39:55 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 15:28:19 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -36,20 +36,6 @@
 	<xs:element name="emulator">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element name="boot">
-					<xs:complexType>
-						<xs:sequence>
-							<xs:element name="bootdrives">
-								<xs:complexType>
-									<xs:sequence>
-										<xs:element name="bootdrive" type="xs:string" minOccurs="3" maxOccurs="3"/>
-									</xs:sequence>
-								</xs:complexType>
-							</xs:element>
-							<xs:element name="floppycheckdisabled" type="xs:boolean"/>
-						</xs:sequence>
-					</xs:complexType>
-				</xs:element>
 				<xs:element name="architecture">
 					<xs:complexType>
 						<xs:sequence>
@@ -63,25 +49,41 @@
 													<xs:element name="vgabiosfilepath" type="xs:string"/>
 													<xs:element name="ramaddresssysbiosstartdec" type="xs:positiveInteger"/>
 													<xs:element name="ramaddressvgabiosstartdec" type="xs:positiveInteger"/>
+													<xs:element name="bootdrives">
+														<xs:complexType>
+															<xs:sequence>
+																<xs:element name="bootdrive0" type="xs:string"/>
+																<xs:element name="bootdrive1" type="xs:string"/>
+																<xs:element name="bootdrive2" type="xs:string"/>
+															</xs:sequence>
+														</xs:complexType>
+													</xs:element>
+													<xs:element name="floppycheckdisabled" type="xs:boolean"/>
 												</xs:sequence>
 											</xs:complexType>
 										</xs:element>			
 										<xs:element name="cpu">
 											<xs:complexType>
-												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="speedmhz" type="xs:decimal" use="required"/>
+												<xs:sequence>
+													<xs:element name="cpu32bit" type="xs:boolean"/>
+													<xs:element name="speedmhz" type="xs:decimal"/>
+												</xs:sequence>
+											<xs:attribute name="debug" type="xs:boolean" use="optional"/>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="ram" minOccurs="0">
-											<xs:complexType>
-												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="debugaddressdecimal" type="xs:positiveInteger" use="optional"/>
-												<xs:attribute name="sizemb" type="xs:decimal" use="required"/>
-											</xs:complexType>
-										</xs:element>
-										<xs:element name="floppydiskdrives" minOccurs="0">
+										<xs:element name="memory" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>
+													<xs:element name="sizemb" type="xs:decimal"/>
+												</xs:sequence>
+												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
+												<xs:attribute name="debugaddressdecimal" type="xs:positiveInteger" use="optional"/>
+											</xs:complexType>
+										</xs:element>
+										<xs:element name="fdc" minOccurs="0">
+											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="updateintervalmicrosecs" type="xs:positiveInteger"/>
 													<xs:element name="floppy" maxOccurs="2">
 														<xs:complexType>
 															<xs:sequence>
@@ -96,30 +98,36 @@
 													</xs:element>
 												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="updateintervalmicrosecs" type="xs:positiveInteger" use="required"/>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="pit" minOccurs="0">
 											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="clockrate" type="xs:positiveInteger"/>
+												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="clockrate" type="xs:positiveInteger" use="required"/>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="keyboard" minOccurs="0">
 											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="updateintervalmicrosecs" type="xs:positiveInteger"/>
+												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="updateintervalmicrosecs" type="xs:positiveInteger" use="required"/>
 											</xs:complexType>
 										</xs:element>
 										<xs:element name="mouse" minOccurs="0">
 											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="mousetype" type="xs:string"/>
+												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="mousetype" type="xs:string" use="optional"/>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="atadrives" minOccurs="0">
+										<xs:element name="ata" minOccurs="0">
 											<xs:complexType>
 												<xs:sequence>
+													<xs:element name="updateintervalmicrosecs" type="xs:positiveInteger"/>
 													<xs:element name="harddiskdrive" maxOccurs="8">
 														<xs:complexType>
 															<xs:sequence>
@@ -136,13 +144,14 @@
 													</xs:element>
 												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="updateintervalmicrosecs" type="xs:positiveInteger" use="required"/>
 											</xs:complexType>
 										</xs:element>
-										<xs:element name="videoadapter" minOccurs="0">
+										<xs:element name="video" minOccurs="0">
 											<xs:complexType>
+												<xs:sequence>
+													<xs:element name="updateintervalmicrosecs" type="xs:positiveInteger"/>
+												</xs:sequence>
 												<xs:attribute name="debug" type="xs:boolean" use="optional"/>
-												<xs:attribute name="updateintervalmicrosecs" type="xs:positiveInteger" use="required"/>
 											</xs:complexType>
 										</xs:element>
 									</xs:sequence>
