@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2007-08-10 14:56:53 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2008-02-11 14:36:22 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -76,7 +76,7 @@ public class RTC extends ModuleRTC
 {
 
     // Instance
-    CMOS cmos = new CMOS();
+    CMOS cmos;
 
     // Relations
     private Emulator emu;
@@ -119,6 +119,7 @@ public class RTC extends ModuleRTC
     {
         emu = owner;
         
+        cmos = new CMOS();
         // Initialise variables
         isObserved = false;
         debugMode = false;

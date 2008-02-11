@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2007-08-24 15:44:21 $ $Author: blohman $
+ * $Revision: 1.8 $ $Date: 2008-02-11 14:40:54 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -920,8 +920,8 @@ public class Counter
      */
     private void loadCounter()
     {
-        
-        logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter " + counterNumber + " loaded with new values");
+        // Cannot guarantee the following command since update to 32-bit:
+		// logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter " + counterNumber + " loaded with new values");
         // Load new count from cr to ce, based on RW mode
         if (rwMode == RWMODE_1)
         {
@@ -940,7 +940,8 @@ public class Counter
             // Write operation: LSB first, then MSB
             ce[LSB] = cr[LSB];
             ce[MSB] = cr[MSB];
-            logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter  " + counterNumber + " (in rwMode " + rwMode + ") loaded with [" +ce[MSB] + "][" +ce[LSB] + "]");
+            // Cannot guarantee the following command since update to 32-bit:
+			// logger.log(Level.CONFIG, pit.motherboard.getCurrentInstructionNumber() + " " + "[" + pit.getType() + "] Counter  " + counterNumber + " (in rwMode " + rwMode + ") loaded with [" +ce[MSB] + "][" +ce[LSB] + "]");
         }
 
         // Check parity of ce value

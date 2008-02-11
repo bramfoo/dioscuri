@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2007-08-31 16:22:58 $ $Author: blohman $
+ * $Revision: 1.9 $ $Date: 2008-02-11 14:39:01 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -99,9 +99,10 @@ public class PIT extends ModulePIT
     
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "cpu", "pic"}; 
+//  BRAM: Removed CPU connection, as it was unnecessary
+    private String[] moduleConnections = new String[] {"motherboard", "pic"};//, "cpu"}; 
     protected ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
+//    private ModuleCPU cpu;
     protected ModulePIC pic;
     private Counter[] counters;
     
@@ -237,11 +238,12 @@ public class PIT extends ModulePIT
         }
         
         // Set connection for CPU
-        if (mod.getType().equalsIgnoreCase("cpu"))
-        {
-            this.cpu = (ModuleCPU)mod;
-            return true;
-        }
+//      BRAM: Removed CPU connection, as it was unnecessary        
+//        if (mod.getType().equalsIgnoreCase("cpu"))
+//        {
+//            this.cpu = (ModuleCPU)mod;
+//            return true;
+//        }
         
         // Set connection for PIC
         if (mod.getType().equalsIgnoreCase("pic"))
@@ -263,7 +265,8 @@ public class PIT extends ModulePIT
     public boolean isConnected()
     {
         // Check if module if connected
-        if (this.motherboard != null && this.cpu != null && this.pic != null)
+//      BRAM: Removed CPU connection, as it was unnecessary        
+        if (this.motherboard != null && this.pic != null) //&& this.cpu != null)
         {
             return true;
         }
