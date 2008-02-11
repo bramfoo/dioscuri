@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2008-02-11 15:30:22 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -37,20 +37,63 @@ package nl.kbna.dioscuri;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.config.ConfigController;
+import nl.kbna.dioscuri.config.ModuleType;
 import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.module.Module;
+import nl.kbna.dioscuri.module.ModuleATA;
 import nl.kbna.dioscuri.module.ModuleCPU;
+import nl.kbna.dioscuri.module.ModuleDevice;
 import nl.kbna.dioscuri.module.ModuleFDC;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
 import nl.kbna.dioscuri.module.ModuleMemory;
 import nl.kbna.dioscuri.module.ModuleMouse;
+import nl.kbna.dioscuri.module.ModulePIT;
+import nl.kbna.dioscuri.module.ModuleScreen;
 import nl.kbna.dioscuri.module.ModuleVideo;
 
+import nl.kbna.dioscuri.module.ata.ATA;
+import nl.kbna.dioscuri.module.ata.ATAConstants;
+import nl.kbna.dioscuri.module.ata.ATATranslationType;
+import nl.kbna.dioscuri.module.bios.BIOS;
+import nl.kbna.dioscuri.module.clock.Clock;
+import nl.kbna.dioscuri.module.cpu.CPU;
+import nl.kbna.dioscuri.module.cpu32.AddressSpace;
+import nl.kbna.dioscuri.module.cpu32.DMAController;
+import nl.kbna.dioscuri.module.cpu32.IOPortHandler;
+import nl.kbna.dioscuri.module.cpu32.LazyMemory;
+import nl.kbna.dioscuri.module.cpu32.LinearAddressSpace;
+import nl.kbna.dioscuri.module.cpu32.ModeSwitchException;
+import nl.kbna.dioscuri.module.cpu32.PhysicalAddressSpace;
+import nl.kbna.dioscuri.module.cpu32.Processor;
+import nl.kbna.dioscuri.module.cpu32.HardwareComponent;
+import nl.kbna.dioscuri.module.cpu32.SystemBIOS;
+import nl.kbna.dioscuri.module.cpu32.VGABIOS;
+import nl.kbna.dioscuri.module.dma.DMA;
+import nl.kbna.dioscuri.module.fdc.FDC;
+import nl.kbna.dioscuri.module.keyboard.Keyboard;
+import nl.kbna.dioscuri.module.memory.Memory;
+import nl.kbna.dioscuri.module.motherboard.DeviceDummy;
+import nl.kbna.dioscuri.module.motherboard.Motherboard;
+import nl.kbna.dioscuri.module.mouse.Mouse;
+import nl.kbna.dioscuri.module.parallelport.ParallelPort;
+import nl.kbna.dioscuri.module.pic.PIC;
+import nl.kbna.dioscuri.module.pit.PIT;
+import nl.kbna.dioscuri.module.rtc.RTC;
+import nl.kbna.dioscuri.module.screen.Screen;
+import nl.kbna.dioscuri.module.serialport.SerialPort;
+import nl.kbna.dioscuri.module.video.Video;
 
 /**
  * Top class owning all classes of the emulator. Entry point
@@ -61,14 +104,17 @@ public class Emulator implements Runnable
 
 	// Attributes
 	private Modules modules;
+    private ArrayList<HardwareComponent> hwComponents;
     private IO io;
     private GUI gui;
     private ConfigController configController;
+    private HashMap moduleSettings;
     
     // Toggles
     private boolean isAlive;
     private boolean coldStart;
     private boolean resetBusy;
+    private boolean cpu32bit;
     
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri");
@@ -122,7 +168,9 @@ public class Emulator implements Runnable
 	public Emulator(GUI owner)
 	{
         this.gui = owner;
-        modules = null;
+        modules = null; // Created in createModules()
+        hwComponents = new ArrayList<HardwareComponent>();
+        
         
 		// Create IO communication channel
 		io = new IO();
@@ -140,13 +188,23 @@ public class Emulator implements Runnable
 	{
 		// TODO: Perform semantic analysis of command (syntaxis is checked by IO class)
 		// Especially important when running with multiple threads!!!
+        int instr = 0;
+        int total = 0;
+        int loop = 0;
 		
 		while (isAlive == true)
 		{
             // Start emulator, start all threads
 
+            // Get the module settings from the configuration file
+            moduleSettings = configController.getSettings("modules");
+            System.out.println("Retrieved the following settings:\n" + moduleSettings);
+
+            // Module creation
+            boolean success = setupEmu();
+            
             // Initialise modules
-            boolean success = this.configController.initModules(this);
+//            boolean success = this.configController.initModules(this);
             
             if (!success)
             {
@@ -155,6 +213,46 @@ public class Emulator implements Runnable
                 return;
             }
 
+            if (cpu32bit)
+            {
+                try 
+                {
+                    AddressSpace addressSpace = null;
+                    Processor cpu = (Processor) modules.getModule(ModuleType.CPU.toString());
+                    if (cpu.isProtectedMode())
+                        addressSpace = (AddressSpace) hwComponents.get(0); //linearAddr
+                    else
+                        addressSpace = (AddressSpace) hwComponents.get(1); //physicalAddr
+                    
+                    while ( total < 15000)
+                    {
+                        instr = addressSpace.execute(cpu, cpu.getInstructionPointer());
+                        try
+                        {
+                            Thread.sleep(100);
+                        }
+                        catch (InterruptedException e)
+                        {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        total += instr;
+                        loop++;
+                    }
+                    while (isAlive == true)
+                    {
+                        instr = addressSpace.execute(cpu, cpu.getInstructionPointer());
+                        total += instr;
+                        loop++;
+                    }
+                } 
+                catch (ModeSwitchException e) 
+                {
+                    instr = 1;
+                }
+            }
+            else
+            {
             logger.log(Level.INFO, "Emulation process started.");
             
             if (((ModuleCPU)modules.getModule("cpu")).getDebugMode() == false)
@@ -177,7 +275,6 @@ public class Emulator implements Runnable
                     this.debug(io.getCommand());
                 }
             }
-
             // Wait until reset of modules is done (wait about 1 second...)
             // This can occur when another thread causes a reset of this emulation process
             while (resetBusy == true)
@@ -192,10 +289,10 @@ public class Emulator implements Runnable
                     e.printStackTrace();
                 }
             }
+            }
         }
 	}
 
-    
     protected void stop()
     {
         // End life of this emulation process
@@ -357,6 +454,16 @@ public class Emulator implements Runnable
         return this.modules;
     }
   
+    /**
+     * Get the hardware components.
+     * 
+     * @return modules
+     */
+    public ArrayList<HardwareComponent> getHWcomponents()
+    {
+        return this.hwComponents;
+    }
+    
     /**
      * Set the modules.
      * @param modules
@@ -528,4 +635,753 @@ public class Emulator implements Runnable
 		// TODO: implement
 		return null;
 	}
+
+    public boolean isCpu32bit()
+    {
+        return cpu32bit;
+    }
+    
+    public boolean setupEmu()
+    {
+        boolean result = true;
+        
+        if (coldStart)
+        {
+            // Cold start (hard reset)
+            logger.log(Level.INFO, "===================    COLD START   ===================");
+            
+            // Create modules
+            logger.log(Level.INFO, "=================== CREATE MODULES  ===================");
+            result &= createModules();
+            
+            // Connect modules together
+            logger.log(Level.INFO, "=================== CONNECT MODULES ===================");
+            result &= connectModules();
+            
+            // Set timers in relevant modules
+            logger.log(Level.INFO, "===================   INIT TIMERS   ===================");
+            result &= setTimingParams(modules.getModule("cpu"));
+            result &= setTimingParams(modules.getModule("video"));
+            result &= setTimingParams(modules.getModule("pit"));
+            result &= setTimingParams(modules.getModule("keyboard"));
+            result &= setTimingParams(modules.getModule("fdc"));
+            result &= setTimingParams(modules.getModule("ata"));
+        }
+        else
+        {
+            // Warm start (soft reset)
+            logger.log(Level.INFO, "===================    WARM START   ===================");
+
+            // Make sure next time cold start will happen (FIXME: why?)
+            setColdStart(true);
+        }
+        
+        // Reset all modules
+        logger.log(Level.INFO, "===================  RESET MODULES  ===================");
+        result &= resetModules();
+        if (cpu32bit)
+        {
+            // FIXME: Need to re-establish I/O port connections with motherboard (?)
+        }
+
+        // Initialise screen (if available)
+        logger.log(Level.INFO, "=================== INIT OUTPUT DEVICES ===================");        
+        result &= initScreenOutputDevice();
+
+        // Initialise mouse (if available)
+        logger.log(Level.INFO, "================== INIT INPUT DEVICES =================");                
+        result &= setMouseParams();
+        result &= setMemoryParams();
+
+        // Load system and video BIOS
+        logger.log(Level.INFO, "===================    LOAD BIOS    ===================");
+        result &= loadBIOS();
+        
+        // Set storage device settings
+        logger.log(Level.INFO, "================= LOAD STORAGE MEDIA ==================");        
+        result &= setFloppyParams();    // At least one floppy is required
+        setHardDriveParams();   // Harddisk not required, so doesn't influence result
+        
+        // Set other settings
+        logger.log(Level.INFO, "===================  MISC SETTINGS  ===================");
+        result &= setBootParams();
+        if (!cpu32bit)
+        {
+            result &= setDebugMode();
+        }
+        
+        // Print ready status
+        logger.log(Level.INFO, "================= READY FOR EXECUTION =================");
+
+        return result;
+
+    }
+    
+    public boolean createModules()
+    {
+        modules = new Modules(20);
+        
+        // Determine CPU type -- assuming a CPU exists in this emulator (pretty pointless without one, really)
+        cpu32bit = Boolean.parseBoolean(((String)((HashMap)moduleSettings.get("cpu")).get("cpu32bit")));
+        
+        // Add clock first, as it is needed for 32-bit RAM
+        Clock clk = new Clock(this);
+        modules.addModule(clk);
+
+        // Create a CPU
+        if (cpu32bit)
+        {
+            // Add JPC 32-bit processor
+            modules.addModule(new Processor());
+        }
+        else 
+        {
+            // Add Dioscuri 16-bit CPU
+            modules.addModule(new CPU(this));
+        }
+        
+        // Create RAM
+            if(cpu32bit)
+            {
+              PhysicalAddressSpace physicalAddr = new PhysicalAddressSpace();
+              LinearAddressSpace linearAddr = new LinearAddressSpace();
+              for (int i=0; i<PhysicalAddressSpace.SYS_RAM_SIZE; i+= AddressSpace.BLOCK_SIZE)
+                  physicalAddr.allocateMemory(i, new LazyMemory(AddressSpace.BLOCK_SIZE, clk));
+
+              hwComponents.add(linearAddr);
+              hwComponents.add(physicalAddr);
+            }
+            else
+            {
+            // Only add Dioscuri memory if using 16-bit processor
+            modules.addModule(new Memory(this));
+            }
+
+        if (moduleSettings.containsKey("bios"))
+        {
+            if (!cpu32bit)
+            {
+                modules.addModule(new BIOS(this));
+            }
+        }
+
+        modules.addModule(new Motherboard(this));       // Motherboard should always be initialised before other I/O devices!!! Else I/O address space will be reset
+        modules.addModule(new PIC(this));               // PIC should always be initialised directly after motherboard
+        
+        if(moduleSettings.containsKey("pit"))
+        {
+            modules.addModule(new PIT(this));
+        }
+        
+        modules.addModule(new RTC(this));               // RTC should always be initialised before other devices
+        
+        if(moduleSettings.containsKey("ata"))
+        {
+            modules.addModule(new ATA(this)); 
+        }
+        
+        // DMA
+        if(cpu32bit)
+        {
+            DMAController primaryDMA, secondaryDMA;
+            primaryDMA = new DMAController(false, true);
+            secondaryDMA = new DMAController(false, false);
+            hwComponents.add(primaryDMA);
+            hwComponents.add(secondaryDMA);
+        }
+        else
+        {
+            modules.addModule(new DMA(this));
+        }
+        
+        
+        if (moduleSettings.containsKey("fdc"))
+        {
+            modules.addModule(new FDC(this));
+        }
+        
+        if (moduleSettings.containsKey("keyboard"))
+        {
+            modules.addModule(new Keyboard(this));
+        }
+        
+        if (moduleSettings.containsKey("mouse"))
+        {
+            modules.addModule(new Mouse(this));     // Mouse always requires a keyboard (controller)
+        }
+        
+        modules.addModule(new ParallelPort(this));      
+        modules.addModule(new SerialPort(this));
+        
+        if(moduleSettings.containsKey("video"))
+        {
+            modules.addModule(new Video(this));
+        }
+        
+        modules.addModule(new DeviceDummy(this));
+        modules.addModule(new Screen(this));
+        
+        logger.log(Level.INFO, "All modules are created.");
+             
+        return true;
+    }
+    
+    /**
+     * Connect the modules together.
+     */
+    public boolean connectModules()
+    {
+        
+        boolean result = true;
+        
+        Module mod1, mod2;
+        for (int i = 0; i < modules.size(); i++)
+        {
+            mod1 = modules.getModule(i);
+            String[] connections = mod1.getConnection();
+            for (int c = 0; c < connections.length; c++)
+            {
+                mod2 = modules.getModule(connections[c]);
+                if (mod2 != null)
+                {
+                    if (mod1.setConnection(mod2))
+                    {
+                        logger.log(Level.CONFIG, "Successfully established connection between " + mod1.getType() + " and " + mod2.getType());
+                    }
+                    else
+                    {
+                        logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and " + mod2.getType());
+                    }
+                }
+                else
+                {
+                    logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and unknown module " + connections[c]);
+                }
+            }
+        }
+        
+        // Check if all modules are connected
+        boolean isConnected = true;
+        for (int i = 0; i < modules.size(); i++)
+        {
+            if (!(modules.getModule(i).isConnected()))
+            {
+                isConnected = false;
+                logger.log(Level.SEVERE, "Could not connect module: " + modules.getModule(i).getType() + ".");
+            }
+        }
+        if (isConnected == false)
+        {
+            logger.log(Level.SEVERE, "Not all modules are connected. Emulator may be unstable.");
+            result &= false;
+        }
+        else
+        {
+            logger.log(Level.INFO, "All modules are successfully connected.");
+            result &= true;
+        }
+        
+        // 32-bit setup requires specific connections along with those processed above
+        if (cpu32bit)
+        {
+            
+            Processor cpu = (Processor) modules.getModule(ModuleType.CPU.toString());
+            Video vid = (Video) modules.getModule(ModuleType.VGA.toString());
+            Motherboard mb = (Motherboard) modules.getModule(ModuleType.MOTHERBOARD.toString());
+            FDC fdc = (FDC) modules.getModule(ModuleType.FDC.toString());
+            // FIXME: remove hardcoded hwComponents index values
+            LinearAddressSpace linearAddr = (LinearAddressSpace) hwComponents.get(0); 
+            PhysicalAddressSpace physicalAddr = (PhysicalAddressSpace) hwComponents.get(1);
+            DMAController primaryDMA = (DMAController) hwComponents.get(2);
+            DMAController secondaryDMA = (DMAController) hwComponents.get(3);
+            PIC pic = (PIC) modules.getModule(ModuleType.PIC.toString());
+            
+            IOPortHandler ioports = new IOPortHandler();
+            ioports.setConnection(mb);
+
+            cpu.acceptComponent(linearAddr);
+            cpu.acceptComponent(physicalAddr);
+            cpu.acceptComponent(ioports);
+            cpu.setConnection(pic);
+            
+            physicalAddr.acceptComponent(linearAddr);
+            linearAddr.acceptComponent(physicalAddr);
+            
+            vid.acceptComponent(physicalAddr);
+            
+            primaryDMA.acceptComponent(physicalAddr);
+            secondaryDMA.acceptComponent(physicalAddr);
+            primaryDMA.acceptComponent(ioports);
+            secondaryDMA.acceptComponent(ioports);
+
+            
+            fdc.acceptComponent(primaryDMA);
+            fdc.acceptComponent(secondaryDMA);  // This isn't necessary...
+            
+            // Because 32-bit components may not match with 16-bit list, overwrite result to true
+            result = true;
+        }
+
+        return result;
+    }
+    
+    /**
+     * Set the timing parameters
+     */
+    public boolean setTimingParams(Module module)
+    {
+        boolean result = true;
+
+        // There are 3 types of timing: speed (cpu), clock rate (pit), update intervals (floppy/keyboard/ata/video/)
+
+        if (module instanceof ModuleCPU)
+        {
+            
+            // Get the CPU timing parameter from the HashMap
+            int mhz = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("speedmhz"))));
+            ((ModuleCPU)module).setIPS(mhz * 1000000);
+            result &= true;
+        }
+        else if (module instanceof ModuleDevice)
+        {
+            int interval;
+            if (module instanceof ModulePIT)
+                interval = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("clockrate"))));
+            else
+                interval = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("updateintervalmicrosecs"))));
+            
+            // Cast the module to ModuleDevice for the setUpdate
+            ((ModuleDevice)modules.getModule(module.getType())).setUpdateInterval(interval);
+            result &= true;
+        }
+        else
+        {
+            // Unhandled module timing
+            result &= false;
+        }
+        return result;
+    }
+
+    /**
+     * Reset all modules.
+     */
+    public boolean resetModules()
+    {
+        boolean result = true;
+        for (int i = 0; i < modules.size(); i++)
+        {
+            if (!(modules.getModule(i).reset()))
+            {
+                result = false;
+                logger.log(Level.SEVERE, "Could not reset module: " + modules.getModule(i).getType() + ".");
+            }
+        }
+        if (result == false)
+        {
+            logger.log(Level.SEVERE, "Not all modules are reset. Emulator may be unstable.");
+        }
+        else
+        {
+            logger.log(Level.INFO, "All modules are successfully reset.");
+        }
+        
+        return result;
+    }
+    
+    /**
+     * Init Screen Output Device.
+     */
+    public boolean initScreenOutputDevice()
+    {
+    
+        // Set screen output
+        // Connect screen (check if screen is available)
+        ModuleScreen screen = (ModuleScreen)modules.getModule(ModuleType.SCREEN.toString());
+        if (screen != null)
+        {
+            getGui().setScreen(screen.getScreen(), true);
+            return true;
+        }
+        else
+        {
+            logger.log(Level.WARNING, "[CONFIG]" + " No screen available.");
+            return false;
+        }
+    }
+
+    /**
+     * Read from config and set mouse parameters
+     */
+    public boolean setMouseParams()
+    {
+        
+        Mouse mouse = (Mouse)modules.getModule(ModuleType.MOUSE.toString());
+        if(mouse != null)
+        {
+            String type = (String) ((HashMap)moduleSettings.get(mouse.getType())).get("mousetype");
+            mouse.setMouseType(type);
+        }
+        return true;
+    }
+  
+    /**
+     * Read from config and set memory parameters
+     */
+    public boolean setMemoryParams()
+    {
+        Memory mem = (Memory)modules.getModule(ModuleType.MEMORY.toString());
+
+        if(mem != null)
+        {
+            int size = Integer.parseInt((String) ((HashMap)moduleSettings.get(mem.getType())).get("sizemb"));
+            mem.setRamSizeInMB(size);
+        }
+        return true;
+    }
+    
+    /**
+     * Load the BIOS into memory
+     */
+    public boolean loadBIOS()
+    {
+        boolean result = true;
+
+        if (cpu32bit)
+        {
+            SystemBIOS sysBIOS;
+            VGABIOS vgaBIOS;
+            try
+            {
+                // open input stream
+                BufferedInputStream bdis = new BufferedInputStream(new DataInputStream(new FileInputStream(new File("images/bios/BIOS-bochs-latest"))));
+
+                // read all bytes (as unsigned) in byte array
+                byte[] byteArray = new byte[bdis.available()];
+                bdis.read(byteArray, 0, byteArray.length);
+
+                // Close input stream
+                bdis.close();
+
+                Clock clk = (Clock) modules.getModule(ModuleType.CLOCK.toString());
+                sysBIOS = new SystemBIOS(byteArray, clk);
+
+                // open input stream
+                BufferedInputStream bdis2 = new BufferedInputStream(new DataInputStream(new FileInputStream(new File("images/bios/VGABIOS-lgpl-latest"))));
+
+                // read all bytes (as unsigned) in byte array
+                byte[] byteArray2 = new byte[bdis2.available()];
+                bdis2.read(byteArray2, 0, byteArray2.length);
+
+                // Close input stream
+                bdis2.close();
+
+                vgaBIOS = new VGABIOS(byteArray2, clk);
+
+                // FIXME: Move to connect method (but: catch-22, as need to load BIOSes first!)
+                PhysicalAddressSpace physicalAddr = (PhysicalAddressSpace) hwComponents.get(1);
+                sysBIOS.acceptComponent(physicalAddr);
+                vgaBIOS.acceptComponent(physicalAddr);
+
+                // Add to emulator HWcomponents array
+                hwComponents.add(sysBIOS);
+                hwComponents.add(vgaBIOS);
+            }
+            catch (IOException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                result &= false;
+            }
+
+            return result;
+        }
+        else
+        {
+            BIOS bios = (BIOS) modules.getModule(ModuleType.BIOS.toString());
+
+            String sysBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("sysbiosfilepath");
+            String vgaBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("vgabiosfilepath");
+            ;
+            int ramAddressSysBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddresssysbiosstartdec"))));
+            int ramAddressVgaBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddressvgabiosstartdec"))));
+
+            try
+            {
+                // Fetch System BIOS binaries from file system and store it in BIOS ROM
+                if (bios.setSystemBIOS(getIo().importBinaryStream(sysBiosFilePath)))
+                {
+                    logger.log(Level.CONFIG, "System BIOS successfully stored in ROM.");
+
+                    // Retrieve System BIOS and store it in RAM
+                    Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
+
+                    mem.setBytes(ramAddressSysBiosStart, bios.getSystemBIOS());
+
+                    logger.log(Level.CONFIG, "System BIOS successfully loaded in RAM.");
+                }
+                else
+                {
+                    logger.log(Level.SEVERE, "Not able to retrieve System BIOS binaries from file system.");
+                    result &= false;
+
+                }
+            }
+            catch (ModuleException emod)
+            {
+                logger.log(Level.SEVERE, emod.getMessage());
+                result &= false;
+            }
+            catch (IOException eio)
+            {
+                logger.log(Level.SEVERE, eio.getMessage());
+                result &= false;
+            }
+
+            // Module BIOS: load Video BIOS in BIOS ROM
+            try
+            {
+                // Fetch System BIOS binaries from file system and store it in BIOS ROM
+                if (bios.setVideoBIOS(getIo().importBinaryStream(vgaBiosFilePath)))
+                {
+                    logger.log(Level.CONFIG, "Video BIOS successfully stored in ROM.");
+
+                    // Retrieve VGA BIOS and store it in RAM at address 0xC0000
+                    Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
+                    mem.setBytes(ramAddressVgaBiosStart, bios.getVideoBIOS());
+                    logger.log(Level.CONFIG, "Video BIOS successfully loaded in RAM.");
+                }
+                else
+                {
+                    logger.log(Level.SEVERE, "Not able to retrieve Video BIOS binaries from file system.");
+                    result &= false;
+                }
+            }
+            catch (ModuleException emod)
+            {
+                logger.log(Level.SEVERE, emod.getMessage());
+                result &= false;
+            }
+            catch (IOException eio)
+            {
+                logger.log(Level.SEVERE, eio.getMessage());
+                result &= false;
+            }
+
+            return result;
+
+        }
+    }
+
+    /**
+     * Get and set floppy parameters
+     */
+    public boolean setFloppyParams()
+    {
+        // Module FDC: set number of drives (max 4), insert floppy and set update interval
+
+        HashMap floppyHM = (HashMap) ((HashMap) moduleSettings.get("fdc")).get("floppy");
+        ModuleFDC fdc = (ModuleFDC) modules.getModule(ModuleType.FDC.toString());
+
+        // FIXME: This needs to be set depending on number of floppies defined in XML/HashMap (also see note on HashMaps)
+        fdc.setNumberOfDrives(1);
+
+        // FIXME: loop on number of floppies defined
+        for (int i = 0; i < 1; i++)
+        {
+            boolean enabled = Boolean.parseBoolean(((String) floppyHM.get("enabled")));
+            boolean inserted = Boolean.parseBoolean(((String) floppyHM.get("inserted")));
+            String driveLetter = (String) floppyHM.get("driveletter");
+            String diskformat = (String) floppyHM.get("diskformat");
+            byte carrierType = 0x0;
+            boolean writeProtected = Boolean.parseBoolean(((String) floppyHM.get("writeprotected")));
+            String imageFilePath = (String) floppyHM.get("imagefilepath");
+
+            if (diskformat.equals("360K"))
+                carrierType = 0x01;
+            else if (diskformat.equals("1.2M"))
+                carrierType = 0x02;
+            else if (diskformat.equals("720K"))
+                carrierType = 0x03;
+            else if (diskformat.equals("1.44M"))
+                carrierType = 0x04;
+            else if (diskformat.equals("2.88M"))
+                carrierType = 0x05;
+            else if (diskformat.equals("160K"))
+                carrierType = 0x06;
+            else if (diskformat.equals("180K"))
+                carrierType = 0x07;
+            else if (diskformat.equals("320K"))
+                carrierType = 0x08;
+            else
+                logger.log(Level.SEVERE, "Floppy disk format not recognised.");
+
+            if (inserted)
+            {
+
+                File imageFile = new File(imageFilePath);
+
+                fdc.insertCarrier(driveLetter, carrierType, imageFile, writeProtected);
+
+                // TODO: updates for B ?
+                if (driveLetter.equals("A"))
+                {
+                    getGui().updateGUI(GUI.EMU_FLOPPYA_INSERT);
+                }
+            }
+
+        }
+        return true;
+                  
+    }
+    
+    /**
+     * Read and set the hard drive parameters
+     */
+    public boolean setHardDriveParams()
+    {
+        // TODO: replace ATA reference by ModuleATA
+
+        // FIXME: This needs to be set depending on number of floppies defined in XML/HashMap (also see note on HashMaps)
+        HashMap ataHM = (HashMap) ((HashMap) moduleSettings.get("ata")).get("harddiskdrive");
+        ModuleATA ata = (ATA)modules.getModule(ModuleType.ATA.toString());
+
+        if (ataHM == null)
+            return false;
+        
+        // FIXME: loop on number of disks defined
+        for (int i = 0; i < 1; i++)
+        {
+            boolean enabled = Boolean.parseBoolean(((String) ataHM.get("enabled")));
+            int ideChannelIndex = Integer.parseInt(((String) ataHM.get("channelindex")));
+            boolean isMaster = Boolean.parseBoolean(((String) ataHM.get("master")));;
+            boolean autoDetectCylinders = Boolean.parseBoolean(((String) ataHM.get("autodetectcylinders")));
+            int numCylinders = Integer.parseInt(((String) ataHM.get("cylinders")));
+            int numHeads = Integer.parseInt(((String) ataHM.get("heads")));
+            int numSectorsPerTrack = Integer.parseInt(((String) ataHM.get("sectorspertrack")));;        
+            String imageFilePath = (String) ataHM.get("imagefilepath");;
+            
+            if(enabled && ideChannelIndex >= 0 && ideChannelIndex < 4)
+            {
+           
+                if(autoDetectCylinders)
+                {
+                    numCylinders = 0;
+                }
+                
+                ata.initConfig(ideChannelIndex,
+                               isMaster,
+                               true,  
+                               false,
+                               numCylinders,
+                               numHeads,
+                               numSectorsPerTrack,
+                               ATATranslationType.AUTO,
+                               imageFilePath);
+                
+                //TODO: updates for other hard drives?
+                if (ideChannelIndex == 0 && isMaster)
+                {
+                    getGui().updateGUI(GUI.EMU_HD1_INSERT);
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Read from config and set the boot params.
+     */
+    public boolean setBootParams()
+    {
+        
+        // TODO: This is currently done via ATA, perhaps it can be generalised to BIOS/CMOS? 
+        ATA ata = (ATA)modules.getModule(ModuleType.ATA.toString());
+
+        // These values are currently stored in the BIOS hashmap, and boot subhashmap
+        HashMap biosHM = (HashMap) moduleSettings.get("bios");
+        HashMap bootHM = (HashMap) biosHM.get("bootdrives");
+        
+        boolean floppyCheckDisabled = Boolean.parseBoolean(((String) biosHM.get("floppycheckdisabled")));;
+        int[] bootDrives = new int[3];
+
+        for (int i = 0; i < bootDrives.length; i++)
+        {
+            String name = (((String) bootHM.get("bootdrive" + i)));
+                     
+                    if(name.equalsIgnoreCase("HARDDRIVE"))
+                    {
+                        bootDrives[i] = ATAConstants.BOOT_DISKC;
+                        
+                    }
+                    else if(name.equalsIgnoreCase("Floppy")) 
+                    {
+                        bootDrives[i] = ATAConstants.BOOT_FLOPPYA;
+                    }
+                    else if(name.equalsIgnoreCase("cd"))
+                    {
+                      bootDrives[i] = ATAConstants.BOOT_CDROM;
+                          
+                    }
+                    else if (name.equalsIgnoreCase("none"))
+                    {    
+                        bootDrives[i] = ATAConstants.BOOT_NONE;
+                    }
+        }
+                     
+        // Control CMOS settings
+        ata.setCmosSettings(bootDrives, floppyCheckDisabled);
+        
+        return true;
+        
+    }
+
+    /**
+     * Set the debug mode.
+     */
+    public boolean setDebugMode()
+    {
+        boolean result = true;
+        
+        // Each hashmap has a debug setting, so use the key values to retrieve all these
+        Set moduleDebug = moduleSettings.keySet();
+        
+        // FIXME: this settings is currently not read into the hashmap from XML
+        boolean isDebugMode = false;
+        
+        // If debug mode is on set all modules in debug mode
+        if (isDebugMode)
+        {
+            for (int i = 0; i < modules.size(); i++)
+            {
+                modules.getModule(i).setDebugMode(true);
+            }
+            logger.log(Level.INFO, "All modules in debug mode.");
+            
+            return result;
+        
+        }
+
+        // For each key in the set, set the appropriate debug mode
+        for (int i = 0; i < moduleDebug.size(); i++)
+        {
+            String moduleName = (String) moduleDebug.toArray()[i];
+            boolean debugVal = Boolean.parseBoolean((String) (((HashMap)moduleSettings.get(moduleName)).get("debug")));
+            
+            modules.getModule(moduleName).setDebugMode(debugVal);
+            logger.log(Level.CONFIG, moduleName + " debug mode set to " + debugVal);
+        }
+
+        // Set RAM address watch
+        boolean memDebug = Boolean.parseBoolean((String) (((HashMap)moduleSettings.get("memory")).get("debug")));
+        int memAddress = Integer.parseInt((String) (((HashMap)moduleSettings.get("memory")).get("debugaddressdecimal")));
+
+        if (memDebug)
+        {
+            ((ModuleMemory)modules.getModule(ModuleType.MEMORY.toString())).setWatchValueAndAddress(memDebug, memAddress);
+            logger.log(Level.CONFIG, "RAM address watch set to " + memDebug + "; address: " + memAddress);
+        }
+        
+        return true;
+    }
+    
 }
