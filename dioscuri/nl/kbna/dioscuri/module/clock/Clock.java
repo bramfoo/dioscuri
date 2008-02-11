@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-24 15:20:45 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -384,17 +384,17 @@ public class Clock extends ModuleClock
      * 
      * @param ModuleDevice device that requires a timer
      * @param int intervalLength in microseconds
-     * @param boolean continuous type of timer requested, one-shot or continuous 
+     * @param boolean continuous type of timer requested, true = continuous, false = one-shot 
      * 
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public boolean registerDevice(ModuleDevice device, int intervalLength, boolean continuousOneShot)
+    public boolean registerDevice(ModuleDevice device, int intervalLength, boolean continuous)
     {
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE)
         {
             // Change the interval length from useconds to instructions
-            timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuousOneShot);
+            timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuous);
             
             logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' registered a timer with interval " + timers[arrayIndex].intervalLength + " instructions");
             
@@ -447,7 +447,7 @@ public class Clock extends ModuleClock
             if (timers[t].user.getType().equalsIgnoreCase(device.getType()))
             {
                 timers[t].active = runState;
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer active state set to to " + runState);
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer active state set to " + runState);
                 return true;
             }
             t++;

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2008-02-11 14:02:10 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -541,16 +541,10 @@ public class Mouse extends ModuleMouse implements UART
     	byte b1, b2, b3, b4;
     	int delta_x, delta_y;
 
-    	if(buffer.isEmpty() && !forceEnqueue)
-    	{
-			// Mouse has nothing in buffer or value is 0
-			return;
-    	}
-
     	delta_x = delayed_dx;
     	delta_y = delayed_dy;
 
-    	if(!forceEnqueue && delta_x == 0 && delta_y == 0)
+    	if(forceEnqueue == false && delta_x == 0 && delta_y == 0)
     	{
     		// No mouse movement, so no changes
     		return;
@@ -647,9 +641,6 @@ public class Mouse extends ModuleMouse implements UART
 		}
 
 		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse " + value);
-//	  BX_DEBUG(("  enable = %u", (unsigned) BX_KEY_THIS s.mouse.enable));
-//	  BX_DEBUG(("  allow_irq12 = %u", (unsigned) BX_KEY_THIS s.kbd_controller.allow_irq12));
-//	  BX_DEBUG(("  aux_clock_enabled = %u", (unsigned) BX_KEY_THIS s.kbd_controller.aux_clock_enabled));
 
 		// An ACK (0xFA) is always the first response to any valid input
 		// received from the system other than Set-Wrap-Mode & Resend-Command
@@ -946,15 +937,8 @@ public class Mouse extends ModuleMouse implements UART
 	  // If serial mouse, redirect data to serial port
 	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
-/*		  
-  		  serialPort.rx_fifo_enq(0, (byte) delayed_dx);
-  		  serialPort.rx_fifo_enq(0, (byte) delayed_dy);
-  		  serialPort.rx_fifo_enq(0, (byte) delayed_dz);
-  		  serialPort.rx_fifo_enq(0, (byte) buttonStatus);
-  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data sent to serialport");
-*/
+		  // Store data in internal mouse buffer
 	  	  this.storeBufferData(force_enq);
-		  
 	  }
 	  else
 	  {

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2008-02-11 14:02:37 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -387,8 +387,9 @@ public class SerialPort extends ModuleSerialPort
             }
         }
 
-        // Request a timer
-        if (motherboard.requestTimer(this, updateInterval, true) == false)
+        // Request a timer (one shot)
+        updateInterval = 0;	// FIXME:
+        if (motherboard.requestTimer(this, updateInterval, false) == false)
         {
             return false;
         }
@@ -619,18 +620,20 @@ public class SerialPort extends ModuleSerialPort
     	    
     	    if (isDataReady == true)
     	    {
-    	    	// Data ready, enqueue data if local loopback if off
+    	    	// Data ready, enqueue data in serial buffer (FIFO) if local loopback if off
     	    	if (!(comPorts[port].mcr_local_loopback == 1))
     	    	{
-    	    		this.rx_fifo_enq(port, chbuf);
+    	    		this.enqueueReceivedData(port, chbuf);
     	    	}
     	    }
     	    else
     	    {
-    	    	// Data was not ready, if FIFO is not active adjust baudrate
-    	    	if (!(comPorts[port].fcr_enable == 1))
+    	    	// Data is not ready
+    	    	// If FIFO is not active adjust baudrate
+    	    	if (comPorts[port].fcr_enable == 0)
     	    	{
-    	    		baudrate = (int) (1000000.0 / 100000); // Poll frequency is 100ms
+    	    		// Set update frequency to 100ms
+    	    		baudrate = (int) (1000000.0 / 100000);
     	    	}
     	    }
     	  }
@@ -640,8 +643,9 @@ public class SerialPort extends ModuleSerialPort
     		  baudrate *= 4;
     	  }
 
+    	  // Activate timer as one shot
+    	  motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
     	  motherboard.setTimerActiveState(this, true);
-//FIXME:    	  (BX_SER_THIS s[port].rx_timer_index, (int) (1000000.0 / bdrate), 0); /* not continuous */
     }
     
 
@@ -1014,8 +1018,10 @@ public class SerialPort extends ModuleSerialPort
                 		comPorts[port].lsr_tsr_empty = 0;
                 		this.setIRQ(port, INTERRUPT_TXHOLD);
                 		
-                		// FIXME: make sure this timer starts again and is one shot
+                		// Start timer again as one shot
                 		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
+                		motherboard.setTimerActiveState(this, true);
+            			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 	}
                 	else
                 	{
@@ -1229,7 +1235,7 @@ public class SerialPort extends ModuleSerialPort
             {
             	comPorts[port].lsr_break_int = 1;
             	comPorts[port].lsr_framing_error = 1;
-            	rx_fifo_enq(port, (byte) 0x00);
+            	this.enqueueReceivedData(port, (byte) 0x00);
             }
             
             // TODO: find out why this is...
@@ -1239,7 +1245,11 @@ public class SerialPort extends ModuleSerialPort
             	if (comPorts[port].rx_pollstate == ComPort.RX_IDLE && comPorts[port].baudrate != 0)
             	{
             		comPorts[port].rx_pollstate = ComPort.RX_POLL;
+            		
+            		// Start timer again as one shot
             		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
+            		motherboard.setTimerActiveState(this, true);
+        			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             	}
             	
 				logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " baud rate of COM1 set to " + comPorts[port].baudrate);
@@ -1271,7 +1281,7 @@ public class SerialPort extends ModuleSerialPort
             		{
             			comPorts[port].lsr_break_int = 1;
             			comPorts[port].lsr_framing_error = 1;
-            			rx_fifo_enq(port, (byte) 0x00);
+            			enqueueReceivedData(port, (byte) 0x00);
             		}
             	}
             	else
@@ -1467,10 +1477,12 @@ public class SerialPort extends ModuleSerialPort
     	      {
     	    	  comPorts[port].rx_interrupt = 1;
         	      raiseInterrupt = true;
+              	  logger.log(Level.FINE, "[" + MODULE_TYPE + "] RXDATA interrupt raised and enabled");
     	      }
     	      else
     	      {
     	    	  comPorts[port].rx_ipending = 1;
+              	  logger.log(Level.FINE, "[" + MODULE_TYPE + "] RXDATA interrupt pending...");
     	      }
     	      break;
     	      
@@ -1518,7 +1530,7 @@ public class SerialPort extends ModuleSerialPort
     	  
     	  if (raiseInterrupt && (comPorts[port].mcr_out2 == 1))
     	  {
-    		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Interrupt raised");
+    		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Raising IRQ (signalling to PIC)");
     		  pic.setIRQ(comPorts[port].irq);
     	  }
     }
@@ -1532,18 +1544,19 @@ public class SerialPort extends ModuleSerialPort
     			(comPorts[port].ms_interrupt == 0) &&
     			(comPorts[port].fifo_interrupt == 0))
     	{
-    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Interrupt lowered");
+    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Lowering IRQ (signalling to PIC)");
     		pic.clearIRQ(comPorts[port].irq);
     	}
     }
     
-    private void rx_fifo_enq(int port, byte data)
+    private void enqueueReceivedData(int port, byte data)
     {
     	boolean raiseInterrupt = false;
 
     	// Check if FIFO is active
     	if (comPorts[port].fcr_enable == 1)
     	{
+      	  logger.log(Level.WARNING, "[" + MODULE_TYPE + "] enqueue data in FIFO");
     		// Check if FIFO buffer is full
     		if (comPorts[port].rcvrFIFO.size() == 16)
     		{
@@ -1579,22 +1592,29 @@ public class SerialPort extends ModuleSerialPort
     			
     			if (raiseInterrupt)
     			{
-//FIXME:    				bx_pc_system.deactivate_timer(BX_SER_THIS s[port].fifo_timer_index);
+    				// FIXME: use comPorts[port].fifo_timer_index as on/off toggle
+    				// Deactivate timer
+    				motherboard.setTimerActiveState(this, false);
     				comPorts[port].lsr_rxdata_ready = 1;
+    				logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer deactivated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    				
+    				// Throw IRQ
     				this.setIRQ(port, INTERRUPT_RXDATA);
     			}
     			else
     			{
-//FIXME:    				bx_pc_system.activate_timer(BX_SER_THIS s[port].fifo_timer_index,
-/*                                        (int) (1000000.0 / BX_SER_THIS s[port].baudrate *
-                                        (BX_SER_THIS s[port].line_cntl.wordlen_sel + 5) * 16),
-                                        0); // not continuous
-*/    			}
+    				// FIXME: use comPorts[port].fifo_timer_index as on/off toggle
+    				// Activate timer as one shot
+    				motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5) * 16));
+    				motherboard.setTimerActiveState(this, true);
+        			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    			}
     		}
     	}
     	else
     	{
     		// FIFO buffer is not active
+        	  logger.log(Level.WARNING, "[" + MODULE_TYPE + "] enqueue data in RBR");
     		if (comPorts[port].lsr_rxdata_ready == 1)
     		{
     			// Unread data still exists in receive buffer
@@ -1605,6 +1625,8 @@ public class SerialPort extends ModuleSerialPort
     		
     		comPorts[port].rbr = data;
     		comPorts[port].lsr_rxdata_ready = 1;
+    		
+    		// Throw IRQ
 			this.setIRQ(port, INTERRUPT_RXDATA);
     	}
     }
