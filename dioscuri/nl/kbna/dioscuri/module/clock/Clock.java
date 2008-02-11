@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2008-02-11 16:23:57 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -422,7 +422,7 @@ public class Clock extends ModuleClock
             if (timers[t].user.getType().equalsIgnoreCase(device.getType()))
             {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer reset to " + timers[t].intervalLength + " instructions");
+                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer reset to " + timers[t].intervalLength + " instructions");
                 return true;
             }
             t++;
@@ -447,7 +447,7 @@ public class Clock extends ModuleClock
             if (timers[t].user.getType().equalsIgnoreCase(device.getType()))
             {
                 timers[t].active = runState;
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer active state set to " + runState);
+                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Device '" + device.getType() + "' timer active state set to " + runState);
                 return true;
             }
             t++;
