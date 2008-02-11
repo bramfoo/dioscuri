@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2008-02-11 15:25:15 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,17 +44,20 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
 public class CpuConfigDialog extends ConfigurationDialog
 {
-
     private JFormattedTextField speedField;
+    private JRadioButton cpu32Button;
+    private JRadioButton cpu16Button;
         
     public CpuConfigDialog(JFrame parent)
     {               
@@ -72,7 +75,11 @@ public class CpuConfigDialog extends ConfigurationDialog
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.CPU);
         Integer cpuSpeed = ((Integer)params[0]);        
         this.speedField.setValue(cpuSpeed);
-        
+        Boolean cpu32Bit = ((Boolean)params[1]);
+        if (cpu32Bit)
+            this.cpu32Button.setSelected(true);
+        else
+            this.cpu16Button.setSelected(true);
     }
 
     protected void initDoButton()
@@ -92,10 +99,22 @@ public class CpuConfigDialog extends ConfigurationDialog
      */
     protected void initMainEntryPanel()
     {
-                   
+        JLabel bitLabel = new JLabel("  CPU bits:");
         JLabel speedLabel = new JLabel("  Speed (MHz)");
+
+        String cpu32String = "32-bit";
+        String cpu16String = "16-bit";
+
+        // Formats to format and parse numbers
         
-        //Formats to format and parse numbers
+        cpu32Button = new JRadioButton(cpu32String);
+        cpu16Button = new JRadioButton(cpu16String);
+        cpu32Button.setSelected(true);
+        
+        ButtonGroup cpuBit = new ButtonGroup();
+        cpuBit.add(cpu32Button);
+        cpuBit.add(cpu16Button);
+        
         speedField = new JFormattedTextField();
         speedField.setValue(new Integer(0));
         speedField.setColumns(10);
@@ -104,6 +123,10 @@ public class CpuConfigDialog extends ConfigurationDialog
         Border blackline = BorderFactory.createLineBorder(Color.black);    
         mainEntryPanel.setBorder(blackline);
         
+        mainEntryPanel.add(bitLabel);
+        mainEntryPanel.add(cpu32Button);
+        mainEntryPanel.add(cpu16Button);
+
         //Fill first blanks in grid
         for (int i = 0; i < 3; i++)
         {
@@ -115,7 +138,7 @@ public class CpuConfigDialog extends ConfigurationDialog
         mainEntryPanel.add(new JLabel("")); 
         
         //Fill end blanks in grid     
-        for (int i = 0; i < 24; i++)
+        for (int i = 0; i < 21; i++)
         {
             mainEntryPanel.add(new JLabel("")); 
         }
@@ -130,10 +153,12 @@ public class CpuConfigDialog extends ConfigurationDialog
     protected Object[] getParamsFromGui()
     {
               
-        Object[] params = new Object[1];
+        Object[] params = new Object[2];
         
         int cpuSpeed = ((Number)speedField.getValue()).intValue();      
         params[0] = new Integer(cpuSpeed);
+        boolean cpu32Bit = cpu32Button.isSelected();
+        params[1] = new Boolean(cpu32Bit);
         
         return params;
     }
