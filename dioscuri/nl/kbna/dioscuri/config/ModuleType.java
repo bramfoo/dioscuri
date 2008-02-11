@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2008-02-11 15:27:18 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -75,7 +75,8 @@ public class ModuleType
     public final static ModuleType ATA = new ModuleType("ata", "ATA / IDE Controller");
     public final static ModuleType BIOS = new ModuleType("bios"); 
     public final static ModuleType BOOT = new ModuleType("boot");   
-    public final static ModuleType CPU = new ModuleType("cpu");    
+    public final static ModuleType CPU = new ModuleType("cpu");
+    public final static ModuleType CLOCK = new ModuleType("clock");    
     public final static ModuleType DMA = new ModuleType("dma");    
     public final static ModuleType FDC = new ModuleType("fdc");
     public final static ModuleType KEYBOARD = new ModuleType("keyboard");
@@ -94,6 +95,7 @@ public class ModuleType
                                                     BIOS,
                                                     BOOT,                                                    
                                                     CPU,
+                                                    CLOCK,
                                                     DMA,
                                                     FDC,
                                                     KEYBOARD,
