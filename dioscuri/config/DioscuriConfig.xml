@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
- * $Revision: 1.5 $ $Date: 2008-02-11 15:28:10 $ $Author: blohman $
+ * $Revision: 1.6 $ $Date: 2008-02-12 11:57:48 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -30,7 +30,6 @@
  *
  * Project Title: DIOSCURI
 --><!-- Defines Dioscuri Emulator modules and settings --><emulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" xsi:noNamespaceSchemaLocation="DioscuriConfig.xsd">
-   <!-- Devines the boot sequence -->
    
    <!-- Defines the architecture required -->
    <architecture name="Von Neumann">
@@ -39,8 +38,8 @@
       
          <!-- Defines the Bios module -->
          <bios>
-			 <sysbiosfilepath>/share/Bram/dioscuri_SF_dev/images/bios/BIOS-bochs-latest</sysbiosfilepath>        
-            <vgabiosfilepath>/share/Bram/dioscuri_SF_dev/images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
+			 <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>        
+            <vgabiosfilepath>images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
             <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
             <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
 			<bootdrives> 
@@ -48,12 +47,12 @@
 				<bootdrive1>none</bootdrive1>
 				<bootdrive2>none</bootdrive2>
 			</bootdrives>
-			<floppycheckdisabled>true</floppycheckdisabled>
+			<floppycheckdisabled>false</floppycheckdisabled>
 		</bios>
             
          <!-- Defines the cpu module -->
          <cpu debug="false">
-		 	<cpu32bit>true</cpu32bit>
+		 	<cpu32bit>false</cpu32bit>
 			<speedmhz>5</speedmhz>
 		</cpu> 
 		 <!-- Defines the memory module-->
@@ -70,7 +69,7 @@
              	<driveletter>A</driveletter>
              	<diskformat>1.44M</diskformat>
              	<writeprotected>false</writeprotected>
-	         	<imagefilepath>/home/bram/shareBram/dioscuri_SF_dev/images/floppy/games1.ima</imagefilepath>
+	         	<imagefilepath>D:\emulation\workspace\dioscuri\images\floppy\games1.ima</imagefilepath>
 	       </floppy>
         </fdc>
         
@@ -86,7 +85,8 @@
         
          <!-- Defines the Mouse module -->
          <mouse debug="false">
-			 <mousetype>ps/2</mousetype>
+			 <enabled>true</enabled>
+			 <mousetype>serial</mousetype>
 		 </mouse>
 
         <!-- Defines the ata module -->
@@ -100,7 +100,7 @@
                <cylinders>0</cylinders>
 	   	       <heads>4</heads>
                <sectorspertrack>17</sectorspertrack>
-               <imagefilepath>/share/Bram/dioscuri_SF_dev/images/floppy/MSDOS5_gms_masm_wp51.img</imagefilepath>
+               <imagefilepath>images/harddisk/MSDOS5_mouse.img</imagefilepath>
             </harddiskdrive>
         </ata>
         
@@ -110,6 +110,6 @@
 		</video>
 		
       </modules>
-           
+      
    </architecture>
 </emulator>
