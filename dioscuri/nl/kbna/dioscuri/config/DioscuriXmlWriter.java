@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 15:26:57 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -488,13 +488,29 @@ public class DioscuriXmlWriter
      */
     private boolean saveMouseParams(Document document, Object[] params)
     {
+    	// Store mouse enabled
+        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
+        NodeList mouseParamsNodes = mouseNode.getChildNodes();
+        
+        for (int i = 0; i < mouseParamsNodes.getLength(); i++)
+        {
+             Node theNode = mouseParamsNodes.item(i);
+             String name = theNode.getNodeName();
+             Node mouseSubNode = theNode.getChildNodes().item(0);
+             
+             if(mouseSubNode != null)
+             {
+                 if (name.equals(DioscuriXmlParams.MOUSE_ENABLED_TEXT))
+                 {
+                	 mouseSubNode.setNodeValue(((Boolean)params[0]).toString());    
+                    
+                 } else if (name.equals(DioscuriXmlParams.MOUSE_TYPE_TEXT))
+                 {
+                	 mouseSubNode.setNodeValue((String)params[1]);
+                 }
+             }
+        }
 
-        Node mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_TYPE_TEXT);
-        Node mouseSubNode = mouseNode.getChildNodes().item(0);
-
-        String mouseTypeString = (String)params[0];
-        mouseSubNode.setNodeValue(mouseTypeString);
-      
         return true;
     }
 }

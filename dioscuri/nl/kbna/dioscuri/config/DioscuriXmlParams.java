@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 15:25:35 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -62,6 +62,7 @@ public class DioscuriXmlParams
     public final static String CPU_32_BIT_TEXT = "cpu32bit";
     public final static String PIT_CLOCKRATE_TEXT = "clockrate";
     public final static String RAM_SIZE_TEXT = "sizemb";
+    public final static String MOUSE_ENABLED_TEXT = "enabled";
     public final static String MOUSE_TYPE_TEXT = "mousetype";
     public final static String DEBUG_TEXT = "debug";
     public final static String FLOPPY = "floppy";

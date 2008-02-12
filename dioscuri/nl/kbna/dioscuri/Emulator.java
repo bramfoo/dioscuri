@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2008-02-11 16:23:27 $ $Author: jrvanderhoeven $
+ * $Revision: 1.9 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -215,16 +215,19 @@ public class Emulator implements Runnable
 
             if (cpu32bit)
             {
+            	// 32-bit CPU processing
+	            logger.log(Level.INFO, "Emulation process started (32-bit).");
                 try 
                 {
                     AddressSpace addressSpace = null;
                     Processor cpu = (Processor) modules.getModule(ModuleType.CPU.toString());
+                    
                     if (cpu.isProtectedMode())
                         addressSpace = (AddressSpace) hwComponents.get(0); //linearAddr
                     else
                         addressSpace = (AddressSpace) hwComponents.get(1); //physicalAddr
                     
-                    while ( total < 15000)
+                    while (total < 15000)
                     {
                         instr = addressSpace.execute(cpu, cpu.getInstructionPointer());
                         try
@@ -239,13 +242,14 @@ public class Emulator implements Runnable
                         total += instr;
                         loop++;
                     }
+                    
                     while (isAlive == true)
                     {
                         instr = addressSpace.execute(cpu, cpu.getInstructionPointer());
                         total += instr;
                         loop++;
                     }
-                } 
+                }
                 catch (ModeSwitchException e) 
                 {
                     instr = 1;
@@ -253,42 +257,44 @@ public class Emulator implements Runnable
             }
             else
             {
-            logger.log(Level.INFO, "Emulation process started.");
-            
-            if (((ModuleCPU)modules.getModule("cpu")).getDebugMode() == false)
-            {
-                ((ModuleCPU)modules.getModule("cpu")).start();
-                if (((ModuleCPU)modules.getModule("cpu")).isAbnormalTermination() == true)
-                {
-                    logger.log(Level.SEVERE, "Emulation process halted due to error in CPU module.");
-                    this.stop();
-                    return;
-                }
-            }
-            else
-            {
-                // Show first upcoming instruction
-                ModuleCPU cpu = (ModuleCPU)modules.getModule("cpu");
-                logger.log(Level.INFO, cpu.getNextInstructionInfo());
-                while (isAlive == true)
-                {
-                    this.debug(io.getCommand());
-                }
-            }
-            // Wait until reset of modules is done (wait about 1 second...)
-            // This can occur when another thread causes a reset of this emulation process
-            while (resetBusy == true)
-            {
-                try
-                {
-                    Thread.sleep(1000);
-                }
-                catch (InterruptedException e)
-                {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
+            	// 16-bit CPU processing
+	            logger.log(Level.INFO, "Emulation process started (16-bit).");
+	            
+	            if (((ModuleCPU)modules.getModule("cpu")).getDebugMode() == false)
+	            {
+	                ((ModuleCPU)modules.getModule("cpu")).start();
+	                if (((ModuleCPU)modules.getModule("cpu")).isAbnormalTermination() == true)
+	                {
+	                    logger.log(Level.SEVERE, "Emulation process halted due to error in CPU module.");
+	                    this.stop();
+	                    return;
+	                }
+	            }
+	            else
+	            {
+	                // Show first upcoming instruction
+	                ModuleCPU cpu = (ModuleCPU)modules.getModule("cpu");
+	                logger.log(Level.INFO, cpu.getNextInstructionInfo());
+	                while (isAlive == true)
+	                {
+	                    this.debug(io.getCommand());
+	                }
+	            }
+	            
+	            // Wait until reset of modules is done (wait about 1 second...)
+	            // This can occur when another thread causes a reset of this emulation process
+	            while (resetBusy == true)
+	            {
+	                try
+	                {
+	                    Thread.sleep(1000);
+	                }
+	                catch (InterruptedException e)
+	                {
+	                    // TODO Auto-generated catch block
+	                    e.printStackTrace();
+	                }
+	            }
             }
         }
 	}
@@ -1018,6 +1024,22 @@ public class Emulator implements Runnable
         Mouse mouse = (Mouse)modules.getModule(ModuleType.MOUSE.toString());
         if(mouse != null)
         {
+
+        	// Init mouse enabled
+            boolean enabled = Boolean.valueOf(((String)((HashMap)moduleSettings.get(mouse.getType())).get("enabled")));
+            
+            mouse.setMouseEnabled(enabled);
+            
+            if (enabled == true)
+            {
+                getGui().updateGUI(GUI.EMU_DEVICES_MOUSE_ENABLED);
+            }
+            else
+            {
+                getGui().updateGUI(GUI.EMU_DEVICES_MOUSE_DISABLED);
+            }
+
+            // Init mouse type
             String type = (String) ((HashMap)moduleSettings.get(mouse.getType())).get("mousetype");
             mouse.setMouseType(type);
         }
@@ -1101,7 +1123,7 @@ public class Emulator implements Runnable
 
             String sysBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("sysbiosfilepath");
             String vgaBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("vgabiosfilepath");
-            ;
+
             int ramAddressSysBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddresssysbiosstartdec"))));
             int ramAddressVgaBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddressvgabiosstartdec"))));
 

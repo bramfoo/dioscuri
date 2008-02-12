@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-10-04 14:25:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,18 +47,19 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import javax.swing.border.Border;
 
 public class MouseConfigDialog extends ConfigurationDialog
 {
 	// Attributes
+	private JLabel enabledLabel;
     private JLabel sizeLabel;
+    private JCheckBox enabledCheckBox;
     private JComboBox mouseTypeComboxBox;
     
     
@@ -79,8 +80,12 @@ public class MouseConfigDialog extends ConfigurationDialog
         DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
         
-        // Set mouse type
-        mouseTypeComboxBox.setSelectedItem((String)params[0]);
+        boolean enabled = ((Boolean)params[0]).booleanValue();
+        String mouseType = (String)params[1];
+        
+        // Set mouse parameters
+        this.enabledCheckBox.setSelected(enabled);
+        this.mouseTypeComboxBox.setSelectedItem(mouseType);
     }
 
     
@@ -101,7 +106,13 @@ public class MouseConfigDialog extends ConfigurationDialog
      */
     protected void initMainEntryPanel()
     {
+    	// Create labels
+        enabledLabel = new JLabel("Enabled");
         sizeLabel = new JLabel("  Type");
+        
+        // Create enabled checkbox
+        enabledCheckBox = new JCheckBox();
+        enabledCheckBox.setSelected(true);
         
         // Create mouse type selection
         DefaultComboBoxModel mouseTypeModel = new DefaultComboBoxModel();
@@ -115,14 +126,17 @@ public class MouseConfigDialog extends ConfigurationDialog
         Border blackline = BorderFactory.createLineBorder(Color.black);    
         mainEntryPanel.setBorder(blackline);
         
+        // Add components to panel
+        mainEntryPanel.add(enabledLabel);
+        mainEntryPanel.add(enabledCheckBox);
+
         // Fill first blanks in grid
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             mainEntryPanel.add(new JLabel("")); 
         }
         
-        // Add components to panel
-        mainEntryPanel.add(sizeLabel); 
+        mainEntryPanel.add(sizeLabel);
         mainEntryPanel.add(mouseTypeComboxBox);
         mainEntryPanel.add(new JLabel("")); 
         
@@ -141,9 +155,10 @@ public class MouseConfigDialog extends ConfigurationDialog
      */    
     protected Object[] getParamsFromGui()
     {
-        Object[] params = new Object[1];
+        Object[] params = new Object[2];
         
-        params[0] = mouseTypeComboxBox.getSelectedItem();
+        params[0] = enabledCheckBox.isSelected();    
+        params[1] = mouseTypeComboxBox.getSelectedItem();
         
         return params;
     }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.9 $ $Date: 2007-10-04 14:28:21 $ $Author: jrvanderhoeven $
+ * $Revision: 1.10 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -100,24 +100,31 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    JMenuBar menuBar;
    JMenu menuEmulator;
    JMenu menuEdit;
-   JMenu menuSource;
+   JMenu menuMedia;
+   JMenu menuDevices;
    JMenu menuConfig;
    JMenu menuHelp;
 
    // Menu items
+   // Menu emulator
    JMenuItem miEmulatorStart;
    JMenuItem miEmulatorStop;
    JMenuItem miEmulatorReset;
    JMenuItem miEmulatorQuit;
+   // Menu edit
    JMenuItem miEditCopyText;
    JMenuItem miEditCopyImage;
    JMenuItem miEditPasteText;
    JMenuItem miEditPasteImage;
- 
+   // Menu media
+   JMenuItem miMediaEjectA;
+   JMenuItem miMediaInsertA;
+   // Menu devices
+   JMenuItem miDevicesMouseEnabled;
+   JMenuItem miDevicesMouseDisabled;
+   // Menu configure
    JMenuItem miEditConfig;
-   
-   JMenuItem miSourceEjectA;
-   JMenuItem miSourceInsertA;
+   // Menu help
    JMenuItem miHelpAbout;
    
    // Screen
@@ -138,7 +145,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
    protected final static String EMULATOR_VERSION = "0.3.0";
-   protected final static String EMULATOR_DATE = "October, 2007";
+   protected final static String EMULATOR_DATE = "February, 2008";
    protected final static String EMULATOR_CREATOR = "National Library of the Netherlands, Nationaal Archief of the Netherlands";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
    private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen.gif";
@@ -165,6 +172,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    public static final int EMU_KEYBOARD_SCROLLLOCK_OFF  = 14;
    public static final int EMU_FLOPPYA_TRANSFER_START   = 15;
    public static final int EMU_FLOPPYA_TRANSFER_STOP    = 16;
+   public static final int EMU_DEVICES_MOUSE_ENABLED	= 17;
+   public static final int EMU_DEVICES_MOUSE_DISABLED	= 18;
    public static final int GUI_RESET                    = 99;
    
    // Key events
@@ -331,13 +340,20 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        menuEdit.add(miEditPasteText);
        menuEdit.add(miEditPasteImage);
        
-       // Create menu: source
-       menuSource = new JMenu("Media");
-       miSourceEjectA = new JMenuItem("Eject floppy A:");
-       miSourceInsertA = new JMenuItem("Insert floppy A:");
-       menuSource.add(miSourceEjectA);
-       menuSource.add(miSourceInsertA);
+       // Create menu: media
+       menuMedia = new JMenu("Media");
+       miMediaEjectA = new JMenuItem("Eject floppy A:");
+       miMediaInsertA = new JMenuItem("Insert floppy A:");
+       menuMedia.add(miMediaEjectA);
+       menuMedia.add(miMediaInsertA);
        
+       // Create menu: devices
+       menuDevices = new JMenu("Devices");
+       miDevicesMouseEnabled = new JMenuItem("Mouse: enable");
+       miDevicesMouseDisabled = new JMenuItem("Mouse: disable");
+       menuDevices.add(miDevicesMouseEnabled);
+       menuDevices.add(miDevicesMouseDisabled);
+
        // Create menu: config        
        menuConfig = new JMenu("Configure");           
        miEditConfig = new JMenuItem("Edit Config");  
@@ -351,7 +367,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        // Assign all menus to the menubar
        menuBar.add(menuEmulator);
        menuBar.add(menuEdit);
-       menuBar.add(menuSource);
+       menuBar.add(menuMedia);
+       menuBar.add(menuDevices);
        menuBar.add(menuConfig);
        menuBar.add(menuHelp);
        
@@ -361,8 +378,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        miEmulatorReset.addActionListener(this);
        miEmulatorQuit.addActionListener(this);
        miEditCopyText.addActionListener(this);
-       miSourceEjectA.addActionListener(this);
-       miSourceInsertA.addActionListener(this);    
+       miMediaEjectA.addActionListener(this);
+       miMediaInsertA.addActionListener(this);    
+       miDevicesMouseEnabled.addActionListener(this);
+       miDevicesMouseDisabled.addActionListener(this);
        miEditConfig.addActionListener(this);       
        miHelpAbout.addActionListener(this);
 
@@ -580,9 +599,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                miEmulatorStart.setEnabled(true);
                miEmulatorStop.setEnabled(false);
                miEmulatorReset.setEnabled(false);
-               miSourceEjectA.setEnabled(false);
-               miSourceInsertA.setEnabled(false);
+               miMediaEjectA.setEnabled(false);
+               miMediaInsertA.setEnabled(false);
                miEditCopyText.setEnabled(false);
+               miDevicesMouseEnabled.setEnabled(false);
+               miDevicesMouseDisabled.setEnabled(false);
                
                // Redefine statusbar
                floppyAPanel.setVisible(false);
@@ -604,8 +625,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
            case EMU_FLOPPYA_INSERT:
                
                // Redefine menu options
-               miSourceEjectA.setEnabled(true);
-               miSourceInsertA.setEnabled(false);
+               miMediaEjectA.setEnabled(true);
+               miMediaInsertA.setEnabled(false);
                // Show A: in statusbar
                floppyAPanel.setVisible(true);
                
@@ -613,8 +634,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
            case EMU_FLOPPYA_EJECT:
                // Redefine menu options
-               miSourceEjectA.setEnabled(false);
-               miSourceInsertA.setEnabled(true);
+               miMediaEjectA.setEnabled(false);
+               miMediaInsertA.setEnabled(true);
                // Hide A: in statusbar
                floppyAPanel.setVisible(false);
                break;
@@ -675,6 +696,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                scrolllockPanel.setBackground(Color.LIGHT_GRAY);
                break;
                
+           case EMU_DEVICES_MOUSE_ENABLED:
+               miDevicesMouseEnabled.setEnabled(false);
+               miDevicesMouseDisabled.setEnabled(true);
+               break;
+
+           case EMU_DEVICES_MOUSE_DISABLED:
+               miDevicesMouseEnabled.setEnabled(true);
+               miDevicesMouseDisabled.setEnabled(false);
+               break;
+
            case GUI_RESET:
                // Enable/disable menu items
                miEmulatorStop.setEnabled(false);
@@ -683,8 +714,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                miEditCopyImage.setEnabled(false);
                miEditPasteText.setEnabled(false);
                miEditPasteImage.setEnabled(false);
-               miSourceInsertA.setEnabled(false);
-               miSourceEjectA.setEnabled(false);
+               miMediaInsertA.setEnabled(false);
+               miMediaEjectA.setEnabled(false);
                
                // Enable/disable status bar items
                floppyAPanel.setVisible(false);
@@ -752,7 +783,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     		   }
     	   }
        }
-       else if (c == (JComponent) miSourceEjectA)
+       else if (c == (JComponent) miMediaEjectA)
        {
            // Eject floppy in drive A
            if (emu.ejectFloppy("A") == true)
@@ -760,7 +791,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                this.updateGUI(EMU_FLOPPYA_EJECT);
            }
        }
-       else if (c == (JComponent) miSourceInsertA)
+       else if (c == (JComponent) miMediaInsertA)
        {
            // Insert floppy in drive A
            // Open file select dialog box
@@ -780,6 +811,18 @@ public class GUI extends JFrame implements ActionListener, KeyListener
            {
                JOptionPane.showMessageDialog(this, "Could not select image from file system.");
            }
+       }
+       else if (c == (JComponent) miDevicesMouseEnabled)
+       {
+           // Enable mouse
+    	   // TODO: attach mouselistener to screen
+           this.updateGUI(EMU_DEVICES_MOUSE_ENABLED);
+       }
+       else if (c == (JComponent) miDevicesMouseDisabled)
+       {
+           // Disable mouse
+    	   // TODO: detach mouselistener from screen
+           this.updateGUI(EMU_DEVICES_MOUSE_DISABLED);
        }
        else if (c == (JComponent) miEditConfig)
        {

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2008-02-11 15:44:51 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -499,6 +499,12 @@ public class Mouse extends ModuleMouse implements UART
     //******************************************************************************
     // ModuleMouse Methods
 	
+	public void setMouseEnabled(boolean status)
+	{
+		mouseEnabled = status;
+	}
+
+	
 	public void setMouseType(String type)
 	{
 		// Check the type of mouse by matching string
@@ -536,7 +542,7 @@ public class Mouse extends ModuleMouse implements UART
 		return buffer.isEmpty();
 	}
     
-    public void storeBufferData(boolean forceEnqueue)
+    public synchronized void storeBufferData(boolean forceEnqueue)
     {
     	byte b1, b2, b3, b4;
     	int delta_x, delta_y;
@@ -1058,12 +1064,12 @@ public class Mouse extends ModuleMouse implements UART
     //******************************************************************************
     // UART interface
 
-    public boolean isDataAvailable()
+    public synchronized boolean isDataAvailable()
     {
     	return !(buffer.isEmpty());
     }
     
-	public byte getSerialData()
+	public synchronized byte getSerialData()
 	{
 		if (buffer.isEmpty() == false)
 		{
@@ -1072,7 +1078,7 @@ public class Mouse extends ModuleMouse implements UART
 		return -1;
 	}
 
-	public void setSerialData(byte data)
+	public synchronized void setSerialData(byte data)
 	{
 		buffer.setByte(data);
 	}

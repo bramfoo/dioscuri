@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 15:26:43 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -302,12 +302,12 @@ public class DioscuriXmlReaderToGui
         
         Object[] params = new Object[7];
         
-        params[0] = this.getTimingParam(document, ModuleType.FDC)[0]; 
+        params[0] = this.getTimingParam(document, ModuleType.FDC)[0];
 
         
-       Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
-       NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
-                       
+        Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
+        NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
+        
         for (int i = 0; i < floppyParamsNodes.getLength(); i++)
         {
             Node theNode = floppyParamsNodes.item(i);         
@@ -439,10 +439,10 @@ public class DioscuriXmlReaderToGui
         }
                
         NodeList hardDriveParamsNodes = hardDriveNode.getChildNodes();
-                       
+        
         for (int i = 0; i < hardDriveParamsNodes.getLength(); i++)
         {
-            Node theNode = hardDriveParamsNodes.item(i);         
+            Node theNode = hardDriveParamsNodes.item(i);
             String name = theNode.getNodeName();
             Node currentNode = theNode.getChildNodes().item(0);
             
@@ -466,7 +466,6 @@ public class DioscuriXmlReaderToGui
                     
                 } else if (name.equals("autodetectcylinders"))
                 {
-  
                     params[4] = Boolean.parseBoolean(theValue); 
                    
                 } else if (name.equals("cylinders"))
@@ -483,10 +482,10 @@ public class DioscuriXmlReaderToGui
           
                 } else if (name.equals("imagefilepath"))
                 {
-                    params[8] =  theValue;                   
-                }                        
+                    params[8] =  theValue;
+                }
             }
-        } 
+        }
         
         return params;
     }
@@ -522,20 +521,58 @@ public class DioscuriXmlReaderToGui
      */
     private Object[] getMouseParams(Document document)
     {
-        Object[] params = new Object[1];
+        Object[] params = new Object[2];
         
-        Node mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        Node mouseNode = DioscuriXmlParams.getModuleNode(document, ModuleType.MOUSE);
+        NodeList mouseParamsNodes = mouseNode.getChildNodes();
+                        
+         for (int i = 0; i < mouseParamsNodes.getLength(); i++)
+         {
+             Node theNode = mouseParamsNodes.item(i);         
+             String name = theNode.getNodeName();
+             Node mouseSubNode = theNode.getChildNodes().item(0);
+             
+             String theValue;
+             
+             if(mouseSubNode != null)
+             {
+                 theValue = mouseSubNode.getNodeValue();
+                 
+                 if (name.equals(DioscuriXmlParams.MOUSE_ENABLED_TEXT))
+                 {
+                     params[0] = Boolean.parseBoolean(theValue);    
+                    
+                 } else if (name.equals(DioscuriXmlParams.MOUSE_TYPE_TEXT))
+                 {
+                     params[1] = (String)theValue;
+                 }
+             }
+         }
+         
+/*          // Get mouse enabled
+        Node mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_ENABLED_TEXT);
         Node mouseSubNode = mouseNode.getChildNodes().item(0);
+        
+        boolean mouseEnabled = false;
+        if (mouseSubNode != null)
+        {
+            mouseEnabled = Boolean.parseBoolean(mouseSubNode.getNodeValue());
+        }
+        
+        params[0] = mouseEnabled;
+
+        // Get mouse type
+        mouseNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.MOUSE_TYPE_TEXT);
+        mouseSubNode = mouseNode.getChildNodes().item(0);
 
         String mouseType = "";
         if (mouseSubNode != null)
         {
-            
             mouseType  = (String) mouseSubNode.getNodeValue();
         }
         
-        params[0] = mouseType;
-        
+        params[1] = mouseType;
+*/        
         return params;
     }
     
