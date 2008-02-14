@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
- * $Revision: 1.7 $ $Date: 2008-02-14 09:54:48 $ $Author: blohman $
+ * $Revision: 1.8 $ $Date: 2008-02-14 10:35:46 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -69,7 +69,7 @@
              	<driveletter>A</driveletter>
              	<diskformat>1.44M</diskformat>
              	<writeprotected>false</writeprotected>
-				<imagefilepath>images\floppy\FreeDOS\fd_odin07_1440.ima</imagefilepath>
+				<imagefilepath>images/floppy/FreeDOS/fd_odin07_1440.ima</imagefilepath>
 	       </floppy>
         </fdc>
 
