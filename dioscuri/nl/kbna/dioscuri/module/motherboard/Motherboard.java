@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2008-02-11 15:08:17 $ $Author: blohman $
+ * $Revision: 1.6 $ $Date: 2008-02-14 11:15:49 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -519,7 +519,7 @@ public class Motherboard extends ModuleMotherboard
         }
         
         // Print warning
-        //logger.log(Level.WARNING"[" + MODULE_TYPE + "]" + "  I/O address space: Registration for " + device.getType() + " failed. I/O port address already registered by " + ioAddressSpace[portAddress].getType());
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  I/O address space: Registration for " + device.getType() + " failed. I/O port address already registered by " + ioAddressSpace[portAddress].getType());
         return false;
     }
 
@@ -554,9 +554,10 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         } 
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " (getByte) is not in use.");
+        // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF is returned as default 
         return (byte) 0xFF;
-//        throw new ModuleException("Requested I/O port " + Integer.toHexString(portAddress) + " (byte) is not used.");
+        // throw new ModuleException("Requested I/O port " + Integer.toHexString(portAddress) + " (getByte) is not used.");
 	}
     
     
@@ -614,8 +615,8 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
-            System.out.println("[" + MODULE_TYPE + "] Requested I/O port [" + portAddress  + "] (setByte) is not available.");
-//            throw new ModuleException("Requested I/O port [" + portAddress  + "] (byte) is not available.");
+            // FIXME: Add proper error handling for unknown I/O ports, no value is passed forward
+        	// throw new ModuleException("Requested I/O port [" + portAddress  + "] (setByte) is not available.");
         }
     }
 
@@ -650,9 +651,10 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " (getWord) is not in use.");
+        // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF is returned as default
         return new byte[]{(byte)0xFF, (byte)0xFF};
-//        throw new ModuleException("Requested I/O port range [" + portAddress  + "] (word) is not in use.");
+        // throw new ModuleException("Requested I/O port range [" + portAddress  + "] (getWord) is not in use.");
     }
 
     
@@ -683,7 +685,8 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
-//            throw new ModuleException("Requested I/O port range [" + portAddress  + "] (word) is not available.");
+            // FIXME: Add proper error handling for unknown I/O ports, no value is passed forward
+        	// throw new ModuleException("Requested I/O port range [" + portAddress  + "] (setWord) is not available.");
         }
     }
 
@@ -718,9 +721,10 @@ public class Motherboard extends ModuleMotherboard
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " is not in use.");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x" + Integer.toHexString(portAddress) + " (getDoubleWord) is not in use.");
+        // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF is returned as default
         return new byte[]{(byte)0xFF, (byte)0xFF,(byte)0xFF, (byte)0xFF};
-//        throw new ModuleException("Requested I/O port range [" + portAddress  + "] (double word) is not available.");
+        // throw new ModuleException("Requested I/O port range [" + portAddress  + "] (getDoubleWord) is not available.");
     }
 
     
@@ -752,7 +756,8 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
-            throw new ModuleException("Requested I/O port range (double word) is not available.");
+            // FIXME: Add proper error handling for unknown I/O ports, no value is passed forward
+        	// throw new ModuleException("Requested I/O port range [" + portAddress  + "] (setDoubleWord) is not available.");
         }
         
     }
