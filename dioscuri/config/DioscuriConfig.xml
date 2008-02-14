@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
- * $Revision: 1.6 $ $Date: 2008-02-12 11:57:48 $ $Author: jrvanderhoeven $
+ * $Revision: 1.7 $ $Date: 2008-02-14 09:54:48 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -30,12 +30,11 @@
  *
  * Project Title: DIOSCURI
 --><!-- Defines Dioscuri Emulator modules and settings --><emulator xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" debug="false" xsi:noNamespaceSchemaLocation="DioscuriConfig.xsd">
-   
+
    <!-- Defines the architecture required -->
    <architecture name="Von Neumann">
-      
       <modules>
-      
+
          <!-- Defines the Bios module -->
          <bios>
 			 <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>        
@@ -43,25 +42,26 @@
             <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
             <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
 			<bootdrives> 
-				<bootdrive0>harddrive</bootdrive0>
+				<bootdrive0>floppy</bootdrive0>
 				<bootdrive1>none</bootdrive1>
 				<bootdrive2>none</bootdrive2>
 			</bootdrives>
 			<floppycheckdisabled>false</floppycheckdisabled>
 		</bios>
-            
+
          <!-- Defines the cpu module -->
          <cpu debug="false">
-		 	<cpu32bit>false</cpu32bit>
+		 	<cpu32bit>true</cpu32bit>
 			<speedmhz>5</speedmhz>
 		</cpu> 
-		 <!-- Defines the memory module-->
+		 
+		<!-- Defines the memory module-->
 		 <memory debug="false" debugaddressdecimal="9295">
-			 <sizemb>1</sizemb>
+			 <sizemb>16</sizemb>
 		 </memory>
 	
          <!-- Defines the floppy drive controller module -->
-	 	 <fdc debug="false"> <!-- normally 300 microseconds -->
+	 	 <fdc debug="false">
 			 <updateintervalmicrosecs>250</updateintervalmicrosecs>
 			 <floppy>
              	<enabled>true</enabled>
@@ -69,23 +69,23 @@
              	<driveletter>A</driveletter>
              	<diskformat>1.44M</diskformat>
              	<writeprotected>false</writeprotected>
-	         	<imagefilepath>D:\emulation\workspace\dioscuri\images\floppy\games1.ima</imagefilepath>
+				<imagefilepath>images\floppy\FreeDOS\fd_odin07_1440.ima</imagefilepath>
 	       </floppy>
         </fdc>
-        
+
         <!-- Defines the PIT module -->
  		<pit debug="false">
 			<clockrate>5</clockrate>
 		</pit>
- 		
+
         <!-- Defines the keyboard module -->
         <keyboard debug="false">
 			<updateintervalmicrosecs>200</updateintervalmicrosecs>
 		</keyboard>
-        
+
          <!-- Defines the Mouse module -->
          <mouse debug="false">
-			 <enabled>true</enabled>
+			 <enabled>false</enabled>
 			 <mousetype>serial</mousetype>
 		 </mouse>
 
@@ -93,23 +93,22 @@
 	    <ata debug="false">
 			<updateintervalmicrosecs>100000</updateintervalmicrosecs>
 			<harddiskdrive>
-               <enabled>true</enabled>
+               <enabled>false</enabled>
                <channelindex>0</channelindex>
                <master>true</master>
                <autodetectcylinders>true</autodetectcylinders>
                <cylinders>0</cylinders>
 	   	       <heads>4</heads>
                <sectorspertrack>17</sectorspertrack>
-               <imagefilepath>images/harddisk/MSDOS5_mouse.img</imagefilepath>
+			   <imagefilepath>null</imagefilepath>
             </harddiskdrive>
         </ata>
-        
+
         <!-- Defines the video module -->
         <video debug="false">
 			<updateintervalmicrosecs>40000</updateintervalmicrosecs>
 		</video>
-		
+
       </modules>
-      
    </architecture>
 </emulator>
