@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2008-02-11 16:24:24 $ $Author: jrvanderhoeven $
+ * $Revision: 1.8 $ $Date: 2008-02-14 11:02:03 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -48,32 +48,28 @@ import nl.kbna.dioscuri.module.ModulePIC;
 import nl.kbna.dioscuri.module.ModuleSerialPort;
 
 /**
- * An implementation of a parallel port module.
- *  
+ * An implementation of a serial port module.
+ * 
  * @see Module
  * 
  * Metadata module
  * ********************************************
  * general.type                : serialport
- * general.name                : General Serial Port
+ * general.name                : UART 16550A Serial Port
  * general.architecture        : Von Neumann
  * general.description         : Models a 9-pin serial port 
  * general.creator             : Tessella Support Services, Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
  * general.version             : 1.0
- * general.keywords            : serial port, port, RS232, DE-9, COM, 
- * general.relations           : Motherboard
+ * general.keywords            : serial port, port, RS232, DE-9, COM, UART 
+ * general.relations           : Motherboard, PIC
  * general.yearOfIntroduction  : 
  * general.yearOfEnding        : 
  * general.ancestor            : 
  * general.successor           : 
  * 
  * Notes:
- * "Some of my readers ask me what a 'Serial Port' is. The answer is: 
- * I don't know. Is it some kind of wine you have with breakfast?"
- * 
- * 
  * - Module serial port supports up to 4 COM ports
- * - It is based on the UART 16550A interface (including FIFO)
+ * - It is based on the UART 16550A interface (including FIFO buffer)
  * - Data is transmitted in little-endian order (least significant bit first)
  * 
  * References:
@@ -81,6 +77,7 @@ import nl.kbna.dioscuri.module.ModuleSerialPort;
  * 		http://mudlist.eorbit.net/~adam/pickey/ports.html
  * - UART register information from PC16550D UART with FIFOs (National Semiconductor):
  * 		http://www.national.com/mpf/PC/PC16550D.html
+ * - Bochs X86 emulator: http://bochs.sourceforge.net
  * 
  * 
  * PORT 03F8-03FF - serial port (8250,8250A,8251,16450,16550,16550A,etc.) COM1
@@ -125,10 +122,6 @@ public class SerialPort extends ModuleSerialPort
 
     // Attributes
 
-	// TODO: some parameters should be set by configuration management, like
-	// - Total number of COM-ports
-	// - 
-	
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "pic"}; 
@@ -155,7 +148,7 @@ public class SerialPort extends ModuleSerialPort
     // Module specifics
     public final static int MODULE_ID       = 1;
     public final static String MODULE_TYPE  = "serialport";
-    public final static String MODULE_NAME  = "RS232 serial port";
+    public final static String MODULE_NAME  = "UART 16550A serial port";
     
     public final static int TOTALCOMPORTS = 4;	// Defines the total number of COM ports
 
@@ -187,6 +180,7 @@ public class SerialPort extends ModuleSerialPort
     
     private final static double CLOCKSPEED = 1843200.0;
     
+    
     // Constructor
 
     /**
@@ -208,39 +202,6 @@ public class SerialPort extends ModuleSerialPort
            	comPorts[c] = new ComPort();
         }
         
-        // ALTERNATIVE: using HashMap instead of array...
-//      comPorts = new HashMap(4);
-//        put = comPorts.put(0x3F8, new ComPort());
-//        put = comPorts.put(0x2F8, new ComPort());
-//        put = comPorts.put(0x3E8, new ComPort());
-//        put = comPorts.put(0x2E8, new ComPort());
-
-        // ELKS boot replies:
-/*        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0xFF);
-        readPortQ.push(0xFF);
-        readPortQ.push(0xFF);
-        readPortQ.push(0xFF);
-        readPortQ.push(0x60);
-        readPortQ.push(0x00);
-        readPortQ.push(0xC1);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        readPortQ.push(0x00);
-        // Bochs BIOS replies:
-        readPortQ.push(0xFF);
-        readPortQ.push(0xFF);
-        readPortQ.push(0xFF);
-        readPortQ.push(0x02);
-        readPortQ.push(0x02);
-*/
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
 
@@ -345,24 +306,13 @@ public class SerialPort extends ModuleSerialPort
      */
     public boolean reset()
     {
-        // Register I/O ports 0x3F[8-F], 0x2F[8-F], 0x3E[8-F], 0x2E[8-F] in I/O address space
-        motherboard.setIOPort(DLL, this);
-        motherboard.setIOPort(DLM, this);
-        motherboard.setIOPort(IIR, this);
-        motherboard.setIOPort(LCR, this);
-        motherboard.setIOPort(MCR, this);
-        motherboard.setIOPort(LSR, this);
-        motherboard.setIOPort(MSR, this);
-        motherboard.setIOPort(SCR, this);
-
-        
         // Reset COM-ports
         for (int c = 0; c < comPorts.length; c++)
         {
         	// Register I/O ports
         	for (int i = 0; i < 8; i++)
         	{
-        		// Register range of ports per COM port
+        		// Register range of ports per COM port (0x3F[8-F], 0x2F[8-F], 0x3E[8-F], 0x2E[8-F])
         		motherboard.setIOPort(IOPORTS[c] + i, this);
         	}
         	
@@ -388,7 +338,8 @@ public class SerialPort extends ModuleSerialPort
         }
 
         // Request a timer (one shot)
-        updateInterval = 0;	// FIXME:
+        updateInterval = 0;
+        
         if (motherboard.requestTimer(this, updateInterval, false) == false)
         {
             return false;
@@ -400,7 +351,6 @@ public class SerialPort extends ModuleSerialPort
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
 
         return true;
-
     }
 
     
@@ -1025,7 +975,7 @@ public class SerialPort extends ModuleSerialPort
                 		// Start timer again as one shot
                 		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
                 		motherboard.setTimerActiveState(this, true);
-            			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            			logger.log(Level.FINE, "[" + MODULE_TYPE + "] Timer activated");
                 	}
                 	else
                 	{
@@ -1145,7 +1095,7 @@ public class SerialPort extends ModuleSerialPort
             	// Check if Transmitter Holding Register Empty interrupt should change
             	if (new_b1 != comPorts[port].ier_txhold_enable)
             	{
-            		// Update THRE interrupt
+            		// Update THR enable interrupt
             		comPorts[port].ier_txhold_enable = new_b1;
             		
             		if (comPorts[port].ier_txhold_enable == 1)
@@ -1253,7 +1203,7 @@ public class SerialPort extends ModuleSerialPort
             		// Start timer again as one shot
             		motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
             		motherboard.setTimerActiveState(this, true);
-        			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        			logger.log(Level.FINE, "[" + MODULE_TYPE + "] Timer activated");
             	}
             	
 				logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " baud rate of COM1 set to " + comPorts[port].baudrate);
@@ -1264,12 +1214,9 @@ public class SerialPort extends ModuleSerialPort
             break;
 
           case MCR: // MODEM control register
-/*            if ((comPorts[port].io_mode == BX_SER_MODE_MOUSE) && (comPorts[port].lcr_wordlen_sel == 2))
-            {
-            	if (new_b0 && !new_b1) BX_SER_THIS detect_mouse = 1;
-            	if (new_b0 && new_b1 && (BX_SER_THIS detect_mouse == 1)) BX_SER_THIS detect_mouse = 2;
-            }
-*/            
+        	  
+        	  // TODO: Handle modem control mode
+        	  
             comPorts[port].mcr_dtr  = new_b0;
             comPorts[port].mcr_rts  = new_b1;
             comPorts[port].mcr_out1 = new_b2;
@@ -1290,8 +1237,7 @@ public class SerialPort extends ModuleSerialPort
             	}
             	else
             	{
-            		// Transition to normal mode
-            		// TODO:...
+            		// TODO: Transition to normal mode
             	}
             }
 
@@ -1344,32 +1290,7 @@ public class SerialPort extends ModuleSerialPort
             }
             else
             {
-/*            	if (comPorts[port].io_mode == BX_SER_MODE_MOUSE)
-            	{
-            		if (BX_SER_THIS detect_mouse == 2)
-            		{
-            			if (SIM->get_param_enum(BXPN_MOUSE_TYPE)->get() == BX_MOUSE_TYPE_SERIAL)
-            			{
-		                    BX_SER_THIS mouse_internal_buffer.head = 0;
-		                    BX_SER_THIS mouse_internal_buffer.num_elements = 1;
-		                    BX_SER_THIS mouse_internal_buffer.buffer[0] = 'M';
-	                    }
-	                    
-	                    if (SIM->get_param_enum(BXPN_MOUSE_TYPE)->get() == BX_MOUSE_TYPE_SERIAL_WHEEL)
-	                    {
-		                    BX_SER_THIS mouse_internal_buffer.head = 0;
-		                    BX_SER_THIS mouse_internal_buffer.num_elements = 6;
-		                    BX_SER_THIS mouse_internal_buffer.buffer[0] = 'M';
-		                    BX_SER_THIS mouse_internal_buffer.buffer[1] = 'Z';
-		                    BX_SER_THIS mouse_internal_buffer.buffer[2] = '@';
-		                    BX_SER_THIS mouse_internal_buffer.buffer[3] = '\0';
-		                    BX_SER_THIS mouse_internal_buffer.buffer[4] = '\0';
-		                    BX_SER_THIS mouse_internal_buffer.buffer[5] = '\0';
-                        }
-                        BX_SER_THIS detect_mouse = 0;
-                    }
-                }
-*/
+            	// TODO: perform special mouse mode here...
             }
 
             // Simulate device connected
@@ -1560,7 +1481,7 @@ public class SerialPort extends ModuleSerialPort
     	// Check if FIFO is active
     	if (comPorts[port].fcr_enable == 1)
     	{
-      	  logger.log(Level.WARNING, "[" + MODULE_TYPE + "] enqueue data in FIFO");
+      	  	logger.log(Level.FINE, "[" + MODULE_TYPE + "] enqueue data in FIFO");
     		// Check if FIFO buffer is full
     		if (comPorts[port].rcvrFIFO.size() == 16)
     		{
@@ -1600,7 +1521,7 @@ public class SerialPort extends ModuleSerialPort
     				// Deactivate timer
     				motherboard.setTimerActiveState(this, false);
     				comPorts[port].lsr_rxdata_ready = 1;
-    				logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer deactivated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    				logger.log(Level.FINE, "[" + MODULE_TYPE + "] Timer deactivated");
     				
     				// Throw IRQ
     				this.setIRQ(port, INTERRUPT_RXDATA);
@@ -1611,14 +1532,14 @@ public class SerialPort extends ModuleSerialPort
     				// Activate timer as one shot
     				motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5) * 16));
     				motherboard.setTimerActiveState(this, true);
-        			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Timer activated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+        			logger.log(Level.FINE, "[" + MODULE_TYPE + "] Timer activated");
     			}
     		}
     	}
     	else
     	{
     		// FIFO buffer is not active
-        	  logger.log(Level.WARNING, "[" + MODULE_TYPE + "] enqueue data in RBR");
+        	logger.log(Level.FINE, "[" + MODULE_TYPE + "] enqueue data in RBR");
     		if (comPorts[port].lsr_rxdata_ready == 1)
     		{
     			// Unread data still exists in receive buffer
