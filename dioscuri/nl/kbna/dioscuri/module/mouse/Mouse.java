@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.8 $ $Date: 2008-02-14 11:01:46 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -39,13 +39,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.kbna.dioscuri.Emulator;
-import nl.kbna.dioscuri.exception.ModuleException;
-import nl.kbna.dioscuri.exception.ModuleUnknownPort;
-import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 import nl.kbna.dioscuri.interfaces.UART;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleKeyboard;
-import nl.kbna.dioscuri.module.ModuleMotherboard;
 import nl.kbna.dioscuri.module.ModuleMouse;
 import nl.kbna.dioscuri.module.ModuleSerialPort;
 
@@ -57,13 +53,13 @@ import nl.kbna.dioscuri.module.ModuleSerialPort;
  * Metadata module
  * ********************************************
  * general.type                : mouse
- * general.name                : PS/2 compatible Mouse
+ * general.name                : Serial mouse
  * general.architecture        : Von Neumann
- * general.description         : Models a serial or PS/2 compatible mouse 
+ * general.description         : Models a serial mouse 
  * general.creator             : Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
  * general.version             : 1.0
  * general.keywords            : Mouse, Keyboard, serial, PS/2
- * general.relations           : Motherboard, Keyboard
+ * general.relations           : Serialport, Keyboard
  * general.yearOfIntroduction  : 1987
  * general.yearOfEnding        : 
  * general.ancestor            : DE-9 RS-232 serial mouse
@@ -83,8 +79,7 @@ public class Mouse extends ModuleMouse implements UART
 {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "keyboard", "serialport"}; 
-    private ModuleMotherboard motherboard;
+    private String[] moduleConnections = new String[] {"keyboard", "serialport"}; 
     private ModuleKeyboard keyboard;
     private ModuleSerialPort serialPort;
     private MouseBuffer buffer;
@@ -92,9 +87,6 @@ public class Mouse extends ModuleMouse implements UART
     // Toggles
     private boolean isObserved;
     private boolean debugMode;
-    
-    // Timing
-    private int updateInterval;
     
     // Variables
     private boolean mouseEnabled;					// Defines if this mouse if enabled
@@ -108,6 +100,8 @@ public class Mouse extends ModuleMouse implements UART
     private byte sampleRate;						// Defines the sample rate of the mouse (default=100)
     private int resolutionCpmm;						// Defines the resolution of the mouse (default=4)
     private int scaling;							// Defines the scaling of the mouse (default=1 (1:1))
+    private int previousX;
+    private int previousY;
     private int delayed_dx      = 0;
     private int delayed_dy      = 0;
     private int delayed_dz      = 0;
@@ -122,7 +116,7 @@ public class Mouse extends ModuleMouse implements UART
     // Module specifics
     public final static int MODULE_ID       			= 1;
     public final static String MODULE_TYPE  			= "mouse";
-    public final static String MODULE_NAME  			= "Serial or PS/2 compatible mouse";
+    public final static String MODULE_NAME  			= "Serial mouse";
     
     // Mouse type
     private final static int MOUSE_TYPE_PS2 			= 1;			// PS/2 mouse
@@ -130,13 +124,13 @@ public class Mouse extends ModuleMouse implements UART
     private final static int MOUSE_TYPE_SERIAL 			= 3;			// Serial mouse
     private final static int MOUSE_TYPE_SERIAL_WHEEL	= 4;			// Serial wheel mouse
     
-    // Mouse mode
+    // Mouse mode (PS/2)
     private final static int MOUSE_MODE_WRAP 			= 1;
     private final static int MOUSE_MODE_STREAM			= 2;
     private final static int MOUSE_MODE_REMOTE			= 3;
     private final static int MOUSE_MODE_RESET			= 4;
     
-    // Mouse commands
+    // Mouse commands (PS/2)
     private final static byte MOUSE_CMD_ACK				= (byte) 0xFA;
     private final static byte MOUSE_CMD_COMPLETION		= (byte) 0xAA;	// Completion code
     private final static byte MOUSE_CMD_ID				= (byte) 0x00;	// ID code
@@ -162,9 +156,6 @@ public class Mouse extends ModuleMouse implements UART
         // Initialise variables
         isObserved = false;
         debugMode = false;
-        
-        // Initialise timing
-        updateInterval = -1;
         
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
@@ -232,14 +223,8 @@ public class Mouse extends ModuleMouse implements UART
      */
     public boolean setConnection(Module mod)
     {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard"))
-        {
-            this.motherboard = (ModuleMotherboard)mod;
-            return true;
-        }
         // Set connection for keyboard
-        else if (mod.getType().equalsIgnoreCase("keyboard"))
+        if (mod.getType().equalsIgnoreCase("keyboard"))
         {
             this.keyboard = (ModuleKeyboard)mod;
             this.keyboard.setConnection(this);	// Set connection to keyboard
@@ -264,7 +249,7 @@ public class Mouse extends ModuleMouse implements UART
     public boolean isConnected()
     {
         // Check if module if connected
-        if (motherboard != null && keyboard != null && serialPort != null)
+        if (keyboard != null && serialPort != null)
         {
             return true;
         }
@@ -282,6 +267,9 @@ public class Mouse extends ModuleMouse implements UART
     	// Reset variables
     	// TODO: add all vars
     	lastMouseCommand = 0;
+    	
+    	previousX = -1;
+    	previousY = -1;
     	
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
 
@@ -423,80 +411,6 @@ public class Mouse extends ModuleMouse implements UART
 
 
     //******************************************************************************
-    // ModuleDevice Methods
-    
-    /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    public int getUpdateInterval()
-    {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     * @param int interval in microseconds
-     */
-    public void setUpdateInterval(int interval)
-    {
-    }
-
-
-    /**
-     * Update device
-     */
-    public void update()
-    {
-    }
-
-
-	@Override
-	public byte getIOPortByte(int portAddress) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-
-	@Override
-	public void setIOPortByte(int portAddress, byte data) throws ModuleException, ModuleUnknownPort {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void setIOPortWord(int portAddress, byte[] dataWord) throws ModuleException, ModuleUnknownPort {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	@Override
-	public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-	public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) throws ModuleException, ModuleUnknownPort {
-		// TODO Auto-generated method stub
-		
-	}
-
-    
-	
-    //******************************************************************************
     // ModuleMouse Methods
 	
 	public void setMouseEnabled(boolean status)
@@ -619,7 +533,7 @@ public class Mouse extends ModuleMouse implements UART
 
     	if (this.enqueueData(b1, b2, b3, b4) == true)
     	{
-    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
+    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
     	}
     	else
     	{
@@ -933,17 +847,26 @@ public class Mouse extends ModuleMouse implements UART
     
     public void mouseMotion(MouseEvent event)
     {
-    	// TODO: handle event here!!!!!!!!!!
-    	delayed_dx = event.getX();
-    	delayed_dy = event.getY();
+    	// Check if this is the first mouse motion
+    	if (previousX == -1)
+    	{
+    		previousX = event.getX();
+    		previousY = event.getY();
+    		
+    		return;
+    	}
+    	
+    	// Measure position change
+    	delayed_dx = event.getX() - previousX;
+    	delayed_dy = event.getY() - previousY;
     	delayed_dz = event.getButton();
 
 	  boolean force_enq = true;
 
-	  // If serial mouse, redirect data to serial port
+	  // Check mouse type
 	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
-		  // Store data in internal mouse buffer
+		  // Serial mouse: store data in internal mouse buffer
 	  	  this.storeBufferData(force_enq);
 	  }
 	  else
@@ -986,8 +909,8 @@ public class Mouse extends ModuleMouse implements UART
 		  	  {
 		  		  force_enq = true;
 		  	  }
-		  */
 		  	  this.storeBufferData(force_enq);
+*/
 	  	}
 	}
 
