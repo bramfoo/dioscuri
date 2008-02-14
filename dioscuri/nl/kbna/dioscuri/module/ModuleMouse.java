@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2008-02-14 11:00:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -41,7 +41,7 @@ import java.awt.event.MouseEvent;
  *  
  */
 
-public abstract class ModuleMouse extends ModuleDevice
+public abstract class ModuleMouse extends Module
 {
     // Methods
 	public abstract void setMouseEnabled(boolean status);
