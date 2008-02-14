@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.10 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.11 $ $Date: 2008-02-14 11:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -127,8 +127,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Menu help
    JMenuItem miHelpAbout;
    
-   // Screen
+   // Input/output devices
    private JPanel screen;     // Defines the screen of the emulator
+   private MouseHandler mouseHandler;
    
    // File selection
    private JFileChooser fcFloppy;
@@ -252,7 +253,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        // Create panel: screen (canvas)
        screenPane = new JScrollPane();
        screenPane.setBackground(Color.gray);
-       this.setScreen(this.getStartupScreen(), false);
+       this.setScreen(this.getStartupScreen());
        
        // Create panel: statusbar (including panels w/ borders for Num Lock, Caps Lock and Scroll Lock status)
        statusPanel = new JPanel(new FlowLayout(FlowLayout.LEADING, 0, 0));
@@ -504,7 +505,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     * @param boolean mouseEnabled to denote if emulated mouse can be used in screen
     * 
     */
-   public void setScreen(JPanel screen, boolean mouseEnabled)
+   public void setScreen(JPanel screen)
    {
        // Replace current canvas with new one
        screenPane.removeAll();
@@ -513,17 +514,50 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        // Attach current screen to given screen
        this.screen = screen;
        
-       if (mouseEnabled == true)
-       {
-           // Mouse handler to the GUI
-           screen.addMouseListener(new MouseHandler());
-           screen.addMouseMotionListener(new MouseHandler());
-       }
-       
        // Update panel
        this.updateScreenPanel();
    }
 
+   /**
+    * Enable mouse support in GUI
+    *
+    * @return true if mouse enabled, false otherwise
+    */
+   public boolean setMouseEnabled()
+   {
+
+	   // Mouse handler to the GUI
+	   mouseHandler = new MouseHandler();
+       screen.addMouseListener(mouseHandler);
+       screen.addMouseMotionListener(mouseHandler);
+	   logger.log(Level.SEVERE, "[gui] Mouse in GUI enabled");
+       
+       return true;
+   }
+   
+   /**
+    * Disable mouse support in GUI
+    *
+    * @return true if mouse enabled, false otherwise
+    */
+   public boolean setMouseDisabled()
+   {
+       // Mouse handler to the GUI
+	   if (mouseHandler != null)
+	   {
+	       screen.removeMouseListener(mouseHandler);
+	       screen.removeMouseMotionListener(mouseHandler);
+	       mouseHandler.setMouseCursorVisibility(true);
+	       mouseHandler = null;
+		   logger.log(Level.SEVERE, "[gui] Mouse in GUI disabled");
+		   
+		   return true;
+	   }
+       
+	   logger.log(Level.SEVERE, "[gui] Mouse does not exist or is already disabled");
+
+	   return true;
+   }
    
    /**
     * Returns a buffered image loaded from specified location
@@ -716,6 +750,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                miEditPasteImage.setEnabled(false);
                miMediaInsertA.setEnabled(false);
                miMediaEjectA.setEnabled(false);
+               miDevicesMouseEnabled.setEnabled(false);
+               miDevicesMouseDisabled.setEnabled(false);
                
                // Enable/disable status bar items
                floppyAPanel.setVisible(false);
@@ -748,6 +784,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        {
            // Stop emulation process
            emu.stop();
+           this.setMouseDisabled();
            this.updateGUI(EMU_PROCESS_STOP);
        }
        else if (c == (JComponent) miEmulatorReset)
@@ -815,13 +852,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        else if (c == (JComponent) miDevicesMouseEnabled)
        {
            // Enable mouse
-    	   // TODO: attach mouselistener to screen
+    	   this.setMouseEnabled();
            this.updateGUI(EMU_DEVICES_MOUSE_ENABLED);
        }
        else if (c == (JComponent) miDevicesMouseDisabled)
        {
            // Disable mouse
-    	   // TODO: detach mouselistener from screen
+    	   this.setMouseDisabled();
            this.updateGUI(EMU_DEVICES_MOUSE_DISABLED);
        }
        else if (c == (JComponent) miEditConfig)
@@ -993,9 +1030,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 	   
 	   public MouseHandler()
 	   {
-		   // Create invisible cursor
-		   ImageIcon emptyIcon = new ImageIcon(new byte[0]);
-		   invisibleCursor = getToolkit().createCustomCursor(emptyIcon.getImage(), new Point(0,0), "Invisible");
+		   // Make cursor invisible
+//		   this.setMouseCursorVisible(false);
 	   }
 	   
 	   
@@ -1022,7 +1058,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 		
 		public void mouseEntered(MouseEvent mouseEvent)
 		{
-	        screen.setCursor(invisibleCursor);
+		   this.setMouseCursorVisibility(false);
 		}
 		
 		
@@ -1044,6 +1080,24 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 	       {
 	           emu.notifyMouse(mouseEvent);
 	       }
+		}
+		
+		public void setMouseCursorVisibility(boolean visible)
+		{
+			if (visible == false)
+			{
+				// Hide cursor
+				ImageIcon emptyIcon = new ImageIcon(new byte[0]);
+				invisibleCursor = getToolkit().createCustomCursor(emptyIcon.getImage(), new Point(0,0), "Invisible");
+		        screen.setCursor(invisibleCursor);
+			}
+			else
+			{
+				// Show cursor
+				screen.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+//				setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
+			
 		}
    }
    

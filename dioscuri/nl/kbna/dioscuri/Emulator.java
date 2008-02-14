@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.9 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.10 $ $Date: 2008-02-14 11:00:59 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1005,7 +1005,7 @@ public class Emulator implements Runnable
         ModuleScreen screen = (ModuleScreen)modules.getModule(ModuleType.SCREEN.toString());
         if (screen != null)
         {
-            getGui().setScreen(screen.getScreen(), true);
+            getGui().setScreen(screen.getScreen());
             return true;
         }
         else
@@ -1032,11 +1032,13 @@ public class Emulator implements Runnable
             
             if (enabled == true)
             {
-                getGui().updateGUI(GUI.EMU_DEVICES_MOUSE_ENABLED);
+            	gui.setMouseEnabled();
+                gui.updateGUI(GUI.EMU_DEVICES_MOUSE_ENABLED);
             }
             else
             {
-                getGui().updateGUI(GUI.EMU_DEVICES_MOUSE_DISABLED);
+            	gui.setMouseDisabled();
+                gui.updateGUI(GUI.EMU_DEVICES_MOUSE_DISABLED);
             }
 
             // Init mouse type
