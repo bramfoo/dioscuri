@@ -1,32 +1,27 @@
 Roadmap Dioscuri - Modular emulator for Digital Preservation
 ============================================================
 Date             : 29 January 2007
-Date last update : 13 August 2007
+Date last update : 14 February 2008
 Organisations    : Koninklijke Bibliotheek,
-                   Nationaal Archief of the Netherlands,
-
+                   Nationaal Archief of the Netherlands
 
 Roadmap
 ------------------------------------------------------------
 - Finalise Intel 8086 CPU (Windows 3.0 capable)
-- Mouse support
+- Mouse support (ongoing)
 - CD-ROM support
 - Sound support
 - Store/restore state functionality
-- Introduce shortcut keys to menu items
-- Screen data extraction support (VGA dump/text dump)
+- Introduce shortcut keys for menu items
+- Screen data extraction support (VGA dump)
 - Metadata for each module based on metadata schema
 - Improve exception handling model (take care of CPU exceptions)
-- Upgrade to Intel 80286, 16-bit, protected mode (Windows 3.x capable)
-- Floating point unit (FPU)
-- Redesign CPU architecture to follow prefetch, execution, flag settings workflow
-- Upgrade to Intel 80386, 32-bit, paging, FPU (Windows 95 capable)
+- Redesign 16-bit CPU architecture to follow prefetch, execution, flag settings workflow
 - Improve GUI and use a better status update mechanism between GUI and modules
 - Module library and software registry
 - Network support
 - Remote emulator control
-- Wrapping emulator in service-based architecture
-
+- Wrap emulator in service-based architecture
 
 Considerations
 ------------------------------------------------------------
@@ -35,10 +30,10 @@ Considerations
 	+ implement CPU caching mechanism to avoid extensive recalculation of memory addressing
 - Refactoring:
 	+ module structure
-	+ constants vs hex values
+	+ constants vs. hex values
+	+ abstract classes vs. interfaces
 - Testing:
-	+ create Unit tests, especially for CPU instructions
-	+ write a test suite in assembler x86 which automatically checks the correctness of all instructions
+	+ create unit tests, esp.for CPU instructions
 
 
 Bug report
@@ -67,5 +62,3 @@ Date found	| Date solved	| Bug description																					| Patch
 01-12-2006  |               | CPU -> DIV/IDIV -> difference not clear: sign extension in DX of AX
 01-12-2006  |               | CPU -> REP/REPE -> Unsure about the effect on ZF of the executed string instruction within this loop. Debug shows that ZF is updated afterwards when loop ends (caused by CX=0). However, we assume that ZF can be set within the string instruction (like CMPS).
 01-12-2006  | 07-06-2007    | CPU -> GRP11_MOV_EvIv, GRP11_MOV_EbIb, LEA -> optimize code because it is outdated
-
-

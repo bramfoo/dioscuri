@@ -1,9 +1,15 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 4 October 2007
+Date          : 14 February 2008
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
+
+0.4.0 : 14-02-2008
+-------------------------------------------------------
+- Added 32-bit CPU from JPC project (http://www-jpc.physics.ox.ac.uk/)
+- Improved mouse support (serial, ps/2)
+- Improved serial port support
 
 
 0.3.0 : 04-10-2007
