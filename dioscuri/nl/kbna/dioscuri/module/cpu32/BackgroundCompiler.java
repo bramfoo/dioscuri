@@ -99,7 +99,7 @@ public class BackgroundCompiler implements CodeBlockCompiler
         } 
                 catch (IllegalStateException e) 
                 {
-            System.out.println(e);
+//            System.out.println(e);
             target.replaceInOwner(target.getBlock());
         } 
                 catch (Throwable e) 
