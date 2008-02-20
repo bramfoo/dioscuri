@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.11 $ $Date: 2008-02-11 16:24:24 $ $Author: jrvanderhoeven $
+ * $Revision: 1.12 $ $Date: 2008-02-20 11:14:45 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1333,7 +1333,7 @@ public class Keyboard extends ModuleKeyboard
         else if (mouse != null)
         {
         	// Mouse buffer
-            mouse.storeBufferData(false);
+            //FIXME: mouse.storeBufferData(false);
             
             if (keyboard.controller.auxClockEnabled == 1 && !mouse.isBufferEmpty())
             {
