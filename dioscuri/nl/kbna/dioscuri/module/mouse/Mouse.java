@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2008-02-14 11:01:46 $ $Author: jrvanderhoeven $
+ * $Revision: 1.9 $ $Date: 2008-02-20 11:18:18 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -72,6 +72,9 @@ import nl.kbna.dioscuri.module.ModuleSerialPort;
  * - all controller aspects are implemented in keyboard: (mouse is only pointing device but not controller)
  * 		+ I/O ports
  * 		+ IRQ handling
+ * 
+ * References:
+ * - http://local.wasp.uwa.edu.au/~pbourke/dataformats/serialmouse/
  * 
  */
 
@@ -459,43 +462,43 @@ public class Mouse extends ModuleMouse implements UART
     public synchronized void storeBufferData(boolean forceEnqueue)
     {
     	byte b1, b2, b3, b4;
-    	int delta_x, delta_y;
+    	int deltaX, deltaY;
 
-    	delta_x = delayed_dx;
-    	delta_y = delayed_dy;
+    	deltaX = delayed_dx;
+    	deltaY = delayed_dy;
 
-    	if(forceEnqueue == false && delta_x == 0 && delta_y == 0)
+    	if(forceEnqueue == false && deltaX == 0 && deltaY == 0)
     	{
     		// No mouse movement, so no changes
     		return;
     	}
 
     	// Limit values
-    	if(delta_x > 254) delta_x = 254;
-    	if(delta_x < -254) delta_x = -254;
-    	if(delta_y > 254) delta_y = 254;
-    	if(delta_y < -254) delta_y = -254;
+    	if(deltaX > 254) deltaX = 254;
+    	if(deltaX < -254) deltaX = -254;
+    	if(deltaY > 254) deltaY = 254;
+    	if(deltaY < -254) deltaY = -254;
 
     	// Set bytes
     	// Byte b1
     	b1 = (byte) ((buttonStatus & 0x0F) | 0x08); // bit3 always set
 
     	// Byte b2
-    	if ((delta_x >= 0) && (delta_x <= 255))
+    	if ((deltaX >= 0) && (deltaX <= 255))
     	{
-    		b2 = (byte) delta_x;
-    		delayed_dx -= delta_x;
+    		b2 = (byte) deltaX;
+    		delayed_dx -= deltaX;
     	}
-    	else if (delta_x > 255)
+    	else if (deltaX > 255)
     	{
     		b2 = (byte) 0xFF;
     		delayed_dx -= 255;
     	}
-    	else if (delta_x >= -256)
+    	else if (deltaX >= -256)
     	{
-	        b2 = (byte) delta_x;
+	        b2 = (byte) deltaX;
 	        b1 |= 0x10;
-	        delayed_dx -= delta_x;
+	        delayed_dx -= deltaX;
     	}
     	else
     	{
@@ -505,21 +508,21 @@ public class Mouse extends ModuleMouse implements UART
     	}
 
     	// Byte b3
-    	if ((delta_y >= 0) && (delta_y <= 255))
+    	if ((deltaY >= 0) && (deltaY <= 255))
     	{
-    		b3 = (byte) delta_y;
-    		delayed_dy -= delta_y;
+    		b3 = (byte) deltaY;
+    		delayed_dy -= deltaY;
     	}
-    	else if (delta_y > 255)
+    	else if (deltaY > 255)
     	{
 	        b3 = (byte) 0xFF;
 	        delayed_dy -= 255;
     	}
-    	else if ( delta_y >= -256 )
+    	else if ( deltaY >= -256 )
     	{
-    		b3 = (byte) delta_y;
+    		b3 = (byte) deltaY;
     		b1 |= 0x20;
-    		delayed_dy -= delta_y;
+    		delayed_dy -= deltaY;
     	}
     	else
     	{
@@ -531,17 +534,11 @@ public class Mouse extends ModuleMouse implements UART
     	// Byte b4
     	b4 = (byte) -delayed_dz;
 
-    	if (this.enqueueData(b1, b2, b3, b4) == true)
-    	{
-    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
-    	}
-    	else
-    	{
-    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data could not be stored in mouse buffer");
-    	}
+    	this.enqueueData(b1, b2, b3, b4);
+		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse (PS/2) data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
     }
 
-	public byte getDataFromBuffer()
+	public synchronized byte getDataFromBuffer()
 	{
 		if (buffer.isEmpty() == false)
 		{
@@ -847,6 +844,9 @@ public class Mouse extends ModuleMouse implements UART
     
     public void mouseMotion(MouseEvent event)
     {
+    	int deltaX, deltaY, deltaZ, buttonLeft, buttonRight;
+    	byte byte1, byte2, byte3, byte4;
+    	
     	// Check if this is the first mouse motion
     	if (previousX == -1)
     	{
@@ -857,35 +857,111 @@ public class Mouse extends ModuleMouse implements UART
     	}
     	
     	// Measure position change
-    	delayed_dx = event.getX() - previousX;
-    	delayed_dy = event.getY() - previousY;
-    	delayed_dz = event.getButton();
-
-	  boolean force_enq = true;
+    	deltaX = event.getX() - previousX;
+    	deltaY = event.getY() - previousY;
+    	deltaZ = 0;
+    	buttonRight = event.getButton() == 3 ? 1 : 0;
+    	buttonLeft = event.getButton() == 1 ? 1 : 0;
+    	
+    	// Preserve current coordinates
+    	previousX = event.getX();
+    	previousY = event.getY();
 
 	  // Check mouse type
 	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
 	  {
 		  // Serial mouse: store data in internal mouse buffer
-	  	  this.storeBufferData(force_enq);
+		  // scale down the motion
+		  if ((deltaX < -1) || (deltaX > 1))
+		  {
+			  deltaX = deltaX / 2;
+		  }
+		  
+		  if ((deltaY < -1) || (deltaY > 1))
+		  {
+			  deltaY = deltaY / 2;
+		  }
+
+		  // Limit the boundaries
+		  if(deltaX > 127) deltaX = 127;
+		  if(deltaY > 127) deltaY = 127;
+		  if(deltaX < -128) deltaX = -128;
+		  if(deltaY < -128) deltaY = -128;
+
+		  //		 FIXME:
+/*
+		  delayed_dx += deltaX;
+		  delayed_dy -= deltaY;
+		  delayed_dz = deltaZ;
+
+		  if (BX_SER_THIS mouse_delayed_dx > 127)
+		  {
+		    deltaX = 127;
+		    BX_SER_THIS mouse_delayed_dx -= 127;
+		  }
+		  else if (BX_SER_THIS mouse_delayed_dx < -128) {
+		    deltaX = -128;
+		    BX_SER_THIS mouse_delayed_dx += 128;
+		  } else {
+		    deltaX = BX_SER_THIS mouse_delayed_dx;
+		    BX_SER_THIS mouse_delayed_dx = 0;
+		  }
+		  if (BX_SER_THIS mouse_delayed_dy > 127) {
+		    deltaY = 127;
+		    BX_SER_THIS mouse_delayed_dy -= 127;
+		  } else if (BX_SER_THIS mouse_delayed_dy < -128) {
+		    deltaY = -128;
+		    BX_SER_THIS mouse_delayed_dy += 128;
+		  } else {
+		    deltaY = BX_SER_THIS mouse_delayed_dy;
+		    BX_SER_THIS mouse_delayed_dy = 0;
+		  }
+*/
+		  // FIXME: delta_z = (byte) -((Bit8s) deltaZ);
+
+		  // Serial mouse data format:
+		  // 				b7	b6	b5	b4	b3	b2	b1	b0
+		  //	1st byte	0	1	LB	RB	Y7	Y6	X7	X6
+		  //	2nd byte	0	0	X5	X4	X3	X2	X1	X0
+		  //	3rd byte	0	0	Y5	Y4	Y3	Y2	Y1	Y0
+		  //
+		  // LB = state of left button, 1 = pressed, 0 = released
+		  // RB = state of right button, 1 = pressed, 0 = released
+		  // X0-7 is movement of mouse in X direction since the last change. Positive movement is toward the right
+		  // Y0-7 is movement of mouse in Y direction since the last change. Positive movement is back, toward the user 
+		      
+		  byte1 = (byte) (0x40 | (((((byte)deltaX) & 0xC0) >> 6) | ((((byte)deltaY) & 0xC0) >> 4)) | ((buttonLeft & 0x01) << 5) | ((buttonRight & 0x01) << 4));
+		  byte2 = (byte) (deltaX & 0x3F);
+		  byte3 = (byte) (deltaY & 0x3F);
+		  byte4 = 0; //FIXME: (byte) ((deltaZ & 0x0f) | ((buttonState & 0x04) << 2));
+
+		  	// Enqueue mouse data in internal mouse buffer
+			//this.enqueueData(byte1, byte2, byte3, byte4);
+		  buffer.setByte(byte1);
+		  buffer.setByte(byte2);
+		  buffer.setByte(byte3);
+		  
+			logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Mouse movement! dX=" + deltaX + ", dY=" + deltaY + ", dZ=" + deltaZ + ", buttonLeft=" + buttonLeft);
+//			logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Mouse movement vervolg: b1=" + b1 + ", b2=" + b2 + ", b3=" + b3 + ", b4=" + b4);
+			logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Mouse (serial) data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
 	  }
 	  else
 	  {
 		  // PS/2 mouse
 		  // Scale down the motion
-		  /*	  if ( (delta_x < -1) || (delta_x > 1) )
-		  	    delta_x /= 2;
-		  	  if ( (delta_y < -1) || (delta_y > 1) )
-		  	    delta_y /= 2;
+		  /*	  if ( (deltaX < -1) || (deltaX > 1) )
+		  	    deltaX /= 2;
+		  	  if ( (deltaY < -1) || (deltaY > 1) )
+		  	    deltaY /= 2;
 
 		  	  if (imMode == false)
 		  	  {
 		  		  delta_z = 0;
 		  	  }
 
-		  	  if (delta_x != 0 || delta_y != 0 || delta_z != 0)
+		  	  if (deltaX != 0 || deltaY != 0 || delta_z != 0)
 		  	  {
-		  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
+		  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + deltaX + ", Dy=" + deltaY + ", Dz=" + delta_z);
 		  	  }
 
 		  	  if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0)
@@ -895,13 +971,13 @@ public class Mouse extends ModuleMouse implements UART
 
 		  	  buttonStatus = (byte) (buttonState & 0x07);
 
-		  	  if(delta_x > 255) delta_x = 255;
-		  	  if(delta_y > 255) delta_y = 255;
-		  	  if(delta_x < -256) delta_x = -256;
-		  	  if(delta_y < -256) delta_y = -256;
+		  	  if(deltaX > 255) deltaX = 255;
+		  	  if(deltaY > 255) deltaY = 255;
+		  	  if(deltaX < -256) deltaX = -256;
+		  	  if(deltaY < -256) deltaY = -256;
 
-		  	  delayed_dx += delta_x;
-		  	  delayed_dy += delta_y;
+		  	  delayed_dx += deltaX;
+		  	  delayed_dy += deltaY;
 		  	  delayed_dz = delta_z;
 
 		  	  // TODO: why is this check necessary?
@@ -961,26 +1037,23 @@ public class Mouse extends ModuleMouse implements UART
 	}
 
     
-    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4)
+    private void enqueueData(byte b1, byte b2, byte b3, byte b4)
     {
     	if (imMode == true)
     	{
     		// Wheel mouse enabled, store 4 bytes
-        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3) && buffer.add(b4))
-        	{
-        		return true;
-        	}
+        	buffer.setByte(b1);
+        	buffer.setByte(b2);
+        	buffer.setByte(b3);
+        	buffer.setByte(b4);
     	}
     	else
     	{
     		// Wheel mouse disabled, store 3 bytes
-        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3))
-        	{
-        		return true;
-        	}
+        	buffer.setByte(b1);
+        	buffer.setByte(b2);
+        	buffer.setByte(b3);
     	}
-
-    	return false;
     }
 
     
@@ -1005,6 +1078,5 @@ public class Mouse extends ModuleMouse implements UART
 	{
 		buffer.setByte(data);
 	}
-	
 
 }

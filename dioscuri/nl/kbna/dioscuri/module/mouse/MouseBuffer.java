@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 14:02:10 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-20 11:18:18 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,7 +47,6 @@ public class MouseBuffer extends ArrayList
 {
       protected final static int NUM_ELEMENTS = 16;
     
-//      List<Byte>  buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data elements
       byte   keyPressDelay;                     // Delay between keypresses
       byte   keyRepeatRate;                     // Key repeat rate
       byte   scanningEnabled;                   // Keyboard enabled
@@ -59,13 +58,13 @@ public class MouseBuffer extends ArrayList
 	}
   	
 	// Methods
-	public void setByte(byte data)
+	protected void setByte(byte data)
 	{
 		super.add(Byte.valueOf(data));
 	}
 
 
-	public byte getByte()
+	protected byte getByte()
 	{
 		byte data = ((Byte)super.get(0)).byteValue();
 		super.remove(0);
