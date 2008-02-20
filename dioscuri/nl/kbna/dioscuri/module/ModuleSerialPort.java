@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 14:03:07 $ $Author: jrvanderhoeven $
+ * $Revision: 1.4 $ $Date: 2008-02-20 11:14:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,7 +44,5 @@ import nl.kbna.dioscuri.interfaces.UART;
 public abstract class ModuleSerialPort extends ModuleDevice
 {
     // Methods
-    public abstract void setBytes(byte[] data);
-    
     public abstract boolean setUARTDevice(UART device, int comPort);
 }

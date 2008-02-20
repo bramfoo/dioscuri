@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.8 $ $Date: 2008-02-14 11:02:03 $ $Author: jrvanderhoeven $
+ * $Revision: 1.9 $ $Date: 2008-02-20 11:14:00 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -814,50 +814,6 @@ public class SerialPort extends ModuleSerialPort
         logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Read (byte) from port 0x" + Integer.toHexString(portAddress).toUpperCase() + ": 0x" + Integer.toHexString(((int)value) & 0xFF).toUpperCase());
         
         return value;
-
-/* 
- * Interactive mode
- */
-//        logger.log(Level.WARNING, motherboard.getCurrentInstructionNumber() + " " + "[" + MODULE_TYPE + "]" + " Last port write: [0x" + Integer.toHexString(lastWritePort).toUpperCase() + "] = 0x" + Integer.toHexString(lastWriteData).toUpperCase());
-//        
-//        BufferedReader stdin = new BufferedReader(new InputStreamReader(System.in));
-//        String input;
-//        
-//        // Flush streams before printing
-//        
-//        System.out.print("[" + MODULE_TYPE + "]" + " Return value (byte) for port [0x" + Integer.toHexString(portAddress).toUpperCase() + "] read: 0x");
-//        try
-//        {
-//            input = stdin.readLine();
-//            returnValue = Integer.parseInt(input, 16);
-//        }
-//        catch (IOException e)
-//        {
-//            logger.log(Level.SEVERE, "Unable to read input; returning default value 0x00");
-//            returnValue = 0x00;
-//        }
-//        catch (NumberFormatException e2)
-//        {
-//            logger.log(Level.SEVERE, "Unable to parse input to integer value; returning default value 0x00");
-//            returnValue = 0x00;
-//        }
-//        
-//        lastReadPort = portAddress;
-//        lastReadReturn = returnValue;
-//        return (byte) returnValue;
-/*
- * Queue mode
- */      
-/*        if (!readPortQ.isEmpty())
-        {
-            return readPortQ.pop().byteValue();
-        }
-        else
-        {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Queue empty, returning default value 0x00");
-            return (byte) 0x00;
-        }
-*/        
     }
 
     /**
@@ -1359,10 +1315,6 @@ public class SerialPort extends ModuleSerialPort
     //******************************************************************************
     // ModuleSerialPort methods
 
-    public void setBytes(byte[] data)
-    {
-    }
-    
     public boolean setUARTDevice(UART device, int comPort)
     {
     	// Check if valid com port
@@ -1539,11 +1491,11 @@ public class SerialPort extends ModuleSerialPort
     	else
     	{
     		// FIFO buffer is not active
-        	logger.log(Level.FINE, "[" + MODULE_TYPE + "] enqueue data in RBR");
+        	logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] enqueue data in RBR");
     		if (comPorts[port].lsr_rxdata_ready == 1)
     		{
     			// Unread data still exists in receive buffer
-    			logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Overflow in receive buffer");
+    			logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Overflow in receive buffer");
     			comPorts[port].lsr_overrun_error = 1;
     			this.setIRQ(port, INTERRUPT_RXLSTAT);
     		}
