@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.6 $ $Date: 2008-02-14 11:15:49 $ $Author: blohman $
+ * $Revision: 1.7 $ $Date: 2008-02-27 16:16:35 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -574,29 +574,28 @@ public class Motherboard extends ModuleMotherboard
         // Check for Bochs BIOS ports first:
         if (portAddress == 0x400 || portAddress == 0x401)
         {
-            System.err.println("BIOS panic at rombios.c, line " + dataByte);
+            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " Problem occurred in ROM BIOS at line: " + dataByte);
             return;
         }
-        
-        if (portAddress == 0x402 || portAddress == 0x403)
+        else if (portAddress == 0x402 || portAddress == 0x403)
         {
             try 
-                {
-                System.out.print(new String(new byte[]{(byte)dataByte},"US-ASCII"));
-                } 
-                catch (Exception e) 
-                {
-                System.out.print(new String(new byte[]{(byte)dataByte}));                
-                }
-                return;
+            {
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " I/O port (0x" + Integer.toHexString(portAddress).toUpperCase() + "): " + new String(new byte[]{(byte)dataByte},"US-ASCII"));
+            } 
+            catch (Exception e) 
+            {
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " I/O port (0x" + Integer.toHexString(portAddress).toUpperCase() + "): " + new String(new byte[]{(byte)dataByte}));
+            }
+            return;
         }
-        if (portAddress == 0x8900)
+        else if (portAddress == 0x8900)
         {
-            System.out.println("Attempt to call Shutdown");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " I/O port (0x" + Integer.toHexString(portAddress).toUpperCase() + "): attempting to shutdown.");
             return;
         }
         
-        // check if port is available
+        // Check if port is available/registered
         if (ioAddressSpace[portAddress] != null)
         {
             try
@@ -615,6 +614,7 @@ public class Motherboard extends ModuleMotherboard
         } 
         else 
         {
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Requested I/O port (0x" + Integer.toHexString(portAddress).toUpperCase() + ", setByte) is not available/registered.");
             // FIXME: Add proper error handling for unknown I/O ports, no value is passed forward
         	// throw new ModuleException("Requested I/O port [" + portAddress  + "] (setByte) is not available.");
         }
@@ -787,7 +787,7 @@ public class Motherboard extends ModuleMotherboard
         A20Enabled = a20;
         if(emu.isCpu32bit())
         {
-            System.out.println("[" + MODULE_TYPE + "]" + "Attempting to set memory A20 line in 32-bit mode (unsupported)");
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
         }
         else
         {
@@ -807,7 +807,7 @@ public class Motherboard extends ModuleMotherboard
 
         if (emu.isCpu32bit())
         {
-            System.out.println("[" + MODULE_TYPE + "]" + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
+        	logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
             return 0x1;
         }
         else
