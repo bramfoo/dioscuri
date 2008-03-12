@@ -7,7 +7,7 @@ Organisations : Koninklijke Bibliotheek,
 
 0.3.0 : 14-02-2008 (MS Windows 3.0 capable)
 -------------------------------------------------------
-- Added 32-bit CPU from JPC project (http://www-jpc.physics.ox.ac.uk/)
+- Added 32-bit CPU from JPC project (http://www.physics.ox.ac.uk/jpc)
 - Added serial mouse support (experimental)
 - Added serial port (UART 16550A with COM-ports 1 to 4)
 - Fixed minor bugs in modules CPU, DMA, PIC
