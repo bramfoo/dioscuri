@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.5 $ $Date: 2008-02-11 14:51:45 $ $Author: blohman $
+ * $Revision: 1.6 $ $Date: 2008-03-12 14:38:04 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -167,7 +167,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard", "rtc", "pic", "dma", "ata"};
+    private String[] moduleConnections;
     private ModuleMotherboard motherboard;
     private ModuleRTC rtc;
     private ModulePIC pic;
@@ -444,6 +444,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable
         statusRegister1 = 0;
         statusRegister2 = 0;
         statusRegister3 = 0;
+        
+        // Set module connections
+        if (!emu.isCpu32bit())
+        	moduleConnections = new String[] {"motherboard", "rtc", "pic", "dma", "ata"};
+        else
+        	moduleConnections = new String[] {"motherboard", "rtc", "pic", "ata"};
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
     }
@@ -549,10 +555,21 @@ public class FDC extends ModuleFDC implements DMATransferCapable
     public boolean isConnected()
     {
         // Check if module is fully connected
-        if (this.motherboard != null && this.rtc != null && this.pic != null && this.dma != null && this.ata != null)
-        {
-            return true;
-        }
+    	
+    	if (!emu.isCpu32bit())
+    	{
+    		if (this.motherboard != null && this.rtc != null && this.pic != null && this.dma != null && this.ata != null)
+    		{
+    			return true;
+    		}
+    	}
+    	else
+    	{
+    		if (this.motherboard != null && this.rtc != null && this.pic != null && this.ata != null)
+    		{
+    			return true;
+    		}
+    	}	
 
         // One or more connections may be missing
         return false;

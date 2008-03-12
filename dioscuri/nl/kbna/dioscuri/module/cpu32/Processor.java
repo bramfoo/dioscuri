@@ -2830,7 +2830,7 @@ public String getType()
 public boolean isConnected()
 {
     // TODO Auto-generated method stub
-    return false;
+    return true;
 }
 
 @Override

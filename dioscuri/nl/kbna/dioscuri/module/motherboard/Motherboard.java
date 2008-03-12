@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.7 $ $Date: 2008-02-27 16:16:35 $ $Author: jrvanderhoeven $
+ * $Revision: 1.8 $ $Date: 2008-03-12 14:40:48 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -82,7 +82,7 @@ public class Motherboard extends ModuleMotherboard
     
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"cpu", "memory"}; 
+    private String[] moduleConnections; 
     private ModuleCPU cpu;
     private ModuleMemory memory;
     private Devices devices;       // Array of all peripheral devices
@@ -140,6 +140,12 @@ public class Motherboard extends ModuleMotherboard
 		
 		// Create new empty I/O address space
 		ioAddressSpace = new ModuleDevice[ioSpaceSize];
+		
+		// Set module connections
+		if (!emu.isCpu32bit()) 
+			moduleConnections = new String[] {"cpu", "memory"};
+		else
+			moduleConnections = new String[]{};
 		
 		logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME + " -> Module created successfully.");
 	}
