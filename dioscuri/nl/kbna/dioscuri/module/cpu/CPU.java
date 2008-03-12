@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.15 $ $Date: 2007-10-31 09:10:02 $ $Author: blohman $
+ * $Revision: 1.16 $ $Date: 2008-03-12 14:36:50 $ $Author: blohman $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -1199,8 +1199,8 @@ public class CPU extends ModuleCPU
         
         // Point CS to power-up entry/hardware reset entry FFFF:0000  
 		cs = new byte[REGISTER_SIZE_SEGMENT / BYTE];
-		cs[REGISTER_SEGMENT_HIGH] = (byte) 0xFF;
-		cs[REGISTER_SEGMENT_LOW] = (byte) 0xFF;
+		cs[REGISTER_SEGMENT_HIGH] = (byte) 0xF0;
+		cs[REGISTER_SEGMENT_LOW] = (byte) 0x00;
 
 		ds = new byte[REGISTER_SIZE_SEGMENT / BYTE];
 		ds[REGISTER_SEGMENT_HIGH]= (byte) 0x00;
@@ -1217,8 +1217,8 @@ public class CPU extends ModuleCPU
 		// Special registers
         // Point IP to power-up entry/hardware reset entry FFFF:0000
         ip = new byte[REGISTER_SIZE_SEGMENT / BYTE];
-		ip[REGISTER_SEGMENT_LOW] = 0x00;
-        ip[REGISTER_SEGMENT_HIGH] = 0x00;
+        ip[REGISTER_SEGMENT_HIGH] = (byte) 0xFF;
+		ip[REGISTER_SEGMENT_LOW] = (byte) 0xF0;
         oldIP = new byte[REGISTER_SIZE_SEGMENT / BYTE];
         oldIP[REGISTER_SEGMENT_LOW] = 0x00;
         oldIP[REGISTER_SEGMENT_HIGH] = 0x00;
@@ -1483,7 +1483,7 @@ public class CPU extends ModuleCPU
 		/* D3 */  singleByteInstructions[211] = new Instruction_ShiftGRP2_EvCL(this); // Immediate Group 2 opcode extension: ROL, ROR, RCL, RCR, SHL/SAL, SHR, SAR
 		/* D4 */  singleByteInstructions[212] = new Instruction_AAM_Ib(this);     // ASCII adjust AX after multiply 
 		/* D5 */  singleByteInstructions[213] = new Instruction_AAD_Ib(this);     // ASCII adjust AX before division 
-		/* D6 */  singleByteInstructions[214] = new Instruction_NULL(this); 
+		/* D6 */  singleByteInstructions[214] = new Instruction_SALC(this);		  // Set AL on CF (undocumented Intel instruction) 
 		/* D7 */  singleByteInstructions[215] = new Instruction_XLAT(this);       // Set AL to memory byte DS:[BX + unsigned AL] 
 		/* D8 */  singleByteInstructions[216] = new Instruction_ESC_FPU(this);    // Escape to coprocessor instruction set (NOTE: Empty instruction handler!!!)
 		/* D9 */  singleByteInstructions[217] = new Instruction_ESC_FPU(this);    // Escape to coprocessor instruction set (NOTE: Empty instruction handler!!!)
