@@ -1448,7 +1448,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock, MicrocodeSet
 
                 case FPATAN: freg0 = Math.atan2(freg1, freg0); break;
                 case FPREM: {
-                    int d = Math.getExponent(freg0) - Math.getExponent(freg1);
+                    int d = nl.kbna.dioscuri.module.cpu.Util.getExponent(freg0) - 
+                    		nl.kbna.dioscuri.module.cpu.Util.getExponent(freg1);
                     if (d < 64)
                     {
                         // full remainder
@@ -1473,7 +1474,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock, MicrocodeSet
                     }
                 } break;
                 case FPREM1: {
-                    int d = Math.getExponent(freg0) - Math.getExponent(freg1);
+                    int d = nl.kbna.dioscuri.module.cpu.Util.getExponent(freg0) - 
+                    		nl.kbna.dioscuri.module.cpu.Util.getExponent(freg1);
                     if (d < 64)
                     {
                         // full remainder
@@ -1510,15 +1512,15 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock, MicrocodeSet
                         freg0 = Math.tan(freg0);
                     }
                 } break;
-                case FSCALE: freg0 = Math.scalb(freg0, (int) freg1); break;
+                case FSCALE: freg0 = nl.kbna.dioscuri.module.cpu.Util.scalb(freg0, (int) freg1); break;
 //                 case FSINCOS: {
 //                     freg1 = sin(freg0);
 //                     freg0 = cos(freg0);
 //                 } break;
                 case FXTRACT: {
-                    int e = Math.getExponent(freg0);
+                    int e = nl.kbna.dioscuri.module.cpu.Util.getExponent(freg0);
                     freg1 = (double) e;
-                    freg0 = Math.scalb(freg0, -e);
+                    freg0 = nl.kbna.dioscuri.module.cpu.Util.scalb(freg0, -e);
                 } break;
 //                 case FYL2X: {
 //                     freg0 = freg1 * log2(freg0);

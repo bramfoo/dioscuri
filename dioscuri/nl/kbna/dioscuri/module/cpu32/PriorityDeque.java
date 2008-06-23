@@ -29,7 +29,7 @@ package nl.kbna.dioscuri.module.cpu32;
 
 import java.util.*;
 
-public class PriorityDeque extends AbstractQueue implements Deque
+public class PriorityDeque extends AbstractQueue implements nl.kbna.dioscuri.util.Deque
 {
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
     
@@ -235,7 +235,11 @@ public class PriorityDeque extends AbstractQueue implements Deque
             newCapacity = Integer.MAX_VALUE;
         if (newCapacity < minCapacity)
             newCapacity = minCapacity;
-        queue = Arrays.copyOf(queue, newCapacity);
+        
+        //queue = Arrays.copyOf(queue, newCapacity);
+        Object[] newQueue = new Object[newCapacity];
+        System.arraycopy(queue, 0, newQueue, 0, queue.length);
+        queue = newQueue;
     }
 
     private int indexOf(Object o) {
@@ -416,6 +420,8 @@ public class PriorityDeque extends AbstractQueue implements Deque
     
     public String toString()
     {
-    return Arrays.toString(Arrays.copyOf(queue, size));
+    	Object[] temp = new Object[size];
+        System.arraycopy(queue, 0, temp, 0, temp.length);
+    	return Arrays.toString(temp);
     }
 }

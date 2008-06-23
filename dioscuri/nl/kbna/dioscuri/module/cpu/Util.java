@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-27 07:48:00 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2008-06-23 20:25:09 $ $Author: bkiers $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -665,6 +665,77 @@ public class Util {
         }
         return word;
     }
+   
+    /*
+    public static void testGetExponent(int numTests) {
+        java.util.Random rand = new java.util.Random();
+        for(int i = 0; i < numTests; i++) {
+            double d = rand.nextDouble()*rand.nextInt();
+            if(getExponent(d) != Math.getExponent(d)) {
+                System.out.println("ERROR -> "+
+                        "getExponent("+d+") = "+getExponent(d)+
+                        " != "+
+                        "Math.getExponent("+d+") = "+Math.getExponent(d));
+            }
+        }
+    }
+    */
+    public static int getExponent(double val) {
+        return (int)(((Double.doubleToRawLongBits(val) &
+                0x7ff0000000000000L) >> 52) - 1023L);
+    }
+   
+    public static int getExponent(float val) {
+        return ((Float.floatToRawIntBits(val) &
+                0x7f800000) >> 23) - 127;
+    }
+    
+    /*
+    public static void testScalb(int numTests) {
+        java.util.Random rand = new java.util.Random();
+        for(int j = 0; j < numTests; j++) {
+            double d = rand.nextDouble()*rand.nextInt();
+            float f = rand.nextFloat()*rand.nextInt();
+            int i = rand.nextInt();
+            if(scalb(d, i) != Math.scalb(d, i)) {
+                System.out.println("ERROR -> "+
+                        "scalb("+d+", "+i+") = "+scalb(d, i)+
+                        " != "+
+                        "Math.scalb("+d+", "+i+") = "+Math.scalb(d, i));
+            }
+            if(scalb(f, i) != Math.scalb(f, i)) {
+                System.out.println("ERROR -> "+
+                        "scalb("+f+", "+i+") = "+scalb(f, i)+
+                        " != "+
+                        "Math.scalb("+f+", "+i+") = "+Math.scalb(f, i));
+            }
+        }
+    }
+    */
+    public static double scalb(double d, int i) {
+        int j = 0;
+        char c = '\0';
+        double d1 = 0.0;
+        if(i < 0) {
+            i = Math.max(i, -2099);
+            c = '\uFE00';
+            d1 = Math.pow(2, -512);
+        } else {
+            i = Math.min(i, 2099);
+            c = '\u0200';
+            d1 = Math.pow(2, 512);
+        }
+        int k = (i >> 8) >>> 23;
+        j = (i + k & 0x1ff) - k;
+        d *= Math.pow(2, j);
+        for(i -= j; i != 0; i -= c) {
+            d *= d1;
+        }
+        return d;
+    }
 
-
+    public static float scalb(float f, int i) {
+        i = Math.max(Math.min(i, 278), -278);
+        return (float)((double)f * Math.pow(2, i));
+    }
 }

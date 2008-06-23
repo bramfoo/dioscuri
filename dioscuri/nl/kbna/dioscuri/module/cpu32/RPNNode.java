@@ -386,8 +386,10 @@ public abstract class RPNNode
     {
         if (reset) return;
         reset = true;
-
-        writeCount = Arrays.binarySearch(writeCountIndex, 0, writeCountMax + 1, location);
+        
+        // writeCount = Arrays.binarySearch(writeCountIndex, 0, writeCountMax + 1, location);
+        writeCount = Arrays.binarySearch(writeCountIndex, location);
+        
     if (writeCount < 0)
         writeCount = ~writeCount;
     writeCount = Math.max(writeCount - 1, 0);
