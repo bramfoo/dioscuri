@@ -1118,7 +1118,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock, Microcod
 
         case FPATAN: freg0 = Math.atan2(freg1, freg0); break;
         case FPREM: {
-        int d = nl.kbna.dioscuri.module.cpu.Util.getExponent(freg0) - 
+        int d = nl.kbna.dioscuri.module.cpu.Util.getExponent(freg0) -  
         		nl.kbna.dioscuri.module.cpu.Util.getExponent(freg1);
         if (d < 64)
                     {

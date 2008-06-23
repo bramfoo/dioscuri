@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-06-23 20:25:09 $ $Author: bkiers $
+ * $Revision: 1.4 $ $Date: 2008-06-23 20:38:49 $ $Author: bkiers $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -56,7 +56,7 @@ public class Util {
 			 true, false, false, true, false, true, true, false, false, true, true, false, true, false, false, true
 			 };
     
-    // Temporary flag variables
+    // Temporary flag variables 
     protected static boolean cf;
     
     // Temporary registers

@@ -29,7 +29,7 @@ package nl.kbna.dioscuri.module.cpu32;
 
 import java.util.*;
 
-public class PriorityDeque extends AbstractQueue implements nl.kbna.dioscuri.util.Deque
+public class PriorityDeque extends AbstractQueue  implements nl.kbna.dioscuri.util.Deque
 {
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
     

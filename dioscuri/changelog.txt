@@ -25,7 +25,6 @@ Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
   O(log(n)) in Big-O terms, so it should be a noticeable difference.
   
   
-  
 0.3.0 : 14-02-2008 (MS Windows 3.0 capable)
 -------------------------------------------------------
 - Added 32-bit CPU from JPC project (http://www.physics.ox.ac.uk/jpc)
