@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.12 $ $Date: 2008-02-14 11:12:58 $ $Author: jrvanderhoeven $
+ * $Revision: 1.13 $ $Date: 2008-12-18 14:35:50 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -145,11 +145,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.3.0";
-   protected final static String EMULATOR_DATE = "February, 2008";
-   protected final static String EMULATOR_CREATOR = "National Library of the Netherlands, Nationaal Archief of the Netherlands";
+   protected final static String EMULATOR_VERSION = "0.4.0";
+   protected final static String EMULATOR_DATE = "December, 2008";
+   protected final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets project";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
-   private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen.gif";
+   private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen_2008_v040.gif";
    
    // Dimension settings
    private static final int GUI_X_LOCATION = 200;
@@ -871,9 +871,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
            // Show About dialog
            JOptionPane.showMessageDialog(this, this.getEmulatorName() + "\n"
                                                    + "Version " + this.getEmulatorVersion() + ", Copyright (C) " + this.getEmulatorDate() + " by " + "\n\n"
-                                                   + " The National Library of the Netherlands\n"
-                                                   + "                               and\n"
+                                                   + " Koninklijke Bibliotheek (KB, the national Library of the Netherlands)\n"
                                                    + " The Nationaal Archief of the Netherlands\n"
+                                                   + " Planets project\n"
                                                    + "\n"
                                                    + " This program is free software; you can redistribute it and/or\n"
                                                    + " modify it under the terms of the GNU General Public License\n"
@@ -884,7 +884,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                                                    + " but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
                                                    + " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
                                                    + " GNU General Public License for more details.\n\n\n"
-                                                   + " Credits: Bram Lohman, Chris Rose, Jeffrey van der Hoeven");
+                                                   + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven");
        }
    }
    
@@ -1009,11 +1009,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     */
    public String toString()
    {
-       String info = "-----------------------------------------------------------------------------" + "\n";
-       info += "| " + EMULATOR_NAME + ": version " + EMULATOR_VERSION + "       |" + "\r\n";
-       info += "| " + "Copyright (C) " + EMULATOR_DATE + "                                              |" + "\r\n";
+       String info = "---------------------------------------------------------------------------------------" + "\n";
+       info += "| " + EMULATOR_NAME + ": version " + EMULATOR_VERSION + "                 |" + "\r\n";
+       info += "| " + "Copyright (C) " + EMULATOR_DATE + "                                                        |" + "\r\n";
        info += "| " + EMULATOR_CREATOR + " |" + "\r\n";
-       info += "-----------------------------------------------------------------------------" + "\n";
+       info += "---------------------------------------------------------------------------------------" + "\n";
        return info;
    }
 

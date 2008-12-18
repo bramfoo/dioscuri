@@ -1,13 +1,13 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 23 June 2008
+Date          : 11 December 2008
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
 
-0.3.1 : 23-06-2008
+0.4.0 : 11-12-2008
 -------------------------------------------------------
-Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
+- Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
 - added nl.kbna.dioscuri.util.Deque to replace Java 1.6's java.util.Deque interface
 - nl.kbna.dioscuri.module.cpu32.PriorityDeque now implements nl.kbna.dioscuri.util.Deque
   instead of the java.util.Deque interface
@@ -23,6 +23,8 @@ Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
   binarySearch(int[] a, int fromIndex, int toIndex, int key) which has been rewritten as:
   binarySearch(int[] a, int key) which will take slightly longer, of course, but still performs a
   O(log(n)) in Big-O terms, so it should be a noticeable difference.
+- Support for command-line interface
+
   
   
 0.3.0 : 14-02-2008 (MS Windows 3.0 capable)
