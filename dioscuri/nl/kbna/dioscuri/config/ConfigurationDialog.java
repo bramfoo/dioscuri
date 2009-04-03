@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-30 09:33:12 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,7 +40,6 @@
 package nl.kbna.dioscuri.config;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -48,16 +47,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.GUI;
 
 public abstract class ConfigurationDialog extends JDialog
 {
@@ -78,7 +76,7 @@ public abstract class ConfigurationDialog extends JDialog
     protected int dialogXPosition;
     protected int dialogYPosition; 
     
-    protected JFrame parent;
+    protected GUI parent;
     protected boolean isMainConfigScreen;
     
     protected ModuleType moduleType;
@@ -89,7 +87,7 @@ public abstract class ConfigurationDialog extends JDialog
     {
     }
     
-    public ConfigurationDialog(JFrame parent, String title, 
+    public ConfigurationDialog(GUI parent, String title, 
                                 boolean isMainConfigScreen,
                                 ModuleType moduleType)
     {       
@@ -100,7 +98,7 @@ public abstract class ConfigurationDialog extends JDialog
         
     }
     
-    private void initComponents(JFrame parent, boolean isMainConfigScreen)
+    private void initComponents(GUI parent, boolean isMainConfigScreen)
     {
         
         this.parent = parent;
@@ -223,7 +221,7 @@ public abstract class ConfigurationDialog extends JDialog
             }
         }
         
-        DioscuriXmlWriter xmlWriter = new DioscuriXmlWriter();
+        DioscuriXmlWriter xmlWriter = parent.getXMLWriter();
         
         try 
         {

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -40,21 +40,17 @@
 package nl.kbna.dioscuri.config;
 
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.GUI;
 
 public class BootConfigDialog extends ConfigurationDialog
 {
@@ -65,10 +61,9 @@ public class BootConfigDialog extends ConfigurationDialog
     private JCheckBox floppyCheckDisabledCheckBox;   
  
                 
-    public BootConfigDialog(JFrame parent)
+    public BootConfigDialog(GUI parent)
     {               
         super (parent, "Boot Configuration", false, ModuleType.BOOT); 
-                    
     }
     
     /**
@@ -77,7 +72,9 @@ public class BootConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
         
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+//        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	// TODO: Maybe even better would be to let XML reader (or GUI) figure out which params to be returned
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.BOOT);
         
         int boot1Index = ((Integer)params[0]).intValue();

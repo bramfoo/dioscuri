@@ -1,9 +1,16 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 11 December 2008
+Date          : 01 April 2009
 Organisations : Koninklijke Bibliotheek,
                 Nationaal Archief of the Netherlands,
                 Tessella Support Services plc.
+Projects      : Dioscuri project, Planets, KEEP
+
+0.4.1 : 01-04-2009
+-------------------------------------------------------
+- Added command line parameters for startup configuration
+- Added user-adjustable configuration file location (other then default)
+
 
 0.4.0 : 11-12-2008
 -------------------------------------------------------

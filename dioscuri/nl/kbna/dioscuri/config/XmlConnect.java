@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:26 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -64,18 +64,31 @@ import org.xml.sax.SAXException;
 
 public class XmlConnect
 {
-    
+    // Config variable (parent)
+	ConfigController configController;
+	
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.config");
-        
-    /**
+    
+    
+    // Constructor
+    
+    public XmlConnect(ConfigController configController)
+    {
+    	this.configController = configController;
+	}
+
+    
+    // Methods
+    
+	/**
      * Load the XML config document and check validation.
      * 
      * @param xmlConfigInputStream
      * @param xmlSchemaInputStream 
      * @return the XML Document
      */
-    public static Document loadXmlDocument(FileInputStream xmlConfigInputStream,
+    public Document loadXmlDocument(FileInputStream xmlConfigInputStream,
                                            File schemaFile) throws Exception
     {
         
@@ -119,7 +132,7 @@ public class XmlConnect
      * @param document
      * @param xmlConfigInputStream
      */
-    public static void closeXmlDocument(Document document, 
+    public void closeXmlDocument(Document document, 
                                         FileInputStream xmlConfigInputStream)
     {
         try 
@@ -140,15 +153,15 @@ public class XmlConnect
      * @param document
      * @return
      */
-    public static boolean writeDocumentToFile(Document document)
+    public boolean writeDocumentToFile(Document document)
     {
         OutputStream outStream = null;
         
         try 
         {
             
-        outStream = new FileOutputStream(ConfigController.CONFIG_FILE_PATH);
-             
+        outStream = new FileOutputStream(configController.getConfigFilePath());
+        
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(document);
@@ -189,7 +202,7 @@ public class XmlConnect
      * @param nodeName
      * @return the node
      */
-    public static Node getFirstNode(Document document, String nodeName)
+    public Node getFirstNode(Document document, String nodeName)
     {
         
         Node theNode = null;

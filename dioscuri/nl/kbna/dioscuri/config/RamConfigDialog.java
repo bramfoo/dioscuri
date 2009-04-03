@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:25 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -52,12 +52,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.GUI;
+
 public class RamConfigDialog extends ConfigurationDialog
 {
 
     private JFormattedTextField sizeField;
         
-    public RamConfigDialog(JFrame parent)
+    public RamConfigDialog(GUI parent)
     {               
         super (parent, "RAM Configuration", false, ModuleType.MEMORY);                    
     }
@@ -68,7 +70,7 @@ public class RamConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
                 
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MEMORY);
         Integer sizeMb = ((Integer)params[0]);        
         this.sizeField.setValue(sizeMb);

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.10 $ $Date: 2008-02-14 11:00:59 $ $Author: jrvanderhoeven $
+ * $Revision: 1.11 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -165,7 +165,7 @@ public class Emulator implements Runnable
      * @param GUI graphical user interface (owner of emulation process)
 	 *
 	 */
-	public Emulator(GUI owner)
+	public Emulator(GUI owner, ConfigController config)
 	{
         this.gui = owner;
         modules = null; // Created in createModules()
@@ -180,7 +180,8 @@ public class Emulator implements Runnable
         coldStart = true;
         resetBusy = false;
         
-        configController =  new ConfigController();
+        // Create module configuration controller
+        configController = config;
     }
 
 	

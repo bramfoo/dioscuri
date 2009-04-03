@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.1 $ $Date: 2007-07-02 14:31:26 $ $Author: blohman $
+ * $Revision: 1.2 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -51,12 +51,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.GUI;
+
 public class SimpleConfigDialog extends ConfigurationDialog
 {
 
     private JFormattedTextField updateIntField;
         
-    public SimpleConfigDialog(JFrame parent, ModuleType moduleType)
+    public SimpleConfigDialog(GUI parent, ModuleType moduleType)
     {               
         super (parent, moduleType.toString().toUpperCase() + " Configuration", false, moduleType); 
                     
@@ -68,7 +70,7 @@ public class SimpleConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
                 
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(moduleType);
         Integer updateInt = ((Integer)params[0]);        
         this.updateIntField.setValue(updateInt);

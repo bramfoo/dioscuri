@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -54,6 +54,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.GUI;
+
 public class MouseConfigDialog extends ConfigurationDialog
 {
 	// Attributes
@@ -65,7 +67,7 @@ public class MouseConfigDialog extends ConfigurationDialog
     
     // Constructor
     
-    public MouseConfigDialog(JFrame parent)
+    public MouseConfigDialog(GUI parent)
     {               
         super (parent, "Mouse Configuration", false, ModuleType.MOUSE);                    
     }
@@ -77,7 +79,7 @@ public class MouseConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
         
         boolean enabled = ((Boolean)params[0]).booleanValue();

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.5 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -47,22 +47,33 @@ import org.w3c.dom.NodeList;
 
 public class DioscuriXmlWriter
 {
+	// Config variables
+	private ConfigController configController;
+	private XmlConnect xmlConnect;
+	
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.config");
     
     
-    public boolean writeModuleParams(Object[] params, ModuleType moduleType)
+    public DioscuriXmlWriter(ConfigController configController,	XmlConnect xmlConnect)
+    {
+    	this.configController = configController;
+    	this.xmlConnect = xmlConnect;
+	}
+
+
+	public boolean writeModuleParams(Object[] params, ModuleType moduleType)
     {
 
-        File configFile = new File(ConfigController.CONFIG_FILE_PATH);
-        File schemaFile = new File(ConfigController.SCHEMA_FILE_PATH);   
+        File configFile = new File(configController.getConfigFilePath());
+        File schemaFile = new File(configController.getSchemaFilePath());   
         Document document = null;
         FileInputStream xmlConfigInputStream = null; 
               
         try 
         {
             xmlConfigInputStream = new FileInputStream(configFile);                      
-            document = XmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
+            document = xmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
             
             boolean success = false;
             
@@ -110,7 +121,7 @@ public class DioscuriXmlWriter
             }
             
             
-            if (!XmlConnect.writeDocumentToFile(document))
+            if (!xmlConnect.writeDocumentToFile(document))
             {    
                 return false;
             }
@@ -268,7 +279,7 @@ public class DioscuriXmlWriter
     
     private boolean saveBootParams(Document document, Object[] params)
     {
-        Node bootDrivesNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
+        Node bootDrivesNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
                        
         NodeList eachBootDriveNode = bootDrivesNode.getChildNodes();
         
@@ -305,7 +316,7 @@ public class DioscuriXmlWriter
             }
         }
         
-        Node floppyCheckDisabledNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY_CHECK_DISABLED_NODE);
+        Node floppyCheckDisabledNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY_CHECK_DISABLED_NODE);
                 
         String name = floppyCheckDisabledNode.getNodeName();
         Node currentNode = floppyCheckDisabledNode.getChildNodes().item(0);
@@ -333,7 +344,7 @@ public class DioscuriXmlWriter
     private boolean saveFdcParams(Document document, Object[] params)
     {
            
-        Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
+        Node floppyDriveNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
         NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
              
         int updateInt = ((Integer)params[0]);
@@ -427,7 +438,7 @@ public class DioscuriXmlWriter
     private boolean saveCpuParams(Document document, Object[] params)
     {
         
-        Node cpuSpeedNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
+        Node cpuSpeedNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
         
         String name = cpuSpeedNode.getNodeName();
         Node currentNode = cpuSpeedNode.getChildNodes().item(0);
@@ -441,7 +452,7 @@ public class DioscuriXmlWriter
             }
         }
         
-        Node cpu32bitNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
+        Node cpu32bitNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
         
         name = cpu32bitNode.getNodeName();
         currentNode = cpu32bitNode.getChildNodes().item(0);
@@ -470,7 +481,7 @@ public class DioscuriXmlWriter
 
         int ramSizeMb = ((Integer)(params[0])).intValue();
 
-        Node ramNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
+        Node ramNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
         Node ramSubNode = ramNode.getChildNodes().item(0);
         
         String ramSpeedString = (new Integer(ramSizeMb)).toString();

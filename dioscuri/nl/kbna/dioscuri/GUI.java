@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.13 $ $Date: 2008-12-18 14:35:50 $ $Author: jrvanderhoeven $
+ * $Revision: 1.14 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -74,6 +74,9 @@ import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.MouseInputListener;
 
+import nl.kbna.dioscuri.config.ConfigController;
+import nl.kbna.dioscuri.config.DioscuriXmlReader;
+import nl.kbna.dioscuri.config.DioscuriXmlWriter;
 import nl.kbna.dioscuri.config.SelectionConfigDialog;
 import nl.kbna.dioscuri.datatransfer.TextTransfer;
 
@@ -85,6 +88,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 {
    // Attributes
    private Emulator emu;
+   private ConfigController configController;
    private TextTransfer textTransfer;
    
    // Panels
@@ -141,13 +145,19 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private int guiWidth;
    private int guiHeight;
    
+   // Command line parameter settings
+   private boolean guiHidden;
+   private String configFilePath;
+   private boolean autorun;
+   private boolean autoshutdown;
+   
    
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.4.0";
-   protected final static String EMULATOR_DATE = "December, 2008";
-   protected final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets project";
+   protected final static String EMULATOR_VERSION = "0.4.1";
+   protected final static String EMULATOR_DATE = "April, 2009";
+   protected final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
    private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen_2008_v040.gif";
    
@@ -211,6 +221,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        
        // Create GUI
        new GUI(args);
+       
    }
 
    
@@ -283,8 +294,9 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        this.setTitle(this.getEmulatorName());
        this.setResizable(false);
        this.updateGUI(GUI_RESET);
-       this.setVisible(true);
-       this.requestFocus();
+       
+       // Create configuration controller (uses default config file path)
+	   configController = new ConfigController(this);
        
        // Create clipboard functionality
        textTransfer = new TextTransfer(this);
@@ -292,20 +304,89 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
    public GUI(String[] arguments)
    {
+	   // Define GUI
 	   this();
 	   
+	   // Interpret arguments (if any)
+	   // The following arguments are allowed:
+	   // -c "<CONFIGPATH_FILE>"	: uses given config.xml file instead of default. If not available, default will be used
+	   // -h						: hide GUI
+	   // autorun					: emulator will directly start emulation process
+	   // autoshutdown				: emulator will shutdown automatically when emulation process is finished
+	   // Example: java -jar Dioscuri.jar -c "c:\emulators\configs\dioscuri_config.xml" autorun
+	   
+	   // Reset argument parameters
+	   configFilePath = "";
+	   guiHidden = false;
+	   autorun = false;
+	   autoshutdown = false;
+	   
 	   // Check arguments
-	   if (arguments.length > 0)
+	   for (int a = 0; a < arguments.length; a++)
 	   {
-		   // Argument run
-		   if (arguments[0].equalsIgnoreCase("autorun"))
+		   // Argument -c
+		   if (arguments[a].equalsIgnoreCase("-c"))
 		   {
-			   // Automatically start emulation process
-	           // Start emulation process
-	           emu = new Emulator(this);
-	           new Thread(emu).start();
-	           this.updateGUI(EMU_PROCESS_START);
+			   // Fetch next argument
+			   a++;
+			   if (arguments[a] != null)
+			   {
+				   // Strip "" of string and assign it to config location
+				   configFilePath = arguments[a].substring(0, arguments[a].length());
+			   }
 		   }
+		   
+		   // Argument -h
+		   else if (arguments[a].equalsIgnoreCase("-h"))
+		   {
+			   guiHidden = true;
+		   }
+
+		   // Argument autorun
+		   else if (arguments[a].equalsIgnoreCase("autorun"))
+		   {
+			   autorun = true;
+		   }
+		   
+		   // Argument autoshutdown
+		   else if (arguments[a].equalsIgnoreCase("autoshutdown"))
+		   {
+			   autoshutdown = true;
+		   }
+		   
+		   // Wrong argument
+		   else
+		   {
+	           logger.log(Level.SEVERE, "[gui] Error in command line parameters during invocation of Dioscuri");
+		   }
+	   }
+
+	   // Perform argument actions
+	   // Change configuration file
+	   if (configFilePath != "" && configController.setConfigFilePath(configFilePath) == true)
+	   {
+           logger.log(Level.SEVERE, "[gui] Configuration path changed in " + configFilePath);
+	   }
+	   
+       // Show / hide GUI (based on command line parameter)
+	   if (guiHidden == true)
+	   {
+	       this.setVisible(false);
+           logger.log(Level.SEVERE, "[gui] GUI is hidden");
+	   }
+	   else
+	   {
+	       this.setVisible(true);
+	       this.requestFocus();
+           logger.log(Level.SEVERE, "[gui] GUI is visible and has focus");
+	   }
+
+	   // Automatically start emulation process
+	   if (autorun == true)
+	   {
+           emu = new Emulator(this, configController);
+           new Thread(emu).start();
+           this.updateGUI(EMU_PROCESS_START);
 	   }
    }
    
@@ -776,7 +857,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        if (c == (JComponent) miEmulatorStart)
        {
            // Start emulation process
-           emu = new Emulator(this);
+           emu = new Emulator(this, configController);
            new Thread(emu).start();
            this.updateGUI(EMU_PROCESS_START);
        }
@@ -874,6 +955,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                                                    + " Koninklijke Bibliotheek (KB, the national Library of the Netherlands)\n"
                                                    + " The Nationaal Archief of the Netherlands\n"
                                                    + " Planets project\n"
+                                                   + " KEEP project\n"
                                                    + "\n"
                                                    + " This program is free software; you can redistribute it and/or\n"
                                                    + " modify it under the terms of the GNU General Public License\n"
@@ -985,6 +1067,17 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                           + "    " + locationString + newline);
        
        return output;
+   }
+   
+   public DioscuriXmlReader getXMLReader()
+   {
+	   return configController.getXMLReader();
+   }
+
+   
+   public DioscuriXmlWriter getXMLWriter()
+   {
+	   return configController.getXMLWriter();
    }
 
    

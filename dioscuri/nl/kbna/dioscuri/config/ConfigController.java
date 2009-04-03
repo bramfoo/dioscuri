@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-11 15:24:53 $ $Author: blohman $
+ * $Revision: 1.5 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -39,19 +39,81 @@ import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import nl.kbna.dioscuri.GUI;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class ConfigController
 {
+	// Read/write XML variables
+	private GUI gui;
+    private XmlConnect xmlConnect;
+    private DioscuriXmlReader xmlReader;
+    private DioscuriXmlWriter xmlWriter;
 
+	
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri");
     
-    public final static String CONFIG_FILE_PATH            = "config/DioscuriConfig.xml"; 
-    public final static String SCHEMA_FILE_PATH            = "config/DioscuriConfig.xsd";
-  
+    // File config and schema paths (set to default)
+    private String configFilePath            = "config/DioscuriConfig.xml";
+    private String schemaFilePath            = "config/DioscuriConfig.xsd";
+    
+//    public final static String CONFIG_FILE_PATH            = "config/DioscuriConfig.xml"; 
+//    public final static String SCHEMA_FILE_PATH            = "config/DioscuriConfig.xsd";
+
+    
+    // Constructor
+    
+    public ConfigController(GUI gui)
+    {
+    	this.gui = gui;
+        xmlConnect = new XmlConnect(this);
+
+        // Create XML reader and writer
+        xmlReader = new DioscuriXmlReader(this, xmlConnect);
+        xmlWriter = new DioscuriXmlWriter(this, xmlConnect);
+        
+
+    }
+
+    // Methods
+    
+	public boolean setConfigFilePath(String configFilePath)
+	{
+		this.configFilePath = configFilePath;
+		return true;
+	}
+
+	public String getConfigFilePath()
+	{
+		return configFilePath;
+	}
+
+	public void setSchemaFilePath(String schemaFilePath)
+	{
+		this.schemaFilePath = schemaFilePath;
+	}
+
+	public String getSchemaFilePath()
+	{
+		return schemaFilePath;
+	}
+
+	public DioscuriXmlReader getXMLReader()
+	{
+		return xmlReader;
+	}
+    
+	
+	public DioscuriXmlWriter getXMLWriter()
+	{
+		return xmlWriter;
+	}
+    
+	
     /**
      * Creates a recursive HashMap from a given node in a xml document
      * Iterates over all subnodes adding key-value pairs as either
@@ -118,15 +180,15 @@ public class ConfigController
     {
         HashMap hm = new HashMap();
         
-        File configFile = new File(CONFIG_FILE_PATH);
-        File schemaFile = new File(SCHEMA_FILE_PATH);
+        File configFile = new File(configFilePath);
+        File schemaFile = new File(schemaFilePath);
         Document document = null;
         FileInputStream xmlConfigInputStream = null;
 
         try
         {
             xmlConfigInputStream = new FileInputStream(configFile);
-            document = XmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
+            document = xmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
 
         }
         catch (Exception e)
@@ -140,10 +202,10 @@ public class ConfigController
 
         nodeToHashMap(modNode, hm);
         
-        XmlConnect.closeXmlDocument(document, xmlConfigInputStream);
+        xmlConnect.closeXmlDocument(document, xmlConfigInputStream);
         
         return hm;
 
     }
-    
+
 }

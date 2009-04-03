@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2008-02-11 15:23:36 $ $Author: blohman $
+ * $Revision: 1.4 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,6 +53,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import nl.kbna.dioscuri.GUI;
+
 public class AtaConfigDialog extends ConfigurationDialog
 {
     
@@ -68,7 +70,7 @@ public class AtaConfigDialog extends ConfigurationDialog
     
     private JButton imageBrowseButton;
             
-    public AtaConfigDialog(JFrame parent)
+    public AtaConfigDialog(GUI parent)
     {               
         super (parent, "ATA Configuration", false, ModuleType.ATA); 
                     
@@ -80,9 +82,9 @@ public class AtaConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
         
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.ATA);
-                   
+        
         Integer updateInt = ((Integer)params[0]);      
         boolean isEnabled = ((Boolean)params[1]).booleanValue();
         int channelIndex = ((Integer)params[2]).intValue();

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2008-02-11 15:25:15 $ $Author: blohman $
+ * $Revision: 1.3 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -53,13 +53,15 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.GUI;
+
 public class CpuConfigDialog extends ConfigurationDialog
 {
     private JFormattedTextField speedField;
     private JRadioButton cpu32Button;
     private JRadioButton cpu16Button;
         
-    public CpuConfigDialog(JFrame parent)
+    public CpuConfigDialog(GUI parent)
     {               
         super (parent, "CPU Configuration", false, ModuleType.CPU); 
                     
@@ -71,7 +73,7 @@ public class CpuConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
                 
-        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
+    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.CPU);
         Integer cpuSpeed = ((Integer)params[0]);        
         this.speedField.setValue(cpuSpeed);

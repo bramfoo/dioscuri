@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.2 $ $Date: 2007-08-20 15:18:47 $ $Author: jrvanderhoeven $
+ * $Revision: 1.3 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -49,17 +49,18 @@ import java.awt.event.MouseEvent;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.GUI;
 
 public class SelectionConfigDialog extends ConfigurationDialog
 {
     
     private JList modulesList;
     
-    public SelectionConfigDialog(JFrame parent)
+    public SelectionConfigDialog(GUI parent)
     {               
         super (parent, "Configuration Selector", true, null);           
     }

@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2008-02-12 11:57:30 $ $Author: jrvanderhoeven $
+ * $Revision: 1.6 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -44,30 +44,47 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class DioscuriXmlReaderToGui
+public class DioscuriXmlReader
 {
-    
+
+	// Config variables
+	private ConfigController configController;
+	private XmlConnect xmlConnect;
+	
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri.config");
+    
+    
+    // Constructor
+    public DioscuriXmlReader(ConfigController configController, XmlConnect xmlConnect)
+    {
+    	this.configController = configController;
+    	this.xmlConnect = xmlConnect;
+    }
+    
+    
+    // Methods
     
     public Object[] getModuleParams(ModuleType moduleType)
     {
              
         Object[] params = null;
         
-        File configFile = new File(ConfigController.CONFIG_FILE_PATH);
-        File schemaFile = new File(ConfigController.SCHEMA_FILE_PATH);   
-        Document document = null;
-        FileInputStream xmlConfigInputStream = null; 
+        // Retrieve configuration and schema file
+        File configFile = new File(configController.getConfigFilePath());
+        File schemaFile = new File(configController.getSchemaFilePath());
         
-        try 
+        Document document = null;
+        FileInputStream xmlConfigInputStream = null;
+        
+        try
         {
-            xmlConfigInputStream = new FileInputStream(configFile);                      
-            document = XmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
+            xmlConfigInputStream = new FileInputStream(configFile);
+            document = xmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
             
             if (moduleType == ModuleType.ATA)
-            {    
-                params = this.getHardDriveParams(document);   
+            {
+                params = this.getHardDriveParams(document);
                 
             } else if (moduleType == ModuleType.BIOS)
             {                                     
@@ -201,7 +218,7 @@ public class DioscuriXmlReaderToGui
         
         Object[] params = new Object[4];
 
-        Node bootDrivesNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
+        Node bootDrivesNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.BOOT_DRIVES_NODE);
         NodeList biosParamsNodes = bootDrivesNode.getChildNodes();
         
         int bootCount = 0;
@@ -238,7 +255,7 @@ public class DioscuriXmlReaderToGui
             }
         }    
                        
-        Node floppyCheckDisabledNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY_CHECK_DISABLED_NODE);
+        Node floppyCheckDisabledNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY_CHECK_DISABLED_NODE);
                 
         String name = floppyCheckDisabledNode.getNodeName();
         Node currentNode = floppyCheckDisabledNode.getChildNodes().item(0);
@@ -268,7 +285,7 @@ public class DioscuriXmlReaderToGui
     {
         Object[] params = new Object[2];
                
-        Node cpuSpeedNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
+        Node cpuSpeedNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_SPEED_MHZ_TEXT);
         Node subNode = cpuSpeedNode.getChildNodes().item(0);
                          
         int cpuSpeed = 0;
@@ -280,7 +297,7 @@ public class DioscuriXmlReaderToGui
         
         params[0] = cpuSpeed;
         
-        Node cpu32bitNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
+        Node cpu32bitNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
         subNode = cpu32bitNode.getChildNodes().item(0);
         
         boolean cpu32bit = true;
@@ -305,7 +322,7 @@ public class DioscuriXmlReaderToGui
         params[0] = this.getTimingParam(document, ModuleType.FDC)[0];
 
         
-        Node floppyDriveNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
+        Node floppyDriveNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
         NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
         
         for (int i = 0; i < floppyParamsNodes.getLength(); i++)
@@ -499,7 +516,7 @@ public class DioscuriXmlReaderToGui
     {
         Object[] params = new Object[1];
         
-        Node ramNode = XmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
+        Node ramNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.RAM_SIZE_TEXT);
         Node ramSubNode = ramNode.getChildNodes().item(0);
 
         int ramSize = 0;
