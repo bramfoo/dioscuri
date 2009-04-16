@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.14 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
+ * $Revision: 1.15 $ $Date: 2009-04-16 12:34:30 $ $Author: bkiers $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -329,10 +329,13 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 		   {
 			   // Fetch next argument
 			   a++;
-			   if (arguments[a] != null)
+			   if(a < arguments.length) 
 			   {
-				   // Strip "" of string and assign it to config location
-				   configFilePath = arguments[a].substring(0, arguments[a].length());
+			       configFilePath = arguments[a];
+			   }
+			   else
+			   {
+			       logger.log(Level.SEVERE, "[gui] No path provided after '-c' option.");
 			   }
 		   }
 		   
@@ -363,7 +366,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
 	   // Perform argument actions
 	   // Change configuration file
-	   if (configFilePath != "" && configController.setConfigFilePath(configFilePath) == true)
+	   if (!configFilePath.equals("") && configController.setConfigFilePath(configFilePath) == true)
 	   {
            logger.log(Level.SEVERE, "[gui] Configuration path changed in " + configFilePath);
 	   }
