@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.15 $ $Date: 2009-04-16 12:34:30 $ $Author: bkiers $
+ * $Revision: 1.16 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -241,7 +241,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        this.addWindowListener(new WindowAdapter(){
            public void windowClosing(WindowEvent event)
            {
-               exitViewer();
+               exitDioscuri();
            }
        });
 
@@ -880,13 +880,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        else if (c == (JComponent) miEmulatorQuit)
        {
            // Quit application
-           dispose();
-           // Check if emulator process is existing, if so shut down
-           if (emu != null)
-           {
-               emu.stop();
-           }
-           System.exit(0);
+    	   this.exitDioscuri();
        }
        else if (c == (JComponent) miEditCopyText)
        {
@@ -1085,10 +1079,38 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
    
    /**
-    * Exit the GUI
+    * Notify GUI about status of emulation process and take appropriate GUI action
+    * 
+    * @param int emulatorStatus indicates the state change of the emulator
     *
     */
-   protected void exitViewer()
+   protected void notifyGUI(int emulatorStatus)
+   {
+		// Check which kind of notification is given
+	   if (emulatorStatus == GUI.EMU_PROCESS_STOP)
+	   {
+		   if (this.autoshutdown == true)
+		   {
+			   // Exit application
+			   this.exitDioscuri();
+		   }
+		   else
+		   {
+			   // Update GUI status
+			   this.updateGUI(GUI.EMU_PROCESS_STOP);
+		   }
+	   }
+
+	   // TODO: add all notifications here that are done by emulator class. Currently, emulator class is directly calling gui.update(..)
+	   
+		
+	}
+	   
+   /**
+    * Exit the GUI and stop the application
+    *
+    */
+   private void exitDioscuri()
    {
        dispose();
        if (emu != null)
@@ -1196,6 +1218,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 			
 		}
    }
-   
+
+
 }
 

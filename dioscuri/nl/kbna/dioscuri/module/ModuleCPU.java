@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.4 $ $Date: 2007-08-24 15:56:16 $ $Author: blohman $
+ * $Revision: 1.5 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -234,6 +234,13 @@ public abstract class ModuleCPU extends Module
      *  @return boolean abnormalTermination true if abnormal, false otherwise
      */
     public abstract boolean isAbnormalTermination();
+
+    /**
+     * Returns if CPU halted due to full system shutdown or not
+     * 
+     *  @return boolean shutDown true if emulator should shutdown, false otherwise
+     */
+    public abstract boolean isShutdown();
 }
 
 

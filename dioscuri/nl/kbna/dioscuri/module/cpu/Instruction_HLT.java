@@ -1,4 +1,4 @@
-/* $Revision: 1.1 $ $Date: 2007-07-02 14:31:31 $ $Author: blohman $
+/* $Revision: 1.2 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -73,6 +73,7 @@ public class Instruction_HLT implements Instruction {
 	public void execute()
 	{
         cpu.asyncEvent = false;
+        cpu.setShutdown(true);
 		cpu.setRunning(false);
         logger.log(Level.SEVERE, "[" + cpu.getType() + "] Instruction HALT executed at " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1));
 	}

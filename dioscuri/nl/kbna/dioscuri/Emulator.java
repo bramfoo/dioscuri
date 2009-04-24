@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.11 $ $Date: 2009-04-03 11:06:27 $ $Author: jrvanderhoeven $
+ * $Revision: 1.12 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -199,7 +199,7 @@ public class Emulator implements Runnable
 
             // Get the module settings from the configuration file
             moduleSettings = configController.getSettings("modules");
-            logger.log(Level.INFO, "Retrieved the following settings:\n" + moduleSettings);
+            logger.log(Level.INFO, "[emu] Retrieved the following settings:\n" + moduleSettings);
 
             // Module creation
             boolean success = setupEmu();
@@ -209,7 +209,7 @@ public class Emulator implements Runnable
             
             if (!success)
             {
-                logger.log(Level.SEVERE, "Emulation process halted due to error initalizing the modules.");
+                logger.log(Level.SEVERE, "[emu] Emulation process halted due to error initalizing the modules.");
                 this.stop();
                 return;
             }
@@ -217,7 +217,7 @@ public class Emulator implements Runnable
             if (cpu32bit)
             {
             	// 32-bit CPU processing
-	            logger.log(Level.INFO, "Emulation process started (32-bit).");
+	            logger.log(Level.INFO, "[emu] Emulation process started (32-bit).");
                 try 
                 {
                     AddressSpace addressSpace = null;
@@ -259,17 +259,31 @@ public class Emulator implements Runnable
             else
             {
             	// 16-bit CPU processing
-	            logger.log(Level.INFO, "Emulation process started (16-bit).");
+	            logger.log(Level.INFO, "[emu] Emulation process started (16-bit).");
 	            
 	            if (((ModuleCPU)modules.getModule("cpu")).getDebugMode() == false)
 	            {
+	            	// Start CPU process
 	                ((ModuleCPU)modules.getModule("cpu")).start();
+	                
+	                // Check if CPU terminated abnormally -> stop emulation process
 	                if (((ModuleCPU)modules.getModule("cpu")).isAbnormalTermination() == true)
 	                {
-	                    logger.log(Level.SEVERE, "Emulation process halted due to error in CPU module.");
+	                    logger.log(Level.SEVERE, "[emu] Emulation process halted due to error in CPU module.");
 	                    this.stop();
 	                    return;
 	                }
+	                
+	                // Check if CPU calls a full shutdown of PC -> stop emulation process
+	                if (((ModuleCPU)modules.getModule("cpu")).isShutdown() == true)
+	                {
+	                    logger.log(Level.SEVERE, "[emu] Emulation process halted due to request for shutdown by CPU module.");
+	                    this.stop();
+	                    return;
+	                }
+	                
+	                // If non of previous conditions caused a full stop of the emulation process, 
+	                // Then continue with rebooting the system.
 	            }
 	            else
 	            {
@@ -313,7 +327,10 @@ public class Emulator implements Runnable
             {
                 modules.getModule(i).stop();
             }
-            logger.log(Level.INFO, "Emulation process stopped.");
+            logger.log(Level.INFO, "[emu] Emulation process stopped.");
+            
+            // Notify GUI that process has ended
+            gui.notifyGUI(GUI.EMU_PROCESS_STOP);
         }
     }
 
@@ -330,7 +347,7 @@ public class Emulator implements Runnable
             ((ModuleCPU)modules.getModule("cpu")).stop();
             
             coldStart = false;
-            logger.log(Level.INFO, "Reset in progress...");
+            logger.log(Level.INFO, "[emu] Reset in progress...");
         }
         resetBusy = false;
     }
@@ -396,7 +413,7 @@ public class Emulator implements Runnable
                     }
                     else
                     {
-                        logger.log(Level.SEVERE, "Module not recognised.");
+                        logger.log(Level.SEVERE, "[emu] Module not recognised.");
                     }
                 }
                 break;
@@ -423,7 +440,7 @@ public class Emulator implements Runnable
                 {
 	                for (int n = 0; n < numBytes; n++)
 	                {
-						logger.log(Level.SEVERE, "Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
+						logger.log(Level.SEVERE, "[emu] Value of [0x" + Integer.toHexString(memAddress + n).toUpperCase() + "]: 0x" + Integer.toHexString( 0x100 | mem.getByte(memAddress + n) & 0xFF).substring(1).toUpperCase());
 	                }
 				}
                 catch (ModuleException e)
@@ -434,7 +451,7 @@ public class Emulator implements Runnable
     
             default:
                 // No command match
-                logger.log(Level.SEVERE, "No command match. Enter a correct emulator command.");
+                logger.log(Level.SEVERE, "[emu] No command match. Enter a correct emulator command.");
                 break;
         }
     }
@@ -828,7 +845,7 @@ public class Emulator implements Runnable
         modules.addModule(new DeviceDummy(this));
         modules.addModule(new Screen(this));
         
-        logger.log(Level.INFO, "All modules are created.");
+        logger.log(Level.INFO, "[emu] All modules are created.");
              
         return true;
     }
@@ -853,16 +870,16 @@ public class Emulator implements Runnable
                 {
                     if (mod1.setConnection(mod2))
                     {
-                        logger.log(Level.CONFIG, "Successfully established connection between " + mod1.getType() + " and " + mod2.getType());
+                        logger.log(Level.CONFIG, "[emu] Successfully established connection between " + mod1.getType() + " and " + mod2.getType());
                     }
                     else
                     {
-                        logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and " + mod2.getType());
+                        logger.log(Level.SEVERE, "[emu] Failed to establish connection between " + mod1.getType() + " and " + mod2.getType());
                     }
                 }
                 else
                 {
-                    logger.log(Level.SEVERE, "Failed to establish connection between " + mod1.getType() + " and unknown module " + connections[c]);
+                    logger.log(Level.SEVERE, "[emu] Failed to establish connection between " + mod1.getType() + " and unknown module " + connections[c]);
                 }
             }
         }
@@ -874,17 +891,17 @@ public class Emulator implements Runnable
             if (!(modules.getModule(i).isConnected()))
             {
                 isConnected = false;
-                logger.log(Level.SEVERE, "Could not connect module: " + modules.getModule(i).getType() + ".");
+                logger.log(Level.SEVERE, "[emu] Could not connect module: " + modules.getModule(i).getType() + ".");
             }
         }
         if (isConnected == false)
         {
-            logger.log(Level.SEVERE, "Not all modules are connected. Emulator may be unstable.");
+            logger.log(Level.SEVERE, "[emu] Not all modules are connected. Emulator may be unstable.");
             result &= false;
         }
         else
         {
-            logger.log(Level.INFO, "All modules are successfully connected.");
+            logger.log(Level.INFO, "[emu] All modules are successfully connected.");
             result &= true;
         }
         
@@ -896,7 +913,7 @@ public class Emulator implements Runnable
             Video vid = (Video) modules.getModule(ModuleType.VGA.toString());
             Motherboard mb = (Motherboard) modules.getModule(ModuleType.MOTHERBOARD.toString());
             FDC fdc = (FDC) modules.getModule(ModuleType.FDC.toString());
-            // FIXME: remove hardcoded hwComponents index values
+            // TODO: remove hardcoded hwComponents index values
             LinearAddressSpace linearAddr = (LinearAddressSpace) hwComponents.get(0); 
             PhysicalAddressSpace physicalAddr = (PhysicalAddressSpace) hwComponents.get(1);
             DMAController primaryDMA = (DMAController) hwComponents.get(2);
@@ -980,16 +997,16 @@ public class Emulator implements Runnable
             if (!(modules.getModule(i).reset()))
             {
                 result = false;
-                logger.log(Level.SEVERE, "Could not reset module: " + modules.getModule(i).getType() + ".");
+                logger.log(Level.SEVERE, "[emu] Could not reset module: " + modules.getModule(i).getType() + ".");
             }
         }
         if (result == false)
         {
-            logger.log(Level.SEVERE, "Not all modules are reset. Emulator may be unstable.");
+            logger.log(Level.SEVERE, "[emu] Not all modules are reset. Emulator may be unstable.");
         }
         else
         {
-            logger.log(Level.INFO, "All modules are successfully reset.");
+            logger.log(Level.INFO, "[emu] All modules are successfully reset.");
         }
         
         return result;
@@ -1011,7 +1028,7 @@ public class Emulator implements Runnable
         }
         else
         {
-            logger.log(Level.WARNING, "[CONFIG]" + " No screen available.");
+            logger.log(Level.WARNING, "[emu] No screen available.");
             return false;
         }
     }
@@ -1135,18 +1152,18 @@ public class Emulator implements Runnable
                 // Fetch System BIOS binaries from file system and store it in BIOS ROM
                 if (bios.setSystemBIOS(getIo().importBinaryStream(sysBiosFilePath)))
                 {
-                    logger.log(Level.CONFIG, "System BIOS successfully stored in ROM.");
+                    logger.log(Level.CONFIG, "[emu] System BIOS successfully stored in ROM.");
 
                     // Retrieve System BIOS and store it in RAM
                     Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
 
                     mem.setBytes(ramAddressSysBiosStart, bios.getSystemBIOS());
 
-                    logger.log(Level.CONFIG, "System BIOS successfully loaded in RAM.");
+                    logger.log(Level.CONFIG, "[emu] System BIOS successfully loaded in RAM.");
                 }
                 else
                 {
-                    logger.log(Level.SEVERE, "Not able to retrieve System BIOS binaries from file system.");
+                    logger.log(Level.SEVERE, "[emu] Not able to retrieve System BIOS binaries from file system.");
                     result &= false;
 
                 }
@@ -1168,16 +1185,16 @@ public class Emulator implements Runnable
                 // Fetch System BIOS binaries from file system and store it in BIOS ROM
                 if (bios.setVideoBIOS(getIo().importBinaryStream(vgaBiosFilePath)))
                 {
-                    logger.log(Level.CONFIG, "Video BIOS successfully stored in ROM.");
+                    logger.log(Level.CONFIG, "[emu] Video BIOS successfully stored in ROM.");
 
                     // Retrieve VGA BIOS and store it in RAM at address 0xC0000
                     Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
                     mem.setBytes(ramAddressVgaBiosStart, bios.getVideoBIOS());
-                    logger.log(Level.CONFIG, "Video BIOS successfully loaded in RAM.");
+                    logger.log(Level.CONFIG, "[emu] Video BIOS successfully loaded in RAM.");
                 }
                 else
                 {
-                    logger.log(Level.SEVERE, "Not able to retrieve Video BIOS binaries from file system.");
+                    logger.log(Level.SEVERE, "[emu] Not able to retrieve Video BIOS binaries from file system.");
                     result &= false;
                 }
             }
@@ -1238,7 +1255,7 @@ public class Emulator implements Runnable
             else if (diskformat.equals("320K"))
                 carrierType = 0x08;
             else
-                logger.log(Level.SEVERE, "Floppy disk format not recognised.");
+                logger.log(Level.SEVERE, "[emu] Floppy disk format not recognised.");
 
             if (inserted)
             {
@@ -1380,7 +1397,7 @@ public class Emulator implements Runnable
             {
                 modules.getModule(i).setDebugMode(true);
             }
-            logger.log(Level.INFO, "All modules in debug mode.");
+            logger.log(Level.INFO, "[emu] All modules in debug mode.");
             
             return result;
         
@@ -1403,7 +1420,7 @@ public class Emulator implements Runnable
         if (memDebug)
         {
             ((ModuleMemory)modules.getModule(ModuleType.MEMORY.toString())).setWatchValueAndAddress(memDebug, memAddress);
-            logger.log(Level.CONFIG, "RAM address watch set to " + memDebug + "; address: " + memAddress);
+            logger.log(Level.CONFIG, "[emu] RAM address watch set to " + memDebug + "; address: " + memAddress);
         }
         
         return true;

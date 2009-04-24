@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.16 $ $Date: 2008-03-12 14:36:50 $ $Author: blohman $
+ * $Revision: 1.17 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -140,6 +140,7 @@ public class CPU extends ModuleCPU
     private boolean waitMessageShown;
 	private boolean cpuInstructionDebug;// Used for outputting logging during bug trace
 	private boolean abnormalTermination;// Denotes if CPU halted due to an error during execution
+	private boolean shutDown;			// Denotes if CPU halted for full emulator shutdown
 
 	// Logging
 	private static Logger logger = Logger.getLogger(CPU.class.getPackage().getName());
@@ -303,6 +304,7 @@ public class CPU extends ModuleCPU
         irqPending = false;
         irqWaited = false;
         abnormalTermination = false;
+        shutDown = false;
         
         // Initialize timing variables
         ips = 1000000;           // default value
@@ -434,6 +436,7 @@ public class CPU extends ModuleCPU
         irqPending = false;
         irqWaited = false;
         abnormalTermination = false;
+        shutDown = false;
         
         // Initialise registers and tables
         this.initRegisters();
@@ -1019,6 +1022,28 @@ public class CPU extends ModuleCPU
     public boolean isAbnormalTermination()
     {
     	return abnormalTermination;
+    }
+
+    
+    /**
+     * Returns if CPU halted due to full system shutdown or not
+     * 
+     *  @return boolean shutDown true if emulator should shutdown, false otherwise
+     */
+    public boolean isShutdown()
+    {
+    	return shutDown;
+    }
+
+    
+    /**
+     * Set shutdown status
+     * 
+     *  @param boolean status true if emulator should shutdown, false otherwise
+     */
+    protected void setShutdown(boolean status)
+    {
+    	shutDown = status;
     }
 
     
