@@ -6,6 +6,11 @@ Organisations : Koninklijke Bibliotheek,
                 Tessella Support Services plc.
 Projects      : Dioscuri project, Planets, KEEP
 
+0.4.2 : 24-04-2009
+-------------------------------------------------------
+- Implemented autoshutdown feature
+
+
 0.4.1 : 01-04-2009
 -------------------------------------------------------
 - Added command line parameters for startup configuration
