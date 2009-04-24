@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.16 $ $Date: 2009-04-24 10:57:43 $ $Author: jrvanderhoeven $
+ * $Revision: 1.17 $ $Date: 2009-04-24 11:44:12 $ $Author: jrvanderhoeven $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -155,7 +155,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    // Constants
    // Emulator characteristics
    protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.4.1";
+   protected final static String EMULATOR_VERSION = "0.4.2";
    protected final static String EMULATOR_DATE = "April, 2009";
    protected final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
    private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
