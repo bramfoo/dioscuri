@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.17 $ $Date: 2009-04-24 11:44:12 $ $Author: jrvanderhoeven $
+ * $Revision: 1.18 $ $Date: 2009-04-28 13:32:01 $ $Author: bkiers $
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
@@ -70,6 +70,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.KeyStroke;
 import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.MouseInputListener;
@@ -300,6 +301,10 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        
        // Create clipboard functionality
        textTransfer = new TextTransfer(this);
+       
+       // Disable that TAB and SHIFT-TAB key strokes don't result in 
+       // component-traversals.
+       super.setFocusTraversalKeysEnabled(false);
    }
 
    public GUI(String[] arguments)
@@ -472,6 +477,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 
        // Assign menubar to frame
        this.setJMenuBar(menuBar);
+       
+       // Disable the default behavior of F10 in all major "look-and-feel"-s 
+       // (set the focus on the first JMenu in the JMenuBar):
+       this.menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+               KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
    }
 
 
