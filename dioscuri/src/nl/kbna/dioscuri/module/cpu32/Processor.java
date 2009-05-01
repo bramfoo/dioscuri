@@ -2602,42 +2602,42 @@ public void updateComponent(HardwareComponent component)
 
 public void timerCallback() {}
 
-@Override
+/* @Override */
 public String dumpRegisters()
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 public boolean getCpuInstructionDebug()
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public long getCurrentInstructionNumber()
 {
     // TODO Auto-generated method stub
     return 0;
 }
 
-@Override
+/* @Override */
 protected byte getIOPortByte(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
 {
     // TODO Auto-generated method stub
     return 0;
 }
 
-@Override
+/* @Override */
 protected byte[] getIOPortDoubleWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 protected byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
 {
     // TODO Auto-generated method stub
@@ -2656,42 +2656,42 @@ public int getIPS()
     return 5 * 1000000;
 }
 
-@Override
+/* @Override */
 public String getNextInstructionInfo()
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 public String getRegisterHex(int register)
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 protected byte[] getRegisterValue(String registerName)
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 protected void incrementInstructionCounter()
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 protected boolean initInstructionTables()
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 protected boolean initRegisters()
 {
     // TODO Auto-generated method stub
@@ -2712,97 +2712,97 @@ public void interruptRequest(boolean value)
     
 }
 
-@Override
+/* @Override */
 public boolean isAbnormalTermination()
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public void setCpuInstructionDebug(boolean isDebugMode)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void setHoldRequest(boolean value, ModuleDevice origin)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 protected void setIOPortByte(int portAddress, byte value) throws ModuleException
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 protected void setIOPortDoubleWord(int portAddress, byte[] value) throws ModuleException
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 protected void setIOPortWord(int portAddress, byte[] value) throws ModuleException
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void setIPS(int ips)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void setIPS(int ips, int lowestUpdatePeriod)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 protected boolean setRegisterValue(String registerName, byte[] value)
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 protected void setRunning(boolean status)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public String[] getConnection()
 {
     return new String[] {};
 }
 
-@Override
+/* @Override */
 public byte[] getData(Module module)
 {
     // TODO Auto-generated method stub
     return null;
 }
 
-@Override
+/* @Override */
 public boolean getDebugMode()
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public String getDump()
 {
     // TODO Auto-generated method stub
@@ -2820,69 +2820,69 @@ public String getName()
     return "8086 compatible CPU";
 }
 
-@Override
+/* @Override */
 public String getType()
 {
     return "cpu";
 }
 
-@Override
+/* @Override */
 public boolean isConnected()
 {
     // TODO Auto-generated method stub
     return true;
 }
 
-@Override
+/* @Override */
 public boolean isObserved()
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public boolean setData(byte[] data, Module module)
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public boolean setData(String[] data, Module module)
 {
     // TODO Auto-generated method stub
     return false;
 }
 
-@Override
+/* @Override */
 public void setDebugMode(boolean status)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void setObserved(boolean status)
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void start()
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public void stop()
 {
     // TODO Auto-generated method stub
     
 }
 
-@Override
+/* @Override */
 public boolean isShutdown() {
 	// TODO Auto-generated method stub
 	return false;

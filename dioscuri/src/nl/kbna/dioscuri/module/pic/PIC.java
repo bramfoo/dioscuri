@@ -755,7 +755,7 @@ public class PIC extends ModulePIC
                 }
 
                 // normal operation
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " setting master pic IMR to %02x", data);
+                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " setting master pic IMR to %02x", Byte.valueOf(data));
                 thePIC[MASTER].interruptMaskRegister = data;
                 serviceMasterPIC();
                 return;
@@ -953,7 +953,7 @@ public class PIC extends ModulePIC
 
             default:
                 // normal operation
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " setting slave pic IMR to %02x", data);
+                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " setting slave pic IMR to %02x", Byte.valueOf(data));
                 thePIC[SLAVE].interruptMaskRegister = data;
                 serviceSlavePIC();
                 return;

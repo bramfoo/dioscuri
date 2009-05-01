@@ -1176,11 +1176,11 @@ public class DMA extends ModuleDMA
         }
 
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " mask[" + chanNum + "]: 0x" + Integer.toHexString(controller[0].mask[chanNum]).toUpperCase());
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " flipflop: " + ((Boolean)controller[0].flipflop).toString());
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " flipflop: " + controller[0].flipflop);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " statusRegister: 0x" + Integer.toHexString(controller[0].statusRegister).toUpperCase());
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " modeType: 0x" + Integer.toHexString(controller[0].channel[chanNum].mode.modeType).toUpperCase());
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " addressDecrement: " + ((Boolean)controller[0].channel[chanNum].mode.addressDecrement).toString());
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " autoInitEnable: " + ((Boolean)controller[0].channel[chanNum].mode.autoInitEnable).toString());
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " addressDecrement: " + controller[0].channel[chanNum].mode.addressDecrement);
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " autoInitEnable: " + controller[0].channel[chanNum].mode.autoInitEnable);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " transferType: 0x" + Integer.toHexString(controller[0].channel[chanNum].mode.transferType).toUpperCase());
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " baseAddress: 0x" + Integer.toHexString(controller[0].channel[chanNum].baseAddress).toUpperCase());
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " currentAddress: 0x" + Integer.toHexString(controller[0].channel[chanNum].currentAddress).toUpperCase());
@@ -1466,14 +1466,14 @@ public class DMA extends ModuleDMA
         // This class does not implement any of the methods.
         class Cascade16Handler extends DMA16Handler
         {
-            @Override
+            // @Override
             // Cascade channel does not support reading
             public void dma16ReadFromMem(byte[] data)
             {
                 // Do nothing                
             }
 
-            @Override
+            // @Override
             // Casace channel does not support writing
             public byte[] dma16WriteToMem()
             {

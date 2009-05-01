@@ -47,7 +47,7 @@ public class KeyboardInternalBuffer
 {
       protected final static int NUM_ELEMENTS = 16;
     
-      List<Byte>  buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data elements
+      List buffer = new ArrayList(NUM_ELEMENTS);// List of data elements
       byte   expectingTypematic;                // Keyboard repeat rate command issued 
       byte   expectingLEDWrite;                 // Keyboard LED change command issued
       byte   expectingScancodeSet;              // Alternate scancode set command issued

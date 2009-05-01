@@ -181,10 +181,10 @@ public class BootConfigDialog extends ConfigurationDialog
               
         Object[] params = new Object[4];
         
-        params[0] = bootDrive1ComboxBox.getSelectedIndex();    
-        params[1] = bootDrive2ComboxBox.getSelectedIndex();
-        params[2] =  bootDrive3ComboxBox.getSelectedIndex();
-        params[3] = floppyCheckDisabledCheckBox.isSelected();   
+        params[0] = Integer.valueOf(bootDrive1ComboxBox.getSelectedIndex());    
+        params[1] = Integer.valueOf(bootDrive2ComboxBox.getSelectedIndex());
+        params[2] = Integer.valueOf(bootDrive3ComboxBox.getSelectedIndex());
+        params[3] = Boolean.valueOf(floppyCheckDisabledCheckBox.isSelected());   
  
         return params;
     }

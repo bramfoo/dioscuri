@@ -2464,7 +2464,7 @@ public class ATA extends ModuleATA
                                     initSendAtapiCommand(channel, atapiCommand, 28, allocLength, false);
 
                                     // TODO: check this
-                                    Object[] dataAsArray = {getSelectedDriveController().getBuffer()[8]};
+                                    Object[] dataAsArray = {Byte.valueOf(getSelectedDriveController().getBuffer()[8])};
 
                                     // TODO buffer 8 is by ref
                                     initModeSenseSingle(channel, dataAsArray, 28);
@@ -2546,7 +2546,7 @@ public class ATA extends ModuleATA
                                     // initModeSenseSingle(channel, &BX_SELECTED_CONTROLLER(channel).buffer[8], 28);
                                     // TODO: by ref input
 
-                                    Object[] dummy = {getSelectedDriveController().getBuffer()[8]};
+                                    Object[] dummy = {Byte.valueOf(getSelectedDriveController().getBuffer()[8])};
                                     initModeSenseSingle(channel, dummy, 28);
 
                                     getSelectedDriveController().setBuffer(8, (byte) (0x2a));
@@ -3892,7 +3892,7 @@ public class ATA extends ModuleATA
                     logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + "  write cmd 0x70 (SEEK) executing, for channel " + curChannelIndex + ", issued to device index "
                             + getSelectedChannel().getSelectedDrive() + ".");
 
-                    if (!getSelectedDrive().calculateLogicalAddress(logicalSector))
+                    if (!getSelectedDrive().calculateLogicalAddress(logicalSector.intValue()))
                     {
                                              
                         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  seek, for channel " + curChannelIndex + ", issued to device index "
@@ -3903,7 +3903,7 @@ public class ATA extends ModuleATA
                         break;
                     }
                     
-                    logicalSector = getSelectedDrive().calculateLogicalAddress();
+                    logicalSector = Integer.valueOf(getSelectedDrive().calculateLogicalAddress());
                     
                     getSelectedDriveController().setErrorRegister(0);
                     getSelectedDriveController().getStatus().setBusy(0);

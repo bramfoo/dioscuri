@@ -104,7 +104,7 @@ public class Emulator implements Runnable
 
 	// Attributes
 	private Modules modules;
-    private ArrayList<HardwareComponent> hwComponents;
+    private ArrayList hwComponents;
     private IO io;
     private GUI gui;
     private ConfigController configController;
@@ -169,7 +169,7 @@ public class Emulator implements Runnable
 	{
         this.gui = owner;
         modules = null; // Created in createModules()
-        hwComponents = new ArrayList<HardwareComponent>();
+        hwComponents = new ArrayList();
         
         
 		// Create IO communication channel
@@ -483,7 +483,7 @@ public class Emulator implements Runnable
      * 
      * @return modules
      */
-    public ArrayList<HardwareComponent> getHWcomponents()
+    public ArrayList getHWcomponents()
     {
         return this.hwComponents;
     }
@@ -1044,7 +1044,7 @@ public class Emulator implements Runnable
         {
 
         	// Init mouse enabled
-            boolean enabled = Boolean.valueOf(((String)((HashMap)moduleSettings.get(mouse.getType())).get("enabled")));
+            boolean enabled = Boolean.valueOf(((String)((HashMap)moduleSettings.get(mouse.getType())).get("enabled"))).booleanValue();
             
             mouse.setMouseEnabled(enabled);
             

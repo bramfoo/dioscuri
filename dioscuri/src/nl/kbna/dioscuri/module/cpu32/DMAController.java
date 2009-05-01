@@ -720,7 +720,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         System.out.println("[DMAController]: ModuleDevice method not implemented");
     }
 
-    @Override
+    /* @Override */
     public int getUpdateInterval()
     {
         // TODO Auto-generated method stub
@@ -728,21 +728,21 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return 0;
     }
 
-    @Override
+    /* @Override */
     public void setUpdateInterval(int interval)
     {
         // TODO Auto-generated method stub
         notImplemented();
     }
 
-    @Override
+    /* @Override */
     public void update()
     {
         // TODO Auto-generated method stub
         notImplemented();
     }
 
-    @Override
+    /* @Override */
     public String[] getConnection()
     {
         // TODO Auto-generated method stub
@@ -750,7 +750,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return null;
     }
 
-    @Override
+    /* @Override */
     public byte[] getData(Module module)
     {
         // TODO Auto-generated method stub
@@ -758,7 +758,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return null;
     }
 
-    @Override
+    /* @Override */
     public boolean getDebugMode()
     {
         // TODO Auto-generated method stub
@@ -766,7 +766,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public String getDump()
     {
         // TODO Auto-generated method stub
@@ -774,7 +774,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return null;
     }
 
-    @Override
+    /* @Override */
     public int getID()
     {
         // TODO Auto-generated method stub
@@ -782,7 +782,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return 0;
     }
 
-    @Override
+    /* @Override */
     public String getName()
     {
         // TODO Auto-generated method stub
@@ -790,7 +790,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return null;
     }
 
-    @Override
+    /* @Override */
     public String getType()
     {
         // TODO Auto-generated method stub
@@ -798,7 +798,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return null;
     }
 
-    @Override
+    /* @Override */
     public boolean isConnected()
     {
         // TODO Auto-generated method stub
@@ -806,7 +806,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public boolean isObserved()
     {
         // TODO Auto-generated method stub
@@ -814,7 +814,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public boolean setConnection(Module mod)
     {
         // TODO Auto-generated method stub
@@ -822,7 +822,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public boolean setData(byte[] data, Module module)
     {
         // TODO Auto-generated method stub
@@ -830,7 +830,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public boolean setData(String[] data, Module module)
     {
         // TODO Auto-generated method stub
@@ -838,28 +838,28 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Hardwa
         return false;
     }
 
-    @Override
+    /* @Override */
     public void setDebugMode(boolean status)
     {
         // TODO Auto-generated method stub
         notImplemented();
     }
 
-    @Override
+    /* @Override */
     public void setObserved(boolean status)
     {
         // TODO Auto-generated method stub
         notImplemented();
     }
 
-    @Override
+    /* @Override */
     public void start()
     {
         // TODO Auto-generated method stub
         notImplemented();
     }
 
-    @Override
+    /* @Override */
     public void stop()
     {
         // TODO Auto-generated method stub

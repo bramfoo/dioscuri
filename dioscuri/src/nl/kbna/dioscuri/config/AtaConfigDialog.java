@@ -288,10 +288,10 @@ public class AtaConfigDialog extends ConfigurationDialog
         int updateInt = ((Number)updateIntField.getValue()).intValue();   
         
         params[0] = new Integer(updateInt);  
-        params[1] = enabledCheckBox.isSelected(); 
+        params[1] = Boolean.valueOf(enabledCheckBox.isSelected()); 
         params[2] = channelIndexFTextField.getValue();         
-        params[3] = masterCheckBox.isSelected();
-        params[4] = autodetectCheckBox.isSelected();          
+        params[3] = Boolean.valueOf(masterCheckBox.isSelected());
+        params[4] = Boolean.valueOf(autodetectCheckBox.isSelected());          
         params[5] = cylindersFTextField.getValue(); 
         params[6] = headsFTextField.getValue(); 
         params[7] = sectorsFTextField.getValue();    

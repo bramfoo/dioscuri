@@ -133,9 +133,7 @@ public class DiskImage
      */
     protected long getSize()
     {
-        
-        Long imageSize = imageFile.length();
-        return imageSize;
+        return imageFile.length();
     }
 
     

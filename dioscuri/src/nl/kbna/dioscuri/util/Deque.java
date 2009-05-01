@@ -4,51 +4,51 @@ import java.util.Iterator;
 import java.util.Queue;
 
 
-public interface Deque<E> extends Queue<E> {
+public interface Deque extends Queue {
 
-    void addFirst(E e);
+    void addFirst(Object e);
 
-    void addLast(E e);
+    void addLast(Object e);
 
-    boolean offerFirst(E e);
+    boolean offerFirst(Object e);
 
-    boolean offerLast(E e);
+    boolean offerLast(Object e);
 
-    E removeFirst();
+    Object removeFirst();
 
-    E removeLast();
+    Object removeLast();
 
-    E pollFirst();
+    Object pollFirst();
 
-    E pollLast();
+    Object pollLast();
 
-    E getFirst();
+    Object getFirst();
 
-    E getLast();
+    Object getLast();
 
-    E peekFirst();
+    Object peekFirst();
 
-    E peekLast();
+    Object peekLast();
 
     boolean removeFirstOccurrence(Object o);
 
     boolean removeLastOccurrence(Object o);
 
-    boolean add(E e);
+    boolean add(Object e);
 
-    boolean offer(E e);
+    boolean offer(Object e);
 
-    E remove();
+    Object remove();
 
-    E poll();
+    Object poll();
 
-    E element();
+    Object element();
 
-    E peek();
+    Object peek();
 
-    void push(E e);
+    void push(Object e);
 
-    E pop();
+    Object pop();
 
     boolean remove(Object o);
 
@@ -56,7 +56,7 @@ public interface Deque<E> extends Queue<E> {
 
     public int size();
 
-    Iterator<E> iterator();
+    Iterator iterator();
 
-    Iterator<E> descendingIterator();
+    Iterator descendingIterator();
 }

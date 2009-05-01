@@ -215,7 +215,7 @@ public class DioscuriXmlWriter
                
         NodeList hardDriveParamsNodes = hardDriveNode.getChildNodes();
         
-        int updateInt = ((Integer)params[0]);
+        int updateInt = ((Integer)params[0]).intValue();
               
         String isEnabled = ((Boolean)params[1]).toString();
         String channelIndex = ((Integer)params[2]).toString();
@@ -347,7 +347,7 @@ public class DioscuriXmlWriter
         Node floppyDriveNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.FLOPPY);
         NodeList floppyParamsNodes = floppyDriveNode.getChildNodes();
              
-        int updateInt = ((Integer)params[0]);
+        int updateInt = ((Integer)params[0]).intValue();
         String enabled = ((Boolean)params[1]).toString();
         String inserted = ((Boolean)params[2]).toString();
         String driveLetter = (String)params[3];

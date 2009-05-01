@@ -273,11 +273,11 @@ public class FdcConfigDialog extends ConfigurationDialog
         int updateInt = ((Number)updateIntField.getValue()).intValue();      
         params[0] = new Integer(updateInt);
         
-        params[1] = enabledCheckBox.isSelected();    
-        params[2] = insertedCheckBox.isSelected();
+        params[1] = Boolean.valueOf(enabledCheckBox.isSelected());    
+        params[2] = Boolean.valueOf(insertedCheckBox.isSelected());
         params[3] = driveLetterComboxBox.getSelectedItem().toString();
         params[4] = diskFormatComboBox.getSelectedItem().toString();
-        params[5] = writeProtectedCheckBox.isSelected();   
+        params[5] = Boolean.valueOf(writeProtectedCheckBox.isSelected());   
         params[6] = selectedfile.getAbsoluteFile().toString();
         
         return params;

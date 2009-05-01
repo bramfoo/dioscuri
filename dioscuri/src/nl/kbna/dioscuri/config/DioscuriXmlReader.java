@@ -168,11 +168,11 @@ public class DioscuriXmlReader
                    
                } else if(name.equalsIgnoreCase("ramaddresssysbiosstartdec"))
                {
-                   params[2] = Integer.parseInt(theValue);
+                   params[2] = Integer.valueOf(theValue);
                    
                } else if(name.equalsIgnoreCase("ramaddressvgabiosstartdec"))
                {
-                   params[3] = Integer.parseInt(theValue);
+                   params[3] = Integer.valueOf(theValue);
                }
                     
             }
@@ -249,7 +249,7 @@ public class DioscuriXmlReader
                        bootIndex = 2;
                    }
                     
-                   params[bootCount] = bootIndex; 
+                   params[bootCount] = Integer.valueOf(bootIndex); 
                    
                    bootCount++;
             }
@@ -268,7 +268,7 @@ public class DioscuriXmlReader
             
             if (name.equals("floppycheckdisabled"))
             {
-               params[3] = Boolean.parseBoolean(theValue); 
+               params[3] = Boolean.valueOf(theValue); 
             }
         }
         
@@ -295,7 +295,7 @@ public class DioscuriXmlReader
             cpuSpeed = Integer.parseInt(subNode.getNodeValue());
         }
         
-        params[0] = cpuSpeed;
+        params[0] = Integer.valueOf(cpuSpeed);
         
         Node cpu32bitNode = xmlConnect.getFirstNode(document,DioscuriXmlParams.CPU_32_BIT_TEXT);
         subNode = cpu32bitNode.getChildNodes().item(0);
@@ -307,7 +307,7 @@ public class DioscuriXmlReader
             cpu32bit = Boolean.parseBoolean(subNode.getNodeValue());
         }
         
-        params[1] = cpu32bit;
+        params[1] = Boolean.valueOf(cpu32bit);
         
         return params;
         
@@ -339,21 +339,21 @@ public class DioscuriXmlReader
                 
                 if (name.equals("enabled"))
                 {
-                    params[1] = Boolean.parseBoolean(theValue);    
+                    params[1] = Boolean.valueOf(theValue);    
                    
                 } else if (name.equals("inserted"))
                 {
-                    params[2] = Boolean.parseBoolean(theValue);
+                    params[2] = Boolean.valueOf(theValue);
                     
                 } else if (name.equals("driveletter"))
                 {
                     if (theValue.toUpperCase().equals("A"))
                     {
-                        params[3] = 0;
+                        params[3] = Integer.valueOf(0);
                         
                     } else if (theValue.toUpperCase().equals("B"))
                     {
-                        params[3] = 1;
+                        params[3] = Integer.valueOf(1);
                     }
                     
                 } else if (name.equals("diskformat"))
@@ -363,7 +363,7 @@ public class DioscuriXmlReader
                       || theValue.equals("360")
                        ||  theValue.equals("0.36")) 
                    {
-                       params[4] = 6;
+                       params[4] = Integer.valueOf(6);
                        
                    } else if (theValue.equals("1.2M")
                            || theValue.equals("1.2")
@@ -371,7 +371,7 @@ public class DioscuriXmlReader
                            ||  theValue.equals("1_2M"))
                    {
                 
-                       params[4]   = 0;
+                       params[4]   = Integer.valueOf(0);
                        
                    } else if (theValue.equals("720K") 
                            || theValue.equals("720")
@@ -379,42 +379,42 @@ public class DioscuriXmlReader
                            ||  theValue.equals("0.72M"))
                         {
                        
-                       params[4] = 7;
+                       params[4] = Integer.valueOf(7);
                                          
                    } else if (theValue.equals("1.44M") 
                        || theValue.equals("1.44")
                        || theValue.equals("1_44")
                        ||  theValue.equals("1_44M"))
                     {
-                       params[4] = 1;
+                       params[4] = Integer.valueOf(1);
                         
                     } else if (theValue.equals("2.88M") 
                             || theValue.equals("2.88")
                             || theValue.equals("2_88")
                             ||  theValue.equals("2_88M"))
                     {
-                        params[4] = 2;
+                        params[4] = Integer.valueOf(2);
                              
                     } else if (theValue.equals("160K") 
                             || theValue.equals("160")
                             || theValue.equals("0.16")
                             ||  theValue.equals("0.16M"))
                     {
-                        params[4] = 3;  
+                        params[4] = Integer.valueOf(3);  
                              
                     } else if (theValue.equals("180K") 
                             || theValue.equals("180")
                             || theValue.equals("0.18")
                             ||  theValue.equals("0.18M"))
                     {
-                        params[4] = 4;   
+                        params[4] = Integer.valueOf(4);   
                              
                     } else if (theValue.equals("320K") 
                             || theValue.equals("320")
                             || theValue.equals("0.32")
                             ||  theValue.equals("0.32M"))
                     {
-                        params[4] = 5;   
+                        params[4] = Integer.valueOf(5);   
                         
                     } else 
                     {
@@ -424,7 +424,7 @@ public class DioscuriXmlReader
                     
                 } else if (name.equals("writeprotected"))
                 {
-                    params[5] = Boolean.parseBoolean(theValue);
+                    params[5] = Boolean.valueOf(theValue);
                     
                 } else if (name.equals("imagefilepath"))
                 {
@@ -471,31 +471,31 @@ public class DioscuriXmlReader
                 
                 if (name.equals("enabled"))
                 {
-                   params[1] = Boolean.parseBoolean(theValue);    
+                   params[1] = Boolean.valueOf(theValue);    
                    
                 } else if (name.equals("channelindex"))
                 {
-                    params[2] = Integer.parseInt(theValue);
+                    params[2] = Integer.valueOf(theValue);
                     
                 } else if (name.equals("master"))
                 {
-                    params[3] = Boolean.parseBoolean(theValue); 
+                    params[3] = Boolean.valueOf(theValue); 
                     
                 } else if (name.equals("autodetectcylinders"))
                 {
-                    params[4] = Boolean.parseBoolean(theValue); 
+                    params[4] = Boolean.valueOf(theValue); 
                    
                 } else if (name.equals("cylinders"))
                 {
-                    params[5] = Integer.parseInt(theValue);
+                    params[5] = Integer.valueOf(theValue);
                     
                 } else if (name.equals("heads"))
                 {
-                    params[6] = Integer.parseInt(theValue);
+                    params[6] = Integer.valueOf(theValue);
                     
                 } else if (name.equals("sectorspertrack"))
                 {
-                    params[7] = Integer.parseInt(theValue);
+                    params[7] = Integer.valueOf(theValue);
           
                 } else if (name.equals("imagefilepath"))
                 {
@@ -526,7 +526,7 @@ public class DioscuriXmlReader
             ramSize  = Integer.parseInt(ramSubNode.getNodeValue());
         }
         
-        params[0] = ramSize;
+        params[0] = Integer.valueOf(ramSize);
         
         return params;
     }
@@ -557,7 +557,7 @@ public class DioscuriXmlReader
                  
                  if (name.equals(DioscuriXmlParams.MOUSE_ENABLED_TEXT))
                  {
-                     params[0] = Boolean.parseBoolean(theValue);    
+                     params[0] = Boolean.valueOf(theValue);    
                     
                  } else if (name.equals(DioscuriXmlParams.MOUSE_TYPE_TEXT))
                  {

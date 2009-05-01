@@ -268,7 +268,7 @@ public class ATADrive
         if (this.getControl().getLbaMode() > 0)
         {
             Integer currentAddressObj = new Integer(0);
-            calculateLogicalAddress(currentAddressObj);
+            calculateLogicalAddress(currentAddressObj.intValue());
             
             int currentAddress = currentAddressObj.intValue();
             currentAddress++;

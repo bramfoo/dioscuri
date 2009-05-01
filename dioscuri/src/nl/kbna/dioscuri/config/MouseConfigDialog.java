@@ -159,7 +159,7 @@ public class MouseConfigDialog extends ConfigurationDialog
     {
         Object[] params = new Object[2];
         
-        params[0] = enabledCheckBox.isSelected();    
+        params[0] = Boolean.valueOf(enabledCheckBox.isSelected());    
         params[1] = mouseTypeComboxBox.getSelectedItem();
         
         return params;

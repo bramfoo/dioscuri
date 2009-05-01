@@ -252,7 +252,7 @@ public class PriorityDeque extends AbstractQueue  implements nl.kbna.dioscuri.ut
     }
 
     private Object removeAt(int i) {
-        assert i >= 0 && i < size;
+        // assert i >= 0 && i < size;
         modCount++;
         int s = --size;
         if (s == i) // removed last element
@@ -278,7 +278,7 @@ public class PriorityDeque extends AbstractQueue  implements nl.kbna.dioscuri.ut
     Comparable key = (Comparable) x;
     while (k != 0) {
         int predecessor = findPredecessor(k);
-        assert predecessor < size : "Predecessor Outside Limit: " + predecessor;
+        // assert predecessor < size : "Predecessor Outside Limit: " + predecessor;
         Object o = queue[predecessor];
         if (key.compareTo(o) >= 0)
         break;
@@ -294,7 +294,7 @@ public class PriorityDeque extends AbstractQueue  implements nl.kbna.dioscuri.ut
     Comparable key = (Comparable)x;
     while (k != 1) {
         int successor = findSuccessor(k);
-        assert successor < size : "Successor Outside Limit: " + successor;
+        // assert successor < size : "Successor Outside Limit: " + successor;
         Object o = queue[successor];
         if (key.compareTo(o) <= 0)
         break;
@@ -394,21 +394,21 @@ public class PriorityDeque extends AbstractQueue  implements nl.kbna.dioscuri.ut
             {
             Object o = list.remove(rndm.nextInt(list.size()));
             boolean r = deque.remove(o);
-            assert r : "Couldn't remove " + o + " from Deque";
+            // assert r : "Couldn't remove " + o + " from Deque";
             removes++;
             } break;
         case 1:
             {
             Object o = deque.pollFirst();
             boolean r = list.remove(o);
-            assert r : "Object " + o + " should not have been in the Deque";
+            // assert r : "Object " + o + " should not have been in the Deque";
             removes++;
             } break;
         case 2:
             {
             Object o = deque.pollLast();
             boolean r = list.remove(o);
-            assert r : "Object " + o + " should not have been in the Deque";
+            // assert r : "Object " + o + " should not have been in the Deque";
             removes++;
             } break;
         default:

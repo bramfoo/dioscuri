@@ -75,10 +75,10 @@ public class CpuConfigDialog extends ConfigurationDialog
                 
     	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
         Object[] params = xmlReaderToGui.getModuleParams(ModuleType.CPU);
-        Integer cpuSpeed = ((Integer)params[0]);        
+        Integer cpuSpeed = (Integer)params[0];        
         this.speedField.setValue(cpuSpeed);
-        Boolean cpu32Bit = ((Boolean)params[1]);
-        if (cpu32Bit)
+        Boolean cpu32Bit = (Boolean)params[1];
+        if (cpu32Bit != null && cpu32Bit.booleanValue())
             this.cpu32Button.setSelected(true);
         else
             this.cpu16Button.setSelected(true);

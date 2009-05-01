@@ -578,7 +578,7 @@ public class Keyboard extends ModuleKeyboard
 
                     if (!keyboard.controllerQueue.isEmpty())
                     {
-                        keyboard.controller.auxOutputBuffer = (keyboard.controllerQueue.remove(0));
+                        keyboard.controller.auxOutputBuffer = ((Byte)keyboard.controllerQueue.remove(0)).byteValue();
                         keyboard.controller.outputBuffer = 1;
                         keyboard.controller.auxBuffer = 1;
                         if (keyboard.controller.allowIRQ12 != 0)
@@ -603,7 +603,7 @@ public class Keyboard extends ModuleKeyboard
 
                     if (!keyboard.controllerQueue.isEmpty())
                     {
-                        keyboard.controller.auxOutputBuffer = (keyboard.controllerQueue.remove(0));
+                        keyboard.controller.auxOutputBuffer = ((Byte)keyboard.controllerQueue.remove(0)).byteValue();
                         keyboard.controller.outputBuffer = 1;
                         keyboard.controller.auxBuffer = 1;
                         if (keyboard.controller.allowIRQ1 != 0)
@@ -1200,7 +1200,7 @@ public class Keyboard extends ModuleKeyboard
             {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " queueKBControllerBuffer(): Keyboard controller is full!");
             }
-            keyboard.controllerQueue.add(data);
+            keyboard.controllerQueue.add(Byte.valueOf(data));
             return;
         }
 
@@ -1252,7 +1252,7 @@ public class Keyboard extends ModuleKeyboard
 		  // Buffer not full
 		  // Add scancode to end of keyboard buffer queue
 		  logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " enqueueInternalBuffer: adding scancode " + Integer.toHexString(0x100 | scancode & 0xFF).substring(1).toUpperCase() + "h to internal buffer");
-		  keyboard.internalBuffer.buffer.add(scancode);
+		  keyboard.internalBuffer.buffer.add(Byte.valueOf(scancode));
 		  
 		  // Activate timer if outputbuffer = 0 and clockEnabled = false
 		  // This means that controller is ready to process next scancode from keyboard
@@ -1318,7 +1318,7 @@ public class Keyboard extends ModuleKeyboard
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): key in internal buffer waiting" + this.getDump());
 
             // Get data byte from keyboard buffer
-            keyboard.controller.kbdOutputBuffer = keyboard.internalBuffer.buffer.remove(0);
+            keyboard.controller.kbdOutputBuffer = ((Byte)keyboard.internalBuffer.buffer.remove(0)).byteValue();
             
             // Set status bytes
             keyboard.controller.outputBuffer = 1;

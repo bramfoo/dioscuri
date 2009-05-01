@@ -89,8 +89,8 @@ public class BiosConfigDialog extends ConfigurationDialog
         String sysPath = (String)params[0];
         String vgaPath = (String)params[1];
         
-        Integer ramSysBiosAddressStart = ((Integer)params[2]).intValue();
-        Integer ramVgaBiosAddressStart = ((Integer)params[3]).intValue();
+        Integer ramSysBiosAddressStart = (Integer)params[2];
+        Integer ramVgaBiosAddressStart = (Integer)params[3];
                 
         this.sysBiosStartsFTextField.setValue(ramSysBiosAddressStart);           
         this.vgaBiosStartFTextField.setValue(ramVgaBiosAddressStart);  
