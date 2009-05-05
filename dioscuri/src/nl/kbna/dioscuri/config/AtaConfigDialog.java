@@ -45,6 +45,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.math.BigInteger;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -52,6 +53,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -69,6 +73,7 @@ public class AtaConfigDialog extends ConfigurationDialog
     private JFormattedTextField updateIntField;
     
     private JButton imageBrowseButton;
+    nl.kbna.dioscuri.config.Emulator emuConfig;
             
     public AtaConfigDialog(GUI parent)
     {               
@@ -82,18 +87,18 @@ public class AtaConfigDialog extends ConfigurationDialog
     protected void readInParams()
     {
         
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.ATA);
-        
-        Integer updateInt = ((Integer)params[0]);      
-        boolean isEnabled = ((Boolean)params[1]).booleanValue();
-        int channelIndex = ((Integer)params[2]).intValue();
-        boolean isMaster = ((Boolean)params[3]).booleanValue();
-        boolean autoDetect = ((Boolean)params[4]).booleanValue();        
-        int cylinders = ((Integer)params[5]).intValue();
-        int heads = ((Integer)params[6]).intValue();
-        int sectors = ((Integer)params[7]).intValue();
-        String imageFormatPath = (String)params[8];
+    	emuConfig = parent.getEmuConfig();
+        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
+    	        
+        Integer updateInt = emuConfig.getArchitecture().getModules().getAta().getUpdateintervalmicrosecs().intValue();      
+        boolean isEnabled = hddConfig.isEnabled();
+        int channelIndex = hddConfig.getChannelindex().intValue();
+        boolean isMaster = hddConfig.isMaster();
+        boolean autoDetect = hddConfig.isAutodetectcylinders();        
+        int cylinders = hddConfig.getCylinders().intValue();
+        int heads = hddConfig.getHeads().intValue();
+        int sectors = hddConfig.getSectorspertrack().intValue();
+        String imageFormatPath = hddConfig.getImagefilepath();
         
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(isEnabled);
@@ -280,24 +285,22 @@ public class AtaConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[9];
         
-        int updateInt = ((Number)updateIntField.getValue()).intValue();   
+        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
         
-        params[0] = new Integer(updateInt);  
-        params[1] = enabledCheckBox.isSelected(); 
-        params[2] = channelIndexFTextField.getValue();         
-        params[3] = masterCheckBox.isSelected();
-        params[4] = autodetectCheckBox.isSelected();          
-        params[5] = cylindersFTextField.getValue(); 
-        params[6] = headsFTextField.getValue(); 
-        params[7] = sectorsFTextField.getValue();    
-        params[8] = selectedfile.getAbsoluteFile().toString();
+        emuConfig.getArchitecture().getModules().getAta().setUpdateintervalmicrosecs(BigInteger.valueOf((Integer)updateIntField.getValue()));
+        hddConfig.setEnabled(enabledCheckBox.isSelected());
+        hddConfig.setChannelindex(BigInteger.valueOf((Integer)channelIndexFTextField.getValue()));
+        hddConfig.setMaster(masterCheckBox.isSelected());
+        hddConfig.setAutodetectcylinders(autodetectCheckBox.isSelected());
+        hddConfig.setCylinders(BigInteger.valueOf((Integer)cylindersFTextField.getValue()));
+        hddConfig.setHeads(BigInteger.valueOf((Integer)headsFTextField.getValue()));
+        hddConfig.setSectorspertrack(BigInteger.valueOf((Integer)sectorsFTextField.getValue()));
+        hddConfig.setImagefilepath(selectedfile.getAbsoluteFile().toString());    
         
-        return params;
+        return emuConfig;
     }
         
 }

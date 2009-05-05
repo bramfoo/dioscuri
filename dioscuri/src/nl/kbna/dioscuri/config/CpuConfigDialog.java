@@ -43,15 +43,19 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
+
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Cpu;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -61,6 +65,8 @@ public class CpuConfigDialog extends ConfigurationDialog
     private JRadioButton cpu32Button;
     private JRadioButton cpu16Button;
         
+    nl.kbna.dioscuri.config.Emulator emuConfig;
+    
     public CpuConfigDialog(GUI parent)
     {               
         super (parent, "CPU Configuration", false, ModuleType.CPU); 
@@ -72,12 +78,12 @@ public class CpuConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-                
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.CPU);
-        Integer cpuSpeed = ((Integer)params[0]);        
+    	emuConfig = parent.getEmuConfig();
+    	Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
+    	
+        Integer cpuSpeed = cpu.getSpeedmhz().intValue();        
         this.speedField.setValue(cpuSpeed);
-        Boolean cpu32Bit = ((Boolean)params[1]);
+        Boolean cpu32Bit = cpu.isCpu32Bit();
         if (cpu32Bit)
             this.cpu32Button.setSelected(true);
         else
@@ -152,17 +158,13 @@ public class CpuConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[2];
-        
-        int cpuSpeed = ((Number)speedField.getValue()).intValue();      
-        params[0] = new Integer(cpuSpeed);
-        boolean cpu32Bit = cpu32Button.isSelected();
-        params[1] = new Boolean(cpu32Bit);
-        
-        return params;
+    	Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
+
+    	cpu.setSpeedmhz(BigDecimal.valueOf(((Number)speedField.getValue()).intValue()));
+    	cpu.setCpu32Bit(cpu32Button.isSelected());
+        return emuConfig;
     }
         
 }

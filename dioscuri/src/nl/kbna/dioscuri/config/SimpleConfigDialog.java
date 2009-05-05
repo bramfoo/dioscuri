@@ -43,13 +43,16 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigInteger;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.config.Emulator;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -58,6 +61,8 @@ public class SimpleConfigDialog extends ConfigurationDialog
 
     private JFormattedTextField updateIntField;
         
+    nl.kbna.dioscuri.config.Emulator emuConfig;
+    
     public SimpleConfigDialog(GUI parent, ModuleType moduleType)
     {               
         super (parent, moduleType.toString().toUpperCase() + " Configuration", false, moduleType); 
@@ -69,10 +74,22 @@ public class SimpleConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-                
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(moduleType);
-        Integer updateInt = ((Integer)params[0]);        
+    	emuConfig = parent.getEmuConfig();
+    	Integer updateInt = 0;
+    	
+    	if (moduleType.equals(ModuleType.PIT))
+    	{
+    		updateInt = emuConfig.getArchitecture().getModules().getPit().getClockrate().intValue();
+    	}
+    	else if (moduleType.equals(ModuleType.KEYBOARD))
+    	{
+    		updateInt = emuConfig.getArchitecture().getModules().getKeyboard().getUpdateintervalmicrosecs().intValue();
+    	}
+    	else if (moduleType.equals(ModuleType.VGA))
+    	{
+    		updateInt = emuConfig.getArchitecture().getModules().getVideo().getUpdateintervalmicrosecs().intValue();
+    	}
+    	
         this.updateIntField.setValue(updateInt);
         
     }
@@ -133,15 +150,23 @@ public class SimpleConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
               
-        Object[] params = new Object[1];
+    	if (moduleType.equals(ModuleType.PIT))
+    	{
+    		emuConfig.getArchitecture().getModules().getPit().setClockrate(BigInteger.valueOf(((Number)updateIntField.getValue()).intValue()));
+    	}
+    	else if (moduleType.equals(ModuleType.KEYBOARD))
+    	{
+    		emuConfig.getArchitecture().getModules().getKeyboard().setUpdateintervalmicrosecs(BigInteger.valueOf(((Number)updateIntField.getValue()).intValue()));
+    	}
+    	else if (moduleType.equals(ModuleType.VGA))
+    	{
+    		emuConfig.getArchitecture().getModules().getVideo().setUpdateintervalmicrosecs(BigInteger.valueOf(((Number)updateIntField.getValue()).intValue()));
+    	}
         
-        int updateInt = ((Number)updateIntField.getValue()).intValue();      
-        params[0] = new Integer(updateInt);
-        
-        return params;
+        return emuConfig;
     }
         
 }

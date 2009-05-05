@@ -55,6 +55,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import nl.kbna.dioscuri.config.Emulator;
+
 import nl.kbna.dioscuri.GUI;
 
 public abstract class ConfigurationDialog extends JDialog
@@ -200,7 +202,7 @@ public abstract class ConfigurationDialog extends JDialog
     protected void saveParams()
     {
         
-        Object[] params = null;
+        nl.kbna.dioscuri.config.Emulator params = null;
         
         String moduleText = "";
         if(moduleType != null)
@@ -220,8 +222,8 @@ public abstract class ConfigurationDialog extends JDialog
                 return;
             }
         }
+
         
-        DioscuriXmlWriter xmlWriter = parent.getXMLWriter();
         
         try 
         {
@@ -237,7 +239,7 @@ public abstract class ConfigurationDialog extends JDialog
             return;
         }
         
-        if (!xmlWriter.writeModuleParams(params, moduleType))
+        if (!parent.saveXML(params))
         {
             JOptionPane.showMessageDialog(this, 
                     "Error saving " + moduleText + " parameter to configuration file.", 
@@ -255,9 +257,9 @@ public abstract class ConfigurationDialog extends JDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-        Object[] params = null;
+        nl.kbna.dioscuri.config.Emulator params = null;
         
         return params;
     }

@@ -43,10 +43,13 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Bios;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 
 import nl.kbna.dioscuri.config.ConfigController;
 import nl.kbna.dioscuri.config.ModuleType;
@@ -108,7 +111,8 @@ public class Emulator implements Runnable
     private IO io;
     private GUI gui;
     private ConfigController configController;
-    private HashMap moduleSettings;
+    private nl.kbna.dioscuri.config.Emulator emuConfig;
+    private nl.kbna.dioscuri.config.Emulator.Architecture.Modules moduleConfig;
     
     // Toggles
     private boolean isAlive;
@@ -198,8 +202,18 @@ public class Emulator implements Runnable
             // Start emulator, start all threads
 
             // Get the module settings from the configuration file
-            moduleSettings = configController.getSettings("modules");
-            logger.log(Level.INFO, "[emu] Retrieved the following settings:\n" + moduleSettings);
+			try {
+				File configFile = new File(configController.getConfigFilePath());
+				logger.log(Level.INFO, "[emu] Config file '" + configFile.toString() + "' exists: " + configFile.exists());
+				emuConfig = configController.loadFromXML(configFile);
+				moduleConfig = emuConfig.getArchitecture().getModules();
+				logger.log(Level.SEVERE, "[emu] Config contents: " + moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());				
+			}
+			catch (Exception ex) {
+				logger.log(Level.SEVERE, "[emu] Config file not readable: " + ex.toString());
+				return;
+			}
+            logger.log(Level.INFO, "[emu] Retrieved settings for modules");
 
             // Module creation
             boolean success = setupEmu();
@@ -746,7 +760,7 @@ public class Emulator implements Runnable
         modules = new Modules(20);
         
         // Determine CPU type -- assuming a CPU exists in this emulator (pretty pointless without one, really)
-        cpu32bit = Boolean.parseBoolean(((String)((HashMap)moduleSettings.get("cpu")).get("cpu32bit")));
+        cpu32bit = moduleConfig.getCpu().isCpu32Bit();
         
         // Add clock first, as it is needed for 32-bit RAM
         Clock clk = new Clock(this);
@@ -781,8 +795,13 @@ public class Emulator implements Runnable
             modules.addModule(new Memory(this));
             }
 
-        if (moduleSettings.containsKey("bios"))
+        if (moduleConfig.getBios() != null)
         {
+        	for (Bios bios : moduleConfig.getBios())
+        	{
+        		logger.log(Level.CONFIG, "System bios file: " + bios.getSysbiosfilepath() + "; starting at 0x" + Integer.toHexString(bios.getRamaddresssysbiosstartdec().intValue()));
+        		logger.log(Level.CONFIG, "VGA bios file: " + bios.getVgabiosfilepath() + "; starting at 0x" + Integer.toHexString(bios.getRamaddressvgabiosstartdec().intValue()));
+        	}
             if (!cpu32bit)
             {
                 modules.addModule(new BIOS(this));
@@ -792,14 +811,14 @@ public class Emulator implements Runnable
         modules.addModule(new Motherboard(this));       // Motherboard should always be initialised before other I/O devices!!! Else I/O address space will be reset
         modules.addModule(new PIC(this));               // PIC should always be initialised directly after motherboard
         
-        if(moduleSettings.containsKey("pit"))
+        if(moduleConfig.getPit() != null)
         {
             modules.addModule(new PIT(this));
         }
         
         modules.addModule(new RTC(this));               // RTC should always be initialised before other devices
         
-        if(moduleSettings.containsKey("ata"))
+        if(moduleConfig.getAta() != null)
         {
             modules.addModule(new ATA(this)); 
         }
@@ -819,17 +838,17 @@ public class Emulator implements Runnable
         }
         
         
-        if (moduleSettings.containsKey("fdc"))
+        if (moduleConfig.getFdc() != null)
         {
             modules.addModule(new FDC(this));
         }
         
-        if (moduleSettings.containsKey("keyboard"))
+        if (moduleConfig.getKeyboard() != null)
         {
             modules.addModule(new Keyboard(this));
         }
         
-        if (moduleSettings.containsKey("mouse"))
+        if (moduleConfig.getMouse() != null)
         {
             modules.addModule(new Mouse(this));     // Mouse always requires a keyboard (controller)
         }
@@ -837,7 +856,7 @@ public class Emulator implements Runnable
         modules.addModule(new ParallelPort(this));      
         modules.addModule(new SerialPort(this));
         
-        if(moduleSettings.containsKey("video"))
+        if(moduleConfig.getVideo() != null)
         {
             modules.addModule(new Video(this));
         }
@@ -960,22 +979,23 @@ public class Emulator implements Runnable
 
         if (module instanceof ModuleCPU)
         {
-            
-            // Get the CPU timing parameter from the HashMap
-            int mhz = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("speedmhz"))));
+            int mhz = moduleConfig.getCpu().getSpeedmhz().intValue();
             ((ModuleCPU)module).setIPS(mhz * 1000000);
             result &= true;
         }
         else if (module instanceof ModuleDevice)
         {
-            int interval;
-            if (module instanceof ModulePIT)
-                interval = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("clockrate"))));
-            else
-                interval = Integer.parseInt((((String)((HashMap)moduleSettings.get(module.getType())).get("updateintervalmicrosecs"))));
-            
             // Cast the module to ModuleDevice for the setUpdate
-            ((ModuleDevice)modules.getModule(module.getType())).setUpdateInterval(interval);
+            if (module instanceof ModulePIT)
+            	((ModuleDevice)module).setUpdateInterval(moduleConfig.getPit().getClockrate().intValue());
+            else if (module instanceof ModuleVideo)
+            	((ModuleDevice)module).setUpdateInterval(moduleConfig.getVideo().getUpdateintervalmicrosecs().intValue());
+            else if (module instanceof ModuleKeyboard)
+            	((ModuleDevice)module).setUpdateInterval(moduleConfig.getKeyboard().getUpdateintervalmicrosecs().intValue());
+            else if (module instanceof ModuleFDC)
+            	((ModuleDevice)module).setUpdateInterval(moduleConfig.getFdc().getUpdateintervalmicrosecs().intValue());            
+            else if (module instanceof ModuleATA)
+            	((ModuleDevice)module).setUpdateInterval(moduleConfig.getAta().getUpdateintervalmicrosecs().intValue());            
             result &= true;
         }
         else
@@ -1044,7 +1064,7 @@ public class Emulator implements Runnable
         {
 
         	// Init mouse enabled
-            boolean enabled = Boolean.valueOf(((String)((HashMap)moduleSettings.get(mouse.getType())).get("enabled")));
+            boolean enabled = moduleConfig.getMouse().isEnabled();
             
             mouse.setMouseEnabled(enabled);
             
@@ -1060,7 +1080,7 @@ public class Emulator implements Runnable
             }
 
             // Init mouse type
-            String type = (String) ((HashMap)moduleSettings.get(mouse.getType())).get("mousetype");
+            String type = moduleConfig.getMouse().getMousetype();
             mouse.setMouseType(type);
         }
         return true;
@@ -1075,7 +1095,7 @@ public class Emulator implements Runnable
 
         if(mem != null)
         {
-            int size = Integer.parseInt((String) ((HashMap)moduleSettings.get(mem.getType())).get("sizemb"));
+            int size = moduleConfig.getMemory().getSizemb().intValue();
             mem.setRamSizeInMB(size);
         }
         return true;
@@ -1141,11 +1161,12 @@ public class Emulator implements Runnable
         {
             BIOS bios = (BIOS) modules.getModule(ModuleType.BIOS.toString());
 
-            String sysBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("sysbiosfilepath");
-            String vgaBiosFilePath = (String) ((HashMap) moduleSettings.get(bios.getType())).get("vgabiosfilepath");
+            // FIXME: Do iteration over BIOS list???
+            String sysBiosFilePath = moduleConfig.getBios().get(0).getSysbiosfilepath();
+            String vgaBiosFilePath = moduleConfig.getBios().get(0).getVgabiosfilepath();
 
-            int ramAddressSysBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddresssysbiosstartdec"))));
-            int ramAddressVgaBiosStart = Integer.parseInt((((String) ((HashMap) moduleSettings.get(bios.getType())).get("ramaddressvgabiosstartdec"))));
+            int ramAddressSysBiosStart = moduleConfig.getBios().get(0).getRamaddresssysbiosstartdec().intValue();
+            int ramAddressVgaBiosStart = moduleConfig.getBios().get(0).getRamaddressvgabiosstartdec().intValue();
 
             try
             {
@@ -1220,8 +1241,6 @@ public class Emulator implements Runnable
     public boolean setFloppyParams()
     {
         // Module FDC: set number of drives (max 4), insert floppy and set update interval
-
-        HashMap floppyHM = (HashMap) ((HashMap) moduleSettings.get("fdc")).get("floppy");
         ModuleFDC fdc = (ModuleFDC) modules.getModule(ModuleType.FDC.toString());
 
         // FIXME: This needs to be set depending on number of floppies defined in XML/HashMap (also see note on HashMaps)
@@ -1230,13 +1249,14 @@ public class Emulator implements Runnable
         // FIXME: loop on number of floppies defined
         for (int i = 0; i < 1; i++)
         {
-            boolean enabled = Boolean.parseBoolean(((String) floppyHM.get("enabled")));
-            boolean inserted = Boolean.parseBoolean(((String) floppyHM.get("inserted")));
-            String driveLetter = (String) floppyHM.get("driveletter");
-            String diskformat = (String) floppyHM.get("diskformat");
+        	Floppy floppyConfig = moduleConfig.getFdc().getFloppy().get(i);
+            boolean enabled = floppyConfig.isEnabled();
+            boolean inserted = floppyConfig.isInserted();
+            String driveLetter = floppyConfig.getDriveletter();
+            String diskformat = floppyConfig.getDiskformat();
             byte carrierType = 0x0;
-            boolean writeProtected = Boolean.parseBoolean(((String) floppyHM.get("writeprotected")));
-            String imageFilePath = (String) floppyHM.get("imagefilepath");
+            boolean writeProtected = floppyConfig.isWriteprotected();
+            String imageFilePath = floppyConfig.getImagefilepath();
 
             if (diskformat.equals("360K"))
                 carrierType = 0x01;
@@ -1284,27 +1304,26 @@ public class Emulator implements Runnable
         // TODO: replace ATA reference by ModuleATA
 
         // FIXME: This needs to be set depending on number of floppies defined in XML/HashMap (also see note on HashMaps)
-        HashMap ataHM = (HashMap) ((HashMap) moduleSettings.get("ata")).get("harddiskdrive");
         ModuleATA ata = (ATA)modules.getModule(ModuleType.ATA.toString());
 
-        if (ataHM == null)
+        if (moduleConfig.getAta().getHarddiskdrive().isEmpty())
             return false;
         
         // FIXME: loop on number of disks defined
         for (int i = 0; i < 1; i++)
         {
-            boolean enabled = Boolean.parseBoolean(((String) ataHM.get("enabled")));
-            int ideChannelIndex = Integer.parseInt(((String) ataHM.get("channelindex")));
-            boolean isMaster = Boolean.parseBoolean(((String) ataHM.get("master")));;
-            boolean autoDetectCylinders = Boolean.parseBoolean(((String) ataHM.get("autodetectcylinders")));
-            int numCylinders = Integer.parseInt(((String) ataHM.get("cylinders")));
-            int numHeads = Integer.parseInt(((String) ataHM.get("heads")));
-            int numSectorsPerTrack = Integer.parseInt(((String) ataHM.get("sectorspertrack")));;        
-            String imageFilePath = (String) ataHM.get("imagefilepath");;
+        	Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(0);
+            boolean enabled = hddConfig.isEnabled();
+            int ideChannelIndex = hddConfig.getChannelindex().intValue();
+            boolean isMaster = hddConfig.isMaster();
+            boolean autoDetectCylinders = hddConfig.isAutodetectcylinders();
+            int numCylinders = hddConfig.getCylinders().intValue();
+            int numHeads = hddConfig.getHeads().intValue();
+            int numSectorsPerTrack = hddConfig.getSectorspertrack().intValue();        
+            String imageFilePath = hddConfig.getImagefilepath();
             
             if(enabled && ideChannelIndex >= 0 && ideChannelIndex < 4)
             {
-           
                 if(autoDetectCylinders)
                 {
                     numCylinders = 0;
@@ -1339,23 +1358,38 @@ public class Emulator implements Runnable
         // TODO: This is currently done via ATA, perhaps it can be generalised to BIOS/CMOS? 
         ATA ata = (ATA)modules.getModule(ModuleType.ATA.toString());
 
-        // These values are currently stored in the BIOS hashmap, and boot subhashmap
-        HashMap biosHM = (HashMap) moduleSettings.get("bios");
-        HashMap bootHM = (HashMap) biosHM.get("bootdrives");
-        
-        boolean floppyCheckDisabled = Boolean.parseBoolean(((String) biosHM.get("floppycheckdisabled")));;
+        // These values are currently stored in the BIOS, and bootdrives
+        // FIXME: Do iteration of BIOS???
+        Bios bios = moduleConfig.getBios().get(0);
+        Bootdrives bootdrives = bios.getBootdrives();
+                
+        boolean floppyCheckDisabled = bios.isFloppycheckdisabled();
         int[] bootDrives = new int[3];
 
+        // FIXME: Change to list in XML, ataCmos, so can iterate properly over XML and arraylist
+        // This currently gets an award for 'ugliest hack'
         for (int i = 0; i < bootDrives.length; i++)
         {
-            String name = (((String) bootHM.get("bootdrive" + i)));
+        	String name = "none";
+        	if (i == 0)
+        	{
+        		name = bootdrives.getBootdrive0();
+        	}
+        	if (i == 1)
+        	{
+        		name = bootdrives.getBootdrive1();
+        	}
+        	if (i == 2)
+        	{
+        		name = bootdrives.getBootdrive2();
+        	}
                      
-                    if(name.equalsIgnoreCase("HARDDRIVE"))
+                    if(name.equalsIgnoreCase("Hard Drive"))
                     {
                         bootDrives[i] = ATAConstants.BOOT_DISKC;
                         
                     }
-                    else if(name.equalsIgnoreCase("Floppy")) 
+                    else if(name.equalsIgnoreCase("Floppy Drive")) 
                     {
                         bootDrives[i] = ATAConstants.BOOT_FLOPPYA;
                     }
@@ -1384,11 +1418,7 @@ public class Emulator implements Runnable
     {
         boolean result = true;
         
-        // Each hashmap has a debug setting, so use the key values to retrieve all these
-        Set moduleDebug = moduleSettings.keySet();
-        
-        // FIXME: this settings is currently not read into the hashmap from XML
-        boolean isDebugMode = false;
+        boolean isDebugMode = emuConfig.isDebug();
         
         // If debug mode is on set all modules in debug mode
         if (isDebugMode)
@@ -1403,21 +1433,21 @@ public class Emulator implements Runnable
         
         }
 
-        // For each key in the set, set the appropriate debug mode
-        for (int i = 0; i < moduleDebug.size(); i++)
-        {
-            String moduleName = (String) moduleDebug.toArray()[i];
-            boolean debugVal = Boolean.parseBoolean((String) (((HashMap)moduleSettings.get(moduleName)).get("debug")));
-            
-            modules.getModule(moduleName).setDebugMode(debugVal);
-            logger.log(Level.CONFIG, moduleName + " debug mode set to " + debugVal);
-        }
+        // Set debug for modules individually
+        modules.getModule(ModuleType.ATA.toString()).setDebugMode(moduleConfig.getAta().isDebug());
+        modules.getModule(ModuleType.CPU.toString()).setDebugMode(moduleConfig.getCpu().isDebug());
+        modules.getModule(ModuleType.MEMORY.toString()).setDebugMode(moduleConfig.getMemory().isDebug());
+        modules.getModule(ModuleType.FDC.toString()).setDebugMode(moduleConfig.getFdc().isDebug());
+        modules.getModule(ModuleType.PIT.toString()).setDebugMode(moduleConfig.getPit().isDebug());
+        modules.getModule(ModuleType.KEYBOARD.toString()).setDebugMode(moduleConfig.getKeyboard().isDebug());
+        modules.getModule(ModuleType.MOUSE.toString()).setDebugMode(moduleConfig.getMouse().isDebug());
+        modules.getModule(ModuleType.VGA.toString()).setDebugMode(moduleConfig.getVideo().isDebug());
 
         // Set RAM address watch
-        boolean memDebug = Boolean.parseBoolean((String) (((HashMap)moduleSettings.get("memory")).get("debug")));
-        int memAddress = Integer.parseInt((String) (((HashMap)moduleSettings.get("memory")).get("debugaddressdecimal")));
+        boolean memDebug = moduleConfig.getMemory().isDebug();
+        int memAddress = moduleConfig.getMemory().getDebugaddressdecimal().intValue();
 
-        if (memDebug)
+        if (moduleConfig.getMemory().isDebug())
         {
             ((ModuleMemory)modules.getModule(ModuleType.MEMORY.toString())).setWatchValueAndAddress(memDebug, memAddress);
             logger.log(Level.CONFIG, "[emu] RAM address watch set to " + memDebug + "; address: " + memAddress);

@@ -50,6 +50,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
+
 import nl.kbna.dioscuri.GUI;
 
 public class BootConfigDialog extends ConfigurationDialog
@@ -60,7 +63,8 @@ public class BootConfigDialog extends ConfigurationDialog
     private JComboBox bootDrive3ComboxBox;
     private JCheckBox floppyCheckDisabledCheckBox;   
  
-                
+    nl.kbna.dioscuri.config.Emulator emuConfig;
+
     public BootConfigDialog(GUI parent)
     {               
         super (parent, "Boot Configuration", false, ModuleType.BOOT); 
@@ -71,20 +75,17 @@ public class BootConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
+    	emuConfig = parent.getEmuConfig();
+    	Bootdrives boot = emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives();
         
-//        DioscuriXmlReaderToGui xmlReaderToGui = new DioscuriXmlReaderToGui();
-    	// TODO: Maybe even better would be to let XML reader (or GUI) figure out which params to be returned
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.BOOT);
-        
-        int boot1Index = ((Integer)params[0]).intValue();
-        int boot2Index = ((Integer)params[1]).intValue();
-        int boot3Index = ((Integer)params[2]).intValue();      
-        boolean floppyCheckDisabled = ((Boolean)params[3]).booleanValue();
+        String boot1Index = boot.getBootdrive0();
+        String boot2Index = boot.getBootdrive1();
+        String boot3Index = boot.getBootdrive2();      
+        boolean floppyCheckDisabled = emuConfig.getArchitecture().getModules().getBios().get(0).isFloppycheckdisabled();
 
-        this.bootDrive1ComboxBox.setSelectedIndex(boot1Index);
-        this.bootDrive2ComboxBox.setSelectedIndex(boot2Index);
-        this.bootDrive3ComboxBox.setSelectedIndex(boot3Index);
+        this.bootDrive1ComboxBox.setSelectedItem(boot1Index);
+        this.bootDrive2ComboxBox.setSelectedItem(boot2Index);
+        this.bootDrive3ComboxBox.setSelectedItem(boot3Index);
         this.floppyCheckDisabledCheckBox.setSelected(floppyCheckDisabled);
       
     }
@@ -176,17 +177,16 @@ public class BootConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[4];
-        
-        params[0] = bootDrive1ComboxBox.getSelectedIndex();    
-        params[1] = bootDrive2ComboxBox.getSelectedIndex();
-        params[2] =  bootDrive3ComboxBox.getSelectedIndex();
-        params[3] = floppyCheckDisabledCheckBox.isSelected();   
+    	Bootdrives boot = emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives();
+    	
+        boot.setBootdrive0((String)bootDrive1ComboxBox.getSelectedItem());    
+        boot.setBootdrive1((String)bootDrive2ComboxBox.getSelectedItem());
+        boot.setBootdrive2((String)bootDrive3ComboxBox.getSelectedItem());
+        emuConfig.getArchitecture().getModules().getBios().get(0).setFloppycheckdisabled(floppyCheckDisabledCheckBox.isSelected());   
  
-        return params;
+        return emuConfig;
     }
       
 }

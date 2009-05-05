@@ -39,25 +39,24 @@
  */
 package nl.kbna.dioscuri.config;
 
-import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.math.BigInteger;
 
-import javax.swing.BorderFactory;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -72,6 +71,8 @@ public class FdcConfigDialog extends ConfigurationDialog
     private JButton imageBrowseButton;
     
     private JFormattedTextField updateIntField;
+
+    nl.kbna.dioscuri.config.Emulator emuConfig;
     
     public FdcConfigDialog(GUI parent)
     {               
@@ -83,23 +84,22 @@ public class FdcConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-        
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.FDC);
-        
-        Integer updateInt = ((Integer)params[0]);        
-        boolean enabled = ((Boolean)params[1]).booleanValue();
-        boolean inserted = ((Boolean)params[2]).booleanValue();
-        int driveLetterIndex = ((Integer)params[3]).intValue();
-        int diskFormatIndex = ((Integer)params[4]).intValue();
-        boolean writeProtected = ((Boolean)params[5]).booleanValue();
-        String imageFormatPath = (String)params[6];
+    	emuConfig = parent.getEmuConfig();
+    	Floppy drive = emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0);
+    	
+        Integer updateInt = emuConfig.getArchitecture().getModules().getFdc().getUpdateintervalmicrosecs().intValue();        
+        boolean enabled = drive.isEnabled();
+        boolean inserted = drive.isInserted();
+        String driveLetterIndex = drive.getDriveletter();
+        String diskFormatIndex = drive.getDiskformat();
+        boolean writeProtected = drive.isWriteprotected();
+        String imageFormatPath = drive.getImagefilepath();
            
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(enabled);
         this.insertedCheckBox.setSelected(inserted);     
-        this.driveLetterComboxBox.setSelectedIndex(driveLetterIndex);
-        this.diskFormatComboBox.setSelectedIndex(diskFormatIndex);   
+        this.driveLetterComboxBox.setSelectedItem(driveLetterIndex);
+        this.diskFormatComboBox.setSelectedItem(diskFormatIndex);   
         this.writeProtectedCheckBox.setSelected(writeProtected);
 
         // Check if length of filepath is longer than 30 characters
@@ -265,22 +265,21 @@ public class FdcConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[7];
+    	Floppy drive = emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0);
         
-        int updateInt = ((Number)updateIntField.getValue()).intValue();      
-        params[0] = new Integer(updateInt);
         
-        params[1] = enabledCheckBox.isSelected();    
-        params[2] = insertedCheckBox.isSelected();
-        params[3] = driveLetterComboxBox.getSelectedItem().toString();
-        params[4] = diskFormatComboBox.getSelectedItem().toString();
-        params[5] = writeProtectedCheckBox.isSelected();   
-        params[6] = selectedfile.getAbsoluteFile().toString();
+        emuConfig.getArchitecture().getModules().getFdc().setUpdateintervalmicrosecs((BigInteger.valueOf(((Number)updateIntField.getValue()).intValue())));
+        drive.setEnabled(enabledCheckBox.isSelected());
+        drive.setInserted(insertedCheckBox.isSelected());
+        drive.setDriveletter(driveLetterComboxBox.getSelectedItem().toString());
+        drive.setDiskformat(diskFormatComboBox.getSelectedItem().toString());
+        drive.setWriteprotected(writeProtectedCheckBox.isSelected());
+        drive.setImagefilepath(selectedfile.getAbsoluteFile().toString());    
         
-        return params;
+        
+        return emuConfig;
     }
       
 }

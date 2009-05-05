@@ -43,14 +43,17 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Memory;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -58,7 +61,9 @@ public class RamConfigDialog extends ConfigurationDialog
 {
 
     private JFormattedTextField sizeField;
-        
+
+    nl.kbna.dioscuri.config.Emulator emuConfig;
+    
     public RamConfigDialog(GUI parent)
     {               
         super (parent, "RAM Configuration", false, ModuleType.MEMORY);                    
@@ -69,10 +74,10 @@ public class RamConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-                
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MEMORY);
-        Integer sizeMb = ((Integer)params[0]);        
+    	emuConfig = parent.getEmuConfig();
+    	Memory mem = emuConfig.getArchitecture().getModules().getMemory();
+    	
+        Integer sizeMb = mem.getSizemb().intValue();
         this.sizeField.setValue(sizeMb);
         
     }
@@ -128,15 +133,12 @@ public class RamConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */    
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[1];
+    	Memory mem = emuConfig.getArchitecture().getModules().getMemory();
+    	mem.setSizemb(BigDecimal.valueOf(((Number)sizeField.getValue()).intValue()));      
         
-        int sizeMb = ((Number)sizeField.getValue()).intValue();      
-        params[0] = new Integer(sizeMb);
-        
-        return params;
+        return emuConfig;
     }
         
 }

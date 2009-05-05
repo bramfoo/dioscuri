@@ -76,8 +76,6 @@ import javax.swing.border.Border;
 import javax.swing.event.MouseInputListener;
 
 import nl.kbna.dioscuri.config.ConfigController;
-import nl.kbna.dioscuri.config.DioscuriXmlReader;
-import nl.kbna.dioscuri.config.DioscuriXmlWriter;
 import nl.kbna.dioscuri.config.SelectionConfigDialog;
 import nl.kbna.dioscuri.datatransfer.TextTransfer;
 
@@ -193,6 +191,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private static final int KEY_RELEASED   = 1;
    private static final int KEY_TYPED      = 2;
 
+   // Emulator configuration
+   nl.kbna.dioscuri.config.Emulator emuConfig;
    
    /**
     * Main method
@@ -951,7 +951,16 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        }
        else if (c == (JComponent) miEditConfig)
        {
-                     
+    	   if (emuConfig == null)
+    	   {
+    		   try {
+    			   emuConfig = configController.loadFromXML(new File (configController.getConfigFilePath()));
+    		   }
+   			catch (Exception ex) {
+				logger.log(Level.SEVERE, "[GUI] Config file not readable: " + ex.toString());
+				return;
+			}
+    	   }
           new SelectionConfigDialog(this);
        }     
        else if (c == (JComponent) miHelpAbout)
@@ -1076,15 +1085,24 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        return output;
    }
    
-   public DioscuriXmlReader getXMLReader()
+   public nl.kbna.dioscuri.config.Emulator getEmuConfig()
    {
-	   return configController.getXMLReader();
+	   return emuConfig;
    }
 
    
-   public DioscuriXmlWriter getXMLWriter()
+   public boolean saveXML(nl.kbna.dioscuri.config.Emulator emuObject)
    {
-	   return configController.getXMLWriter();
+	   try
+	   {
+		   configController.saveToXML(emuObject, new File(configController.getConfigFilePath()));
+	   }
+	   catch (Exception e)
+	   {
+		   logger.log(Level.SEVERE, " [gui] Failed to save config file");
+		   return false;
+	   }
+	   return true;
    }
 
    

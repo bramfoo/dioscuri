@@ -47,6 +47,7 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.math.BigInteger;
 import java.text.NumberFormat;
 
 import javax.swing.BorderFactory;
@@ -57,6 +58,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Bios;
 
 import nl.kbna.dioscuri.GUI;
 
@@ -71,6 +75,8 @@ public class BiosConfigDialog extends ConfigurationDialog
         
     private File selectedVgaFile = null;
     private JLabel imageFilePathVgaLabel = null;
+    
+    nl.kbna.dioscuri.config.Emulator emuConfig;
             
     public BiosConfigDialog(GUI parent)
     {               
@@ -82,15 +88,14 @@ public class BiosConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
+    	emuConfig = parent.getEmuConfig();
+    	Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
+    	
+        String sysPath = bios.getSysbiosfilepath();
+        String vgaPath = bios.getVgabiosfilepath();
         
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.BIOS);
-                        
-        String sysPath = (String)params[0];
-        String vgaPath = (String)params[1];
-        
-        Integer ramSysBiosAddressStart = ((Integer)params[2]).intValue();
-        Integer ramVgaBiosAddressStart = ((Integer)params[3]).intValue();
+        Integer ramSysBiosAddressStart = bios.getRamaddresssysbiosstartdec().intValue();
+        Integer ramVgaBiosAddressStart = bios.getRamaddressvgabiosstartdec().intValue();
                 
         this.sysBiosStartsFTextField.setValue(ramSysBiosAddressStart);           
         this.vgaBiosStartFTextField.setValue(ramVgaBiosAddressStart);  
@@ -250,17 +255,16 @@ public class BiosConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-              
-        Object[] params = new Object[4];
-        
-        params[0] = selectedfile.getAbsoluteFile().toString();    
-        params[1] = selectedVgaFile.getAbsoluteFile().toString();
-        params[2] = sysBiosStartsFTextField.getValue();
-        params[3] = vgaBiosStartFTextField.getValue();  
+    	Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
+    	
+        bios.setSysbiosfilepath(selectedfile.getAbsoluteFile().toString());    
+        bios.setVgabiosfilepath(selectedVgaFile.getAbsoluteFile().toString());
+        bios.setRamaddresssysbiosstartdec(BigInteger.valueOf((Integer)sysBiosStartsFTextField.getValue()));
+        bios.setRamaddressvgabiosstartdec(BigInteger.valueOf((Integer) vgaBiosStartFTextField.getValue()));  
   
-        return params;
+        return emuConfig;
     }
         
 }

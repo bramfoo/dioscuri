@@ -54,6 +54,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
 
+import nl.kbna.dioscuri.config.Emulator;
+import nl.kbna.dioscuri.config.Emulator.Architecture.Modules.Mouse;
+
 import nl.kbna.dioscuri.GUI;
 
 public class MouseConfigDialog extends ConfigurationDialog
@@ -64,6 +67,7 @@ public class MouseConfigDialog extends ConfigurationDialog
     private JCheckBox enabledCheckBox;
     private JComboBox mouseTypeComboxBox;
     
+    nl.kbna.dioscuri.config.Emulator emuConfig;
     
     // Constructor
     
@@ -79,11 +83,11 @@ public class MouseConfigDialog extends ConfigurationDialog
      */
     protected void readInParams()
     {
-    	DioscuriXmlReader xmlReaderToGui = parent.getXMLReader();
-        Object[] params = xmlReaderToGui.getModuleParams(ModuleType.MOUSE);
+    	emuConfig = parent.getEmuConfig();
+    	Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
         
-        boolean enabled = ((Boolean)params[0]).booleanValue();
-        String mouseType = (String)params[1];
+        boolean enabled = mouse.isEnabled();
+        String mouseType = mouse.getMousetype();
         
         // Set mouse parameters
         this.enabledCheckBox.setSelected(enabled);
@@ -155,13 +159,13 @@ public class MouseConfigDialog extends ConfigurationDialog
      * 
      * @return object array of params.
      */    
-    protected Object[] getParamsFromGui()
+    protected Emulator getParamsFromGui()
     {
-        Object[] params = new Object[2];
+    	Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
         
-        params[0] = enabledCheckBox.isSelected();    
-        params[1] = mouseTypeComboxBox.getSelectedItem();
+        mouse.setEnabled(enabledCheckBox.isSelected());    
+        mouse.setMousetype((String)mouseTypeComboxBox.getSelectedItem());
         
-        return params;
+        return emuConfig;
     }
 }

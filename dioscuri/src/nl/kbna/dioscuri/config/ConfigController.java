@@ -35,31 +35,31 @@ package nl.kbna.dioscuri.config;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.HashMap;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
 import nl.kbna.dioscuri.GUI;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
+import nl.kbna.dioscuri.config.Emulator;
 
 public class ConfigController
 {
-	// Read/write XML variables
-	private GUI gui;
-    private XmlConnect xmlConnect;
-    private DioscuriXmlReader xmlReader;
-    private DioscuriXmlWriter xmlWriter;
-
-	
     // Logging
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri");
     
     // File config and schema paths (set to default)
     private String configFilePath            = "config/DioscuriConfig.xml";
     private String schemaFilePath            = "config/DioscuriConfig.xsd";
+    
+    private static JAXBContext jc;
+    public static String EMULATOR_XML = "nl.kbna.dioscuri.config";
     
 //    public final static String CONFIG_FILE_PATH            = "config/DioscuriConfig.xml"; 
 //    public final static String SCHEMA_FILE_PATH            = "config/DioscuriConfig.xsd";
@@ -69,14 +69,11 @@ public class ConfigController
     
     public ConfigController(GUI gui)
     {
-    	this.gui = gui;
-        xmlConnect = new XmlConnect(this);
-
-        // Create XML reader and writer
-        xmlReader = new DioscuriXmlReader(this, xmlConnect);
-        xmlWriter = new DioscuriXmlWriter(this, xmlConnect);
-        
-
+    	try {
+    		jc = JAXBContext.newInstance(EMULATOR_XML);
+    	}  catch (JAXBException e) {
+    		logger.log(Level.SEVERE, "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: " + e.getMessage());
+    	}
     }
 
     // Methods
@@ -102,110 +99,64 @@ public class ConfigController
 		return schemaFilePath;
 	}
 
-	public DioscuriXmlReader getXMLReader()
-	{
-		return xmlReader;
-	}
-    
-	
-	public DioscuriXmlWriter getXMLWriter()
-	{
-		return xmlWriter;
-	}
-    
-	
     /**
-     * Creates a recursive HashMap from a given node in a xml document
-     * Iterates over all subnodes adding key-value pairs as either
-     * nodeName=nodeValue for simple elements, or 
-     * nodeName=HashMap for complex elements, recursing into these elements in turn
-     * Ignores TEXT and COMMENT node fields
+     * Get an unmarshaller that can unmarshal Emulator types.
      * 
-     * @param node The starting node
-     * @param HashMap The HashMap to add the node attributes to
-     * 
-     * @return HashMap A recursively filled HashMap consisting of node attributes 
+     * @return	A new unmarshaller
+     * @throws JAXBException
      */
-    private HashMap nodeToHashMap(Node node, HashMap hm)
-    {
-        //FIXME: A HashMap can only contain unique keys, so multiple instances of e.g. floppy will result in one being added
-        
-        logger.log(Level.INFO, "Creating hashmap for: " + node.getNodeName());
-        
-        // Loop through the attribute of the current node
-        NamedNodeMap nodeAttr = node.getAttributes();
-        if (nodeAttr.getLength() > 0)
-        {
-            for (int j = 0; j < nodeAttr.getLength(); j++)
-            {
-                logger.log(Level.INFO, "\tAdding attribute: " + nodeAttr.item(j).getNodeName() + "=" + nodeAttr.item(j).getNodeValue());
-                hm.put(nodeAttr.item(j).getNodeName(), nodeAttr.item(j).getNodeValue());
-            }
-        }
-        
-        // Recurse through each of the child nodes
-        for (int i = 0; i < node.getChildNodes().getLength(); i++)
-        {
-            Node childNode = node.getChildNodes().item(i); 
-            if (childNode.getNodeType() != Node.TEXT_NODE && childNode.getNodeType() != Node.COMMENT_NODE )
-            {
-                // A complex node should be have its own subHashMap, added to the parent HashMap
-                if (childNode.getChildNodes().getLength() > 1)
-                {
-                    logger.log(Level.INFO, "Found subMap: " + childNode.getNodeName());
-                    HashMap childHashMap = new HashMap();
-                    hm.put(childNode.getNodeName(), childHashMap);
-                    
-                    // Recursion
-                    nodeToHashMap(childNode, childHashMap);
-                }
-                // Simple elements can be added straight to the parent HashMap
-                else
-                {
-                    logger.log(Level.INFO, "\tAdding element: " + childNode.getNodeName() + "=" + childNode.getFirstChild().getNodeValue());
-                    hm.put(childNode.getNodeName(), childNode.getFirstChild().getNodeValue());
-                }
-            }
-        }
-        
-        return hm;
+    public static Unmarshaller getEmuUnmarshaller() throws JAXBException {
+    	return jc.createUnmarshaller();
     }
     
     /**
-     * Temporary interface for the xml2hm function
-     * @param nodeName string representation for the starting node
-     * @return Hashmap containing all the emulator settings
+     * Get a marshaller that can marshal Emulator types
+     * 
+     * @return	A new marshaller
+     * @throws JAXBException
      */
-    public HashMap getSettings(String nodeName)
-    {
-        HashMap hm = new HashMap();
-        
-        File configFile = new File(configFilePath);
-        File schemaFile = new File(schemaFilePath);
-        Document document = null;
-        FileInputStream xmlConfigInputStream = null;
-
-        try
-        {
-            xmlConfigInputStream = new FileInputStream(configFile);
-            document = xmlConnect.loadXmlDocument(xmlConfigInputStream, schemaFile);
-
-        }
-        catch (Exception e)
-        {
-            logger.log(Level.SEVERE, e.getMessage());
-            return null;
-        }
-
-        // Translate the string
-        Node modNode = document.getElementsByTagName(nodeName).item(0);
-
-        nodeToHashMap(modNode, hm);
-        
-        xmlConnect.closeXmlDocument(document, xmlConfigInputStream);
-        
-        return hm;
-
+    public static Marshaller getEmuMarshaller() throws JAXBException {
+    	Marshaller m = jc.createMarshaller();
+    	m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+    	return m;
     }
-
+    
+    /**
+     *  save JAXB Emu object to disk as an XML file
+     *
+     * @param xipObject          The XIP object
+     * @param ouputXMLFile       The xml output file
+     * @throws Exception
+     */
+    public static void saveToXML(Emulator emuObject,  File ouputXMLFile) throws Exception {
+        FileOutputStream fos =  new FileOutputStream(ouputXMLFile);
+        try {
+        	Marshaller marshaller = jc.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+            marshaller.marshal(emuObject, fos);
+        } finally {
+        	fos.close();
+        }
+    }
+    
+    /**
+     *  Load a whole Emu object from an XML file on disk
+     *
+     * @param inputEmuFile	An Emulator XML config file to load into memory
+     * @return An Emulator object representing the whole Emulator file
+     * @throws Exception
+     */
+    public static Emulator loadFromXML(File inputEmuFile) throws Exception {
+        FileInputStream fis = new FileInputStream(inputEmuFile);
+        try {
+        	return (Emulator) jc.createUnmarshaller().unmarshal(fis);
+        } finally {
+        	fis.close();
+        }
+    }
+    
+    public static Emulator loadFromXML(InputStream is) throws Exception {
+        return (Emulator) jc.createUnmarshaller().unmarshal(is);
+    }
 }
