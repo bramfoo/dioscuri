@@ -998,4 +998,23 @@ public class ScanCodeSets
                     /* 65489: VK_CUT                */ {"",  ""}
                 },
         };
+    
+    /**
+     * Returns true iff <code>x</code>, <code>y</code> and <code>z</code> are 
+     * within the bounds of the three dimensional class variable 
+     * <code>String[][][]</code> {@link #scancodes}, else false.
+     * @param x the value of the first 'dimension'
+     * @param y the value of the second 'dimension'
+     * @param z the value of the third 'dimension'
+     * @return true iff <code>x</code>, <code>y</code> and <code>z</code> are 
+     * within the bounds of the three dimensional class variable 
+     * <code>String[][][]</code> {@link #scancodes}, else false.
+     */
+    protected boolean keyIsPresent(int x, int y, int z) {
+        return (x >= 0 && x < scancodes.length) &&
+                // 'y >= 3' because 'keyEvent.getKeyCode()-3' is used in KeyBoard
+                // 'scancodes[0].length-1' because 'keyEvent.getKeyCode()+1'  is used in KeyBoard
+                (y >= 3 && y < scancodes[0].length-1) &&
+                (z >= 0 && z < scancodes[0][0].length);
+    }
 }
