@@ -53,8 +53,9 @@ import nl.kbna.dioscuri.Emulator;
 import nl.kbna.dioscuri.module.Module;
 import nl.kbna.dioscuri.module.ModuleCPU;
 import nl.kbna.dioscuri.module.ModuleDMA;
+import nl.kbna.dioscuri.module.ModuleMemory;
 import nl.kbna.dioscuri.module.ModuleMotherboard;
-import nl.kbna.dioscuri.module.memory.Memory;
+import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.exception.ModuleUnknownPort;
 import nl.kbna.dioscuri.exception.ModuleWriteOnlyPortException;
 
@@ -103,7 +104,7 @@ public class DMA extends ModuleDMA
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "cpu", "memory"};
     private ModuleMotherboard motherboard;
-    private Memory memory;
+    private ModuleMemory memory;
     private ModuleCPU cpu;
     
     // Toggles
@@ -308,7 +309,7 @@ public class DMA extends ModuleDMA
         // Set connection for memory
         if (mod.getType().equalsIgnoreCase("memory"))
         {
-            this.memory = (Memory)mod;
+            this.memory = (ModuleMemory)mod;
             return true;
         }
         
@@ -1283,6 +1284,7 @@ public class DMA extends ModuleDMA
      *  DMA now has control over the system busses, so the highest priority DMA channel 
      *  that scheduled a request is located and after setting up the necessary parameters
      *  (address, count, memory), the DMA transfer is initiated
+     * @throws ModuleException 
      *
      */
     public void acknowledgeBusHold()
@@ -1362,7 +1364,11 @@ public class DMA extends ModuleDMA
             }
         }
 
-        initiateDMATransfer(ctrlNum, chanNum, memoryAddress);
+        try {
+			initiateDMATransfer(ctrlNum, chanNum, memoryAddress);
+		} catch (ModuleException e) {
+			logger.log(Level.SEVERE, "[DMA] Error in DMA transfer: " + e.getMessage());
+		}
         
         if (countExpired)   // DMA process finished, so reset all involved variables
         {
@@ -1385,8 +1391,9 @@ public class DMA extends ModuleDMA
      * @param ctrlNum       Controller whose channel is requesting a transfer
      * @param chanNum       Channel number of the request
      * @param memoryAddress Source/destination address in memory of the DMA operation
+     * @throws ModuleException 
      */
-    private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
+    private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress) throws ModuleException
     {
         byte dataByte; // 8-bit data read/written to/from memory
         byte[] dataWord = new byte[2]; // 16-bit data read/written to/from memory
