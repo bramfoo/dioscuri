@@ -86,6 +86,7 @@ import nl.kbna.dioscuri.module.cpu32.VGABIOS;
 import nl.kbna.dioscuri.module.dma.DMA;
 import nl.kbna.dioscuri.module.fdc.FDC;
 import nl.kbna.dioscuri.module.keyboard.Keyboard;
+import nl.kbna.dioscuri.module.memory.DynamicAllocationMemory;
 import nl.kbna.dioscuri.module.memory.Memory;
 import nl.kbna.dioscuri.module.motherboard.DeviceDummy;
 import nl.kbna.dioscuri.module.motherboard.Motherboard;
@@ -119,6 +120,7 @@ public class Emulator implements Runnable
     private boolean coldStart;
     private boolean resetBusy;
     private boolean cpu32bit;
+    private boolean dynamicMem;
     
 	// Logging
 	private static Logger logger = Logger.getLogger("nl.kbna.dioscuri");
@@ -183,6 +185,7 @@ public class Emulator implements Runnable
 		isAlive = true;
         coldStart = true;
         resetBusy = false;
+        dynamicMem = true;
         
         // Create module configuration controller
         configController = config;
@@ -792,7 +795,12 @@ public class Emulator implements Runnable
             else
             {
             // Only add Dioscuri memory if using 16-bit processor
-            modules.addModule(new Memory(this));
+            
+            	// Choose between full array or dynamically allocated
+            	if (dynamicMem)
+            		modules.addModule(new DynamicAllocationMemory(this));
+            	else
+            		modules.addModule(new Memory(this));
             }
 
         if (moduleConfig.getBios() != null)
@@ -1091,7 +1099,7 @@ public class Emulator implements Runnable
      */
     public boolean setMemoryParams()
     {
-        Memory mem = (Memory)modules.getModule(ModuleType.MEMORY.toString());
+        ModuleMemory mem = (ModuleMemory)modules.getModule(ModuleType.MEMORY.toString());
 
         if(mem != null)
         {
@@ -1176,7 +1184,7 @@ public class Emulator implements Runnable
                     logger.log(Level.CONFIG, "[emu] System BIOS successfully stored in ROM.");
 
                     // Retrieve System BIOS and store it in RAM
-                    Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(ModuleType.MEMORY.toString());
 
                     mem.setBytes(ramAddressSysBiosStart, bios.getSystemBIOS());
 
@@ -1209,7 +1217,7 @@ public class Emulator implements Runnable
                     logger.log(Level.CONFIG, "[emu] Video BIOS successfully stored in ROM.");
 
                     // Retrieve VGA BIOS and store it in RAM at address 0xC0000
-                    Memory mem = (Memory) modules.getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(ModuleType.MEMORY.toString());
                     mem.setBytes(ramAddressVgaBiosStart, bios.getVideoBIOS());
                     logger.log(Level.CONFIG, "[emu] Video BIOS successfully loaded in RAM.");
                 }
