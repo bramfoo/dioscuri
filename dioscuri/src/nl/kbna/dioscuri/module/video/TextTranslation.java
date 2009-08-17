@@ -1,3 +1,36 @@
+/*
+ * $Revision$ $Date$ $Author$
+ * 
+ * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
+ * 
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ *
+ * For more information about this project, visit
+ * http://dioscuri.sourceforge.net/
+ * or contact us via email:
+ * jrvanderhoeven at users.sourceforge.net
+ * blohman at users.sourceforge.net
+ * 
+ * Developed by:
+ * Nationaal Archief               <www.nationaalarchief.nl>
+ * Koninklijke Bibliotheek         <www.kb.nl>
+ * Tessella Support Services plc   <www.tessella.com>
+ *
+ * Project Title: DIOSCURI
+ *
+ */
 package nl.kbna.dioscuri.module.video;
 
 public class TextTranslation
@@ -32,8 +65,8 @@ public class TextTranslation
     						/* 017 */ "?",
     						/* 018 */ "?",
     						/* 019 */ "?",
-    						/* 020 */ "∂",
-    						/* 021 */ "ß",
+    						/* 020 */ "¬∂",
+    						/* 021 */ "¬ß",
     						/* 022 */ "",	// ?
     						/* 023 */ "",
     						/* 024 */ "?",
@@ -142,69 +175,69 @@ public class TextTranslation
     						/* 127 */ "?",
     						
     				    // Extended ASCII set (128 - 255)
-    						/* 128 */ "«",
-    						/* 129 */ "¸",
-    						/* 130 */ "È",
-    						/* 131 */ "‚",
-    						/* 132 */ "‰",
-    						/* 133 */ "‡",
-    						/* 134 */ "Â",
-    						/* 135 */ "Á",
-    						/* 136 */ "Í",
-    						/* 137 */ "Î",
-    						/* 138 */ "Ë",
-    						/* 139 */ "Ô",
-    						/* 140 */ "Ó",
-    						/* 141 */ "Ï",
-    						/* 142 */ "ƒ",
-    						/* 143 */ "≈",
-    						/* 144 */ "…",
-    						/* 145 */ "Ê",
-    						/* 146 */ "∆",
-    						/* 147 */ "Ù",
-    						/* 148 */ "ˆ",
-    						/* 149 */ "Ú",
-    						/* 150 */ "˚",
-    						/* 151 */ "˘",
-    						/* 152 */ "ˇ",
-    						/* 153 */ "÷",
-    						/* 154 */ "‹",
-    						/* 155 */ "¯",
-    						/* 156 */ "£",
-    						/* 157 */ "ÿ",
-    						/* 158 */ "◊",
-    						/* 159 */ "É",
-    						/* 160 */ "·",
-    						/* 161 */ "Ì",
-    						/* 162 */ "Û",
-    						/* 163 */ "˙",
-    						/* 164 */ "Ò",
-    						/* 165 */ "—",
+    						/* 128 */ "√á",
+    						/* 129 */ "√º",
+    						/* 130 */ "√©",
+    						/* 131 */ "√¢",
+    						/* 132 */ "√§",
+    						/* 133 */ "√†",
+    						/* 134 */ "√•",
+    						/* 135 */ "√ß",
+    						/* 136 */ "√™",
+    						/* 137 */ "√´",
+    						/* 138 */ "√®",
+    						/* 139 */ "√Ø",
+    						/* 140 */ "√Æ",
+    						/* 141 */ "√¨",
+    						/* 142 */ "√Ñ",
+    						/* 143 */ "√Ö",
+    						/* 144 */ "√â",
+    						/* 145 */ "√¶",
+    						/* 146 */ "√Ü",
+    						/* 147 */ "√¥",
+    						/* 148 */ "√∂",
+    						/* 149 */ "√≤",
+    						/* 150 */ "√ª",
+    						/* 151 */ "√π",
+    						/* 152 */ "√ø",
+    						/* 153 */ "√ñ",
+    						/* 154 */ "√ú",
+    						/* 155 */ "√∏",
+    						/* 156 */ "¬£",
+    						/* 157 */ "√ò",
+    						/* 158 */ "√ó",
+    						/* 159 */ "∆í",
+    						/* 160 */ "√°",
+    						/* 161 */ "√≠",
+    						/* 162 */ "√≥",
+    						/* 163 */ "√∫",
+    						/* 164 */ "√±",
+    						/* 165 */ "√ë",
     						/* 166 */ "",	// ?
     						/* 167 */ "",	// ?
-    						/* 168 */ "ø",
-    						/* 169 */ "Æ",
-    						/* 170 */ "¨",
-    						/* 171 */ "Ω",
-    						/* 172 */ "º",
-    						/* 173 */ "°",
-    						/* 174 */ "´",
-    						/* 175 */ "ª",
+    						/* 168 */ "¬ø",
+    						/* 169 */ "¬Æ",
+    						/* 170 */ "¬¨",
+    						/* 171 */ "¬Ω",
+    						/* 172 */ "¬º",
+    						/* 173 */ "¬°",
+    						/* 174 */ "¬´",
+    						/* 175 */ "¬ª",
     						/* 176 */ "?",	// Unicode difference
     						/* 177 */ "?",	// Unicode difference
     						/* 178 */ "?",	// Unicode difference
     						/* 179 */ "?",	// Unicode difference
     						/* 180 */ "?",	// Unicode difference
-    						/* 181 */ "¡",
-    						/* 182 */ "¬",
-    						/* 183 */ "¿",
-    						/* 184 */ "©",
+    						/* 181 */ "√Å",
+    						/* 182 */ "√Ç",
+    						/* 183 */ "√Ä",
+    						/* 184 */ "¬©",
     						/* 185 */ "?",	// Unicode difference
     						/* 186 */ "?",	// Unicode difference
     						/* 187 */ "?",	// Unicode difference
     						/* 188 */ "?",	// Unicode difference
     						/* 189 */ "",	// ?
-    						/* 190 */ "•",
+    						/* 190 */ "¬•",
     						/* 191 */ "?",	// Unicode difference
     						/* 192 */ "?",	// Unicode difference
     						/* 193 */ "?",	// Unicode difference
@@ -212,8 +245,8 @@ public class TextTranslation
     						/* 195 */ "?",	// Unicode difference
     						/* 196 */ "?",	// Unicode difference
     						/* 197 */ "?",	// Unicode difference
-    						/* 198 */ "„",
-    						/* 199 */ "√",
+    						/* 198 */ "√£",
+    						/* 199 */ "√É",
     						/* 200 */ "?",	// Unicode difference
     						/* 201 */ "?",	// Unicode difference
     						/* 202 */ "?",	// Unicode difference
@@ -221,53 +254,53 @@ public class TextTranslation
     						/* 204 */ "?",	// Unicode difference
     						/* 205 */ "?",	// Unicode difference
     						/* 206 */ "?",	// Unicode difference
-    						/* 207 */ "§",
-    						/* 208 */ "",
-    						/* 209 */ "–",
-    						/* 210 */ " ",
-    						/* 211 */ "À",
-    						/* 212 */ "»",
-    						/* 213 */ "π",	// ?
-    						/* 214 */ "Õ",
-    						/* 215 */ "Œ",
-    						/* 216 */ "œ",
+    						/* 207 */ "¬§",
+    						/* 208 */ "√∞",
+    						/* 209 */ "√ê",
+    						/* 210 */ "√ä",
+    						/* 211 */ "√ã",
+    						/* 212 */ "√à",
+    						/* 213 */ "¬π",	// ?
+    						/* 214 */ "√ç",
+    						/* 215 */ "√é",
+    						/* 216 */ "√è",
     						/* 217 */ "?",	// Unicode difference
     						/* 218 */ "?",	// Unicode difference
     						/* 219 */ "?",	// Unicode difference
     						/* 220 */ "?",	// Unicode difference
-    						/* 221 */ "¶",
-    						/* 222 */ "Ã",
+    						/* 221 */ "¬¶",
+    						/* 222 */ "√å",
     						/* 223 */ "?",	// Unicode difference
-    						/* 224 */ "”",
-    						/* 225 */ "ﬂ",
-    						/* 226 */ "‘",
-    						/* 227 */ "“",
-    						/* 228 */ "ı",
-    						/* 229 */ "’",
-    						/* 230 */ "µ",
-    						/* 231 */ "˛",
-    						/* 232 */ "ﬁ",
-    						/* 233 */ "⁄",
-    						/* 234 */ "€",
-    						/* 235 */ "Ÿ",
-    						/* 236 */ "˝",
-    						/* 237 */ "›",
-    						/* 238 */ "Ø",
-    						/* 239 */ "¥",
-    						/* 240 */ "ñ",
-    						/* 241 */ "±",
+    						/* 224 */ "√ì",
+    						/* 225 */ "√ü",
+    						/* 226 */ "√î",
+    						/* 227 */ "√í",
+    						/* 228 */ "√µ",
+    						/* 229 */ "√ï",
+    						/* 230 */ "¬µ",
+    						/* 231 */ "√æ",
+    						/* 232 */ "√û",
+    						/* 233 */ "√ö",
+    						/* 234 */ "√õ",
+    						/* 235 */ "√ô",
+    						/* 236 */ "√Ω",
+    						/* 237 */ "√ù",
+    						/* 238 */ "¬Ø",
+    						/* 239 */ "¬¥",
+    						/* 240 */ "‚Äì",
+    						/* 241 */ "¬±",
     						/* 242 */ "",	// ?
-    						/* 243 */ "æ",
-    						/* 244 */ "∂",
-    						/* 245 */ "ß",
-    						/* 246 */ "˜",
-    						/* 247 */ "∏",
-    						/* 248 */ "∫",
-    						/* 249 */ "®",
-    						/* 250 */ "ï",
-    						/* 251 */ "π",
-    						/* 252 */ "≥",
-    						/* 253 */ "≤",
+    						/* 243 */ "¬æ",
+    						/* 244 */ "¬∂",
+    						/* 245 */ "¬ß",
+    						/* 246 */ "√∑",
+    						/* 247 */ "¬∏",
+    						/* 248 */ "¬∫",
+    						/* 249 */ "¬®",
+    						/* 250 */ "‚Ä¢",
+    						/* 251 */ "¬π",
+    						/* 252 */ "¬≥",
+    						/* 253 */ "¬≤",
     						/* 254 */ "?",	// Unicode difference
     						/* 255 */ ""	// ?
     					};
