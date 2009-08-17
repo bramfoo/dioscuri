@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.18 $ $Date: 2009-04-28 13:32:01 $ $Author: bkiers $
+ * $Revision$ $Date$ $Author$
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 

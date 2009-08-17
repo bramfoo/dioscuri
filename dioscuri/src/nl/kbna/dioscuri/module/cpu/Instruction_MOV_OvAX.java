@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-08-07 15:03:55 $ $Author: blohman $
+ * $Revision$ $Date$ $Author$
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 

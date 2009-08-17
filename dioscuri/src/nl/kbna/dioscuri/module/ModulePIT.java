@@ -1,5 +1,5 @@
 /*
- * $Revision: 1.3 $ $Date: 2007-07-30 14:59:02 $ $Author: jrvanderhoeven $
+ * $Revision$ $Date$ $Author$
  * 
  * Copyright (C) 2007  National Library of the Netherlands, Nationaal Archief of the Netherlands
  * 
