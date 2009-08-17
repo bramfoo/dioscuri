@@ -34,7 +34,6 @@
 
 package nl.kbna.dioscuri.module;
 
-import nl.kbna.dioscuri.exception.ModuleException;
 import nl.kbna.dioscuri.module.dma.DMA8Handler;
 import nl.kbna.dioscuri.module.dma.DMA16Handler;
 
