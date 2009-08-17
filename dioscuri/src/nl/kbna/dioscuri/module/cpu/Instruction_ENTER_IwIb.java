@@ -36,7 +36,7 @@ package nl.kbna.dioscuri.module.cpu;
 
 /**
  * Intel opcode C8<BR>
- * ENTER — Make Stack Frame for Procedure Parameters.<BR>
+ * ENTER - Make Stack Frame for Procedure Parameters.<BR>
  * Flags modified: none
  */
 public class Instruction_ENTER_IwIb implements Instruction
@@ -116,7 +116,7 @@ public class Instruction_ENTER_IwIb implements Instruction
     // Methods
 
     /**
-     * ENTER — Make Stack Frame for Procedure Parameters.<BR>
+     * ENTER - Make Stack Frame for Procedure Parameters.<BR>
      * Takes care of nesting level (0, 1 or higher)
      */
     public void execute()
