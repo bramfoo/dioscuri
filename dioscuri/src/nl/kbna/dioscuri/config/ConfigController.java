@@ -124,7 +124,7 @@ public class ConfigController
     /**
      *  save JAXB Emu object to disk as an XML file
      *
-     * @param xipObject          The XIP object
+     * @param emuObject          The Emulator object
      * @param ouputXMLFile       The xml output file
      * @throws Exception
      */
