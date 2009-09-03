@@ -42,6 +42,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -111,7 +112,6 @@ public class Emulator implements Runnable
     private ArrayList<HardwareComponent> hwComponents;
     private IO io;
     private GUI gui;
-    private ConfigController configController;
     private nl.kbna.dioscuri.config.Emulator emuConfig;
     private nl.kbna.dioscuri.config.Emulator.Architecture.Modules moduleConfig;
     
@@ -171,7 +171,7 @@ public class Emulator implements Runnable
      * @param GUI graphical user interface (owner of emulation process)
 	 *
 	 */
-	public Emulator(GUI owner, ConfigController config)
+	public Emulator(GUI owner)
 	{
         this.gui = owner;
         modules = null; // Created in createModules()
@@ -185,10 +185,7 @@ public class Emulator implements Runnable
 		isAlive = true;
         coldStart = true;
         resetBusy = false;
-        dynamicMem = true;
-        
-        // Create module configuration controller
-        configController = config;
+        dynamicMem = false;
     }
 
 	
@@ -206,9 +203,18 @@ public class Emulator implements Runnable
 
             // Get the module settings from the configuration file
 			try {
-				File configFile = new File(configController.getConfigFilePath());
-				logger.log(Level.INFO, "[emu] Config file '" + configFile.toString() + "' exists: " + configFile.exists());
-				emuConfig = configController.loadFromXML(configFile);
+				File configFile = new File(gui.getConfigFilePath());
+				if (!configFile.exists() || !configFile.canRead())
+	    		   {
+					logger.log(Level.WARNING, "[emu] No local config file accessible, using read-only jar settings");
+	    			InputStream fallBack = GUI.class.getResourceAsStream(GUI.JAR_CONFIG_XML);
+	    			emuConfig = ConfigController.loadFromXML(fallBack);
+	    			fallBack.close();
+	    		   }
+				else
+					{
+					emuConfig = ConfigController.loadFromXML(configFile);
+					}
 				moduleConfig = emuConfig.getArchitecture().getModules();
 				logger.log(Level.SEVERE, "[emu] Config contents: " + moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());				
 			}

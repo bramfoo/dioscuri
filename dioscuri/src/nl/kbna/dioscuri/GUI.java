@@ -48,10 +48,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
-import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -87,8 +88,8 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 {
    // Attributes
    private Emulator emu;
-   private ConfigController configController;
    private TextTransfer textTransfer;
+   boolean readOnlyConfig = false;
    
    // Panels
    private JScrollPane screenPane;
@@ -145,20 +146,24 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    private int guiHeight;
    
    // Command line parameter settings
-   private boolean guiHidden;
+   private boolean guiVisible;
    private String configFilePath;
    private boolean autorun;
    private boolean autoshutdown;
    
-   
    // Constants
    // Emulator characteristics
-   protected final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-   protected final static String EMULATOR_VERSION = "0.4.2";
-   protected final static String EMULATOR_DATE = "April, 2009";
-   protected final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
-   private final static String EMULATOR_ICON_IMAGE = "config/dioscuri_icon.gif";
-   private final static String EMULATOR_SPLASHSCREEN_IMAGE = "config/dioscuri_splashscreen_2008_v040.gif";
+   protected final static String EMULATOR_NAME				= "Dioscuri - modular emulator for digital preservation";
+   protected final static String EMULATOR_VERSION			= "0.4.2";
+   protected final static String EMULATOR_DATE				= "April, 2009";
+   protected final static String EMULATOR_CREATOR			= "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
+   private final static String CONFIG_DIR					= "config";
+   private final static String EMULATOR_ICON_IMAGE			= "dioscuri_icon.gif";
+   private final static String EMULATOR_SPLASHSCREEN_IMAGE	= "dioscuri_splashscreen_2008_v040.gif";
+   private final static String EMULATOR_LOGGING_PROPERTIES	= "logging.properties";
+   private final static String CONFIG_XML					= "DioscuriConfig.xml";
+   public final static String JAR_CONFIG_XML				= File.separator + CONFIG_DIR + File.separator + CONFIG_XML;
+
    
    // Dimension settings
    private static final int GUI_X_LOCATION = 200;
@@ -201,23 +206,36 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     */
    public static void main(String[] args)
    {
-       
+
+	   // Load logging.properties
        try
        {
-           // Logging
-           LogManager.getLogManager().readConfiguration(new BufferedInputStream(new DataInputStream(new FileInputStream(new File("config/logging.properties")))));
-           
-           logger.setLevel(Level.ALL);
+		   // Check for a local system logging.properties file
+		   File localLogFile = new File(CONFIG_DIR + File.separator + EMULATOR_LOGGING_PROPERTIES);
+		   if (localLogFile.exists() && localLogFile.canRead())
+		   {
+			   LogManager.getLogManager().readConfiguration(new BufferedInputStream(new FileInputStream(localLogFile)));
+			   logger.log(Level.INFO, "Logging.properties loaded from local file " + localLogFile);
+		   }
+		   else
+		   {
+			   // Use log file included in jar
+	    	   String jarLogFile = File.separator + CONFIG_DIR + File.separator + EMULATOR_LOGGING_PROPERTIES;
+	    	   InputStream loggingFileStream = GUI.class.getResourceAsStream(jarLogFile);
+	           if (loggingFileStream == null)
+	           {
+	        	   System.out.println("No Logging.properties file found locally (" + localLogFile + " or in jar (" + jarLogFile +")");
+	           }
+	           else
+	           {
+	               LogManager.getLogManager().readConfiguration(new BufferedInputStream(loggingFileStream));
+	        	   logger.log(Level.INFO, "Logging.properties loaded from jar " + jarLogFile);
+	           }
+		   }    	   
        }
-       catch (SecurityException e)
+       catch (Exception e)
        {
-           // TODO Auto-generated catch block
-           e.printStackTrace();
-       }
-       catch (IOException e)
-       {
-           // TODO Auto-generated catch block
-           e.printStackTrace();
+    	   System.out.println("Error initialising the logging system: " + e.toString());
        }
        
        // Create GUI
@@ -257,7 +275,18 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        }
        
        // Set icon image
-       this.setIconImage(this.getImageFromFile(EMULATOR_ICON_IMAGE));
+       String jarIconFile = new String(File.separator + CONFIG_DIR + File.separator + EMULATOR_ICON_IMAGE);
+       URL iconURL = GUI.class.getResource(jarIconFile);
+       if (iconURL == null)
+       {
+    	   logger.log(Level.SEVERE, "Icon image not found in jar: " + jarIconFile);
+       }
+       else
+       {
+    	   logger.log(Level.INFO, "Icon image loaded from " + jarIconFile);
+    	   this.setIconImage(getImageFromFile(iconURL));
+       }
+
        
        // Create menubar
        this.initMenuBar();
@@ -296,15 +325,19 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        this.setResizable(false);
        this.updateGUI(GUI_RESET);
        
-       // Create configuration controller (uses default config file path)
-	   configController = new ConfigController(this);
-       
        // Create clipboard functionality
        textTransfer = new TextTransfer(this);
        
        // Disable that TAB and SHIFT-TAB key strokes don't result in 
        // component-traversals.
        super.setFocusTraversalKeysEnabled(false);
+
+	   guiVisible = true;
+	   autorun = false;
+	   autoshutdown = false;
+
+       // Default location, outside jar
+       configFilePath = CONFIG_DIR + File.separator + CONFIG_XML;
    }
 
    public GUI(String[] arguments)
@@ -320,12 +353,6 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 	   // autoshutdown				: emulator will shutdown automatically when emulation process is finished
 	   // Example: java -jar Dioscuri.jar -c "c:\emulators\configs\dioscuri_config.xml" autorun
 	   
-	   // Reset argument parameters
-	   configFilePath = "";
-	   guiHidden = false;
-	   autorun = false;
-	   autoshutdown = false;
-	   
 	   // Check arguments
 	   for (int a = 0; a < arguments.length; a++)
 	   {
@@ -337,6 +364,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 			   if(a < arguments.length) 
 			   {
 			       configFilePath = arguments[a];
+			       logger.log(Level.SEVERE, "[gui] Configuration path changed to " + configFilePath);
 			   }
 			   else
 			   {
@@ -347,7 +375,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 		   // Argument -h
 		   else if (arguments[a].equalsIgnoreCase("-h"))
 		   {
-			   guiHidden = true;
+			   guiVisible = false;
 		   }
 
 		   // Argument autorun
@@ -370,29 +398,17 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 	   }
 
 	   // Perform argument actions
-	   // Change configuration file
-	   if (!configFilePath.equals("") && configController.setConfigFilePath(configFilePath) == true)
-	   {
-           logger.log(Level.SEVERE, "[gui] Configuration path changed in " + configFilePath);
-	   }
-	   
        // Show / hide GUI (based on command line parameter)
-	   if (guiHidden == true)
-	   {
-	       this.setVisible(false);
-           logger.log(Level.SEVERE, "[gui] GUI is hidden");
-	   }
-	   else
-	   {
-	       this.setVisible(true);
-	       this.requestFocus();
-           logger.log(Level.SEVERE, "[gui] GUI is visible and has focus");
-	   }
+       this.setVisible(guiVisible);
+       if (guiVisible)
+    	   this.requestFocus();
+       String output = guiVisible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden";
+       logger.log(Level.SEVERE, output);
 
 	   // Automatically start emulation process
-	   if (autorun == true)
+	   if (autorun)
 	   {
-           emu = new Emulator(this, configController);
+           emu = new Emulator(this);
            new Thread(emu).start();
            this.updateGUI(EMU_PROCESS_START);
 	   }
@@ -586,8 +602,19 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        // Create startup screen
        StartupPanel startup = new StartupPanel();
        startup.setSize(720, 400);
-       startup.setImage(this.getImageFromFile(EMULATOR_SPLASHSCREEN_IMAGE));
-       
+
+       String jarSplashFile = new String(File.separator + CONFIG_DIR + File.separator + EMULATOR_SPLASHSCREEN_IMAGE);
+       URL imageURL = GUI.class.getResource(jarSplashFile);
+       if (imageURL == null)
+       {
+    	   logger.log(Level.SEVERE, "Splash screen image not found in jar: " + jarSplashFile);
+       }
+       else
+       {
+    	   logger.log(Level.INFO, "Splash screen image loaded from " + jarSplashFile);
+           startup.setImage(this.getImageFromFile(imageURL));
+       }
+
        return startup;
    }
 
@@ -659,11 +686,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
     * @param String path location where image resides
     * 
     */
-   private BufferedImage getImageFromFile(String path)
+   private BufferedImage getImageFromFile(URL path)
    {
        BufferedImage image = null;
        try {
-           image = ImageIO.read(new File(path));
+           image = ImageIO.read(path);
        }
        catch(IOException e)
        {
@@ -870,7 +897,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        if (c == (JComponent) miEmulatorStart)
        {
            // Start emulation process
-           emu = new Emulator(this, configController);
+           emu = new Emulator(this);
            new Thread(emu).start();
            this.updateGUI(EMU_PROCESS_START);
        }
@@ -953,15 +980,36 @@ public class GUI extends JFrame implements ActionListener, KeyListener
        {
     	   if (emuConfig == null)
     	   {
+    		   File config = new File(configFilePath);
     		   try {
-    			   emuConfig = configController.loadFromXML(new File (configController.getConfigFilePath()));
+        		   if (!config.exists() || !config.canRead())
+        		   {
+        			   InputStream fallBack = GUI.class.getResourceAsStream(JAR_CONFIG_XML);
+        			   emuConfig = ConfigController.loadFromXML(fallBack);
+        			   readOnlyConfig = true;
+        			   configFilePath = JAR_CONFIG_XML;
+        			   fallBack.close();
+        		   }
+        		   else
+        		   {
+        			   emuConfig = ConfigController.loadFromXML(config);
+        		   }
     		   }
    			catch (Exception ex) {
 				logger.log(Level.SEVERE, "[GUI] Config file not readable: " + ex.toString());
 				return;
-			}
+   			}
     	   }
-          new SelectionConfigDialog(this);
+
+    	   // Load edit screen or show warning config is read-only
+    	   if (readOnlyConfig)
+    	   {
+    		   JOptionPane.showMessageDialog(this, "No editable configuration found.\nDefault configuration loaded from jar file and is read-only", "Configuration", JOptionPane.WARNING_MESSAGE);
+    	   }
+    	   else
+    	   {
+    		   new SelectionConfigDialog(this);
+    	   }
        }     
        else if (c == (JComponent) miHelpAbout)
        {
@@ -982,7 +1030,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
                                                    + " but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
                                                    + " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
                                                    + " GNU General Public License for more details.\n\n\n"
-                                                   + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven");
+                                                   + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven", "About", JOptionPane.INFORMATION_MESSAGE);
        }
    }
    
@@ -1095,7 +1143,7 @@ public class GUI extends JFrame implements ActionListener, KeyListener
    {
 	   try
 	   {
-		   configController.saveToXML(emuObject, new File(configController.getConfigFilePath()));
+		   ConfigController.saveToXML(emuObject, new File(configFilePath));
 	   }
 	   catch (Exception e)
 	   {
@@ -1246,6 +1294,11 @@ public class GUI extends JFrame implements ActionListener, KeyListener
 			
 		}
    }
+
+
+public String getConfigFilePath() {
+	return configFilePath;
+}
 
 
 }
