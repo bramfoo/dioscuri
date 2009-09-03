@@ -36,7 +36,7 @@ package nl.kbna.dioscuri.module.cpu;
 
 /**
  * Intel opcode C9<BR>
- * LEAVE — High Level Procudure Exit.<BR>
+ * LEAVE - High Level Procudure Exit.<BR>
  * Flags modified: none
  */
 public class Instruction_LEAVE implements Instruction
@@ -76,7 +76,7 @@ public class Instruction_LEAVE implements Instruction
     // Methods
 
     /**
-     * LEAVE — High Level Procudure Exit.<BR>
+     * LEAVE - High Level Procudure Exit.<BR>
      */
     public void execute()
     {
