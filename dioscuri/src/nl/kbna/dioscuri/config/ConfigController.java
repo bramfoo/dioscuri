@@ -55,50 +55,25 @@ public class ConfigController
     private static Logger logger = Logger.getLogger("nl.kbna.dioscuri");
     
     // File config and schema paths (set to default)
-    private String configFilePath            = "config/DioscuriConfig.xml";
-    private String schemaFilePath            = "config/DioscuriConfig.xsd";
     
     private static JAXBContext jc;
     public static String EMULATOR_XML = "nl.kbna.dioscuri.config";
-    
-//    public final static String CONFIG_FILE_PATH            = "config/DioscuriConfig.xml"; 
-//    public final static String SCHEMA_FILE_PATH            = "config/DioscuriConfig.xsd";
 
-    
-    // Constructor
-    
-    public ConfigController(GUI gui)
-    {
+    static {
     	try {
     		jc = JAXBContext.newInstance(EMULATOR_XML);
     	}  catch (JAXBException e) {
     		logger.log(Level.SEVERE, "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: " + e.getMessage());
     	}
     }
+    
+    // Constructor
+    public ConfigController(GUI gui)
+    {
+    }
 
     // Methods
     
-	public boolean setConfigFilePath(String configFilePath)
-	{
-		this.configFilePath = configFilePath;
-		return true;
-	}
-
-	public String getConfigFilePath()
-	{
-		return configFilePath;
-	}
-
-	public void setSchemaFilePath(String schemaFilePath)
-	{
-		this.schemaFilePath = schemaFilePath;
-	}
-
-	public String getSchemaFilePath()
-	{
-		return schemaFilePath;
-	}
-
     /**
      * Get an unmarshaller that can unmarshal Emulator types.
      * 
@@ -125,11 +100,11 @@ public class ConfigController
      *  save JAXB Emu object to disk as an XML file
      *
      * @param emuObject          The Emulator object
-     * @param ouputXMLFile       The xml output file
+     * @param outputXMLFile       The xml output file
      * @throws Exception
      */
-    public static void saveToXML(Emulator emuObject,  File ouputXMLFile) throws Exception {
-        FileOutputStream fos =  new FileOutputStream(ouputXMLFile);
+    public static void saveToXML(Emulator emuObject,  File outputXMLFile) throws Exception {
+        FileOutputStream fos =  new FileOutputStream(outputXMLFile);
         try {
         	Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
@@ -148,7 +123,7 @@ public class ConfigController
      * @throws Exception
      */
     public static Emulator loadFromXML(File inputEmuFile) throws Exception {
-        FileInputStream fis = new FileInputStream(inputEmuFile);
+    	FileInputStream fis = new FileInputStream(inputEmuFile);
         try {
         	return (Emulator) jc.createUnmarshaller().unmarshal(fis);
         } finally {
