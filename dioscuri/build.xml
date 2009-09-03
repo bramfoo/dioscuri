@@ -50,7 +50,7 @@
 	<property name="main-class"  value="nl.kbna.dioscuri.GUI"/>
 
 	<!-- Directories in this tree -->
-    <property name="src.dir"     value="${basedir}"/>
+    <property name="src.dir"     value="${basedir}/src"/>
     <property name="libs.dir"    value="${basedir}/libs"/>
     <property name="gen-src.dir" value="${basedir}/generated-src"/>
     <property name="config.dir"  value="${basedir}/config"/>
@@ -99,9 +99,9 @@
     </target>
 
     <!-- Create the javadoc files -->
-    <target name="javadoc" description="Create the javadoc files">
+    <target name="javadoc" description="Create the javadoc files" depends="generated.src">
 		<mkdir dir="${javadoc.dir}"/>
-        <javadoc packagenames="nl.kbna.*" sourcepath="." destdir="${javadoc.dir}" author="true" version="true" use="true"  classpathref="master-classpath">
+        <javadoc packagenames="nl.kbna.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" author="true" version="true" use="true"  classpathref="master-classpath">
             <classpath>
                 <dirset dir="."/>
                 <path refid="master-classpath"/>
@@ -113,20 +113,24 @@
     <target name="jar" description="Create the Dioscuri jar file" depends="compile">
 		<mkdir dir="${jar.dir}"/>
 		<tstamp/>
-        <jar destfile="${jar.dir}/${ant.project.name}-${version}.jar" basedir="${classes.dir}">
+        <jar destfile="${jar.dir}/${ant.project.name}-${version}.jar" whenmanifestonly="fail">
+        	<fileset dir="${basedir}/" includes="config/**" />
+        	<fileset dir="${classes.dir}/" />
 			<manifest>
 				<attribute name="Built-By" value="KEEP project"/>
 				<attribute name="Built-On" value="${TODAY}"/>
 				<attribute name="Main-Class" value="${main-class}"/>
+				<attribute name="Class-Path" value="libs/jaxb-api.jar libs/jaxb-impl.jar"/>
 			</manifest>
         </jar>
     </target>
 
-    <!-- Create a complete release (zip/gzip file, including jar, docs, logs, config and images) -->
-    <target name="release" description="Create a complete release" depends="clean, javadoc, jar">
+    <!-- Create a complete release (zip/gzip file, including jar, libs, docs, logs, config and images) -->
+    <target name="release" description="Create a complete release" depends="javadoc, jar">
 		<zip destfile="${build.dir}/${ant.project.name}-${version}.zip">
 			<fileset dir="${jar.dir}" />
-			<zipfileset dir="${config.dir}" prefix="config"/>
+			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties"/>
+			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar" />
 			<zipfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
 			<zipfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
@@ -135,8 +139,9 @@
 		</zip>
     	<tar destfile="${build.dir}/${ant.project.name}-${version}.tar.gz" compression="gzip">
 			<fileset dir="${jar.dir}" />
-			<tarfileset dir="${config.dir}" prefix="config"/>
-			<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
+			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties"/>
+			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar" />
+    		<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
 			<tarfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
 			<fileset dir="${basedir}" includes="dioscuri.bat"/>
