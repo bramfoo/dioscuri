@@ -11,7 +11,7 @@ GCJ= ${COMPILER_PATH}/gcj $(OPTLEVEL) $(DEBUGLEVEL) $(COMPILER_OPTIONS)
 CP="--classpath=./src:"
 
 #main class (or so output)
-MAINCLASS=--main=nl.kbna.dioscuri.GUI
+MAINCLASS=--main=dioscuri.GUI
 
 #source dir
 SRC_DIR = src/nl/kbna/dioscuri

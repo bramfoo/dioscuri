@@ -20,18 +20,18 @@ Projects      : Dioscuri project, Planets, KEEP
 0.4.0 : 11-12-2008
 -------------------------------------------------------
 - Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
-- added nl.kbna.dioscuri.util.Deque to replace Java 1.6's java.util.Deque interface
-- nl.kbna.dioscuri.module.cpu32.PriorityDeque now implements nl.kbna.dioscuri.util.Deque
+- added dioscuri.util.Deque to replace Java 1.6's java.util.Deque interface
+- dioscuri.module.cpu32.PriorityDeque now implements dioscuri.util.Deque
   instead of the java.util.Deque interface
-- changed a couple of JDK 1.6 Arrays.copyOf(...) calls in nl.kbna.dioscuri.module.cpu32.PriorityDeque
+- changed a couple of JDK 1.6 Arrays.copyOf(...) calls in dioscuri.module.cpu32.PriorityDeque
   to the more verbose System.arraycopy(..,) etc.
-- nl.kbna.dioscuri.module.cpu32.ProtectedModeUBlock,
-  nl.kbna.dioscuri.module.cpu32.Virtual8086ModeUBlock and
-  nl.kbna.dioscuri.module.cpu32.RealModeUBlock made some calls to java.lang.Math
+- dioscuri.module.cpu32.ProtectedModeUBlock,
+  dioscuri.module.cpu32.Virtual8086ModeUBlock and
+  dioscuri.module.cpu32.RealModeUBlock made some calls to java.lang.Math
   method available in Java 1.6. These methods are now also available in:
-  nl.kbna.dioscuri.module.cpu.Util and changed nl.kbna.dioscuri.module.cpu32.ProtectedModeUBlock
-  and nl.kbna.dioscuri.module.cpu32.RealModeUBlock accordingly.
-- nl.kbna.dioscuri.module.cpu32.RPNNode made a call to 
+  dioscuri.module.cpu.Util and changed dioscuri.module.cpu32.ProtectedModeUBlock
+  and dioscuri.module.cpu32.RealModeUBlock accordingly.
+- dioscuri.module.cpu32.RPNNode made a call to 
   binarySearch(int[] a, int fromIndex, int toIndex, int key) which has been rewritten as:
   binarySearch(int[] a, int key) which will take slightly longer, of course, but still performs a
   O(log(n)) in Big-O terms, so it should be a noticeable difference.
