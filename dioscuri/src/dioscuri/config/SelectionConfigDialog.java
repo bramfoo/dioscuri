@@ -53,7 +53,7 @@ import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
 
-import dioscuri.GUI;
+import dioscuri.DioscuriFrame;
 
 
 public class SelectionConfigDialog extends ConfigurationDialog
@@ -61,7 +61,7 @@ public class SelectionConfigDialog extends ConfigurationDialog
     
     private JList modulesList;
     
-    public SelectionConfigDialog(GUI parent)
+    public SelectionConfigDialog(DioscuriFrame parent)
     {               
         super (parent, "Configuration Selector", true, null);           
     }

@@ -42,7 +42,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.Toolkit;
 import java.io.*;
 
-import dioscuri.GUI;
+import dioscuri.DioscuriFrame;
 
 
 /**
@@ -52,11 +52,11 @@ public final class TextTransfer implements ClipboardOwner
 {
 
 	// Attributes
-	GUI gui;
+	DioscuriFrame gui;
 	
 	
 	// Constructor
-	public TextTransfer(GUI parent)
+	public TextTransfer(DioscuriFrame parent)
 	{
 		gui = parent;
 	}

@@ -112,7 +112,7 @@ public class Emulator implements Runnable
 	private Modules modules;
     private ArrayList<HardwareComponent> hwComponents;
     private IO io;
-    private GUI gui;
+    private DioscuriFrame gui;
     private dioscuri.config.Emulator emuConfig;
     private dioscuri.config.Emulator.Architecture.Modules moduleConfig;
     
@@ -169,10 +169,10 @@ public class Emulator implements Runnable
 	/**
 	 * Class constructor
      * 
-     * @param GUI graphical user interface (owner of emulation process)
+     * @param DioscuriFrame graphical user interface (owner of emulation process)
 	 *
 	 */
-	public Emulator(GUI owner)
+	public Emulator(DioscuriFrame owner)
 	{
         this.gui = owner;
         modules = null; // Created in createModules()
@@ -208,7 +208,7 @@ public class Emulator implements Runnable
 				if (!configFile.exists() || !configFile.canRead())
 	    		   {
 					logger.log(Level.WARNING, "[emu] No local config file accessible, using read-only jar settings");
-	    			InputStream fallBack = GUI.class.getResourceAsStream(GUI.JAR_CONFIG_XML);
+	    			InputStream fallBack = DioscuriFrame.class.getResourceAsStream(DioscuriFrame.JAR_CONFIG_XML);
 	    			emuConfig = ConfigController.loadFromXML(fallBack);
 	    			fallBack.close();
 	    		   }
@@ -354,7 +354,7 @@ public class Emulator implements Runnable
             logger.log(Level.INFO, "[emu] Emulation process stopped.");
             
             // Notify GUI that process has ended
-            gui.notifyGUI(GUI.EMU_PROCESS_STOP);
+            gui.notifyGUI(DioscuriFrame.EMU_PROCESS_STOP);
         }
     }
 
@@ -526,7 +526,7 @@ public class Emulator implements Runnable
      * 
      * @return gui
      */
-    public GUI getGui()
+    public DioscuriFrame getGui()
     {
         return this.gui;
     }
@@ -622,43 +622,43 @@ public class Emulator implements Runnable
         switch(status)
         {
             case MODULE_FDC_TRANSFER_START:
-                gui.updateGUI(GUI.EMU_FLOPPYA_TRANSFER_START);
+                gui.updateGUI(DioscuriFrame.EMU_FLOPPYA_TRANSFER_START);
                 break;
             
             case MODULE_FDC_TRANSFER_STOP:
-                gui.updateGUI(GUI.EMU_FLOPPYA_TRANSFER_STOP);
+                gui.updateGUI(DioscuriFrame.EMU_FLOPPYA_TRANSFER_STOP);
                 break;
             
             case MODULE_ATA_HD1_TRANSFER_START:
-                gui.updateGUI(GUI.EMU_HD1_TRANSFER_START);
+                gui.updateGUI(DioscuriFrame.EMU_HD1_TRANSFER_START);
                 break;
             
             case MODULE_ATA_HD1_TRANSFER_STOP:
-                gui.updateGUI(GUI.EMU_HD1_TRANSFER_STOP);
+                gui.updateGUI(DioscuriFrame.EMU_HD1_TRANSFER_STOP);
                 break;
 
             case MODULE_KEYBOARD_NUMLOCK_ON:
-                gui.updateGUI(GUI.EMU_KEYBOARD_NUMLOCK_ON);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_NUMLOCK_ON);
                 break;
             
             case MODULE_KEYBOARD_NUMLOCK_OFF:
-                gui.updateGUI(GUI.EMU_KEYBOARD_NUMLOCK_OFF);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_NUMLOCK_OFF);
                 break;
 
             case MODULE_KEYBOARD_CAPSLOCK_ON:
-                gui.updateGUI(GUI.EMU_KEYBOARD_CAPSLOCK_ON);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_CAPSLOCK_ON);
                 break;
             
             case MODULE_KEYBOARD_CAPSLOCK_OFF:
-                gui.updateGUI(GUI.EMU_KEYBOARD_CAPSLOCK_OFF);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_CAPSLOCK_OFF);
                 break;
 
             case MODULE_KEYBOARD_SCROLLLOCK_ON:
-                gui.updateGUI(GUI.EMU_KEYBOARD_SCROLLLOCK_ON);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_SCROLLLOCK_ON);
                 break;
             
             case MODULE_KEYBOARD_SCROLLLOCK_OFF:
-                gui.updateGUI(GUI.EMU_KEYBOARD_SCROLLLOCK_OFF);
+                gui.updateGUI(DioscuriFrame.EMU_KEYBOARD_SCROLLLOCK_OFF);
                 break;
 
             default:
@@ -1086,12 +1086,12 @@ public class Emulator implements Runnable
             if (enabled == true)
             {
             	gui.setMouseEnabled();
-                gui.updateGUI(GUI.EMU_DEVICES_MOUSE_ENABLED);
+                gui.updateGUI(DioscuriFrame.EMU_DEVICES_MOUSE_ENABLED);
             }
             else
             {
             	gui.setMouseDisabled();
-                gui.updateGUI(GUI.EMU_DEVICES_MOUSE_DISABLED);
+                gui.updateGUI(DioscuriFrame.EMU_DEVICES_MOUSE_DISABLED);
             }
 
             // Init mouse type
@@ -1265,7 +1265,7 @@ public class Emulator implements Runnable
         for (int i = 0; i < 1; i++)
         {
         	Floppy floppyConfig = moduleConfig.getFdc().getFloppy().get(i);
-            boolean enabled = floppyConfig.isEnabled();
+            //boolean enabled = floppyConfig.isEnabled();
             boolean inserted = floppyConfig.isInserted();
             String driveLetter = floppyConfig.getDriveletter();
             String diskformat = floppyConfig.getDiskformat();
@@ -1302,7 +1302,7 @@ public class Emulator implements Runnable
                 // TODO: updates for B ?
                 if (driveLetter.equals("A"))
                 {
-                    getGui().updateGUI(GUI.EMU_FLOPPYA_INSERT);
+                    getGui().updateGUI(DioscuriFrame.EMU_FLOPPYA_INSERT);
                 }
             }
 
@@ -1357,7 +1357,7 @@ public class Emulator implements Runnable
                 //TODO: updates for other hard drives?
                 if (ideChannelIndex == 0 && isMaster)
                 {
-                    getGui().updateGUI(GUI.EMU_HD1_INSERT);
+                    getGui().updateGUI(DioscuriFrame.EMU_HD1_INSERT);
                 }
             }
         }

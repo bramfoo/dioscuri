@@ -55,6 +55,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+import dioscuri.DioscuriFrame;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 
@@ -94,7 +95,7 @@ public abstract class ConfigurationDialog extends JDialog
                                 boolean isMainConfigScreen,
                                 ModuleType moduleType)
     {       
-        super(parent, title, true);     
+        super(parent.asJFrame(), title, true);     
         this.moduleType = moduleType;
         
         this.initComponents(parent, isMainConfigScreen); 
