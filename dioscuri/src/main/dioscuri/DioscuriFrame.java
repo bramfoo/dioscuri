@@ -86,7 +86,7 @@ import dioscuri.datatransfer.TextTransfer;
 * Graphical User Interface for emulator.
 */
 @SuppressWarnings("serial")
-public class DioscuriFrame extends JFrame implements ActionListener, KeyListener, GUI
+public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyListener
 {
    // Attributes
    private Emulator emu;
@@ -178,7 +178,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
 		   {
 			   // Use log file included in jar
 	    	   String jarLogFile = File.separator + CONFIG_DIR + File.separator + EMULATOR_LOGGING_PROPERTIES;
-	    	   InputStream loggingFileStream = DioscuriFrame.class.getResourceAsStream(jarLogFile);
+	    	   InputStream loggingFileStream = GUI.class.getResourceAsStream(jarLogFile);
 	           if (loggingFileStream == null)
 	           {
 	        	   System.out.println("No Logging.properties file found locally (" + localLogFile + " or in jar (" + jarLogFile +")");
@@ -233,7 +233,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
        
        // Set icon image
        String jarIconFile = new String(/*File.separator + */CONFIG_DIR + File.separator + EMULATOR_ICON_IMAGE);
-       URL iconURL = DioscuriFrame.class.getResource(jarIconFile);
+       URL iconURL = GUI.class.getResource(jarIconFile);
        if (iconURL == null)
        {
     	   logger.log(Level.SEVERE, "Icon image not found in jar: " + jarIconFile);
@@ -369,11 +369,6 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
            new Thread(emu).start();
            this.updateGUI(EMU_PROCESS_START);
 	   }
-   }
-   
-   @Override
-   public JFrame asJFrame() {
-   		return this;
    }
 
    // Methods
@@ -566,7 +561,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
        startup.setSize(720, 400);
 
        String jarSplashFile = new String(/*File.separator + */CONFIG_DIR + File.separator + EMULATOR_SPLASHSCREEN_IMAGE);
-       URL imageURL = DioscuriFrame.class.getResource(jarSplashFile);
+       URL imageURL = GUI.class.getResource(jarSplashFile);
        if (imageURL == null)
        {
     	   logger.log(Level.SEVERE, "Splash screen image not found in jar: " + jarSplashFile);
@@ -946,7 +941,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
     		   try {
         		   if (!config.exists() || !config.canRead())
         		   {
-        			   InputStream fallBack = DioscuriFrame.class.getResourceAsStream(JAR_CONFIG_XML);
+        			   InputStream fallBack = GUI.class.getResourceAsStream(JAR_CONFIG_XML);
         			   emuConfig = ConfigController.loadFromXML(fallBack);
         			   readOnlyConfig = true;
         			   configFilePath = JAR_CONFIG_XML;
@@ -1122,10 +1117,10 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
     * @param int emulatorStatus indicates the state change of the emulator
     *
     */
-   protected void notifyGUI(int emulatorStatus)
+   public void notifyGUI(int emulatorStatus)
    {
 		// Check which kind of notification is given
-	   if (emulatorStatus == DioscuriFrame.EMU_PROCESS_STOP)
+	   if (emulatorStatus == GUI.EMU_PROCESS_STOP)
 	   {
 		   if (this.autoshutdown == true)
 		   {
@@ -1135,7 +1130,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
 		   else
 		   {
 			   // Update GUI status
-			   this.updateGUI(DioscuriFrame.EMU_PROCESS_STOP);
+			   this.updateGUI(GUI.EMU_PROCESS_STOP);
 		   }
 	   }
 
@@ -1163,6 +1158,7 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
     * Versioning information
     * 
     */
+   @Override
    public String toString()
    {
        String info = "---------------------------------------------------------------------------------------" + "\n";
@@ -1261,6 +1257,10 @@ public class DioscuriFrame extends JFrame implements ActionListener, KeyListener
 	public String getConfigFilePath() {
 		return configFilePath;
 	}
+
+    public JFrame asJFrame() {
+        return this;
+    }
 
 }
 

@@ -4,6 +4,7 @@ import java.awt.Frame;
 import java.io.File;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 
 import dioscuri.config.Emulator;
 
@@ -58,4 +59,16 @@ public interface GUI {
 	public boolean saveXML(Emulator params);
 
 	public Emulator getEmuConfig();
+
+    public String getConfigFilePath();
+
+    public void notifyGUI(int emuProcess);
+
+    public void updateGUI(int activity);
+
+    public void setScreen(JPanel screen);
+
+    public boolean setMouseEnabled();
+
+    public boolean setMouseDisabled();
 }

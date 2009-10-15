@@ -45,7 +45,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import dioscuri.DioscuriFrame;
+import dioscuri.GUI;
 import dioscuri.config.Emulator;
 
 
@@ -69,7 +69,7 @@ public class ConfigController
     }
     
     // Constructor
-    public ConfigController(DioscuriFrame gui)
+    public ConfigController(GUI gui)
     {
     }
 
