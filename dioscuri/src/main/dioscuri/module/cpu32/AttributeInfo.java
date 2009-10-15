@@ -26,7 +26,6 @@
 package dioscuri.module.cpu32;
 
 import java.io.*;
-import java.util.*;
 
 public abstract class AttributeInfo
 {
@@ -37,6 +36,7 @@ public abstract class AttributeInfo
         int index = in.readUnsignedShort();
         int tag = pool[index].getTag();
 
+        @SuppressWarnings("unused")
         AttributeInfo temp;
         if (tag == ConstantPoolInfo.UTF8)
         {

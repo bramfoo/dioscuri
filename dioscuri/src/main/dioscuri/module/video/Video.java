@@ -84,6 +84,7 @@ public class Video extends ModuleVideo
     // Attributes
 	
     // Relations
+    @SuppressWarnings("unused")
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "cpu", "screen", "rtc"};
     private ModuleMotherboard motherboard;
@@ -2463,6 +2464,7 @@ public class Video extends ModuleVideo
      * This class is based on VGALowMemoryRegion, found in JPC's VGAcard, and is used
      * to connect the memory range A0000 - C0000 to the vgaMemory array in VideoCard
      */
+    @SuppressWarnings("unused")
     public class DiosJPCVideoConnect extends Memory
     {
         // Added because needed - need to check if used elsewhere in JPC

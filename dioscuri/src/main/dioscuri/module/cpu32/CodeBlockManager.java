@@ -44,6 +44,7 @@ private SpanningVirtual8086ModeCodeBlock spanningVirtual8086Mode;
 
 private BackgroundCompiler bgc;
 
+@SuppressWarnings("unused")
 private Clock clock;
 
 public CodeBlockManager(Clock clk)

@@ -35,8 +35,6 @@
 
 package dioscuri.module.cpu;
 
-import java.util.Stack;
-
 /**
  * Intel opcode CC<BR>
  * Call to Interrupt 3 - trap to debugger<BR>

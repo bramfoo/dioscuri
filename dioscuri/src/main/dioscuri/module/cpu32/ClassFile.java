@@ -36,7 +36,7 @@ public class ClassFile
     private int majorVersion;
     private int constantPoolCount;
     private ConstantPoolInfo[] constantPool;
-    private Map constantPoolMap;
+    private Map<ConstantPoolInfo, Integer> constantPoolMap;
 
     private int accessFlags;
     private int thisClass;
@@ -189,6 +189,7 @@ public class ClassFile
     }
 
     /** @return index into constant pool where value is stored */
+    @SuppressWarnings("unchecked")
     public int addToConstantPool(Object o)
     {
         ConstantPoolInfo cpInfo = null;
@@ -205,7 +206,7 @@ public class ClassFile
             ConstantPoolInfo nameAndTypeInfo = new ConstantPoolInfo.NameAndTypeInfo(nameIndex, descriptorIndex);
             int nameAndTypeIndex = addToConstantPool(nameAndTypeInfo);
 
-            Class cls = ((Field)o).getDeclaringClass();
+            Class<?> cls = ((Field)o).getDeclaringClass();
             int classIndex = addToConstantPool(cls); 
 
             cpInfo = new ConstantPoolInfo.FieldRefInfo(classIndex, nameAndTypeIndex);
@@ -352,6 +353,7 @@ public class ClassFile
     }
 
     /** @return stack delta caused by an invoke on this method descriptor -- delta = within () - outside () */
+    @SuppressWarnings("unused")
     protected int getMethodStackDelta(String methodDescriptor)
     {
 //         System.out.println("methodDescriptor = " + methodDescriptor);
@@ -361,6 +363,7 @@ public class ClassFile
 //         System.out.println("methodDescriptor = " + methodDescriptor);
 
         int argLength = getMethodArgLength(methodDescriptor);
+        
         
         int count = 0;
         int delta = 0;
@@ -377,6 +380,7 @@ public class ClassFile
     }
 
     /** @return count of arguments -- within () */
+    @SuppressWarnings("unused")
     int getMethodArgLength(String methodDescriptor)
     {
         int count = 0;
@@ -419,7 +423,7 @@ public class ClassFile
     }
 
 
-    private static String getDescriptor(Class cls)
+    private static String getDescriptor(Class<?> cls)
     {
         if (cls.isArray())
             return cls.getName().replace('.','/');
@@ -507,7 +511,7 @@ public class ClassFile
         constantPoolCount = in.readUnsignedShort();
         // be aware that constant pool indices start at 1!! (not 0)
     constantPool = new ConstantPoolInfo[MAX_CONSTANT_POOL_SIZE];
-    constantPoolMap = new HashMap();
+    constantPoolMap = new HashMap<ConstantPoolInfo, Integer>();
 //         constantPool = new ConstantPoolInfo[constantPoolCount];
         for(int i = 1; i < constantPoolCount; i++)
         {

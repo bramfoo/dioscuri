@@ -25,13 +25,14 @@
 */
 package dioscuri.module.cpu32;
 
+
 import java.util.*;
 import java.io.*;
 
 //import org.jpc.emulator.*;
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.emulator.processor.*;
-
+@SuppressWarnings("unused")
 public final class LinearAddressSpace extends AddressSpace implements HardwareComponent
 {
 private static final PageFaultWrapper PF_NOT_PRESENT_RU = new PageFaultWrapper(4);
@@ -57,7 +58,7 @@ private int baseAddress, lastAddress;
 private AddressSpace target;
 
 private byte[] pageFlags;
-private Hashtable nonGlobalPages;
+private Hashtable<Integer, Integer> nonGlobalPages;
 private Memory[] readUserIndex, readSupervisorIndex, writeUserIndex, writeSupervisorIndex, readIndex, writeIndex;
 
 public LinearAddressSpace()
@@ -69,7 +70,7 @@ public LinearAddressSpace()
     writeProtectUserPages = false;
     pageSizeExtensions = false;
 
-    nonGlobalPages = new Hashtable();
+    nonGlobalPages = new Hashtable<Integer, Integer>();
 
     pageFlags = new byte[INDEX_SIZE];
     for (int i=0; i < INDEX_SIZE; i++)
@@ -94,11 +95,11 @@ public void dumpState(DataOutput output) throws IOException
     output.writeInt(pageFlags.length);
     output.write(pageFlags);
     output.writeInt(nonGlobalPages.size());
-    Enumeration ee = nonGlobalPages.keys();
+    Enumeration<Integer> ee = nonGlobalPages.keys();
     while (ee.hasMoreElements())
     {
-        Integer key  = (Integer) ee.nextElement();
-        Integer value = (Integer) nonGlobalPages.get(key);
+        Integer key  = ee.nextElement();
+        Integer value = nonGlobalPages.get(key);
         output.writeInt(key.intValue());
         output.writeInt(value.intValue());
     }
@@ -363,10 +364,10 @@ private void partialFlush()
         return;
     }
     
-    Enumeration ee = nonGlobalPages.keys();
+    Enumeration<Integer> ee = nonGlobalPages.keys();
     while (ee.hasMoreElements())
     {
-        int index = ((Integer) ee.nextElement()).intValue();
+        int index = (ee.nextElement()).intValue();
     nullIndex(readSupervisorIndex, index);
     nullIndex(writeSupervisorIndex, index);
     nullIndex(readUserIndex, index);

@@ -79,6 +79,7 @@ public class BIOS extends ModuleBIOS
 	// Attributes
 
     // Relations
+    @SuppressWarnings("unused")
     private Emulator emu;
     private String[] moduleConnections = new String[] {}; 
 
@@ -89,6 +90,7 @@ public class BIOS extends ModuleBIOS
     // BIOS ROM
 	private byte[] systemROM;      // Contains the System BIOS, using signed bytes as both signed/unsigned
     private byte[] videoROM;         // Contains the Video BIOS
+    @SuppressWarnings("unused")
     private byte[] optionalROM;    // TODO: can contain optional BIOSes
     
 	// Logging

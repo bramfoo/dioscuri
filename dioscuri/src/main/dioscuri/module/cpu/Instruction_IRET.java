@@ -35,8 +35,6 @@
 
 package dioscuri.module.cpu;
 
-import java.util.Stack;
-
 /**
  * Intel opcode CF<BR>
  * Interrupt return.<BR>

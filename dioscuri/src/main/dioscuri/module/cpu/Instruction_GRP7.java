@@ -46,6 +46,7 @@ import dioscuri.exception.CPUInstructionException;
  * Performs the selected instruction (indicated by bits 5, 4, 3 of the ModR/M byte).<BR>
  * Flags modified: depending on instruction can be any of: OF, SF, ZF, AF, PF, CF
  */
+@SuppressWarnings("unused")
 public class Instruction_GRP7 implements Instruction
 {
 

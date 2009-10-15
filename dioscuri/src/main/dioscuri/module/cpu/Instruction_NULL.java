@@ -38,7 +38,7 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.CPUInstructionException;
 
-
+@SuppressWarnings("unused")
 public class Instruction_NULL implements Instruction {
 
 	// Attributes

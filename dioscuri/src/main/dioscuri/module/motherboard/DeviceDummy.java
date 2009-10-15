@@ -55,7 +55,7 @@ import dioscuri.module.ModuleMotherboard;
  * @see Module
  * 
  */
-
+@SuppressWarnings("unused")
 public class DeviceDummy extends ModuleDevice
 {
     // Attributes

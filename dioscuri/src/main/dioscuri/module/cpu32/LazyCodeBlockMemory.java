@@ -42,6 +42,7 @@ protected RealModeCodeBlock[] realCodeBuffer;
 protected ProtectedModeCodeBlock[] protectedCodeBuffer;
 protected Virtual8086ModeCodeBlock[] virtual8086CodeBuffer;
 
+@SuppressWarnings("unused")
 private Clock clock;
 
 public LazyCodeBlockMemory(Memory src, Clock clk)

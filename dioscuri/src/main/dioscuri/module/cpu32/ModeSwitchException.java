@@ -27,6 +27,7 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.*;
 
+@SuppressWarnings("serial")
 public class ModeSwitchException extends RuntimeException
 {
     public static final int REAL_MODE = 0;

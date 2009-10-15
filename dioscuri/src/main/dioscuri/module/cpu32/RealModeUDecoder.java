@@ -6148,6 +6148,7 @@ case 0x28: working.write(STORE0_GS); break;
 default: throw new IllegalStateException("Unknown Segment Register Operand");
 }
 }
+@SuppressWarnings("unused")
 private void store1_Sw(int modrm)
 {
 switch(modrm & 0x38) {
@@ -6217,18 +6218,21 @@ decodeO(prefices, displacement);
 working.write(STORE0_MEM_DWORD);
 }
 
+@SuppressWarnings("unused")
 private void load1_Ob(int prefices, int displacement)
 {
 decodeO(prefices, displacement);
 working.write(LOAD1_MEM_BYTE);
 }
 
+@SuppressWarnings("unused")
 private void load1_Ow(int prefices, int displacement)
 {
 decodeO(prefices, displacement);
 working.write(LOAD1_MEM_WORD);
 }
 
+@SuppressWarnings("unused")
 private void load1_Od(int prefices, int displacement)
 {
 decodeO(prefices, displacement);

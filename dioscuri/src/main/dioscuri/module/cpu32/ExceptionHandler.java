@@ -33,14 +33,14 @@ import java.util.*;
 
 public abstract class ExceptionHandler
 {
-    private Map rootNodes;
+    private Map<Integer, RPNNode> rootNodes;
     private RPNNode initialNode;
 
     private int minPC, maxPC;
 
     private int lastX86Position;
 
-    public ExceptionHandler(int lastX86Position, RPNNode initialNode, Map stateMap)
+    public ExceptionHandler(int lastX86Position, RPNNode initialNode, Map<Integer, RPNNode> stateMap)
     {
     rootNodes = stateMap;
     for (int i = FASTCompiler.PROCESSOR_ELEMENT_COUNT; i < FASTCompiler.ELEMENT_COUNT; i++)
@@ -76,8 +76,8 @@ public abstract class ExceptionHandler
     public void write(CountingOutputStream byteCodes, ClassFile cf) throws IOException
     {
     int affectedCount = 0;
-    for (Iterator itt = rootNodes.values().iterator(); itt.hasNext();) {
-            RPNNode rpn = (RPNNode) itt.next();
+    for (Iterator<RPNNode> itt = rootNodes.values().iterator(); itt.hasNext();) {
+            RPNNode rpn = itt.next();
 
             if (rpn.getMicrocode() == -1)
                 continue;
@@ -89,8 +89,8 @@ public abstract class ExceptionHandler
         int index = 0;
         RPNNode[] roots = new RPNNode[affectedCount];
 
-        for (Iterator itt = rootNodes.values().iterator(); itt.hasNext();) {
-            RPNNode rpn = (RPNNode) itt.next();            
+        for (Iterator<RPNNode> itt = rootNodes.values().iterator(); itt.hasNext();) {
+            RPNNode rpn = itt.next();            
             if ((rpn.getMicrocode() == -1) || (rpn.getID() == FASTCompiler.PROCESSOR_ELEMENT_EIP))
         continue;
         

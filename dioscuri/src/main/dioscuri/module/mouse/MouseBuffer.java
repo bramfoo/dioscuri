@@ -35,7 +35,6 @@
 package dioscuri.module.mouse;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Mouse buffer
@@ -43,7 +42,8 @@ import java.util.List;
  * Contains data intended for controller
  *
  */
-public class MouseBuffer extends ArrayList
+@SuppressWarnings("serial")
+public class MouseBuffer extends ArrayList<Byte>
 {
       protected final static int NUM_ELEMENTS = 16;
     

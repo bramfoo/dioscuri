@@ -31,7 +31,7 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.processor.*;
-
+@SuppressWarnings("unused")
 public class BackgroundCompiler implements CodeBlockCompiler
 {
     private static final int COMPILER_QUEUE_SIZE = 20;
@@ -131,7 +131,7 @@ public class BackgroundCompiler implements CodeBlockCompiler
     return immediate.getVirtual8086ModeCodeBlock(source);
     }
 
-    abstract class ExecuteCountingCodeBlockWrapper extends AbstractCodeBlockWrapper implements Comparable
+    abstract class ExecuteCountingCodeBlockWrapper extends AbstractCodeBlockWrapper implements Comparable<ExecuteCountingCodeBlockWrapper>
     {
         int executeCount, diff;
 
@@ -152,10 +152,10 @@ public class BackgroundCompiler implements CodeBlockCompiler
             return super.execute(cpu);
         }
 
-    public int compareTo(Object o)
+    public int compareTo(ExecuteCountingCodeBlockWrapper o)
     {
         
-        if (loadedExecuteCount > ((ExecuteCountingCodeBlockWrapper)o).loadedExecuteCount)
+        if (loadedExecuteCount > o.loadedExecuteCount)
         return 1;
         else
         return -1;

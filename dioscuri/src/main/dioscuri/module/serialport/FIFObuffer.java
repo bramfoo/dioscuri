@@ -35,7 +35,8 @@ package dioscuri.module.serialport;
 
 import java.util.ArrayList;
 
-public class FIFObuffer extends ArrayList
+@SuppressWarnings("serial")
+public class FIFObuffer extends ArrayList<Byte>
 {
 
 	// Attributes

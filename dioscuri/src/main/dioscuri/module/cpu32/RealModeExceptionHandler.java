@@ -36,7 +36,7 @@ import java.util.*;
 
 public class RealModeExceptionHandler extends ExceptionHandler
 {
-    public RealModeExceptionHandler(int lastX86Position, RealModeRPNNode initialNode, Map stateMap)
+    public RealModeExceptionHandler(int lastX86Position, RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
     {
     super(lastX86Position, initialNode, stateMap);
     }

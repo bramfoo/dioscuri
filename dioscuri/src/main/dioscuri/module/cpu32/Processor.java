@@ -145,7 +145,7 @@ private ModulePIC interruptController;
 //private Clock virtualClock;
 private boolean alignmentChecking;
 
-private Hashtable modelSpecificRegisters;
+private Hashtable<Integer, Long> modelSpecificRegisters;
 
 private long resetTime;
 private int currentPrivilegeLevel;
@@ -161,7 +161,7 @@ physicalMemory = null;
     alignmentCheckedMemory = null;
 ioports = null;
     alignmentChecking = false;
-modelSpecificRegisters = new Hashtable();
+modelSpecificRegisters = new Hashtable<Integer, Long>();
 }
 
 public void dumpState(DataOutput output) throws IOException
@@ -214,13 +214,13 @@ public void dumpState(DataOutput output) throws IOException
     output.writeInt(currentPrivilegeLevel);
     //modelSpecificRegisters hashtable
     output.writeInt(modelSpecificRegisters.size());
-    Set entries = modelSpecificRegisters.entrySet();
-Iterator itt = entries.iterator();
+    Set<Map.Entry<Integer, Long>> entries = modelSpecificRegisters.entrySet();
+Iterator<Map.Entry<Integer, Long>> itt = entries.iterator();
 while (itt.hasNext()) 
     {
-    Map.Entry entry = (Map.Entry) itt.next();
-        output.writeInt(((Integer)entry.getKey()).intValue());
-        output.writeLong(((Long)entry.getValue()).longValue());
+    Map.Entry<Integer, Long> entry = itt.next();
+        output.writeInt((entry.getKey()).intValue());
+        output.writeLong((entry.getValue()).longValue());
     }
     cs.dumpState(output);
     ds.dumpState(output);
@@ -284,7 +284,7 @@ public void loadState(DataInput input) throws IOException
     currentPrivilegeLevel = input.readInt();
     //modelSpecificRegisters hashtable
     int len = input.readInt();
-    modelSpecificRegisters = new Hashtable();
+    modelSpecificRegisters = new Hashtable<Integer, Long>();
     int key;
     long value;
 for (int i=0; i<len; i++)
@@ -2415,6 +2415,7 @@ overflowThree = dataThree;
 overflowMethod = method;
 }
 
+@SuppressWarnings("unused")
 private int carryOne, carryTwo, carryThree;
 private long carryLong;
 private boolean carryCalculated;
@@ -2537,6 +2538,7 @@ carryMethod = method;
 
 private int zeroOne;
 private boolean zeroCalculated;
+@SuppressWarnings("unused")
 private int zeroMethod;
 
 public boolean getZeroFlag()
@@ -2563,6 +2565,7 @@ zeroOne = data;
 
 private int signOne;
 private boolean signCalculated;
+@SuppressWarnings("unused")
 private int signMethod;
 
 public boolean getSignFlag()

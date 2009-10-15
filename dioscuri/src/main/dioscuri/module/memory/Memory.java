@@ -73,6 +73,7 @@ import dioscuri.module.ModuleVideo;
  * Notes: none
  * 
  */
+@SuppressWarnings("unused")
 public class Memory extends ModuleMemory
 {
 

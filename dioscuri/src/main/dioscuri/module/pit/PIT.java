@@ -92,7 +92,7 @@ import dioscuri.module.ModulePIT;
  * 
  */
 
-
+@SuppressWarnings("unused")
 public class PIT extends ModulePIT
 {
 

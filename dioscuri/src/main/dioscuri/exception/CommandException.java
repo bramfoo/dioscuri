@@ -34,6 +34,7 @@
 
 package dioscuri.exception;
 
+@SuppressWarnings("serial")
 public class CommandException extends Exception
 {
 

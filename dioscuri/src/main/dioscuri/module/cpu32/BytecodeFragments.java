@@ -25,14 +25,14 @@
 */
 package dioscuri.module.cpu32;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.io.*;
+//import java.lang.reflect.*;
+//import java.util.*;
+//import java.io.*;
 
 //import org.jpc.emulator.processor.Processor;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.classfile.*;
-
+@SuppressWarnings("unchecked")
 public class BytecodeFragments implements MicrocodeSet
 {
     public static final Object IMMEDIATE = new Object();

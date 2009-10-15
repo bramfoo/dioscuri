@@ -160,7 +160,7 @@ import dioscuri.module.cpu32.HardwareComponent;
  *               = 11  1   Mb/S mode (MFM) (on 82072/82077AA)
  *      conflict bit 0     FIXED DISK drive 0 select 
  */
-
+@SuppressWarnings("unused")
 public class FDC extends ModuleFDC implements DMATransferCapable
 {
 

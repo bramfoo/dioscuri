@@ -25,8 +25,6 @@
 */
 package dioscuri.module.cpu32;
 
-
-import java.util.*;
 import java.io.*;
 
 //import org.jpc.emulator.*;
@@ -47,7 +45,7 @@ private static final int BOTTOM_INDEX_BITS = 32 - INDEX_SHIFT - TOP_INDEX_BITS;
 
 private static final int TOP_INDEX_SHIFT = 32 - TOP_INDEX_BITS;
 private static final int TOP_INDEX_SIZE = 1 << TOP_INDEX_BITS;
-private static final int TOP_INDEX_MASK = TOP_INDEX_SIZE - 1;
+//private static final int TOP_INDEX_MASK = TOP_INDEX_SIZE - 1;
 
 private static final int BOTTOM_INDEX_SHIFT = 32 - TOP_INDEX_BITS - BOTTOM_INDEX_BITS;
 private static final int BOTTOM_INDEX_SIZE = 1 << BOTTOM_INDEX_BITS;

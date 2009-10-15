@@ -172,10 +172,10 @@ public class FASTCompiler implements CodeBlockCompiler
 
     private static void compileProtectedModeExecuteMethod(MicrocodeNode[] microcodes, ClassFile cf, int x86CountIndex) throws IOException
     {
-        List externalEffects = new ArrayList();
-        Map currentElements = new HashMap();
+        List<ProtectedModeRPNNode> externalEffects = new ArrayList<ProtectedModeRPNNode>();
+        Map<Integer, ProtectedModeRPNNode> currentElements = new HashMap<Integer, ProtectedModeRPNNode>();
 
-    List exceptionHandlers = new ArrayList();
+    List<ExceptionHandler> exceptionHandlers = new ArrayList<ExceptionHandler>();
     ExceptionHandler currentExceptionHandler = null;
 
         //set all initial elements to their processor values
@@ -192,7 +192,7 @@ public class FASTCompiler implements CodeBlockCompiler
             if (codes == null)
                 throw new IllegalStateException("Unimplemented Microcode: "+MicrocodeNode.getName(uCode));
             
-            List targets = new ArrayList();
+            List<ProtectedModeRPNNode> targets = new ArrayList<ProtectedModeRPNNode>();
             for(int j=0; j < codes.length; j++) {               
                 if (codes[j] == null)
                     continue;
@@ -203,7 +203,7 @@ public class FASTCompiler implements CodeBlockCompiler
 
         if (rpn.canThrowException()) {
             if ((currentExceptionHandler == null) || (currentExceptionHandler.getX86Index() != rpn.getX86Index())) {
-            currentExceptionHandler = new ProtectedModeExceptionHandler(lastX86Position, rpn, new HashMap(currentElements));
+            currentExceptionHandler = new ProtectedModeExceptionHandler(lastX86Position, rpn, new HashMap<Integer, RPNNode>(currentElements));
             exceptionHandlers.add(currentExceptionHandler);
             }
             rpn.attachExceptionHandler(currentExceptionHandler);
@@ -238,8 +238,8 @@ public class FASTCompiler implements CodeBlockCompiler
         localVariableIndex = ((ProtectedModeRPNNode)externalEffects.get(i)).markSubtrees(localVariableIndex);
         
         int affectedCount = 0;
-    for (Iterator itt = currentElements.values().iterator(); itt.hasNext();) {
-            ProtectedModeRPNNode rpn = (ProtectedModeRPNNode) itt.next();
+    for (Iterator<ProtectedModeRPNNode> itt = currentElements.values().iterator(); itt.hasNext();) {
+            ProtectedModeRPNNode rpn = itt.next();
 
             if (rpn.getMicrocode() == -1)
                 continue;
@@ -263,8 +263,8 @@ public class FASTCompiler implements CodeBlockCompiler
         
         int index = 0;
         ProtectedModeRPNNode[] roots = new ProtectedModeRPNNode[affectedCount];
-        for (Iterator itt = currentElements.values().iterator(); itt.hasNext();) {
-            ProtectedModeRPNNode rpn = (ProtectedModeRPNNode) itt.next();            
+        for (Iterator<ProtectedModeRPNNode> itt = currentElements.values().iterator(); itt.hasNext();) {
+            ProtectedModeRPNNode rpn = itt.next();            
             if (rpn.getMicrocode() == -1)
                 continue;
         
@@ -308,10 +308,10 @@ public class FASTCompiler implements CodeBlockCompiler
 
     private static void compileRealModeExecuteMethod(MicrocodeNode[] microcodes, ClassFile cf, int x86CountIndex) throws IOException
     {
-        List externalEffects = new ArrayList();
-        Map currentElements = new HashMap();
+        List<RealModeRPNNode> externalEffects = new ArrayList<RealModeRPNNode>();
+        Map<Integer, RealModeRPNNode> currentElements = new HashMap<Integer, RealModeRPNNode>();
 
-    List exceptionHandlers = new ArrayList();
+    List<ExceptionHandler> exceptionHandlers = new ArrayList<ExceptionHandler>();
     ExceptionHandler currentExceptionHandler = null;
 
         //set all initial elements to their processor values
@@ -328,7 +328,7 @@ public class FASTCompiler implements CodeBlockCompiler
             if (codes == null)
                 throw new IllegalStateException("Unimplemented Microcode: "+MicrocodeNode.getName(uCode));
             
-            List targets = new ArrayList();
+            List<RealModeRPNNode> targets = new ArrayList<RealModeRPNNode>();
             for(int j=0; j < codes.length; j++) {               
                 if (codes[j] == null)
                     continue;
@@ -339,7 +339,7 @@ public class FASTCompiler implements CodeBlockCompiler
 
         if (rpn.canThrowException()) {
             if ((currentExceptionHandler == null) || (currentExceptionHandler.getX86Index() != rpn.getX86Index())) {
-            currentExceptionHandler = new RealModeExceptionHandler(lastX86Position, rpn, new HashMap(currentElements));
+            currentExceptionHandler = new RealModeExceptionHandler(lastX86Position, rpn, new HashMap<Integer, RPNNode>(currentElements));
             exceptionHandlers.add(currentExceptionHandler);
             }
             rpn.attachExceptionHandler(currentExceptionHandler);
@@ -374,8 +374,8 @@ public class FASTCompiler implements CodeBlockCompiler
         localVariableIndex = ((RealModeRPNNode)externalEffects.get(i)).markSubtrees(localVariableIndex);
         
         int affectedCount = 0;
-    for (Iterator itt = currentElements.values().iterator(); itt.hasNext();) {
-            RealModeRPNNode rpn = (RealModeRPNNode) itt.next();
+    for (Iterator<RealModeRPNNode> itt = currentElements.values().iterator(); itt.hasNext();) {
+            RealModeRPNNode rpn = itt.next();
 
             if (rpn.getMicrocode() == -1)
                 continue;
@@ -398,7 +398,7 @@ public class FASTCompiler implements CodeBlockCompiler
         
         int index = 0;
         RealModeRPNNode[] roots = new RealModeRPNNode[affectedCount];
-        for (Iterator itt = currentElements.values().iterator(); itt.hasNext();) {
+        for (Iterator<RealModeRPNNode> itt = currentElements.values().iterator(); itt.hasNext();) {
             RealModeRPNNode rpn = (RealModeRPNNode) itt.next();            
             if (rpn.getMicrocode() == -1)
                 continue;
@@ -475,6 +475,7 @@ public class FASTCompiler implements CodeBlockCompiler
         cf.setMethodCode("getX86Length", ints);
     }
 
+    @SuppressWarnings("unused")
     private static void dumpClass(ClassFile cls)
     {
     try {

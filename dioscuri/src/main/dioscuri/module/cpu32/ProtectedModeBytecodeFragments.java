@@ -25,9 +25,6 @@
 */
 package dioscuri.module.cpu32;
 
-import java.util.*;
-import java.io.*;
-
 //import org.jpc.emulator.memory.codeblock.fastcompiler.BytecodeFragments;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.FASTCompiler;
 

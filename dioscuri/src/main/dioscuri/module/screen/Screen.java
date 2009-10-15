@@ -79,6 +79,7 @@ import dioscuri.module.ModuleVideo;
  * screen.resolutionRange     : unlimited
  * screen.colorDepth          : 256
  */
+@SuppressWarnings("unused")
 public class Screen extends ModuleScreen
 {
 

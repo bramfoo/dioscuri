@@ -116,6 +116,7 @@ import dioscuri.module.ModulePIC;
  * 
  * 
  */
+@SuppressWarnings("unused")
 public class CPU extends ModuleCPU
 {
 	// Attributes

@@ -25,6 +25,7 @@
 */
 package dioscuri.module.cpu32;
 
+@SuppressWarnings("unused")
 public class ArrayBackedInstructionSource implements InstructionSource
 {
     private int[] microcodes;

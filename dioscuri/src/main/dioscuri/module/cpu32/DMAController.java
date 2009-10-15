@@ -36,7 +36,7 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
 import dioscuri.module.ModuleDevice;
 
-
+@SuppressWarnings("unused")
 public class DMAController extends ModuleDevice implements IOPortCapable, HardwareComponent
 {
     private static final int pagePortList0 = 0x1;

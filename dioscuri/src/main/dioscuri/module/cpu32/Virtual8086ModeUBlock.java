@@ -3251,6 +3251,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock, Microcod
     {
     int count = cpu.ecx & 0xffff;
     int addr = cpu.edi & 0xffff;
+        @SuppressWarnings("unused")
         boolean used = count != 0;
     int input = 0;
 

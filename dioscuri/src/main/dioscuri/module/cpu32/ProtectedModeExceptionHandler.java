@@ -36,7 +36,7 @@ import java.util.*;
 
 public class ProtectedModeExceptionHandler extends ExceptionHandler
 {
-    public ProtectedModeExceptionHandler(int lastX86Position, ProtectedModeRPNNode initialNode, Map stateMap)
+    public ProtectedModeExceptionHandler(int lastX86Position, ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
     {
     super(lastX86Position, initialNode, stateMap);
     }

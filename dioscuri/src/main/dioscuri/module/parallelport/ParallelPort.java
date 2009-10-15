@@ -75,6 +75,7 @@ import dioscuri.module.ModuleParallelPort;
 
 
 // TODO: Class is (mostly) a stub to return requested values to the BIOS
+@SuppressWarnings("unused")
 public class ParallelPort extends ModuleParallelPort
 {
 

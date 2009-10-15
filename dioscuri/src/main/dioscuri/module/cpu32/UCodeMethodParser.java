@@ -27,7 +27,6 @@ package dioscuri.module.cpu32;
 
 import java.lang.reflect.*;
 import java.util.*;
-import java.io.*;
 
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
@@ -41,10 +40,10 @@ public class UCodeMethodParser implements MicrocodeSet
     private boolean[][] externalEffectsArray;
     private boolean[][] explicitThrowArray;
 
-    private static Hashtable microcodeIndex = new Hashtable();
-    private static Hashtable elementIndex = new Hashtable();
-    private static Hashtable opcodeIndex = new Hashtable();
-    private static Hashtable constantPoolIndex = new Hashtable();
+    private static Hashtable<String, Integer> microcodeIndex = new Hashtable<String, Integer>();
+    private static Hashtable<String, Integer> elementIndex = new Hashtable<String, Integer>();
+    private static Hashtable<String, Integer> opcodeIndex = new Hashtable<String, Integer>();
+    private static Hashtable<String, Object> constantPoolIndex = new Hashtable<String, Object>();
 
     static 
     {
@@ -166,7 +165,7 @@ public class UCodeMethodParser implements MicrocodeSet
     {
         System.out.println();
         System.out.println("microcodeIndex");
-        Enumeration en = microcodeIndex.keys();
+        Enumeration<String> en = microcodeIndex.keys();
         while (en.hasMoreElements())
             System.out.println(en.nextElement());
         System.out.println();
@@ -191,11 +190,13 @@ public class UCodeMethodParser implements MicrocodeSet
     
     }
 
-    private void insertIntoFragmentArrays(String uCodeName, String resultName, String[] args, boolean externalEffect, boolean explicitThrow, Vector instructions)
+    private void insertIntoFragmentArrays(String uCodeName, String resultName, 
+            String[] args, boolean externalEffect, boolean explicitThrow, 
+            Vector<Integer> instructions)
     {
         try
         {
-            Integer codeVal = (Integer) microcodeIndex.get(uCodeName);
+            Integer codeVal = microcodeIndex.get(uCodeName);
             if (codeVal == null)
                 syntaxError("Unknown microcode "+uCodeName);
 
@@ -233,6 +234,7 @@ public class UCodeMethodParser implements MicrocodeSet
         
     }
 
+    @SuppressWarnings("unchecked")
     private void parseMethod(Method m)
     {
         String name = m.getName();

@@ -4290,6 +4290,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock, MicrocodeSet
     cpu.eip = tempEIP;
     }
 
+    @SuppressWarnings("unused")
     private final void call_o32_a16(int target) 
     {
     int tempEIP = cpu.eip + target;

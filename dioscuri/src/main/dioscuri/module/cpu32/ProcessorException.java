@@ -25,6 +25,7 @@
 */
 package dioscuri.module.cpu32;
 
+@SuppressWarnings("serial")
 public final class ProcessorException extends RuntimeException
 {
 private int vector;

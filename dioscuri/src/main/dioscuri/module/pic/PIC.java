@@ -81,6 +81,7 @@ import dioscuri.module.ModulePIC;
  * - All IRQ numbers are managed by PIC
  * 
  */
+@SuppressWarnings("unused")
 public class PIC extends ModulePIC
 {
     // Instance (array of master and slave PIC)

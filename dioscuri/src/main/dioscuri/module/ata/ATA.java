@@ -57,7 +57,6 @@ import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleRTC;
 
-//import dioscuri.module.ModuleCPU;
 
 /**
  * An implementation of a ATA controller module.
@@ -420,15 +419,12 @@ public class ATA extends ModuleATA
     {
         // Show some status information of this module
         String dump = "";
-        String ret = "\r\n";
-        String tab = "\t";
-        String space = " ";
 
-        dump = "ATA dump:" + ret;
+        dump = "ATA dump:\n";
 
         int numDrives = this.getNumDrives();
 
-        dump += "In total " + numDrives + " IDE drive(s) exist:" + ret;
+        dump += "In total " + numDrives + " IDE drive(s) exist:\n";
 
         for (int i = 0; i < channels.length; i++)
         {
@@ -446,17 +442,16 @@ public class ATA extends ModuleATA
 
                     if (drives[j].containsDisk())
                     {
-                        dump += "; drive present, type=" + drives[j].getDriveType().toString() + ", size=" + drives[j].getDiskImageSize() + " bytes"
-                                + ret;
+                        dump += "; drive present, type=" + drives[j].getDriveType().toString() + ", size=" + drives[j].getDiskImageSize() + " bytes\n";
                     }
                     else
                     {
-                        dump += ", empty" + ret;
+                        dump += ", empty\n";
                     }
                 }
                 else
                 {
-                    dump += "Drive " + j + ": not present" + ret;
+                    dump += "Drive " + j + ": not present\n";
                 }
             }
         }
@@ -2757,6 +2752,7 @@ public class ATA extends ModuleATA
                             int toc_length;
                         }
 
+                        @SuppressWarnings("unused")
                         int allocLength = 0;
                         // int allocLength = read_16bit(getSelectedDriveController().getBuffer() + 7);
                         // TODO: 7 - offset?
@@ -2979,10 +2975,12 @@ public class ATA extends ModuleATA
 
                 case (byte) 0x42: // read sub-channel
                 {
+                    @SuppressWarnings("unused")
                     int msf = getPacketField(channel, 1, 1, 1);
                     int subQ = getPacketField(channel, 2, 6, 1);
 
                     int dataFormat = getPacketByte(channel, 3);
+                    @SuppressWarnings("unused")
                     int trackNumber = getPacketByte(channel, 6);
                     int allocLength = getPacketWord(channel, 7);
 

@@ -25,8 +25,6 @@
 */
 package dioscuri.module.cpu32;
 
-import java.io.*;
-
 public interface Hibernatable
 {
 //public void loadState(DataInputStream din) throws IOException;

@@ -42,7 +42,6 @@ package dioscuri.module.ata;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.Level;
 
 import dioscuri.exception.StorageDeviceException;
 

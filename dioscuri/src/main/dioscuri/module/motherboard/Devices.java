@@ -39,7 +39,8 @@ import java.util.ArrayList;
 import dioscuri.module.ModuleDevice;
 
 
-public class Devices extends ArrayList
+@SuppressWarnings("serial")
+public class Devices extends ArrayList<ModuleDevice>
 {
 	// Attributes
 	

@@ -82,6 +82,7 @@ import dioscuri.module.ModuleMotherboard;
  * 
  * 
  */
+@SuppressWarnings("unused")
 public class DMA extends ModuleDMA
 {
     boolean busHoldAcknowledged;        // Hold Acknowlege; CPU has relinquished control of the system busses

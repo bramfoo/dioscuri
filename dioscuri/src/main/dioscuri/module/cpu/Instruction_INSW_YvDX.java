@@ -38,9 +38,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-
-
 
 	/**
 	 * Intel opcode 6D<BR>

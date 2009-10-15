@@ -49,7 +49,7 @@ public class ClassFileBuilder
         newClassLoader();
     }
 
-    private static InputStream loadSkeletonClass(Class clz)
+    private static InputStream loadSkeletonClass(Class<?> clz)
     {
         byte[] classBytes = null;
         String classRes = clz.getName().replace('.', '/')+".class";
@@ -140,7 +140,7 @@ public class ClassFileBuilder
 
         byte[] classBytes = bos.toByteArray();
                 
-        Class codeBlockClass = currentClassLoader.createClass(className, classBytes, 0, classBytes.length);
+        Class<?> codeBlockClass = currentClassLoader.createClass(className, classBytes, 0, classBytes.length);
 
         CodeBlock compiledBlock = null;
         try
@@ -166,30 +166,30 @@ public class ClassFileBuilder
 
     static class CustomClassLoader extends ClassLoader
     {
-    private Hashtable classes;
+    private Hashtable<String, Class<?>> classes;
     private int classesCount;
 
     public CustomClassLoader()
     {
         super(ClassFileBuilder.class.getClassLoader());
-        classes = new Hashtable();
+        classes = new Hashtable<String, Class<?>>();
     }
 
-    public Class createClass(String name, byte[] b, int off, int len)
+    public Class<?> createClass(String name, byte[] b, int off, int len)
     {
         if (++classesCount == CLASSES_PER_LOADER)
         newClassLoader();
         
-        Class newClass = defineClass(name, b, off, len);
+        Class<?> newClass = defineClass(name, b, off, len);
         
         classes.put(name, newClass);
         
         return newClass;
     }
 
-    public Class findClass(String name) throws ClassNotFoundException
+    public Class<?> findClass(String name) throws ClassNotFoundException
     {
-        Class myClass = (Class)classes.get(name);
+        Class<?> myClass = (Class<?>)classes.get(name);
         if (myClass != null)
         return myClass;
         else

@@ -33,7 +33,7 @@ public class ConstantPoolSymbol
 
     public ConstantPoolSymbol(Object o)
     {
-        boolean ok = (o instanceof Class)
+        boolean ok = (o instanceof Class<?>)
         || (o instanceof Method)
         || (o instanceof Field)
         || (o instanceof String)

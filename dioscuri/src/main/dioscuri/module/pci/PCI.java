@@ -89,6 +89,7 @@ import dioscuri.module.ModuleMotherboard;
  */
 
 // TODO: This module is just a stub and needs further implementation
+@SuppressWarnings("unused")
 public class PCI extends ModuleDevice
 {
 

@@ -29,7 +29,7 @@ package dioscuri.module.cpu32;
 
 import java.util.*;
 
-public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
+public class PriorityDeque extends AbstractQueue<Object>  implements dioscuri.util.Deque<Object>
 {
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
     
@@ -51,12 +51,12 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     this.queue = new Object[initialCapacity];
     }
     
-    public Iterator descendingIterator()
+    public Iterator<Object> descendingIterator()
     {
     throw new UnsupportedOperationException();
     }
 
-    public Iterator iterator()
+    public Iterator<Object> iterator()
     {    
     throw new UnsupportedOperationException();
     }
@@ -273,6 +273,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     private int siftUp(int k, Object x)
     {
     Comparable key = (Comparable) x;
@@ -289,6 +290,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     return k;
     }
     
+    @SuppressWarnings("unchecked")
     private int siftDown(int k, Object x)
     {
     Comparable key = (Comparable)x;
@@ -305,6 +307,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     return k;
     }
 
+    @SuppressWarnings("unchecked")
     private int findPredecessor(int index)
     {
     if (index == 0)
@@ -331,6 +334,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     }
     }
 
+    @SuppressWarnings("unchecked")
     private int findSuccessor(int index)
     {
     if (index == 1)
@@ -359,6 +363,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     }
     }
 
+    @SuppressWarnings("unchecked")
     public static final void main(String[] args)
     {
     Random rndm = new Random();
@@ -373,7 +378,7 @@ public class PriorityDeque extends AbstractQueue  implements dioscuri.util.Deque
     
     System.err.println("<===== Starting =====> S:" + deque.size());
 
-    int j = 0, adds = 0, removes = 0;
+    int adds = 0, removes = 0;
     while (true) {
         System.err.println("<===== 100k Operations =====> S:" + deque.size() + " A:" + adds + " R:" + removes);
         

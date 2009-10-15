@@ -34,6 +34,7 @@
 
 package dioscuri.module.cpu;
 
+@SuppressWarnings("unused")
 public class Util {
 	
 	// Attributes
@@ -65,7 +66,7 @@ public class Util {
 	
 	
 	// Constants
-	private final static int REGISTER_LOW = 1;
+    private final static int REGISTER_LOW = 1;
 	private final static int REGISTER_HIGH = 0;
 	
 	private final static int OVERFLOW_FLAG = 0;

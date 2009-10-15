@@ -73,6 +73,7 @@ import dioscuri.module.ModuleRTC;
  * rtc.ramsize                 : 256 bytes
  * 
  */
+@SuppressWarnings("unused")
 public class RTC extends ModuleRTC
 {
 

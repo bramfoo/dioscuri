@@ -117,7 +117,7 @@ import dioscuri.module.ModuleSerialPort;
  * 	(not used for serial I/O; available to any application using 16450, 16550) (not present on original 8250)
  * 
  */
-
+@SuppressWarnings("unused")
 public class SerialPort extends ModuleSerialPort
 {
 

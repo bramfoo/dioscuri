@@ -37,16 +37,14 @@ package dioscuri.module.screen;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Image;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
-import javax.swing.event.MouseInputListener;
-
 
 /**
  * Class ImageCanvas draws a buffered image on a canvas.
  * 
  */
+@SuppressWarnings("serial")
 public class ScreenPanel extends JPanel
 {
     // Attributes

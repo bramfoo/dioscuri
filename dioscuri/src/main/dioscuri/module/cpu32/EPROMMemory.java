@@ -29,6 +29,7 @@ import dioscuri.module.clock.Clock;
 
 public class EPROMMemory extends LazyCodeBlockMemory
 {
+    @SuppressWarnings("unused")
     private Clock clock;
     
     public EPROMMemory(byte[] data, Clock clk)

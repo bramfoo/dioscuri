@@ -140,7 +140,7 @@ public class MicrocodeNode implements MicrocodeSet
     public static MicrocodeNode[] getMicrocodes(InstructionSource source)
     {
         int x86Length = 0, x86Count = 0;
-        Vector buffer = new Vector();
+        Vector<MicrocodeNode> buffer = new Vector<MicrocodeNode>();
 
     while (source.getNext()) 
         {

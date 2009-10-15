@@ -78,7 +78,7 @@ import dioscuri.module.ModuleSerialPort;
  * - http://local.wasp.uwa.edu.au/~pbourke/dataformats/serialmouse/
  * 
  */
-
+@SuppressWarnings("unused")
 public class Mouse extends ModuleMouse implements UART
 {
     // Relations

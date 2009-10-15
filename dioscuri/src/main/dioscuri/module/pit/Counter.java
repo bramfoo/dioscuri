@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * 
  * 
  */
-
+@SuppressWarnings("unused")
 public class Counter
 {
     // Attributes

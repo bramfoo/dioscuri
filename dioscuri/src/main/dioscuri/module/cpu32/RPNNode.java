@@ -33,7 +33,7 @@ import java.util.*;
 public abstract class RPNNode
 {
     private int id, count, useCount, subtreeIndex;
-    private List argLinks;
+    private List<RPNNode> argLinks;
 
     private int writeCount = 0;
     private int writeCountMax = 0;
@@ -52,7 +52,7 @@ public abstract class RPNNode
 
         useCount = 0;
         subtreeIndex = -1;
-        argLinks = new Vector();
+        argLinks = new Vector<RPNNode>();
         count = counter++;
         writeCount = 0;
         writeCountMax = 0;

@@ -65,6 +65,7 @@ public class Clock extends ModuleClock
     // Attributes
 
     // Relations
+    @SuppressWarnings("unused")
     private Emulator emu;
     private String[] moduleConnections = new String[] {"motherboard", "cpu"}; 
     private ModuleMotherboard motherboard;
@@ -360,16 +361,14 @@ public class Clock extends ModuleClock
     {
         // Show some status information of this module
         String dump = "";
-        String ret = "\r\n";
-        String tab = "\t";
         
-        dump = "Clock dump:" + ret;
+        dump = "Clock dump:\n";
         
         for (int t = 0; t < timers.length; t++)
         {
             if (timers[t] != null)
             {
-                dump += "Timer " + t + ": " + timers[t].user.getType() + ", updateInterval=" +  timers[t].intervalLength + " instr., countdown=" + timers[t].currentCount + " instr. " + ret;
+                dump += "Timer " + t + ": " + timers[t].user.getType() + ", updateInterval=" +  timers[t].intervalLength + " instr., countdown=" + timers[t].currentCount + " instr.\n";
             }
         }
         
@@ -520,6 +519,7 @@ public class Clock extends ModuleClock
      * FIXME: This method is not completely implemented yet!!!
      * 
      */
+    @SuppressWarnings("unused")
     private void calibrate()
     {
         // Get system time

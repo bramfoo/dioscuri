@@ -74,6 +74,7 @@ import dioscuri.module.ModuleVideo;
  * Tiago Leite, Tiago Taveira and Bruno Martins, students at the Insituto Superior Tecnico, May 2009.
  * 
  */
+@SuppressWarnings("unused")
 public class DynamicAllocationMemory extends ModuleMemory
 {
 

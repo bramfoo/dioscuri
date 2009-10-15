@@ -26,7 +26,7 @@
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.*;
-
+@SuppressWarnings("unused")
 public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder, InstructionSource
 {
     private static final boolean[] modrmArray = new boolean[] { // true for opcodes that require a modrm byte
@@ -6224,6 +6224,7 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder, Instr
     working.write(STORE0_MEM_DWORD);
     }
 
+    
     private void load1_Ob(int prefices, int displacement)
     {
     decodeO(prefices, displacement);

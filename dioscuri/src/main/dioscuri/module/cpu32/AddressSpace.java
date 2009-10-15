@@ -25,8 +25,6 @@
 */
 package dioscuri.module.cpu32;
 
-import java.util.*;
-
 //import org.jpc.emulator.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
