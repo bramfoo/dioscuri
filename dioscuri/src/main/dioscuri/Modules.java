@@ -38,8 +38,8 @@ import java.util.ArrayList;
 
 import dioscuri.module.Module;
 
-
-public class Modules extends ArrayList
+@SuppressWarnings("serial")
+public class Modules extends ArrayList<Module>
 {
 	// Attributes
 	

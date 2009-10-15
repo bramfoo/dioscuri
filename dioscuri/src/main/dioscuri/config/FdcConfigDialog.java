@@ -55,13 +55,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import dioscuri.DioscuriFrame;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 
-
-
+@SuppressWarnings("serial")
 public class FdcConfigDialog extends ConfigurationDialog
 {
     

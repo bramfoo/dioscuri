@@ -56,6 +56,7 @@ import javax.swing.border.Border;
 import dioscuri.DioscuriFrame;
 
 
+@SuppressWarnings("serial")
 public class SelectionConfigDialog extends ConfigurationDialog
 {
     
@@ -104,39 +105,31 @@ public class SelectionConfigDialog extends ConfigurationDialog
     
         ModuleType selectedModule = (ModuleType)modulesList.getSelectedValue();
         
-        if (selectedModule.equals(ModuleType.ATA)) 
-        {
-            AtaConfigDialog ataConfigDialog = new AtaConfigDialog(parent);
-            
-        } else if (selectedModule.equals(ModuleType.BIOS)) 
-        {
-           BiosConfigDialog biosConfigDialog = new BiosConfigDialog(parent);
-                
-        } else if(selectedModule.equals(ModuleType.BOOT))
-        {       
-            BootConfigDialog bootConfigDialog = new BootConfigDialog(parent);  
-            
-        } else if(selectedModule.equals(ModuleType.CPU))
-        {       
-            CpuConfigDialog cpuConfigDialog = new CpuConfigDialog(parent);
-        
-        } else if (selectedModule.equals(ModuleType.FDC)) 
-        {
-            FdcConfigDialog fdcConfigDialog = new FdcConfigDialog(parent);
-            
-        } else if (selectedModule.equals(ModuleType.MEMORY)) 
-        {
-            RamConfigDialog ramConfigDialog = new RamConfigDialog(parent);
-            
-        } else if (selectedModule.equals(ModuleType.MOUSE)) 
-        {
-            MouseConfigDialog mouseConfigDialog = new MouseConfigDialog(parent);
-            
-        } else if (selectedModule.equals(ModuleType.PIT) 
+        if (selectedModule.equals(ModuleType.ATA)) {
+            new AtaConfigDialog(parent);
+        } 
+        else if (selectedModule.equals(ModuleType.BIOS)) {
+           new BiosConfigDialog(parent);    
+        } 
+        else if(selectedModule.equals(ModuleType.BOOT)) {       
+            new BootConfigDialog(parent);     
+        } 
+        else if(selectedModule.equals(ModuleType.CPU)) {       
+            new CpuConfigDialog(parent);
+        } 
+        else if (selectedModule.equals(ModuleType.FDC)) {
+            new FdcConfigDialog(parent);
+        } 
+        else if (selectedModule.equals(ModuleType.MEMORY)) {
+            new RamConfigDialog(parent); 
+        } 
+        else if (selectedModule.equals(ModuleType.MOUSE)) {
+            new MouseConfigDialog(parent);  
+        } 
+        else if (selectedModule.equals(ModuleType.PIT) 
                 || selectedModule.equals(ModuleType.KEYBOARD)
-                || selectedModule.equals(ModuleType.VGA)) 
-        {
-            SimpleConfigDialog simpleConfigDialog = new SimpleConfigDialog(parent, selectedModule);
+                || selectedModule.equals(ModuleType.VGA)) {
+            new SimpleConfigDialog(parent, selectedModule);
         }
     }
     
@@ -155,16 +148,16 @@ public class SelectionConfigDialog extends ConfigurationDialog
             listModel.addElement(moduleTypes[i]);        
         }
 */
-        listModel.addElement(moduleType.ATA);
-        listModel.addElement(moduleType.BIOS);
-        listModel.addElement(moduleType.BOOT); 
-        listModel.addElement(moduleType.CPU);
-        listModel.addElement(moduleType.FDC);
-        listModel.addElement(moduleType.KEYBOARD);
-        listModel.addElement(moduleType.MOUSE);
-        listModel.addElement(moduleType.MEMORY); 
-        listModel.addElement(moduleType.PIT);
-        listModel.addElement(moduleType.VGA);
+        listModel.addElement(ModuleType.ATA);
+        listModel.addElement(ModuleType.BIOS);
+        listModel.addElement(ModuleType.BOOT); 
+        listModel.addElement(ModuleType.CPU);
+        listModel.addElement(ModuleType.FDC);
+        listModel.addElement(ModuleType.KEYBOARD);
+        listModel.addElement(ModuleType.MOUSE);
+        listModel.addElement(ModuleType.MEMORY); 
+        listModel.addElement(ModuleType.PIT);
+        listModel.addElement(ModuleType.VGA);
         
         modulesList = new JList(listModel);
         modulesList.setSelectedIndex(0);

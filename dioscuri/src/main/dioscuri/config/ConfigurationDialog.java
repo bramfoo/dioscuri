@@ -55,12 +55,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import dioscuri.DioscuriFrame;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 
-
-
+@SuppressWarnings("serial")
 public abstract class ConfigurationDialog extends JDialog
 {
 
@@ -185,6 +183,7 @@ public abstract class ConfigurationDialog extends JDialog
         });
     }
     
+    @SuppressWarnings("unused")
     private void initCancelButton()
     {
         Dimension buttonSize = new Dimension(70, 25);

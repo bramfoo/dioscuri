@@ -50,17 +50,16 @@ import java.math.BigInteger;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import dioscuri.DioscuriFrame;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 
 
 
+@SuppressWarnings("serial")
 public class AtaConfigDialog extends ConfigurationDialog
 {
     

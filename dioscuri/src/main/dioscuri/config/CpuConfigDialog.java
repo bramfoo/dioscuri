@@ -54,13 +54,11 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
-import dioscuri.DioscuriFrame;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Cpu;
 
-
-
+@SuppressWarnings("serial")
 public class CpuConfigDialog extends ConfigurationDialog
 {
     private JFormattedTextField speedField;

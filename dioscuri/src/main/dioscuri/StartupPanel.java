@@ -44,6 +44,7 @@ import javax.swing.JPanel;
  * Class StartupCanvas draws a buffered image on a canvas.
  * 
  */
+@SuppressWarnings("serial")
 public class StartupPanel extends JPanel
 {
     // Attributes

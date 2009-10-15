@@ -1,6 +1,5 @@
 package dioscuri;
 
-import java.awt.Frame;
 import java.io.File;
 
 import javax.swing.JFrame;

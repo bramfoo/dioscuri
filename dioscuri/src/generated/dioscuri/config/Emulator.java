@@ -237,6 +237,7 @@ import dioscuri.config.Emulator.Architecture.Modules.Video;
  * 
  * 
  */
+@SuppressWarnings("unused")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "architecture"
