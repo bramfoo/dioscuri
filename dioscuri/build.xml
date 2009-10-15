@@ -40,27 +40,28 @@
  Automated tasks for the Dioscuri project
 -->
 
-<project name="Dioscuri" basedir="." default="generated.src">
+<project name="Dioscuri" basedir="." default="main">
 
     <description>
         Build file for Dioscuri, the modular emulator
     </description>
 
-	<property name="version" value="0.4.1"/>
-	<property name="main-class"  value="dioscuri.GUI"/>
+	<property name="version"            value="0.4.1"/>
+	<property name="main-class"         value="dioscuri.DioscuriFrame"/>
 
 	<!-- Directories in this tree -->
-    <property name="src.dir"      value="${basedir}/src"/>
-	<property name="test-src.dir" value="${basedir}/test"/>
-	<property name="libs.dir"     value="${basedir}/libs"/>
-    <property name="gen-src.dir"  value="${basedir}/generated-src"/>
-    <property name="config.dir"   value="${basedir}/config"/>
-    <property name="log.dir"      value="${basedir}/log"/>
-    <property name="images.dir"   value="${basedir}/images"/>
-    <property name="build.dir"    value="${basedir}/build"/>
-    <property name="classes.dir"  value="${build.dir}/classes"/>
-    <property name="jar.dir"      value="${build.dir}/jar"/>
-    <property name="javadoc.dir"  value="${build.dir}/javadoc"/>
+    <property name="src.dir"            value="${basedir}/src"/>
+	<property name="main-src.dir"       value="${src.dir}/main"/>
+	<property name="test-src.dir"       value="${src.dir}/test"/>
+	<property name="gen-src.dir"        value="${src.dir}/generated"/>
+	<property name="libs.dir"           value="${basedir}/libs"/>
+    <property name="config.dir"         value="${basedir}/config"/>
+    <property name="log.dir"            value="${basedir}/log"/>
+    <property name="images.dir"         value="${basedir}/images"/>
+    <property name="build.dir"          value="${basedir}/build"/>
+    <property name="classes.dir"        value="${build.dir}/classes/main"/>
+    <property name="jar.dir"            value="${build.dir}/jar"/>
+    <property name="javadoc.dir"        value="${build.dir}/javadoc"/>
 
     <!-- Classpath -->
     <path id="master-classpath">
@@ -102,7 +103,7 @@
     <!-- Create the javadoc files -->
     <target name="javadoc" description="Create the javadoc files" depends="generated.src">
 		<mkdir dir="${javadoc.dir}"/>
-        <javadoc packagenames="dioscuri.*" sourcepath="${src.dir}" destdir="${javadoc.dir}" author="true" version="true" use="true"  classpathref="master-classpath">
+        <javadoc packagenames="dioscuri.*" sourcepath="${main-src.dir}" destdir="${javadoc.dir}" author="true" version="true" use="true"  classpathref="master-classpath">
             <classpath>
                 <dirset dir="."/>
                 <path refid="master-classpath"/>
