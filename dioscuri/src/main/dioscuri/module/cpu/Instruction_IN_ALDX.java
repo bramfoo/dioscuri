@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -47,14 +46,12 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 
-
 /**
  * Intel opcode EC<BR>
  * Put byte from I/O port address specified by DX into AL.<BR>
  * Flags modified: none
  */
-public class Instruction_IN_ALDX implements Instruction
-{
+public class Instruction_IN_ALDX implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -65,22 +62,20 @@ public class Instruction_IN_ALDX implements Instruction
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_IN_ALDX()
-    {
+    public Instruction_IN_ALDX() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_IN_ALDX(CPU processor)
-    {
+    public Instruction_IN_ALDX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -91,24 +86,23 @@ public class Instruction_IN_ALDX implements Instruction
 
     /**
      * Input byte from I/O port address specified by DX into AL
-     * @throws ModuleWriteOnlyPortException 
-     * @throws ModuleUnknownPort 
+     * 
+     * @throws ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
-    public void execute()
-    {
+    public void execute() {
 
-        // Convert value in DX to unsigned integer to prevent lookup table out of bounds;
+        // Convert value in DX to unsigned integer to prevent lookup table out
+        // of bounds;
         // get data to appropriate port
-        portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH])& 0xFF)<<8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
+        portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
 
-        try
-        {
+        try {
             // Write retrieved value into AL
             cpu.ax[CPU.REGISTER_GENERAL_LOW] = cpu.getIOPortByte(portAddress);
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
     }
 }

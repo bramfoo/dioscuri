@@ -37,54 +37,52 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 97<BR>
-	 * Exchange contents of registers DI and AX.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 97<BR>
+ * Exchange contents of registers DI and AX.<BR>
+ * Flags modified: none
+ */
 public class Instruction_XCHG_DIAX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte[] temp;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_XCHG_DIAX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_XCHG_DIAX(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-		
-		// Initialise variable for temporary storage 
-		temp = new byte[2];
-	}
+    // Attributes
+    private CPU cpu;
+    byte[] temp;
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 */
-	public void execute()
-	{
-		// Swap registers, using temp as a go-between
-        System.arraycopy(cpu.di, 0, temp, 0 , cpu.di.length);
-        System.arraycopy(cpu.ax, 0, cpu.di, 0 , cpu.ax.length);
-        System.arraycopy(temp, 0, cpu.ax, 0 , temp.length);
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_XCHG_DIAX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_XCHG_DIAX(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+
+        // Initialise variable for temporary storage
+        temp = new byte[2];
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     */
+    public void execute() {
+        // Swap registers, using temp as a go-between
+        System.arraycopy(cpu.di, 0, temp, 0, cpu.di.length);
+        System.arraycopy(cpu.ax, 0, cpu.di, 0, cpu.ax.length);
+        System.arraycopy(temp, 0, cpu.ax, 0, temp.length);
+    }
 }

@@ -37,19 +37,18 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
 
 /**
- * Abstract class representing a generic hardware module.
- * This class defines a template for a BIOS module, which may contain a system BIOS, VIDEO BIOS and optional BIOSes.
- *  
+ * Abstract class representing a generic hardware module. This class defines a
+ * template for a BIOS module, which may contain a system BIOS, VIDEO BIOS and
+ * optional BIOSes.
+ * 
  */
 
-public abstract class ModuleBIOS extends Module
-{
+public abstract class ModuleBIOS extends Module {
     // Methods
     /**
      * Returns the system BIOS code from ROM
@@ -63,11 +62,13 @@ public abstract class ModuleBIOS extends Module
      * 
      * @param byte[] biosCode containing the binary code of System BIOS
      * 
-     * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store is successful, false otherwise
+     * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
+     *         is successful, false otherwise
      * @throws ModuleException
      */
-    public abstract boolean setSystemBIOS(byte[] biosCode) throws ModuleException;
-    
+    public abstract boolean setSystemBIOS(byte[] biosCode)
+            throws ModuleException;
+
     /**
      * Returns the Video BIOS code from ROM
      * 
@@ -80,8 +81,10 @@ public abstract class ModuleBIOS extends Module
      * 
      * @param byte[] biosCode containing the binary code of Video BIOS
      * 
-     * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is successful, false otherwise
+     * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
+     *         successful, false otherwise
      * @throws ModuleException
      */
-    public abstract boolean setVideoBIOS(byte[] biosCode) throws ModuleException;
+    public abstract boolean setVideoBIOS(byte[] biosCode)
+            throws ModuleException;
 }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Flags modified: ZF
  */
 @SuppressWarnings("unused")
-public class Instruction_LAR implements Instruction
-{
+public class Instruction_LAR implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,17 +54,16 @@ public class Instruction_LAR implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_LAR()
-    {
+    public Instruction_LAR() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_LAR(CPU processor)
-    {
+    public Instruction_LAR(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,12 +73,11 @@ public class Instruction_LAR implements Instruction
     // Methods
 
     /**
-     * Load Access Rights byte.
-     * Test ZF flag
+     * Load Access Rights byte. Test ZF flag
      */
-    public void execute()
-    {
-        // FIXME: instruction LAR is not implemented, because it is only executed in protected mode
-        
+    public void execute() {
+        // FIXME: instruction LAR is not implemented, because it is only
+        // executed in protected mode
+
     }
 }

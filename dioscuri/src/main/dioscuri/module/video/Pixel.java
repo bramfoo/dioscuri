@@ -40,13 +40,12 @@
 package dioscuri.module.video;
 
 /**
- * Representation of pixel data, implementing the R, G, and B values. 
- *
+ * Representation of pixel data, implementing the R, G, and B values.
+ * 
  */
-public class Pixel
-{
+public class Pixel {
     // RGB values of the pixel, stored in bytes
-    byte red;   
+    byte red;
     byte green;
     byte blue;
 }

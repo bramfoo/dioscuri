@@ -37,56 +37,53 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 50<BR>
-	 * Push general register AX onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 50<BR>
+ * Push general register AX onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_AX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_AX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_AX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in AX onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_AX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_AX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in AX onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-		// Double word will be stored as [ax[LSB][MSB] eax[LSB][MSB]] because stack is counting backwards in memory
-        if (cpu.doubleWord)
-        {
+        // Double word will be stored as [ax[LSB][MSB] eax[LSB][MSB]] because
+        // stack is counting backwards in memory
+        if (cpu.doubleWord) {
             cpu.setWordToStack(cpu.eax);
         }
-        
-        // Get word at AX and assign to SS:SP 
-		cpu.setWordToStack(cpu.ax);
-	}
+
+        // Get word at AX and assign to SS:SP
+        cpu.setWordToStack(cpu.ax);
+    }
 }

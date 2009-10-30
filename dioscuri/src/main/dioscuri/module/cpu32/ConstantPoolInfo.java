@@ -22,13 +22,12 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public abstract class ConstantPoolInfo
-{
+public abstract class ConstantPoolInfo {
     public static final int CLASS = 7;
     public static final int FIELDREF = 9;
     public static final int METHODREF = 10;
@@ -42,14 +41,15 @@ public abstract class ConstantPoolInfo
     public static final int UTF8 = 1;
 
     public abstract int getTag();
+
     public abstract void write(DataOutputStream out) throws IOException;
+
     public abstract boolean equals(Object obj);
 
-    public static ConstantPoolInfo construct(DataInputStream in) throws IOException
-    {
+    public static ConstantPoolInfo construct(DataInputStream in)
+            throws IOException {
         int tag = in.readUnsignedByte();
-        switch (tag)
-        {
+        switch (tag) {
         case CLASS:
             return new ClassInfo(in);
         case FIELDREF:
@@ -76,561 +76,506 @@ public abstract class ConstantPoolInfo
         return null;
     }
 
-    public static class ClassInfo extends ConstantPoolInfo
-    {
+    public static class ClassInfo extends ConstantPoolInfo {
         private final int nameIndex;
-    private final int hashCode;
+        private final int hashCode;
 
-        ClassInfo(DataInputStream in) throws IOException
-        {
+        ClassInfo(DataInputStream in) throws IOException {
             nameIndex = in.readUnsignedShort();
-        hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
         }
 
-        ClassInfo(int val)
-        {
+        ClassInfo(int val) {
             nameIndex = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return CLASS;
         }
 
-        public int getNameIndex()
-        {
+        public int getNameIndex() {
             return nameIndex;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(CLASS);
             out.writeShort(nameIndex);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof ClassInfo))
                 return false;
 
-            return getNameIndex() == ((ClassInfo)obj).getNameIndex();
+            return getNameIndex() == ((ClassInfo) obj).getNameIndex();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Class_info : name=" + getNameIndex();
         }
     }
 
-    abstract static class RefInfo extends ConstantPoolInfo
-    {
+    abstract static class RefInfo extends ConstantPoolInfo {
         private final int classIndex;
         private final int nameAndTypeIndex;
-    private final int hashCode;
+        private final int hashCode;
 
-        RefInfo(DataInputStream in) throws IOException
-        {
+        RefInfo(DataInputStream in) throws IOException {
             classIndex = in.readUnsignedShort();
             nameAndTypeIndex = in.readUnsignedShort();
-        hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37) ^ (nameAndTypeIndex * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37)
+                    ^ (nameAndTypeIndex * 41);
         }
 
-        RefInfo(int classIndex, int nameAndTypeIndex)
-        {
+        RefInfo(int classIndex, int nameAndTypeIndex) {
             this.classIndex = classIndex;
             this.nameAndTypeIndex = nameAndTypeIndex;
-        hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37) ^ (nameAndTypeIndex * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37)
+                    ^ (nameAndTypeIndex * 41);
         }
 
-        public int getClassIndex()
-        {
+        public int getClassIndex() {
             return classIndex;
         }
 
-        public int getNameAndTypeIndex()
-        {
+        public int getNameAndTypeIndex() {
             return nameAndTypeIndex;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(getTag());
             out.writeShort(classIndex);
             out.writeShort(nameAndTypeIndex);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof RefInfo))
                 return false;
 
-            if (getTag() != ((RefInfo)obj).getTag())
+            if (getTag() != ((RefInfo) obj).getTag())
                 return false;
 
-            return (getClassIndex() == ((RefInfo)obj).getClassIndex()) && (getNameAndTypeIndex() == ((RefInfo)obj).getNameAndTypeIndex());
+            return (getClassIndex() == ((RefInfo) obj).getClassIndex())
+                    && (getNameAndTypeIndex() == ((RefInfo) obj)
+                            .getNameAndTypeIndex());
         }
     }
 
-    public static class FieldRefInfo extends RefInfo
-    {
-        FieldRefInfo(DataInputStream in) throws IOException { super(in); }
+    public static class FieldRefInfo extends RefInfo {
+        FieldRefInfo(DataInputStream in) throws IOException {
+            super(in);
+        }
 
-        FieldRefInfo(int classIndex, int nameAndTypeIndex) { super(classIndex, nameAndTypeIndex); }
+        FieldRefInfo(int classIndex, int nameAndTypeIndex) {
+            super(classIndex, nameAndTypeIndex);
+        }
 
-        public int getTag()
-        {
+        public int getTag() {
             return FIELDREF;
         }
 
-        public String toString()
-        {
-            return "CONSTANT_FieldRef_info : class=" + getClassIndex() + " : nameandtype=" + getNameAndTypeIndex();
+        public String toString() {
+            return "CONSTANT_FieldRef_info : class=" + getClassIndex()
+                    + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
-    public static class MethodRefInfo extends RefInfo
-    {
-        MethodRefInfo (DataInputStream in) throws IOException { super(in); }
+    public static class MethodRefInfo extends RefInfo {
+        MethodRefInfo(DataInputStream in) throws IOException {
+            super(in);
+        }
 
-        MethodRefInfo(int classIndex, int nameAndTypeIndex) { super(classIndex, nameAndTypeIndex); }
+        MethodRefInfo(int classIndex, int nameAndTypeIndex) {
+            super(classIndex, nameAndTypeIndex);
+        }
 
-        public int getTag()
-        {
+        public int getTag() {
             return METHODREF;
         }
 
-        public String toString()
-        {
-            return "CONSTANT_MethodRef_info : class=" + getClassIndex() + " : nameandtype=" + getNameAndTypeIndex();
+        public String toString() {
+            return "CONSTANT_MethodRef_info : class=" + getClassIndex()
+                    + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
-    public static class InterfaceMethodRefInfo extends MethodRefInfo
-    {
-        InterfaceMethodRefInfo(DataInputStream in) throws IOException { super(in); }
+    public static class InterfaceMethodRefInfo extends MethodRefInfo {
+        InterfaceMethodRefInfo(DataInputStream in) throws IOException {
+            super(in);
+        }
 
-        InterfaceMethodRefInfo(int classIndex, int nameAndTypeIndex) { super(classIndex, nameAndTypeIndex); }
+        InterfaceMethodRefInfo(int classIndex, int nameAndTypeIndex) {
+            super(classIndex, nameAndTypeIndex);
+        }
 
-        public int getTag()
-        {
+        public int getTag() {
             return INTERFACEMETHODREF;
         }
 
-        public String toString()
-        {
-            return "CONSTANT_InterfaceMethodRef_info : class=" + getClassIndex() + " : nameandtype=" + getNameAndTypeIndex();
+        public String toString() {
+            return "CONSTANT_InterfaceMethodRef_info : class="
+                    + getClassIndex() + " : nameandtype="
+                    + getNameAndTypeIndex();
         }
     }
 
-    public static class StringInfo extends ConstantPoolInfo
-    {
+    public static class StringInfo extends ConstantPoolInfo {
         private final int stringIndex;
-    private final int hashCode;
-        StringInfo(DataInputStream in) throws IOException
-        {
+        private final int hashCode;
+
+        StringInfo(DataInputStream in) throws IOException {
             stringIndex = in.readUnsignedShort();
-        hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
         }
 
-        StringInfo(int val)
-        {
+        StringInfo(int val) {
             stringIndex = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return STRING;
         }
 
-        public int getStringIndex()
-        {
+        public int getStringIndex() {
             return stringIndex;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(STRING);
             out.writeShort(stringIndex);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof StringInfo))
                 return false;
 
-            return getStringIndex() == ((StringInfo)obj).getStringIndex();
+            return getStringIndex() == ((StringInfo) obj).getStringIndex();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_String_info : string=" + getStringIndex();
         }
     }
 
-    public static class IntegerInfo extends ConstantPoolInfo
-    {
+    public static class IntegerInfo extends ConstantPoolInfo {
         private final int bytes;
-    private final int hashCode;
+        private final int hashCode;
 
-        IntegerInfo(DataInputStream in) throws IOException
-        {
+        IntegerInfo(DataInputStream in) throws IOException {
             bytes = in.readInt();
-        hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
         }
 
-        IntegerInfo(int val)
-        {
+        IntegerInfo(int val) {
             bytes = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
+            hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return INTEGER;
         }
 
-        public int getBytes()
-        {
+        public int getBytes() {
             return bytes;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(INTEGER);
             out.writeInt(bytes);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof IntegerInfo))
                 return false;
 
-            return getBytes() == ((IntegerInfo)obj).getBytes();
+            return getBytes() == ((IntegerInfo) obj).getBytes();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Integer_info : value=" + getBytes();
         }
     }
 
-    public static class FloatInfo extends ConstantPoolInfo
-    {
+    public static class FloatInfo extends ConstantPoolInfo {
         private final float bytes;
-    private final int hashCode;
+        private final int hashCode;
 
-        FloatInfo(DataInputStream in) throws IOException
-        {
+        FloatInfo(DataInputStream in) throws IOException {
             bytes = in.readFloat();
-        hashCode = (this.getClass().hashCode() * 31) ^ (Float.floatToRawIntBits(bytes) * 37);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (Float.floatToRawIntBits(bytes) * 37);
         }
 
-        FloatInfo(float val)
-        {
+        FloatInfo(float val) {
             bytes = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (Float.floatToRawIntBits(bytes) * 37);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (Float.floatToRawIntBits(bytes) * 37);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return FLOAT;
         }
 
-        public float getBytes()
-        {
+        public float getBytes() {
             return bytes;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(FLOAT);
             out.writeFloat(bytes);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof FloatInfo))
                 return false;
 
-            return getBytes() == ((FloatInfo)obj).getBytes();
+            return getBytes() == ((FloatInfo) obj).getBytes();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Float_info : value=" + getBytes();
         }
     }
 
-    public static class LongInfo extends ConstantPoolInfo
-    {
+    public static class LongInfo extends ConstantPoolInfo {
         private final long bytes;
-    private final int hashCode;
+        private final int hashCode;
 
-        LongInfo(DataInputStream in) throws IOException
-        {
+        LongInfo(DataInputStream in) throws IOException {
             bytes = in.readLong();
-        hashCode = (this.getClass().hashCode() * 31) ^ (((int)bytes) * 37) ^ (((int)(bytes >>> 32)) * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (((int) bytes) * 37)
+                    ^ (((int) (bytes >>> 32)) * 41);
         }
 
-        LongInfo(long val)
-        {
+        LongInfo(long val) {
             bytes = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (((int)bytes) * 37) ^ (((int)(bytes >>> 32)) * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (((int) bytes) * 37)
+                    ^ (((int) (bytes >>> 32)) * 41);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return LONG;
         }
 
-        public long getBytes()
-        {
+        public long getBytes() {
             return bytes;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(LONG);
             out.writeLong(bytes);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof LongInfo))
                 return false;
 
-            return getBytes() == ((LongInfo)obj).getBytes();
+            return getBytes() == ((LongInfo) obj).getBytes();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Long_info : value=" + getBytes();
         }
     }
 
-    public static class DoubleInfo extends ConstantPoolInfo
-    {
+    public static class DoubleInfo extends ConstantPoolInfo {
         private final double bytes;
-    private final int hashCode;
+        private final int hashCode;
 
-        DoubleInfo(DataInputStream in) throws IOException
-        {
+        DoubleInfo(DataInputStream in) throws IOException {
             bytes = in.readDouble();
-        long longBytes = Double.doubleToRawLongBits(bytes);
-        hashCode = (this.getClass().hashCode() * 31) ^ (((int)longBytes) * 37) ^ (((int)(longBytes >>> 32)) * 41);
+            long longBytes = Double.doubleToRawLongBits(bytes);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (((int) longBytes) * 37)
+                    ^ (((int) (longBytes >>> 32)) * 41);
         }
 
-        DoubleInfo(double val)
-        {
+        DoubleInfo(double val) {
             bytes = val;
-        long longBytes = Double.doubleToRawLongBits(bytes);
-        hashCode = (this.getClass().hashCode() * 31) ^ (((int)longBytes) * 37) ^ (((int)(longBytes >>> 32)) * 41);
+            long longBytes = Double.doubleToRawLongBits(bytes);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (((int) longBytes) * 37)
+                    ^ (((int) (longBytes >>> 32)) * 41);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return DOUBLE;
         }
 
-        public double getBytes()
-        {
+        public double getBytes() {
             return bytes;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(DOUBLE);
             out.writeDouble(bytes);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof DoubleInfo))
                 return false;
 
-            return getBytes() == ((DoubleInfo)obj).getBytes();
+            return getBytes() == ((DoubleInfo) obj).getBytes();
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Double_info : value=" + getBytes();
         }
     }
 
-    public static class NameAndTypeInfo extends ConstantPoolInfo
-    {
+    public static class NameAndTypeInfo extends ConstantPoolInfo {
         private final int nameIndex;
         private final int descriptorIndex;
-    private final int hashCode;
+        private final int hashCode;
 
-        NameAndTypeInfo(DataInputStream in) throws IOException
-        {
+        NameAndTypeInfo(DataInputStream in) throws IOException {
             nameIndex = in.readUnsignedShort();
             descriptorIndex = in.readUnsignedShort();
-        hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37) ^ (descriptorIndex * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37)
+                    ^ (descriptorIndex * 41);
         }
 
-        NameAndTypeInfo(int nameIndex, int descriptorIndex)
-        {
+        NameAndTypeInfo(int nameIndex, int descriptorIndex) {
             this.nameIndex = nameIndex;
             this.descriptorIndex = descriptorIndex;
-        hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37) ^ (descriptorIndex * 41);
+            hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37)
+                    ^ (descriptorIndex * 41);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return NAMEANDTYPE;
         }
 
-        public int getNameIndex()
-        {
+        public int getNameIndex() {
             return nameIndex;
         }
 
-        public int getDescriptorIndex()
-        {
+        public int getDescriptorIndex() {
             return descriptorIndex;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(NAMEANDTYPE);
             out.writeShort(nameIndex);
             out.writeShort(descriptorIndex);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof NameAndTypeInfo))
                 return false;
 
-            return (getNameIndex() == ((NameAndTypeInfo)obj).getNameIndex())
-                && (getDescriptorIndex() == ((NameAndTypeInfo)obj).getDescriptorIndex());
+            return (getNameIndex() == ((NameAndTypeInfo) obj).getNameIndex())
+                    && (getDescriptorIndex() == ((NameAndTypeInfo) obj)
+                            .getDescriptorIndex());
         }
 
-        public String toString()
-        {
-            return "CONSTANT_NameAndType_info : descriptor=" + getDescriptorIndex() + " : name=" + getNameIndex();
+        public String toString() {
+            return "CONSTANT_NameAndType_info : descriptor="
+                    + getDescriptorIndex() + " : name=" + getNameIndex();
         }
     }
 
-    public static class Utf8Info extends ConstantPoolInfo
-    {
+    public static class Utf8Info extends ConstantPoolInfo {
         private final String bytes;
-    private final int hashCode;
+        private final int hashCode;
 
-        Utf8Info(DataInputStream in) throws IOException
-        {
+        Utf8Info(DataInputStream in) throws IOException {
             bytes = in.readUTF();
-        hashCode = (this.getClass().hashCode() * 31) ^ (bytes.hashCode() * 37);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (bytes.hashCode() * 37);
         }
 
-        Utf8Info(String val)
-        {
+        Utf8Info(String val) {
             bytes = val;
-        hashCode = (this.getClass().hashCode() * 31) ^ (bytes.hashCode() * 37);
+            hashCode = (this.getClass().hashCode() * 31)
+                    ^ (bytes.hashCode() * 37);
         }
 
-        public int getTag()
-        {
+        public int getTag() {
             return UTF8;
         }
 
-        public String getBytes()
-        {
+        public String getBytes() {
             return bytes;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(UTF8);
             out.writeUTF(bytes);
         }
 
-    public int hashCode()
-    {
-        return hashCode;
-    }
+        public int hashCode() {
+            return hashCode;
+        }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
             if (!(obj instanceof Utf8Info))
                 return false;
 
-            return getBytes().equals(((Utf8Info)obj).getBytes());
+            return getBytes().equals(((Utf8Info) obj).getBytes());
         }
 
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Utf8_info : value=" + getBytes();
         }
     }

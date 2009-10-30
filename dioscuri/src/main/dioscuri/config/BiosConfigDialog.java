@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -63,94 +62,90 @@ import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Bios;
 
-
-
 @SuppressWarnings("serial")
-public class BiosConfigDialog extends ConfigurationDialog
-{
-    
-    private JFormattedTextField sysBiosStartsFTextField;  
-    private JFormattedTextField vgaBiosStartFTextField; 
-    
+public class BiosConfigDialog extends ConfigurationDialog {
+
+    private JFormattedTextField sysBiosStartsFTextField;
+    private JFormattedTextField vgaBiosStartFTextField;
+
     private JButton sysBiosBrowseButton;
-    private JButton vgaBiosBrowseButton;  
-        
+    private JButton vgaBiosBrowseButton;
+
     private File selectedVgaFile = null;
     private JLabel imageFilePathVgaLabel = null;
-    
+
     dioscuri.config.Emulator emuConfig;
-            
-    public BiosConfigDialog(GUI parent)
-    {               
-        super (parent, "BIOS Configuration", false, ModuleType.BIOS);                  
+
+    public BiosConfigDialog(GUI parent) {
+        super(parent, "BIOS Configuration", false, ModuleType.BIOS);
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
-    	
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
+
         String sysPath = bios.getSysbiosfilepath();
         String vgaPath = bios.getVgabiosfilepath();
-        
-        Integer ramSysBiosAddressStart = bios.getRamaddresssysbiosstartdec().intValue();
-        Integer ramVgaBiosAddressStart = bios.getRamaddressvgabiosstartdec().intValue();
-                
-        this.sysBiosStartsFTextField.setValue(ramSysBiosAddressStart);           
-        this.vgaBiosStartFTextField.setValue(ramVgaBiosAddressStart);  
-        
+
+        Integer ramSysBiosAddressStart = bios.getRamaddresssysbiosstartdec()
+                .intValue();
+        Integer ramVgaBiosAddressStart = bios.getRamaddressvgabiosstartdec()
+                .intValue();
+
+        this.sysBiosStartsFTextField.setValue(ramSysBiosAddressStart);
+        this.vgaBiosStartFTextField.setValue(ramVgaBiosAddressStart);
+
         this.selectedfile = new File(sysPath);
         this.selectedVgaFile = new File(vgaPath);
-        
+
         // Check if length of System BIOS file is longer than 30 characters
-        if (selectedfile.getName().length() > 30)
-        {
-        	// Trail off the beginning of the string
-        	this.imageFilePathLabel.setText("..." + selectedfile.getName().substring(selectedfile.getName().length() - 30));
-        }
-        else
-        {
+        if (selectedfile.getName().length() > 30) {
+            // Trail off the beginning of the string
+            this.imageFilePathLabel.setText("..."
+                    + selectedfile.getName().substring(
+                            selectedfile.getName().length() - 30));
+        } else {
             this.imageFilePathLabel.setText(selectedfile.getName());
         }
 
         // Check if length of Video BIOS file is longer than 30 characters
-        if (selectedVgaFile.getName().length() > 30)
-        {
-        	// Trail off the beginning of the string
-        	this.imageFilePathVgaLabel.setText("..." + selectedVgaFile.getName().substring(selectedVgaFile.getName().length() - 30));
-        }
-        else
-        {
+        if (selectedVgaFile.getName().length() > 30) {
+            // Trail off the beginning of the string
+            this.imageFilePathVgaLabel.setText("..."
+                    + selectedVgaFile.getName().substring(
+                            selectedVgaFile.getName().length() - 30));
+        } else {
             this.imageFilePathVgaLabel.setText(selectedVgaFile.getName());
         }
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-                 
-        JLabel sysBiosFileLabel = new JLabel("Sys Bios File");  
-        JLabel vgaBiosFileLabel = new JLabel("Vga Bios File"); 
+    protected void initMainEntryPanel() {
+
+        JLabel sysBiosFileLabel = new JLabel("Sys Bios File");
+        JLabel vgaBiosFileLabel = new JLabel("Vga Bios File");
         JLabel sysBiosStartLabel = new JLabel("Sys Bios Start");
-        JLabel vgaBiosStartLabel = new JLabel("Vga Bios Start");   
-        
+        JLabel vgaBiosStartLabel = new JLabel("Vga Bios Start");
+
         this.populateControls();
-             
-        //Lay out the labels in a panel.
+
+        // Lay out the labels in a panel.
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         mainEntryPanel = new JPanel(gridbag);
-        
+
         // Makeup layout with contraints
         // General layout contraints
-        c.fill = GridBagConstraints.HORIZONTAL; // Make the component fill its display area entirely
-        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
-        
+        c.fill = GridBagConstraints.HORIZONTAL; // Make the component fill its
+                                                // display area entirely
+        c.insets = new Insets(0, 10, 0, 10); // Defines the spaces between
+                                             // layout and display area
+
         // Row 1
         c.weightx = 1.0;
         c.gridwidth = 1;
@@ -159,7 +154,7 @@ public class BiosConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
         gridbag.setConstraints(this.imageFilePathLabel, c);
         mainEntryPanel.add(this.imageFilePathLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(this.sysBiosBrowseButton, c);
         mainEntryPanel.add(this.sysBiosBrowseButton);
 
@@ -173,7 +168,7 @@ public class BiosConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(this.vgaBiosBrowseButton, c);
         mainEntryPanel.add(this.vgaBiosBrowseButton);
-        
+
         // Row 3
         c.gridwidth = 1;
         gridbag.setConstraints(sysBiosStartLabel, c);
@@ -190,83 +185,76 @@ public class BiosConfigDialog extends ConfigurationDialog
         gridbag.setConstraints(this.vgaBiosStartFTextField, c);
         mainEntryPanel.add(this.vgaBiosStartFTextField);
     }
-    
+
     /**
      * Initalise the GUI Controls.
      */
-    private void populateControls()
-    {
+    private void populateControls() {
         this.imageFilePathLabel = new JLabel("");
-        this.imageFilePathVgaLabel  = new JLabel("");
-                   
+        this.imageFilePathVgaLabel = new JLabel("");
+
         this.sysBiosStartsFTextField = new JFormattedTextField();
         this.sysBiosStartsFTextField.setValue(new Integer(0));
         this.sysBiosStartsFTextField.setColumns(10);
-        
+
         this.vgaBiosStartFTextField = new JFormattedTextField();
         this.vgaBiosStartFTextField.setValue(new Integer(0));
-        this.vgaBiosStartFTextField.setColumns(10);  
-         
-        this.sysBiosBrowseButton = new JButton("Browse");       
-        this.sysBiosBrowseButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+        this.vgaBiosStartFTextField.setColumns(10);
+
+        this.sysBiosBrowseButton = new JButton("Browse");
+        this.sysBiosBrowseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 launchFileChooser();
             }
         });
-               
+
         this.vgaBiosBrowseButton = new JButton("Browse");
-        this.vgaBiosBrowseButton.addActionListener(new ActionListener()
-                {         
-                    public void actionPerformed(ActionEvent e)
-                    { 
-                        launchFileChooserVga();
-                    }
-                });
-        
-        
+        this.vgaBiosBrowseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                launchFileChooserVga();
+            }
+        });
+
     }
-    
+
     /**
      * Launch a file chooser to select VGA file.
-     *
+     * 
      */
-    private void launchFileChooserVga()
-    {
+    private void launchFileChooserVga() {
         JFileChooser fileChooser = new JFileChooser();
-        
+
         int returnVal = fileChooser.showOpenDialog(this);
 
-        if (returnVal == JFileChooser.APPROVE_OPTION) 
-        {
-            
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+
             selectedVgaFile = fileChooser.getSelectedFile();
-            
+
             String filePath = selectedVgaFile.getName();
 
             imageFilePathVgaLabel.setText("   " + filePath);
-                      
+
         } else {
-   
+
         }
     }
-      
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui()
-    {
-    	Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
-    	
-        bios.setSysbiosfilepath(selectedfile.getAbsoluteFile().toString());    
+    protected Emulator getParamsFromGui() {
+        Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
+
+        bios.setSysbiosfilepath(selectedfile.getAbsoluteFile().toString());
         bios.setVgabiosfilepath(selectedVgaFile.getAbsoluteFile().toString());
-        bios.setRamaddresssysbiosstartdec(BigInteger.valueOf((Integer)sysBiosStartsFTextField.getValue()));
-        bios.setRamaddressvgabiosstartdec(BigInteger.valueOf((Integer) vgaBiosStartFTextField.getValue()));  
-  
+        bios.setRamaddresssysbiosstartdec(BigInteger
+                .valueOf((Integer) sysBiosStartsFTextField.getValue()));
+        bios.setRamaddressvgabiosstartdec(BigInteger
+                .valueOf((Integer) vgaBiosStartFTextField.getValue()));
+
         return emuConfig;
     }
-        
+
 }

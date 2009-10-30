@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.motherboard;
 
 import java.util.logging.Level;
@@ -50,183 +49,165 @@ import dioscuri.module.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
-
 /**
  * This class is a dummy for a peripheral device.
- *  
+ * 
  * Contains all standard methods for a device.
  * 
- * Note: init this module only after all other devices, because this class claims all available I/O address space that is left
+ * Note: init this module only after all other devices, because this class
+ * claims all available I/O address space that is left
  * 
  * @see Module
  * 
  */
 @SuppressWarnings("unused")
-public class DeviceDummy extends ModuleDevice
-{
+public class DeviceDummy extends ModuleDevice {
     // Attributes
     private boolean isObserved;
     private boolean debugMode;
-    
+
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"motherboard"}; 
+    private String[] moduleConnections = new String[] { "motherboard" };
     private ModuleMotherboard motherboard;
-    
+
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.deviceDummy");
-    
+    private static Logger logger = Logger
+            .getLogger("dioscuri.module.deviceDummy");
+
     // Constants
 
     // Module specifics
-    public final static int MODULE_ID       = 5000;
-    public final static String MODULE_TYPE  = "dummy device";
-    public final static String MODULE_NAME  = "Dummy Device";
+    public final static int MODULE_ID = 5000;
+    public final static String MODULE_TYPE = "dummy device";
+    public final static String MODULE_NAME = "Dummy Device";
 
-    
     // Constructor
 
     /**
      * Class constructor
      * 
      */
-    public DeviceDummy(Emulator owner)
-    {
+    public DeviceDummy(Emulator owner) {
         emu = owner;
     }
 
-    
-    //******************************************************************************
+    // ******************************************************************************
     // Module Methods
-    
+
     /**
      * Returns the ID of the module
      * 
-     * @return string containing the ID of module 
+     * @return string containing the ID of module
      * @see Module
      */
-    public int getID()
-    {
+    public int getID() {
         return MODULE_ID;
     }
 
-    
     /**
      * Returns the type of the module
      * 
-     * @return string containing the type of module 
+     * @return string containing the type of module
      * @see Module
      */
-    public String getType()
-    {
+    public String getType() {
         return MODULE_TYPE;
     }
-
 
     /**
      * Returns the name of the module
      * 
-     * @return string containing the name of module 
+     * @return string containing the name of module
      * @see Module
      */
-    public String getName()
-    {
+    public String getName() {
         return MODULE_NAME;
     }
 
-    
     /**
      * Returns a String[] with all names of modules it needs to be connected to
      * 
-     * @return String[] containing the names of modules, or null if no connections
+     * @return String[] containing the names of modules, or null if no
+     *         connections
      */
-    public String[] getConnection()
-    {
+    public String[] getConnection() {
         // Return all required connections;
         return moduleConnections;
     }
 
-
     /**
      * Sets up a connection with another module
      * 
-     * @param mod   Module that is to be connected to this class
+     * @param mod
+     *            Module that is to be connected to this class
      * 
-     * @return true if connection has been established successfully, false otherwise
+     * @return true if connection has been established successfully, false
+     *         otherwise
      * 
      * @see Module
      */
-    public boolean setConnection(Module mod)
-    {
+    public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard"))
-        {
-            this.motherboard = (ModuleMotherboard)mod;
+        if (mod.getType().equalsIgnoreCase("motherboard")) {
+            this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
-        
+
         // No connection has been established
         return false;
     }
-
 
     /**
      * Checks if this module is connected to operate normally
      * 
      * @return true if this module is connected successfully, false otherwise
      */
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         // Check if module if connected
-        if (this.motherboard != null)
-        {
+        if (this.motherboard != null) {
             return true;
         }
-        
+
         // One or more connections may be missing
         return false;
     }
 
-
     /**
      * Reset all parameters of module
      * 
-     * @return boolean true if module has been reset successfully, false otherwise
+     * @return boolean true if module has been reset successfully, false
+     *         otherwise
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         // Register I/O ports in I/O address space
-        
+
         // Claim all other I/O space
-        for (int port = 0x0000; port < motherboard.ioSpaceSize; port++)
-        {
+        for (int port = 0x0000; port < motherboard.ioSpaceSize; port++) {
             motherboard.setIOPort(port, this);
         }
-        
+
         return true;
     }
 
-    
     /**
      * Starts the module
+     * 
      * @see Module
      */
-    public void start()
-    {
+    public void start() {
         // Nothing to start
     }
-    
 
     /**
      * Stops the module
+     * 
      * @see Module
      */
-    public void stop()
-    {
+    public void stop() {
         // Nothing to stop
     }
-    
-    
+
     /**
      * Returns the status of observed toggle
      * 
@@ -234,11 +215,9 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @see Module
      */
-    public boolean isObserved()
-    {
+    public boolean isObserved() {
         return isObserved;
     }
-
 
     /**
      * Sets the observed toggle
@@ -247,11 +226,9 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @see Module
      */
-    public void setObserved(boolean status)
-    {
+    public void setObserved(boolean status) {
         isObserved = status;
     }
-
 
     /**
      * Returns the status of the debug mode toggle
@@ -260,11 +237,9 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @see Module
      */
-    public boolean getDebugMode()
-    {
+    public boolean getDebugMode() {
         return debugMode;
     }
-
 
     /**
      * Sets the debug mode toggle
@@ -273,58 +248,54 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @see Module
      */
-    public void setDebugMode(boolean status)
-    {
+    public void setDebugMode(boolean status) {
         debugMode = status;
     }
 
-
     /**
      * Returns data from this module
-     *
-     * @param Module requester, the requester of the data
+     * 
+     * @param Module
+     *            requester, the requester of the data
      * @return byte[] with data
      * 
      * @see Module
      */
-    public byte[] getData(Module requester)
-    {
+    public byte[] getData(Module requester) {
         return null;
     }
-
 
     /**
      * Set data for this module
      * 
      * @param byte[] data
-     * @param Module sender, the sender of the data
+     * @param Module
+     *            sender, the sender of the data
      * 
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
      */
-    public boolean setData(byte[] data, Module sender)
-    {
+    public boolean setData(byte[] data, Module sender) {
         return false;
     }
-
 
     /**
      * Set String[] data for this module
      * 
-     * @param String[] data
-     * @param Module sender, the sender of the data
+     * @param String
+     *            [] data
+     * @param Module
+     *            sender, the sender of the data
      * 
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
      */
-    public boolean setData(String[] data, Module sender)
-    {
+    public boolean setData(String[] data, Module sender) {
         return false;
     }
 
-    
     /**
      * Returns a dump of this module
      * 
@@ -332,23 +303,20 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @see Module
      */
-    public String getDump()
-    {
+    public String getDump() {
         // TODO Auto-generated method stub
         return null;
     }
 
-
-    //******************************************************************************
+    // ******************************************************************************
     // ModuleDevice Methods
-    
+
     /**
      * Retrieve the interval between subsequent updates
      * 
      * @return int interval in microseconds
      */
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return -1;
     }
 
@@ -357,15 +325,15 @@ public class DeviceDummy extends ModuleDevice
      * 
      * @param int interval in microseconds
      */
-    public void setUpdateInterval(int interval) {}
-
+    public void setUpdateInterval(int interval) {
+    }
 
     /**
      * Update device
      * 
      */
-    public void update() {}
-    
+    public void update() {
+    }
 
     /**
      * Return a byte from I/O address space at given port
@@ -373,24 +341,30 @@ public class DeviceDummy extends ModuleDevice
      * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
-     * @throws ModuleException, ModuleWriteOnlyPortException
+     * @throws ModuleException
+     *             , ModuleWriteOnlyPortException
      */
-    public byte getIOPortByte(int portAddress) throws ModuleException
-    {
-        if (portAddress == 0x92)
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IN command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Returned A20 value: " + Boolean.toString(motherboard.getA20()));
+    public byte getIOPortByte(int portAddress) throws ModuleException {
+        if (portAddress == 0x92) {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    + " IN command (byte) to port "
+                    + Integer.toHexString(portAddress).toUpperCase()
+                    + " received");
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    + " Returned A20 value: "
+                    + Boolean.toString(motherboard.getA20()));
             return (byte) (motherboard.getA20() ? (1 << 1) : 0);
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IN command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Returned default value 0xFF to AL");
-        
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                + " IN command (byte) to port "
+                + Integer.toHexString(portAddress).toUpperCase() + " received");
+        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                + " Returned default value 0xFF to AL");
+
         // Return dummy value 0xFF
         return (byte) 0x0FF;
     }
-
 
     /**
      * Set a byte in I/O address space at given port
@@ -398,75 +372,95 @@ public class DeviceDummy extends ModuleDevice
      * @param int portAddress containing the address of the I/O port
      * @param byte data
      * 
-     * @throws ModuleException, ModuleWriteOnlyPortException
+     * @throws ModuleException
+     *             , ModuleWriteOnlyPortException
      */
-    public void setIOPortByte(int portAddress, byte data) throws ModuleException
-    {
-        if (portAddress == 0x92)
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Set A20 value: " + data);
+    public void setIOPortByte(int portAddress, byte data)
+            throws ModuleException {
+        if (portAddress == 0x92) {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    + " OUT command (byte) to port "
+                    + Integer.toHexString(portAddress).toUpperCase()
+                    + " received");
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Set A20 value: "
+                    + data);
             motherboard.setA20((data & 0x02) == 2 ? true : false);
             return;
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (byte) to port " + Integer.toHexString(portAddress).toUpperCase() + " received. No action taken.");
-        
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " OUT command (byte) to port "
+                + Integer.toHexString(portAddress).toUpperCase()
+                + " received. No action taken.");
+
         // Do nothing and just return okay
         return;
     }
 
-
-    public byte[] getIOPortWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
-    {
-        if (portAddress == 0x92)
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IN command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Returned A20 value");
-            return (motherboard.getA20() ? new byte[]{ 0x00, (byte) (1 << 1)} : new byte[]{ 0x00, 0x00});
+    public byte[] getIOPortWord(int portAddress) throws ModuleException,
+            ModuleWriteOnlyPortException {
+        if (portAddress == 0x92) {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    + " IN command (word) to port "
+                    + Integer.toHexString(portAddress).toUpperCase()
+                    + " received");
+            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    + " Returned A20 value");
+            return (motherboard.getA20() ? new byte[] { 0x00, (byte) (1 << 1) }
+                    : new byte[] { 0x00, 0x00 });
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " IN command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Returned default value 0xFFFF to AX");
-        
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " IN command (word) to port "
+                + Integer.toHexString(portAddress).toUpperCase() + " received");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " Returned default value 0xFFFF to AX");
+
         // Return dummy value 0xFFFF
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
-
-    public void setIOPortWord(int portAddress, byte[] dataWord) throws ModuleException
-    {
-        if (portAddress == 0x92)
-        {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " OUT command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
+    public void setIOPortWord(int portAddress, byte[] dataWord)
+            throws ModuleException {
+        if (portAddress == 0x92) {
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    + " OUT command (word) to port "
+                    + Integer.toHexString(portAddress).toUpperCase()
+                    + " received");
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Set A20 value");
             motherboard.setA20((dataWord[1] & 0x02) == 2 ? true : false);
             return;
         }
 
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received. No action taken.");
-        
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " OUT command (word) to port "
+                + Integer.toHexString(portAddress).toUpperCase()
+                + " received. No action taken.");
+
         // Do nothing and just return okay
         return;
     }
 
+    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
+            ModuleWriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " IN command (double word) to port "
+                + Integer.toHexString(portAddress).toUpperCase() + " received");
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " Returned default value 0xFFFFFFFF to eAX");
 
-    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException, ModuleWriteOnlyPortException
-    {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " IN command (double word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " Returned default value 0xFFFFFFFF to eAX");
-        
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF };
+        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
+                (byte) 0x0FF };
     }
 
+    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
+            throws ModuleException {
+        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                + " OUT command (double word) to port "
+                + Integer.toHexString(portAddress).toUpperCase()
+                + " received. No action taken.");
 
-    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) throws ModuleException
-    {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " OUT command (double word) to port " + Integer.toHexString(portAddress).toUpperCase() + " received. No action taken.");
-        
         // Do nothing and just return okay
         return;
     }
 
-
-    
 }

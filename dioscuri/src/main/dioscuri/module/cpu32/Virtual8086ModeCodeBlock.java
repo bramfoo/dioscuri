@@ -22,9 +22,8 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface Virtual8086ModeCodeBlock extends CodeBlock
-{
+public interface Virtual8086ModeCodeBlock extends CodeBlock {
 }

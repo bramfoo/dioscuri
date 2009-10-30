@@ -22,26 +22,25 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public interface HardwareComponent extends Hibernatable
-{
-public boolean initialised();
+public interface HardwareComponent extends Hibernatable {
+    public boolean initialised();
 
-public void acceptComponent(HardwareComponent component);
+    public void acceptComponent(HardwareComponent component);
 
-public boolean reset();
+    public boolean reset();
 
-public void dumpState(DataOutput output) throws IOException;
+    public void dumpState(DataOutput output) throws IOException;
 
-public void loadState(DataInput input) throws IOException;
+    public void loadState(DataInput input) throws IOException;
 
-public boolean updated();
+    public boolean updated();
 
-public void updateComponent(HardwareComponent component);
+    public void updateComponent(HardwareComponent component);
 
-public void timerCallback();
+    public void timerCallback();
 }

@@ -37,18 +37,18 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
  * Intel opcode 8D<BR>
- * Load effective address computed from second operand (source) to register (destination).<BR>
- * The addressbyte determines the source (rrr bits, memory address) and destination (sss bits).<BR>
+ * Load effective address computed from second operand (source) to register
+ * (destination).<BR>
+ * The addressbyte determines the source (rrr bits, memory address) and
+ * destination (sss bits).<BR>
  * NOTE: The direction (d) bit in the opcode does not seems to be honored here!<BR>
  * Flags modified: none
  */
-public class Instruction_LEA_GvM implements Instruction
-{
+public class Instruction_LEA_GvM implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,54 +56,54 @@ public class Instruction_LEA_GvM implements Instruction
     boolean operandWordSize = true;
 
     byte addressByte = 0;
-    
+
     byte[] memoryReferenceLocation = new byte[2];
     byte[] memoryReferenceDisplacement = new byte[2];
     byte[] destinationRegister = new byte[2];
-    
-    
+
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_LEA_GvM()
-    {
+    public Instruction_LEA_GvM() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_LEA_GvM(CPU processor)
-    {
+    public Instruction_LEA_GvM(CPU processor) {
         this();
 
         // Create reference to cpu class
         cpu = processor;
     }
 
-    
     // Methods
 
     /**
-     * Load effective address computed from second operand (source) to register (destination).<BR>
+     * Load effective address computed from second operand (source) to register
+     * (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // FIXME: take care of address-size and operand-size attributes
-        
+
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
-        // Determine IP displacement of memory location (if any) 
+        // Determine IP displacement of memory location (if any)
         memoryReferenceDisplacement = cpu.decodeMM(addressByte);
 
         // Determine memory location
-        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                memoryReferenceDisplacement);
 
-        // Determine destination resgister using addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
-        destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
+        // Determine destination resgister using addressbyte. AND it with 0011
+        // 1000 and right-shift 3 to get rrr bits
+        destinationRegister = (cpu.decodeRegister(operandWordSize,
+                (addressByte & 0x38) >> 3));
 
         destinationRegister[CPU.REGISTER_GENERAL_LOW] = memoryReferenceLocation[CPU.REGISTER_GENERAL_LOW];
         destinationRegister[CPU.REGISTER_GENERAL_HIGH] = memoryReferenceLocation[CPU.REGISTER_GENERAL_HIGH];

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -46,11 +45,12 @@ import java.util.logging.Logger;
 /**
  * Intel opcode FE<BR>
  * INC/DEC Group 4 opcode extension: INC, DEC.<BR>
- * Performs the selected instruction (indicated by bits 5, 4, 3 of the ModR/M byte) using immediate data.<BR>
- * Flags modified: depending on instruction can be any of: OF, SF, ZF, AF, PF, CF
+ * Performs the selected instruction (indicated by bits 5, 4, 3 of the ModR/M
+ * byte) using immediate data.<BR>
+ * Flags modified: depending on instruction can be any of: OF, SF, ZF, AF, PF,
+ * CF
  */
-public class Instruction_INCDEC_GRP4 implements Instruction
-{
+public class Instruction_INCDEC_GRP4 implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -66,19 +66,17 @@ public class Instruction_INCDEC_GRP4 implements Instruction
 
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
-    
-    
+
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_INCDEC_GRP4()
-    {
+    public Instruction_INCDEC_GRP4() {
         // Initialise variables
         operandWordSize = false;
         memoryReferenceLocation = new byte[2];
         memoryReferenceDisplacement = new byte[2];
-        
+
         addressByte = 0;
         sourceValue = new byte[2];
         oldSource = new byte[2];
@@ -87,10 +85,10 @@ public class Instruction_INCDEC_GRP4 implements Instruction
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_INCDEC_GRP4(CPU processor)
-    {
+    public Instruction_INCDEC_GRP4(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -102,120 +100,140 @@ public class Instruction_INCDEC_GRP4 implements Instruction
     /**
      * Execute any of the following Immediate Group 4 instructions: INC, DEC.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
-        
+
         // Re-initialise source to get rid of pointers
         sourceValue = new byte[2];
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
-        switch ((addressByte & 0x38) >> 3)
-        {
-            case 0: // INC Eb
-                if (((addressByte >> 6) & 0x03) == 3)
-                {
-                    // Address given in register (=pointer!)
-                    sourceValue = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
-                    
-                    // Determine high/low part of register based on bit 3 (leading sss bit)
-                    registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
-                }
-                else
-                {
-                    // Address given in memory (m16:16)
-                    // Determine IP displacement of memory location (if any) 
-                    memoryReferenceDisplacement = cpu.decodeMM(addressByte);
+        switch ((addressByte & 0x38) >> 3) {
+        case 0: // INC Eb
+            if (((addressByte >> 6) & 0x03) == 3) {
+                // Address given in register (=pointer!)
+                sourceValue = cpu.decodeRegister(operandWordSize,
+                        addressByte & 0x07);
 
-                    // Determine memory location
-                    memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+                // Determine high/low part of register based on bit 3 (leading
+                // sss bit)
+                registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW
+                        : (byte) CPU.REGISTER_GENERAL_HIGH;
+            } else {
+                // Address given in memory (m16:16)
+                // Determine IP displacement of memory location (if any)
+                memoryReferenceDisplacement = cpu.decodeMM(addressByte);
 
-                    // Get value from memory
-                    registerHighLow = CPU.REGISTER_GENERAL_LOW;
-                    sourceValue = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-                }
-                
-                // Store old value
-                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
-                
-                // Increment the source (= destination) register
-                sourceValue[registerHighLow]++;
-                        
-                // No need to check for overflow, as INC is only on source[low]
-                
-                // Return result to memory if necessary
-                // Note: if register, then value automatically updated as array is reference!
-                if (((addressByte >> 6) & 0x03) != 3)
-                {
-                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, sourceValue[registerHighLow]);
-                }
-                
-                // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldSource[registerHighLow], sourceValue[registerHighLow]);  
-                // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldSource[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
-                // Test ZF
-                cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true : false;
-                // Test SF (set when MSB of AH is 1. In Java can check signed byte)
-                cpu.flags[CPU.REGISTER_FLAGS_SF] = sourceValue[registerHighLow] < 0 ? true : false;
-                // Set PF, only applies to LSB
-                cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(sourceValue[registerHighLow]);
-                break;
-                
-            case 1: // DEC Eb
-                if (((addressByte >> 6) & 0x03) == 3)
-                {
-                    // Address given in register
-                    sourceValue = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
-                    
-                    // Determine high/low part of register based on bit 3 (leading sss bit)
-                    registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
-                }
-                else
-                {
-                    // Address given in memory (m16:16)
-                    // Determine IP displacement of memory location (if any) 
-                    memoryReferenceDisplacement = cpu.decodeMM(addressByte);
+                // Determine memory location
+                memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                        memoryReferenceDisplacement);
 
-                    // Determine memory location
-                    memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+                // Get value from memory
+                registerHighLow = CPU.REGISTER_GENERAL_LOW;
+                sourceValue = cpu.getWordFromMemorySegment(addressByte,
+                        memoryReferenceLocation);
+            }
 
-                    // Get value from memory
-                    registerHighLow = CPU.REGISTER_GENERAL_LOW;
-                    sourceValue = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-                }
-                
-                // Store old value
-                System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
-                
-                // Decrement the source (= destination) register
-                sourceValue[registerHighLow]--;
-                        
-                // No need to check for overflow, as DEC is only on source[low]
-                
-                // Return result to memory if necessary
-                // Note: if register, then value automatically updated as array is reference!
-                if (((addressByte >> 6) & 0x03) != 3)
-                {
-                    cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, sourceValue[registerHighLow]);
-                }
-                
-                // Test AF
-                cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldSource[registerHighLow], sourceValue[registerHighLow]);  
-                // Test OF
-                cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldSource[registerHighLow], (byte) 0x01, sourceValue[registerHighLow], 0);  
-                // Test ZF
-                cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true : false;
-                // Test SF (set when MSB of AH is 1. In Java can check signed byte)
-                cpu.flags[CPU.REGISTER_FLAGS_SF] = sourceValue[registerHighLow] < 0 ? true : false;
-                // Set PF, only applies to LSB
-                cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(sourceValue[registerHighLow]);
-                break;
+            // Store old value
+            System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
 
-            default:
-                logger.log(Level.SEVERE, cpu.getType() + " -> Instruction INCDEC_GRP4 (0xFE): no group instruction match.");
-                break;
+            // Increment the source (= destination) register
+            sourceValue[registerHighLow]++;
+
+            // No need to check for overflow, as INC is only on source[low]
+
+            // Return result to memory if necessary
+            // Note: if register, then value automatically updated as array is
+            // reference!
+            if (((addressByte >> 6) & 0x03) != 3) {
+                cpu.setByteInMemorySegment(addressByte,
+                        memoryReferenceLocation, sourceValue[registerHighLow]);
+            }
+
+            // Test AF
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(
+                    oldSource[registerHighLow], sourceValue[registerHighLow]);
+            // Test OF
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(
+                    oldSource[registerHighLow], (byte) 0x01,
+                    sourceValue[registerHighLow], 0);
+            // Test ZF
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true
+                    : false;
+            // Test SF (set when MSB of AH is 1. In Java can check signed byte)
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = sourceValue[registerHighLow] < 0 ? true
+                    : false;
+            // Set PF, only applies to LSB
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(sourceValue[registerHighLow]);
+            break;
+
+        case 1: // DEC Eb
+            if (((addressByte >> 6) & 0x03) == 3) {
+                // Address given in register
+                sourceValue = cpu.decodeRegister(operandWordSize,
+                        addressByte & 0x07);
+
+                // Determine high/low part of register based on bit 3 (leading
+                // sss bit)
+                registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW
+                        : (byte) CPU.REGISTER_GENERAL_HIGH;
+            } else {
+                // Address given in memory (m16:16)
+                // Determine IP displacement of memory location (if any)
+                memoryReferenceDisplacement = cpu.decodeMM(addressByte);
+
+                // Determine memory location
+                memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                        memoryReferenceDisplacement);
+
+                // Get value from memory
+                registerHighLow = CPU.REGISTER_GENERAL_LOW;
+                sourceValue = cpu.getWordFromMemorySegment(addressByte,
+                        memoryReferenceLocation);
+            }
+
+            // Store old value
+            System.arraycopy(sourceValue, 0, oldSource, 0, sourceValue.length);
+
+            // Decrement the source (= destination) register
+            sourceValue[registerHighLow]--;
+
+            // No need to check for overflow, as DEC is only on source[low]
+
+            // Return result to memory if necessary
+            // Note: if register, then value automatically updated as array is
+            // reference!
+            if (((addressByte >> 6) & 0x03) != 3) {
+                cpu.setByteInMemorySegment(addressByte,
+                        memoryReferenceLocation, sourceValue[registerHighLow]);
+            }
+
+            // Test AF
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(
+                    oldSource[registerHighLow], sourceValue[registerHighLow]);
+            // Test OF
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(
+                    oldSource[registerHighLow], (byte) 0x01,
+                    sourceValue[registerHighLow], 0);
+            // Test ZF
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = sourceValue[registerHighLow] == 0x00 ? true
+                    : false;
+            // Test SF (set when MSB of AH is 1. In Java can check signed byte)
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = sourceValue[registerHighLow] < 0 ? true
+                    : false;
+            // Set PF, only applies to LSB
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(sourceValue[registerHighLow]);
+            break;
+
+        default:
+            logger
+                    .log(
+                            Level.SEVERE,
+                            cpu.getType()
+                                    + " -> Instruction INCDEC_GRP4 (0xFE): no group instruction match.");
+            break;
         }
     }
 }

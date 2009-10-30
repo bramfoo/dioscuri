@@ -22,10 +22,9 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface DMATransferCapable
-{
+public interface DMATransferCapable {
     public int transferHandler(int nchan, int pos, int size);
 }

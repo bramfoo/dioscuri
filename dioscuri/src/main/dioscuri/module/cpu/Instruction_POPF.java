@@ -37,68 +37,66 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 9D<BR>
-	 * Pop word from stack into FLAGS register.<BR>
-	 * Flags modified: NT, IOPL, OF, DF, IF, TF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode 9D<BR>
+ * Pop word from stack into FLAGS register.<BR>
+ * Flags modified: NT, IOPL, OF, DF, IF, TF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_POPF implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	int flagValue;
-	int[] flagsHex = new int[2];
+    // Attributes
+    private CPU cpu;
+    int flagValue;
+    int[] flagsHex = new int[2];
     boolean[] temp = new boolean[16];
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_POPF()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_POPF(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_POPF() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Pop word from stack into FLAGS register.
-	 */
-	public void execute()
-	{
-		// Pop word from stack and convert bytes to booleans
-		temp = Util.bytesToBooleans(cpu.getWordFromStack());
-        
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_POPF(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Pop word from stack into FLAGS register.
+     */
+    public void execute() {
+        // Pop word from stack and convert bytes to booleans
+        temp = Util.bytesToBooleans(cpu.getWordFromStack());
+
         // Store booleans in flags register
-		System.arraycopy(temp, 0, cpu.flags, 0, temp.length);
-        
-        // But static bits of the flags register (bit 1, bit 3, bit 5, bit 15) remain constant!
+        System.arraycopy(temp, 0, cpu.flags, 0, temp.length);
+
+        // But static bits of the flags register (bit 1, bit 3, bit 5, bit 15)
+        // remain constant!
         cpu.flags[1] = true;
         cpu.flags[3] = false;
         cpu.flags[5] = false;
         cpu.flags[15] = false;
-        
+
         // Pop EFLAGS, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-            // We don't support 32-bits flags, so just pop word into a big, empty void...
+        if (cpu.doubleWord) {
+            // We don't support 32-bits flags, so just pop word into a big,
+            // empty void...
             cpu.getWordFromStack();
         }
-	}
+    }
 }

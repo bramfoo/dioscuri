@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import dioscuri.exception.CPUInstructionException;
@@ -46,10 +45,10 @@ import dioscuri.exception.CPUInstructionException;
  * Intel opcode F2<BR>
  * Repeat execution of string instruction until CX == 0 or ZF is set.<BR>
  * Target string instruction is next instruction.<BR>
- * Flags modified: none; however, the CMPS and SCAS instructions do set status flags
+ * Flags modified: none; however, the CMPS and SCAS instructions do set status
+ * flags
  */
-public class Instruction_REPNE implements Instruction
-{
+public class Instruction_REPNE implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -60,23 +59,22 @@ public class Instruction_REPNE implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_REPNE()
-    {
+    public Instruction_REPNE() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_REPNE(CPU processor)
-    {
+    public Instruction_REPNE(CPU processor) {
         this();
 
         // Create reference to cpu class
         cpu = processor;
-        
-        word0x01 = new byte[]{0x00, 0x01};
+
+        word0x01 = new byte[] { 0x00, 0x01 };
     }
 
     // Methods
@@ -84,10 +82,9 @@ public class Instruction_REPNE implements Instruction
     /**
      * Repeat string instruction until CX == 0 or ZF == 1
      */
-    public void execute() throws CPUInstructionException
-    {
-    	cpu.prefixRep = true;
-    	// Set type of prefix
-    	cpu.prefixRepType = 0xF2;
-    }        
+    public void execute() throws CPUInstructionException {
+        cpu.prefixRep = true;
+        // Set type of prefix
+        cpu.prefixRepType = 0xF2;
+    }
 }

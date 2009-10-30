@@ -37,14 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import dioscuri.exception.CPUInstructionException;
 
 public interface Instruction {
 
-	// Methods
-	public void execute() throws CPUInstructionException;
-	
+    // Methods
+    public void execute() throws CPUInstructionException;
+
 }

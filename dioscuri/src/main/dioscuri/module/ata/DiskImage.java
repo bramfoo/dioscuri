@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -52,31 +51,29 @@ import java.io.RandomAccessFile;
 /**
  * A class holding a IDE disk image.
  */
-public class DiskImage
-{
+public class DiskImage {
     // Attributes
-        
+
     protected File imageFile;
-    
+
     /**
      * Class constructor without disk image file.
-     *
+     * 
      */
-    public DiskImage()
-    {
+    public DiskImage() {
     }
-    
+
     /**
      * Class constructor with disk image file.
      * 
-     * @param the disk image file
+     * @param the
+     *            disk image file
      * @throws IOException
      */
-    public DiskImage(File theImageFile) throws IOException
-    {
+    public DiskImage(File theImageFile) throws IOException {
 
         this.imageFile = theImageFile;
-        
+
     }
 
     /**
@@ -88,24 +85,22 @@ public class DiskImage
      * @return the data
      * @throws IOException
      */
-    public byte[] readFromImage(byte[] theData, int theOffset, int theLength) throws IOException
-    {             
-        
-       RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile, "r" );  
-        
-       if(theOffset > 0)
-       {           
-           randomAccessFile.seek(theOffset);  
-       }
-              
-       randomAccessFile.read(theData, 0, theLength);
-                    
-       randomAccessFile.close();
-        
-                      
+    public byte[] readFromImage(byte[] theData, int theOffset, int theLength)
+            throws IOException {
+
+        RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile, "r");
+
+        if (theOffset > 0) {
+            randomAccessFile.seek(theOffset);
+        }
+
+        randomAccessFile.read(theData, 0, theLength);
+
+        randomAccessFile.close();
+
         return theData;
     }
-    
+
     /**
      * Write to image.
      * 
@@ -114,35 +109,32 @@ public class DiskImage
      * @param theLength
      * @throws IOException
      */
-    public void writeToImage(byte[] theData, int theOffset, int theLength) throws IOException
-    {        
-        
-        RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile, "rw" ); 
-        
-        if(theOffset > 0)
-        {
-            randomAccessFile.seek(theOffset);            
-        } 
-           
+    public void writeToImage(byte[] theData, int theOffset, int theLength)
+            throws IOException {
+
+        RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile,
+                "rw");
+
+        if (theOffset > 0) {
+            randomAccessFile.seek(theOffset);
+        }
+
         randomAccessFile.write(theData, 0, theLength);
-                    
+
         randomAccessFile.close();
 
-        
         return;
     }
-           
+
     /**
      * Gets the size of the disk image in bytes.
      * 
-     * @returns  the size of the disk image in bytes
+     * @returns the size of the disk image in bytes
      */
-    protected long getSize()
-    {
-        
+    protected long getSize() {
+
         Long imageSize = imageFile.length();
         return imageSize;
     }
 
-    
 }

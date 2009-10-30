@@ -37,54 +37,50 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode BA<BR>
-	 * Copy immediate word to register DX.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode BA<BR>
+ * Copy immediate word to register DX.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_DX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_Imm_DX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_DX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate word to register DX
-	 */
-	public void execute()
-	{
-            cpu.dx = cpu.getWordFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_Imm_DX() {
+    }
 
-            if (cpu.doubleWord)
-            {
-                // 32 bit instruction, so move one extra word into eDX
-                cpu.edx = cpu.getWordFromCode();
-            }
-	}
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_DX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate word to register DX
+     */
+    public void execute() {
+        cpu.dx = cpu.getWordFromCode();
+
+        if (cpu.doubleWord) {
+            // 32 bit instruction, so move one extra word into eDX
+            cpu.edx = cpu.getWordFromCode();
+        }
+    }
 }

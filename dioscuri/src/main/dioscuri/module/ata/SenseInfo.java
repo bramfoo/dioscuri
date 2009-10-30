@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,96 +46,81 @@ package dioscuri.module.ata;
 
 /**
  * Class to represent Sense Info.
- *
+ * 
  */
-public class SenseInfo
-{
-        
+public class SenseInfo {
+
     /**
      * Constructor.
      */
     public SenseInfo() {
-        //TODO: init values
+        // TODO: init values
     }
-    
+
     private SenseType senseKey;
     private AscType ascType;
-    
+
     private byte fruc;
     private byte ascq;
-    
+
     private byte[] information = new byte[4];
-    private byte[] specificInf = new byte[4];     
-    private byte[] keySpec = new byte[3];   
-  
-    public byte getFruc()
-    {
+    private byte[] specificInf = new byte[4];
+    private byte[] keySpec = new byte[3];
+
+    public byte getFruc() {
         return fruc;
     }
-    
-    public void setFruc(byte fruc)
-    {
+
+    public void setFruc(byte fruc) {
         this.fruc = fruc;
     }
-    
-    public AscType getAsc()
-    {
+
+    public AscType getAsc() {
         return this.ascType;
     }
-    
-    public void setAsc(AscType ascType)
-    {
+
+    public void setAsc(AscType ascType) {
         this.ascType = ascType;
     }
-    
-    public byte getAscq()
-    {
+
+    public byte getAscq() {
         return this.ascq;
     }
-    
-    public void setAscq(byte ascq)
-    {
+
+    public void setAscq(byte ascq) {
         this.ascq = ascq;
     }
 
-    public byte[] getInformation()
-    {
+    public byte[] getInformation() {
         return information;
     }
 
-    public void setInformation(int index, byte information)
-    {
+    public void setInformation(int index, byte information) {
         this.information[index] = information;
     }
 
-    public byte[] getSpecificInf()
-    {
+    public byte[] getSpecificInf() {
         return specificInf;
     }
 
-    public void setSpecificInf(int index, byte specificInf)
-    {
+    public void setSpecificInf(int index, byte specificInf) {
         this.specificInf[index] = specificInf;
     }
 
-    public byte[] getKeySpec()
-    {
+    public byte[] getKeySpec() {
         return keySpec;
     }
 
-    public void setKeySpec(int index, byte keySpec)
-    {
+    public void setKeySpec(int index, byte keySpec) {
         this.keySpec[index] = keySpec;
     }
 
-    public SenseType getSenseKey()
-    {
+    public SenseType getSenseKey() {
         return senseKey;
     }
 
-    public void setSenseKey(SenseType senseKey)
-    {
+    public void setSenseKey(SenseType senseKey) {
         this.senseKey = senseKey;
     }
-     
+
 }

@@ -37,87 +37,87 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-     * Intel opcode 27<BR>
-     * DAA - Decimal adjust AL after addition.<BR>
-     * This instruction adjusts the sum of two packed BCD values to create a packed BCD result. The AL register is the implied source and destination operand.
-     * Flags modified: AF, CF, SF, ZF and PF.
-	 */
+/**
+ * Intel opcode 27<BR>
+ * DAA - Decimal adjust AL after addition.<BR>
+ * This instruction adjusts the sum of two packed BCD values to create a packed
+ * BCD result. The AL register is the implied source and destination operand.
+ * Flags modified: AF, CF, SF, ZF and PF.
+ */
 public class Instruction_DAA implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     private byte oldByte;
 
-    
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_DAA()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_DAA(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-        
-        oldByte = 0;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_DAA() {
+    }
 
-	
-	// Methods
-	
-	/**
-     * This instruction adjusts the sum of two packed BCD values to create a packed BCD result. The AL register is the implied source and destination operand.
-	 */
-	public void execute()
-	{
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_DAA(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
+        oldByte = 0;
+    }
+
+    // Methods
+
+    /**
+     * This instruction adjusts the sum of two packed BCD values to create a
+     * packed BCD result. The AL register is the implied source and destination
+     * operand.
+     */
+    public void execute() {
         // Check if AL > 0x09 or AF = 1, adjust AL and set flags
-        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9) || cpu.flags[CPU.REGISTER_FLAGS_AF] == true)
-        {
+        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9)
+                || cpu.flags[CPU.REGISTER_FLAGS_AF] == true) {
             // Adjust AL
             oldByte = cpu.ax[CPU.REGISTER_GENERAL_LOW];
             cpu.ax[CPU.REGISTER_GENERAL_LOW] += 6;
-            
+
             // Set flags AF and CF
-            cpu.flags[CPU.REGISTER_FLAGS_CF] = (cpu.flags[CPU.REGISTER_FLAGS_CF] | Util.test_CF_ADD(oldByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], 0));
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = (cpu.flags[CPU.REGISTER_FLAGS_CF] | Util
+                    .test_CF_ADD(oldByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], 0));
             cpu.flags[CPU.REGISTER_FLAGS_AF] = true;
-        }
-        else
-        {
+        } else {
             // Clear flag AF
             cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
         }
-        
+
         // Check if AL > 0x90 or CF = 1
-        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0xF0) > 0x90) || cpu.flags[CPU.REGISTER_FLAGS_CF] == true)
-        {
+        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0xF0) > 0x90)
+                || cpu.flags[CPU.REGISTER_FLAGS_CF] == true) {
             // Adjust AL
             cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] + 0x60);
-            
+
             // Set flag CF
             cpu.flags[CPU.REGISTER_FLAGS_CF] = true;
-        }
-        else
-        {
+        } else {
             // Clear flag CF
             cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
         }
-        
+
         // Test ZF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
         // Test SF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
         // Set PF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-	}
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    }
 }

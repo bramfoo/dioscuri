@@ -22,41 +22,39 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
-public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements RealModeCodeBlock
-{
+public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
+        RealModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
-    public SpanningRealModeCodeBlock(CodeBlockFactory[] factories)
-    {
-    this.factories = factories;
+    public SpanningRealModeCodeBlock(CodeBlockFactory[] factories) {
+        this.factories = factories;
     }
 
-    protected CodeBlock decode(Processor cpu)
-    {
-    RealModeCodeBlock block = null;
-    AddressSpace memory = cpu.physicalMemory;
-    int address = cpu.getInstructionPointer();
+    protected CodeBlock decode(Processor cpu) {
+        RealModeCodeBlock block = null;
+        AddressSpace memory = cpu.physicalMemory;
+        int address = cpu.getInstructionPointer();
 
-    for (int i = 0; (i < factories.length) && (block == null); i++) {
-        try {
-        byteSource.set(memory, address);
-        block = factories[i].getRealModeCodeBlock(byteSource);
-        } catch (IllegalStateException e) {}
+        for (int i = 0; (i < factories.length) && (block == null); i++) {
+            try {
+                byteSource.set(memory, address);
+                block = factories[i].getRealModeCodeBlock(byteSource);
+            } catch (IllegalStateException e) {
+            }
+        }
+
+        return block;
     }
 
-    return block;
-    }
-
-    public String getDisplayString()
-    {
-    return "Spanning Real Mode CodeBlock";
+    public String getDisplayString() {
+        return "Spanning Real Mode CodeBlock";
     }
 }

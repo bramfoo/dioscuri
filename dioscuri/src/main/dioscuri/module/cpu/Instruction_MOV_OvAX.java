@@ -37,71 +37,72 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode A3<BR>
-	 * Copy word from register AX to DS:DISPL (DISPL given by word following opcode).<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode A3<BR>
+ * Copy word from register AX to DS:DISPL (DISPL given by word following
+ * opcode).<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_OvAX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	private byte[] displ = new byte[2];
-	private byte[] tempWord = new byte[2];
-    private byte[] word0x02 = new byte[] {0x00, 0x02};
+    // Attributes
+    private CPU cpu;
+    private byte[] displ = new byte[2];
+    private byte[] tempWord = new byte[2];
+    private byte[] word0x02 = new byte[] { 0x00, 0x02 };
     private byte dataSegmentAddressByte = 0;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_OvAX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_OvAX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Copy word from register AX to DS:DISPL (DISPL given by word following opcode)
-	 */
-	public void execute()
-	{
-		// Get displacement within segment
-		displ = cpu.getWordFromCode();		
-		
-		// Get word at AX and assign to memory segment
-        // This memory segment defaults to DS:DISPL unless there is a segment override
-        // Because setWordInMemorySegment expects an address byte to determine the segment,
-        // a default of 0 is used here to end up in the Data Segment (unless of course there is an override,
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_OvAX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_OvAX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy word from register AX to DS:DISPL (DISPL given by word following
+     * opcode)
+     */
+    public void execute() {
+        // Get displacement within segment
+        displ = cpu.getWordFromCode();
+
+        // Get word at AX and assign to memory segment
+        // This memory segment defaults to DS:DISPL unless there is a segment
+        // override
+        // Because setWordInMemorySegment expects an address byte to determine
+        // the segment,
+        // a default of 0 is used here to end up in the Data Segment (unless of
+        // course there is an override,
         // but that is handled in setWord[..])
-		cpu.setWordInMemorySegment(dataSegmentAddressByte, displ, cpu.ax);
+        cpu.setWordInMemorySegment(dataSegmentAddressByte, displ, cpu.ax);
 
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Increment displacement
             tempWord = Util.addWords(displ, word0x02, 0);
             System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
-            
+
             // Store upper 16 bits of eAX in memory
             cpu.setWordInMemorySegment(dataSegmentAddressByte, displ, cpu.eax);
         }
 
-        
-	}
+    }
 }

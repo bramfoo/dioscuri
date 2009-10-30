@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class CommandException extends Exception
-{
+public class CommandException extends Exception {
 
-	public CommandException(String message)
-	{
-		super(message);
-	}
+    public CommandException(String message) {
+        super(message);
+    }
 
 }

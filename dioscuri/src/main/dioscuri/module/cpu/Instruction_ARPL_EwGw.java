@@ -37,56 +37,58 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 63<BR>
-	 * Adjust RPL Field of Segment Selector.<BR>
-	 * This instruction can be used by operating systems to check the privilege level of an application in protected mode.<BR>
-	 * Flags modified: ZF
-	 */
+/**
+ * Intel opcode 63<BR>
+ * Adjust RPL Field of Segment Selector.<BR>
+ * This instruction can be used by operating systems to check the privilege
+ * level of an application in protected mode.<BR>
+ * Flags modified: ZF
+ */
 public class Instruction_ARPL_EwGw implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
-	byte addressByte;
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_ARPL_EwGw()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_ARPL_EwGw(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
+    byte addressByte;
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_ARPL_EwGw() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_ARPL_EwGw(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
 
         addressByte = 0;
-	}
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Adjust RPL Field of Segment Selector.
-	 */
-	public void execute()
-	{
-		// FIXME: this instruction is not implemented. Just a dummy!
-		System.out.println("[" + cpu.getType() + "] Instruction ARPL_EwGw not implemented! Should only be used in protected mode!");
+    // Methods
+
+    /**
+     * Adjust RPL Field of Segment Selector.
+     */
+    public void execute() {
+        // FIXME: this instruction is not implemented. Just a dummy!
+        System.out
+                .println("["
+                        + cpu.getType()
+                        + "] Instruction ARPL_EwGw not implemented! Should only be used in protected mode!");
 
         // Get addresByte (eat it to keep cpu in line if instructions)
         addressByte = cpu.getByteFromCode();
-	}
+    }
 }

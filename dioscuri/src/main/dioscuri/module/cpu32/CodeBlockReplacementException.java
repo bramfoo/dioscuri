@@ -22,24 +22,21 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.Processor;
 
 @SuppressWarnings("serial")
-public class CodeBlockReplacementException extends RuntimeException
-{
+public class CodeBlockReplacementException extends RuntimeException {
     private CodeBlock replacement;
 
-    public CodeBlockReplacementException(CodeBlock replacement)
-    {
+    public CodeBlockReplacementException(CodeBlock replacement) {
         super("CodeBlock replacement trigger exception");
         this.replacement = replacement;
     }
 
-    public CodeBlock getReplacement()
-    {
+    public CodeBlock getReplacement() {
         return replacement;
     }
 }

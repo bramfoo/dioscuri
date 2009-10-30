@@ -37,43 +37,35 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.mouse;
 
 import java.util.ArrayList;
 
 /**
- * Mouse buffer
- * Virtual buffer - located in the mouse hardware 
- * Contains data intended for controller
- *
+ * Mouse buffer Virtual buffer - located in the mouse hardware Contains data
+ * intended for controller
+ * 
  */
 @SuppressWarnings("serial")
-public class MouseBuffer extends ArrayList<Byte>
-{
-      protected final static int NUM_ELEMENTS = 16;
-    
-      byte   keyPressDelay;                     // Delay between keypresses
-      byte   keyRepeatRate;                     // Key repeat rate
-      byte   scanningEnabled;                   // Keyboard enabled
+public class MouseBuffer extends ArrayList<Byte> {
+    protected final static int NUM_ELEMENTS = 16;
 
-      
-  	public MouseBuffer(int capacity)
-	{
-		super(capacity);
-	}
-  	
-	// Methods
-	protected void setByte(byte data)
-	{
-		super.add(Byte.valueOf(data));
-	}
+    byte keyPressDelay; // Delay between keypresses
+    byte keyRepeatRate; // Key repeat rate
+    byte scanningEnabled; // Keyboard enabled
 
+    public MouseBuffer(int capacity) {
+        super(capacity);
+    }
 
-	protected byte getByte()
-	{
-		byte data = ((Byte)super.get(0)).byteValue();
-		super.remove(0);
-		return data;
-	}
+    // Methods
+    protected void setByte(byte data) {
+        super.add(Byte.valueOf(data));
+    }
+
+    protected byte getByte() {
+        byte data = ((Byte) super.get(0)).byteValue();
+        super.remove(0);
+        return data;
+    }
 }

@@ -22,42 +22,42 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
-public class RealModeRPNNode extends RPNNode
-{
-    public RealModeRPNNode(int id, MicrocodeNode parent)
-    {
-    super(id, parent);
+public class RealModeRPNNode extends RPNNode {
+    public RealModeRPNNode(int id, MicrocodeNode parent) {
+        super(id, parent);
     }
 
-    protected Object[] getByteCodes()
-    {
+    protected Object[] getByteCodes() {
         if (getMicrocode() == -1)
             return RealModeBytecodeFragments.pushCode(getID());
-        
+
         if (hasImmediate())
-            return RealModeBytecodeFragments.getOperation(getID(), getMicrocode(), getX86Position(), getImmediate());
+            return RealModeBytecodeFragments.getOperation(getID(),
+                    getMicrocode(), getX86Position(), getImmediate());
         else
-            return RealModeBytecodeFragments.getOperation(getID(), getMicrocode(), getX86Position());
+            return RealModeBytecodeFragments.getOperation(getID(),
+                    getMicrocode(), getX86Position());
     }
 
-    public boolean hasExternalEffect()
-    {
-    if (getMicrocode() == -1)
-        return false;
+    public boolean hasExternalEffect() {
+        if (getMicrocode() == -1)
+            return false;
 
-    return RealModeBytecodeFragments.hasExternalEffect(getID(), getMicrocode());
+        return RealModeBytecodeFragments.hasExternalEffect(getID(),
+                getMicrocode());
     }
 
-    public boolean canThrowException()
-    {
-    if (getMicrocode() == -1)
-        return false;
+    public boolean canThrowException() {
+        if (getMicrocode() == -1)
+            return false;
 
-    return RealModeBytecodeFragments.hasExplicitThrow(getID(), getMicrocode()) || hasExternalEffect();
+        return RealModeBytecodeFragments.hasExplicitThrow(getID(),
+                getMicrocode())
+                || hasExternalEffect();
     }
 }

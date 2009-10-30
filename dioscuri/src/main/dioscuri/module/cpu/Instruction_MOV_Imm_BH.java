@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,8 +44,7 @@ package dioscuri.module.cpu;
  * Copy immediate byte to register BH.<BR>
  * Flags modified: none
  */
-public class Instruction_MOV_Imm_BH implements Instruction
-{
+public class Instruction_MOV_Imm_BH implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -55,17 +53,16 @@ public class Instruction_MOV_Imm_BH implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_BH()
-    {
+    public Instruction_MOV_Imm_BH() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_MOV_Imm_BH(CPU processor)
-    {
+    public Instruction_MOV_Imm_BH(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +74,7 @@ public class Instruction_MOV_Imm_BH implements Instruction
     /**
      * Copy immediate byte to register BH
      */
-    public void execute()
-    {
+    public void execute() {
         // Put next byte into BH
         cpu.bx[CPU.REGISTER_GENERAL_HIGH] = cpu.getByteFromCode();
     }

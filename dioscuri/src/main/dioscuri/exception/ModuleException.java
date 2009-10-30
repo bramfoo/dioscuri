@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class ModuleException extends Exception
-{
+public class ModuleException extends Exception {
 
-	public ModuleException(String message)
-	{
-		super(message);
-	}
-    
+    public ModuleException(String message) {
+        super(message);
+    }
+
 }

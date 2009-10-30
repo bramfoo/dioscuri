@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,14 +44,12 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
 
-
 /**
  * Intel opcode ED<BR>
  * Put word/doubleword from I/O port address specified by DX into eAX.<BR>
  * Flags modified: none
  */
-public class Instruction_IN_eAXDX implements Instruction
-{
+public class Instruction_IN_eAXDX implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -63,22 +60,20 @@ public class Instruction_IN_eAXDX implements Instruction
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_IN_eAXDX()
-    {
+    public Instruction_IN_eAXDX() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_IN_eAXDX(CPU processor)
-    {
+    public Instruction_IN_eAXDX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -90,18 +85,16 @@ public class Instruction_IN_eAXDX implements Instruction
     /**
      * Input word/doubleword from I/O port address specified by DX into eAX
      */
-    public void execute()
-    {
+    public void execute() {
 
-        // Convert value in DX to unsigned integer to prevent lookup table out of bounds;
+        // Convert value in DX to unsigned integer to prevent lookup table out
+        // of bounds;
         // get data to appropriate port
-        portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH])& 0xFF)<<8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
+        portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
 
-        try
-        {
+        try {
             // Check if word or double word should be read
-            if (cpu.doubleWord)
-            {
+            if (cpu.doubleWord) {
                 // A double word should be read from I/O space
                 byte[] doubleWord = cpu.getIOPortDoubleWord(portAddress);
 
@@ -110,8 +103,7 @@ public class Instruction_IN_eAXDX implements Instruction
                 cpu.ax[CPU.REGISTER_GENERAL_HIGH] = doubleWord[2];
                 cpu.eax[CPU.REGISTER_GENERAL_LOW] = doubleWord[1];
                 cpu.eax[CPU.REGISTER_GENERAL_HIGH] = doubleWord[0];
-            }
-            else // Word
+            } else // Word
             {
                 // A word should be read from I/O space
                 byte[] word = cpu.getIOPortWord(portAddress);
@@ -120,10 +112,9 @@ public class Instruction_IN_eAXDX implements Instruction
                 cpu.ax[CPU.REGISTER_GENERAL_LOW] = word[1];
                 cpu.ax[CPU.REGISTER_GENERAL_HIGH] = word[0];
             }
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
     }
 }

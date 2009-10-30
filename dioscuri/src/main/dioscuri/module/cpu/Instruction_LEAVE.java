@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,78 +44,67 @@ package dioscuri.module.cpu;
  * LEAVE - High Level Procudure Exit.<BR>
  * Flags modified: none
  */
-public class Instruction_LEAVE implements Instruction
-{
+public class Instruction_LEAVE implements Instruction {
 
     // Attributes
     private CPU cpu;
-    
+
     byte[] destWord;
     byte[] destDoubleWord;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_LEAVE()
-    {
+    public Instruction_LEAVE() {
         destWord = new byte[2];
         destDoubleWord = new byte[2];
     }
-    
+
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_LEAVE(CPU processor)
-    {
+    public Instruction_LEAVE(CPU processor) {
         this();
-        
+
         // Create reference to cpu class
         cpu = processor;
     }
 
-    
     // Methods
 
     /**
      * LEAVE - High Level Procudure Exit.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         System.out.println("CPU -> instruction LEAVE");
 
         // Check if stacksize is 32 or 16 bit
-        if (cpu.stackSize == 32)
-        {
+        if (cpu.stackSize == 32) {
             // Copy eBP to eSP
-        	cpu.esp[CPU.REGISTER_GENERAL_HIGH] = cpu.ebp[CPU.REGISTER_GENERAL_HIGH];
-        	cpu.esp[CPU.REGISTER_GENERAL_LOW] = cpu.ebp[CPU.REGISTER_GENERAL_LOW];
-        	cpu.sp[CPU.REGISTER_GENERAL_HIGH] = cpu.bp[CPU.REGISTER_GENERAL_HIGH];
-        	cpu.sp[CPU.REGISTER_GENERAL_LOW] = cpu.bp[CPU.REGISTER_GENERAL_LOW];
-        }
-        else
-        {
+            cpu.esp[CPU.REGISTER_GENERAL_HIGH] = cpu.ebp[CPU.REGISTER_GENERAL_HIGH];
+            cpu.esp[CPU.REGISTER_GENERAL_LOW] = cpu.ebp[CPU.REGISTER_GENERAL_LOW];
+            cpu.sp[CPU.REGISTER_GENERAL_HIGH] = cpu.bp[CPU.REGISTER_GENERAL_HIGH];
+            cpu.sp[CPU.REGISTER_GENERAL_LOW] = cpu.bp[CPU.REGISTER_GENERAL_LOW];
+        } else {
             // Stack size is 16
             // Copy BP to SP
-        	cpu.sp[CPU.REGISTER_GENERAL_HIGH] = cpu.bp[CPU.REGISTER_GENERAL_HIGH];
-        	cpu.sp[CPU.REGISTER_GENERAL_LOW] = cpu.bp[CPU.REGISTER_GENERAL_LOW];
+            cpu.sp[CPU.REGISTER_GENERAL_HIGH] = cpu.bp[CPU.REGISTER_GENERAL_HIGH];
+            cpu.sp[CPU.REGISTER_GENERAL_LOW] = cpu.bp[CPU.REGISTER_GENERAL_LOW];
         }
-        
-        
+
         // Check operand size 32 or 16 bit
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Operand size is 32
             destWord = cpu.getWordFromStack();
             System.arraycopy(destWord, 0, cpu.bp, 0, destWord.length);
             destDoubleWord = cpu.getWordFromStack();
-            System.arraycopy(destDoubleWord, 0, cpu.ebp, 0, destDoubleWord.length);
-        }
-        else
-        {
+            System.arraycopy(destDoubleWord, 0, cpu.ebp, 0,
+                    destDoubleWord.length);
+        } else {
             // Operand size is 16
             destWord = cpu.getWordFromStack();
             System.arraycopy(destWord, 0, cpu.bp, 0, destWord.length);

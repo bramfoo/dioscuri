@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Displacement is relative to next instruction.<BR>
  * Flags modified: none
  */
-public class Instruction_JP_JPE implements Instruction
-{
+public class Instruction_JP_JPE implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -57,17 +55,16 @@ public class Instruction_JP_JPE implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_JP_JPE()
-    {
+    public Instruction_JP_JPE() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_JP_JPE(CPU processor)
-    {
+    public Instruction_JP_JPE(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -77,20 +74,21 @@ public class Instruction_JP_JPE implements Instruction
     /**
      * Execute conditional short jump on parity / parity even
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // This byte is interpreted signed, so cast to Java byte
         // Jump is relative to _next_ instruction, but by the time we change
-        // the IP, it has already been incremented twice, so no extra arithmetic necessary
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
         displacement = (byte) cpu.getByteFromCode();
 
         // Jump if parity flag set, otherwise skip instruction
         // IP has already been properly updated when bytes were retrieved
-        if (cpu.flags[CPU.REGISTER_FLAGS_PF])
-        {
-            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte displacement is sign-extended and added. 
-            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
+        if (cpu.flags[CPU.REGISTER_FLAGS_PF]) {
+            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
+            // displacement is sign-extended and added.
+            cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                    Util.signExtend(displacement), displacement }, 0);
         }
     }
 }

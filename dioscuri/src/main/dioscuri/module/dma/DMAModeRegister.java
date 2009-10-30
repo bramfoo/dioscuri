@@ -44,32 +44,32 @@ package dioscuri.module.dma;
  * Class representing the mode register a DMA controller<BR>
  * 
  */
-public class DMAModeRegister
-{
-    
-    protected final static int DMA_MODE_DEMAND  = 0;
-    protected final static int DMA_MODE_SINGLE  = 1;
-    protected final static int DMA_MODE_BLOCK   = 2;
+public class DMAModeRegister {
+
+    protected final static int DMA_MODE_DEMAND = 0;
+    protected final static int DMA_MODE_SINGLE = 1;
+    protected final static int DMA_MODE_BLOCK = 2;
     protected final static int DMA_MODE_CASCADE = 3;
-    
+
     protected final static int DMA_TRANSFER_VERIFY = 0;
-    protected final static int DMA_TRANSFER_WRITE  = 1;
-    protected final static int DMA_TRANSFER_READ   = 2;
-    
-    // Variable                 // Mode register bits:
-    byte modeType;              // Bits 7-6: Transfer mode; 00b - Demand mode
-                                //                          01b - Single mode
-                                //                          10b - Block mode
-                                //                          11b - Cascade mode
-    boolean addressDecrement;   // Bit 5: INC; when set address is decremented, when cleared incremented
-    boolean autoInitEnable;     // Bit 4: AI; when set enables auto initialisation
-    byte transferType;          // Bits 3-2: Type;          00b - Verify
-                                //                          01b - Write to memory
-                                //                          10b - Read from memory
-                                //                          11b - Illegal
-                                //                          XXb - if bits 7-6 are 11b
-                                // Bits 1-0: Channel;       00b - Channel 0
-                                //                          01b - Channel 1
-                                //                          10b - Channel 2
-                                //                          11b - Channel 3
+    protected final static int DMA_TRANSFER_WRITE = 1;
+    protected final static int DMA_TRANSFER_READ = 2;
+
+    // Variable // Mode register bits:
+    byte modeType; // Bits 7-6: Transfer mode; 00b - Demand mode
+    // 01b - Single mode
+    // 10b - Block mode
+    // 11b - Cascade mode
+    boolean addressDecrement; // Bit 5: INC; when set address is decremented,
+                              // when cleared incremented
+    boolean autoInitEnable; // Bit 4: AI; when set enables auto initialisation
+    byte transferType; // Bits 3-2: Type; 00b - Verify
+    // 01b - Write to memory
+    // 10b - Read from memory
+    // 11b - Illegal
+    // XXb - if bits 7-6 are 11b
+    // Bits 1-0: Channel; 00b - Channel 0
+    // 01b - Channel 1
+    // 10b - Channel 2
+    // 11b - Channel 3
 }

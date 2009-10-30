@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.screen;
 
 import java.awt.Color;
@@ -51,79 +50,66 @@ import javax.swing.JPanel;
  * 
  */
 @SuppressWarnings("serial")
-public class ScreenPanel extends JPanel
-{
+public class ScreenPanel extends JPanel {
     // Attributes
     private Image image = null;
     private boolean paint = false;
 
-    
     // Constructor
-    public ScreenPanel()
-    {
+    public ScreenPanel() {
     }
 
-    
     // Methods
     /**
      * Clear the image on canvas
      * 
      */
-    public void clearImage()
-    {
+    public void clearImage() {
         // Clear Image Area
         paint = false;
         this.repaint();
     }
 
     /**
-     * Draw an image on the canvas
-     * This is a standard method used by Graphics
+     * Draw an image on the canvas This is a standard method used by Graphics
      * 
-     * @param Graphics g - standard graphics component
+     * @param Graphics
+     *            g - standard graphics component
      * 
      */
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
         // Paint image on canvas
-        if (paint)
-        {
+        if (paint) {
             g.drawImage(image, 0, 0, this);
-        }
-        else
-        {
+        } else {
             // Paint canvas black
             g.setColor(Color.black);
             g.fillRect(0, 0, getWidth(), getHeight());
         }
     }
-    
 
     /**
-     * Update the canvas
-     * This method is called automatically when repaint() is called.
-     * It is necesarry to doublebuffer the canvas.
+     * Update the canvas This method is called automatically when repaint() is
+     * called. It is necesarry to doublebuffer the canvas.
      * 
-     * @param Graphics g - the standard graphics component
+     * @param Graphics
+     *            g - the standard graphics component
      */
-    public void update(Graphics g)
-    {
-         paint(g);
-    } 
-    
+    public void update(Graphics g) {
+        paint(g);
+    }
 
     /**
      * Set the given image to current and redraw canvas
      * 
-     * @param Image i
+     * @param Image
+     *            i
      */
-    public void setImage(Image i)
-    {
+    public void setImage(Image i) {
         // Paint image object
         paint = true;
         image = i;
         this.repaint();
     }
-
 
 }

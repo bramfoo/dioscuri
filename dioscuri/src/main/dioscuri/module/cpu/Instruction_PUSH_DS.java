@@ -37,61 +37,58 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 1E<BR>
-	 * Push general register DS onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 1E<BR>
+ * Push general register DS onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_DS implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Attributes
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_DS()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_DS(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in DS onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_DS() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_DS(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in DS onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_DS: 32-bits not supported");
+        if (cpu.doubleWord) {
+            logger.log(Level.WARNING, "[" + cpu.getType()
+                    + "] Instruction PUSH_DS: 32-bits not supported");
         }
-        
-		// Get word at DS and assign to SS:SP 
-		cpu.setWordToStack(cpu.ds);
-	}
+
+        // Get word at DS and assign to SS:SP
+        cpu.setWordToStack(cpu.ds);
+    }
 }

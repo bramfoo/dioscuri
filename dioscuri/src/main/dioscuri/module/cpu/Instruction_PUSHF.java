@@ -37,57 +37,53 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 9C<BR>
-	 * Transfer FLAGS register onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 9C<BR>
+ * Transfer FLAGS register onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSHF implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSHF()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSHF(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSHF() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Transfer FLAGS register onto stack top SS:SP
-	 */
-	public void execute()
-	{
-        
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSHF(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Transfer FLAGS register onto stack top SS:SP
+     */
+    public void execute() {
+
         // Push EFLAGS first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Since we don't use EFLAGS, push 0x0000 onto stack
-            cpu.setWordToStack(new byte[]{0x00, 0x00});
+            cpu.setWordToStack(new byte[] { 0x00, 0x00 });
         }
-        
-		// Push flags register (16-bit) onto stack
-		cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
-	}
+
+        // Push flags register (16-bit) onto stack
+        cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
+    }
 }

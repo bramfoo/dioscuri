@@ -37,56 +37,52 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 59<BR>
-	 * Pop word from stack SP:SS into general register CX.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 59<BR>
+ * Pop word from stack SP:SS into general register CX.<BR>
+ * Flags modified: none
+ */
 public class Instruction_POP_CX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_POP_CX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_POP_CX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * This pops the word at stack top SS:SP into CX 
-	 */
-	public void execute()
-	{
-		// Get word SS:SP and assign to CX   
-		cpu.cx = cpu.getWordFromStack();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_POP_CX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_POP_CX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pops the word at stack top SS:SP into CX
+     */
+    public void execute() {
+        // Get word SS:SP and assign to CX
+        cpu.cx = cpu.getWordFromStack();
 
         // Pop extra register, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             cpu.ecx = cpu.getWordFromStack();
         }
 
-	}
+    }
 }

@@ -22,11 +22,10 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface ByteSource
-{
+public interface ByteSource {
     public byte getByte();
 
     public boolean skip(int count);

@@ -37,18 +37,16 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import dioscuri.interfaces.UART;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleSerialPort extends ModuleDevice
-{
+public abstract class ModuleSerialPort extends ModuleDevice {
     // Methods
     public abstract boolean setUARTDevice(UART device, int comPort);
 }

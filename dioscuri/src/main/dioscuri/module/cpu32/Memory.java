@@ -22,54 +22,54 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
-
 
 //import org.jpc.emulator.processor.Processor;
 //import org.jpc.emulator.memory.codeblock.CodeBlock;
 
-public abstract class Memory implements ByteArray
-{
-public abstract void clear();
+public abstract class Memory implements ByteArray {
+    public abstract void clear();
 
-public abstract void clear(int start, int length);
+    public abstract void clear(int start, int length);
 
-public abstract void copyContentsInto(int address, byte[] buffer, int off, int len);
+    public abstract void copyContentsInto(int address, byte[] buffer, int off,
+            int len);
 
-public abstract void copyContentsFrom(int address, byte[] buffer, int off, int len);
+    public abstract void copyContentsFrom(int address, byte[] buffer, int off,
+            int len);
 
-public boolean isAllocated()
-{
-    return true;
-}
+    public boolean isAllocated() {
+        return true;
+    }
 
-public abstract long getSize();
+    public abstract long getSize();
 
-public abstract byte getByte(int offset);
+    public abstract byte getByte(int offset);
 
-public abstract short getWord(int offset);
+    public abstract short getWord(int offset);
 
-public abstract int getDoubleWord(int offset);
+    public abstract int getDoubleWord(int offset);
 
-public abstract long getQuadWord(int offset);
+    public abstract long getQuadWord(int offset);
 
-public abstract long getLowerDoubleQuadWord(int offset);
+    public abstract long getLowerDoubleQuadWord(int offset);
 
-public abstract long getUpperDoubleQuadWord(int offset);
+    public abstract long getUpperDoubleQuadWord(int offset);
 
-public abstract void setByte(int offset, byte data);
+    public abstract void setByte(int offset, byte data);
 
-public abstract void setWord(int offset, short data);
+    public abstract void setWord(int offset, short data);
 
-public abstract void setDoubleWord(int offset, int data);
+    public abstract void setDoubleWord(int offset, int data);
 
-public abstract void setQuadWord(int offset, long data);
+    public abstract void setQuadWord(int offset, long data);
 
-public abstract void setLowerDoubleQuadWord(int offset, long data);
+    public abstract void setLowerDoubleQuadWord(int offset, long data);
 
-public abstract void setUpperDoubleQuadWord(int offset, long data);
+    public abstract void setUpperDoubleQuadWord(int offset, long data);
 
-public abstract int execute(Processor cpu, int address);
-public abstract CodeBlock decodeCodeBlockAt(Processor cpu, int address);
+    public abstract int execute(Processor cpu, int address);
+
+    public abstract CodeBlock decodeCodeBlockAt(Processor cpu, int address);
 }

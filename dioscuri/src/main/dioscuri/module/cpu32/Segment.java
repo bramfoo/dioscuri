@@ -22,58 +22,57 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.*;
 import java.io.*;
 
-public abstract class Segment implements Hibernatable
-{
-public abstract boolean isPresent();
+public abstract class Segment implements Hibernatable {
+    public abstract boolean isPresent();
 
-public abstract void setAddressSpace(AddressSpace memory);
+    public abstract void setAddressSpace(AddressSpace memory);
 
-public abstract int getType();
+    public abstract int getType();
 
-public abstract int getSelector();
+    public abstract int getSelector();
 
-public abstract int getLimit();
+    public abstract int getLimit();
 
-public abstract int getBase();
+    public abstract int getBase();
 
-public abstract boolean getDefaultSizeFlag();
+    public abstract boolean getDefaultSizeFlag();
 
-public abstract int getRPL();
+    public abstract int getRPL();
 
-public abstract void setRPL(int cpl);
+    public abstract void setRPL(int cpl);
 
-public abstract int getDPL();
+    public abstract int getDPL();
 
-public abstract boolean setSelector(int selector);
+    public abstract boolean setSelector(int selector);
 
-public abstract void checkAddress(int offset) throws ProcessorException;
+    public abstract void checkAddress(int offset) throws ProcessorException;
 
-public abstract int translateAddressRead(int offset);
+    public abstract int translateAddressRead(int offset);
 
-public abstract int translateAddressWrite(int offset);
+    public abstract int translateAddressWrite(int offset);
 
-public abstract byte getByte(int offset);
+    public abstract byte getByte(int offset);
 
-public abstract short getWord(int offset);
+    public abstract short getWord(int offset);
 
-public abstract int getDoubleWord(int offset);
+    public abstract int getDoubleWord(int offset);
 
-public abstract long getQuadWord(int offset);
+    public abstract long getQuadWord(int offset);
 
-public abstract void setByte(int offset, byte data);
+    public abstract void setByte(int offset, byte data);
 
-public abstract void setWord(int offset, short data);
+    public abstract void setWord(int offset, short data);
 
-public abstract void setDoubleWord(int offset, int data);
+    public abstract void setDoubleWord(int offset, int data);
 
-public abstract void setQuadWord(int offset, long data);
+    public abstract void setQuadWord(int offset, long data);
 
-public abstract int dumpState(DataOutput output) throws IOException;
+    public abstract int dumpState(DataOutput output) throws IOException;
 }

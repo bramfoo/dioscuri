@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,8 +44,7 @@ package dioscuri.module.cpu;
  * Logical AND of immediate byte and AL.<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_AND_ALIb implements Instruction
-{
+public class Instruction_AND_ALIb implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -55,17 +53,16 @@ public class Instruction_AND_ALIb implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_AND_ALIb()
-    {
+    public Instruction_AND_ALIb() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_AND_ALIb(CPU processor)
-    {
+    public Instruction_AND_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +75,7 @@ public class Instruction_AND_ALIb implements Instruction
      * Logical AND of immediate byte and AL.<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
@@ -91,11 +87,14 @@ public class Instruction_AND_ALIb implements Instruction
         cpu.ax[CPU.REGISTER_GENERAL_LOW] &= cpu.getByteFromCode();
 
         // Test ZF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
         // Test SF, only applies to AL (set when MSB is 1, occurs when AL >=
         // 0x80)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
         // Set PF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
     }
 }

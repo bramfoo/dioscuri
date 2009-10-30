@@ -37,60 +37,57 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 06<BR>
-	 * Push general register ES onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 06<BR>
+ * Push general register ES onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_ES implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Attributes
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_ES()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_ES(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in ES onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_ES() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_ES(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in ES onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_ES: 32-bits not supported");
-        }      
-		// Get word at ES and assign to SS:SP 
-		cpu.setWordToStack(cpu.es);
-	}
+        if (cpu.doubleWord) {
+            logger.log(Level.WARNING, "[" + cpu.getType()
+                    + "] Instruction PUSH_ES: 32-bits not supported");
+        }
+        // Get word at ES and assign to SS:SP
+        cpu.setWordToStack(cpu.es);
+    }
 }

@@ -37,24 +37,22 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import java.awt.event.KeyEvent;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleKeyboard extends ModuleDevice
-{
+public abstract class ModuleKeyboard extends ModuleDevice {
     // Methods
 
     public abstract void generateScancode(KeyEvent keyEvent, int i);
 
     public abstract void enqueueControllerBuffer(byte data, int source);
-    
+
     public abstract void setTimeOut(byte status);
-    
+
 }

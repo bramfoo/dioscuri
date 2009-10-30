@@ -37,55 +37,51 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 5E<BR>
-	 * Pop word from stack SP:SS into general register SI.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 5E<BR>
+ * Pop word from stack SP:SS into general register SI.<BR>
+ * Flags modified: none
+ */
 public class Instruction_POP_SI implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_POP_SI()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_POP_SI(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * This pops the word at stack top SS:SP into SI 
-	 */
-	public void execute()
-	{
-		// Get word SS:SP and assign to SI   
-		cpu.si = cpu.getWordFromStack();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_POP_SI() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_POP_SI(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pops the word at stack top SS:SP into SI
+     */
+    public void execute() {
+        // Get word SS:SP and assign to SI
+        cpu.si = cpu.getWordFromStack();
 
         // Pop extra register, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             cpu.esi = cpu.getWordFromStack();
         }
-	}
+    }
 }

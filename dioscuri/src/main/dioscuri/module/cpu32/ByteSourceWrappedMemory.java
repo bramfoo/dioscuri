@@ -22,56 +22,48 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.*;
 
-public class ByteSourceWrappedMemory implements ByteSource
-{
+public class ByteSourceWrappedMemory implements ByteSource {
     private Memory source;
     private int offset, startingPosition;
 
-    public void set(Memory source, int offset)
-    {
-    this.source = source;
-    this.offset = offset;
+    public void set(Memory source, int offset) {
+        this.source = source;
+        this.offset = offset;
         startingPosition = offset;
     }
 
-    public Memory getMemory()
-    {
+    public Memory getMemory() {
         return source;
     }
 
-    public int getOffset()
-    {
+    public int getOffset() {
         return offset;
     }
 
-    public byte getByte()
-    {
-    return source.getByte(offset++);
+    public byte getByte() {
+        return source.getByte(offset++);
     }
 
-    public boolean skip(int count)
-    {
+    public boolean skip(int count) {
         if (offset + count >= source.getSize())
             return false;
         offset += count;
         return true;
     }
 
-    public boolean rewind(int count)
-    {
+    public boolean rewind(int count) {
         if (offset - count < startingPosition)
             return false;
         offset -= count;
         return true;
     }
 
-    public boolean reset()
-    {
+    public boolean reset() {
         offset = startingPosition;
         return true;
     }

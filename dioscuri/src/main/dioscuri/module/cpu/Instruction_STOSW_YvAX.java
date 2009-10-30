@@ -37,62 +37,60 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode AB<BR>
-	 * Copy word from register AX to ES:DI; update DI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode AB<BR>
+ * Copy word from register AX to ES:DI; update DI register according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_STOSW_YvAX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-    byte[] transition = new byte[]{0x00, 0x02};  // Increment/decrement value
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_STOSW_YvAX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_STOSW_YvAX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte[] transition = new byte[] { 0x00, 0x02 }; // Increment/decrement value
 
-	
-	// Methods
-	
-	/**
-	 * Copy word from register AX to ES:DI; update DI register according to flag DF
-	 */
-	public void execute()
-	{
-		// Get word at AX and assign to ES:DI; ES segment override is not allowed
-		cpu.setWordToExtra(cpu.di, cpu.ax);
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_STOSW_YvAX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_STOSW_YvAX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy word from register AX to ES:DI; update DI register according to flag
+     * DF
+     */
+    public void execute() {
+        // Get word at AX and assign to ES:DI; ES segment override is not
+        // allowed
+        cpu.setWordToExtra(cpu.di, cpu.ax);
 
         // Update DI according to DF flag
-        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1, DI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1,
+        // DI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the DI register by word size
             cpu.di = Util.subtractWords(cpu.di, transition, 0);
-        }
-        else
-        {
+        } else {
             // Increment the DI register by word size
             cpu.di = Util.addWords(cpu.di, transition, 0);
         }
-	}
+    }
 }

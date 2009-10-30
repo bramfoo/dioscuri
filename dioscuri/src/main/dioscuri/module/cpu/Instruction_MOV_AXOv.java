@@ -37,70 +37,73 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode A1<BR>
-	 * Copy word from DS:DISPL (DISPL given by word following opcode) to register AX.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode A1<BR>
+ * Copy word from DS:DISPL (DISPL given by word following opcode) to register
+ * AX.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_AXOv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	private byte[] displ = new byte[2];
-	private byte[] tempWord = new byte[2];
-    private byte[] word0x02 = new byte[] {0x00, 0x02};
+    // Attributes
+    private CPU cpu;
+    private byte[] displ = new byte[2];
+    private byte[] tempWord = new byte[2];
+    private byte[] word0x02 = new byte[] { 0x00, 0x02 };
     private byte dataSegmentAddressByte = 0;
-		
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_MOV_AXOv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_AXOv(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Copy word from DS:DISPL (DISPL given by word following opcode) to register AX
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_MOV_AXOv() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_AXOv(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy word from DS:DISPL (DISPL given by word following opcode) to
+     * register AX
+     */
+    public void execute() {
         // Get displacement within segment
-		// Honour Intel little-endian: first byte is LSB, followed by MSB. Order array [MSB, LSB]
-		displ = cpu.getWordFromCode();
-		
+        // Honour Intel little-endian: first byte is LSB, followed by MSB. Order
+        // array [MSB, LSB]
+        displ = cpu.getWordFromCode();
+
         // Get word at DS:DISPL and place in AX
-        // This memory segment defaults to DS:DISPL unless there is a segment override
-        // Because getWordFromMemorySegment expects an address byte to determine the segment,
-        // a default of 0 is used here to end up in the Data Segment (unless of course there is an override,
+        // This memory segment defaults to DS:DISPL unless there is a segment
+        // override
+        // Because getWordFromMemorySegment expects an address byte to determine
+        // the segment,
+        // a default of 0 is used here to end up in the Data Segment (unless of
+        // course there is an override,
         // but that is handled in getWord[..])
         cpu.ax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
 
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Increment displacement
             tempWord = Util.addWords(displ, word0x02, 0);
             System.arraycopy(tempWord, 0, displ, 0, tempWord.length);
-            
+
             // Store upper 16 bits in eAX
-            cpu.eax = cpu.getWordFromMemorySegment(dataSegmentAddressByte, displ);
+            cpu.eax = cpu.getWordFromMemorySegment(dataSegmentAddressByte,
+                    displ);
         }
-	}
+    }
 }

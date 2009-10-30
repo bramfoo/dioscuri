@@ -22,13 +22,12 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public class FieldInfo
-{
+public class FieldInfo {
     private int accessFlags;
     private int nameIndex;
     private int descriptorIndex;
@@ -45,27 +44,25 @@ public class FieldInfo
     public static final int SYNTHETIC = 0x1000;
     public static final int ENUM = 0x4000;
 
-
-    public FieldInfo(DataInputStream in, ConstantPoolInfo[] pool) throws IOException
-    {
+    public FieldInfo(DataInputStream in, ConstantPoolInfo[] pool)
+            throws IOException {
         accessFlags = in.readUnsignedShort();
         nameIndex = in.readUnsignedShort();
         descriptorIndex = in.readUnsignedShort();
 
         attributesCount = in.readUnsignedShort();
         attributes = new AttributeInfo[attributesCount];
-        for(int i = 0; i < attributesCount; i++)
+        for (int i = 0; i < attributesCount; i++)
             attributes[i] = AttributeInfo.construct(in, pool);
     }
 
-    public void write(DataOutputStream out) throws IOException
-    {
+    public void write(DataOutputStream out) throws IOException {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
         out.writeShort(descriptorIndex);
 
         out.writeShort(attributesCount);
-        for(int i = 0; i < attributesCount; i++)
+        for (int i = 0; i < attributesCount; i++)
             attributes[i].write(out);
     }
 }

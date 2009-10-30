@@ -22,17 +22,15 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-
-public interface InstructionSource
-{
+public interface InstructionSource {
     public boolean getNext();
- 
+
     public int getMicrocode();
- 
+
     public int getLength();
- 
+
     public int getX86Length();
 }

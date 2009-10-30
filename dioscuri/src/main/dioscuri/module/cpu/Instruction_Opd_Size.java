@@ -37,37 +37,35 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
  * Intel opcode 66<BR>
- * Instruction prefix, indicating the next instruction should work with doublewords.<BR>
+ * Instruction prefix, indicating the next instruction should work with
+ * doublewords.<BR>
  * Flags modified: none
  */
-public class Instruction_Opd_Size implements Instruction
-{
+public class Instruction_Opd_Size implements Instruction {
 
     // Attributes
     private CPU cpu;
-    
+
     int instruction;
 
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_Opd_Size()
-    {
+    public Instruction_Opd_Size() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_Opd_Size(CPU processor)
-    {
+    public Instruction_Opd_Size(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -75,13 +73,13 @@ public class Instruction_Opd_Size implements Instruction
     // Methods
 
     /**
-     * Set cpu.doubleWord to true, indicating next instruction should work with doublewords
+     * Set cpu.doubleWord to true, indicating next instruction should work with
+     * doublewords
      */
-    public void execute()
-    {
+    public void execute() {
         // Let CPU know this is an instruction prefix
         cpu.prefixInstruction = 0x66;
-            
+
         // Set boolean
         cpu.doubleWord = true;
     }

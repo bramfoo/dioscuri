@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,36 +44,33 @@ package dioscuri.module.cpu;
  * Add immediate word to AX.<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_ADD_AXIv implements Instruction
-{
+public class Instruction_ADD_AXIv implements Instruction {
 
     // Attributes
     private CPU cpu;
     byte[] immediateWord;
     byte[] oldDest;
-    
+
     byte[] temp;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_ADD_AXIv()
-    {
+    public Instruction_ADD_AXIv() {
         immediateWord = new byte[2];
         oldDest = new byte[2];
-        
+
         temp = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_ADD_AXIv(CPU processor)
-    {
+    public Instruction_ADD_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -86,8 +82,7 @@ public class Instruction_ADD_AXIv implements Instruction
     /**
      * Add immediate word to AX
      */
-    public void execute()
-    {
+    public void execute() {
         immediateWord = cpu.getWordFromCode();
 
         // Copy old value of AX
@@ -98,17 +93,24 @@ public class Instruction_ADD_AXIv implements Instruction
         System.arraycopy(temp, 0, cpu.ax, 0, temp.length);
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(oldDest[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(
+                oldDest[CPU.REGISTER_GENERAL_LOW],
+                cpu.ax[CPU.REGISTER_GENERAL_LOW]);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest, immediateWord, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_ADD(oldDest,
+                immediateWord, 0);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, immediateWord, cpu.ax, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest,
+                immediateWord, cpu.ax, 0);
         // Test ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0x00
+                && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
         // Test SF (set when MSB of AL is 1. In Java can check signed byte)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                : false;
         // Set PF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
 
     }
 }

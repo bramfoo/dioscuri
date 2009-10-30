@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -66,91 +65,89 @@ import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 
 @SuppressWarnings("serial")
-public class FdcConfigDialog extends ConfigurationDialog
-{
-    
+public class FdcConfigDialog extends ConfigurationDialog {
+
     private JCheckBox enabledCheckBox;
     private JCheckBox insertedCheckBox;
     private JComboBox driveLetterComboxBox;
     private JComboBox diskFormatComboBox;
-    private JCheckBox writeProtectedCheckBox;   
+    private JCheckBox writeProtectedCheckBox;
     private JButton imageBrowseButton;
-    
+
     private JFormattedTextField updateIntField;
 
     dioscuri.config.Emulator emuConfig;
-    
-    public FdcConfigDialog(GUI parent)
-    {               
-        super (parent, "FDC Configuration", false, ModuleType.FDC); 
+
+    public FdcConfigDialog(GUI parent) {
+        super(parent, "FDC Configuration", false, ModuleType.FDC);
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Floppy drive = emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0);
-    	
-        Integer updateInt = emuConfig.getArchitecture().getModules().getFdc().getUpdateintervalmicrosecs().intValue();        
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Floppy drive = emuConfig.getArchitecture().getModules().getFdc()
+                .getFloppy().get(0);
+
+        Integer updateInt = emuConfig.getArchitecture().getModules().getFdc()
+                .getUpdateintervalmicrosecs().intValue();
         boolean enabled = drive.isEnabled();
         boolean inserted = drive.isInserted();
         String driveLetterIndex = drive.getDriveletter();
         String diskFormatIndex = drive.getDiskformat();
         boolean writeProtected = drive.isWriteprotected();
         String imageFormatPath = drive.getImagefilepath();
-           
+
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(enabled);
-        this.insertedCheckBox.setSelected(inserted);     
+        this.insertedCheckBox.setSelected(inserted);
         this.driveLetterComboxBox.setSelectedItem(driveLetterIndex);
-        this.diskFormatComboBox.setSelectedItem(diskFormatIndex);   
+        this.diskFormatComboBox.setSelectedItem(diskFormatIndex);
         this.writeProtectedCheckBox.setSelected(writeProtected);
 
         // Check if length of filepath is longer than 30 characters
-        if (imageFormatPath.length() > 30)
-        {
-        	// Trail off the beginning of the string
-        	this.imageFilePathLabel.setText("..." + imageFormatPath.substring(imageFormatPath.length() - 30));
-        }
-        else
-        {
+        if (imageFormatPath.length() > 30) {
+            // Trail off the beginning of the string
+            this.imageFilePathLabel.setText("..."
+                    + imageFormatPath.substring(imageFormatPath.length() - 30));
+        } else {
             this.imageFilePathLabel.setText(imageFormatPath);
         }
 
         this.selectedfile = new File(imageFormatPath);
-        
+
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-        
+    protected void initMainEntryPanel() {
+
         JLabel updateIntLabel = new JLabel("Update Interval");
         JLabel updateIntUnitLabel = new JLabel("microseconds");
         JLabel enabledLabel = new JLabel("Enabled");
         JLabel insertedLabel = new JLabel("Inserted");
-        JLabel driveLetterLabel = new JLabel("Drive Letter");      
-        JLabel diskFormatLabel = new JLabel("Disk Format");    
+        JLabel driveLetterLabel = new JLabel("Drive Letter");
+        JLabel diskFormatLabel = new JLabel("Disk Format");
         JLabel writeProtectedLabel = new JLabel("Write Protected");
         JLabel imageFileLabel = new JLabel("Image File");
-        
+
         this.populateControls();
-             
-        //Lay out the labels in a panel.
-                  
-        //Lay out the labels in a panel.
+
+        // Lay out the labels in a panel.
+
+        // Lay out the labels in a panel.
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         mainEntryPanel = new JPanel(gridbag);
-        
+
         // Makeup layout with contraints
         // General layout contraints
-        c.fill = GridBagConstraints.BOTH; // Make the component fill its display area entirely
-        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
+        c.fill = GridBagConstraints.BOTH; // Make the component fill its display
+                                          // area entirely
+        c.insets = new Insets(0, 10, 0, 10); // Defines the spaces between
+                                             // layout and display area
 
         // Row 1
         c.weightx = 1.0;
@@ -160,7 +157,7 @@ public class FdcConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
         gridbag.setConstraints(updateIntField, c);
         mainEntryPanel.add(updateIntField);
-        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(updateIntUnitLabel, c);
         mainEntryPanel.add(updateIntUnitLabel);
 
@@ -179,7 +176,7 @@ public class FdcConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(insertedCheckBox, c);
         mainEntryPanel.add(insertedCheckBox);
-        
+
         // Row 4
         c.gridwidth = 1;
         gridbag.setConstraints(driveLetterLabel, c);
@@ -215,31 +212,30 @@ public class FdcConfigDialog extends ConfigurationDialog
         gridbag.setConstraints(imageBrowseButton, c);
         mainEntryPanel.add(imageBrowseButton);
     }
-    
+
     /**
      * Initalise the GUI Controls.
      */
-    private void populateControls()
-    {
+    private void populateControls() {
         imageFilePathLabel = new JLabel("");
-        
-        //Formats to format and parse numbers
+
+        // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
         updateIntField.setValue(new Integer(0));
         updateIntField.setColumns(10);
-         
+
         enabledCheckBox = new JCheckBox();
-        enabledCheckBox.setSelected(true);    
+        enabledCheckBox.setSelected(true);
         insertedCheckBox = new JCheckBox();
         insertedCheckBox.setSelected(true);
-        
+
         DefaultComboBoxModel driveLetterModel = new DefaultComboBoxModel();
         driveLetterModel.addElement("A");
-        driveLetterModel.addElement("B");   
+        driveLetterModel.addElement("B");
         driveLetterComboxBox = new JComboBox(driveLetterModel);
         driveLetterComboxBox.setSelectedIndex(0);
-             
-        DefaultComboBoxModel diskFormatModel = new DefaultComboBoxModel();      
+
+        DefaultComboBoxModel diskFormatModel = new DefaultComboBoxModel();
         diskFormatModel.addElement("1.2M");
         diskFormatModel.addElement("1.44M");
         diskFormatModel.addElement("2.88M");
@@ -248,44 +244,44 @@ public class FdcConfigDialog extends ConfigurationDialog
         diskFormatModel.addElement("320K");
         diskFormatModel.addElement("360K");
         diskFormatModel.addElement("720K");
-      
+
         diskFormatComboBox = new JComboBox(diskFormatModel);
         diskFormatComboBox.setSelectedIndex(1);
-        
-        writeProtectedCheckBox = new JCheckBox(); 
-        
+
+        writeProtectedCheckBox = new JCheckBox();
+
         imageBrowseButton = new JButton("Browse");
-        
-        imageBrowseButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+
+        imageBrowseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 launchFileChooser();
             }
         });
-        
+
     }
-     
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui()
-    {
-    	Floppy drive = emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0);
-        
-        
-        emuConfig.getArchitecture().getModules().getFdc().setUpdateintervalmicrosecs((BigInteger.valueOf(((Number)updateIntField.getValue()).intValue())));
+    protected Emulator getParamsFromGui() {
+        Floppy drive = emuConfig.getArchitecture().getModules().getFdc()
+                .getFloppy().get(0);
+
+        emuConfig.getArchitecture().getModules().getFdc()
+                .setUpdateintervalmicrosecs(
+                        (BigInteger
+                                .valueOf(((Number) updateIntField.getValue())
+                                        .intValue())));
         drive.setEnabled(enabledCheckBox.isSelected());
         drive.setInserted(insertedCheckBox.isSelected());
         drive.setDriveletter(driveLetterComboxBox.getSelectedItem().toString());
         drive.setDiskformat(diskFormatComboBox.getSelectedItem().toString());
         drive.setWriteprotected(writeProtectedCheckBox.isSelected());
-        drive.setImagefilepath(selectedfile.getAbsoluteFile().toString());    
-        
-        
+        drive.setImagefilepath(selectedfile.getAbsoluteFile().toString());
+
         return emuConfig;
     }
-      
+
 }

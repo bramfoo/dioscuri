@@ -37,45 +37,48 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import java.io.File;
 
 /**
- * Interface representing a generic hardware module.
- * TODO: this template of moduleFDC could also be made more generic for any removable storage device
+ * Interface representing a generic hardware module. TODO: this template of
+ * moduleFDC could also be made more generic for any removable storage device
  */
 
-public abstract class ModuleFDC extends ModuleDevice
-{
+public abstract class ModuleFDC extends ModuleDevice {
     // Methods
-    
+
     /**
-     * Defines the total number of available drives
-     * Note: total number may not exceed 4
+     * Defines the total number of available drives Note: total number may not
+     * exceed 4
      * 
      * @param int total number of drives
      * @return boolean true if drives set successfully, false otherwise
      */
     public abstract boolean setNumberOfDrives(int totalDrives);
-    
+
     /**
      * Inserts a new carrier into a selected drive
      * 
-     * @param String drive to which carrier has to be inserted
+     * @param String
+     *            drive to which carrier has to be inserted
      * @param byte carrierType that defines the type of the carrier
-     * @param File containing the disk image raw bytes of the carrier
-     * @param boolean writeProtected denoting the inserted floppy is write protected or not
+     * @param File
+     *            containing the disk image raw bytes of the carrier
+     * @param boolean writeProtected denoting the inserted floppy is write
+     *        protected or not
      * 
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
-    public abstract boolean insertCarrier(String drive, byte carrierType, File imageFile, boolean writeProtected);
-    
+    public abstract boolean insertCarrier(String drive, byte carrierType,
+            File imageFile, boolean writeProtected);
+
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
-     * @param String drive of which carrier has to be ejected
+     * @param String
+     *            drive of which carrier has to be ejected
      * 
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
@@ -86,13 +89,16 @@ public abstract class ModuleFDC extends ModuleDevice
      * 
      * @param int driveIndex to which carrier has to be inserted
      * @param byte carrierType that defines the type of the carrier
-     * @param File containing the disk image raw bytes of the carrier
-     * @param boolean writeProtected denoting the inserted floppy is write protected or not
+     * @param File
+     *            containing the disk image raw bytes of the carrier
+     * @param boolean writeProtected denoting the inserted floppy is write
+     *        protected or not
      * 
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
-    public abstract boolean insertCarrier(int driveIndex, byte carrierType, File imageFile, boolean writeProtected);
-    
+    public abstract boolean insertCarrier(int driveIndex, byte carrierType,
+            File imageFile, boolean writeProtected);
+
     /**
      * Ejects a carrier (if any) from a selected drive
      * 

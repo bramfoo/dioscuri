@@ -37,62 +37,60 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode AA<BR>
-	 * Copy byte from register AL to ES:DI; update DI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode AA<BR>
+ * Copy byte from register AL to ES:DI; update DI register according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_STOSB_YbAL implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-    byte[] transition = new byte[]{0x00, 0x01};  // Increment/decrement value
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_STOSB_YbAL()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_STOSB_YbAL(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte[] transition = new byte[] { 0x00, 0x01 }; // Increment/decrement value
 
-	
-	// Methods
-	
-	/**
-	 * Copy word from register AX to ES:DI; update DI register according to flag DF
-	 */
-	public void execute()
-	{
-		// Get byte at AL and assign to ES:DI; ES segment override is not allowed
-		cpu.setByteToExtra(cpu.di, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_STOSB_YbAL() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_STOSB_YbAL(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy word from register AX to ES:DI; update DI register according to flag
+     * DF
+     */
+    public void execute() {
+        // Get byte at AL and assign to ES:DI; ES segment override is not
+        // allowed
+        cpu.setByteToExtra(cpu.di, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
 
         // Update DI according to DF flag
-        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1, DI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1,
+        // DI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the DI register by byte size
             cpu.di = Util.subtractWords(cpu.di, transition, 0);
-        }
-        else
-        {
+        } else {
             // Increment the DI register by byte size
             cpu.di = Util.addWords(cpu.di, transition, 0);
         }
-	}
+    }
 }

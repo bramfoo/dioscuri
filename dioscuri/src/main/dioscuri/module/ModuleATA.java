@@ -37,18 +37,16 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import dioscuri.module.ata.ATATranslationType;
 
 /**
- * Interface representing a generic hardware module.
- * TODO: this template of moduleATA could also be made more generic for any fixed storage device
+ * Interface representing a generic hardware module. TODO: this template of
+ * moduleATA could also be made more generic for any fixed storage device
  */
 
-public abstract class ModuleATA extends ModuleDevice
-{
+public abstract class ModuleATA extends ModuleDevice {
     // Methods
 
     /**
@@ -64,9 +62,11 @@ public abstract class ModuleATA extends ModuleDevice
      * @param translationType
      * @param imageFilePath
      */
-    public abstract void initConfig(int theIdeChannel, boolean isMaster, boolean isHardDisk, boolean isWriteProtected, int numCylinders, int numHeads,
-            int numSectorsPerTrack, ATATranslationType translationType, String imageFilePath);
-    
+    public abstract void initConfig(int theIdeChannel, boolean isMaster,
+            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
+            int numHeads, int numSectorsPerTrack,
+            ATATranslationType translationType, String imageFilePath);
+
     /**
      * Set CMOS values
      * 
@@ -74,13 +74,14 @@ public abstract class ModuleATA extends ModuleDevice
      * @param bootDrives
      * @param floppySigCheckDisabled
      */
-    public abstract void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled);
-    
+    public abstract void setCmosSettings(int[] bootDrives,
+            boolean floppySigCheckDisabled);
+
     /**
      * Gets the current channel index.
      * 
      * @return int the current channel index
      */
     public abstract int getCurrentChannelIndex();
-    
+
 }

@@ -37,28 +37,22 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.logging;
 
 import java.util.logging.*;
 
-public class ConsoleFormatter extends Formatter
-{
-      public String format(LogRecord record)
-      {
+public class ConsoleFormatter extends Formatter {
+    public String format(LogRecord record) {
         return record.getMessage() + '\n';
-      }
-      
-		/* Example of other formatter
-		return
-		          "LogRecord info:\n" +
-		          "Level: " + record.getLevel() + '\n' +
-		          "LoggerName: " + record.getLoggerName() + '\n' +
-		          "Message: " + record.getMessage() + '\n' +
-		          " " + record.getMillis() + '\n' +
-		          "Sequence Number: " + record.getSequenceNumber() + '\n' +
-		          "SourceClassName: " + record.getSourceClassName() + '\n' +
-		          "SourceMethodName: " + record.getSourceMethodName() + '\n' +
-		          "ThreadID: " + record.getThreadID() + '\n';
-		*/      
+    }
+
+    /*
+     * Example of other formatter return "LogRecord info:\n" + "Level: " +
+     * record.getLevel() + '\n' + "LoggerName: " + record.getLoggerName() + '\n'
+     * + "Message: " + record.getMessage() + '\n' + " " + record.getMillis() +
+     * '\n' + "Sequence Number: " + record.getSequenceNumber() + '\n' +
+     * "SourceClassName: " + record.getSourceClassName() + '\n' +
+     * "SourceMethodName: " + record.getSourceMethodName() + '\n' + "ThreadID: "
+     * + record.getThreadID() + '\n';
+     */
 }

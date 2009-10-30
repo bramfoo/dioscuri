@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,40 +46,38 @@ package dioscuri.module.ata;
 
 /**
  * Enumeration class for Asc Type.
- *
+ * 
  */
-public class AscType
-{
-    
+public class AscType {
+
     private int value;
-    
+
     /*
      * Constructor
      */
-    private AscType(int theValue) 
-    {
+    private AscType(int theValue) {
         this.value = theValue;
     }
+
     public final static AscType NOT_SET = new AscType(0x00);
     public final static AscType ILLEGAL_OPCODE = new AscType(0x20);
     public final static AscType LOGICAL_BLOCK_OOR = new AscType(0x21);
     public final static AscType INV_FIELD_IN_CMD_PACKET = new AscType(0x24);
-    public final static AscType SAVING_PARAMETERS_NOT_SUPPORTED = new AscType(0x39);
+    public final static AscType SAVING_PARAMETERS_NOT_SUPPORTED = new AscType(
+            0x39);
     public final static AscType MEDIUM_NOT_PRESENT = new AscType(0x3a);
-      
-    public final static AscType[] asc = {NOT_SET,
-                                     ILLEGAL_OPCODE,
-                                     LOGICAL_BLOCK_OOR,
-                                     INV_FIELD_IN_CMD_PACKET,
-                                     SAVING_PARAMETERS_NOT_SUPPORTED,
-                                     MEDIUM_NOT_PRESENT };
-    
+
+    public final static AscType[] asc = { NOT_SET, ILLEGAL_OPCODE,
+            LOGICAL_BLOCK_OOR, INV_FIELD_IN_CMD_PACKET,
+            SAVING_PARAMETERS_NOT_SUPPORTED, MEDIUM_NOT_PRESENT };
+
     /**
      * get the value associated with the enum entry
+     * 
      * @return the value
      */
     public int getValue() {
         return this.value;
-    } 
-    
+    }
+
 }

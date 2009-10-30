@@ -37,66 +37,66 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode A8<BR>
-	 * Logical comparison (AND) of immediate byte and AL.<BR>
-	 * Does not update any registers, only sets appropriate flags.<BR> 
-	 * Flags modified: OF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode A8<BR>
+ * Logical comparison (AND) of immediate byte and AL.<BR>
+ * Does not update any registers, only sets appropriate flags.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_TEST_ALIb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte tempResult;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_TEST_ALIb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_TEST_ALIb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte tempResult;
 
-	
-	// Methods
-	
-	/**
-	 * Logical comparison (AND) of immediate byte and AL.<BR>
-	 * Does not update any registers, only sets appropriate flags.<BR> 
-	 * SF, ZF, and PF are set according to the result;<BR>
-	 * OF and CF are cleared. AF is undefined.
-	 */
-	public void execute()
-	{
-		
-		// Clear appropriate flags
-		cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
-		cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
-		// Intel docs state AF remains undefined, but MS-DOS debug.exe clears AF
-		cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
-		
-		// Get immediate byte and AND with AL, storing temporary result.
-		tempResult = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] & cpu.getByteFromCode()); 
-		
-		// Test ZF, according to tempResult
-		cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult == 0 ? true : false;
-		// Test SF, according to tempResult (set when MSB is 1, occurs when tempResult >= 0x80)
-		cpu.flags[CPU.REGISTER_FLAGS_SF] = tempResult < 0 ? true : false;
-		// Set PF, according to tempResult
-		cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(tempResult);
-	}
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_TEST_ALIb() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_TEST_ALIb(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Logical comparison (AND) of immediate byte and AL.<BR>
+     * Does not update any registers, only sets appropriate flags.<BR>
+     * SF, ZF, and PF are set according to the result;<BR>
+     * OF and CF are cleared. AF is undefined.
+     */
+    public void execute() {
+
+        // Clear appropriate flags
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
+        // Intel docs state AF remains undefined, but MS-DOS debug.exe clears AF
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
+
+        // Get immediate byte and AND with AL, storing temporary result.
+        tempResult = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] & cpu
+                .getByteFromCode());
+
+        // Test ZF, according to tempResult
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult == 0 ? true : false;
+        // Test SF, according to tempResult (set when MSB is 1, occurs when
+        // tempResult >= 0x80)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = tempResult < 0 ? true : false;
+        // Set PF, according to tempResult
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(tempResult);
+    }
 }

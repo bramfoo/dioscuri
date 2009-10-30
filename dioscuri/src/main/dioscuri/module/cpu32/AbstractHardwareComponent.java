@@ -22,43 +22,36 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public abstract class AbstractHardwareComponent implements HardwareComponent
-{
-    public boolean initialised()
-    {
+public abstract class AbstractHardwareComponent implements HardwareComponent {
+    public boolean initialised() {
         return true;
     }
 
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
     }
 
-    public boolean updated()
-    {
+    public boolean updated() {
         return true;
     }
 
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
     }
 
-    public boolean reset()
-    {
+    public boolean reset() {
         return true;
     }
 
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
     }
 
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
     }
 
-    public void timerCallback() {}
+    public void timerCallback() {
+    }
 }

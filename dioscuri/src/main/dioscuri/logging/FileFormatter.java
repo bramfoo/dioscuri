@@ -37,29 +37,23 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.logging;
 
 import java.util.logging.*;
 
-public class FileFormatter extends Formatter
-{
-      public String format(LogRecord record)
-      {
-        return
-        	record.getMillis() + "\t" + record.getLoggerName() + "\t" + record.getLevel() + "\t: " + record.getMessage() + '\n';
-      }
-      
-		/* Example of other formatter
-		return
-		          "LogRecord info:\n" +
-		          "Level: " + record.getLevel() + '\n' +
-		          "LoggerName: " + record.getLoggerName() + '\n' +
-		          "Message: " + record.getMessage() + '\n' +
-		          " " + record.getMillis() + '\n' +
-		          "Sequence Number: " + record.getSequenceNumber() + '\n' +
-		          "SourceClassName: " + record.getSourceClassName() + '\n' +
-		          "SourceMethodName: " + record.getSourceMethodName() + '\n' +
-		          "ThreadID: " + record.getThreadID() + '\n';
-		*/      
+public class FileFormatter extends Formatter {
+    public String format(LogRecord record) {
+        return record.getMillis() + "\t" + record.getLoggerName() + "\t"
+                + record.getLevel() + "\t: " + record.getMessage() + '\n';
+    }
+
+    /*
+     * Example of other formatter return "LogRecord info:\n" + "Level: " +
+     * record.getLevel() + '\n' + "LoggerName: " + record.getLoggerName() + '\n'
+     * + "Message: " + record.getMessage() + '\n' + " " + record.getMillis() +
+     * '\n' + "Sequence Number: " + record.getSequenceNumber() + '\n' +
+     * "SourceClassName: " + record.getSourceClassName() + '\n' +
+     * "SourceMethodName: " + record.getSourceMethodName() + '\n' + "ThreadID: "
+     * + record.getThreadID() + '\n';
+     */
 }

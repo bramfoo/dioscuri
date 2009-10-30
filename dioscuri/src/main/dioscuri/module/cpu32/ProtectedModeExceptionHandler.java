@@ -22,7 +22,7 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
@@ -34,63 +34,72 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.ExceptionHandler;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
-public class ProtectedModeExceptionHandler extends ExceptionHandler
-{
-    public ProtectedModeExceptionHandler(int lastX86Position, ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
-    {
-    super(lastX86Position, initialNode, stateMap);
+public class ProtectedModeExceptionHandler extends ExceptionHandler {
+    public ProtectedModeExceptionHandler(int lastX86Position,
+            ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
+        super(lastX86Position, initialNode, stateMap);
     }
 
-    protected void writeHandlerRoutine(CountingOutputStream byteCodes, ClassFile cf) throws IOException
-    {
-    //update eip?
+    protected void writeHandlerRoutine(CountingOutputStream byteCodes,
+            ClassFile cf) throws IOException {
+        // update eip?
 
-    byteCodes.write(JavaOpcode.ALOAD_1); //cpu, e
-    byteCodes.write(JavaOpcode.SWAP); //e, cpu
-    byteCodes.write(JavaOpcode.DUP); //e, e, cpu
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(ProcessorException.class.getDeclaredMethod("getVector", (Class[])null));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    } // vector, e, cpu
-    byteCodes.write(JavaOpcode.SWAP); //e, vector, cpu
-    byteCodes.write(JavaOpcode.DUP); //e, e, vector, cpu
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(ProcessorException.class.getDeclaredMethod("hasErrorCode", (Class[])null));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    } // hasec, e, vector, cpu
-    byteCodes.write(JavaOpcode.SWAP); //e, hasec, vector, cpu
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(ProcessorException.class.getDeclaredMethod("getErrorCode", (Class[])null));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    } //ec, hasec, vector, cpu
- 
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(Processor.class.getDeclaredMethod("handleProtectedModeException", new Class[] {Integer.TYPE, Boolean.TYPE, Integer.TYPE}));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    }
+        byteCodes.write(JavaOpcode.ALOAD_1); // cpu, e
+        byteCodes.write(JavaOpcode.SWAP); // e, cpu
+        byteCodes.write(JavaOpcode.DUP); // e, e, cpu
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(ProcessorException.class
+                    .getDeclaredMethod("getVector", (Class[]) null));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        } // vector, e, cpu
+        byteCodes.write(JavaOpcode.SWAP); // e, vector, cpu
+        byteCodes.write(JavaOpcode.DUP); // e, e, vector, cpu
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(ProcessorException.class
+                    .getDeclaredMethod("hasErrorCode", (Class[]) null));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        } // hasec, e, vector, cpu
+        byteCodes.write(JavaOpcode.SWAP); // e, hasec, vector, cpu
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(ProcessorException.class
+                    .getDeclaredMethod("getErrorCode", (Class[]) null));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        } // ec, hasec, vector, cpu
+
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(Processor.class
+                    .getDeclaredMethod("handleProtectedModeException",
+                            new Class[] { Integer.TYPE, Boolean.TYPE,
+                                    Integer.TYPE }));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        }
     }
 }

@@ -22,21 +22,24 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import dioscuri.exception.ModuleException;
 
 //import org.jpc.emulator.*;
 
-public interface IOPortCapable extends HardwareComponent
-{
+public interface IOPortCapable extends HardwareComponent {
     public void ioPortWriteByte(int address, int data) throws ModuleException;
+
     public void ioPortWriteWord(int address, int data) throws ModuleException;
+
     public void ioPortWriteLong(int address, int data) throws ModuleException;
 
     public int ioPortReadByte(int address) throws ModuleException;
+
     public int ioPortReadWord(int address) throws ModuleException;
+
     public int ioPortReadLong(int address) throws ModuleException;
 
     public int[] ioPortsRequested();

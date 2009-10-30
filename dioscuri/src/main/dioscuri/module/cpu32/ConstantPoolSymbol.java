@@ -22,38 +22,31 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.lang.reflect.*;
 
-public class ConstantPoolSymbol
-{
+public class ConstantPoolSymbol {
     private Object poolEntity;
 
-    public ConstantPoolSymbol(Object o)
-    {
-        boolean ok = (o instanceof Class<?>)
-        || (o instanceof Method)
-        || (o instanceof Field)
-        || (o instanceof String)
-        || (o instanceof Integer)
-            || (o instanceof Float)
-        || (o instanceof Long)
-        || (o instanceof Double);
+    public ConstantPoolSymbol(Object o) {
+        boolean ok = (o instanceof Class<?>) || (o instanceof Method)
+                || (o instanceof Field) || (o instanceof String)
+                || (o instanceof Integer) || (o instanceof Float)
+                || (o instanceof Long) || (o instanceof Double);
 
-        if (!ok) throw new IllegalArgumentException();
+        if (!ok)
+            throw new IllegalArgumentException();
 
         poolEntity = o;
     }
 
-    public Object poolEntity()
-    {
+    public Object poolEntity() {
         return poolEntity;
     }
 
-    public String toString()
-    {
-        return "ConstantPoolSymbol["+poolEntity+"]";
+    public String toString() {
+        return "ConstantPoolSymbol[" + poolEntity + "]";
     }
 }

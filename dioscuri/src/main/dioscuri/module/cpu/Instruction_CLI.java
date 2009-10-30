@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Set IF to 0<BR>
  * Flags modified: none
  */
-public class Instruction_CLI implements Instruction
-{
+public class Instruction_CLI implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,17 +54,16 @@ public class Instruction_CLI implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_CLI()
-    {
+    public Instruction_CLI() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_CLI(CPU processor)
-    {
+    public Instruction_CLI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +75,7 @@ public class Instruction_CLI implements Instruction
     /**
      * Set IF to 0
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear interrupt flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_IF] = false;
     }

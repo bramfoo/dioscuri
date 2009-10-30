@@ -37,60 +37,57 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 16<BR>
-	 * Push general register SS onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 16<BR>
+ * Push general register SS onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_SS implements Instruction {
 
-	// Attributss
-	private CPU cpu;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Attributss
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_SS()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_SS(CPU procsssor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = procsssor;
-	}
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in SS onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_SS() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_SS(CPU procsssor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = procsssor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in SS onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_SS: 32-bits not supported");
-        }      
-		// Get word at SS and assign to SS:SP 
-		cpu.setWordToStack(cpu.ss);
-	}
+        if (cpu.doubleWord) {
+            logger.log(Level.WARNING, "[" + cpu.getType()
+                    + "] Instruction PUSH_SS: 32-bits not supported");
+        }
+        // Get word at SS and assign to SS:SP
+        cpu.setWordToStack(cpu.ss);
+    }
 }

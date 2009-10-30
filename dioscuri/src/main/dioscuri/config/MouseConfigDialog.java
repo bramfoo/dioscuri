@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -64,67 +63,58 @@ import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Mouse;
 
 @SuppressWarnings("serial")
-public class MouseConfigDialog extends ConfigurationDialog
-{
-	// Attributes
-	private JLabel enabledLabel;
+public class MouseConfigDialog extends ConfigurationDialog {
+    // Attributes
+    private JLabel enabledLabel;
     private JLabel sizeLabel;
     private JCheckBox enabledCheckBox;
     private JComboBox mouseTypeComboxBox;
-    
+
     dioscuri.config.Emulator emuConfig;
-    
+
     // Constructor
-    
-    public MouseConfigDialog(GUI parent)
-    {               
-        super (parent, "Mouse Configuration", false, ModuleType.MOUSE);                    
+
+    public MouseConfigDialog(GUI parent) {
+        super(parent, "Mouse Configuration", false, ModuleType.MOUSE);
     }
-    
-    
+
     // Methods
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
-        
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
+
         boolean enabled = mouse.isEnabled();
         String mouseType = mouse.getMousetype();
-        
+
         // Set mouse parameters
         this.enabledCheckBox.setSelected(enabled);
         this.mouseTypeComboxBox.setSelectedItem(mouseType);
     }
 
-    
-    protected void initDoButton()
-    {
+    protected void initDoButton() {
         this.doButton = new JButton("Save");
-        this.doButton.addActionListener(new ActionListener()
-        {
-            public void actionPerformed(ActionEvent e)
-            { 
+        this.doButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 saveParams();
             }
         });
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-    	// Create labels
+    protected void initMainEntryPanel() {
+        // Create labels
         enabledLabel = new JLabel("Enabled");
         sizeLabel = new JLabel("  Type");
-        
+
         // Create enabled checkbox
         enabledCheckBox = new JCheckBox();
         enabledCheckBox.setSelected(true);
-        
+
         // Create mouse type selection
         DefaultComboBoxModel mouseTypeModel = new DefaultComboBoxModel();
         mouseTypeModel.addElement("ps/2");
@@ -133,44 +123,40 @@ public class MouseConfigDialog extends ConfigurationDialog
         mouseTypeComboxBox.setSelectedIndex(0);
 
         // Layout components
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
+        mainEntryPanel = new JPanel(new GridLayout(10, 3));
+        Border blackline = BorderFactory.createLineBorder(Color.black);
         mainEntryPanel.setBorder(blackline);
-        
+
         // Add components to panel
         mainEntryPanel.add(enabledLabel);
         mainEntryPanel.add(enabledCheckBox);
 
         // Fill first blanks in grid
-        for (int i = 0; i < 1; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+        for (int i = 0; i < 1; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
-        
+
         mainEntryPanel.add(sizeLabel);
         mainEntryPanel.add(mouseTypeComboxBox);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        // Fill end blanks in grid     
-        for (int i = 0; i < 24; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+        mainEntryPanel.add(new JLabel(""));
+
+        // Fill end blanks in grid
+        for (int i = 0; i < 24; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
     }
-    
-    
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
-     */    
-    protected Emulator getParamsFromGui()
-    {
-    	Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
-        
-        mouse.setEnabled(enabledCheckBox.isSelected());    
-        mouse.setMousetype((String)mouseTypeComboxBox.getSelectedItem());
-        
+     */
+    protected Emulator getParamsFromGui() {
+        Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
+
+        mouse.setEnabled(enabledCheckBox.isSelected());
+        mouse.setMousetype((String) mouseTypeComboxBox.getSelectedItem());
+
         return emuConfig;
     }
 }

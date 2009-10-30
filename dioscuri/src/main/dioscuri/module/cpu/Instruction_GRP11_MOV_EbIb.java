@@ -37,20 +37,20 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import dioscuri.exception.CPUInstructionException;
 
 /**
  * Intel opcode C6<BR>
- * Group 11 opcode extension: MOV immediate byte (source) into memory/register (destination).<BR>
- * Performs the selected instruction (indicated by bits 5, 4, 3 of the ModR/M byte) using immediate data.<BR>
+ * Group 11 opcode extension: MOV immediate byte (source) into memory/register
+ * (destination).<BR>
+ * Performs the selected instruction (indicated by bits 5, 4, 3 of the ModR/M
+ * byte) using immediate data.<BR>
  * NOTE: Only one instruction in group (MOV EbIb, reg=000).<BR>
  * Flags modified: none
  */
-public class Instruction_GRP11_MOV_EbIb implements Instruction
-{
+public class Instruction_GRP11_MOV_EbIb implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -66,13 +66,11 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction
     byte displacement;
     byte registerHighLow;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_GRP11_MOV_EbIb()
-    {
+    public Instruction_GRP11_MOV_EbIb() {
         operandWordSize = false;
 
         addressByte = 0;
@@ -88,10 +86,10 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_GRP11_MOV_EbIb(CPU processor)
-    {
+    public Instruction_GRP11_MOV_EbIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -102,47 +100,49 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction
 
     /**
      * MOV immediate byte into memory/register.<BR>
-     * @throws CPUInstructionException 
+     * 
+     * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
-        if (((addressByte & 0x38) >> 3) == 0x00)
-        {
+        if (((addressByte & 0x38) >> 3) == 0x00) {
             // 000
-            // Execute MOV on reg,reg or mem,reg. Determine this from mm bits of addressbyte
-            if (((addressByte >> 6) & 0x03) == 3)
-            {
+            // Execute MOV on reg,reg or mem,reg. Determine this from mm bits of
+            // addressbyte
+            if (((addressByte >> 6) & 0x03) == 3) {
                 // MOV reg,reg
-                // Determine destination register from addressbyte, ANDing it with 0000 0111
-                destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
+                // Determine destination register from addressbyte, ANDing it
+                // with 0000 0111
+                destinationRegister = cpu.decodeRegister(operandWordSize,
+                        addressByte & 0x07);
 
-                // Determine high/low part of register based on bit 3 (leading sss bit)
-                registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
+                // Determine high/low part of register based on bit 3 (leading
+                // sss bit)
+                registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW
+                        : (byte) CPU.REGISTER_GENERAL_HIGH;
 
                 // MOV source to destination
                 destinationRegister[registerHighLow] = cpu.getByteFromCode();
-            }
-            else
-            {
+            } else {
                 // MOV mem,reg
-                // Determine IP displacement of memory location (if any) 
+                // Determine IP displacement of memory location (if any)
                 memoryReferenceDisplacement = cpu.decodeMM(addressByte);
 
                 // Determine memory location
-                memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+                memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                        memoryReferenceDisplacement);
 
                 // Store next immediate in memory reference location
-                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.getByteFromCode());
+                cpu.setByteInMemorySegment(addressByte,
+                        memoryReferenceLocation, cpu.getByteFromCode());
             }
-        }
-        else
-        {
+        } else {
             // Throw exception for illegal nnn bits
-            throw new CPUInstructionException("Group 11 (0xC6) instruction illegal nnn bits.");
+            throw new CPUInstructionException(
+                    "Group 11 (0xC6) instruction illegal nnn bits.");
         }
     }
 }

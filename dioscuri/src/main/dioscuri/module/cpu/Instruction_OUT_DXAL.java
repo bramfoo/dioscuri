@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,14 +44,12 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
 
-
 /**
  * Intel opcode EE<BR>
  * Output byte in AL to I/O port address specified by DX.<BR>
  * Flags modified: none
  */
-public class Instruction_OUT_DXAL implements Instruction
-{
+public class Instruction_OUT_DXAL implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -63,22 +60,20 @@ public class Instruction_OUT_DXAL implements Instruction
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXAL()
-    {
+    public Instruction_OUT_DXAL() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_OUT_DXAL(CPU processor)
-    {
+    public Instruction_OUT_DXAL(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -88,30 +83,30 @@ public class Instruction_OUT_DXAL implements Instruction
     /**
      * Output byte in AL to I/O port address in DX
      */
-    public void execute()
-    {
-        try
-        {
-            // Convert value in DX to unsigned integer to prevent lookup table out of bounds;
+    public void execute() {
+        try {
+            // Convert value in DX to unsigned integer to prevent lookup table
+            // out of bounds;
             // set data to appropriate port
-            portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH])& 0xFF)<<8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
-            
-            // FIXME: Temporary shunt for custom Bochs ports defined in the Bochs BIOS; implement properly
-            // #define PANIC_PORT  0x400
+            portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
+
+            // FIXME: Temporary shunt for custom Bochs ports defined in the
+            // Bochs BIOS; implement properly
+            // #define PANIC_PORT 0x400
             // #define PANIC_PORT2 0x401
-            // #define INFO_PORT   0x402
-            // #define DEBUG_PORT  0x403
-            if (portAddress == 1024 || portAddress == 1025 || portAddress == 1026 || portAddress == 1027)
-            {
-                logger.log(Level.CONFIG, "Instruction_OUT_DXAL targeted custom Bochs port " + portAddress + ". OUT ignored.");
+            // #define INFO_PORT 0x402
+            // #define DEBUG_PORT 0x403
+            if (portAddress == 1024 || portAddress == 1025
+                    || portAddress == 1026 || portAddress == 1027) {
+                logger.log(Level.CONFIG,
+                        "Instruction_OUT_DXAL targeted custom Bochs port "
+                                + portAddress + ". OUT ignored.");
+            } else {
+                cpu
+                        .setIOPortByte(portAddress,
+                                cpu.ax[CPU.REGISTER_GENERAL_LOW]);
             }
-            else
-            {
-                cpu.setIOPortByte(portAddress, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-            }
-        }
-        catch (ModuleException e)
-        {
+        } catch (ModuleException e) {
             // TODO: Implement proper catch block for OUT_DXAL instruction
         }
     }

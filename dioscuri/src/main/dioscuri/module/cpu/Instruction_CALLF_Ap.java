@@ -37,17 +37,16 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
  * Intel opcode 9A<BR>
- * Call to procedure in another code segment (intersegment call) indicated by immediate signed words.<BR>
+ * Call to procedure in another code segment (intersegment call) indicated by
+ * immediate signed words.<BR>
  * Displacement is relative to next instruction.<BR>
  * Flags modified: none
  */
-public class Instruction_CALLF_Ap implements Instruction
-{
+public class Instruction_CALLF_Ap implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -59,17 +58,16 @@ public class Instruction_CALLF_Ap implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_CALLF_Ap()
-    {
+    public Instruction_CALLF_Ap() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_CALLF_Ap(CPU processor)
-    {
+    public Instruction_CALLF_Ap(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
 
@@ -82,8 +80,7 @@ public class Instruction_CALLF_Ap implements Instruction
     /**
      * Execute call to procedure indicated by immediate signed words
      */
-    public void execute()
-    {
+    public void execute() {
         // Call far absolute address given in operand (IP:CS=r16:16 or r16:32)
 
         // Get new IP from code

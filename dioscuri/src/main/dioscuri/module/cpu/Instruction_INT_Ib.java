@@ -37,55 +37,51 @@
  * Project Title: DIOSCURI
  */
 
-
-
 package dioscuri.module.cpu;
 
 /**
  * Intel opcode CD<BR>
  * Call to Interrupt Procedure.<BR>
- * The immediate byte specifies the index (0 - 255) within the Interrupt Descriptor Table (IDT).<BR>
+ * The immediate byte specifies the index (0 - 255) within the Interrupt
+ * Descriptor Table (IDT).<BR>
  * Flags modified: IF, TF, AC
  */
-public class Instruction_INT_Ib implements Instruction
-{
+public class Instruction_INT_Ib implements Instruction {
 
     // Attributes
     private CPU cpu;
 
     boolean operandWordSize;
-    
+
     int index;
     int offset;
 
     byte[] newCS;
     byte[] newIP;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_INT_Ib()
-    {
+    public Instruction_INT_Ib() {
         operandWordSize = true;
-        
+
         index = 0;
         offset = 0;
 
         newCS = new byte[2];
         newIP = new byte[2];
     }
-    
+
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_INT_Ib(CPU processor)
-    {
+    public Instruction_INT_Ib(CPU processor) {
         this();
-        
+
         // Create reference to cpu class
         cpu = processor;
     }
@@ -95,49 +91,51 @@ public class Instruction_INT_Ib implements Instruction
     /**
      * Call the interrupt procedure based on the interrupt vector in the IDT.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Retrieve immediate byte (index for IDT) from memory
         index = (((int) cpu.getByteFromCode()) & 0xFF);
-        
+
         // Check if index is in range of IDT (0 - 255)
-        if (index <= 255)
-        {
+        if (index <= 255) {
             // Push flags register (16-bit) onto stack
             cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
-            
-            // Clear flags IF, TF, (and Alignment Check AC, but is not implemented on 16-bit)
+
+            // Clear flags IF, TF, (and Alignment Check AC, but is not
+            // implemented on 16-bit)
             cpu.flags[CPU.REGISTER_FLAGS_IF] = false;
             cpu.flags[CPU.REGISTER_FLAGS_TF] = false;
-            
+
             // Push current code segment and instruction pointer onto stack
             cpu.setWordToStack(cpu.cs);
             cpu.setWordToStack(cpu.ip);
-            
-            // Retrieve the interrupt vector (IP:CS) from the IDT, based on the index
+
+            // Retrieve the interrupt vector (IP:CS) from the IDT, based on the
+            // index
             // Reset the CS and IP to interrupt vector in IDT
-            cpu.cs = new byte[] {0x00, 0x00};   // refer to beginning of code segment
-            offset = index * 4;                 // define offset from code segment (index * 4 bytes)
-            cpu.ip = new byte[] {(byte)((offset >> 8) & 0xFF), (byte)(offset & 0xFF)};
+            cpu.cs = new byte[] { 0x00, 0x00 }; // refer to beginning of code
+                                                // segment
+            offset = index * 4; // define offset from code segment (index * 4
+                                // bytes)
+            cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
+                    (byte) (offset & 0xFF) };
 
             // Fetch IP value
             newIP = cpu.getWordFromCode();
 
             // Increment offset by 2 bytes and fetch CS
             offset += 2;
-            cpu.ip = new byte[] {(byte)((offset >> 8) & 0xFF), (byte)(offset & 0xFF)};
+            cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
+                    (byte) (offset & 0xFF) };
             newCS = cpu.getWordFromCode();
-            
+
             // Assign new CS and IP to registers pointing to interrupt procedure
             cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
             cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
             cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];
             cpu.ip[CPU.REGISTER_HIGH] = newIP[CPU.REGISTER_HIGH];
+        } else {
+            // TODO: exception because index is out of range of IDT.
         }
-        else
-        {
-            //TODO: exception because index is out of range of IDT.
-        }
-        
+
     }
 }

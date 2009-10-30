@@ -37,49 +37,48 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 99<BR>
-	 * Convert Word to DoubleWord.<BR>
-	 * Copy the sign (bit 15) in AX into every bit of DX register<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 99<BR>
+ * Convert Word to DoubleWord.<BR>
+ * Copy the sign (bit 15) in AX into every bit of DX register<BR>
+ * Flags modified: none
+ */
 public class Instruction_CWD implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_CWD()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_CWD(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_CWD() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Copy the sign (bit 15) in AX into every bit of DX register
-	 */
-	public void execute()
-	{
-		// Change DX to 0x0000 if AH < 0x80, or 0xFFFF if AH >= 0x80
-		cpu.dx[CPU.REGISTER_GENERAL_HIGH] = cpu.dx[CPU.REGISTER_GENERAL_LOW] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] >= 0 ? (byte) 0x00 : (byte) 0xFF;	
-	}
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_CWD(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy the sign (bit 15) in AX into every bit of DX register
+     */
+    public void execute() {
+        // Change DX to 0x0000 if AH < 0x80, or 0xFFFF if AH >= 0x80
+        cpu.dx[CPU.REGISTER_GENERAL_HIGH] = cpu.dx[CPU.REGISTER_GENERAL_LOW] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] >= 0 ? (byte) 0x00
+                : (byte) 0xFF;
+    }
 }

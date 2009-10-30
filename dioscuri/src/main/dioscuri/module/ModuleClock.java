@@ -37,52 +37,55 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
  */
 
-public abstract class ModuleClock extends Module
-{
+public abstract class ModuleClock extends Module {
     // Methods
-    
+
     /**
      * Register a device to clock and assign a timer to it
      * 
-     * @param ModuleDevice device that requires a timer
+     * @param ModuleDevice
+     *            device that requires a timer
      * @param int updateInterval in microseconds
      * @param boolean continuous type of timer requested, one-shot or continuous
      * 
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public abstract boolean registerDevice(ModuleDevice device, int intervalLength, boolean continuousOneShot);
-    
+    public abstract boolean registerDevice(ModuleDevice device,
+            int intervalLength, boolean continuousOneShot);
+
     /**
      * Reset the timer of given device (if any)
      * 
-     * @param ModuleDevice device that request a timer reset
+     * @param ModuleDevice
+     *            device that request a timer reset
      * @param int updateInterval in microseconds
      * 
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean resetTimer(ModuleDevice device, int intervalLength);
-    
+
     /**
      * Set a timer to start/stop running
      * 
-     * @param ModuleDevice device that request a timer to be set
+     * @param ModuleDevice
+     *            device that request a timer to be set
      * @param boolean runState the state to set the timer to (start/stop)
      * 
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device, boolean runState);
-    
+    public abstract boolean setTimerActiveState(ModuleDevice device,
+            boolean runState);
+
     /**
      * Triggers device's update if timer goes off
      * 
      */
     public abstract void pulse();
-    
+
 }

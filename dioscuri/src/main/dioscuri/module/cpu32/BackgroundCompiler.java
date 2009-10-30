@@ -22,7 +22,7 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.util.*;
@@ -32,8 +32,7 @@ import java.util.*;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.processor.*;
 @SuppressWarnings("unused")
-public class BackgroundCompiler implements CodeBlockCompiler
-{
+public class BackgroundCompiler implements CodeBlockCompiler {
     private static final int COMPILER_QUEUE_SIZE = 20;
     private static final int COMPILE_REQUEST_THRESHOLD = 64;
 
@@ -42,177 +41,159 @@ public class BackgroundCompiler implements CodeBlockCompiler
 
     private boolean running;
 
-    public BackgroundCompiler(CodeBlockCompiler immediate, CodeBlockCompiler delayed)
-    {
+    public BackgroundCompiler(CodeBlockCompiler immediate,
+            CodeBlockCompiler delayed) {
         this.immediate = immediate;
         this.delayed = delayed;
-    compilerQueue = new CompilerQueue(COMPILER_QUEUE_SIZE);
+        compilerQueue = new CompilerQueue(COMPILER_QUEUE_SIZE);
 
         running = true;
         new CompilerThread();
     }
 
-    public void stop()
-    {
+    public void stop() {
         running = false;
-    }        
+    }
 
-    class CompilerThread extends Thread
-    {
-        CompilerThread()
-        {
+    class CompilerThread extends Thread {
+        CompilerThread() {
             super("Background CodeBlock Compiler Task");
             start();
-            setPriority(Math.max(Thread.MIN_PRIORITY, Thread.currentThread().getPriority()-1));
+            setPriority(Math.max(Thread.MIN_PRIORITY, Thread.currentThread()
+                    .getPriority() - 1));
         }
 
-        public void run()
-        {
-            while (running)
-            {
-        ExecuteCountingCodeBlockWrapper target = compilerQueue.getBlock();
-                try
-                {
-                    if (target == null)
-                    {
+        public void run() {
+            while (running) {
+                ExecuteCountingCodeBlockWrapper target = compilerQueue
+                        .getBlock();
+                try {
+                    if (target == null) {
                         Thread.sleep(100);
                         continue;
                     }
 
                     CodeBlock src = target.getBlock();
 
-            if (src instanceof RealModeUBlock) 
-                    {
-            RealModeCodeBlock result = delayed.getRealModeCodeBlock(((RealModeUBlock)src).getAsInstructionSource());
-            target.replaceInOwner(result);
-            } 
-                    else if (src instanceof ProtectedModeUBlock) 
-                    {
-            ProtectedModeCodeBlock result = delayed.getProtectedModeCodeBlock(((ProtectedModeUBlock)src).getAsInstructionSource());
-            target.replaceInOwner(result);
-            }
-                } 
-                catch (ClassFormatError e) 
-                {
-            System.out.println(e);
-            target.replaceInOwner(target.getBlock());
-        } 
-                catch (IllegalStateException e) 
-                {
-//            System.out.println(e);
-            target.replaceInOwner(target.getBlock());
-        } 
-                catch (Throwable e) 
-                {
-            System.out.println(e);
-            target.replaceInOwner(target.getBlock());
+                    if (src instanceof RealModeUBlock) {
+                        RealModeCodeBlock result = delayed
+                                .getRealModeCodeBlock(((RealModeUBlock) src)
+                                        .getAsInstructionSource());
+                        target.replaceInOwner(result);
+                    } else if (src instanceof ProtectedModeUBlock) {
+                        ProtectedModeCodeBlock result = delayed
+                                .getProtectedModeCodeBlock(((ProtectedModeUBlock) src)
+                                        .getAsInstructionSource());
+                        target.replaceInOwner(result);
+                    }
+                } catch (ClassFormatError e) {
+                    System.out.println(e);
+                    target.replaceInOwner(target.getBlock());
+                } catch (IllegalStateException e) {
+                    // System.out.println(e);
+                    target.replaceInOwner(target.getBlock());
+                } catch (Throwable e) {
+                    System.out.println(e);
+                    target.replaceInOwner(target.getBlock());
                 }
             }
         }
     }
 
-    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source)
-    {
+    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         RealModeCodeBlock imm = immediate.getRealModeCodeBlock(source);
-    return new RealModeCodeBlockWrapper(imm);
+        return new RealModeCodeBlockWrapper(imm);
     }
 
-    public ProtectedModeCodeBlock getProtectedModeCodeBlock(InstructionSource source)
-    {
-    ProtectedModeCodeBlock imm = immediate.getProtectedModeCodeBlock(source);
-    return new ProtectedModeCodeBlockWrapper(imm);
+    public ProtectedModeCodeBlock getProtectedModeCodeBlock(
+            InstructionSource source) {
+        ProtectedModeCodeBlock imm = immediate
+                .getProtectedModeCodeBlock(source);
+        return new ProtectedModeCodeBlockWrapper(imm);
     }
 
-    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(InstructionSource source)
-    {
-//  Virtual8086ModeCodeBlock imm = immediate.getVirtual8086ModeCodeBlock(source);
-//  return new Virtual8086ModeCodeBlockWrapper(imm);
+    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
+            InstructionSource source) {
+        // Virtual8086ModeCodeBlock imm =
+        // immediate.getVirtual8086ModeCodeBlock(source);
+        // return new Virtual8086ModeCodeBlockWrapper(imm);
 
-    return immediate.getVirtual8086ModeCodeBlock(source);
+        return immediate.getVirtual8086ModeCodeBlock(source);
     }
 
-    abstract class ExecuteCountingCodeBlockWrapper extends AbstractCodeBlockWrapper implements Comparable<ExecuteCountingCodeBlockWrapper>
-    {
+    abstract class ExecuteCountingCodeBlockWrapper extends
+            AbstractCodeBlockWrapper implements
+            Comparable<ExecuteCountingCodeBlockWrapper> {
         int executeCount, diff;
 
-    int loadedExecuteCount;
+        int loadedExecuteCount;
 
-    public ExecuteCountingCodeBlockWrapper(CodeBlock block)
-    {
+        public ExecuteCountingCodeBlockWrapper(CodeBlock block) {
             super(block);
         }
 
-        public int execute(Processor cpu)
-        {
-        if ((++executeCount & COMPILE_REQUEST_THRESHOLD) == 0) {
-        loadedExecuteCount = executeCount;
-        compilerQueue.addBlock(this);
-        }
+        public int execute(Processor cpu) {
+            if ((++executeCount & COMPILE_REQUEST_THRESHOLD) == 0) {
+                loadedExecuteCount = executeCount;
+                compilerQueue.addBlock(this);
+            }
 
             return super.execute(cpu);
         }
 
-    public int compareTo(ExecuteCountingCodeBlockWrapper o)
-    {
-        
-        if (loadedExecuteCount > o.loadedExecuteCount)
-        return 1;
-        else
-        return -1;
-    }
+        public int compareTo(ExecuteCountingCodeBlockWrapper o) {
+
+            if (loadedExecuteCount > o.loadedExecuteCount)
+                return 1;
+            else
+                return -1;
+        }
     }
 
-    class RealModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper implements RealModeCodeBlock
-    {
-    public RealModeCodeBlockWrapper(RealModeCodeBlock block)
-    {
+    class RealModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper
+            implements RealModeCodeBlock {
+        public RealModeCodeBlockWrapper(RealModeCodeBlock block) {
             super(block);
-    }
-    }
-
-    class ProtectedModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper implements ProtectedModeCodeBlock
-    {
-    public ProtectedModeCodeBlockWrapper(ProtectedModeCodeBlock block)
-    {
-        super(block);
-    }
-    }
-
-    static class CompilerQueue
-    {
-    private final PriorityDeque queue;
-
-    private final int capacity;
-
-    private final Object lock = new Object();
-
-    CompilerQueue(int size)
-    {
-        queue = new PriorityDeque(size);
-        capacity = size;
-    }
-
-    void addBlock(ExecuteCountingCodeBlockWrapper block)
-    {
-        synchronized (lock) {
-        queue.remove(block);
-        queue.offer(block);
-        
-        while (queue.size() >= capacity)
-            queue.pollFirst();
         }
     }
 
-    ExecuteCountingCodeBlockWrapper getBlock()
-    {
-        synchronized (lock) {
-        return (ExecuteCountingCodeBlockWrapper)(queue.pollLast());
+    class ProtectedModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper
+            implements ProtectedModeCodeBlock {
+        public ProtectedModeCodeBlockWrapper(ProtectedModeCodeBlock block) {
+            super(block);
         }
     }
+
+    static class CompilerQueue {
+        private final PriorityDeque queue;
+
+        private final int capacity;
+
+        private final Object lock = new Object();
+
+        CompilerQueue(int size) {
+            queue = new PriorityDeque(size);
+            capacity = size;
+        }
+
+        void addBlock(ExecuteCountingCodeBlockWrapper block) {
+            synchronized (lock) {
+                queue.remove(block);
+                queue.offer(block);
+
+                while (queue.size() >= capacity)
+                    queue.pollFirst();
+            }
+        }
+
+        ExecuteCountingCodeBlockWrapper getBlock() {
+            synchronized (lock) {
+                return (ExecuteCountingCodeBlockWrapper) (queue.pollLast());
+            }
+        }
     }
 
-    protected void finalize()
-    {
+    protected void finalize() {
         stop();
     }
 }

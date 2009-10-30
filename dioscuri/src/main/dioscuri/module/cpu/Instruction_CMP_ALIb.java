@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Does not update any registers, only sets appropriate flags.<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_CMP_ALIb implements Instruction
-{
+public class Instruction_CMP_ALIb implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -60,17 +58,16 @@ public class Instruction_CMP_ALIb implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_CMP_ALIb()
-    {
+    public Instruction_CMP_ALIb() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_CMP_ALIb(CPU processor)
-    {
+    public Instruction_CMP_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -83,19 +80,21 @@ public class Instruction_CMP_ALIb implements Instruction
      * Comparison of immediate byte (SUB) with AL.<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute()
-    {
+    public void execute() {
         immediateByte = cpu.getByteFromCode();
 
         // Subtract immediate byte from register AL
         tempResult = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] - immediateByte);
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(cpu.ax[CPU.REGISTER_GENERAL_LOW], tempResult);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(
+                cpu.ax[CPU.REGISTER_GENERAL_LOW], tempResult);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(cpu.ax[CPU.REGISTER_GENERAL_LOW], immediateByte, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(
+                cpu.ax[CPU.REGISTER_GENERAL_LOW], immediateByte, 0);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(cpu.ax[CPU.REGISTER_GENERAL_LOW], immediateByte, tempResult, 0);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(
+                cpu.ax[CPU.REGISTER_GENERAL_LOW], immediateByte, tempResult, 0);
         // Test ZF, is tested againt tempResult
         cpu.flags[CPU.REGISTER_FLAGS_ZF] = tempResult == 0 ? true : false;
         // Test SF, only applies to lower byte (set when MSB is 1, occurs when

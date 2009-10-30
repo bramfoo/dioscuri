@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,120 +44,121 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
 
-
-	/**
-	 * Intel opcode 6F<BR>
-	 * Output word from DS:(E)SI to I/O port (specified in DX); update SI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 6F<BR>
+ * Output word from DS:(E)SI to I/O port (specified in DX); update SI register
+ * according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_OUTSW_DXXv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     int portAddress;
-    
-    // Note: the addressbyte passed here is a value chosen so if the segmentOverride fails (which it shouldn't!),
-    // the DS segment is still chosen. 
+
+    // Note: the addressbyte passed here is a value chosen so if the
+    // segmentOverride fails (which it shouldn't!),
+    // the DS segment is still chosen.
     byte defaultAddressByte = 0;
-    
+
     byte[] memoryValue = new byte[2];
     byte[] eMemoryValue = new byte[2];
-    
+
     byte[] transition;
-	
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-
     // Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_OUTSW_DXXv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_OUTSW_DXXv(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_OUTSW_DXXv() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_OUTSW_DXXv(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
         // Set transition that holds the amount SI should be altered (word = 2)
         transition = new byte[] { 0x00, 0x02 };
-        
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Output word from DS:(E)SI to I/O port (specified in DX); update SI register according to DF.
-	 */
-	public void execute()
-	{
-        
-        // Get port address from DX; convert this to unsigned integer to prevent lookup table out of bounds;
+    }
+
+    // Methods
+
+    /**
+     * Output word from DS:(E)SI to I/O port (specified in DX); update SI
+     * register according to DF.
+     */
+    public void execute() {
+
+        // Get port address from DX; convert this to unsigned integer to prevent
+        // lookup table out of bounds;
         portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
 
         // Read word from DS:SI; write to portAddress
         // DS segment may be overridden.
-        try
-        {
+        try {
             // Check if the destination is a word or doubleword
-            if (cpu.doubleWord)
-            {
+            if (cpu.doubleWord) {
                 // Get the doubleword
-                eMemoryValue = cpu.getWordFromMemorySegment(defaultAddressByte, cpu.si);
+                eMemoryValue = cpu.getWordFromMemorySegment(defaultAddressByte,
+                        cpu.si);
                 // Increment offset when getting the next word
-                memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte, Util.addWords(cpu.si, new byte[]{0x00, 0x02}, 0));
-                
+                memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte,
+                        Util.addWords(cpu.si, new byte[] { 0x00, 0x02 }, 0));
+
                 // Write the doubleword to the I/O port
-                cpu.setIOPortDoubleWord(portAddress, new byte[]{eMemoryValue[CPU.REGISTER_GENERAL_LOW], eMemoryValue[CPU.REGISTER_GENERAL_HIGH], memoryValue[CPU.REGISTER_GENERAL_LOW], memoryValue[CPU.REGISTER_GENERAL_HIGH]});
-                
-                // Note: SI is updated by word-size here, the other word-size is done below
+                cpu.setIOPortDoubleWord(portAddress, new byte[] {
+                        eMemoryValue[CPU.REGISTER_GENERAL_LOW],
+                        eMemoryValue[CPU.REGISTER_GENERAL_HIGH],
+                        memoryValue[CPU.REGISTER_GENERAL_LOW],
+                        memoryValue[CPU.REGISTER_GENERAL_HIGH] });
+
+                // Note: SI is updated by word-size here, the other word-size is
+                // done below
                 // Update SI according to DF flag
-                // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
-                if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-                {
+                // Check direction of flag: If DF == 0, SI is incremented; if DF
+                // == 1, SI is decremented
+                if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
                     // Decrement the SI register by word size
                     cpu.si = Util.subtractWords(cpu.si, transition, 0);
-                }
-                else
-                {
+                } else {
                     // Increment the SI register by word size
                     cpu.si = Util.addWords(cpu.si, transition, 0);
                 }
-                
-            }
-            else    // Word-size
+
+            } else // Word-size
             {
-                memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte, cpu.si);
+                memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte,
+                        cpu.si);
 
                 // Write the word to the I/O port
                 cpu.setIOPortWord(portAddress, memoryValue);
             }
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
 
         // Update SI according to DF flag
-        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1,
+        // SI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the SI register by word size
             cpu.si = Util.subtractWords(cpu.si, transition, 0);
-        }
-        else
-        {
+        } else {
             // Increment the SI register by word size
             cpu.si = Util.addWords(cpu.si, transition, 0);
         }
-	}
+    }
 }

@@ -37,72 +37,74 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 46<BR>
-	 * Increment index register SI.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF
-	 */
+/**
+ * Intel opcode 46<BR>
+ * Increment index register SI.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF
+ */
 public class Instruction_INC_SI implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     private byte[] temp;
     private byte[] oldDest;
     private byte[] incWord;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_INC_SI()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_INC_SI(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
+
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_INC_SI() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_INC_SI(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
         temp = new byte[2];
         oldDest = new byte[2];
-        incWord = new byte[] {0x00,0x01};
-	}
+        incWord = new byte[] { 0x00, 0x01 };
+    }
 
-	
-	// Methods
-    
+    // Methods
+
     /**
      * Increment general register SI
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.si, 0, oldDest, 0, cpu.si.length);
-        
+
         // Increment the si register
         temp = Util.addWords(cpu.si, incWord, 0);
-        
+
         // Assign result to si
         cpu.si[CPU.REGISTER_GENERAL_HIGH] = temp[CPU.REGISTER_GENERAL_HIGH];
         cpu.si[CPU.REGISTER_GENERAL_LOW] = temp[CPU.REGISTER_GENERAL_LOW];
-        
+
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDest[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true : false;  
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = (oldDest[CPU.REGISTER_GENERAL_LOW] & 0x0F) == 0x0F ? true
+                : false;
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, incWord, cpu.si, 0);  
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_ADD(oldDest, incWord,
+                cpu.si, 0);
         // Test ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.si[CPU.REGISTER_GENERAL_HIGH] == 0x00 && cpu.si[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.si[CPU.REGISTER_GENERAL_HIGH] == 0x00
+                && cpu.si[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
         // Test SF (set when MSB of BH is 1. In Java can check signed byte)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.si[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.si[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                : false;
         // Set PF, only applies to LSB
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.si[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.si[CPU.REGISTER_GENERAL_LOW]);
     }
 }

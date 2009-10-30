@@ -37,30 +37,29 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModulePIT extends ModuleDevice
-{
+public abstract class ModulePIT extends ModuleDevice {
     // Methods
-    
+
     /**
      * Retrieves the current clockrate of this clock in milliseconds
      * 
-     * @return long milliseconds defining how long the clock sleeps before sending a pulse
+     * @return long milliseconds defining how long the clock sleeps before
+     *         sending a pulse
      */
-//    public abstract long getClockRate();
+    // public abstract long getClockRate();
 
     /**
      * Sets the clock rate for this PIT
      * 
      * @param long milliseconds, the time between two consequtive clock pulses
      */
-//    public abstract void setClockRate(long milliseconds);
-    
+    // public abstract void setClockRate(long milliseconds);
+
 }

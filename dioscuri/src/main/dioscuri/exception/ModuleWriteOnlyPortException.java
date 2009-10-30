@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class ModuleWriteOnlyPortException extends Exception
-{
+public class ModuleWriteOnlyPortException extends Exception {
 
-    public ModuleWriteOnlyPortException(String message)
-    {
+    public ModuleWriteOnlyPortException(String message) {
         super(message);
     }
-    
+
 }

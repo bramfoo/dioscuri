@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,65 +44,65 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.CPUInstructionException;
 
-
-	/**
-	 * Intel opcode 0F<BR>
-	 * Escape character for two-byte opcodes.<BR>
-	 * References the doubleByteInstructions array in CPU<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 0F<BR>
+ * Escape character for two-byte opcodes.<BR>
+ * References the doubleByteInstructions array in CPU<BR>
+ * Flags modified: none
+ */
 public class Instruction_2ByteEscape implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-    
+    // Attributes
+    private CPU cpu;
+
     int instruction;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_2ByteEscape()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_2ByteEscape(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_2ByteEscape() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Execute doubleByteInstructions[instruction]
-	 */
-	public void execute() throws CPUInstructionException
-	{
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_2ByteEscape(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute doubleByteInstructions[instruction]
+     */
+    public void execute() throws CPUInstructionException {
         // Retrieve instruction number after escape byte
-	    instruction = cpu.getByteFromCode();
-        
-        // Temporary setting for debugging
-//        if(cpu.getCpuInstructionDebug())
-            cpu.codeByte2 = (instruction & 0xFF);
+        instruction = cpu.getByteFromCode();
 
-    	if (cpu.doubleWord && cpu.isDoubleByte32BitSupported() == false)
-    	{
-            logger.log(Level.SEVERE, "[" + cpu.getType() + "] Instruction problem (opcode " + Integer.toHexString(cpu.codeByte) + " " + Integer.toHexString(cpu.codeByte2) + "h): 32-bit not supported!");
-    	}
-        
-        // Cast signed byte to integer to avoid invalid array lookup 
+        // Temporary setting for debugging
+        // if(cpu.getCpuInstructionDebug())
+        cpu.codeByte2 = (instruction & 0xFF);
+
+        if (cpu.doubleWord && cpu.isDoubleByte32BitSupported() == false) {
+            logger.log(Level.SEVERE, "[" + cpu.getType()
+                    + "] Instruction problem (opcode "
+                    + Integer.toHexString(cpu.codeByte) + " "
+                    + Integer.toHexString(cpu.codeByte2)
+                    + "h): 32-bit not supported!");
+        }
+
+        // Cast signed byte to integer to avoid invalid array lookup
         // Jump to doubleByte instruction
         cpu.doubleByteInstructions[(instruction & 0xFF)].execute();
     }

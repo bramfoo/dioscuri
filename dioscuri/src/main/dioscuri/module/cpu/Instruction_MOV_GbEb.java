@@ -37,88 +37,95 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 8A<BR>
-	 * Byte-sized copy of register (destination) from memory/register (source).<BR>
-	 * The addressbyte determines the source (sss bits) and destination (rrr bits).<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 8A<BR>
+ * Byte-sized copy of register (destination) from memory/register (source).<BR>
+ * The addressbyte determines the source (sss bits) and destination (rrr bits).<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_GbEb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-    
+    // Attributes
+    private CPU cpu;
+
     boolean operandWordSize = false;
 
-	byte addressByte = 0;
-	byte[] memoryReferenceLocation = new byte[2];
-	byte[] memoryReferenceDisplacement = new byte[2];
+    byte addressByte = 0;
+    byte[] memoryReferenceLocation = new byte[2];
+    byte[] memoryReferenceDisplacement = new byte[2];
 
-	byte sourceValue = 0;
-	byte[] destinationRegister = new byte[2];
-	byte registerHighLow = 0;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_MOV_GbEb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_GbEb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    byte sourceValue = 0;
+    byte[] destinationRegister = new byte[2];
+    byte registerHighLow = 0;
 
-	// Methods
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_MOV_GbEb() {
+    }
 
-	/**
-	 * Byte-sized copy of register (destination) from memory/register (source).<BR>
-	 * Flags modified: none
-	 */
-	public void execute()
-	{
-		// Get addresByte
-		addressByte = cpu.getByteFromCode();
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_GbEb(CPU processor) {
+        this();
 
-		// Determine displacement of memory location (if any) 
-		memoryReferenceDisplacement = cpu.decodeMM(addressByte);
-		
-		// Execute MOV on reg,reg or mem,reg. Determine this from mm bits of addressbyte
-        if (((addressByte >> 6) & 0x03) == 3)
-		{
-			// MOV reg,reg
-			// Determine source value from addressbyte, ANDing it with 0000 0111 to get sss bits
-            // Determine high/low part of register based on bit 2 (leading sss bit)
-            registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
-			sourceValue = cpu.decodeRegister(operandWordSize, addressByte & 0x07)[registerHighLow];
-		}
-		else
-		{
-			// MOV mem,reg
-			// Determine memory location
-			memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Byte-sized copy of register (destination) from memory/register (source).<BR>
+     * Flags modified: none
+     */
+    public void execute() {
+        // Get addresByte
+        addressByte = cpu.getByteFromCode();
+
+        // Determine displacement of memory location (if any)
+        memoryReferenceDisplacement = cpu.decodeMM(addressByte);
+
+        // Execute MOV on reg,reg or mem,reg. Determine this from mm bits of
+        // addressbyte
+        if (((addressByte >> 6) & 0x03) == 3) {
+            // MOV reg,reg
+            // Determine source value from addressbyte, ANDing it with 0000 0111
+            // to get sss bits
+            // Determine high/low part of register based on bit 2 (leading sss
+            // bit)
+            registerHighLow = ((addressByte & 0x04) >> 2) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW
+                    : (byte) CPU.REGISTER_GENERAL_HIGH;
+            sourceValue = cpu.decodeRegister(operandWordSize,
+                    addressByte & 0x07)[registerHighLow];
+        } else {
+            // MOV mem,reg
+            // Determine memory location
+            memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                    memoryReferenceDisplacement);
 
             // Retrieve source value from memory indicated by reference location
-            sourceValue = cpu.getByteFromMemorySegment(addressByte, memoryReferenceLocation);
-		}
-		
-		// Determine destination register using addressbyte, ANDing it with 0011 1000 and right-shift 3 to get rrr bits
-		destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
-		
-		// MOV source to destination
-        // Re-determine high/low part of register based on bit 5 (leading rrr bit)
-        registerHighLow = ((addressByte & 0x20) >> 5) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW : (byte) CPU.REGISTER_GENERAL_HIGH;
-		destinationRegister[registerHighLow] = sourceValue;
-	}
+            sourceValue = cpu.getByteFromMemorySegment(addressByte,
+                    memoryReferenceLocation);
+        }
+
+        // Determine destination register using addressbyte, ANDing it with 0011
+        // 1000 and right-shift 3 to get rrr bits
+        destinationRegister = (cpu.decodeRegister(operandWordSize,
+                (addressByte & 0x38) >> 3));
+
+        // MOV source to destination
+        // Re-determine high/low part of register based on bit 5 (leading rrr
+        // bit)
+        registerHighLow = ((addressByte & 0x20) >> 5) == 0 ? (byte) CPU.REGISTER_GENERAL_LOW
+                : (byte) CPU.REGISTER_GENERAL_HIGH;
+        destinationRegister[registerHighLow] = sourceValue;
+    }
 }

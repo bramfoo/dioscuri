@@ -22,12 +22,11 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface Hibernatable
-{
-//public void loadState(DataInputStream din) throws IOException;
+public interface Hibernatable {
+    // public void loadState(DataInputStream din) throws IOException;
 
-//public void saveState(DataOutputStream dout) throws IOException;
+    // public void saveState(DataOutputStream dout) throws IOException;
 }

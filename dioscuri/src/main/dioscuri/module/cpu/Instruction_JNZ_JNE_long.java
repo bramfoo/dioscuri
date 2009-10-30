@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Displacement is relative to next instruction.<BR>
  * Flags modified: none
  */
-public class Instruction_JNZ_JNE_long implements Instruction
-{
+public class Instruction_JNZ_JNE_long implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -57,17 +55,16 @@ public class Instruction_JNZ_JNE_long implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_JNZ_JNE_long()
-    {
+    public Instruction_JNZ_JNE_long() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_JNZ_JNE_long(CPU processor)
-    {
+    public Instruction_JNZ_JNE_long(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -77,17 +74,16 @@ public class Instruction_JNZ_JNE_long implements Instruction
     /**
      * Execute conditional short jump not zero
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
-        // the IP, it has already been incremented twice, so no extra arithmetic necessary
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
         displacement = cpu.getWordFromCode();
 
         // Jump if zero flag set, otherwise skip instruction
         // IP has already been properly updated when bytes were retrieved
-        if (!cpu.flags[CPU.REGISTER_FLAGS_ZF])
-        {
+        if (!cpu.flags[CPU.REGISTER_FLAGS_ZF]) {
             cpu.ip = Util.addWords(cpu.ip, displacement, 0);
         }
     }

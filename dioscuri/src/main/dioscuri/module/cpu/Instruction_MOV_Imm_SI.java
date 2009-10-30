@@ -37,54 +37,50 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode BE<BR>
-	 * Copy immediate word to register SI.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode BE<BR>
+ * Copy immediate word to register SI.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_SI implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_Imm_SI()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_SI(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate word to register SI
-	 */
-	public void execute()
-	{
-		cpu.si = cpu.getWordFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_Imm_SI() {
+    }
 
-        if (cpu.doubleWord)
-        {
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_SI(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate word to register SI
+     */
+    public void execute() {
+        cpu.si = cpu.getWordFromCode();
+
+        if (cpu.doubleWord) {
             // 32 bit instruction, so move one extra word into eSI
             cpu.esi = cpu.getWordFromCode();
         }
-	}
+    }
 }

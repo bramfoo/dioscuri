@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -63,79 +62,73 @@ import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 
-
-
 @SuppressWarnings("serial")
-public class AtaConfigDialog extends ConfigurationDialog
-{
-    
+public class AtaConfigDialog extends ConfigurationDialog {
+
     private JCheckBox enabledCheckBox;
-    private JFormattedTextField channelIndexFTextField;  
+    private JFormattedTextField channelIndexFTextField;
     private JCheckBox masterCheckBox;
-    private JCheckBox autodetectCheckBox;        
-    private JFormattedTextField cylindersFTextField;    
+    private JCheckBox autodetectCheckBox;
+    private JFormattedTextField cylindersFTextField;
     private JFormattedTextField headsFTextField;
     private JFormattedTextField sectorsFTextField;
-    
+
     private JFormattedTextField updateIntField;
-    
+
     private JButton imageBrowseButton;
     dioscuri.config.Emulator emuConfig;
-            
-    public AtaConfigDialog(GUI parent)
-    {               
-        super (parent, "ATA Configuration", false, ModuleType.ATA); 
-                    
+
+    public AtaConfigDialog(GUI parent) {
+        super(parent, "ATA Configuration", false, ModuleType.ATA);
+
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-        
-    	emuConfig = parent.getEmuConfig();
-        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
-    	        
-        Integer updateInt = emuConfig.getArchitecture().getModules().getAta().getUpdateintervalmicrosecs().intValue();      
+    protected void readInParams() {
+
+        emuConfig = parent.getEmuConfig();
+        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules()
+                .getAta().getHarddiskdrive().get(0);
+
+        Integer updateInt = emuConfig.getArchitecture().getModules().getAta()
+                .getUpdateintervalmicrosecs().intValue();
         boolean isEnabled = hddConfig.isEnabled();
         int channelIndex = hddConfig.getChannelindex().intValue();
         boolean isMaster = hddConfig.isMaster();
-        boolean autoDetect = hddConfig.isAutodetectcylinders();        
+        boolean autoDetect = hddConfig.isAutodetectcylinders();
         int cylinders = hddConfig.getCylinders().intValue();
         int heads = hddConfig.getHeads().intValue();
         int sectors = hddConfig.getSectorspertrack().intValue();
         String imageFormatPath = hddConfig.getImagefilepath();
-        
+
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(isEnabled);
-        this.channelIndexFTextField.setValue(new Integer(channelIndex));           
+        this.channelIndexFTextField.setValue(new Integer(channelIndex));
         this.masterCheckBox.setSelected(isMaster);
-        this.autodetectCheckBox.setSelected(autoDetect);     
-        this.cylindersFTextField.setValue(new Integer(cylinders));   
+        this.autodetectCheckBox.setSelected(autoDetect);
+        this.cylindersFTextField.setValue(new Integer(cylinders));
         this.headsFTextField.setValue(new Integer(heads));
         this.sectorsFTextField.setValue(new Integer(sectors));
 
         // Check if length of filepath is longer than 30 characters
-        if (imageFormatPath.length() > 30)
-        {
-        	// Trail off the beginning of the string
-        	this.imageFilePathLabel.setText("..." + imageFormatPath.substring(imageFormatPath.length() - 30));
-        }
-        else
-        {
+        if (imageFormatPath.length() > 30) {
+            // Trail off the beginning of the string
+            this.imageFilePathLabel.setText("..."
+                    + imageFormatPath.substring(imageFormatPath.length() - 30));
+        } else {
             this.imageFilePathLabel.setText(imageFormatPath);
         }
-        
+
         this.selectedfile = new File(imageFormatPath);
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-    	// Create labels
+    protected void initMainEntryPanel() {
+        // Create labels
         JLabel updateIntLabel = new JLabel("Update Interval");
         JLabel updateIntUnitLabel = new JLabel("microseconds");
         JLabel enabledLabel = new JLabel("Enabled");
@@ -144,22 +137,24 @@ public class AtaConfigDialog extends ConfigurationDialog
         JLabel autodetectLabel = new JLabel("Auto Detect");
         JLabel cylindersLabel = new JLabel("Cylinders");
         JLabel headsLabel = new JLabel("Heads");
-        JLabel sectorsLabel  = new JLabel("Sectors");
+        JLabel sectorsLabel = new JLabel("Sectors");
         JLabel imageFileLabel = new JLabel("Image File");
-        
+
         // Create controls
         this.populateControls();
-        
-        //Lay out the labels in a panel.
+
+        // Lay out the labels in a panel.
         GridBagLayout gridbag = new GridBagLayout();
         GridBagConstraints c = new GridBagConstraints();
         mainEntryPanel = new JPanel(gridbag);
-        
+
         // Makeup layout with contraints
         // General layout contraints
-        c.fill = GridBagConstraints.BOTH; // Make the component fill its display area entirely
-        c.insets = new Insets(0, 10, 0, 10);	// Defines the spaces between layout and display area
-        
+        c.fill = GridBagConstraints.BOTH; // Make the component fill its display
+                                          // area entirely
+        c.insets = new Insets(0, 10, 0, 10); // Defines the spaces between
+                                             // layout and display area
+
         // Row 1
         c.weightx = 1.0;
         c.gridwidth = 1;
@@ -168,7 +163,7 @@ public class AtaConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
         gridbag.setConstraints(updateIntField, c);
         mainEntryPanel.add(updateIntField);
-        c.gridwidth = GridBagConstraints.REMAINDER; //end row
+        c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(updateIntUnitLabel, c);
         mainEntryPanel.add(updateIntUnitLabel);
 
@@ -188,7 +183,7 @@ public class AtaConfigDialog extends ConfigurationDialog
         c.gridwidth = GridBagConstraints.REMAINDER; // end row
         gridbag.setConstraints(channelIndexFTextField, c);
         mainEntryPanel.add(channelIndexFTextField);
-        
+
         // Row 4
         c.gridwidth = 1;
         gridbag.setConstraints(masterLabel, c);
@@ -241,26 +236,25 @@ public class AtaConfigDialog extends ConfigurationDialog
         mainEntryPanel.add(imageBrowseButton);
 
     }
-    
+
     /**
      * Initalise the GUI Controls.
      */
-    private void populateControls()
-    {
+    private void populateControls() {
         imageFilePathLabel = new JLabel("");
-             
-        //Formats to format and parse numbers
+
+        // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
         updateIntField.setValue(new Integer(0));
         updateIntField.setColumns(10);
-        
+
         enabledCheckBox = new JCheckBox();
-        enabledCheckBox.setSelected(true);   
-        
-        channelIndexFTextField = new JFormattedTextField(); 
+        enabledCheckBox.setSelected(true);
+
+        channelIndexFTextField = new JFormattedTextField();
         channelIndexFTextField.setValue(new Integer(0));
         channelIndexFTextField.setColumns(10);
-        cylindersFTextField = new JFormattedTextField(); 
+        cylindersFTextField = new JFormattedTextField();
         cylindersFTextField.setValue(new Integer(0));
         cylindersFTextField.setColumns(10);
         headsFTextField = new JFormattedTextField();
@@ -268,46 +262,53 @@ public class AtaConfigDialog extends ConfigurationDialog
         headsFTextField.setColumns(10);
         sectorsFTextField = new JFormattedTextField();
         sectorsFTextField.setValue(new Integer(0));
-        sectorsFTextField.setColumns(10);  
-        
+        sectorsFTextField.setColumns(10);
+
         masterCheckBox = new JCheckBox();
         masterCheckBox.setSelected(true);
-        
+
         autodetectCheckBox = new JCheckBox();
-          
+
         imageBrowseButton = new JButton("Browse");
-        
-        imageBrowseButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+
+        imageBrowseButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 launchFileChooser();
             }
         });
-        
+
     }
-      
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui()
-    {
-        
-        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
-        
-        emuConfig.getArchitecture().getModules().getAta().setUpdateintervalmicrosecs(BigInteger.valueOf((Integer)updateIntField.getValue()));
+    protected Emulator getParamsFromGui() {
+
+        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules()
+                .getAta().getHarddiskdrive().get(0);
+
+        emuConfig
+                .getArchitecture()
+                .getModules()
+                .getAta()
+                .setUpdateintervalmicrosecs(
+                        BigInteger.valueOf((Integer) updateIntField.getValue()));
         hddConfig.setEnabled(enabledCheckBox.isSelected());
-        hddConfig.setChannelindex(BigInteger.valueOf((Integer)channelIndexFTextField.getValue()));
+        hddConfig.setChannelindex(BigInteger
+                .valueOf((Integer) channelIndexFTextField.getValue()));
         hddConfig.setMaster(masterCheckBox.isSelected());
         hddConfig.setAutodetectcylinders(autodetectCheckBox.isSelected());
-        hddConfig.setCylinders(BigInteger.valueOf((Integer)cylindersFTextField.getValue()));
-        hddConfig.setHeads(BigInteger.valueOf((Integer)headsFTextField.getValue()));
-        hddConfig.setSectorspertrack(BigInteger.valueOf((Integer)sectorsFTextField.getValue()));
-        hddConfig.setImagefilepath(selectedfile.getAbsoluteFile().toString());    
-        
+        hddConfig.setCylinders(BigInteger.valueOf((Integer) cylindersFTextField
+                .getValue()));
+        hddConfig.setHeads(BigInteger.valueOf((Integer) headsFTextField
+                .getValue()));
+        hddConfig.setSectorspertrack(BigInteger
+                .valueOf((Integer) sectorsFTextField.getValue()));
+        hddConfig.setImagefilepath(selectedfile.getAbsoluteFile().toString());
+
         return emuConfig;
     }
-        
+
 }

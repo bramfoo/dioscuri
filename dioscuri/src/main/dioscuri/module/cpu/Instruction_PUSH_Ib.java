@@ -37,53 +37,52 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-     * Intel opcode 6A<BR>
-	 * Push immediate byte onto stack SS:SP.<BR>
-	 * NOTE: Since only words can be popped from the stack, the word {0x00, Ib} is pushed on the stack<BR>
-     * This may be a wrong asumption as nowhere is documented what MSB of word has to be!!
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 6A<BR>
+ * Push immediate byte onto stack SS:SP.<BR>
+ * NOTE: Since only words can be popped from the stack, the word {0x00, Ib} is
+ * pushed on the stack<BR>
+ * This may be a wrong asumption as nowhere is documented what MSB of word has
+ * to be!! Flags modified: none
+ */
 public class Instruction_PUSH_Ib implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_Ib()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 *  
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_Ib(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * 
-	 * Pushes the immediate word onto stack top SS:SP
-	 */
-	public void execute()
-	{
-		// Get immediate byte, complement to word with '0x00' and assign word to SS:SP
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_Ib() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_Ib(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * 
+     * Pushes the immediate word onto stack top SS:SP
+     */
+    public void execute() {
+        // Get immediate byte, complement to word with '0x00' and assign word to
+        // SS:SP
         // Not sure if byte should be extended with 0x00 (is undocumented)!!
-		cpu.setWordToStack(new byte[] {0x00, cpu.getByteFromCode()});
-	}
+        cpu.setWordToStack(new byte[] { 0x00, cpu.getByteFromCode() });
+    }
 }

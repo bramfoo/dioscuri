@@ -37,75 +37,69 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 68<BR>
-	 * Push immediate word onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 68<BR>
+ * Push immediate word onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 @SuppressWarnings("unused")
 public class Instruction_PUSH_Iv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	private byte[] word;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Attributes
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_Iv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_Iv(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-		
-		word = new byte[2];
-	}
+    private byte[] word;
 
-	
-	// Methods
-	
-	/**
-	 * 
-	 * Pushes the immediate word onto stack top SS:SP
-	 */
-	public void execute()
-	{
-		// Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	// 32-bit: note that lower and higher words need to be interchanged!
-    		// Get lower 16-bit immediate word 
-    		word = cpu.getWordFromCode();
-    		// Get higher 16-bit immediate word and store it on stack
-    		cpu.setWordToStack(cpu.getWordFromCode());
-    		// Store lower 16-bits
-    		cpu.setWordToStack(word);
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_Iv() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_Iv(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+
+        word = new byte[2];
+    }
+
+    // Methods
+
+    /**
+     * 
+     * Pushes the immediate word onto stack top SS:SP
+     */
+    public void execute() {
+        // Push extra register first, if 32 bit instruction
+        if (cpu.doubleWord) {
+            // 32-bit: note that lower and higher words need to be interchanged!
+            // Get lower 16-bit immediate word
+            word = cpu.getWordFromCode();
+            // Get higher 16-bit immediate word and store it on stack
+            cpu.setWordToStack(cpu.getWordFromCode());
+            // Store lower 16-bits
+            cpu.setWordToStack(word);
+        } else {
+            // 16-bit
+            // Get immediate word and assign to SS:SP
+            cpu.setWordToStack(cpu.getWordFromCode());
         }
-        else
-        {
-        	// 16-bit
-    		// Get immediate word and assign to SS:SP 
-    		cpu.setWordToStack(cpu.getWordFromCode());
-        }
-	}
+    }
 }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,90 +44,88 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
 
-
-	/**
-	 * Intel opcode 6E<BR>
-	 * Output byte from DS:SI to I/O port (specified in DX); update SI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 6E<BR>
+ * Output byte from DS:SI to I/O port (specified in DX); update SI register
+ * according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_OUTS_DXXb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     int portAddress;
-    
-    // Note: the addressbyte passed here is a value chosen so if the segmentOverride fails (which it shouldn't!),
-    // the DS segment is still chosen. 
+
+    // Note: the addressbyte passed here is a value chosen so if the
+    // segmentOverride fails (which it shouldn't!),
+    // the DS segment is still chosen.
     byte defaultAddressByte = 0;
-    
+
     byte memoryValue = 0;
-    
+
     byte[] transition;
-	
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-
     // Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_OUTS_DXXb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_OUTS_DXXb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_OUTS_DXXb() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_OUTS_DXXb(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
         // Set transition that holds the amount SI should be altered (byte = 1)
         transition = new byte[] { 0x00, 0x01 };
-        
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Output word from DS:SI to I/O port (specified in DX); update SI register according to DF.
-	 */
-	public void execute()
-	{
-        
-        // Get port address from DX; convert this to unsigned integer to prevent lookup table out of bounds;
+    }
+
+    // Methods
+
+    /**
+     * Output word from DS:SI to I/O port (specified in DX); update SI register
+     * according to DF.
+     */
+    public void execute() {
+
+        // Get port address from DX; convert this to unsigned integer to prevent
+        // lookup table out of bounds;
         portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
 
         // Read byte from DS:SI; write to portAddress
         // DS segment may be overridden.
-        try
-        {
-            memoryValue = cpu.getByteFromMemorySegment(defaultAddressByte, cpu.si);
+        try {
+            memoryValue = cpu.getByteFromMemorySegment(defaultAddressByte,
+                    cpu.si);
 
             // Write the byte to the I/O port
             cpu.setIOPortByte(portAddress, memoryValue);
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
 
         // Update SI according to DF flag
-        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1,
+        // SI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the SI register by byte size
             cpu.si = Util.subtractWords(cpu.si, transition, 0);
-        }
-        else
-        {
+        } else {
             // Increment the SI register by byte size
             cpu.si = Util.addWords(cpu.si, transition, 0);
         }
-	}
+    }
 }

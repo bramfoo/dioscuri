@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Copies the sign (bit 7) in AL into every bit in AH register<BR>
  * Flags modified: none
  */
-public class Instruction_CBW implements Instruction
-{
+public class Instruction_CBW implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,17 +54,16 @@ public class Instruction_CBW implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_CBW()
-    {
+    public Instruction_CBW() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_CBW(CPU processor)
-    {
+    public Instruction_CBW(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,9 +75,9 @@ public class Instruction_CBW implements Instruction
     /**
      * Copy sign (bit 7) in AL into every bit in AH register
      */
-    public void execute()
-    {
+    public void execute() {
         // Change AH to 0x00 if AL < 0x80, or 0xFF if AL >= 0x80
-        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.ax[CPU.REGISTER_GENERAL_LOW] >= 0 ? (byte) 0x00 : (byte) 0xFF;
+        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.ax[CPU.REGISTER_GENERAL_LOW] >= 0 ? (byte) 0x00
+                : (byte) 0xFF;
     }
 }

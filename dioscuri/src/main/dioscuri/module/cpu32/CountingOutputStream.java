@@ -22,51 +22,53 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public class CountingOutputStream extends OutputStream
-{
+public class CountingOutputStream extends OutputStream {
     private final OutputStream backing;
     private int count;
-    
-    public CountingOutputStream(OutputStream wraps)
-    {
-    backing = wraps;
-    count = 0;
-    }
-    
-    public int position()
-    {
-    return count;
-    }
-    
-    public void close() throws IOException { backing.close(); }
-    public void flush() throws IOException { backing.flush(); }
 
-    public void write(byte[] b) throws IOException
-    {
-    if ((count + b.length) > 0xffff)
-        throw new IllegalStateException("Oversize Method");
-
-    backing.write(b); count += b.length;
-    }
- 
-    public void write(byte[] b, int off, int len) throws IOException
-    {
-    if ((count + len) > 0xffff)
-        throw new IllegalStateException("Oversize Method");
-        
-    backing.write(b, off, len); count += len;
+    public CountingOutputStream(OutputStream wraps) {
+        backing = wraps;
+        count = 0;
     }
 
-    public void write(int b) throws IOException                 
-    {
-    if ((count + 1) > 0xffff)
-        throw new IllegalStateException("Oversize Method");
-    
-    backing.write(b); count++;
+    public int position() {
+        return count;
+    }
+
+    public void close() throws IOException {
+        backing.close();
+    }
+
+    public void flush() throws IOException {
+        backing.flush();
+    }
+
+    public void write(byte[] b) throws IOException {
+        if ((count + b.length) > 0xffff)
+            throw new IllegalStateException("Oversize Method");
+
+        backing.write(b);
+        count += b.length;
+    }
+
+    public void write(byte[] b, int off, int len) throws IOException {
+        if ((count + len) > 0xffff)
+            throw new IllegalStateException("Oversize Method");
+
+        backing.write(b, off, len);
+        count += len;
+    }
+
+    public void write(int b) throws IOException {
+        if ((count + 1) > 0xffff)
+            throw new IllegalStateException("Oversize Method");
+
+        backing.write(b);
+        count++;
     }
 }

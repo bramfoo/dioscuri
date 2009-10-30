@@ -37,16 +37,14 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleParallelPort extends ModuleDevice
-{
+public abstract class ModuleParallelPort extends ModuleDevice {
     // Methods
-    
+
 }

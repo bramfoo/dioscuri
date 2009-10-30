@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -65,29 +64,26 @@ import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Cpu;
 
 @SuppressWarnings("serial")
-public class CpuConfigDialog extends ConfigurationDialog
-{
+public class CpuConfigDialog extends ConfigurationDialog {
     private JFormattedTextField speedField;
     private JRadioButton cpu32Button;
     private JRadioButton cpu16Button;
-        
+
     dioscuri.config.Emulator emuConfig;
-    
-    public CpuConfigDialog(GUI parent)
-    {               
-        super (parent, "CPU Configuration", false, ModuleType.CPU); 
-                    
+
+    public CpuConfigDialog(GUI parent) {
+        super(parent, "CPU Configuration", false, ModuleType.CPU);
+
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
-    	
-        Integer cpuSpeed = cpu.getSpeedmhz().intValue();        
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
+
+        Integer cpuSpeed = cpu.getSpeedmhz().intValue();
         this.speedField.setValue(cpuSpeed);
         Boolean cpu32Bit = cpu.isCpu32Bit();
         if (cpu32Bit)
@@ -96,23 +92,19 @@ public class CpuConfigDialog extends ConfigurationDialog
             this.cpu16Button.setSelected(true);
     }
 
-    protected void initDoButton()
-    {
+    protected void initDoButton() {
         this.doButton = new JButton("Save");
-        this.doButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+        this.doButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 saveParams();
             }
         });
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
+    protected void initMainEntryPanel() {
         JLabel bitLabel = new JLabel("  CPU bits:");
         JLabel speedLabel = new JLabel("  Speed (MHz)");
 
@@ -120,57 +112,55 @@ public class CpuConfigDialog extends ConfigurationDialog
         String cpu16String = "16-bit";
 
         // Formats to format and parse numbers
-        
+
         cpu32Button = new JRadioButton(cpu32String);
         cpu16Button = new JRadioButton(cpu16String);
         cpu32Button.setSelected(true);
-        
+
         ButtonGroup cpuBit = new ButtonGroup();
         cpuBit.add(cpu32Button);
         cpuBit.add(cpu16Button);
-        
+
         speedField = new JFormattedTextField();
         speedField.setValue(new Integer(0));
         speedField.setColumns(10);
-  
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
+
+        mainEntryPanel = new JPanel(new GridLayout(10, 3));
+        Border blackline = BorderFactory.createLineBorder(Color.black);
         mainEntryPanel.setBorder(blackline);
-        
+
         mainEntryPanel.add(bitLabel);
         mainEntryPanel.add(cpu32Button);
         mainEntryPanel.add(cpu16Button);
 
-        //Fill first blanks in grid
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+        // Fill first blanks in grid
+        for (int i = 0; i < 3; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
-        
-        mainEntryPanel.add(speedLabel); 
+
+        mainEntryPanel.add(speedLabel);
         mainEntryPanel.add(speedField);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        //Fill end blanks in grid     
-        for (int i = 0; i < 21; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+        mainEntryPanel.add(new JLabel(""));
+
+        // Fill end blanks in grid
+        for (int i = 0; i < 21; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
-        
+
     }
-       
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui()
-    {
-    	Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
+    protected Emulator getParamsFromGui() {
+        Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
 
-    	cpu.setSpeedmhz(BigDecimal.valueOf(((Number)speedField.getValue()).intValue()));
-    	cpu.setCpu32Bit(cpu32Button.isSelected());
+        cpu.setSpeedmhz(BigDecimal.valueOf(((Number) speedField.getValue())
+                .intValue()));
+        cpu.setCpu32Bit(cpu32Button.isSelected());
         return emuConfig;
     }
-        
+
 }

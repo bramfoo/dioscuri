@@ -22,40 +22,38 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
-public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock implements Virtual8086ModeCodeBlock
-{
+public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock
+        implements Virtual8086ModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
-    public SpanningVirtual8086ModeCodeBlock(CodeBlockFactory[] factories)
-    {
-    this.factories = factories;
+    public SpanningVirtual8086ModeCodeBlock(CodeBlockFactory[] factories) {
+        this.factories = factories;
     }
 
-    protected CodeBlock decode(Processor cpu)
-    {
-    Virtual8086ModeCodeBlock block = null;
-    AddressSpace memory = cpu.linearMemory;
-    int address = cpu.getInstructionPointer();
-    for (int i = 0; (i < factories.length) && (block == null); i++) {
-        try {
-        byteSource.set(memory, address);
-        block = factories[i].getVirtual8086ModeCodeBlock(byteSource);
-        } catch (IllegalStateException e) {}
+    protected CodeBlock decode(Processor cpu) {
+        Virtual8086ModeCodeBlock block = null;
+        AddressSpace memory = cpu.linearMemory;
+        int address = cpu.getInstructionPointer();
+        for (int i = 0; (i < factories.length) && (block == null); i++) {
+            try {
+                byteSource.set(memory, address);
+                block = factories[i].getVirtual8086ModeCodeBlock(byteSource);
+            } catch (IllegalStateException e) {
+            }
+        }
+
+        return block;
     }
-    
-    return block;
-    }
-    
-    public String getDisplayString()
-    {
-    return "Spanning Virtual8086 Mode CodeBlock";
+
+    public String getDisplayString() {
+        return "Spanning Virtual8086 Mode CodeBlock";
     }
 }

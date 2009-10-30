@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import dioscuri.exception.ModuleException;
@@ -47,8 +46,7 @@ import dioscuri.exception.ModuleException;
  * Output word/doubleword in eAX to I/O port address specified by DX.<BR>
  * Flags modified: none
  */
-public class Instruction_OUT_DXeAX implements Instruction
-{
+public class Instruction_OUT_DXeAX implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -60,17 +58,16 @@ public class Instruction_OUT_DXeAX implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXeAX()
-    {
+    public Instruction_OUT_DXeAX() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_OUT_DXeAX(CPU processor)
-    {
+    public Instruction_OUT_DXeAX(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -80,36 +77,36 @@ public class Instruction_OUT_DXeAX implements Instruction
     /**
      * Output word/doubleword in eAX to I/O port address in DX
      */
-    public void execute()
-    {
-        try
-        {
-            // Convert value in DX to unsigned integer to prevent lookup table out of bounds;
+    public void execute() {
+        try {
+            // Convert value in DX to unsigned integer to prevent lookup table
+            // out of bounds;
             // set data to appropriate port
-            portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH])& 0xFF)<<8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
-            
+            portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
+
             // Check if word or double word should be written
-            if (cpu.doubleWord)
-            {
+            if (cpu.doubleWord) {
                 // A double word should be written to I/O space
                 // Create double word from eAX and AX (in Big Endian order)
-                byte[] doubleWord = new byte[] { cpu.eax[CPU.REGISTER_GENERAL_HIGH], cpu.eax[CPU.REGISTER_GENERAL_LOW], cpu.ax[CPU.REGISTER_GENERAL_HIGH], cpu.ax[CPU.REGISTER_GENERAL_LOW] };
-                
+                byte[] doubleWord = new byte[] {
+                        cpu.eax[CPU.REGISTER_GENERAL_HIGH],
+                        cpu.eax[CPU.REGISTER_GENERAL_LOW],
+                        cpu.ax[CPU.REGISTER_GENERAL_HIGH],
+                        cpu.ax[CPU.REGISTER_GENERAL_LOW] };
+
                 // Write double word to I/O space
                 cpu.setIOPortDoubleWord(portAddress, doubleWord);
-            }
-            else // Word
+            } else // Word
             {
                 // A word should be written to I/O space
                 // Create word from AX (in Big Endian order)
-                byte[] word = new byte[] { cpu.ax[CPU.REGISTER_GENERAL_HIGH], cpu.ax[CPU.REGISTER_GENERAL_LOW] };
-                
+                byte[] word = new byte[] { cpu.ax[CPU.REGISTER_GENERAL_HIGH],
+                        cpu.ax[CPU.REGISTER_GENERAL_LOW] };
+
                 // Write word to I/O space
                 cpu.setIOPortWord(portAddress, word);
             }
-        }
-        catch (ModuleException e)
-        {
+        } catch (ModuleException e) {
             // TODO: Implement proper catch block for OUT_DXeAX instruction
         }
     }

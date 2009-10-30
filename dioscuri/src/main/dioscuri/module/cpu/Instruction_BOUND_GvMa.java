@@ -37,21 +37,20 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-    /**
-     * Intel opcode 62<BR>
-     * Check array index against bounds.<BR>
-     * Flags modified: none
-     */
+/**
+ * Intel opcode 62<BR>
+ * Check array index against bounds.<BR>
+ * Flags modified: none
+ */
 public class Instruction_BOUND_GvMa implements Instruction {
 
     // Attributes
     private CPU cpu;
-    
+
     boolean operandWordSize = true;
-    
+
     byte addressByte = 0;
     byte[] memoryReferenceLocation = new byte[2];
     byte[] memoryReferenceDisplacement = new byte[2];
@@ -61,61 +60,68 @@ public class Instruction_BOUND_GvMa implements Instruction {
     int lowerBoundary;
     int higherBoundary;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_BOUND_GvMa()   {}
-    
+    public Instruction_BOUND_GvMa() {
+    }
+
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_BOUND_GvMa(CPU processor)
-    {
+    public Instruction_BOUND_GvMa(CPU processor) {
         this();
-        
+
         // Create reference to cpu class
         cpu = processor;
     }
 
-    
     // Methods
 
     /**
      * Check array index against bounds.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
-        // Get array index (register) from addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
-        sourceValue = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
-        arrayIndex = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8) + sourceValue[CPU.REGISTER_GENERAL_LOW];
-        
-        // Determine displacement of memory location (if any) 
+        // Get array index (register) from addressbyte. AND it with 0011 1000
+        // and right-shift 3 to get rrr bits
+        sourceValue = (cpu.decodeRegister(operandWordSize,
+                (addressByte & 0x38) >> 3));
+        arrayIndex = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8)
+                + sourceValue[CPU.REGISTER_GENERAL_LOW];
+
+        // Determine displacement of memory location (if any)
         memoryReferenceDisplacement = cpu.decodeMM(addressByte);
-        
+
         // Determine memory location
-        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                memoryReferenceDisplacement);
 
         // Get lower boundary (word from memory)
-        sourceValue = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-        lowerBoundary = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8) + sourceValue[CPU.REGISTER_GENERAL_LOW];
-        
-        // Increment memory location with 2
-        memoryReferenceLocation = Util.addWords(memoryReferenceLocation, new byte[] { 0x00, 0x02 }, 0);
-        
-        // Get higher boundary (word from memory)
-        sourceValue = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-        higherBoundary = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8) + sourceValue[CPU.REGISTER_GENERAL_LOW];
+        sourceValue = cpu.getWordFromMemorySegment(addressByte,
+                memoryReferenceLocation);
+        lowerBoundary = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8)
+                + sourceValue[CPU.REGISTER_GENERAL_LOW];
 
-        // Check if array index is between (or equals) the lower and higher boundaries
-        if (arrayIndex < lowerBoundary || arrayIndex > higherBoundary)
-        {
+        // Increment memory location with 2
+        memoryReferenceLocation = Util.addWords(memoryReferenceLocation,
+                new byte[] { 0x00, 0x02 }, 0);
+
+        // Get higher boundary (word from memory)
+        sourceValue = cpu.getWordFromMemorySegment(addressByte,
+                memoryReferenceLocation);
+        higherBoundary = (sourceValue[CPU.REGISTER_GENERAL_HIGH] << 8)
+                + sourceValue[CPU.REGISTER_GENERAL_LOW];
+
+        // Check if array index is between (or equals) the lower and higher
+        // boundaries
+        if (arrayIndex < lowerBoundary || arrayIndex > higherBoundary) {
             // FIXME: throw exception #BR
         }
     }

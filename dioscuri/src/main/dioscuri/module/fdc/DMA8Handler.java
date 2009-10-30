@@ -37,55 +37,50 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.fdc;
 
-public class DMA8Handler extends dioscuri.module.dma.DMA8Handler
-{
+public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
     // Attributes
     private FDC fdc;
-    
-    
+
     // Constructors
     /**
      * Class Constructor
      * 
-     * @param FDC pointer
+     * @param FDC
+     *            pointer
      */
-    public DMA8Handler(FDC fdc)
-    {
+    public DMA8Handler(FDC fdc) {
         this.fdc = fdc;
         super.owner = this.fdc.getType();
     }
 
-    
     // Methods
     /**
      * Implementation of the 8-bit DMA read functionality.<BR>
-     * This provides a way for DMA to pass a byte read from memory (by way of DMA request)
-     * to the device for further processing.
+     * This provides a way for DMA to pass a byte read from memory (by way of
+     * DMA request) to the device for further processing.
      * 
-     * @param data  Byte from memory that is passed to the device for handling
+     * @param data
+     *            Byte from memory that is passed to the device for handling
      */
-    public void dma8ReadFromMem(byte data)
-    {
+    public void dma8ReadFromMem(byte data) {
         // DMA read: from memory to I/O
         fdc.setDMAByte(data);
-        
-    }
 
+    }
 
     /**
      * Implementation of the 8-bit DMA write functionality.<BR>
-     * This provides a way for DMA to write a byte to memory (by way of DMA request)
-     * passed from the device.
+     * This provides a way for DMA to write a byte to memory (by way of DMA
+     * request) passed from the device.
      * 
      * @return Byte from device that will be written to memory
      */
-    public byte dma8WriteToMem()
-    {
+    public byte dma8WriteToMem() {
         // DMA write: from I/O to memory
-        // Return value; this is the value at the current index, before the index is incremented
+        // Return value; this is the value at the current index, before the
+        // index is incremented
         return fdc.getDMAByte();
     }
 }

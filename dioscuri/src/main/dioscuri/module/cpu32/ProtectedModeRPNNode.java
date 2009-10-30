@@ -22,42 +22,42 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
-public class ProtectedModeRPNNode extends RPNNode
-{
-    public ProtectedModeRPNNode(int id, MicrocodeNode parent)
-    {
-    super(id, parent);
+public class ProtectedModeRPNNode extends RPNNode {
+    public ProtectedModeRPNNode(int id, MicrocodeNode parent) {
+        super(id, parent);
     }
 
-    protected Object[] getByteCodes()
-    {
+    protected Object[] getByteCodes() {
         if (getMicrocode() == -1)
             return ProtectedModeBytecodeFragments.pushCode(getID());
-        
+
         if (hasImmediate())
-            return ProtectedModeBytecodeFragments.getOperation(getID(), getMicrocode(), getX86Position(), getImmediate());
+            return ProtectedModeBytecodeFragments.getOperation(getID(),
+                    getMicrocode(), getX86Position(), getImmediate());
         else
-            return ProtectedModeBytecodeFragments.getOperation(getID(), getMicrocode(), getX86Position());
+            return ProtectedModeBytecodeFragments.getOperation(getID(),
+                    getMicrocode(), getX86Position());
     }
 
-    public boolean hasExternalEffect()
-    {
-    if (getMicrocode() == -1)
-        return false;
+    public boolean hasExternalEffect() {
+        if (getMicrocode() == -1)
+            return false;
 
-    return ProtectedModeBytecodeFragments.hasExternalEffect(getID(), getMicrocode());
+        return ProtectedModeBytecodeFragments.hasExternalEffect(getID(),
+                getMicrocode());
     }
 
-    public boolean canThrowException()
-    {
-    if (getMicrocode() == -1)
-        return false;
+    public boolean canThrowException() {
+        if (getMicrocode() == -1)
+            return false;
 
-    return ProtectedModeBytecodeFragments.hasExplicitThrow(getID(), getMicrocode()) || hasExternalEffect();
+        return ProtectedModeBytecodeFragments.hasExplicitThrow(getID(),
+                getMicrocode())
+                || hasExternalEffect();
     }
 }

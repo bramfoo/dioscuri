@@ -37,61 +37,62 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode E2<BR>
-	 * Loop while CX is not zero, performing short jump indicated by immediate signed byte.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode E2<BR>
+ * Loop while CX is not zero, performing short jump indicated by immediate
+ * signed byte.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_LOOP_Jb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte displacement;
-    byte[] decrement = new byte[]{0x00, 0x01};  // Decrement by one
+    // Attributes
+    private CPU cpu;
+    byte displacement;
+    byte[] decrement = new byte[] { 0x00, 0x01 }; // Decrement by one
 
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_LOOP_Jb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_LOOP_Jb(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_LOOP_Jb() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Loop while CX is not zero, 
-	 * performing short jump indicated by immediate signed byte
-	 */
-	public void execute()
-	{
-		// Get displacement byte (immediate)
-		displacement = cpu.getByteFromCode();
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_LOOP_Jb(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+    }
 
-		// Decrement the CX register
-		cpu.cx = Util.subtractWords(cpu.cx, decrement, 0);
-			
-		// Test LOOP condition, jump if CX is not zero
-		if (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00 || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00)
-		{
-			// Jump is relative to _next_ instruction, but by the time we change 
-			// the IP, it has already been incremented twice, so no extra arithmetic necessary 		
-            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
-		}
-	}
+    // Methods
+
+    /**
+     * Loop while CX is not zero, performing short jump indicated by immediate
+     * signed byte
+     */
+    public void execute() {
+        // Get displacement byte (immediate)
+        displacement = cpu.getByteFromCode();
+
+        // Decrement the CX register
+        cpu.cx = Util.subtractWords(cpu.cx, decrement, 0);
+
+        // Test LOOP condition, jump if CX is not zero
+        if (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00
+                || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00) {
+            // Jump is relative to _next_ instruction, but by the time we change
+            // the IP, it has already been incremented twice, so no extra
+            // arithmetic necessary
+            cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                    Util.signExtend(displacement), displacement }, 0);
+        }
+    }
 }

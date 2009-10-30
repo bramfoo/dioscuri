@@ -37,57 +37,51 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode D6<BR>
-	 * Set AL on CF (undocumented Intel instruction).<BR>
-	 * Set or clear AL depending on carry flag status<BR>
-	 * Flags modified: none
-	 */
-public class Instruction_SALC implements Instruction
-{
+/**
+ * Intel opcode D6<BR>
+ * Set AL on CF (undocumented Intel instruction).<BR>
+ * Set or clear AL depending on carry flag status<BR>
+ * Flags modified: none
+ */
+public class Instruction_SALC implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_SALC()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_SALC(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_SALC() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Set or clear AL depending on carry flag status<BR>
-	 * Information taken from http://www.x86.org/secrets/opcodes/salc.htm
-	 */
-	public void execute()
-	{
-		if (cpu.flags[CPU.REGISTER_FLAGS_CF] == true)
-		{
-			cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) 0xFF;
-		}
-		else
-		{
-			cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) 0x00;
-		}
-	}
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_SALC(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Set or clear AL depending on carry flag status<BR>
+     * Information taken from http://www.x86.org/secrets/opcodes/salc.htm
+     */
+    public void execute() {
+        if (cpu.flags[CPU.REGISTER_FLAGS_CF] == true) {
+            cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) 0xFF;
+        } else {
+            cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) 0x00;
+        }
+    }
 }

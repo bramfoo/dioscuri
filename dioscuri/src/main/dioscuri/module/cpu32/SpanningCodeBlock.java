@@ -22,41 +22,37 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
-public abstract class SpanningCodeBlock implements CodeBlock
-{
+public abstract class SpanningCodeBlock implements CodeBlock {
     private CodeBlock lastBlock;
 
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return 0;
     }
 
-    public int getX86Count()
-    {
-    try {
-        return lastBlock.getX86Count();
-    } catch (NullPointerException e) {
-        return 0;
+    public int getX86Count() {
+        try {
+            return lastBlock.getX86Count();
+        } catch (NullPointerException e) {
+            return 0;
+        }
     }
-    }
-    
-    // Returns the number of equivalent x86 instructions executed. Negative results indicate an error
-    public int execute(Processor cpu)
-    {
-    lastBlock = decode(cpu);
-    return lastBlock.execute(cpu);
+
+    // Returns the number of equivalent x86 instructions executed. Negative
+    // results indicate an error
+    public int execute(Processor cpu) {
+        lastBlock = decode(cpu);
+        return lastBlock.execute(cpu);
     }
 
     protected abstract CodeBlock decode(Processor cpu);
 
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return true;
     }
 }

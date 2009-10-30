@@ -37,61 +37,58 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 0E<BR>
-	 * Push general register CS onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 0E<BR>
+ * Push general register CS onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_CS implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Attributes
+    private CPU cpu;
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_CS()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_CS(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in CS onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_CS() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_CS(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in CS onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSH_CS: 32-bits not supported");
-        }      
+        if (cpu.doubleWord) {
+            logger.log(Level.WARNING, "[" + cpu.getType()
+                    + "] Instruction PUSH_CS: 32-bits not supported");
+        }
 
-		// Get word at CS and assign to SS:SP 
-		cpu.setWordToStack(cpu.cs);
-	}
+        // Get word at CS and assign to SS:SP
+        cpu.setWordToStack(cpu.cs);
+    }
 }

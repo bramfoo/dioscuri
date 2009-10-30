@@ -39,7 +39,6 @@
 
 package dioscuri.module.cpu;
 
-
 /**
  * Intel opcode 26<BR>
  * Instruction SEG=ES. Overrides the selected segment with ES.<BR>
@@ -47,40 +46,38 @@ package dioscuri.module.cpu;
  */
 public class Instruction_SEG_ES implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-    
-	// Constructors
-	/**
-	 * Construct class
-	 */
-	public Instruction_SEG_ES()	{}
-	
-	/**
-	 * Construct class
-	 * @param processor
-	 */
-	public Instruction_SEG_ES(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Construct class
+     */
+    public Instruction_SEG_ES() {
+    }
+
+    /**
+     * Construct class
+     * 
+     * @param processor
+     */
+    public Instruction_SEG_ES(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     */
+    public void execute() {
         // Let CPU know this is an instruction prefix
         cpu.prefixInstruction = 0x26;
-        
+
         cpu.segmentOverride = true;
         cpu.segmentOverridePointer = CPU.SEGMENT_OVERRIDE_ES;
-	}
+    }
 }

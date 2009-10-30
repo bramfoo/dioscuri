@@ -37,45 +37,45 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModulePIC extends ModuleDevice
-{
+public abstract class ModulePIC extends ModuleDevice {
     // Methods
-    
+
     /**
      * Returns an IRQ number.
      * 
-     * @param module that would like to have an IRQ number
+     * @param module
+     *            that would like to have an IRQ number
      * @return int IRQ number between 1 to 16, or -1 if not allowed/possible
      */
     public abstract int requestIRQNumber(Module module);
-    
+
     /**
      * Lowers an interrupt request (IRQ) of given IRQ number
      * 
      * @param int irqNumber the number of IRQ to be cleared
      */
     public abstract void clearIRQ(int irqNumber);
-    
+
     /**
      * Raises an interrupt request (IRQ) of given IRQ number
      * 
      * @param int irqNumber the number of IRQ to be raised
      */
     public abstract void setIRQ(int irqNumber);
-    
+
     /**
-     * Acknowledges an interrupt request from PIC by CPU
-     * Note: only the CPU can acknowledge an interrupt
+     * Acknowledges an interrupt request from PIC by CPU Note: only the CPU can
+     * acknowledge an interrupt
      * 
-     * @return int address defining the jump address for handling the IRQ by the CPU
+     * @return int address defining the jump address for handling the IRQ by the
+     *         CPU
      */
     public abstract int interruptAcknowledge();
 }

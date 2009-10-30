@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,8 +44,7 @@ package dioscuri.module.cpu;
  * Logical AND of immediate word and AX.<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_AND_AXIv implements Instruction
-{
+public class Instruction_AND_AXIv implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -55,17 +53,16 @@ public class Instruction_AND_AXIv implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_AND_AXIv()
-    {
+    public Instruction_AND_AXIv() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_AND_AXIv(CPU processor)
-    {
+    public Instruction_AND_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,9 +75,8 @@ public class Instruction_AND_AXIv implements Instruction
      * Logical AND of immediate word and AX.<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
-        
+    public void execute() {
+
         // Reset appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
@@ -92,10 +88,9 @@ public class Instruction_AND_AXIv implements Instruction
         // Get immediate byte and AND with AH, storing result in AH.
         cpu.ax[CPU.REGISTER_GENERAL_HIGH] &= cpu.getByteFromCode();
 
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Need to take care of extra registers
-            
+
             // Get immediate byte and AND with eAX[LOW]
             cpu.eax[CPU.REGISTER_GENERAL_LOW] &= cpu.getByteFromCode();
             // Get immediate byte and AND with eAX[HIGH]
@@ -103,19 +98,24 @@ public class Instruction_AND_AXIv implements Instruction
         }
 
         // Test ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0
+                && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
         // Test SF (set when MSB is 1, occurs when AH >= 0x80)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                : false;
         // Set PF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);            
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
 
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             // Need to check extended registers with flags
             // Test ZF
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF] && cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF]
+                    && cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0
+                    && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF (set when MSB is 1, occurs when AH >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
         }
     }
 }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,111 +44,106 @@ import java.util.logging.Logger;
 
 import dioscuri.exception.ModuleException;
 
-	/**
-	 * Intel opcode 6D<BR>
-	 * Copy word from I/O port to ES:DI; update DI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 6D<BR>
+ * Copy word from I/O port to ES:DI; update DI register according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_INSW_YvDX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     int portAddress;
     byte[] portValue = new byte[2];
     byte[] ePortValue = new byte[4];
     byte[] transition;
-	
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-
     // Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_INSW_YvDX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_INSW_YvDX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-        
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_INSW_YvDX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_INSW_YvDX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+
         // Set transition that holds the amount DI should be altered (word = 2)
         transition = new byte[] { 0x00, 0x02 };
-	}
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Copy word from I/O port to ES:DI; update DI register according to DF
-	 */
-	public void execute()
-	{
-        
-        // Get port address from DX; convert this to unsigned integer to prevent lookup table out of bounds;
+    // Methods
+
+    /**
+     * Copy word from I/O port to ES:DI; update DI register according to DF
+     */
+    public void execute() {
+
+        // Get port address from DX; convert this to unsigned integer to prevent
+        // lookup table out of bounds;
         portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));
 
-        // Read word from I/O space; write to ES:DI; ES segment override is not allowed
-        try
-        {
+        // Read word from I/O space; write to ES:DI; ES segment override is not
+        // allowed
+        try {
             // Check if the destination is a word or doubleword
-            if (cpu.doubleWord)
-            {
+            if (cpu.doubleWord) {
                 // Get the doubleword
                 ePortValue = cpu.getIOPortDoubleWord(portAddress);
-                
+
                 // Write the doubleword as two words into the Extra segment
                 // TODO: Should this set to cpu.di or cpu.edi - or both??
-                cpu.setWordToExtra(cpu.di, new byte[]{ePortValue[1], ePortValue[0]});
-                
-                // Note: DI is updated by word-size here, the other word-size is done below
+                cpu.setWordToExtra(cpu.di, new byte[] { ePortValue[1],
+                        ePortValue[0] });
+
+                // Note: DI is updated by word-size here, the other word-size is
+                // done below
                 // Update DI according to DF flag
-                // Check direction of flag: If DF == 0, DI is incremented; if DF == 1, DI is decremented
-                if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-                {
+                // Check direction of flag: If DF == 0, DI is incremented; if DF
+                // == 1, DI is decremented
+                if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
                     // Decrement the DI register by word size
                     cpu.di = Util.subtractWords(cpu.di, transition, 0);
-                }
-                else
-                {
+                } else {
                     // Increment the DI register by word size
                     cpu.di = Util.addWords(cpu.di, transition, 0);
                 }
-                
+
                 // Set the second part of the doubleword
-                cpu.setWordToExtra(cpu.di, new byte[]{ePortValue[3], ePortValue[2]});
+                cpu.setWordToExtra(cpu.di, new byte[] { ePortValue[3],
+                        ePortValue[2] });
                 // Second update of DI is done below
-                
-            }
-            else    // Word-size
+
+            } else // Word-size
             {
                 portValue = cpu.getIOPortWord(portAddress);
                 cpu.setWordToExtra(cpu.di, portValue);
             }
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
 
         // Update DI according to DF flag
-        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1, DI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, DI is incremented; if DF == 1,
+        // DI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the DI register by word size
             cpu.di = Util.subtractWords(cpu.di, transition, 0);
-        }
-        else
-        {
+        } else {
             // Increment the DI register by word size
             cpu.di = Util.addWords(cpu.di, transition, 0);
         }

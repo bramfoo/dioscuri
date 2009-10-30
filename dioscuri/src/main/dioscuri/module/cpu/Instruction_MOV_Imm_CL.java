@@ -37,49 +37,46 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode B1<BR>
-	 * Copy immediate byte to register CL.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode B1<BR>
+ * Copy immediate byte to register CL.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_CL implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_Imm_CL()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_CL(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate byte to register CL
-	 */
-	public void execute()
-	{
-		// Put next byte into CL 
-		cpu.cx[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_Imm_CL() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_CL(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate byte to register CL
+     */
+    public void execute() {
+        // Put next byte into CL
+        cpu.cx[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
+    }
 }

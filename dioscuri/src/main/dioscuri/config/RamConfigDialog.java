@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -63,88 +62,79 @@ import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Memory;
 
 @SuppressWarnings("serial")
-public class RamConfigDialog extends ConfigurationDialog
-{
+public class RamConfigDialog extends ConfigurationDialog {
 
     private JFormattedTextField sizeField;
 
     dioscuri.config.Emulator emuConfig;
-    
-    public RamConfigDialog(GUI parent)
-    {               
-        super (parent, "RAM Configuration", false, ModuleType.MEMORY);                    
+
+    public RamConfigDialog(GUI parent) {
+        super(parent, "RAM Configuration", false, ModuleType.MEMORY);
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Memory mem = emuConfig.getArchitecture().getModules().getMemory();
-    	
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Memory mem = emuConfig.getArchitecture().getModules().getMemory();
+
         Integer sizeMb = mem.getSizemb().intValue();
         this.sizeField.setValue(sizeMb);
-        
+
     }
 
-    protected void initDoButton()
-    {
+    protected void initDoButton() {
         this.doButton = new JButton("Save");
-        this.doButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+        this.doButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 saveParams();
             }
         });
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-                   
+    protected void initMainEntryPanel() {
+
         JLabel sizeLabel = new JLabel("  Size (MB)");
-        
-        //Formats to format and parse numbers
+
+        // Formats to format and parse numbers
         sizeField = new JFormattedTextField();
         sizeField.setValue(new Integer(0));
         sizeField.setColumns(10);
-  
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
+
+        mainEntryPanel = new JPanel(new GridLayout(10, 3));
+        Border blackline = BorderFactory.createLineBorder(Color.black);
         mainEntryPanel.setBorder(blackline);
-        
-        //Fill first blanks in grid
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+
+        // Fill first blanks in grid
+        for (int i = 0; i < 3; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
-        
-        mainEntryPanel.add(sizeLabel); 
+
+        mainEntryPanel.add(sizeLabel);
         mainEntryPanel.add(sizeField);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        //Fill end blanks in grid     
-        for (int i = 0; i < 24; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }       
+        mainEntryPanel.add(new JLabel(""));
+
+        // Fill end blanks in grid
+        for (int i = 0; i < 24; i++) {
+            mainEntryPanel.add(new JLabel(""));
+        }
     }
-    
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
-     */    
-    protected Emulator getParamsFromGui()
-    {
-    	Memory mem = emuConfig.getArchitecture().getModules().getMemory();
-    	mem.setSizemb(BigDecimal.valueOf(((Number)sizeField.getValue()).intValue()));      
-        
+     */
+    protected Emulator getParamsFromGui() {
+        Memory mem = emuConfig.getArchitecture().getModules().getMemory();
+        mem.setSizemb(BigDecimal.valueOf(((Number) sizeField.getValue())
+                .intValue()));
+
         return emuConfig;
     }
-        
+
 }

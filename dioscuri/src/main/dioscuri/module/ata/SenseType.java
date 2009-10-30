@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,29 +46,27 @@ package dioscuri.module.ata;
 
 /**
  * Enumeration class for sense type.
- *
+ * 
  */
-public final class SenseType
-{
+public final class SenseType {
 
     private int value;
-    
+
     /*
      * Constructor
      */
-    private SenseType(int theValue) 
-    {
+    private SenseType(int theValue) {
         this.value = theValue;
     }
-    
+
     public final static SenseType NONE = new SenseType(0);
     public final static SenseType NOT_READY = new SenseType(2);
     public final static SenseType ILLEGAL_REQUEST = new SenseType(5);
     public final static SenseType UNIT_ATTENTION = new SenseType(6);
-      
-    public final static SenseType[] sense = {NONE,NOT_READY,
-        ILLEGAL_REQUEST, UNIT_ATTENTION};
-    
+
+    public final static SenseType[] sense = { NONE, NOT_READY, ILLEGAL_REQUEST,
+            UNIT_ATTENTION };
+
     /**
      * get the value associated with the enum entry.
      * 

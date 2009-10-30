@@ -37,54 +37,50 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode BD<BR>
-	 * Copy immediate word to register BP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode BD<BR>
+ * Copy immediate word to register BP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_BP implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_Imm_BP()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_BP(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate word to register BP
-	 */
-	public void execute()
-	{
-		cpu.bp = cpu.getWordFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_Imm_BP() {
+    }
 
-        if (cpu.doubleWord)
-        {
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_BP(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate word to register BP
+     */
+    public void execute() {
+        cpu.bp = cpu.getWordFromCode();
+
+        if (cpu.doubleWord) {
             // 32 bit instruction, so move one extra word into eBP
             cpu.ebp = cpu.getWordFromCode();
         }
-	}
+    }
 }

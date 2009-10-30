@@ -37,54 +37,56 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode EB<BR>
-	 * Unconditional relative short jump indicated by immediate signed byte.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode EB<BR>
+ * Unconditional relative short jump indicated by immediate signed byte.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JMP_shortJb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte displacement;
 
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JMP_shortJb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JMP_shortJb(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JMP_shortJb() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Execute unconditional relative short jump indicated by immediate signed byte
-	 */
-	public void execute()
-	{
-		// Get displacement byte (immediate)
-		// Jump is relative to _next_ instruction, but by the time the displacement is added to 
-		// the IP, it has already been incremented twice, so no extra arithmetic necessary
-		displacement = cpu.getByteFromCode();
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JMP_shortJb(CPU processor) {
+        // this();
 
-        cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
-     }
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute unconditional relative short jump indicated by immediate signed
+     * byte
+     */
+    public void execute() {
+        // Get displacement byte (immediate)
+        // Jump is relative to _next_ instruction, but by the time the
+        // displacement is added to
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
+        displacement = cpu.getByteFromCode();
+
+        cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                Util.signExtend(displacement), displacement }, 0);
+    }
 }

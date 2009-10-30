@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class StorageDeviceException extends Exception
-{
+public class StorageDeviceException extends Exception {
 
-	public StorageDeviceException(String message)
-	{
-		super(message);
-	}
-    
+    public StorageDeviceException(String message) {
+        super(message);
+    }
+
 }

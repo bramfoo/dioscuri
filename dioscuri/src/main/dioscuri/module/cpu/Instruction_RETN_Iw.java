@@ -37,57 +37,55 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode C2<BR>
-	 * Near (intrasegment) return to calling procedure.<BR>
-	 * Transfer control to return address located at top stack and pop immediate from mem.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode C2<BR>
+ * Near (intrasegment) return to calling procedure.<BR>
+ * Transfer control to return address located at top stack and pop immediate
+ * from mem.<BR>
+ * Flags modified: none
+ */
 public class Instruction_RETN_Iw implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
+    // Attributes
+    private CPU cpu;
+
     byte[] displacement;
 
-    
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_RETN_Iw()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_RETN_Iw(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-        
-        displacement = new byte[2];
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_RETN_Iw() {
+    }
 
-	
-	// Methods
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_RETN_Iw(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
+        displacement = new byte[2];
+    }
+
+    // Methods
 
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute()
-    {
+    public void execute() {
         // Get immediate word from code segment
         displacement = cpu.getWordFromCode();
 
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
-        
+
         // Add displacement to stack pointer
         cpu.sp = Util.addWords(cpu.sp, displacement, 0);
     }

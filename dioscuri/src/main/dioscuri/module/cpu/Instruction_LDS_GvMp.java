@@ -37,21 +37,20 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode C5<BR>
-	 * Load DS:r16 with far pointer from memory.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode C5<BR>
+ * Load DS:r16 with far pointer from memory.<BR>
+ * Flags modified: none
+ */
 public class Instruction_LDS_GvMp implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
     boolean operandWordSize;
-    
+
     byte addressByte = 0;
     byte[] memoryReferenceLocation = new byte[2];
     byte[] memoryReferenceDisplacement = new byte[2];
@@ -59,87 +58,92 @@ public class Instruction_LDS_GvMp implements Instruction {
     byte[] segmentSelector = new byte[2];
     byte[] segmentOffset = new byte[2];
     byte[] eSegmentOffset = new byte[2];
-    
+
     byte[] destinationRegister = new byte[2];
     byte[] eDestinationRegister = new byte[2];
 
-    
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_LDS_GvMp()
-    {
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_LDS_GvMp() {
         operandWordSize = true;
     }
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_LDS_GvMp(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-    
-	// Methods
-	
-	/**
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_LDS_GvMp(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
      * Load DS:r16 or DS:r32 with far pointer from memory m16:16 or m16:32.<BR>
-	 * Flags modified: none
-	 */
-	public void execute()
-	{
+     * Flags modified: none
+     */
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
-        // Determine displacement of memory location (if any) 
+        // Determine displacement of memory location (if any)
         memoryReferenceDisplacement = cpu.decodeMM(addressByte);
-        
+
         // Determine memory location
-        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                memoryReferenceDisplacement);
 
         // Retrieve offset, selector from memory (16-bit)
-        segmentOffset = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
+        segmentOffset = cpu.getWordFromMemorySegment(addressByte,
+                memoryReferenceLocation);
 
         // Redetermine memory location (increment displacement with 2)
-        memoryReferenceDisplacement = Util.addWords(memoryReferenceDisplacement, new byte[] {0x00, 0x02}, 0);
-        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+        memoryReferenceDisplacement = Util.addWords(
+                memoryReferenceDisplacement, new byte[] { 0x00, 0x02 }, 0);
+        memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                memoryReferenceDisplacement);
 
-        segmentSelector = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-        
-        // Determine destination register using addressbyte. AND it with 0011 1000 and right-shift 3 to get rrr bits
-        destinationRegister = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
+        segmentSelector = cpu.getWordFromMemorySegment(addressByte,
+                memoryReferenceLocation);
+
+        // Determine destination register using addressbyte. AND it with 0011
+        // 1000 and right-shift 3 to get rrr bits
+        destinationRegister = (cpu.decodeRegister(operandWordSize,
+                (addressByte & 0x38) >> 3));
 
         // Store segment selector in DS
         cpu.ds[CPU.REGISTER_SEGMENT_LOW] = segmentSelector[CPU.REGISTER_GENERAL_LOW];
         cpu.ds[CPU.REGISTER_SEGMENT_HIGH] = segmentSelector[CPU.REGISTER_GENERAL_HIGH];
-        
+
         // Store segment offset in destination register
         destinationRegister[CPU.REGISTER_GENERAL_LOW] = segmentOffset[CPU.REGISTER_GENERAL_LOW];
         destinationRegister[CPU.REGISTER_GENERAL_HIGH] = segmentOffset[CPU.REGISTER_GENERAL_HIGH];
 
-        
         if (cpu.doubleWord) // 32 bit registers
         {
             // Redetermine memory location (increment displacement with 4)
-            Util.addWords(memoryReferenceDisplacement, new byte[] {0x00, 0x04}, 0);
-            memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+            Util.addWords(memoryReferenceDisplacement,
+                    new byte[] { 0x00, 0x04 }, 0);
+            memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                    memoryReferenceDisplacement);
 
             // Retrieve offset (32-bit)
-            eSegmentOffset = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
-            
+            eSegmentOffset = cpu.getWordFromMemorySegment(addressByte,
+                    memoryReferenceLocation);
+
             // Retrieve destination register (32-bit)
             eDestinationRegister = cpu.decodeExtraRegister(addressByte & 0x07);
-            
+
             // Store segment offset in destination register (32-bit)
             eDestinationRegister[CPU.REGISTER_GENERAL_LOW] = eSegmentOffset[CPU.REGISTER_GENERAL_LOW];
             eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] = eSegmentOffset[CPU.REGISTER_GENERAL_HIGH];
         }
-	}
+    }
 }

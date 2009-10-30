@@ -54,90 +54,94 @@ import javax.xml.bind.Unmarshaller;
 import dioscuri.GUI;
 import dioscuri.config.Emulator;
 
-
-
-public class ConfigController
-{
+public class ConfigController {
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri");
-    
+
     // File config and schema paths (set to default)
-    
+
     private static JAXBContext jc;
     public static String EMULATOR_XML = "dioscuri.config";
 
     static {
-    	try {
-    		jc = JAXBContext.newInstance(EMULATOR_XML);
-    	}  catch (JAXBException e) {
-    		logger.log(Level.SEVERE, "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: " + e.getMessage());
-    	}
+        try {
+            jc = JAXBContext.newInstance(EMULATOR_XML);
+        } catch (JAXBException e) {
+            logger
+                    .log(
+                            Level.SEVERE,
+                            "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: "
+                                    + e.getMessage());
+        }
     }
-    
+
     // Constructor
-    public ConfigController(GUI gui)
-    {
+    public ConfigController(GUI gui) {
     }
 
     // Methods
-    
+
     /**
      * Get an unmarshaller that can unmarshal Emulator types.
      * 
-     * @return	A new unmarshaller
+     * @return A new unmarshaller
      * @throws JAXBException
      */
     public static Unmarshaller getEmuUnmarshaller() throws JAXBException {
-    	return jc.createUnmarshaller();
+        return jc.createUnmarshaller();
     }
-    
+
     /**
      * Get a marshaller that can marshal Emulator types
      * 
-     * @return	A new marshaller
+     * @return A new marshaller
      * @throws JAXBException
      */
     public static Marshaller getEmuMarshaller() throws JAXBException {
-    	Marshaller m = jc.createMarshaller();
-    	m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-    	return m;
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+        return m;
     }
-    
+
     /**
-     *  save JAXB Emu object to disk as an XML file
-     *
-     * @param emuObject          The Emulator object
-     * @param outputXMLFile       The xml output file
+     * save JAXB Emu object to disk as an XML file
+     * 
+     * @param emuObject
+     *            The Emulator object
+     * @param outputXMLFile
+     *            The xml output file
      * @throws Exception
      */
-    public static void saveToXML(Emulator emuObject,  File outputXMLFile) throws Exception {
-        FileOutputStream fos =  new FileOutputStream(outputXMLFile);
+    public static void saveToXML(Emulator emuObject, File outputXMLFile)
+            throws Exception {
+        FileOutputStream fos = new FileOutputStream(outputXMLFile);
         try {
-        	Marshaller marshaller = jc.createMarshaller();
+            Marshaller marshaller = jc.createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.marshal(emuObject, fos);
         } finally {
-        	fos.close();
+            fos.close();
         }
     }
-    
+
     /**
-     *  Load a whole Emu object from an XML file on disk
-     *
-     * @param inputEmuFile	An Emulator XML config file to load into memory
+     * Load a whole Emu object from an XML file on disk
+     * 
+     * @param inputEmuFile
+     *            An Emulator XML config file to load into memory
      * @return An Emulator object representing the whole Emulator file
      * @throws Exception
      */
     public static Emulator loadFromXML(File inputEmuFile) throws Exception {
-    	FileInputStream fis = new FileInputStream(inputEmuFile);
+        FileInputStream fis = new FileInputStream(inputEmuFile);
         try {
-        	return (Emulator) jc.createUnmarshaller().unmarshal(fis);
+            return (Emulator) jc.createUnmarshaller().unmarshal(fis);
         } finally {
-        	fis.close();
+            fis.close();
         }
     }
-    
+
     public static Emulator loadFromXML(InputStream is) throws Exception {
         return (Emulator) jc.createUnmarshaller().unmarshal(is);
     }

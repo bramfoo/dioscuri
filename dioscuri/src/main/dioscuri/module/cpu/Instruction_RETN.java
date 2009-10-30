@@ -37,46 +37,44 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode C3<BR>
-	 * Near (intrasegment) return to calling procedure.<BR>
-	 * Transfer control to return address located at top stack.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode C3<BR>
+ * Near (intrasegment) return to calling procedure.<BR>
+ * Transfer control to return address located at top stack.<BR>
+ * Flags modified: none
+ */
 public class Instruction_RETN implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_RETN()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_RETN(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_RETN() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_RETN(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
 
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute()
-    {
+    public void execute() {
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
     }

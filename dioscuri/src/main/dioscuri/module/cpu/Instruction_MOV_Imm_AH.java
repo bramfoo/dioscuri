@@ -37,49 +37,46 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode B4<BR>
-	 * Copy immediate byte to register AH.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode B4<BR>
+ * Copy immediate byte to register AH.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_AH implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_Imm_AH()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_AH(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate byte to register AH
-	 */
-	public void execute()
-	{
-		// Put next byte into AH 
-		cpu.ax[CPU.REGISTER_GENERAL_HIGH]=cpu.getByteFromCode();
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_Imm_AH() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_AH(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate byte to register AH
+     */
+    public void execute() {
+        // Put next byte into AH
+        cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.getByteFromCode();
+    }
 }

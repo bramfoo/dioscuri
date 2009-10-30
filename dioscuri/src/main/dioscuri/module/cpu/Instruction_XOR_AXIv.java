@@ -37,81 +37,83 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 35<BR>
-	 * Logical XOR of immediate word and AX.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode 35<BR>
+ * Logical XOR of immediate word and AX.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_XOR_AXIv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_XOR_AXIv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_XOR_AXIv(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Logical XOR of immediate word and AL.<BR>
-	 * OF and CF are cleared. AF is undefined.
-	 */
-	public void execute()
-	{
-		
-		// Reset appropriate flags
-		cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
-		cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
-		// Intel docs state AF remains undefined, but MS-DOS debug.exe clears AF
-		cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
-		
-		// Get immediate byte and XOR with AL, storing result in AL.
-		cpu.ax[CPU.REGISTER_GENERAL_LOW] ^= cpu.getByteFromCode();
-		// Get immediate byte and XOR with AH, storing result in AH.
-		cpu.ax[CPU.REGISTER_GENERAL_HIGH] ^= cpu.getByteFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_XOR_AXIv() {
+    }
 
-        if (cpu.doubleWord)
-        {
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_XOR_AXIv(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Logical XOR of immediate word and AL.<BR>
+     * OF and CF are cleared. AF is undefined.
+     */
+    public void execute() {
+
+        // Reset appropriate flags
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
+        // Intel docs state AF remains undefined, but MS-DOS debug.exe clears AF
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
+
+        // Get immediate byte and XOR with AL, storing result in AL.
+        cpu.ax[CPU.REGISTER_GENERAL_LOW] ^= cpu.getByteFromCode();
+        // Get immediate byte and XOR with AH, storing result in AH.
+        cpu.ax[CPU.REGISTER_GENERAL_HIGH] ^= cpu.getByteFromCode();
+
+        if (cpu.doubleWord) {
             // Get immediate byte and XOR with eAL, storing result in eAL.
             cpu.eax[CPU.REGISTER_GENERAL_LOW] ^= cpu.getByteFromCode();
             // Get immediate byte and XOR with eAH, storing result in eAH.
             cpu.eax[CPU.REGISTER_GENERAL_HIGH] ^= cpu.getByteFromCode();
         }
-		
-		// Test ZF
-		cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
-		// Test SF (set when MSB is 1, occurs when AH >= 0x80)
-		cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
-		// Set PF, only applies to AL
-		cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-        
-        if (cpu.doubleWord)
-        {
+
+        // Test ZF
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0
+                && cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+        // Test SF (set when MSB is 1, occurs when AH >= 0x80)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                : false;
+        // Set PF, only applies to AL
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+
+        if (cpu.doubleWord) {
             // Need to check extended registers with flags
             // Test ZF
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF] && cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0 && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.flags[CPU.REGISTER_FLAGS_ZF]
+                    && cpu.eax[CPU.REGISTER_GENERAL_HIGH] == 0
+                    && cpu.eax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
             // Test SF (set when MSB is 1, occurs when AH >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.eax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
         }
-	}
+    }
 }

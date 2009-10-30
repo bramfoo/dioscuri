@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import dioscuri.exception.ModuleException;
@@ -47,8 +46,7 @@ import dioscuri.exception.ModuleException;
  * Output byte in AL to I/O port address indicated by immediate byte.<BR>
  * Flags modified: none
  */
-public class Instruction_OUT_IbAL implements Instruction
-{
+public class Instruction_OUT_IbAL implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -60,17 +58,16 @@ public class Instruction_OUT_IbAL implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_OUT_IbAL()
-    {
+    public Instruction_OUT_IbAL() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_OUT_IbAL(CPU processor)
-    {
+    public Instruction_OUT_IbAL(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -80,17 +77,14 @@ public class Instruction_OUT_IbAL implements Instruction
     /**
      * Output byte in AL to I/O port address imm8
      */
-    public void execute()
-    {
-        try
-        {
+    public void execute() {
+        try {
             // Fetch immediate byte from memory and convert to unsigned integer,
             // to prevent lookup table out of bounds
             // and set data to appropriate port
-            cpu.setIOPortByte(((int)(cpu.getByteFromCode()) & 0xFF), cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-        }
-        catch (ModuleException e)
-        {
+            cpu.setIOPortByte(((int) (cpu.getByteFromCode()) & 0xFF),
+                    cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        } catch (ModuleException e) {
             // TODO: Implement proper catch block for OUT_IbAL instruction
         }
     }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,30 +44,29 @@ package dioscuri.module.cpu;
  * Load word from DS:SI into AX; update DI register according to DF.<BR>
  * Flags modified: none
  */
-public class Instruction_LODS_AXXv implements Instruction
-{
+public class Instruction_LODS_AXXv implements Instruction {
 
     // Attributes
     private CPU cpu;
     byte[] source;
-    byte[] incrementSize = new byte[]{0x00, 0x02};  // Word size increment for SI
+    byte[] incrementSize = new byte[] { 0x00, 0x02 }; // Word size increment for
+                                                      // SI
 
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_LODS_AXXv()
-    {
+    public Instruction_LODS_AXXv() {
         source = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_LODS_AXXv(CPU processor)
-    {
+    public Instruction_LODS_AXXv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -80,29 +78,23 @@ public class Instruction_LODS_AXXv implements Instruction
     /**
      * Load word from DS:SI into AX
      */
-    public void execute()
-    {
+    public void execute() {
         // Get word at DS:SI and assign to AX; DS segment override is allowed
-        if (cpu.segmentOverride)
-        {
+        if (cpu.segmentOverride) {
             source = cpu.getWordFromMemorySegment((byte) 0, cpu.si);
-        }
-        else
-        {
+        } else {
             source = cpu.getWordFromData(cpu.si);
         }
 
         cpu.ax = source;
 
         // Update SI according to DF flag
-        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1,
+        // SI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the SI register by word size
             cpu.si = Util.subtractWords(cpu.si, incrementSize, 0);
-        }
-        else
-        {
+        } else {
             // Increment the SI register by word size
             cpu.si = Util.addWords(cpu.si, incrementSize, 0);
         }

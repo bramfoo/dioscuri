@@ -42,7 +42,6 @@ package dioscuri.util;
 import java.util.Iterator;
 import java.util.Queue;
 
-
 public interface Deque<E> extends Queue<E> {
 
     void addFirst(E e);

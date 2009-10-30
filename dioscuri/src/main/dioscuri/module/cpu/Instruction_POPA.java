@@ -37,65 +37,62 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 61<BR>
-	 * Pop top 8 words off stack into general purpose registers<BR> 
-	 * The order is DI, SI, BP, SP, BX, DX, CX, AX<BR>
-	 * The SP value popped from the stack is discarded<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 61<BR>
+ * Pop top 8 words off stack into general purpose registers<BR>
+ * The order is DI, SI, BP, SP, BX, DX, CX, AX<BR>
+ * The SP value popped from the stack is discarded<BR>
+ * Flags modified: none
+ */
 public class Instruction_POPA implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_POPA()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_POPA(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Pops the top 8 words stack top SS:SP into the 8 general purpose registers<BR>
-	 * The order is DI, SI, BP, SP, BX, DX, CX, AX<BR>
-	 * The SP value popped from the stack is discarded
-	 */
-	public void execute()
-	{
-		// Get words from stack and assign to general purpose registers   
-		cpu.di = cpu.getWordFromStack();
-		cpu.si = cpu.getWordFromStack();
-		cpu.bp = cpu.getWordFromStack();
-		// Pop, but ignore SP value. Do this by assigning BX twice
-		cpu.bx = cpu.getWordFromStack();
-		cpu.bx = cpu.getWordFromStack();
-		cpu.dx = cpu.getWordFromStack();
-		cpu.cx = cpu.getWordFromStack();
-		cpu.ax = cpu.getWordFromStack();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_POPA() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_POPA(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Pops the top 8 words stack top SS:SP into the 8 general purpose registers<BR>
+     * The order is DI, SI, BP, SP, BX, DX, CX, AX<BR>
+     * The SP value popped from the stack is discarded
+     */
+    public void execute() {
+        // Get words from stack and assign to general purpose registers
+        cpu.di = cpu.getWordFromStack();
+        cpu.si = cpu.getWordFromStack();
+        cpu.bp = cpu.getWordFromStack();
+        // Pop, but ignore SP value. Do this by assigning BX twice
+        cpu.bx = cpu.getWordFromStack();
+        cpu.bx = cpu.getWordFromStack();
+        cpu.dx = cpu.getWordFromStack();
+        cpu.cx = cpu.getWordFromStack();
+        cpu.ax = cpu.getWordFromStack();
 
         // Pop extra register, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             System.out.println("POPA: 32-bits not supported");
         }
 

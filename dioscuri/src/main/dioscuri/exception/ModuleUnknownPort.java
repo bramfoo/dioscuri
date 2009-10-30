@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class ModuleUnknownPort extends Exception
-{
+public class ModuleUnknownPort extends Exception {
 
-    public ModuleUnknownPort(String message)
-    {
+    public ModuleUnknownPort(String message) {
         super(message);
     }
-    
+
 }

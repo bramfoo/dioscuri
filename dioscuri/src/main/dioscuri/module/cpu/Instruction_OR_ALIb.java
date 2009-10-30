@@ -37,63 +37,64 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 0C<BR>
-	 * Logical OR of immediate byte and AL.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode 0C<BR>
+ * Logical OR of immediate byte and AL.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_OR_ALIb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_OR_ALIb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_OR_ALIb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Logical OR of immediate byte and AL.<BR>
-	 * OF and CF are cleared. AF is undefined.
-	 */
-	public void execute()
-	{
-		
-		// Clear appropriate flags
-		cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
-		cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_OR_ALIb() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_OR_ALIb(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Logical OR of immediate byte and AL.<BR>
+     * OF and CF are cleared. AF is undefined.
+     */
+    public void execute() {
+
+        // Clear appropriate flags
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
         // Intel docs state AF remains undefined, but MS-DOS debug.exe clears AF
         cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
 
-		
-		// Get immediate byte and OR with AL, storing result in AL.
-		cpu.ax[CPU.REGISTER_GENERAL_LOW] |= cpu.getByteFromCode(); 
-		
-		// Test ZF, only applies to AL
-		cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
-		// Test SF, only applies to AL (set when MSB is 1, occurs when AL >= 0x80)
-		cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
-		// Set PF, only applies to AL
-		cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-	}
+        // Get immediate byte and OR with AL, storing result in AL.
+        cpu.ax[CPU.REGISTER_GENERAL_LOW] |= cpu.getByteFromCode();
+
+        // Test ZF, only applies to AL
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
+        // Test SF, only applies to AL (set when MSB is 1, occurs when AL >=
+        // 0x80)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
+        // Set PF, only applies to AL
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    }
 }

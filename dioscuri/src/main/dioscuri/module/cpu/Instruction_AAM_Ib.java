@@ -37,63 +37,63 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode D4<BR>
-	 * ASCII adjust AX after multiply.<BR>
-	 * Adjust multiplication result of two unpacked BCD values to create a pair of unpacked (base 10) BCD values.<BR>
-	 * Flags modified: SF, ZF, PF; OF, AF, CF are undefined
-	 */
+/**
+ * Intel opcode D4<BR>
+ * ASCII adjust AX after multiply.<BR>
+ * Adjust multiplication result of two unpacked BCD values to create a pair of
+ * unpacked (base 10) BCD values.<BR>
+ * Flags modified: SF, ZF, PF; OF, AF, CF are undefined
+ */
 public class Instruction_AAM_Ib implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte base;
     int tempResult;
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_AAM_Ib()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_AAM_Ib(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-        
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_AAM_Ib() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_AAM_Ib(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
         base = 0;
         tempResult = 0;
-	}
+    }
 
-	
-	// Methods
-	
-	/**
-     * Adjust multiplication result of two unpacked BCD values to create a pair of unpacked (base 10) BCD values.<BR>
-	 * Set AX(AH:AL) register to AL/imm8 (AH), and AL%imm8 (AL), respectively.<BR>
-     * The base is defined by imm8; for example, 08H for octal, 0AH for decimal, or 0CH for base 12.
-	 */
-	public void execute()
-	{
+    // Methods
+
+    /**
+     * Adjust multiplication result of two unpacked BCD values to create a pair
+     * of unpacked (base 10) BCD values.<BR>
+     * Set AX(AH:AL) register to AL/imm8 (AH), and AL%imm8 (AL), respectively.<BR>
+     * The base is defined by imm8; for example, 08H for octal, 0AH for decimal,
+     * or 0CH for base 12.
+     */
+    public void execute() {
         // Get immediate byte for base
         base = cpu.getByteFromCode();
         tempResult = cpu.ax[CPU.REGISTER_GENERAL_LOW];
-        
+
         // AH = AL / base
         cpu.ax[CPU.REGISTER_GENERAL_HIGH] = (byte) (tempResult / base);
         // AL = AL % base
         cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) (tempResult % base);
-        
-        
+
         // Set appropriate flags; follow Bochs' example of undefined flags
         // OF is undefined
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
@@ -102,10 +102,14 @@ public class Instruction_AAM_Ib implements Instruction {
         // CF is undefined
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
         // Set ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 && cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0 ? true : false;
-        // Set SF on particular byte of AX (set when MSB is 1, occurs when destReg >= 0x80)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0
+                && cpu.ax[CPU.REGISTER_GENERAL_HIGH] == 0 ? true : false;
+        // Set SF on particular byte of AX (set when MSB is 1, occurs when
+        // destReg >= 0x80)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                : false;
         // Set PF on particular byte of AX
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-	}
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    }
 }

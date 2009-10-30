@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Set IF to 1<BR>
  * Flags modified: none
  */
-public class Instruction_STI implements Instruction
-{
+public class Instruction_STI implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,17 +54,16 @@ public class Instruction_STI implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_STI()
-    {
+    public Instruction_STI() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_STI(CPU processor)
-    {
+    public Instruction_STI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,10 +75,10 @@ public class Instruction_STI implements Instruction
     /**
      * Set IF to 1
      */
-    public void execute()
-    {
+    public void execute() {
         // Set interrupt flag in FLAGS register
-        // Note: Interrupt should be sensed by processor with a delay of one instruction
+        // Note: Interrupt should be sensed by processor with a delay of one
+        // instruction
         cpu.flags[CPU.REGISTER_FLAGS_IF] = true;
     }
 }

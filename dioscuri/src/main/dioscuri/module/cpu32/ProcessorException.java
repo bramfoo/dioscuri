@@ -22,84 +22,77 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 @SuppressWarnings("serial")
-public final class ProcessorException extends RuntimeException
-{
-private int vector;
-private int errorCode;
-private boolean pointsToSelf;
-private boolean hasErrorCode;
+public final class ProcessorException extends RuntimeException {
+    private int vector;
+    private int errorCode;
+    private boolean pointsToSelf;
+    private boolean hasErrorCode;
 
-public ProcessorException(int vector, int errorCode, boolean pointsToSelf)
-{
-    this.vector = vector;
-    this.hasErrorCode = true;
-    this.errorCode = errorCode;
-    this.pointsToSelf = pointsToSelf;
-}
+    public ProcessorException(int vector, int errorCode, boolean pointsToSelf) {
+        this.vector = vector;
+        this.hasErrorCode = true;
+        this.errorCode = errorCode;
+        this.pointsToSelf = pointsToSelf;
+    }
 
-public ProcessorException(int vector, boolean pointsToSelf)
-{
-    this.vector = vector;
-    this.hasErrorCode = false;
-    this.errorCode = 0;
-    this.pointsToSelf = pointsToSelf;
-}
+    public ProcessorException(int vector, boolean pointsToSelf) {
+        this.vector = vector;
+        this.hasErrorCode = false;
+        this.errorCode = 0;
+        this.pointsToSelf = pointsToSelf;
+    }
 
-public int getVector()
-{
-    return vector;
-}
+    public int getVector() {
+        return vector;
+    }
 
-public boolean hasErrorCode()
-{
-    return hasErrorCode;
-}
+    public boolean hasErrorCode() {
+        return hasErrorCode;
+    }
 
-public int getErrorCode()
-{
-    return errorCode;
-}
+    public int getErrorCode() {
+        return errorCode;
+    }
 
-public boolean pointsToSelf()
-{
-    return pointsToSelf;
-}
+    public boolean pointsToSelf() {
+        return pointsToSelf;
+    }
 
-private static final boolean isContributory(int vector)
-{
-switch (vector) {
-case Processor.PROC_EXCEPTION_DE:
-case Processor.PROC_EXCEPTION_TS:
-case Processor.PROC_EXCEPTION_NP:
-case Processor.PROC_EXCEPTION_SS:
-case Processor.PROC_EXCEPTION_GP:
-    return true;
-default:
-    return false;
-}
-}
+    private static final boolean isContributory(int vector) {
+        switch (vector) {
+        case Processor.PROC_EXCEPTION_DE:
+        case Processor.PROC_EXCEPTION_TS:
+        case Processor.PROC_EXCEPTION_NP:
+        case Processor.PROC_EXCEPTION_SS:
+        case Processor.PROC_EXCEPTION_GP:
+            return true;
+        default:
+            return false;
+        }
+    }
 
-private static final boolean isPageFault(int vector)
-{
-return (vector == Processor.PROC_EXCEPTION_PF);
-}
+    private static final boolean isPageFault(int vector) {
+        return (vector == Processor.PROC_EXCEPTION_PF);
+    }
 
-public boolean combinesToDoubleFault(int vector)
-{
-//Here we are the "second exception"
-return isContributory(vector) && isContributory(this.getVector()) ||
-    isPageFault(vector) && (isContributory(this.getVector()) || isPageFault(this.getVector()));
-}
+    public boolean combinesToDoubleFault(int vector) {
+        // Here we are the "second exception"
+        return isContributory(vector)
+                && isContributory(this.getVector())
+                || isPageFault(vector)
+                && (isContributory(this.getVector()) || isPageFault(this
+                        .getVector()));
+    }
 
-public String toString()
-{
-if (hasErrorCode())
-    return "Processor Exception: " + getVector() + " [errorcode:0x" + Integer.toHexString(getErrorCode()) + "]";
-else
-    return "Processor Exception: " + getVector();
-}
+    public String toString() {
+        if (hasErrorCode())
+            return "Processor Exception: " + getVector() + " [errorcode:0x"
+                    + Integer.toHexString(getErrorCode()) + "]";
+        else
+            return "Processor Exception: " + getVector();
+    }
 }

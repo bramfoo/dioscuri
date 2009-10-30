@@ -37,24 +37,23 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 // Keyboard state information
-public class TheKeyboard
-{
+public class TheKeyboard {
     protected final static int CONTROLLER_QUEUE_SIZE = 5;
-    
+
     // Motherboard side controller chip
     KeyBoardController controller = new KeyBoardController();
-    
-    // Keyboard side internal buffer 
+
+    // Keyboard side internal buffer
     KeyboardInternalBuffer internalBuffer = new KeyboardInternalBuffer();
-    
-    // Keyboard controller queue, contains data intended for keyboard (command bytes).
+
+    // Keyboard controller queue, contains data intended for keyboard (command
+    // bytes).
     // Contains keypresses passed from keyboard to controller
     List<Byte> controllerQueue = new ArrayList<Byte>(CONTROLLER_QUEUE_SIZE);
 }

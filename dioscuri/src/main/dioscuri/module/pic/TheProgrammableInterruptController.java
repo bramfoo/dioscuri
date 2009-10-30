@@ -45,49 +45,51 @@ package dioscuri.module.pic;
  * Includes a reset function to reset certain variables to their defaults<BR>
  * 
  */
-public class TheProgrammableInterruptController
-{
-	// PIC settings
-    boolean singleCascadedPIC;      // PIC is single or cascaded (true=master only, false=cascaded PIC)
-    int interruptOffset;            // INT routine <-> IRQ offset (ex. IRQ0 == INT8)
-    boolean specialFullyNestedMode; // Specially fully nested mode (true=yes, false=no)
-    boolean bufferedMode;           // Buffer mode (true=buffered mode, false=no buffered mode)
-    boolean isMaster;               // master/slave PIC (true=master PIC, false=slave PIC) 
-    boolean autoEndOfInt;           // true=automatic EOI, false=manual EOI
-    
+public class TheProgrammableInterruptController {
+    // PIC settings
+    boolean singleCascadedPIC; // PIC is single or cascaded (true=master only,
+                               // false=cascaded PIC)
+    int interruptOffset; // INT routine <-> IRQ offset (ex. IRQ0 == INT8)
+    boolean specialFullyNestedMode; // Specially fully nested mode (true=yes,
+                                    // false=no)
+    boolean bufferedMode; // Buffer mode (true=buffered mode, false=no buffered
+                          // mode)
+    boolean isMaster; // master/slave PIC (true=master PIC, false=slave PIC)
+    boolean autoEndOfInt; // true=automatic EOI, false=manual EOI
+
     // Registers
-    byte interruptRequestRegister;  // interrupt request register (irr)
-    byte inServiceRegister;         // in service register (isr)
-    byte interruptMaskRegister;     // interrupt mask register (imr), 1=masked
-    
+    byte interruptRequestRegister; // interrupt request register (irr)
+    byte inServiceRegister; // in service register (isr)
+    byte interruptMaskRegister; // interrupt mask register (imr), 1=masked
+
     // Other variables
-    int readRegisterSelect;         // 0: IRR, 1: ISR
-    byte currentIrqNumber;          // current IRQ number
-    int lowestPriorityIRQ;          // current lowest priority irq
-    boolean intRequestPin;          // INT request pin of PIC
-    int irqPins;                    // IRQ pins of PIC. Each pin is a bit in irqPins. If pin is high, bit is 1: IRQ 4 high = 0000.0100
+    int readRegisterSelect; // 0: IRR, 1: ISR
+    byte currentIrqNumber; // current IRQ number
+    int lowestPriorityIRQ; // current lowest priority irq
+    boolean intRequestPin; // INT request pin of PIC
+    int irqPins; // IRQ pins of PIC. Each pin is a bit in irqPins. If pin is
+                 // high, bit is 1: IRQ 4 high = 0000.0100
     boolean specialMask;
-    boolean isPolled;               // Set when poll command is issued.
-    boolean rotateOnAutoEOI;        // Set when should rotate in auto-eoi mode.
-    int edgeLevel;                  // IRQ mode (0=edge, 1=level)
-    
+    boolean isPolled; // Set when poll command is issued.
+    boolean rotateOnAutoEOI; // Set when should rotate in auto-eoi mode.
+    int edgeLevel; // IRQ mode (0=edge, 1=level)
+
     InitSequence initSequence = new InitSequence();
-    
+
     /**
-     * Resets all common parameters to their default value
-     * NOTE: Not all parameters are reset! (interruptOffset, masterSlave, etc.) 
-     *
+     * Resets all common parameters to their default value NOTE: Not all
+     * parameters are reset! (interruptOffset, masterSlave, etc.)
+     * 
      */
-    protected void reset()
-    {
+    protected void reset() {
         singleCascadedPIC = false;
-        specialFullyNestedMode = false;         // normal nested mode
-        bufferedMode = false;                   // unbuffered mode
-        autoEndOfInt = false;                   // manual EOI from CPU
-        interruptMaskRegister = (byte) 0xFF;    // all IRQ's initially masked
-        inServiceRegister = 0x00;               // no IRQ's in service
-        interruptRequestRegister = 0x00;        // no IRQ's requested
-        readRegisterSelect = 0;                 // IRR
+        specialFullyNestedMode = false; // normal nested mode
+        bufferedMode = false; // unbuffered mode
+        autoEndOfInt = false; // manual EOI from CPU
+        interruptMaskRegister = (byte) 0xFF; // all IRQ's initially masked
+        inServiceRegister = 0x00; // no IRQ's in service
+        interruptRequestRegister = 0x00; // no IRQ's requested
+        readRegisterSelect = 0; // IRR
         currentIrqNumber = 0;
         lowestPriorityIRQ = 7;
         intRequestPin = false;
@@ -96,7 +98,7 @@ public class TheProgrammableInterruptController
         isPolled = false;
         rotateOnAutoEOI = false;
         edgeLevel = 0;
-        
+
         initSequence.reset();
     }
 }

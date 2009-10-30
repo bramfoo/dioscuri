@@ -49,39 +49,39 @@ import dioscuri.exception.CPUInstructionException;
 @SuppressWarnings("unused")
 public class Instruction_SEG_GS implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-    
-	// Constructors
-	/**
-	 * Construct class
-	 */
-	public Instruction_SEG_GS()	{}
-	
-	/**
-	 * Construct class
-	 * @param processor
-	 */
-	public Instruction_SEG_GS(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 * @throws CPUInstructionException 
-	 */
-	public void execute() throws CPUInstructionException
-	{
+    // Constructors
+    /**
+     * Construct class
+     */
+    public Instruction_SEG_GS() {
+    }
+
+    /**
+     * Construct class
+     * 
+     * @param processor
+     */
+    public Instruction_SEG_GS(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     * 
+     * @throws CPUInstructionException
+     */
+    public void execute() throws CPUInstructionException {
         // FS and GS are undefined for the 80186. So do nothing here,
         // which is likely to lead to disastrous results...
-        throw new CPUInstructionException("Segment GS override not implemented (not part of 8086 instruction set)");
-	}
+        throw new CPUInstructionException(
+                "Segment GS override not implemented (not part of 8086 instruction set)");
+    }
 }

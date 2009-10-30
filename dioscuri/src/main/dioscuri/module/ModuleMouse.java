@@ -37,30 +37,30 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import java.awt.event.MouseEvent;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleMouse extends Module
-{
+public abstract class ModuleMouse extends Module {
     // Methods
-	public abstract void setMouseEnabled(boolean status);
-	
-	public abstract void setMouseType(String type);
-	
-	public abstract boolean isBufferEmpty();
-	
-	public abstract byte getDataFromBuffer(); // returns the head of the buffer FIFO, data is automatically removed from buffer
-	
+    public abstract void setMouseEnabled(boolean status);
+
+    public abstract void setMouseType(String type);
+
+    public abstract boolean isBufferEmpty();
+
+    public abstract byte getDataFromBuffer(); // returns the head of the buffer
+                                              // FIFO, data is automatically
+                                              // removed from buffer
+
     public abstract void storeBufferData(boolean forceEnqueue);
 
     public abstract void controlMouse(byte value);
-    
+
     public abstract void mouseMotion(MouseEvent mouseEvent);
 }

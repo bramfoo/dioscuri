@@ -22,25 +22,21 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 
-public class RealModeSkeletonBlock extends RealModeTemplateBlock
-{
-    public int execute(Processor cpu)
-    {
+public class RealModeSkeletonBlock extends RealModeTemplateBlock {
+    public int execute(Processor cpu) {
         return 0;
     }
 
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return 0;
     }
 
-    public int getX86Count()
-    {
+    public int getX86Count() {
         return 0;
     }
 }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Logger;
@@ -47,42 +46,47 @@ import dioscuri.exception.CPUInstructionException;
 @SuppressWarnings("unused")
 public class Instruction_NULL implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.cpu");
-	
-	// Constructors
-	/**
-	 * Construct class
-	 */
-	public Instruction_NULL()	{}
-	
-	/**
-	 * Construct class
-	 * @param processor
-	 */
-	public Instruction_NULL(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 * @throws CPUInstructionException 
-	 */
-	public void execute() throws CPUInstructionException
-	{
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.cpu");
+
+    // Constructors
+    /**
+     * Construct class
+     */
+    public Instruction_NULL() {
+    }
+
+    /**
+     * Construct class
+     * 
+     * @param processor
+     */
+    public Instruction_NULL(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     * 
+     * @throws CPUInstructionException
+     */
+    public void execute() throws CPUInstructionException {
         // Throw exception for illegal nnn bits
-//        byte b1 = (byte) (cpu.getByteFromCode() & 0xFF);    // Target instruction
-//        System.out.println("Unknown instruction (NULL) encountered at " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) + ", next instruction=" + Integer.toHexString(b1));
-        throw new CPUInstructionException("Unknown instruction (NULL) encountered at " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1));
-	}
+        // byte b1 = (byte) (cpu.getByteFromCode() & 0xFF); // Target
+        // instruction
+        // System.out.println("Unknown instruction (NULL) encountered at " +
+        // cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) +
+        // ", next instruction=" + Integer.toHexString(b1));
+        throw new CPUInstructionException(
+                "Unknown instruction (NULL) encountered at "
+                        + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1));
+    }
 }

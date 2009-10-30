@@ -37,29 +37,27 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Internal keyboard buffer
- * Virtual buffer - located in the keyboard hardware 
- * Contains data intended for controller (ACKS/NACKS, scancodes, etc.) 
- *
+ * Internal keyboard buffer Virtual buffer - located in the keyboard hardware
+ * Contains data intended for controller (ACKS/NACKS, scancodes, etc.)
+ * 
  */
-public class KeyboardInternalBuffer
-{
-      protected final static int NUM_ELEMENTS = 16;
-    
-      List<Byte>  buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data elements
-      byte   expectingTypematic;                // Keyboard repeat rate command issued 
-      byte   expectingLEDWrite;                 // Keyboard LED change command issued
-      byte   expectingScancodeSet;              // Alternate scancode set command issued
-      byte   keyPressDelay;                     // Delay between keypresses
-      byte   keyRepeatRate;                     // Key repeat rate
-      byte   ledStatus;                         // Current Num-Lock, Caps-Lock, Scroll-Lock status
-      byte   scanningEnabled;                   // Keyboard enabled
+public class KeyboardInternalBuffer {
+    protected final static int NUM_ELEMENTS = 16;
+
+    List<Byte> buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data
+                                                          // elements
+    byte expectingTypematic; // Keyboard repeat rate command issued
+    byte expectingLEDWrite; // Keyboard LED change command issued
+    byte expectingScancodeSet; // Alternate scancode set command issued
+    byte keyPressDelay; // Delay between keypresses
+    byte keyRepeatRate; // Key repeat rate
+    byte ledStatus; // Current Num-Lock, Caps-Lock, Scroll-Lock status
+    byte scanningEnabled; // Keyboard enabled
 
 }

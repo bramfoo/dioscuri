@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import dioscuri.module.dma.DMA16Handler;
@@ -47,16 +46,17 @@ import dioscuri.module.dma.DMA8Handler;
  * Interface representing a generic hardware module.
  */
 
-public abstract class ModuleDMA extends ModuleDevice
-{
+public abstract class ModuleDMA extends ModuleDevice {
     // Methods
-    public abstract boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler);
-    
-    public abstract boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler);
-   
+    public abstract boolean registerDMAChannel(int chanNum,
+            DMA8Handler dma8handler);
+
+    public abstract boolean registerDMAChannel(int chanNum,
+            DMA16Handler dma16handler);
+
     public abstract void setDMARequest(int chanNum, boolean request);
 
     public abstract void acknowledgeBusHold();
-    
+
     public abstract boolean isTerminalCountReached();
 }

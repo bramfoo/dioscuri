@@ -22,57 +22,51 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import dioscuri.module.clock.Clock;
 
-public class EPROMMemory extends LazyCodeBlockMemory
-{
+public class EPROMMemory extends LazyCodeBlockMemory {
     @SuppressWarnings("unused")
     private Clock clock;
-    
-    public EPROMMemory(byte[] data, Clock clk)
-    {
+
+    public EPROMMemory(byte[] data, Clock clk) {
         this(data, 0, data.length, clk);
     }
 
-    public EPROMMemory(byte[] data, int offset, int length, Clock clk)
-    {
+    public EPROMMemory(byte[] data, int offset, int length, Clock clk) {
         this(length, 0, data, offset, length, clk);
     }
 
-    public EPROMMemory(int size, int base, byte[] data, int offset, int length, Clock clk)
-    {
+    public EPROMMemory(int size, int base, byte[] data, int offset, int length,
+            Clock clk) {
         super(size, clk);
-        super.copyContentsFrom(base, data, offset, Math.min(size - base, Math.min(length, data.length - offset)));
+        super.copyContentsFrom(base, data, offset, Math.min(size - base, Math
+                .min(length, data.length - offset)));
         this.clock = clk;
     }
 
-    public void setByte(int offset, byte data)
-    {
-    System.err.println("Tried to write to EPROM");
+    public void setByte(int offset, byte data) {
+        System.err.println("Tried to write to EPROM");
     }
 
-    public void setWord(int offset, short data)
-    {
-    System.err.println("Tried to write to EPROM");
+    public void setWord(int offset, short data) {
+        System.err.println("Tried to write to EPROM");
     }
 
-    public void setDoubleWord(int offset, int data)
-    {
-    System.err.println("Tried to write to EPROM");
+    public void setDoubleWord(int offset, int data) {
+        System.err.println("Tried to write to EPROM");
     }
 
-    public void copyContentsFrom(int address, byte[] buf, int off, int len) {}
-
-    public void clear()
-    {
-    constructCodeBlocksArray();
+    public void copyContentsFrom(int address, byte[] buf, int off, int len) {
     }
 
-    public boolean isVolatile()
-    {
+    public void clear() {
+        constructCodeBlocksArray();
+    }
+
+    public boolean isVolatile() {
         return false;
     }
 }

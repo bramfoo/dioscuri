@@ -37,56 +37,58 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode D7<BR>
-	 * Set AL to memory byte DS:[BX + unsigned AL].<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode D7<BR>
+ * Set AL to memory byte DS:[BX + unsigned AL].<BR>
+ * Flags modified: none
+ */
 public class Instruction_XLAT implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
     byte defaultAddressByteDS;
     byte[] memoryReferenceLocation;
 
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_XLAT()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_XLAT(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_XLAT() {
+    }
 
-        // The addressbyte set here is hardcoded to reference DS, unless there is a segment override
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_XLAT(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
+        // The addressbyte set here is hardcoded to reference DS, unless there
+        // is a segment override
         defaultAddressByteDS = 0x00;
         memoryReferenceLocation = new byte[2];
-	}
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Set AL to memory byte DS:[BX + unsigned AL]
-	 */
-	public void execute()
-	{
+    // Methods
+
+    /**
+     * Set AL to memory byte DS:[BX + unsigned AL]
+     */
+    public void execute() {
         // Set memory location as BX + AL
-        memoryReferenceLocation = Util.addWords(cpu.bx, new byte[]{0x00, cpu.ax[CPU.REGISTER_GENERAL_LOW]}, 0);
-        
-        // Get byte from DS:[BX+AL] (segment overrides are possible) and store in AL
-        cpu.ax[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromMemorySegment(defaultAddressByteDS, memoryReferenceLocation);
-	}
+        memoryReferenceLocation = Util.addWords(cpu.bx, new byte[] { 0x00,
+                cpu.ax[CPU.REGISTER_GENERAL_LOW] }, 0);
+
+        // Get byte from DS:[BX+AL] (segment overrides are possible) and store
+        // in AL
+        cpu.ax[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromMemorySegment(
+                defaultAddressByteDS, memoryReferenceLocation);
+    }
 }

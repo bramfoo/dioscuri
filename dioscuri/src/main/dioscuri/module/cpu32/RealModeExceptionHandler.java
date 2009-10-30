@@ -22,7 +22,7 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
@@ -34,37 +34,41 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.ExceptionHandler;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
-public class RealModeExceptionHandler extends ExceptionHandler
-{
-    public RealModeExceptionHandler(int lastX86Position, RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
-    {
-    super(lastX86Position, initialNode, stateMap);
+public class RealModeExceptionHandler extends ExceptionHandler {
+    public RealModeExceptionHandler(int lastX86Position,
+            RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
+        super(lastX86Position, initialNode, stateMap);
     }
 
-    protected void writeHandlerRoutine(CountingOutputStream byteCodes, ClassFile cf) throws IOException
-    {
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(ProcessorException.class.getDeclaredMethod("getVector", (Class[])null));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    }
+    protected void writeHandlerRoutine(CountingOutputStream byteCodes,
+            ClassFile cf) throws IOException {
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(ProcessorException.class
+                    .getDeclaredMethod("getVector", (Class[]) null));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        }
 
-    byteCodes.write(JavaOpcode.ALOAD_1);
-    byteCodes.write(JavaOpcode.SWAP);
-    byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
-    try {
-        int cpIndex = cf.addToConstantPool(Processor.class.getDeclaredMethod("handleRealModeException", new Class[] {Integer.TYPE}));
-        if (cpIndex > 0xffff)
-        throw new IllegalStateException("Compilation ran out of constant pool slots");
-        byteCodes.write(cpIndex >>> 8);
-        byteCodes.write(cpIndex & 0xff);
-    } catch (NoSuchMethodException e) {
-        System.err.println(e);
-    }
+        byteCodes.write(JavaOpcode.ALOAD_1);
+        byteCodes.write(JavaOpcode.SWAP);
+        byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
+        try {
+            int cpIndex = cf.addToConstantPool(Processor.class
+                    .getDeclaredMethod("handleRealModeException",
+                            new Class[] { Integer.TYPE }));
+            if (cpIndex > 0xffff)
+                throw new IllegalStateException(
+                        "Compilation ran out of constant pool slots");
+            byteCodes.write(cpIndex >>> 8);
+            byteCodes.write(cpIndex & 0xff);
+        } catch (NoSuchMethodException e) {
+            System.err.println(e);
+        }
     }
 }

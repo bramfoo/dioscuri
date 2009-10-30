@@ -37,8 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
-
 package dioscuri.module.cpu;
 
 /**
@@ -47,68 +45,65 @@ package dioscuri.module.cpu;
  * Returns from an interrupt or exception handler and restores IP, CS and flags.<BR>
  * Flags modified: all
  */
-public class Instruction_IRET implements Instruction
-{
+public class Instruction_IRET implements Instruction {
 
     // Attributes
     private CPU cpu;
 
     boolean operandWordSize;
-    
+
     byte[] newCS;
     byte[] newIP;
     byte[] newFlags;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_IRET()
-    {
+    public Instruction_IRET() {
         operandWordSize = true;
-        
+
         newCS = new byte[2];
         newIP = new byte[2];
         newFlags = new byte[2];
     }
-    
+
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_IRET(CPU processor)
-    {
+    public Instruction_IRET(CPU processor) {
         this();
-        
+
         // Create reference to cpu class
         cpu = processor;
     }
 
-    
     // Methods
 
     /**
-     * Returns from an interrupt or exception handler and restores IP, CS and flags.<BR>
+     * Returns from an interrupt or exception handler and restores IP, CS and
+     * flags.<BR>
      */
-    public void execute()
-    {
-        // Pop IP, CS and flags in reverse order as they were pushed (i.e. by INT instruction)
-        
+    public void execute() {
+        // Pop IP, CS and flags in reverse order as they were pushed (i.e. by
+        // INT instruction)
+
         // Pop IP (16-bit) from stack
         newIP = cpu.getWordFromStack();
         cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];
         cpu.ip[CPU.REGISTER_HIGH] = newIP[CPU.REGISTER_HIGH];
-        
+
         // Pop CS (16-bit) from stack
         newCS = cpu.getWordFromStack();
         cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
         cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
-        
+
         // Pop flags register (16-bit) from stack
         newFlags = cpu.getWordFromStack();
-        
+
         // Convert flagbytes into booleans and store them in flags register
         cpu.flags = Util.bytesToBooleans(newFlags);
     }

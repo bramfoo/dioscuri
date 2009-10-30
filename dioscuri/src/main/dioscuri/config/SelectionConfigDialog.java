@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -61,142 +60,118 @@ import javax.swing.border.Border;
 
 import dioscuri.DioscuriFrame;
 
-
 @SuppressWarnings("serial")
-public class SelectionConfigDialog extends ConfigurationDialog
-{
-    
+public class SelectionConfigDialog extends ConfigurationDialog {
+
     private JList modulesList;
-    
-    public SelectionConfigDialog(DioscuriFrame parent)
-    {               
-        super (parent, "Configuration Selector", true, null);           
+
+    public SelectionConfigDialog(DioscuriFrame parent) {
+        super(parent, "Configuration Selector", true, null);
     }
-    
+
     /**
      * Initialize the edit button
      */
-    protected void initDoButton()
-    {
+    protected void initDoButton() {
         doButton = new JButton("Edit");
-        
-        doButton.addActionListener(new ActionListener()
-        {         
-            public void actionPerformed(ActionEvent e)
-            { 
+
+        doButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
                 launchSpecificConfigDialog();
-                       
+
             }
-            
+
         });
     }
-    
-    protected void initConfirmButton()
-    {
+
+    protected void initConfirmButton() {
         okButton = new JButton("OK");
-        
-        okButton.addActionListener(new ActionListener(){
-            public void actionPerformed(ActionEvent e){
-               dispose(); 
+
+        okButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                dispose();
             }
-          });
-            
+        });
+
     }
 
     /**
      * Launch the config dialog for the selected module.
      */
-    private void launchSpecificConfigDialog()
-    {
-    
-        ModuleType selectedModule = (ModuleType)modulesList.getSelectedValue();
-        
+    private void launchSpecificConfigDialog() {
+
+        ModuleType selectedModule = (ModuleType) modulesList.getSelectedValue();
+
         if (selectedModule.equals(ModuleType.ATA)) {
             new AtaConfigDialog(parent);
-        } 
-        else if (selectedModule.equals(ModuleType.BIOS)) {
-           new BiosConfigDialog(parent);    
-        } 
-        else if(selectedModule.equals(ModuleType.BOOT)) {       
-            new BootConfigDialog(parent);     
-        } 
-        else if(selectedModule.equals(ModuleType.CPU)) {       
+        } else if (selectedModule.equals(ModuleType.BIOS)) {
+            new BiosConfigDialog(parent);
+        } else if (selectedModule.equals(ModuleType.BOOT)) {
+            new BootConfigDialog(parent);
+        } else if (selectedModule.equals(ModuleType.CPU)) {
             new CpuConfigDialog(parent);
-        } 
-        else if (selectedModule.equals(ModuleType.FDC)) {
+        } else if (selectedModule.equals(ModuleType.FDC)) {
             new FdcConfigDialog(parent);
-        } 
-        else if (selectedModule.equals(ModuleType.MEMORY)) {
-            new RamConfigDialog(parent); 
-        } 
-        else if (selectedModule.equals(ModuleType.MOUSE)) {
-            new MouseConfigDialog(parent);  
-        } 
-        else if (selectedModule.equals(ModuleType.PIT) 
+        } else if (selectedModule.equals(ModuleType.MEMORY)) {
+            new RamConfigDialog(parent);
+        } else if (selectedModule.equals(ModuleType.MOUSE)) {
+            new MouseConfigDialog(parent);
+        } else if (selectedModule.equals(ModuleType.PIT)
                 || selectedModule.equals(ModuleType.KEYBOARD)
                 || selectedModule.equals(ModuleType.VGA)) {
             new SimpleConfigDialog(parent, selectedModule);
         }
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
+    protected void initMainEntryPanel() {
         DefaultListModel listModel = new DefaultListModel();
-        
-/*       
-//    Add all config modules
-      ModuleType[] moduleTypes = ModuleType.moduleTypes;     
-        for(int i = 0; i < moduleTypes.length; i++)
-        {     
-            listModel.addElement(moduleTypes[i]);        
-        }
-*/
+
+        /*
+         * // Add all config modules ModuleType[] moduleTypes =
+         * ModuleType.moduleTypes; for(int i = 0; i < moduleTypes.length; i++) {
+         * listModel.addElement(moduleTypes[i]); }
+         */
         listModel.addElement(ModuleType.ATA);
         listModel.addElement(ModuleType.BIOS);
-        listModel.addElement(ModuleType.BOOT); 
+        listModel.addElement(ModuleType.BOOT);
         listModel.addElement(ModuleType.CPU);
         listModel.addElement(ModuleType.FDC);
         listModel.addElement(ModuleType.KEYBOARD);
         listModel.addElement(ModuleType.MOUSE);
-        listModel.addElement(ModuleType.MEMORY); 
+        listModel.addElement(ModuleType.MEMORY);
         listModel.addElement(ModuleType.PIT);
         listModel.addElement(ModuleType.VGA);
-        
+
         modulesList = new JList(listModel);
         modulesList.setSelectedIndex(0);
-      
-     
-        JScrollPane selectionScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
-                                                          JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        
-        Dimension listSize = new Dimension(dialogWidth - 50, 215); 
+
+        JScrollPane selectionScrollPane = new JScrollPane(
+                JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        Dimension listSize = new Dimension(dialogWidth - 50, 215);
         selectionScrollPane.setSize(listSize);
         selectionScrollPane.setPreferredSize(listSize);
-        
-        
-        selectionScrollPane.getViewport().add(modulesList);
-        
-        mainEntryPanel.add(selectionScrollPane);
-        
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
-        mainEntryPanel.setBorder(blackline);
-        
-        modulesList.addMouseListener(new MouseAdapter() 
-        {
 
-            public void mouseClicked(MouseEvent e) 
-            {
-                if (e.getClickCount() == 2) 
-                {
+        selectionScrollPane.getViewport().add(modulesList);
+
+        mainEntryPanel.add(selectionScrollPane);
+
+        Border blackline = BorderFactory.createLineBorder(Color.black);
+        mainEntryPanel.setBorder(blackline);
+
+        modulesList.addMouseListener(new MouseAdapter() {
+
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
                     launchSpecificConfigDialog();
                 }
             }
         });
 
-
     }
-    
+
 }

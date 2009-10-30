@@ -22,41 +22,40 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
-public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements ProtectedModeCodeBlock
-{
+public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
+        ProtectedModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
-    public SpanningProtectedModeCodeBlock(CodeBlockFactory[] factories)
-    {
-    this.factories = factories;
+    public SpanningProtectedModeCodeBlock(CodeBlockFactory[] factories) {
+        this.factories = factories;
     }
 
-    protected CodeBlock decode(Processor cpu)
-    {
-    ProtectedModeCodeBlock block = null;
-    AddressSpace memory = cpu.linearMemory;
-    int address = cpu.getInstructionPointer();
-    boolean opSize = cpu.cs.getDefaultSizeFlag();
-    for (int i = 0; (i < factories.length) && (block == null); i++) {
-        try {
-        byteSource.set(memory, address);
-        block = factories[i].getProtectedModeCodeBlock(byteSource, opSize);
-        } catch (IllegalStateException e) {}
+    protected CodeBlock decode(Processor cpu) {
+        ProtectedModeCodeBlock block = null;
+        AddressSpace memory = cpu.linearMemory;
+        int address = cpu.getInstructionPointer();
+        boolean opSize = cpu.cs.getDefaultSizeFlag();
+        for (int i = 0; (i < factories.length) && (block == null); i++) {
+            try {
+                byteSource.set(memory, address);
+                block = factories[i].getProtectedModeCodeBlock(byteSource,
+                        opSize);
+            } catch (IllegalStateException e) {
+            }
+        }
+
+        return block;
     }
-    
-    return block;
-    }
-    
-    public String getDisplayString()
-    {
-    return "Spanning Protected Mode CodeBlock";
+
+    public String getDisplayString() {
+        return "Spanning Protected Mode CodeBlock";
     }
 }

@@ -37,52 +37,50 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode CB<BR>
-	 * Far (intersegment) return to calling procedure.<BR>
-	 * Transfer control to return address located at top stack.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode CB<BR>
+ * Far (intersegment) return to calling procedure.<BR>
+ * Transfer control to return address located at top stack.<BR>
+ * Flags modified: none
+ */
 public class Instruction_RETF implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-    //byte[] displacement = new byte[2];
-    //int overUnderFlowCheck;
+    // Attributes
+    private CPU cpu;
 
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_RETF()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_RETF(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // byte[] displacement = new byte[2];
+    // int overUnderFlowCheck;
 
-	
-	// Methods
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_RETF() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_RETF(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
 
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute()
-    {
+    public void execute() {
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
-        
+
         // Pop code segment from top of stack into CS register
         cpu.cs = cpu.getWordFromStack();
     }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,8 +45,7 @@ package dioscuri.module.cpu;
  * Invert CF<BR>
  * Flags modified: none
  */
-public class Instruction_CMC implements Instruction
-{
+public class Instruction_CMC implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -56,17 +54,16 @@ public class Instruction_CMC implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_CMC()
-    {
+    public Instruction_CMC() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_CMC(CPU processor)
-    {
+    public Instruction_CMC(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +75,7 @@ public class Instruction_CMC implements Instruction
     /**
      * Invert CF
      */
-    public void execute()
-    {
+    public void execute() {
         // Invert carry flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_CF] = !cpu.flags[CPU.REGISTER_FLAGS_CF];
     }

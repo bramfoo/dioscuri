@@ -47,46 +47,49 @@ import java.util.Arrays;
  */
 
 /**
- * CRT Controller Registers, Address (RW: 3x4h) and Data (RW: 3x5h),
- * where x can be B or D, set in colorEmulation
- *
+ * CRT Controller Registers, Address (RW: 3x4h) and Data (RW: 3x5h), where x can
+ * be B or D, set in colorEmulation
+ * 
  */
-public class CRTControllerRegister
-{
-    byte index;                     // Index into CRTC register for data write; set via Address register
-    boolean protectEnable;          // Protect video timing registers from values unsuitable for VGA timings; legacy programs attempted this
-                                    // Writing to registers 00h-07h is disabled, except Line Compare of Overflow register (0x07).
+public class CRTControllerRegister {
+    byte index; // Index into CRTC register for data write; set via Address
+                // register
+    boolean protectEnable; // Protect video timing registers from values
+                           // unsuitable for VGA timings; legacy programs
+                           // attempted this
+    // Writing to registers 00h-07h is disabled, except Line Compare of Overflow
+    // register (0x07).
     byte[] regArray = new byte[0x19];// 0x00 - Horizontal Total Register
-                                    // 0x01 - End Horizontal Display Register
-                                    // 0x02 - Start Horizontal Blanking Register
-                                    // 0x03 - End Horizontal Blanking Register
-                                    // 0x04 - Start Horizontal Retrace Register
-                                    // 0x05 - End Horizontal Retrace Register
-                                    // 0x06 - Vertical Total Register
-                                    // 0x07 - Overflow Register
-                                    // 0x08 - Preset Row Scan Register
-                                    // 0x09 - Maximum Scan Line Register
-    byte scanDoubling;              //        Bit 7 of register 0x09
-                                    // 0x0A - Cursor Start Register
-                                    // 0x0B - Cursor End Register
-                                    // 0x0C - Start Address High Register
-                                    // 0x0D - Start Address Low Register
-                                    // 0x0E - Cursor Location High Register
-                                    // 0x0F - Cursor Location Low Register
-                                    // 0x10 - Vertical Retrace Start Register
-                                    // 0x11 - Vertical Retrace End Register
-                                    // 0x12 - Vertical Display End Register
-                                    // 0x13 - Offset Register
-                                    // 0x14 - Underline Location Register
-                                    // 0x15 - Start Vertical Blanking Register
-                                    // 0x16 - End Vertical Blanking
-                                    // 0x17 - CRTC Mode Control Register
-                                    // 0x18 - Line Compare Register
+    // 0x01 - End Horizontal Display Register
+    // 0x02 - Start Horizontal Blanking Register
+    // 0x03 - End Horizontal Blanking Register
+    // 0x04 - Start Horizontal Retrace Register
+    // 0x05 - End Horizontal Retrace Register
+    // 0x06 - Vertical Total Register
+    // 0x07 - Overflow Register
+    // 0x08 - Preset Row Scan Register
+    // 0x09 - Maximum Scan Line Register
+    byte scanDoubling; // Bit 7 of register 0x09
+
+    // 0x0A - Cursor Start Register
+    // 0x0B - Cursor End Register
+    // 0x0C - Start Address High Register
+    // 0x0D - Start Address Low Register
+    // 0x0E - Cursor Location High Register
+    // 0x0F - Cursor Location Low Register
+    // 0x10 - Vertical Retrace Start Register
+    // 0x11 - Vertical Retrace End Register
+    // 0x12 - Vertical Display End Register
+    // 0x13 - Offset Register
+    // 0x14 - Underline Location Register
+    // 0x15 - Start Vertical Blanking Register
+    // 0x16 - End Vertical Blanking
+    // 0x17 - CRTC Mode Control Register
+    // 0x18 - Line Compare Register
     /**
      * Return variables to default values
      */
-    protected void reset()
-    {
+    protected void reset() {
         index = 0;
         protectEnable = false;
         Arrays.fill(regArray, (byte) 0);

@@ -22,47 +22,41 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public abstract class AbstractBasicCompiler implements CodeBlockCompiler
-{
+public abstract class AbstractBasicCompiler implements CodeBlockCompiler {
     protected int bufferOffset;
     protected int[] bufferMicrocodes;
     protected int[] bufferPositions;
 
-    public AbstractBasicCompiler()
-    {
-    bufferMicrocodes = new int[100];
-    bufferPositions = new int[100];
-    bufferOffset = 0;
+    public AbstractBasicCompiler() {
+        bufferMicrocodes = new int[100];
+        bufferPositions = new int[100];
+        bufferOffset = 0;
     }
 
-    protected void buildCodeBlockBuffers(InstructionSource source)
-    {
+    protected void buildCodeBlockBuffers(InstructionSource source) {
         bufferOffset = 0;
         int position = 0;
 
-        while(source.getNext())
-        {
+        while (source.getNext()) {
             int uCodeLength = source.getLength();
             int uCodeX86Length = source.getX86Length();
             position += uCodeX86Length;
 
-            for(int i = 0; i < uCodeLength; i++)
-            {
+            for (int i = 0; i < uCodeLength; i++) {
                 int data = source.getMicrocode();
-                try 
-                {
+                try {
                     bufferMicrocodes[bufferOffset] = data;
                     bufferPositions[bufferOffset] = position;
-                } 
-                catch (ArrayIndexOutOfBoundsException e) 
-                {
+                } catch (ArrayIndexOutOfBoundsException e) {
                     int[] newMicrocodes = new int[bufferMicrocodes.length * 2];
                     int[] newPositions = new int[bufferMicrocodes.length * 2];
-                    System.arraycopy(bufferMicrocodes, 0, newMicrocodes, 0, bufferMicrocodes.length);
-                    System.arraycopy(bufferPositions, 0, newPositions, 0, bufferPositions.length);
+                    System.arraycopy(bufferMicrocodes, 0, newMicrocodes, 0,
+                            bufferMicrocodes.length);
+                    System.arraycopy(bufferPositions, 0, newPositions, 0,
+                            bufferPositions.length);
                     bufferMicrocodes = newMicrocodes;
                     bufferPositions = newPositions;
                     bufferMicrocodes[bufferOffset] = data;

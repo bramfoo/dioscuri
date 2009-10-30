@@ -37,56 +37,54 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode EA<BR>
-	 * Unconditional absolute far jump indicated by immediate two words.<BR>
-	 * Displacement is absolute, where addressword1 == IP, addressword 2 == CS.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode EA<BR>
+ * Unconditional absolute far jump indicated by immediate two words.<BR>
+ * Displacement is absolute, where addressword1 == IP, addressword 2 == CS.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JMP_farAP implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte[] newCS = new byte[2];
-	byte[] newIP = new byte[2];
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JMP_farAP()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JMP_farAP(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte[] newCS = new byte[2];
+    byte[] newIP = new byte[2];
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 */
-	public void execute()
-	{
-		// Get displacement words (immediate).
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JMP_farAP() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JMP_farAP(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     */
+    public void execute() {
+        // Get displacement words (immediate).
         byte[] newIP = cpu.getWordFromCode();
         byte[] newCS = cpu.getWordFromCode();
-        
+
         // Assign words to ip and cs
         cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
         cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
         cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];
         cpu.ip[CPU.REGISTER_HIGH] = newIP[CPU.REGISTER_HIGH];
-	}
+    }
 }

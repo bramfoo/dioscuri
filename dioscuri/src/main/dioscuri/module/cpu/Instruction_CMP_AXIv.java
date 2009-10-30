@@ -37,102 +37,115 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 3D<BR>
-	 * Comparison of immediate word (SUB) with AX.<BR>
-	 * Does not update any registers, only sets appropriate flags.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode 3D<BR>
+ * Comparison of immediate word (SUB) with AX.<BR>
+ * Does not update any registers, only sets appropriate flags.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_CMP_AXIv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte[] immediateWord = new byte[2];
-	byte[] immediateDoubleWord = new byte[2];
-	byte[] resultWord = new byte[2];
-	byte[] resultDoubleWord = new byte[2];
-	int tempCF = 0;
-	boolean tempOF = false;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_CMP_AXIv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_CMP_AXIv(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte[] immediateWord = new byte[2];
+    byte[] immediateDoubleWord = new byte[2];
+    byte[] resultWord = new byte[2];
+    byte[] resultDoubleWord = new byte[2];
+    int tempCF = 0;
+    boolean tempOF = false;
 
-	
-	// Methods
-	
-	/**
-	 * Comparison of immediate word (SUB) with AX.<BR>
-	 * Does not update any registers, only sets appropriate flags.
-	 */
-	public void execute()
-	{
-		if (cpu.doubleWord)
-		{
-			// 32-bit
-			immediateWord = cpu.getWordFromCode();
-			immediateDoubleWord = cpu.getWordFromCode();
-			
-			// Subtract lower 16 bits
-			resultWord = Util.subtractWords(cpu.ax, immediateWord, 0);
-			
-			tempCF = Util.test_CF_SUB(cpu.ax, immediateWord, 0) == true ? 1 : 0;
-			
-			// Subtract higher 16 bits
-			resultDoubleWord = Util.subtractWords(cpu.eax, immediateDoubleWord, tempCF);
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_CMP_AXIv() {
+    }
 
-	        // Test AF
-	        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(cpu.ax[CPU.REGISTER_GENERAL_LOW], resultWord[CPU.REGISTER_GENERAL_LOW]);
-			// Test CF
-			cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(cpu.eax, immediateDoubleWord, tempCF);
-			// Test OF
-			cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(cpu.eax, immediateDoubleWord, resultDoubleWord, tempCF);
-			// Test ZF
-			cpu.flags[CPU.REGISTER_FLAGS_ZF] = resultDoubleWord[CPU.REGISTER_GENERAL_HIGH] == 0x00 && resultDoubleWord[CPU.REGISTER_GENERAL_LOW] == 0x00 && resultWord[CPU.REGISTER_GENERAL_HIGH] == 0x00 && resultWord[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
-			// Test SF (set when MSB is 1, occurs when tempResult >= 0x8000)
-			cpu.flags[CPU.REGISTER_FLAGS_SF] = resultDoubleWord[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
-			// Set PF, only applies to tempResult[LOW]
-			cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(resultWord[CPU.REGISTER_GENERAL_LOW]);
-		}
-		else
-		{
-			// 16-bit
-			immediateWord = cpu.getWordFromCode();
-	
-			// Subtract
-			resultWord = Util.subtractWords(cpu.ax, immediateWord, 0);
-	
-	        // Test AF
-	        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(cpu.ax[CPU.REGISTER_GENERAL_LOW], resultWord[CPU.REGISTER_GENERAL_LOW]);
-			// Test CF
-			cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(cpu.ax, immediateWord, 0);
-			// Test OF
-			cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(cpu.ax, immediateWord, resultWord, 0);
-			// Test ZF
-			cpu.flags[CPU.REGISTER_FLAGS_ZF] = resultWord[CPU.REGISTER_GENERAL_HIGH] == 0x00 && resultWord[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true : false;
-			// Test SF (set when MSB is 1, occurs when tempResult >= 0x8000)
-			cpu.flags[CPU.REGISTER_FLAGS_SF] = resultWord[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
-			// Set PF, only applies to tempResult[LOW]
-			cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(resultWord[CPU.REGISTER_GENERAL_LOW]);
-		}
-	}
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_CMP_AXIv(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Comparison of immediate word (SUB) with AX.<BR>
+     * Does not update any registers, only sets appropriate flags.
+     */
+    public void execute() {
+        if (cpu.doubleWord) {
+            // 32-bit
+            immediateWord = cpu.getWordFromCode();
+            immediateDoubleWord = cpu.getWordFromCode();
+
+            // Subtract lower 16 bits
+            resultWord = Util.subtractWords(cpu.ax, immediateWord, 0);
+
+            tempCF = Util.test_CF_SUB(cpu.ax, immediateWord, 0) == true ? 1 : 0;
+
+            // Subtract higher 16 bits
+            resultDoubleWord = Util.subtractWords(cpu.eax, immediateDoubleWord,
+                    tempCF);
+
+            // Test AF
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(
+                    cpu.ax[CPU.REGISTER_GENERAL_LOW],
+                    resultWord[CPU.REGISTER_GENERAL_LOW]);
+            // Test CF
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(cpu.eax,
+                    immediateDoubleWord, tempCF);
+            // Test OF
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(cpu.eax,
+                    immediateDoubleWord, resultDoubleWord, tempCF);
+            // Test ZF
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = resultDoubleWord[CPU.REGISTER_GENERAL_HIGH] == 0x00
+                    && resultDoubleWord[CPU.REGISTER_GENERAL_LOW] == 0x00
+                    && resultWord[CPU.REGISTER_GENERAL_HIGH] == 0x00
+                    && resultWord[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true
+                    : false;
+            // Test SF (set when MSB is 1, occurs when tempResult >= 0x8000)
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = resultDoubleWord[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
+            // Set PF, only applies to tempResult[LOW]
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(resultWord[CPU.REGISTER_GENERAL_LOW]);
+        } else {
+            // 16-bit
+            immediateWord = cpu.getWordFromCode();
+
+            // Subtract
+            resultWord = Util.subtractWords(cpu.ax, immediateWord, 0);
+
+            // Test AF
+            cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(
+                    cpu.ax[CPU.REGISTER_GENERAL_LOW],
+                    resultWord[CPU.REGISTER_GENERAL_LOW]);
+            // Test CF
+            cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(cpu.ax,
+                    immediateWord, 0);
+            // Test OF
+            cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(cpu.ax,
+                    immediateWord, resultWord, 0);
+            // Test ZF
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = resultWord[CPU.REGISTER_GENERAL_HIGH] == 0x00
+                    && resultWord[CPU.REGISTER_GENERAL_LOW] == 0x00 ? true
+                    : false;
+            // Test SF (set when MSB is 1, occurs when tempResult >= 0x8000)
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = resultWord[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
+            // Set PF, only applies to tempResult[LOW]
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(resultWord[CPU.REGISTER_GENERAL_LOW]);
+        }
+    }
 }

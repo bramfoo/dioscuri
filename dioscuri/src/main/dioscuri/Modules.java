@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri;
 
 import java.util.ArrayList;
@@ -45,45 +44,33 @@ import java.util.ArrayList;
 import dioscuri.module.Module;
 
 @SuppressWarnings("serial")
-public class Modules extends ArrayList<Module>
-{
-	// Attributes
-	
-	// Constructors
-	public Modules()
-	{
-		super();
-	}
-	
-	public Modules(int capacity)
-	{
-		super(capacity);
-	}
+public class Modules extends ArrayList<Module> {
+    // Attributes
 
-	
-	// Methods
-	public boolean addModule(Module module)
-	{
-		return super.add(module);
-	}
+    // Constructors
+    public Modules() {
+        super();
+    }
 
+    public Modules(int capacity) {
+        super(capacity);
+    }
 
-	public Module getModule(String type)
-	{
-		for (int i = 0; i < super.size(); i++)
-		{
-			if ((this.getModule(i)).getType().equalsIgnoreCase(type))
-			{
-				return (Module)super.get(i);
-			}
-		}
-		return null;
-	}
+    // Methods
+    public boolean addModule(Module module) {
+        return super.add(module);
+    }
 
+    public Module getModule(String type) {
+        for (int i = 0; i < super.size(); i++) {
+            if ((this.getModule(i)).getType().equalsIgnoreCase(type)) {
+                return (Module) super.get(i);
+            }
+        }
+        return null;
+    }
 
-	public Module getModule(int index)
-	{
-		return (Module)super.get(index);
-	}
+    public Module getModule(int index) {
+        return (Module) super.get(index);
+    }
 }
-

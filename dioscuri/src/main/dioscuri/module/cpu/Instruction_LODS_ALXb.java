@@ -39,69 +39,64 @@
 
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode AC<BR>
-	 * Load byte from DS:SI into AL; update SI register according to DF.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode AC<BR>
+ * Load byte from DS:SI into AL; update SI register according to DF.<BR>
+ * Flags modified: none
+ */
 public class Instruction_LODS_ALXb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte source;
-    byte[] incrementSize = new byte[]{0x00, 0x01};  // Byte size increment for SI
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_LODS_ALXb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_LODS_ALXb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    byte[] incrementSize = new byte[] { 0x00, 0x01 }; // Byte size increment for
+                                                      // SI
 
-	
-	// Methods
-	
-	/**
-	 * Load byte from DS:SI into AL; update SI
-	 */
-	public void execute()
-	{
-		// Get byte at DS:SI and assign to AL; DS segment override is allowed
-        if (cpu.segmentOverride)
-        {
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_LODS_ALXb() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_LODS_ALXb(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Load byte from DS:SI into AL; update SI
+     */
+    public void execute() {
+        // Get byte at DS:SI and assign to AL; DS segment override is allowed
+        if (cpu.segmentOverride) {
             source = cpu.getByteFromMemorySegment((byte) 0, cpu.si);
-        }
-        else
-        {
+        } else {
             source = cpu.getByteFromData(cpu.si);
         }
-        
-		cpu.ax[CPU.REGISTER_GENERAL_LOW] = source;
+
+        cpu.ax[CPU.REGISTER_GENERAL_LOW] = source;
 
         // Update SI according to DF flag
-        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1, SI is decremented
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF])
-        {
+        // Check direction of flag: If DF == 0, SI is incremented; if DF == 1,
+        // SI is decremented
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement the SI register by byte size
             cpu.si = Util.subtractWords(cpu.si, incrementSize, 0);
-        }
-        else
-        {
+        } else {
             // Increment the SI register by byte size
             cpu.si = Util.addWords(cpu.si, incrementSize, 0);
         }
-	}
+    }
 }

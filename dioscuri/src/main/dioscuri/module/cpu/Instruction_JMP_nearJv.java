@@ -37,54 +37,52 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode E9<BR>
-	 * Unconditional relative near jump indicated by immediate signed word.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode E9<BR>
+ * Unconditional relative near jump indicated by immediate signed word.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JMP_nearJv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte[] displacement;
-    
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JMP_nearJv()
-    {
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JMP_nearJv() {
         displacement = new byte[2];
     }
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JMP_nearJv(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Execute unconditional relative near jump indicated by immediate signed word
-	 */
-	public void execute()
-	{
-		// Jump is relative to _next_ instruction, but by the time we change 
-		// the IP, it has already been incremented thrice, so no extra arithmetic necessary 		
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JMP_nearJv(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute unconditional relative near jump indicated by immediate signed
+     * word
+     */
+    public void execute() {
+        // Jump is relative to _next_ instruction, but by the time we change
+        // the IP, it has already been incremented thrice, so no extra
+        // arithmetic necessary
         displacement = cpu.getWordFromCode();
         cpu.ip = Util.addWords(cpu.ip, displacement, 0);
     }

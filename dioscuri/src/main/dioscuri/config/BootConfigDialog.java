@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -60,141 +59,134 @@ import dioscuri.GUI;
 import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 
-
-
 @SuppressWarnings("serial")
-public class BootConfigDialog extends ConfigurationDialog
-{
-   
+public class BootConfigDialog extends ConfigurationDialog {
+
     private JComboBox bootDrive1ComboxBox;
     private JComboBox bootDrive2ComboxBox;
     private JComboBox bootDrive3ComboxBox;
-    private JCheckBox floppyCheckDisabledCheckBox;   
- 
+    private JCheckBox floppyCheckDisabledCheckBox;
+
     dioscuri.config.Emulator emuConfig;
 
-    public BootConfigDialog(GUI parent)
-    {               
-        super (parent, "Boot Configuration", false, ModuleType.BOOT); 
+    public BootConfigDialog(GUI parent) {
+        super(parent, "Boot Configuration", false, ModuleType.BOOT);
     }
-    
+
     /**
      * Read in params from XML.
      */
-    protected void readInParams()
-    {
-    	emuConfig = parent.getEmuConfig();
-    	Bootdrives boot = emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives();
-        
+    protected void readInParams() {
+        emuConfig = parent.getEmuConfig();
+        Bootdrives boot = emuConfig.getArchitecture().getModules().getBios()
+                .get(0).getBootdrives();
+
         String boot1Index = boot.getBootdrive0();
         String boot2Index = boot.getBootdrive1();
-        String boot3Index = boot.getBootdrive2();      
-        boolean floppyCheckDisabled = emuConfig.getArchitecture().getModules().getBios().get(0).isFloppycheckdisabled();
+        String boot3Index = boot.getBootdrive2();
+        boolean floppyCheckDisabled = emuConfig.getArchitecture().getModules()
+                .getBios().get(0).isFloppycheckdisabled();
 
         this.bootDrive1ComboxBox.setSelectedItem(boot1Index);
         this.bootDrive2ComboxBox.setSelectedItem(boot2Index);
         this.bootDrive3ComboxBox.setSelectedItem(boot3Index);
         this.floppyCheckDisabledCheckBox.setSelected(floppyCheckDisabled);
-      
+
     }
-    
+
     /**
      * Initialise the panel for data entry.
      */
-    protected void initMainEntryPanel()
-    {
-                 
+    protected void initMainEntryPanel() {
+
         JLabel boot1Label = new JLabel("  Select Boot Drive 1");
         JLabel boot2Label = new JLabel("  Select Boot Drive 2");
         JLabel boot3Label = new JLabel("  Select Boot Drive 3");
         JLabel floppyCheckDisabledLabel = new JLabel("  Floppy Check Disabled");
-        
+
         this.populateControls();
-             
-        //Lay out the labels in a panel.
-                  
-        mainEntryPanel  = new JPanel(new GridLayout(10, 3)); 
-        Border blackline = BorderFactory.createLineBorder(Color.black);    
+
+        // Lay out the labels in a panel.
+
+        mainEntryPanel = new JPanel(new GridLayout(10, 3));
+        Border blackline = BorderFactory.createLineBorder(Color.black);
         mainEntryPanel.setBorder(blackline);
-        
-        //Fill start blanks in grid  
-        for (int i = 0; i < 3; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
-        }
-        
-        mainEntryPanel.add(boot1Label); 
-        mainEntryPanel.add(bootDrive1ComboxBox);
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(boot2Label);
-        mainEntryPanel.add(bootDrive2ComboxBox);  
-        mainEntryPanel.add(new JLabel("")); 
-        
-        mainEntryPanel.add(boot3Label);  
-        mainEntryPanel.add(bootDrive3ComboxBox);  
-        mainEntryPanel.add(new JLabel("")); 
-            
-        mainEntryPanel.add(floppyCheckDisabledLabel);
-        mainEntryPanel.add(floppyCheckDisabledCheckBox);
-        mainEntryPanel.add(new JLabel(""));       
-                   
-        //Fill end blanks in grid    
-        for (int i = 0; i < 15; i++)
-        {
-            mainEntryPanel.add(new JLabel("")); 
+
+        // Fill start blanks in grid
+        for (int i = 0; i < 3; i++) {
+            mainEntryPanel.add(new JLabel(""));
         }
 
-        
+        mainEntryPanel.add(boot1Label);
+        mainEntryPanel.add(bootDrive1ComboxBox);
+        mainEntryPanel.add(new JLabel(""));
+
+        mainEntryPanel.add(boot2Label);
+        mainEntryPanel.add(bootDrive2ComboxBox);
+        mainEntryPanel.add(new JLabel(""));
+
+        mainEntryPanel.add(boot3Label);
+        mainEntryPanel.add(bootDrive3ComboxBox);
+        mainEntryPanel.add(new JLabel(""));
+
+        mainEntryPanel.add(floppyCheckDisabledLabel);
+        mainEntryPanel.add(floppyCheckDisabledCheckBox);
+        mainEntryPanel.add(new JLabel(""));
+
+        // Fill end blanks in grid
+        for (int i = 0; i < 15; i++) {
+            mainEntryPanel.add(new JLabel(""));
+        }
+
     }
-    
+
     /**
      * Initalise the GUI Controls.
      */
-    private void populateControls()
-    {
-                 
+    private void populateControls() {
+
         DefaultComboBoxModel bootModel1 = new DefaultComboBoxModel();
         bootModel1.addElement("Floppy Drive");
         bootModel1.addElement("Hard Drive");
-        bootModel1.addElement("None");   
+        bootModel1.addElement("None");
         bootDrive1ComboxBox = new JComboBox(bootModel1);
         bootDrive1ComboxBox.setSelectedIndex(0);
-        
-        
+
         DefaultComboBoxModel bootModel2 = new DefaultComboBoxModel();
         bootModel2.addElement("Floppy Drive");
         bootModel2.addElement("Hard Drive");
-        bootModel2.addElement("None");   
+        bootModel2.addElement("None");
         bootDrive2ComboxBox = new JComboBox(bootModel2);
         bootDrive2ComboxBox.setSelectedIndex(2);
-        
+
         DefaultComboBoxModel bootModel3 = new DefaultComboBoxModel();
         bootModel3.addElement("Floppy Drive");
         bootModel3.addElement("Hard Drive");
-        bootModel3.addElement("None");   
+        bootModel3.addElement("None");
         bootDrive3ComboxBox = new JComboBox(bootModel3);
         bootDrive3ComboxBox.setSelectedIndex(2);
-                     
-        floppyCheckDisabledCheckBox = new JCheckBox(); 
-              
+
+        floppyCheckDisabledCheckBox = new JCheckBox();
+
     }
-     
+
     /**
      * Get the params from the GUI.
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui()
-    {
-    	Bootdrives boot = emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives();
-    	
-        boot.setBootdrive0((String)bootDrive1ComboxBox.getSelectedItem());    
-        boot.setBootdrive1((String)bootDrive2ComboxBox.getSelectedItem());
-        boot.setBootdrive2((String)bootDrive3ComboxBox.getSelectedItem());
-        emuConfig.getArchitecture().getModules().getBios().get(0).setFloppycheckdisabled(floppyCheckDisabledCheckBox.isSelected());   
- 
+    protected Emulator getParamsFromGui() {
+        Bootdrives boot = emuConfig.getArchitecture().getModules().getBios()
+                .get(0).getBootdrives();
+
+        boot.setBootdrive0((String) bootDrive1ComboxBox.getSelectedItem());
+        boot.setBootdrive1((String) bootDrive2ComboxBox.getSelectedItem());
+        boot.setBootdrive2((String) bootDrive3ComboxBox.getSelectedItem());
+        emuConfig.getArchitecture().getModules().getBios().get(0)
+                .setFloppycheckdisabled(
+                        floppyCheckDisabledCheckBox.isSelected());
+
         return emuConfig;
     }
-      
+
 }

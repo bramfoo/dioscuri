@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -45,43 +44,42 @@ import java.util.logging.Logger;
 
 public class Instruction_HLT implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
+    // Attributes
+    private CPU cpu;
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-    
     // Constructors
-	/**
-	 * Construct class
-	 */
-	public Instruction_HLT()	{}
-	
-	/**
-	 * Construct class
-	 * @param processor
-	 */
-	public Instruction_HLT(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    /**
+     * Construct class
+     */
+    public Instruction_HLT() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 */
-	public void execute()
-	{
+    /**
+     * Construct class
+     * 
+     * @param processor
+     */
+    public Instruction_HLT(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     */
+    public void execute() {
         cpu.asyncEvent = false;
         cpu.setShutdown(true);
-		cpu.setRunning(false);
-        logger.log(Level.SEVERE, "[" + cpu.getType() + "] Instruction HALT executed at " + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1));
-	}
+        cpu.setRunning(false);
+        logger.log(Level.SEVERE, "[" + cpu.getType()
+                + "] Instruction HALT executed at " + cpu.getRegisterHex(0)
+                + ":" + cpu.getRegisterHex(1));
+    }
 }

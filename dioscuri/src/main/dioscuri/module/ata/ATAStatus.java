@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,11 +46,10 @@ package dioscuri.module.ata;
 
 /**
  * Class to hold status flags of a ATA channel
- *
+ * 
  */
-public class ATAStatus
-{
-       
+public class ATAStatus {
+
     private int busy;
     private int driveReady;
     private int writeFault;
@@ -61,118 +59,100 @@ public class ATAStatus
     private int indexPulse;
     private int indexPulseCount;
     private int err;
-    
-    
+
     /**
      * Constructor.
      */
-    public ATAStatus()
-    {
-      // Initialize controller state
-        busy            = 0;
-        driveReady      = 1;
-        writeFault      = 0;
-        seekComplete    = 1;
-        drq             = 0;
-        correctedData   = 0;
-        indexPulse      = 0;
+    public ATAStatus() {
+        // Initialize controller state
+        busy = 0;
+        driveReady = 1;
+        writeFault = 0;
+        seekComplete = 1;
+        drq = 0;
+        correctedData = 0;
+        indexPulse = 0;
         indexPulseCount = 0;
-        err             = 0;
+        err = 0;
     }
-    
-    public int getBusy()
-    {
+
+    public int getBusy() {
         return busy;
     }
-    
-    public void setBusy(int busy)
-    {
+
+    public void setBusy(int busy) {
         this.busy = busy;
     }
-    public int getDriveReady()
-    {
+
+    public int getDriveReady() {
         return driveReady;
     }
-    
-    public void setDriveReady(int driveReady)
-    {
+
+    public void setDriveReady(int driveReady) {
         this.driveReady = driveReady;
     }
-    
-    public int getWriteFault()
-    {
+
+    public int getWriteFault() {
         return writeFault;
     }
-    public void setWriteFault(int writeFault)
-    {
+
+    public void setWriteFault(int writeFault) {
         this.writeFault = writeFault;
     }
-    
-    public int getSeekComplete()
-    {
+
+    public int getSeekComplete() {
         return seekComplete;
     }
-    
-    public void setSeekComplete(int seekComplete)
-    {
+
+    public void setSeekComplete(int seekComplete) {
         this.seekComplete = seekComplete;
     }
-    
-    public int getDrq()
-    {
+
+    public int getDrq() {
         return drq;
     }
-    
-    public void setDrq(int drq)
-    {
+
+    public void setDrq(int drq) {
         this.drq = drq;
     }
-    public int getCorrectedData()
-    {
+
+    public int getCorrectedData() {
         return correctedData;
     }
-    
-    public void setCorrectedData(int correctedData)
-    {
+
+    public void setCorrectedData(int correctedData) {
         this.correctedData = correctedData;
     }
-    public int getIndexPulse()
-    {
+
+    public int getIndexPulse() {
         return indexPulse;
     }
-    
-    public void setIndexPulse(int indexPulse)
-    {
+
+    public void setIndexPulse(int indexPulse) {
         this.indexPulse = indexPulse;
     }
-    
-    public int getIndexPulseCount()
-    {
+
+    public int getIndexPulseCount() {
         return indexPulseCount;
     }
-    
-    public void decrementIndexPulseCount()
-    {
+
+    public void decrementIndexPulseCount() {
         indexPulseCount--;
     }
-    
-    public void incrementIndexPulseCount()
-    {
+
+    public void incrementIndexPulseCount() {
         indexPulseCount++;
     }
-    
-    public void setIndexPulseCount(int indexPulseCount)
-    {
+
+    public void setIndexPulseCount(int indexPulseCount) {
         this.indexPulseCount = indexPulseCount;
     }
-    
-    public int getErr()
-    {
+
+    public int getErr() {
         return err;
     }
-    
-    public void setErr(int err)
-    {
+
+    public void setErr(int err) {
         this.err = err;
     }
 }

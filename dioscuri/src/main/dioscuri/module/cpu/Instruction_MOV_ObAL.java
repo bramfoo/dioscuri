@@ -37,58 +37,62 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode A2<BR>
-	 * Copy byte from register AL to DS:DISPL (DISPL given by word following opcode).<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode A2<BR>
+ * Copy byte from register AL to DS:DISPL (DISPL given by word following
+ * opcode).<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_ObAL implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	private byte[] displ = new byte[2];
+    // Attributes
+    private CPU cpu;
+    private byte[] displ = new byte[2];
     private byte dataSegmentAddressByte = 0;
-		
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_MOV_ObAL()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_ObAL(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Copy byte from register AL to DS:DISPL (DISPL given by word following opcode)
-	 */
-	public void execute()
-	{
-		// Get displacement within segment
-		displ = cpu.getWordFromCode();
-						
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_MOV_ObAL() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_ObAL(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy byte from register AL to DS:DISPL (DISPL given by word following
+     * opcode)
+     */
+    public void execute() {
+        // Get displacement within segment
+        displ = cpu.getWordFromCode();
+
         // Get byte at AL and assign to memory segment
-        // This memory segment defaults to DS:DISPL unless there is a segment override
-        // Because setByteInMemorySegment expects an address byte to determine the segment,
-        // a default of 0 is used here to end up in the Data Segment (unless of course there is an override,
+        // This memory segment defaults to DS:DISPL unless there is a segment
+        // override
+        // Because setByteInMemorySegment expects an address byte to determine
+        // the segment,
+        // a default of 0 is used here to end up in the Data Segment (unless of
+        // course there is an override,
         // but that is handled in setByte[..])
-        cpu.setByteInMemorySegment(dataSegmentAddressByte, displ, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-		
-	}
+        cpu.setByteInMemorySegment(dataSegmentAddressByte, displ,
+                cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+
+    }
 }

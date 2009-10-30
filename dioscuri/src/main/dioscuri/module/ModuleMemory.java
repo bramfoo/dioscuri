@@ -37,65 +37,68 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleMemory extends Module
-{
-	// Methods
-	
-	/**
-	 * Return a byte from memory
-	 * 
-	 * @return int containing the byte at given address
-	 * @throws ModuleException 
-	 */
-	public abstract byte getByte(int address) throws ModuleException;
+public abstract class ModuleMemory extends Module {
+    // Methods
 
-	/**
-	 * Set a byte in memory at given address
-	 * 
-	 * @param int address
-	 * @param int value containing the byte in Big-Endian order
-	 * 
-	 * @throws ModuleException 
-	 */
-	public abstract void setByte(int address, byte value) throws ModuleException;
+    /**
+     * Return a byte from memory
+     * 
+     * @return int containing the byte at given address
+     * @throws ModuleException
+     */
+    public abstract byte getByte(int address) throws ModuleException;
 
-	/**
-	 * Return a word from memory
-	 * 
-	 * @return int[] containing the word at given address
-	 * @throws ModuleException 
-	 */
-	public abstract byte[] getWord(int address) throws ModuleException;
+    /**
+     * Set a byte in memory at given address
+     * 
+     * @param int address
+     * @param int value containing the byte in Big-Endian order
+     * 
+     * @throws ModuleException
+     */
+    public abstract void setByte(int address, byte value)
+            throws ModuleException;
 
-	/**
-	 * Set a word in memory at given address
-	 * 
-	 * @param int address
-	 * @param int[] value containing the word in Big-Endian order
-	 * 
-	 * @throws ModuleException 
-	 */
-	public abstract void setWord(int address, byte[] value) throws ModuleException;
+    /**
+     * Return a word from memory
+     * 
+     * @return int[] containing the word at given address
+     * @throws ModuleException
+     */
+    public abstract byte[] getWord(int address) throws ModuleException;
 
-	/**
-	 * Stores an array of bytes in memory starting at a specific address
-	 * 
-	 * @param address	Flat-address where data is stored 
-	 * @param value	Byte array to be placed in memory
-	 * 
-	 * @throws ModuleException 
-	 */
-	public abstract void setBytes(int address, byte[] binaryStream) throws ModuleException;
+    /**
+     * Set a word in memory at given address
+     * 
+     * @param int address
+     * @param int[] value containing the word in Big-Endian order
+     * 
+     * @throws ModuleException
+     */
+    public abstract void setWord(int address, byte[] value)
+            throws ModuleException;
+
+    /**
+     * Stores an array of bytes in memory starting at a specific address
+     * 
+     * @param address
+     *            Flat-address where data is stored
+     * @param value
+     *            Byte array to be placed in memory
+     * 
+     * @throws ModuleException
+     */
+    public abstract void setBytes(int address, byte[] binaryStream)
+            throws ModuleException;
 
     /**
      * Set A20 address line toggle
@@ -103,14 +106,15 @@ public abstract class ModuleMemory extends Module
      * @param boolean status (on or off)
      */
     public abstract void setA20AddressLine(boolean status);
-    
+
     /**
      * Set watch toggle and address to trace in memory
      * 
      * @param boolean isWatch on
      * @param int watchAddress
      */
-    public abstract void setWatchValueAndAddress(boolean isWatchOn, int watchAddress);
+    public abstract void setWatchValueAndAddress(boolean isWatchOn,
+            int watchAddress);
 
     /**
      * Set RAM Size in megabytes

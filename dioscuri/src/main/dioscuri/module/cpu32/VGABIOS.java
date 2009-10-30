@@ -22,7 +22,7 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.*;
@@ -31,162 +31,146 @@ import java.io.*;
 
 import dioscuri.module.clock.Clock;
 
-
-public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable
-{
+public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable {
     private byte[] imageData;
     private boolean ioportRegistered, loaded;
     private Clock clock;
 
-    public VGABIOS(byte[] image, Clock clk)
-    {
-    loaded = false;
-    ioportRegistered = false;
-    this.clock = clk;
+    public VGABIOS(byte[] image, Clock clk) {
+        loaded = false;
+        ioportRegistered = false;
+        this.clock = clk;
 
-    imageData = new byte[image.length];
-    System.arraycopy(image, 0, imageData, 0, image.length);
+        imageData = new byte[image.length];
+        System.arraycopy(image, 0, imageData, 0, image.length);
     }
 
-    public VGABIOS(String imagefile) throws IOException
-    {
+    public VGABIOS(String imagefile) throws IOException {
         InputStream in = null;
-        try 
-        {
-        ByteArrayOutputStream bout = new ByteArrayOutputStream();
-        in = getClass().getResourceAsStream("/"+imagefile);
-        
-        while (true) 
-            {
+        try {
+            ByteArrayOutputStream bout = new ByteArrayOutputStream();
+            in = getClass().getResourceAsStream("/" + imagefile);
+
+            while (true) {
                 int ch = in.read();
                 if (ch < 0)
                     break;
                 bout.write((byte) ch);
             }
 
-        imageData = bout.toByteArray();
-        } 
-        finally 
-        {
-        try 
-            {
-        in.close();
-            } 
-            catch (Exception e) {}
+            imageData = bout.toByteArray();
+        } finally {
+            try {
+                in.close();
+            } catch (Exception e) {
+            }
         }
     }
 
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
         output.writeInt(imageData.length);
         output.write(imageData);
     }
 
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
         int len = input.readInt();
         imageData = new byte[len];
-        input.readFully(imageData,0,len);
+        input.readFully(imageData, 0, len);
     }
 
-    public int[] ioPortsRequested()
-    {
-    return new int[]{0x500, 0x501, 0x502, 0x503};
+    public int[] ioPortsRequested() {
+        return new int[] { 0x500, 0x501, 0x502, 0x503 };
     }
 
-    public int ioPortReadByte(int address) { return 0xff; }
-    public int ioPortReadWord(int address) { return 0xffff; }
-    public int ioPortReadLong(int address) { return (int)0xffffffff; }
+    public int ioPortReadByte(int address) {
+        return 0xff;
+    }
 
-    public void ioPortWriteByte(int address, int data)
-    {
-    switch(address) 
-        {
+    public int ioPortReadWord(int address) {
+        return 0xffff;
+    }
+
+    public int ioPortReadLong(int address) {
+        return (int) 0xffffffff;
+    }
+
+    public void ioPortWriteByte(int address, int data) {
+        switch (address) {
         /* LGPL VGA-BIOS Messages */
-    case 0x500:
-    case 0x503:
-        try 
-            {
-            System.out.print(new String(new byte[]{(byte)data},"US-ASCII"));
-            } 
-            catch (Exception e) 
-            {
-            System.out.print(new String(new byte[]{(byte)data}));                
+        case 0x500:
+        case 0x503:
+            try {
+                System.out.print(new String(new byte[] { (byte) data },
+                        "US-ASCII"));
+            } catch (Exception e) {
+                System.out.print(new String(new byte[] { (byte) data }));
             }
-        break;
-    default:
-    }
-    }
-    public void ioPortWriteWord(int address, int data)
-    {
-    switch(address) {
-        /* Bochs BIOS Messages */
-    case 0x501:
-    case 0x502:
-        System.err.println("VGA-BIOS panic line " + data);
-    default:
-    }
-    }
-    public void ioPortWriteLong(int address, int data) {}
-
-    public void load(PhysicalAddressSpace physicalAddress)
-    {
-        int blockSize = AddressSpace.BLOCK_SIZE;
-        int len = ((imageData.length-1) / blockSize + 1)*blockSize;
-
-        for (int i=0; i<len/blockSize; i++)
-        {
-            EPROMMemory ep = new EPROMMemory(blockSize, 0, imageData, i*blockSize, blockSize, clock);
-            physicalAddress.allocateMemory(0xC0000 + i*blockSize, ep);
+            break;
+        default:
         }
     }
 
-    public byte[] getImage()
-    {
-    return (byte[]) imageData.clone();
+    public void ioPortWriteWord(int address, int data) {
+        switch (address) {
+        /* Bochs BIOS Messages */
+        case 0x501:
+        case 0x502:
+            System.err.println("VGA-BIOS panic line " + data);
+        default:
+        }
     }
 
-    public boolean updated()
-    {
-    return (loaded && ioportRegistered);
+    public void ioPortWriteLong(int address, int data) {
     }
 
-    public void updateComponent(HardwareComponent component)
-    {
-    if ((component instanceof PhysicalAddressSpace) && component.updated()) 
-        {
-        this.load((PhysicalAddressSpace)component);
-        loaded = true;
+    public void load(PhysicalAddressSpace physicalAddress) {
+        int blockSize = AddressSpace.BLOCK_SIZE;
+        int len = ((imageData.length - 1) / blockSize + 1) * blockSize;
+
+        for (int i = 0; i < len / blockSize; i++) {
+            EPROMMemory ep = new EPROMMemory(blockSize, 0, imageData, i
+                    * blockSize, blockSize, clock);
+            physicalAddress.allocateMemory(0xC0000 + i * blockSize, ep);
+        }
     }
 
-    if ((component instanceof IOPortHandler) && component.updated()) 
-        {
-        ((IOPortHandler)component).registerIOPortCapable(this);
-        ioportRegistered = true;
-    }
+    public byte[] getImage() {
+        return (byte[]) imageData.clone();
     }
 
-    public boolean initialised()
-    {
-    return (loaded && ioportRegistered);
+    public boolean updated() {
+        return (loaded && ioportRegistered);
     }
 
-    public void acceptComponent(HardwareComponent component)
-    {
-    if ((component instanceof PhysicalAddressSpace) && component.initialised()) 
-        {
-        this.load((PhysicalAddressSpace)component);
-        loaded = true;
+    public void updateComponent(HardwareComponent component) {
+        if ((component instanceof PhysicalAddressSpace) && component.updated()) {
+            this.load((PhysicalAddressSpace) component);
+            loaded = true;
+        }
+
+        if ((component instanceof IOPortHandler) && component.updated()) {
+            ((IOPortHandler) component).registerIOPortCapable(this);
+            ioportRegistered = true;
+        }
     }
-    if ((component instanceof IOPortHandler) && component.initialised()) 
-        {
-        ((IOPortHandler)component).registerIOPortCapable(this);
-        ioportRegistered = true;
+
+    public boolean initialised() {
+        return (loaded && ioportRegistered);
     }
+
+    public void acceptComponent(HardwareComponent component) {
+        if ((component instanceof PhysicalAddressSpace)
+                && component.initialised()) {
+            this.load((PhysicalAddressSpace) component);
+            loaded = true;
+        }
+        if ((component instanceof IOPortHandler) && component.initialised()) {
+            ((IOPortHandler) component).registerIOPortCapable(this);
+            ioportRegistered = true;
+        }
     }
-    
-    public boolean reset()
-    {
+
+    public boolean reset() {
         ioportRegistered = false;
         loaded = false;
         return true;

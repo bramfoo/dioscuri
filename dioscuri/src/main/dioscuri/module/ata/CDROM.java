@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,10 +46,9 @@ package dioscuri.module.ata;
 
 /**
  * Class that stores CDROM attributes.
- *
+ * 
  */
-public class CDROM
-{
+public class CDROM {
 
     boolean isReady;
     boolean isLocked;
@@ -63,8 +61,7 @@ public class CDROM
 
     int[] errorRecovery = new int[8];
 
-    public CDROM()
-    {
+    public CDROM() {
 
         this.errorRecovery[0] = 0x01;
         this.errorRecovery[1] = 0x06;
@@ -79,69 +76,56 @@ public class CDROM
 
         // TODO: init variables
 
-        if (ATAConstants.IS_LOW_LEVEL_CDROM)
-        {
+        if (ATAConstants.IS_LOW_LEVEL_CDROM) {
             // lowLevelCDROM = new LowLevelCDROM();
         }
     }
 
-    public boolean isReady()
-    {
+    public boolean isReady() {
         return isReady;
     }
 
-    public void setReady(boolean isReady)
-    {
+    public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
 
-    public boolean isLocked()
-    {
+    public boolean isLocked() {
         return isLocked;
     }
 
-    public void setLocked(boolean isLocked)
-    {
+    public void setLocked(boolean isLocked) {
         this.isLocked = isLocked;
     }
 
-    public int getCapacity()
-    {
+    public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity)
-    {
+    public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 
-    public int getNextLba()
-    {
+    public int getNextLba() {
         return nextLba;
     }
 
-    public void setNextLba(int nextLba)
-    {
+    public void setNextLba(int nextLba) {
         this.nextLba = nextLba;
     }
 
-    public int getRemainingBlocks()
-    {
+    public int getRemainingBlocks() {
         return remainingBlocks;
     }
 
-    public void setRemainingBlocks(int remainingBlocks)
-    {
+    public void setRemainingBlocks(int remainingBlocks) {
         this.remainingBlocks = remainingBlocks;
     }
 
-    public int[] getErrorRecovery()
-    {
+    public int[] getErrorRecovery() {
         return errorRecovery;
     }
 
-    public void setErrorRecovery(int[] errorRecovery)
-    {
+    public void setErrorRecovery(int[] errorRecovery) {
         this.errorRecovery = errorRecovery;
     }
 

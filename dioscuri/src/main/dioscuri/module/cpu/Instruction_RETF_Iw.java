@@ -37,59 +37,59 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode CA<BR>
-	 * Far (intersegment) return to calling procedure and pop bytes from stack<BR>
-	 * Transfer control to return address located at top stack, and release a number of stack bytes<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode CA<BR>
+ * Far (intersegment) return to calling procedure and pop bytes from stack<BR>
+ * Transfer control to return address located at top stack, and release a number
+ * of stack bytes<BR>
+ * Flags modified: none
+ */
 public class Instruction_RETF_Iw implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-    
-    byte[] releaseStackBytes;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_RETF_Iw()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_RETF_Iw(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-        
-        releaseStackBytes = new byte[2];
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
+    byte[] releaseStackBytes;
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_RETF_Iw() {
+    }
 
     /**
-     * Transfer control to return address located at top of stack; release number of stack bytes
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
      */
-    public void execute()
-    {
+    public Instruction_RETF_Iw(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
+        releaseStackBytes = new byte[2];
+    }
+
+    // Methods
+
+    /**
+     * Transfer control to return address located at top of stack; release
+     * number of stack bytes
+     */
+    public void execute() {
         releaseStackBytes = cpu.getWordFromCode();
-        
+
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
-        
+
         // Pop code segment from top of stack into CS register
         cpu.cs = cpu.getWordFromStack();
-        
-        // Increase the stack pointer by the given number of bytes 
+
+        // Increase the stack pointer by the given number of bytes
         cpu.sp = Util.addWords(cpu.sp, releaseStackBytes, 0);
     }
 }

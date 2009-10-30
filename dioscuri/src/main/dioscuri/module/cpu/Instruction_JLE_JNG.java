@@ -37,61 +37,63 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 7E<BR>
-	 * Conditional short jump if zero or sign != overflow.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 7E<BR>
+ * Conditional short jump if zero or sign != overflow.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JLE_JNG implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte displacement;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JLE_JNG()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JLE_JNG(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte displacement;
 
-	
-	// Methods
-	
-	/**
-	 * Execute conditional short jump if zero or sign != overflow
-	 */
-	public void execute()
-	{
-		// Get displacement byte (immediate)
-		// This byte is interpreted signed, so cast to Java byte
-		// Jump is relative to _next_ instruction, but by the time we change 
-		// the IP, it has already been incremented twice, so no extra arithmetic necessary 		
-		displacement = (byte) cpu.getByteFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JLE_JNG() {
+    }
 
-		// Jump if zero flag or sign not equal to overflow flag, otherwise skip instruction
-		// IP has already been properly updated when bytes were retrieved
-		if ((cpu.flags[CPU.REGISTER_FLAGS_ZF]) || (cpu.flags[CPU.REGISTER_FLAGS_SF] != cpu.flags[CPU.REGISTER_FLAGS_OF]))
-		{
-            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte displacement is sign-extended and added. 
-            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
-		}
-	}
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JLE_JNG(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute conditional short jump if zero or sign != overflow
+     */
+    public void execute() {
+        // Get displacement byte (immediate)
+        // This byte is interpreted signed, so cast to Java byte
+        // Jump is relative to _next_ instruction, but by the time we change
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
+        displacement = (byte) cpu.getByteFromCode();
+
+        // Jump if zero flag or sign not equal to overflow flag, otherwise skip
+        // instruction
+        // IP has already been properly updated when bytes were retrieved
+        if ((cpu.flags[CPU.REGISTER_FLAGS_ZF])
+                || (cpu.flags[CPU.REGISTER_FLAGS_SF] != cpu.flags[CPU.REGISTER_FLAGS_OF])) {
+            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
+            // displacement is sign-extended and added.
+            cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                    Util.signExtend(displacement), displacement }, 0);
+        }
+    }
 }

@@ -37,36 +37,32 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.interfaces;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public interface Module
-{
-	// Methods
-	
-	/**
-	 * Returns the type of module (CPU, Memory, etc.)
-	 * 
-	 * @return string with the type of this module
-	 * 
-	 */
-	public String getType();
-	
-	
-	/**
-	 * Returns the name of module
-	 * 
-	 * @return string with the name of this module
-	 * 
-	 */
-	public String getName();
+public interface Module {
+    // Methods
 
-	
+    /**
+     * Returns the type of module (CPU, Memory, etc.)
+     * 
+     * @return string with the type of this module
+     * 
+     */
+    public String getType();
+
+    /**
+     * Returns the name of module
+     * 
+     * @return string with the name of this module
+     * 
+     */
+    public String getName();
+
     /**
      * Returns a String[] with all names of modules it needs to be connected to
      * 
@@ -75,49 +71,45 @@ public interface Module
     public String[] getConnections();
 
     /**
-	 * Sets up a connection with another module
-	 * 
-	 * @param mod	Module that is to be connected
-	 * 
-	 * @return true if connection was set successfully, false otherwise
-	 */
-	public boolean setConnection(Module mod);
-	
-	
-	/**
-	 * Checks if this module is connected to operate normally
-	 * 
-	 * @return true if this module is connected successfully, false otherwise
-	 */
-	public boolean isConnected();
-
-	
-	/**
-	 * Returns configuration of this module
+     * Sets up a connection with another module
      * 
-	 * @return byte[] with configuration
-	 */
-	public byte[] getConfig();
+     * @param mod
+     *            Module that is to be connected
+     * 
+     * @return true if connection was set successfully, false otherwise
+     */
+    public boolean setConnection(Module mod);
 
-	
-	/**
-	 * Set configuration for this module
-	 *
-	 * @param byte[] containing data
-	 * 
-	 * @return true if configured successfully, false otherwise
-	 */
-	public boolean setConfig(byte[] data);
+    /**
+     * Checks if this module is connected to operate normally
+     * 
+     * @return true if this module is connected successfully, false otherwise
+     */
+    public boolean isConnected();
 
-	
-	/**
-	 * Checks if this module is configured to operate normally
-	 * 
-	 * @return true if this module is configured successfully, false otherwise
-	 */
-	public boolean isConfigured();
+    /**
+     * Returns configuration of this module
+     * 
+     * @return byte[] with configuration
+     */
+    public byte[] getConfig();
 
-	
+    /**
+     * Set configuration for this module
+     * 
+     * @param byte[] containing data
+     * 
+     * @return true if configured successfully, false otherwise
+     */
+    public boolean setConfig(byte[] data);
+
+    /**
+     * Checks if this module is configured to operate normally
+     * 
+     * @return true if this module is configured successfully, false otherwise
+     */
+    public boolean isConfigured();
+
     /**
      * Reset all parameters of module
      * 
@@ -125,54 +117,48 @@ public interface Module
     public boolean reset();
 
     /**
-	 * Starts the module to become active
-	 * 
-	 */
-	public void start();
+     * Starts the module to become active
+     * 
+     */
+    public void start();
 
-	
-	/**
-	 * Stops the module from being active
-	 * 
-	 */
-	public void stop();
+    /**
+     * Stops the module from being active
+     * 
+     */
+    public void stop();
 
-	
-	/**
-	 * Save the current state of module
-	 * 
-	 */
-	public byte[] saveState();
+    /**
+     * Save the current state of module
+     * 
+     */
+    public byte[] saveState();
 
-	
-	/**
-	 * Load the given state in module
-	 * 
-	 */
-	public boolean loadState(byte[] variables);
+    /**
+     * Load the given state in module
+     * 
+     */
+    public boolean loadState(byte[] variables);
 
-	
-	/**
-	 * Returns the state of debug mode
-	 * 
-	 * @return true if this module is in debug mode, false otherwise
-	 */
-	public boolean getDebugMode();
+    /**
+     * Returns the state of debug mode
+     * 
+     * @return true if this module is in debug mode, false otherwise
+     */
+    public boolean getDebugMode();
 
-	
-	/**
-	 * Set toggle to define if this module is in debug mode or not
-	 * 
-	 * @param boolean to set the status of debug mode
-	 */
-	public void setDebugMode(boolean status);
+    /**
+     * Set toggle to define if this module is in debug mode or not
+     * 
+     * @param boolean to set the status of debug mode
+     */
+    public void setDebugMode(boolean status);
 
-	
-	/**
-	 * Return a dump of module status
-	 * 
-	 * @return string containing a dump of this module
-	 */
-	public abstract String getDump();
+    /**
+     * Return a dump of module status
+     * 
+     * @return string containing a dump of this module
+     */
+    public abstract String getDump();
 
 }

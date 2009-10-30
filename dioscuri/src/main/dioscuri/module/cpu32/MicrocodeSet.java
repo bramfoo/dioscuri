@@ -22,12 +22,11 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface MicrocodeSet
-{
-    //Rough Frequency Ordered Microcodes
+public interface MicrocodeSet {
+    // Rough Frequency Ordered Microcodes
     public static final int MEM_RESET = 0;
     public static final int ADDR_MASK16 = 1;
     public static final int EIP_UPDATE = 2;
@@ -294,7 +293,7 @@ public interface MicrocodeSet
     public static final int REP_SUB_O16_FLAGS = 238;
     public static final int REP_SUB_O32_FLAGS = 239;
 
-    //Operand Microcodes
+    // Operand Microcodes
     public static final int LOAD0_ESP = 240;
     public static final int LOAD0_EBP = 241;
 
@@ -334,7 +333,6 @@ public interface MicrocodeSet
     public static final int STORE0_DR3 = 267;
     public static final int STORE0_DR6 = 268;
     public static final int STORE0_DR7 = 269;
-
 
     public static final int LOAD1_ESP = 270;
     public static final int LOAD1_EBP = 271;
@@ -425,7 +423,7 @@ public interface MicrocodeSet
 
     public static final int ADDR_uAL = 343;
 
-    //Operation Microcodes
+    // Operation Microcodes
     public static final int JUMP_FAR_O32 = 344;
 
     public static final int JUMP_ABS_O32 = 345;
@@ -577,7 +575,7 @@ public interface MicrocodeSet
     public static final int CMOVNL = 459;
     public static final int CMOVNG = 460;
     public static final int CMOVG = 461;
-   
+
     public static final int STD = 462;
     public static final int CMC = 463;
 
@@ -808,29 +806,28 @@ public interface MicrocodeSet
     public static final int LAR_O32 = 639;
     public static final int LSL_O16 = 640;
     public static final int LSL_O32 = 641;
-    
-    
-    //Flag Operations
+
+    // Flag Operations
     public static final int DEC_O32_FLAGS = 642;
 
     public static final int ADC_O32_FLAGS = 643;
 
     public static final int SBB_O32_FLAGS = 644;
-      
+
     public static final int SAR_O8_FLAGS = 645;
     public static final int SAR_O32_FLAGS = 646;
-    
+
     public static final int RCL_O8_FLAGS = 647;
     public static final int RCL_O32_FLAGS = 648;
-    
+
     public static final int RCR_O8_FLAGS = 649;
     public static final int RCR_O16_FLAGS = 650;
     public static final int RCR_O32_FLAGS = 651;
-    
+
     public static final int ROL_O8_FLAGS = 652;
     public static final int ROL_O16_FLAGS = 653;
     public static final int ROL_O32_FLAGS = 654;
-    
+
     public static final int ROR_O16_FLAGS = 655;
     public static final int ROR_O32_FLAGS = 656;
 
@@ -842,9 +839,8 @@ public interface MicrocodeSet
 
     public static final int UNDEFINED = 661;
 
+    // FPU Operations
 
-    //FPU Operations
-    
     public static final int FLOAD0_ST0 = 662;
     public static final int FLOAD0_STN = 663;
     public static final int FLOAD0_MEM_SINGLE = 664;
@@ -883,7 +879,6 @@ public interface MicrocodeSet
     public static final int FSTORE1_MEM_EXTENDED = 694;
     public static final int FSTORE1_REG0 = 695;
 
-
     public static final int LOAD0_FPUCW = 696;
     public static final int STORE0_FPUCW = 697;
     public static final int LOAD0_FPUSW = 698;
@@ -892,7 +887,7 @@ public interface MicrocodeSet
     public static final int FPOP = 700;
     public static final int FPUSH = 701;
 
-    public static final int FADD = 702;    
+    public static final int FADD = 702;
     public static final int FMUL = 703;
     public static final int FCOM = 704;
     public static final int FUCOM = 705;
@@ -948,7 +943,6 @@ public interface MicrocodeSet
 
     public static final int FCHECK0 = 751;
     public static final int FCHECK1 = 752;
-
 
     public static final int MICROCODE_LIMIT = 753;
 }

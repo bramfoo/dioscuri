@@ -22,51 +22,44 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
-public class BlankCodeBlock implements RealModeCodeBlock, ProtectedModeCodeBlock, Virtual8086ModeCodeBlock
-{
+public class BlankCodeBlock implements RealModeCodeBlock,
+        ProtectedModeCodeBlock, Virtual8086ModeCodeBlock {
     protected int x86Count, x86Length;
 
     private static final RuntimeException executeException = new NullPointerException();
 
-    public BlankCodeBlock(int x86Count, int x86Length)
-    {
+    public BlankCodeBlock(int x86Count, int x86Length) {
         this.x86Count = x86Count;
         this.x86Length = x86Length;
     }
 
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return x86Length;
     }
 
-    public int getX86Count()
-    {
+    public int getX86Count() {
         return x86Count;
     }
 
-    public int execute(Processor cpu)
-    {
-    throw executeException;
+    public int execute(Processor cpu) {
+        throw executeException;
     }
 
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return "\n\n<<Blank Block>>\n\n";
     }
 
-    public String toString()
-    {
+    public String toString() {
         return " -- Blank --\n";
     }
 }

@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -45,32 +44,30 @@
  */
 package dioscuri.module.ata;
 
-
 /**
  * An enumeration representing the types of drives available for the ATA Module.
- *  
+ * 
  */
-public class ATADriveType
-{
-    
+public class ATADriveType {
+
     private String name;
-    
+
     public final static ATADriveType NONE = new ATADriveType("None");
     public final static ATADriveType HARD_DISK = new ATADriveType("Hard Disk");
     public final static ATADriveType CDROM = new ATADriveType("CD ROM");
-      
-    public final static ATADriveType[] driveType = {NONE, HARD_DISK, CDROM};
-    
+
+    public final static ATADriveType[] driveType = { NONE, HARD_DISK, CDROM };
+
     /**
      * Class constructor.
      * 
-     * @param theName   the name of the drive type 
+     * @param theName
+     *            the name of the drive type
      */
-    private ATADriveType(String theName) 
-    {
+    private ATADriveType(String theName) {
         this.name = theName;
     }
-    
+
     /**
      * get the name of the drive type.
      * 
@@ -79,5 +76,5 @@ public class ATADriveType
     public String toString() {
         return this.name;
     }
-    
+
 }

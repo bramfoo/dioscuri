@@ -37,56 +37,53 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 51<BR>
-	 * Push general register CX onto stack SS:SP.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 51<BR>
+ * Push general register CX onto stack SS:SP.<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSH_CX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSH_CX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSH_CX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * This pushes the word in CX onto stack top SS:SP
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSH_CX() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSH_CX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pushes the word in CX onto stack top SS:SP
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-		// Double word will be stored as [cx[LSB][MSB] ecx[LSB][MSB]] because stack is counting backwards in memory
-        if (cpu.doubleWord)
-        {
+        // Double word will be stored as [cx[LSB][MSB] ecx[LSB][MSB]] because
+        // stack is counting backwards in memory
+        if (cpu.doubleWord) {
             cpu.setWordToStack(cpu.ecx);
         }
 
-		// Get word at CX and assign to SS:SP 
-		cpu.setWordToStack(cpu.cx);
-	}
+        // Get word at CX and assign to SS:SP
+        cpu.setWordToStack(cpu.cx);
+    }
 }

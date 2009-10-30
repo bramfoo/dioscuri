@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,39 +46,41 @@ package dioscuri.module.ata;
 
 /**
  * An enumeration representing the translation types for a ATA drive.
- *  
+ * 
  */
-public class ATATranslationType
-{
-    
+public class ATATranslationType {
+
     private String name;
-    
+
     public final static ATATranslationType NONE = new ATATranslationType("None");
     public final static ATATranslationType LBA = new ATATranslationType("LBA");
-    public final static ATATranslationType LARGE = new ATATranslationType("Large");
-    public final static ATATranslationType RECHS = new ATATranslationType("Rechs");
+    public final static ATATranslationType LARGE = new ATATranslationType(
+            "Large");
+    public final static ATATranslationType RECHS = new ATATranslationType(
+            "Rechs");
     public final static ATATranslationType AUTO = new ATATranslationType("Auto");
-           
-    public final static ATATranslationType[] driveType = {NONE, LBA, LARGE, RECHS, AUTO};
-    
+
+    public final static ATATranslationType[] driveType = { NONE, LBA, LARGE,
+            RECHS, AUTO };
+
     /**
      * Class constructor.
      * 
-     * @param theName   the name of the translation type 
+     * @param theName
+     *            the name of the translation type
      */
-    private ATATranslationType(String theName) 
-    {
+    private ATATranslationType(String theName) {
         this.name = theName;
     }
-    
+
     /**
      * get the name of the translation type.
      * 
      * @return the name of the translation type
      */
     public String toString() {
-        
+
         return this.name;
     }
-    
+
 }

@@ -22,23 +22,21 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 
-public interface CodeBlock
-{
-public int getX86Length();
+public interface CodeBlock {
+    public int getX86Length();
 
-public int getX86Count();
+    public int getX86Count();
 
-// Returns the number of equivalent x86 instructions executed. Negative results indicate an error
-public int execute(Processor cpu);
+    // Returns the number of equivalent x86 instructions executed. Negative
+    // results indicate an error
+    public int execute(Processor cpu);
 
-public String getDisplayString();
+    public String getDisplayString();
 
-public boolean handleMemoryRegionChange(int startAddress, int endAddress);
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress);
 }
-
-

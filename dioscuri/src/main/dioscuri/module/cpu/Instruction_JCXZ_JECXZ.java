@@ -37,60 +37,61 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode E3<BR>
-	 * Conditional short jump if CX is zero.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode E3<BR>
+ * Conditional short jump if CX is zero.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JCXZ_JECXZ implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte displacement;
-    
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JCXZ_JECXZ()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JCXZ_JECXZ(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte displacement;
 
-	
-	// Methods
-	
-	/**
-	 * Execute conditional short jump if CX is zero
-	 */
-	public void execute()
-	{
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JCXZ_JECXZ() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JCXZ_JECXZ(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute conditional short jump if CX is zero
+     */
+    public void execute() {
         // Get displacement byte (immediate)
-        // Jump is relative to _next_ instruction, but by the time we change 
-		// the IP, it has already been incremented twice, so no extra arithmetic necessary 		
-		displacement = (byte) cpu.getByteFromCode();
+        // Jump is relative to _next_ instruction, but by the time we change
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
+        displacement = (byte) cpu.getByteFromCode();
 
-		// Jump if register CX is zero, otherwise skip instruction
-		// IP has already been properly updated when bytes were retrieved
-		if (cpu.cx[CPU.REGISTER_GENERAL_LOW] == 0 && cpu.cx[CPU.REGISTER_GENERAL_HIGH] == 0)
-		{
-            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte displacement is sign-extended and added. 
-            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
-		}
-	}
+        // Jump if register CX is zero, otherwise skip instruction
+        // IP has already been properly updated when bytes were retrieved
+        if (cpu.cx[CPU.REGISTER_GENERAL_LOW] == 0
+                && cpu.cx[CPU.REGISTER_GENERAL_HIGH] == 0) {
+            // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
+            // displacement is sign-extended and added.
+            cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                    Util.signExtend(displacement), displacement }, 0);
+        }
+    }
 }

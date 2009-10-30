@@ -42,35 +42,28 @@ package dioscuri.module.serialport;
 import java.util.ArrayList;
 
 @SuppressWarnings("serial")
-public class FIFObuffer extends ArrayList<Byte>
-{
+public class FIFObuffer extends ArrayList<Byte> {
 
-	// Attributes
-	
-	// Constructors
-	public FIFObuffer()
-	{
-		super();
-	}
-	
-	public FIFObuffer(int capacity)
-	{
-		super(capacity);
-	}
+    // Attributes
 
-	
-	// Methods
-	public boolean setByte(byte data)
-	{
-		return super.add(Byte.valueOf(data));
-	}
+    // Constructors
+    public FIFObuffer() {
+        super();
+    }
 
+    public FIFObuffer(int capacity) {
+        super(capacity);
+    }
 
-	public byte getByte()
-	{
-		byte data = ((Byte)super.get(0)).byteValue();
-		super.remove(0);
-		return data;
-	}
+    // Methods
+    public boolean setByte(byte data) {
+        return super.add(Byte.valueOf(data));
+    }
+
+    public byte getByte() {
+        byte data = ((Byte) super.get(0)).byteValue();
+        super.remove(0);
+        return data;
+    }
 
 }

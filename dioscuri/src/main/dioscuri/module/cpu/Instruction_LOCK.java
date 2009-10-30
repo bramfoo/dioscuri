@@ -37,54 +37,51 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 40<BR>
-	 * Increment general register AX.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF
-	 */
+/**
+ * Intel opcode 40<BR>
+ * Increment general register AX.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF
+ */
 public class Instruction_LOCK implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_LOCK()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_LOCK(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Execute instruction
-	 */
-	public void execute()
-	{
-		// Dummy commands...
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_LOCK() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_LOCK(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute instruction
+     */
+    public void execute() {
+        // Dummy commands...
         // FIXME: still to implement
         System.out.println("LOCK instruction (0x40) not yet implemented!");
-        
-		// Increment the AX register
-		cpu.ax[CPU.REGISTER_GENERAL_LOW]++;
-				
-	}
+
+        // Increment the AX register
+        cpu.ax[CPU.REGISTER_GENERAL_LOW]++;
+
+    }
 }

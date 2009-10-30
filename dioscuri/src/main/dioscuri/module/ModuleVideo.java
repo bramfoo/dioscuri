@@ -37,36 +37,35 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleVideo extends ModuleDevice
-{
+public abstract class ModuleVideo extends ModuleDevice {
     // Methods
     /**
      * Video read mode implementations
      */
     public abstract byte readMode(int addr);
-    
+
     /**
      * Video write mode implementations
+     * 
      * @param address
      * @param data
      */
     public abstract void writeMode(int address, byte data);
-    
+
     /**
      * Returns a pointer to the whole video buffer
      * 
      * @return byte[] containing the video buffer
      */
     public abstract byte[] getVideoBuffer();
-    
+
     /**
      * Returns a byte from video buffer at position index
      * 
@@ -75,7 +74,7 @@ public abstract class ModuleVideo extends ModuleDevice
      * @return byte from video buffer
      */
     public abstract byte getVideoBufferByte(int index);
-    
+
     /**
      * Stores a byte in video buffer at position index
      * 
@@ -87,9 +86,10 @@ public abstract class ModuleVideo extends ModuleDevice
     /**
      * Returns all characters (as Unicode) that are currently in buffer
      * 
-     * @return String containing all characters in the buffer or null when no characters exist
+     * @return String containing all characters in the buffer or null when no
+     *         characters exist
      */
-	public abstract String getVideoBufferCharacters();
+    public abstract String getVideoBufferCharacters();
 
     /**
      * Returns a byte from text snapshot at position index
@@ -99,7 +99,7 @@ public abstract class ModuleVideo extends ModuleDevice
      * @return byte from textsnapshot
      */
     public abstract byte getTextSnapshot(int index);
-    
+
     /**
      * Stores a byte in text snapshot at position index
      * 
@@ -107,7 +107,7 @@ public abstract class ModuleVideo extends ModuleDevice
      * @param byte data
      */
     public abstract void setTextSnapshot(int index, byte data);
-    
+
     /**
      * Returns a byte from attribute palette register at position index
      * 

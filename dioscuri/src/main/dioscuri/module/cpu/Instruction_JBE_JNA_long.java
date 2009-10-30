@@ -37,62 +37,59 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode OF 86<BR>
-	 * Conditional long jump on carry or zero.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode OF 86<BR>
+ * Conditional long jump on carry or zero.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_JBE_JNA_long implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte[] displacement;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_JBE_JNA_long()
-    {
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_JBE_JNA_long() {
         displacement = new byte[2];
     }
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_JBE_JNA_long(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Execute conditional long jump on carry
-	 */
-	public void execute()
-	{
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_JBE_JNA_long(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute conditional long jump on carry
+     */
+    public void execute() {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
-        // the IP, it has already been incremented twice, so no extra arithmetic necessary
+        // the IP, it has already been incremented twice, so no extra arithmetic
+        // necessary
         displacement = cpu.getWordFromCode();
 
         // Jump if carry flag or zero flag set, otherwise skip instruction
         // IP has already been properly updated when bytes were retrieved
-        if (cpu.flags[CPU.REGISTER_FLAGS_CF] || cpu.flags[CPU.REGISTER_FLAGS_ZF])
-        {
+        if (cpu.flags[CPU.REGISTER_FLAGS_CF]
+                || cpu.flags[CPU.REGISTER_FLAGS_ZF]) {
             cpu.ip = Util.addWords(cpu.ip, displacement, 0);
         }
-	}
+    }
 }

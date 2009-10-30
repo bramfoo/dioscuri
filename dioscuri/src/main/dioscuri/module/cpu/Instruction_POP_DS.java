@@ -37,55 +37,51 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 1F<BR>
-	 * Pop word from stack SP:SS into general register DS.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 1F<BR>
+ * Pop word from stack SP:SS into general register DS.<BR>
+ * Flags modified: none
+ */
 public class Instruction_POP_DS implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_POP_DS()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_POP_DS(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * This pops the word at stack top SS:SP into DS
-	 */
-	public void execute()
-	{
-		// Get word SS:SP and assign to DS   
-		cpu.ds = cpu.getWordFromStack();
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_POP_DS() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_POP_DS(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * This pops the word at stack top SS:SP into DS
+     */
+    public void execute() {
+        // Get word SS:SP and assign to DS
+        cpu.ds = cpu.getWordFromStack();
 
         // Pop extra register, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
+        if (cpu.doubleWord) {
             System.out.println("POP_DS: 32-bits not supported");
         }
-	}
+    }
 }

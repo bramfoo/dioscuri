@@ -40,31 +40,33 @@
 package dioscuri.module.dma;
 
 /**
- * Handler for the slave DMA controller, providing implementations for 16-bit read and write functionality<BR>
- * This handler will be registered with the DMA class to provide device-specific methods for reading (memory -> device) 
- * and writing (device -> memory) a word via DMA. 
+ * Handler for the slave DMA controller, providing implementations for 16-bit
+ * read and write functionality<BR>
+ * This handler will be registered with the DMA class to provide device-specific
+ * methods for reading (memory -> device) and writing (device -> memory) a word
+ * via DMA.
  * 
  */
-public abstract class DMA16Handler
-{
+public abstract class DMA16Handler {
     // Name of the device that provides the methods
     String owner;
 
     /**
      * Device-specific implementation of the 16-bit DMA read functionality.<BR>
-     * This provides a way for DMA to pass a word read from memory (by way of DMA request)
-     * to the device for further processing.
+     * This provides a way for DMA to pass a word read from memory (by way of
+     * DMA request) to the device for further processing.
      * 
-     * @param data  Word from memory that is passed to the device for handling
+     * @param data
+     *            Word from memory that is passed to the device for handling
      */
     public abstract void dma16ReadFromMem(byte[] data);
 
     /**
      * Device-specific implementation of the 16-bit DMA write functionality.<BR>
-     * This provides a way for DMA to write a word to memory (by way of DMA request)
-     * passed from the device.
+     * This provides a way for DMA to write a word to memory (by way of DMA
+     * request) passed from the device.
      * 
      * @return Word from device that will be written to memory
      */
-    public abstract byte[] dma16WriteToMem();    
+    public abstract byte[] dma16WriteToMem();
 }

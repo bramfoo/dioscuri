@@ -37,72 +37,75 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode E8<BR>
-	 * Call to procedure within the current code segment (intrasegment call) indicated by immediate signed word.<BR>
-	 * Displacement is relative to next instruction.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode E8<BR>
+ * Call to procedure within the current code segment (intrasegment call)
+ * indicated by immediate signed word.<BR>
+ * Displacement is relative to next instruction.<BR>
+ * Flags modified: none
+ */
 public class Instruction_CALL_Jv implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
+    // Attributes
+    private CPU cpu;
+
     byte[] displacement = new byte[2];
     int overUnderFlowCheck;
 
-	// Constructors
-	/**
-	 * Class constructor
-	 * 
-	 */
-	public Instruction_CALL_Jv()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_CALL_Jv(CPU processor)
-	{
-		//this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_CALL_Jv() {
+    }
 
-	
-	// Methods
-	
-	/**
-	 * Execute call to procedure indicated by immediate signed word
-	 */
-	public void execute()
-	{
-        // Call is relative to _next_ instruction, but by the time we change 
-        // the IP, it has already been incremented thrice, so no extra arithmetic necessary         
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_CALL_Jv(CPU processor) {
+        // this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Execute call to procedure indicated by immediate signed word
+     */
+    public void execute() {
+        // Call is relative to _next_ instruction, but by the time we change
+        // the IP, it has already been incremented thrice, so no extra
+        // arithmetic necessary
         displacement = cpu.getWordFromCode();
-        
+
         // Push current instruction pointer onto stack
         cpu.setWordToStack(cpu.ip);
-        
-        // Add to current IP (interpreted unsigned) the displacement (interpreted signed)
-        // However, lower byte is always interpreted unsigned (as high byte carries sign)
-        // So cast low bytes to int for unsigned, then add to check for over/underflow in IP 
-        overUnderFlowCheck = (((int)(cpu.ip[CPU.REGISTER_GENERAL_LOW]))& 0xFF) + (((int)displacement[CPU.REGISTER_GENERAL_LOW])&0xFF);
-        cpu.ip[CPU.REGISTER_GENERAL_LOW] = (byte)(overUnderFlowCheck);
+
+        // Add to current IP (interpreted unsigned) the displacement
+        // (interpreted signed)
+        // However, lower byte is always interpreted unsigned (as high byte
+        // carries sign)
+        // So cast low bytes to int for unsigned, then add to check for
+        // over/underflow in IP
+        overUnderFlowCheck = (((int) (cpu.ip[CPU.REGISTER_GENERAL_LOW])) & 0xFF)
+                + (((int) displacement[CPU.REGISTER_GENERAL_LOW]) & 0xFF);
+        cpu.ip[CPU.REGISTER_GENERAL_LOW] = (byte) (overUnderFlowCheck);
 
         // Need to check for possible overflow/underflow in IP[low]
-        if (overUnderFlowCheck > 255)
-        {
+        if (overUnderFlowCheck > 255) {
             // Overflow
             cpu.ip[CPU.REGISTER_GENERAL_HIGH]++;
         }
-   
+
         // Update IP[high] with displacement; this can be done unsigned
         cpu.ip[CPU.REGISTER_GENERAL_HIGH] = (byte) (cpu.ip[CPU.REGISTER_GENERAL_HIGH] + displacement[CPU.REGISTER_GENERAL_HIGH]);
-	}
+    }
 }

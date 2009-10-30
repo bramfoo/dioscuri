@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -47,41 +46,36 @@ package dioscuri.module.ata;
 
 /**
  * Stores attributes of the ATPI.
- *
+ * 
  */
-public class Atpi
-{
+public class Atpi {
 
-      int command;
-      int drqBytes;
-      int totalBytesRemaining;
-      
-      
-    public int getCommand()
-    {
+    int command;
+    int drqBytes;
+    int totalBytesRemaining;
+
+    public int getCommand() {
         return command;
     }
-    public void setCommand(int command)
-    {
+
+    public void setCommand(int command) {
         this.command = command;
     }
-    public int getDrqBytes()
-    {
+
+    public int getDrqBytes() {
         return drqBytes;
     }
-    public void setDrqBytes(int drqBytes)
-    {
+
+    public void setDrqBytes(int drqBytes) {
         this.drqBytes = drqBytes;
     }
-    public int getTotalBytesRemaining()
-    {
+
+    public int getTotalBytesRemaining() {
         return totalBytesRemaining;
     }
-    public void setTotalBytesRemaining(int totalBytesRemaining)
-    {
+
+    public void setTotalBytesRemaining(int totalBytesRemaining) {
         this.totalBytesRemaining = totalBytesRemaining;
     }
-      
-      
- 
+
 }

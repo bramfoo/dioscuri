@@ -37,67 +37,71 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode 2C<BR>
-	 * Subtract immediate byte from AL.<BR>
-	 * Flags modified: OF, SF, ZF, AF, PF, CF
-	 */
+/**
+ * Intel opcode 2C<BR>
+ * Subtract immediate byte from AL.<BR>
+ * Flags modified: OF, SF, ZF, AF, PF, CF
+ */
 public class Instruction_SUB_ALIb implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	byte immediateByte;
-	byte oldDest;
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_SUB_ALIb()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_SUB_ALIb(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
+    byte immediateByte;
+    byte oldDest;
 
-	
-	// Methods
-	
-	/**
-	 * Subtract immediate byte from AL
-	 */
-	public void execute()
-	{
-		immediateByte = cpu.getByteFromCode();
-		
-		// Store initial value of AL
-		oldDest = cpu.ax[CPU.REGISTER_GENERAL_LOW]; 
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_SUB_ALIb() {
+    }
 
-		// Subtract immediate byte from register AL
-		cpu.ax[CPU.REGISTER_GENERAL_LOW] -= immediateByte; 
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_SUB_ALIb(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Subtract immediate byte from AL
+     */
+    public void execute() {
+        immediateByte = cpu.getByteFromCode();
+
+        // Store initial value of AL
+        oldDest = cpu.ax[CPU.REGISTER_GENERAL_LOW];
+
+        // Subtract immediate byte from register AL
+        cpu.ax[CPU.REGISTER_GENERAL_LOW] -= immediateByte;
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-		// Test CF
-		cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, immediateByte, 0);
-		// Test OF
-		cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], 0);
-		// Test ZF, only applies to AL
-		cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
-		// Test SF (set when MSB of AL is 1. In Java can check signed byte)
-		cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
-		// Set PF, only applies to AL
-		cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-	}
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest,
+                cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        // Test CF
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest,
+                immediateByte, 0);
+        // Test OF
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest,
+                immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], 0);
+        // Test ZF, only applies to AL
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
+        // Test SF (set when MSB of AL is 1. In Java can check signed byte)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
+        // Set PF, only applies to AL
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    }
 }

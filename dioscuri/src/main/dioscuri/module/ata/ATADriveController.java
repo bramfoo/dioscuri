@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -48,228 +47,198 @@ package dioscuri.module.ata;
 /**
  * Class representing the ATA drive controller.
  */
-public class ATADriveController
-{  
-    private byte[] buffer = new byte[ATAConstants.MAX_MULTIPLE_SECTORS * 512 + 4]; //TODO: Where does 2352 come from?
-    
+public class ATADriveController {
+    private byte[] buffer = new byte[ATAConstants.MAX_MULTIPLE_SECTORS * 512 + 4]; // TODO:
+                                                                                   // Where
+                                                                                   // does
+                                                                                   // 2352
+                                                                                   // come
+                                                                                   // from?
+
     private int bufferSize;
-    private int bufferIndex;    
+    private int bufferIndex;
     private int lbaMode;
     private int errorRegister;
-    
+
     protected int numSectorsPerBlock; // Total number of sectors per block
-    
+
     private ATAStatus status;
-    
+
     private int currentCommand;
-    private int drqIndex; 
+    private int drqIndex;
     private InterruptReason interruptReason;
-    
+
     private int byteCount;
-    
-    private boolean reset;       // 0=normal, 1=reset controller
-    private boolean disableIrq; 
+
+    private boolean reset; // 0=normal, 1=reset controller
+    private boolean disableIrq;
     private int resetInProgress;
-    
+
     private int packetDma;
-           
+
     public ATA parent;
-    
-    public int multipleSectors  = 0;
-    
-    
+
+    public int multipleSectors = 0;
+
     /**
      * Copnstructor.
      * 
      * @param theParent
      */
-    public ATADriveController(ATA theParent)
-    {     
-    
+    public ATADriveController(ATA theParent) {
+
         this.parent = theParent;
-        
+
         errorRegister = 0x01; // diagnostic code: no error
-        
+
         currentCommand = 0x00;
         bufferIndex = 0;
-        reset       = false;
-        disableIrq  = false;
-        resetInProgress  = 0;
-        lbaMode          = 0;
-              
-        multipleSectors  = 0;
-        
-        numSectorsPerBlock   = ATAConstants.SECTORS_PER_BLOCK;  
-   
+        reset = false;
+        disableIrq = false;
+        resetInProgress = 0;
+        lbaMode = 0;
+
+        multipleSectors = 0;
+
+        numSectorsPerBlock = ATAConstants.SECTORS_PER_BLOCK;
+
         status = new ATAStatus();
         interruptReason = new InterruptReason();
-             
-        //TODO
+
+        // TODO
         // Initialise DMA
-    //    this.packetDma = ????;
-    
+        // this.packetDma = ????;
+
     }
-    
+
     /**
      * reset the control
      */
-    public void reset()
-    {     
+    public void reset() {
     }
-      
-    public ATAStatus getStatus()
-    {
+
+    public ATAStatus getStatus() {
         return status;
     }
-            
-    public int getLbaMode()
-    {
+
+    public int getLbaMode() {
         return lbaMode;
     }
 
-    public void setLbaMode(int lbaMode)
-    {
+    public void setLbaMode(int lbaMode) {
         this.lbaMode = lbaMode;
     }
 
-    public int getErrorRegister()
-    {
+    public int getErrorRegister() {
         return errorRegister;
     }
 
-    public void setErrorRegister(int errorRegister)
-    {
+    public void setErrorRegister(int errorRegister) {
         this.errorRegister = errorRegister;
     }
 
-   public byte[] getBuffer()
-    {
+    public byte[] getBuffer() {
         return buffer;
     }
 
-    public void setBuffer(int index, byte bufferValue)
-    {
+    public void setBuffer(int index, byte bufferValue) {
         this.buffer[index] = bufferValue;
     }
 
-    public int getBufferSize()
-    {
+    public int getBufferSize() {
         return bufferSize;
     }
 
-    public void setBufferSize(int bufferSize)
-    {
+    public void setBufferSize(int bufferSize) {
         this.bufferSize = bufferSize;
     }
 
-    public int getBufferIndex()
-    {
+    public int getBufferIndex() {
         return bufferIndex;
     }
 
-    public void setBufferIndex(int bufferIndex)
-    {
+    public void setBufferIndex(int bufferIndex) {
         this.bufferIndex = bufferIndex;
     }
 
-    public int getCurrentCommand()
-    {
+    public int getCurrentCommand() {
         return currentCommand;
     }
 
-    public void setCurrentCommand(int currentCommand)
-    {
+    public void setCurrentCommand(int currentCommand) {
         this.currentCommand = currentCommand;
     }
 
-    public int getDrqIndex()
-    {
+    public int getDrqIndex() {
         return drqIndex;
     }
 
-    public void setDrqIndex(int drqIndex)
-    {
+    public void setDrqIndex(int drqIndex) {
         this.drqIndex = drqIndex;
     }
 
-    public InterruptReason getInterruptReason()
-    {
+    public InterruptReason getInterruptReason() {
         return interruptReason;
     }
 
-    public void setInterruptReason(InterruptReason interruptReason)
-    {
+    public void setInterruptReason(InterruptReason interruptReason) {
         this.interruptReason = interruptReason;
     }
 
-    public int getByteCount()
-    {
+    public int getByteCount() {
         return byteCount;
     }
 
-    public void setByteCount(int byteCount)
-    {
+    public void setByteCount(int byteCount) {
         this.byteCount = byteCount;
     }
 
-    public boolean isDisableIrq()
-    {
+    public boolean isDisableIrq() {
         return disableIrq;
     }
 
-    public void setDisableIrq(boolean disableIrq)
-    {
+    public void setDisableIrq(boolean disableIrq) {
         this.disableIrq = disableIrq;
     }
 
-    public boolean isReset()
-    {
+    public boolean isReset() {
         return reset;
     }
 
-    public void setReset(boolean reset)
-    {
+    public void setReset(boolean reset) {
         this.reset = reset;
     }
 
-    public int getResetInProgress()
-    {
+    public int getResetInProgress() {
         return resetInProgress;
     }
 
-    public void setResetInProgress(int resetInProgress)
-    {
+    public void setResetInProgress(int resetInProgress) {
         this.resetInProgress = resetInProgress;
     }
 
-    public int getNumSectorsPerBlock()
-    {
+    public int getNumSectorsPerBlock() {
         return numSectorsPerBlock;
     }
 
-    public void setNumSectorsPerBlock(int numSectorsPerBlock)
-    {
+    public void setNumSectorsPerBlock(int numSectorsPerBlock) {
         this.numSectorsPerBlock = numSectorsPerBlock;
     }
 
-    public int getPacketDma()
-    {
+    public int getPacketDma() {
         return packetDma;
     }
 
-    public void setPacketDma(int packetDma)
-    {
+    public void setPacketDma(int packetDma) {
         this.packetDma = packetDma;
     }
 
-    public int getMultipleSectors()
-    {
+    public int getMultipleSectors() {
         return multipleSectors;
     }
 
-    public void setMultipleSectors(int multipleSectors)
-    {
+    public void setMultipleSectors(int multipleSectors) {
         this.multipleSectors = multipleSectors;
     }
-   
+
 }

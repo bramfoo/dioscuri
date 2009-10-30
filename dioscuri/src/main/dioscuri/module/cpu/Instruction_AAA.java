@@ -37,66 +37,63 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-     * Intel opcode 37<BR>
-     * AAA- ASCII adjust after addition.<BR>
-     * Adjust two unpacked BCD digits so a addition operation on result yields correct unpacked BCD value<BR>
-     * Flags modified: AF, CF (OF, SF, ZF and PF are undefined.
-	 */
+/**
+ * Intel opcode 37<BR>
+ * AAA- ASCII adjust after addition.<BR>
+ * Adjust two unpacked BCD digits so a addition operation on result yields
+ * correct unpacked BCD value<BR>
+ * Flags modified: AF, CF (OF, SF, ZF and PF are undefined.
+ */
 public class Instruction_AAA implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
 
-    
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_AAA()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_AAA(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_AAA() {
+    }
 
-	
-	// Methods
-	
-	/**
-     * Adjust two unpacked BCD digits so a addition operation on result yields correct unpacked BCD value.<BR>
-	 */
-	public void execute()
-	{
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_AAA(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Adjust two unpacked BCD digits so a addition operation on result yields
+     * correct unpacked BCD value.<BR>
+     */
+    public void execute() {
         // Check if AL > 9 or AF = 1, adjust AX and set flags
-        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9) || cpu.flags[CPU.REGISTER_FLAGS_AF] == true)
-        {
+        if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9)
+                || cpu.flags[CPU.REGISTER_FLAGS_AF] == true) {
             // Adjust AL and AH
             cpu.ax[CPU.REGISTER_GENERAL_LOW] += 6;
-            cpu.ax[CPU.REGISTER_GENERAL_HIGH] ++;
-            
+            cpu.ax[CPU.REGISTER_GENERAL_HIGH]++;
+
             // Set flags AF and CF
             cpu.flags[CPU.REGISTER_FLAGS_AF] = true;
             cpu.flags[CPU.REGISTER_FLAGS_CF] = true;
-        }
-        else
-        {
+        } else {
             // Clear flags AF and CF
             cpu.flags[CPU.REGISTER_FLAGS_AF] = false;
             cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
         }
-        
+
         // Mask AL
         cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F);
-	}
+    }
 }

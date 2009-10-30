@@ -22,33 +22,31 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public class DefaultCodeBlockFactory implements CodeBlockFactory
-{
+public class DefaultCodeBlockFactory implements CodeBlockFactory {
     private Decoder decoder;
     private CodeBlockCompiler compiler;
 
-    public DefaultCodeBlockFactory(Decoder decoder, CodeBlockCompiler compiler)
-    {
-    this.decoder = decoder;
-    this.compiler = compiler;
+    public DefaultCodeBlockFactory(Decoder decoder, CodeBlockCompiler compiler) {
+        this.decoder = decoder;
+        this.compiler = compiler;
     }
 
-    public RealModeCodeBlock getRealModeCodeBlock(ByteSource source)
-    {
-    return compiler.getRealModeCodeBlock(decoder.decodeReal(source));
+    public RealModeCodeBlock getRealModeCodeBlock(ByteSource source) {
+        return compiler.getRealModeCodeBlock(decoder.decodeReal(source));
     }
 
-
-    public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source, boolean operandSize)
-    {
-    return compiler.getProtectedModeCodeBlock(decoder.decodeProtected(source, operandSize));
+    public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
+            boolean operandSize) {
+        return compiler.getProtectedModeCodeBlock(decoder.decodeProtected(
+                source, operandSize));
     }
 
-    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(ByteSource source)
-    {
-    return compiler.getVirtual8086ModeCodeBlock(decoder.decodeVirtual8086(source));
+    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
+            ByteSource source) {
+        return compiler.getVirtual8086ModeCodeBlock(decoder
+                .decodeVirtual8086(source));
     }
 }

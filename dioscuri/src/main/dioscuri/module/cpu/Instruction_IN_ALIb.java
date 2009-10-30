@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
@@ -47,14 +46,12 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 
-
 /**
  * Intel opcode E4<BR>
  * Put byte from I/O port address indicated by immediate byte into AL.<BR>
  * Flags modified: none
  */
-public class Instruction_IN_ALIb implements Instruction
-{
+public class Instruction_IN_ALIb implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -65,22 +62,20 @@ public class Instruction_IN_ALIb implements Instruction
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_IN_ALIb()
-    {
+    public Instruction_IN_ALIb() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_IN_ALIb(CPU processor)
-    {
+    public Instruction_IN_ALIb(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -91,24 +86,22 @@ public class Instruction_IN_ALIb implements Instruction
 
     /**
      * Input byte from I/O port address indicated by immediate byte into AL
-     * @throws ModuleWriteOnlyPortException 
-     * @throws ModuleUnknownPort 
+     * 
+     * @throws ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Fetch immediate byte from memory and convert to unsigned integer,
         // to prevent lookup table out of bounds
         portAddress = cpu.getByteFromCode() & 0xFF;
 
-        try
-        {
+        try {
             // Write retrieved value into AL
             cpu.ax[CPU.REGISTER_GENERAL_LOW] = cpu.getIOPortByte(portAddress);
-        }
-        catch (ModuleException e)
-        {
-            logger.log(Level.WARNING, "[" + cpu.getType() + "] " + e.getMessage());
+        } catch (ModuleException e) {
+            logger.log(Level.WARNING, "[" + cpu.getType() + "] "
+                    + e.getMessage());
         }
     }
 }

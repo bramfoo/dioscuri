@@ -22,27 +22,22 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import dioscuri.module.clock.Clock;
 
 //import org.jpc.emulator.memory.codeblock.*;
 
+public class OptimisedCompiler extends AbstractBasicCompiler {
 
-
-public class OptimisedCompiler extends AbstractBasicCompiler
-{
-    
     private Clock clock;
 
-    public OptimisedCompiler(Clock clk)
-    {
+    public OptimisedCompiler(Clock clk) {
         this.clock = clk;
     }
 
-    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source)
-    {
+    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];
@@ -53,8 +48,8 @@ public class OptimisedCompiler extends AbstractBasicCompiler
         return new RealModeUBlock(newMicrocodes, newPositions, clock);
     }
 
-    public ProtectedModeCodeBlock getProtectedModeCodeBlock(InstructionSource source)
-    {
+    public ProtectedModeCodeBlock getProtectedModeCodeBlock(
+            InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];
@@ -65,8 +60,8 @@ public class OptimisedCompiler extends AbstractBasicCompiler
         return new ProtectedModeUBlock(newMicrocodes, newPositions);
     }
 
-    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(InstructionSource source)
-    {
+    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
+            InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];

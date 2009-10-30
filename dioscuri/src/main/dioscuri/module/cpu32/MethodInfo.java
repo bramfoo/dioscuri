@@ -22,13 +22,12 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 import java.io.*;
 
-public class MethodInfo
-{
+public class MethodInfo {
     private int accessFlags;
     private int nameIndex;
     private int descriptorIndex;
@@ -48,107 +47,107 @@ public class MethodInfo
     public static final int STRICT = 0x0800;
     public static final int SYTHETIC = 0x1000;
 
-    public MethodInfo(DataInputStream in, ConstantPoolInfo[] pool) throws IOException
-    {
+    public MethodInfo(DataInputStream in, ConstantPoolInfo[] pool)
+            throws IOException {
         accessFlags = in.readUnsignedShort();
         nameIndex = in.readUnsignedShort();
         descriptorIndex = in.readUnsignedShort();
 
         attributesCount = in.readUnsignedShort();
         attributes = new AttributeInfo[attributesCount];
-        for(int i = 0; i < attributesCount; i++)
+        for (int i = 0; i < attributesCount; i++)
             attributes[i] = AttributeInfo.construct(in, pool);
     }
 
-    public void write(DataOutputStream out) throws IOException
-    {
+    public void write(DataOutputStream out) throws IOException {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
         out.writeShort(descriptorIndex);
 
         out.writeShort(attributesCount);
-        for(int i = 0; i < attributesCount; i++)
+        for (int i = 0; i < attributesCount; i++)
             attributes[i].write(out);
     }
 
-    public int getNameIndex() { return nameIndex; }
+    public int getNameIndex() {
+        return nameIndex;
+    }
 
-    public int getDescriptorIndex() { return descriptorIndex; }
+    public int getDescriptorIndex() {
+        return descriptorIndex;
+    }
 
-    public int getMaxStack()
-    {
-        for(int i = 0; (i < attributesCount); i++)
+    public int getMaxStack() {
+        for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-                return ((AttributeInfo.CodeAttribute) attributes[i]).getMaxStack();
+                return ((AttributeInfo.CodeAttribute) attributes[i])
+                        .getMaxStack();
         return 0;
     }
 
-    public int getMaxLocals()
-    {
-        for(int i = 0; (i < attributesCount); i++)
+    public int getMaxLocals() {
+        for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-                return ((AttributeInfo.CodeAttribute) attributes[i]).getMaxLocals();
+                return ((AttributeInfo.CodeAttribute) attributes[i])
+                        .getMaxLocals();
         return 0;
     }
 
-    public int[] getCode()
-    {
-        for(int i = 0; (i < attributesCount); i++)
+    public int[] getCode() {
+        for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
                 return ((AttributeInfo.CodeAttribute) attributes[i]).getCode();
         return null;
     }
 
-    public void setCode(int[] code, ClassFile cf)
-    {
+    public void setCode(int[] code, ClassFile cf) {
         setCode(code, code.length, cf);
     }
 
-    public void setCode(int[] code, int codeLength, ClassFile cf)
-    {
+    public void setCode(int[] code, int codeLength, ClassFile cf) {
         String descriptor = cf.getConstantPoolUtf8(this.getDescriptorIndex());
         int argLength = cf.getMethodArgLength(descriptor);
-        for(int i = 0; (i < attributesCount); i++)
-        {
-            if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-            {
-                ((AttributeInfo.CodeAttribute) attributes[i]).setCode(code, codeLength, cf, argLength);
+        for (int i = 0; (i < attributesCount); i++) {
+            if (attributes[i] instanceof AttributeInfo.CodeAttribute) {
+                ((AttributeInfo.CodeAttribute) attributes[i]).setCode(code,
+                        codeLength, cf, argLength);
                 return;
             }
         }
     }
 
-    public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable()
-    {
-    for (int i = 0; i < attributesCount; i++)
-        if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-        return ((AttributeInfo.CodeAttribute) attributes[i]).getExceptionTable();
-    return null;
+    public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable() {
+        for (int i = 0; i < attributesCount; i++)
+            if (attributes[i] instanceof AttributeInfo.CodeAttribute)
+                return ((AttributeInfo.CodeAttribute) attributes[i])
+                        .getExceptionTable();
+        return null;
     }
 
-    public void setExceptionTable(AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable, ClassFile cf)
-    {
-        for(int i = 0; (i < attributesCount); i++)
-        {
-            if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-            {
-                ((AttributeInfo.CodeAttribute) attributes[i]).setExceptionTable(exceptionTable, exceptionTable.length, cf);
+    public void setExceptionTable(
+            AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
+            ClassFile cf) {
+        for (int i = 0; (i < attributesCount); i++) {
+            if (attributes[i] instanceof AttributeInfo.CodeAttribute) {
+                ((AttributeInfo.CodeAttribute) attributes[i])
+                        .setExceptionTable(exceptionTable,
+                                exceptionTable.length, cf);
                 return;
             }
         }
     }
 
-    public void setExceptionTable(AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable, int exceptionTableLength, ClassFile cf)
-    {
-        for(int i = 0; (i < attributesCount); i++)
-        {
-            if (attributes[i] instanceof AttributeInfo.CodeAttribute)
-            {
-                ((AttributeInfo.CodeAttribute) attributes[i]).setExceptionTable(exceptionTable, exceptionTableLength, cf);
+    public void setExceptionTable(
+            AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
+            int exceptionTableLength, ClassFile cf) {
+        for (int i = 0; (i < attributesCount); i++) {
+            if (attributes[i] instanceof AttributeInfo.CodeAttribute) {
+                ((AttributeInfo.CodeAttribute) attributes[i])
+                        .setExceptionTable(exceptionTable,
+                                exceptionTableLength, cf);
                 return;
             }
         }
     }
-
 
 }

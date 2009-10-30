@@ -37,85 +37,72 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.motherboard;
 
 import java.util.ArrayList;
 
 import dioscuri.module.ModuleDevice;
 
-
 @SuppressWarnings("serial")
-public class Devices extends ArrayList<ModuleDevice>
-{
-	// Attributes
-	
-    
-	// Constructors
-	/**
-     * Class Constructor
-	 * 
-	 */
-	public Devices()
-	{
-		super();
-	}
-	
-	/**
+public class Devices extends ArrayList<ModuleDevice> {
+    // Attributes
+
+    // Constructors
+    /**
      * Class Constructor
      * 
-	 * @param capacity
-	 */
-	public Devices(int capacity)
-	{
-		super(capacity);
-	}
+     */
+    public Devices() {
+        super();
+    }
 
-	
-	// Methods
-	/**
+    /**
+     * Class Constructor
+     * 
+     * @param capacity
+     */
+    public Devices(int capacity) {
+        super(capacity);
+    }
+
+    // Methods
+    /**
      * Add a device to array
      * 
-	 * @param ModuleDevice device
+     * @param ModuleDevice
+     *            device
      * 
-	 * @return boolean true if succesful, false otherwise
-	 */
-	public boolean addDevice(ModuleDevice device)
-	{
-		return super.add(device);
-	}
+     * @return boolean true if succesful, false otherwise
+     */
+    public boolean addDevice(ModuleDevice device) {
+        return super.add(device);
+    }
 
-
-	/**
+    /**
      * Return a device from array based on given type
      * 
-	 * @param String type defining the type of the requested device
+     * @param String
+     *            type defining the type of the requested device
      * 
-	 * @return ModuleDevice
-	 */
-	public ModuleDevice getDevice(String type)
-	{
-		for (int i = 0; i < super.size(); i++)
-		{
-			if ((this.getDevice(i)).getType().equalsIgnoreCase(type))
-			{
-				return (ModuleDevice)super.get(i);
-			}
-		}
-		return null;
-	}
+     * @return ModuleDevice
+     */
+    public ModuleDevice getDevice(String type) {
+        for (int i = 0; i < super.size(); i++) {
+            if ((this.getDevice(i)).getType().equalsIgnoreCase(type)) {
+                return (ModuleDevice) super.get(i);
+            }
+        }
+        return null;
+    }
 
-
-	/**
+    /**
      * Return a device from array based on given index
      * 
-	 * @param int index of the device
+     * @param int index of the device
      * 
-	 * @return ModuleDevice
-	 */
-	public ModuleDevice getDevice(int index)
-	{
-		return (ModuleDevice)super.get(index);
-	}
+     * @return ModuleDevice
+     */
+    public ModuleDevice getDevice(int index) {
+        return (ModuleDevice) super.get(index);
+    }
 }
-

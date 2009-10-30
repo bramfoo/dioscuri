@@ -37,16 +37,14 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 /**
  * Interface representing a generic hardware module.
- *  
+ * 
  */
 
-public abstract class ModuleRTC extends ModuleDevice
-{
+public abstract class ModuleRTC extends ModuleDevice {
     // Methods
     /**
      * Return requested CMOS register
@@ -66,8 +64,7 @@ public abstract class ModuleRTC extends ModuleDevice
     public abstract void setCMOSRegister(int register, byte value);
 
     /**
-     * Update clock
-     * Increment the clock value
+     * Update clock Increment the clock value
      */
     public abstract void updateClock();
 

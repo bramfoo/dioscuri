@@ -37,75 +37,70 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-	/**
-	 * Intel opcode 60<BR>
-	 * Push all general purpose registers onto stack SS:SP.<BR>
-	 * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode 60<BR>
+ * Push all general purpose registers onto stack SS:SP.<BR>
+ * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI<BR>
+ * Flags modified: none
+ */
 public class Instruction_PUSHA implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte[] tempSP;
 
-	// Logging
-	private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    // Logging
+    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
 
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_PUSHA()
-    {
-     tempSP = new byte[2];   
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_PUSHA() {
+        tempSP = new byte[2];
     }
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_PUSHA(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
 
-	
-	// Methods
-	
-	/**
-	 * Pushes the words in all general purpose registers onto stack top SS:SP
-	 * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI
-	 */
-	public void execute()
-	{
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_PUSHA(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Pushes the words in all general purpose registers onto stack top SS:SP
+     * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI
+     */
+    public void execute() {
         // Push extra register first, if 32 bit instruction
-        if (cpu.doubleWord)
-        {
-        	logger.log(Level.WARNING, "[" + cpu.getType() + "] Instruction PUSHA: 32-bits not supported");
+        if (cpu.doubleWord) {
+            logger.log(Level.WARNING, "[" + cpu.getType()
+                    + "] Instruction PUSHA: 32-bits not supported");
         }
-        
+
         // Get words in register and assign to stack
-        System.arraycopy(cpu.sp, 0, tempSP, 0,cpu.sp.length);
-		cpu.setWordToStack(cpu.ax);
-		cpu.setWordToStack(cpu.cx);
-		cpu.setWordToStack(cpu.dx);
-		cpu.setWordToStack(cpu.bx);
-		cpu.setWordToStack(tempSP);
-		cpu.setWordToStack(cpu.bp);
-		cpu.setWordToStack(cpu.si);
-		cpu.setWordToStack(cpu.di);
-	}
+        System.arraycopy(cpu.sp, 0, tempSP, 0, cpu.sp.length);
+        cpu.setWordToStack(cpu.ax);
+        cpu.setWordToStack(cpu.cx);
+        cpu.setWordToStack(cpu.dx);
+        cpu.setWordToStack(cpu.bx);
+        cpu.setWordToStack(tempSP);
+        cpu.setWordToStack(cpu.bp);
+        cpu.setWordToStack(cpu.si);
+        cpu.setWordToStack(cpu.di);
+    }
 }

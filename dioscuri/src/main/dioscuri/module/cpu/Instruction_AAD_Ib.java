@@ -37,62 +37,66 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode D5<BR>
-	 * ASCII adjust AX before division.<BR>
-	 * Adjust two unpacked BCD digits so a division operation on result yields correct unpacked BCD value<BR>
-	 * Flags modified: SF, ZF, PF
-	 */
+/**
+ * Intel opcode D5<BR>
+ * ASCII adjust AX before division.<BR>
+ * Adjust two unpacked BCD digits so a division operation on result yields
+ * correct unpacked BCD value<BR>
+ * Flags modified: SF, ZF, PF
+ */
 public class Instruction_AAD_Ib implements Instruction {
 
-	// Attributes
-	private CPU cpu;
+    // Attributes
+    private CPU cpu;
     byte base;
     int tempResult;
-	
-	// Constructors
-	/**
-	 * Class constructor 
-	 * 
-	 */
-	public Instruction_AAD_Ib()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_AAD_Ib(CPU processor)
-	{
-		// Create reference to cpu class
-		cpu = processor;
-        
+
+    // Constructors
+    /**
+     * Class constructor
+     * 
+     */
+    public Instruction_AAD_Ib() {
+    }
+
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_AAD_Ib(CPU processor) {
+        // Create reference to cpu class
+        cpu = processor;
+
         base = 0;
         tempResult = 0;
-	}
+    }
 
-	
-	// Methods
-	
-	/**
-     * Adjust two unpacked BCD digits so a division operation on result yields correct unpacked BCD value.<BR>
-	 * Set AL register to (AL + (10 * AH)), clear AH register. AX is then equal to binary equivalent of original unpacked two-digit (base 10) number.<BR>
-     * The generalized version adjusts two unpacked digits of any number base (defined by imm8); for example, 08H for octal, 0AH for decimal, or 0CH for base 12.
-	 */
-	public void execute()
-	{
+    // Methods
+
+    /**
+     * Adjust two unpacked BCD digits so a division operation on result yields
+     * correct unpacked BCD value.<BR>
+     * Set AL register to (AL + (10 * AH)), clear AH register. AX is then equal
+     * to binary equivalent of original unpacked two-digit (base 10) number.<BR>
+     * The generalized version adjusts two unpacked digits of any number base
+     * (defined by imm8); for example, 08H for octal, 0AH for decimal, or 0CH
+     * for base 12.
+     */
+    public void execute() {
         // Get immediate byte for base
         base = cpu.getByteFromCode();
-        
+
         // AL = (AL + (imm * AH))
-        tempResult = ((int) cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0xFF) + (((int) cpu.ax[CPU.REGISTER_GENERAL_HIGH] & 0xFF) * base);
-        
+        tempResult = ((int) cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0xFF)
+                + (((int) cpu.ax[CPU.REGISTER_GENERAL_HIGH] & 0xFF) * base);
+
         cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) (tempResult & 0xFF);
         cpu.ax[CPU.REGISTER_GENERAL_HIGH] = 0x00;
-        
+
         // Set appropriate flags; follow Bochs' example of undefined flags
         // OF is undefined
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
@@ -101,10 +105,14 @@ public class Instruction_AAD_Ib implements Instruction {
         // CF is undefined
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
         // Set ZF
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
-        // Set SF on particular byte of AX (set when MSB is 1, occurs when destReg >= 0x80)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
+        // Set SF on particular byte of AX (set when MSB is 1, occurs when
+        // destReg >= 0x80)
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
         // Set PF on particular byte of AX
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
-	}
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+    }
 }

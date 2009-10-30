@@ -37,53 +37,49 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
-	/**
-	 * Intel opcode B9<BR>
-	 * Copy immediate word to register CX.<BR>
-	 * Flags modified: none
-	 */
+/**
+ * Intel opcode B9<BR>
+ * Copy immediate word to register CX.<BR>
+ * Flags modified: none
+ */
 public class Instruction_MOV_Imm_CX implements Instruction {
 
-	// Attributes
-	private CPU cpu;
-	
-	
-	// Constructors
-	/**
-	 * Class constructor
-	 */
-	public Instruction_MOV_Imm_CX()	{}
-	
-	/**
-	 * Class constructor specifying processor reference
-	 * 
-	 * @param processor	Reference to CPU class
-	 */
-	public Instruction_MOV_Imm_CX(CPU processor)
-	{
-		this();
-		
-		// Create reference to cpu class
-		cpu = processor;
-	}
+    // Attributes
+    private CPU cpu;
 
-	
-	// Methods
-	
-	/**
-	 * Copy immediate word to register CX
-	 */
-	public void execute()
-	{
-		cpu.cx = cpu.getWordFromCode();
+    // Constructors
+    /**
+     * Class constructor
+     */
+    public Instruction_MOV_Imm_CX() {
+    }
 
-        if (cpu.doubleWord)
-        {
+    /**
+     * Class constructor specifying processor reference
+     * 
+     * @param processor
+     *            Reference to CPU class
+     */
+    public Instruction_MOV_Imm_CX(CPU processor) {
+        this();
+
+        // Create reference to cpu class
+        cpu = processor;
+    }
+
+    // Methods
+
+    /**
+     * Copy immediate word to register CX
+     */
+    public void execute() {
+        cpu.cx = cpu.getWordFromCode();
+
+        if (cpu.doubleWord) {
             // 32 bit instruction, so move one extra word into eCX
             cpu.ecx = cpu.getWordFromCode();
-        }            
-	}
+        }
+    }
 }

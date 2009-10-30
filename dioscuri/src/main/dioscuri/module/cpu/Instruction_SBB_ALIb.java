@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -45,8 +44,7 @@ package dioscuri.module.cpu;
  * Subtract (immediate byte + CF) from AL.<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_SBB_ALIb implements Instruction
-{
+public class Instruction_SBB_ALIb implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -54,13 +52,11 @@ public class Instruction_SBB_ALIb implements Instruction
     byte oldDest;
     int iCarryFlag;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_SBB_ALIb()
-    {
+    public Instruction_SBB_ALIb() {
         immediateByte = 0;
         oldDest = 0;
         iCarryFlag = 0;
@@ -69,10 +65,10 @@ public class Instruction_SBB_ALIb implements Instruction
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_SBB_ALIb(CPU processor)
-    {
+    public Instruction_SBB_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -84,8 +80,7 @@ public class Instruction_SBB_ALIb implements Instruction
     /**
      * Subtract (immediate byte + CF) from AL
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
@@ -100,16 +95,22 @@ public class Instruction_SBB_ALIb implements Instruction
         cpu.ax[CPU.REGISTER_GENERAL_LOW] -= (immediateByte + iCarryFlag);
 
         // Test AF
-        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest, cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_SUB(oldDest,
+                cpu.ax[CPU.REGISTER_GENERAL_LOW]);
         // Test CF
-        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest, immediateByte, iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_CF] = Util.test_CF_SUB(oldDest,
+                immediateByte, iCarryFlag);
         // Test OF
-        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest, immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
+        cpu.flags[CPU.REGISTER_FLAGS_OF] = Util.test_OF_SUB(oldDest,
+                immediateByte, cpu.ax[CPU.REGISTER_GENERAL_LOW], iCarryFlag);
         // Test ZF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_ZF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                : false;
         // Test SF (set when MSB of AL is 1. In Java can check signed byte)
-        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true : false;
+        cpu.flags[CPU.REGISTER_FLAGS_SF] = cpu.ax[CPU.REGISTER_GENERAL_LOW] < 0 ? true
+                : false;
         // Set PF, only applies to AL
-        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
+        cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                .checkParityOfByte(cpu.ax[CPU.REGISTER_GENERAL_LOW]);
     }
 }

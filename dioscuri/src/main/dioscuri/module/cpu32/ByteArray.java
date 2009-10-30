@@ -22,18 +22,17 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface ByteArray
-{
-public void clear();
+public interface ByteArray {
+    public void clear();
 
-public long getSize();
+    public long getSize();
 
-public byte getByte(int offset);
+    public byte getByte(int offset);
 
-public void setByte(int offset, byte data);
+    public void setByte(int offset, byte data);
 
-public void copyContentsInto(int address, byte[] buffer, int off, int len);
+    public void copyContentsInto(int address, byte[] buffer, int off, int len);
 }

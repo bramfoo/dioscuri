@@ -41,7 +41,8 @@ package dioscuri.module.dma;
 
 /**
  * DMA controller<BR>
- * Class representing the structure of a DMA controller; each controller contains:<BR>
+ * Class representing the structure of a DMA controller; each controller
+ * contains:<BR>
  * - 4 channels, eah having a DMA Request (DRQ) and DMA Acknowledge (DRQ) bit<BR>
  * - mask register (disables incoming DRQs)<BR>
  * - flipflop (additional address bit)<BR>
@@ -49,40 +50,38 @@ package dioscuri.module.dma;
  * - command register (operation control)<BR>
  * 
  */
-public class DMAController
-{
+public class DMAController {
     // Create channels 0..3 for each controller
-    DMAChannel[] channel = new DMAChannel[]{ new DMAChannel(), 
-                                             new DMAChannel(),
-                                             new DMAChannel(),
-                                             new DMAChannel()
-                                           };
-    
-    boolean DRQ[] = new boolean[4];   // DMA Request for channels 0 - 3
-    boolean DACK[] = new boolean[4];  // DMA Acknowlege for channels 0 - 3
+    DMAChannel[] channel = new DMAChannel[] { new DMAChannel(),
+            new DMAChannel(), new DMAChannel(), new DMAChannel() };
 
-    byte mask[] = new byte[4];  // Mask for each channel; incoming DMA requests are disabled if set
+    boolean DRQ[] = new boolean[4]; // DMA Request for channels 0 - 3
+    boolean DACK[] = new boolean[4]; // DMA Acknowlege for channels 0 - 3
 
-    boolean flipflop;           // Generate additional bit of address, used to determine upper/lower
-                                // byte of 16-bit address and count registers
+    byte mask[] = new byte[4]; // Mask for each channel; incoming DMA requests
+                               // are disabled if set
 
-    byte statusRegister;        // Status of terminal counts and DMA requests
-                                // Bit 7: Channel 3 request
-                                // Bit 6: Channel 2 request
-                                // Bit 5: Channel 1 request
-                                // Bit 4: Channel 0 request
-                                // Bit 3: Channel 3 has reached TC
-                                // Bit 2: Channel 2 has reached TC
-                                // Bit 1: Channel 1 has reached TC
-                                // Bit 0: Channel 0 has reached TC
+    boolean flipflop; // Generate additional bit of address, used to determine
+                      // upper/lower
+    // byte of 16-bit address and count registers
 
-    byte commandRegister;       // Controls operation of the 8237A.
-                                // Bit 7: DACK sense active: low/high
-                                // Bit 6: DREQ sense active: high/low
-                                // Bit 5: Write selection  : late/extended
-                                // Bit 4: Priority         : fixed/rotating
-                                // Bit 3: Timing           : normal/compressed
-    boolean ctrlDisabled;       // Bit 2: Controller       : enable/disable
-                                // Bit 1: Chan 0 addr. hold: disable/enable
-                                // Bit 0: Memory to memory : disable/enable
+    byte statusRegister; // Status of terminal counts and DMA requests
+    // Bit 7: Channel 3 request
+    // Bit 6: Channel 2 request
+    // Bit 5: Channel 1 request
+    // Bit 4: Channel 0 request
+    // Bit 3: Channel 3 has reached TC
+    // Bit 2: Channel 2 has reached TC
+    // Bit 1: Channel 1 has reached TC
+    // Bit 0: Channel 0 has reached TC
+
+    byte commandRegister; // Controls operation of the 8237A.
+    // Bit 7: DACK sense active: low/high
+    // Bit 6: DREQ sense active: high/low
+    // Bit 5: Write selection : late/extended
+    // Bit 4: Priority : fixed/rotating
+    // Bit 3: Timing : normal/compressed
+    boolean ctrlDisabled; // Bit 2: Controller : enable/disable
+    // Bit 1: Chan 0 addr. hold: disable/enable
+    // Bit 0: Memory to memory : disable/enable
 }

@@ -37,25 +37,23 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module;
 
 import javax.swing.JPanel;
 
 /**
- * Abstract class representing a generic hardware module.
- * This class defines a template for a screen module.
- *  
+ * Abstract class representing a generic hardware module. This class defines a
+ * template for a screen module.
+ * 
  */
 
-public abstract class ModuleScreen extends Module
-{
+public abstract class ModuleScreen extends Module {
     // Methods
     /**
      * Return a reference to the actual screen
      */
     public abstract JPanel getScreen();
-    
+
     /**
      * Clear screen from any output
      */
@@ -83,6 +81,7 @@ public abstract class ModuleScreen extends Module
 
     /**
      * Set the screen size in number of pixels
+     * 
      * @param int width New width of the screen in pixels
      * @param int height New height of the screen in pixels
      */
@@ -91,24 +90,23 @@ public abstract class ModuleScreen extends Module
     /**
      * Update screen size
      * 
-     * @param int screenWidth 
+     * @param int screenWidth
      * @param int screenHeight
      * @param int fontWidth (zero if not relevant)
      * @param int fontHeight (zero if not relevant)
      */
-    public abstract void updateScreenSize(int screenWidth, int screenHeight, int fontWidth, int fontHeight);
-    
+    public abstract void updateScreenSize(int screenWidth, int screenHeight,
+            int fontWidth, int fontHeight);
+
     /**
-     * Update the code page
-     * The code page is the character encoding table
+     * Update the code page The code page is the character encoding table
      * 
      * @param int startAddress
      */
     public abstract void updateCodePage(int startAddress);
-    
+
     /**
-     * Set a byte in Code page
-     * The code page is the character encoding table
+     * Set a byte in Code page The code page is the character encoding table
      * 
      * @param int index
      * @param byte data
@@ -118,36 +116,38 @@ public abstract class ModuleScreen extends Module
     /**
      * Set a particular colour in palette with RGB-values
      * 
-     * @param byte index denoting position of colour in palette 
+     * @param byte index denoting position of colour in palette
      * @param int red
      * @param int green
      * @param int blue
      */
-    public abstract boolean setPaletteColour(byte index, int red, int green, int blue);
-    
+    public abstract boolean setPaletteColour(byte index, int red, int green,
+            int blue);
+
     /**
-     * Update a tile on screen with given bytes
-     * Graphics mode. A tile is a part of the screenbuffer 
+     * Update a tile on screen with given bytes Graphics mode. A tile is a part
+     * of the screenbuffer
      * 
-     * @param byte[] tile containing the bytes of the tile to be updated 
+     * @param byte[] tile containing the bytes of the tile to be updated
      * @param int startPositionX
      * @param int startPositionY
      */
-    public abstract void updateGraphicsTile(byte[] tile, int startPositionX, int startPositionY);
-    
+    public abstract void updateGraphicsTile(byte[] tile, int startPositionX,
+            int startPositionY);
+
     /**
-     * Update text on screen at given position
-     * Text mode. Selected text will replace existing text at given position 
+     * Update text on screen at given position Text mode. Selected text will
+     * replace existing text at given position
      * 
-     * @param int oldText is start position of old text 
+     * @param int oldText is start position of old text
      * @param int newText is start position of new text
      * @param long cursorXpos
      * @param long cursorYpos
-     * @param short[] textModeAttribs contains (in order):
-     *                      fullStartAddress, cursorStartLine, cursorEndLine, 
-     *                      lineOffset, lineCompare, horizPanning, vertPanning, 
-     *                      lineGraphics, splitHorizPanning
+     * @param short[] textModeAttribs contains (in order): fullStartAddress,
+     *        cursorStartLine, cursorEndLine, lineOffset, lineCompare,
+     *        horizPanning, vertPanning, lineGraphics, splitHorizPanning
      * @param int numberOfRows denoting the number of text rows to update
      */
-    public abstract void updateText(int oldText, int newText, long cursorXPos, long cursorYPos, short[] textModeAttribs, int numberOfRows);
+    public abstract void updateText(int oldText, int newText, long cursorXPos,
+            long cursorYPos, short[] textModeAttribs, int numberOfRows);
 }

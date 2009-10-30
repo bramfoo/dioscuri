@@ -22,66 +22,58 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.fastcompiler.BytecodeFragments;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.FASTCompiler;
 
-public class RealModeBytecodeFragments extends BytecodeFragments
-{
+public class RealModeBytecodeFragments extends BytecodeFragments {
     private static Object[][][] operationArray = new Object[MICROCODE_LIMIT][][];
     private static int[][][] operandArray = new int[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT][];
 
     private static boolean[][] externalEffectsArray = new boolean[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT];
     private static boolean[][] explicitThrowArray = new boolean[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT];
 
-    private RealModeBytecodeFragments()
-    {
+    private RealModeBytecodeFragments() {
     }
 
-    static 
-    {
-        try 
-        {
-            UCodeMethodParser p = new UCodeMethodParser(operationArray, operandArray, externalEffectsArray, explicitThrowArray);
-            
+    static {
+        try {
+            UCodeMethodParser p = new UCodeMethodParser(operationArray,
+                    operandArray, externalEffectsArray, explicitThrowArray);
+
             System.out.println("Parsed " + p.parse() + " uCodes from file");
-        } 
-        catch (Exception e) 
-        {
+        } catch (Exception e) {
             System.err.println("failed loading bytecodes from file:" + e);
             e.printStackTrace();
         }
     }
 
-
-    public static Object[] getOperation(int element, int microcode, int x86Position)
-    {
+    public static Object[] getOperation(int element, int microcode,
+            int x86Position) {
         Object[] ops = operationArray[microcode][element];
         if (ops == null)
             return null;
 
         Object[] temp = new Object[ops.length];
         System.arraycopy(ops, 0, temp, 0, temp.length);
-        
-        for (int i = 0; i < temp.length; i++) 
-        {
-            if (temp[i] == X86LENGTH) 
+
+        for (int i = 0; i < temp.length; i++) {
+            if (temp[i] == X86LENGTH)
                 temp[i] = integer(x86Position);
         }
-        
+
         return temp;
     }
 
-    public static Object[] getOperation(int element, int microcode, int x86Position, int immediate)
-    {
+    public static Object[] getOperation(int element, int microcode,
+            int x86Position, int immediate) {
         Object[] temp = getOperation(element, microcode, x86Position);
         if (temp == null)
             return null;
 
-        for (int i = 0; i < temp.length; i++) 
-        {
+        for (int i = 0; i < temp.length; i++) {
             if (temp[i] == IMMEDIATE)
                 temp[i] = integer(immediate);
         }
@@ -89,23 +81,19 @@ public class RealModeBytecodeFragments extends BytecodeFragments
         return temp;
     }
 
-    public static Object[] getTargetsOf(int microcode)
-    {
+    public static Object[] getTargetsOf(int microcode) {
         return operationArray[microcode];
     }
 
-    public static int[] getOperands(int element, int microcode)
-    {
+    public static int[] getOperands(int element, int microcode) {
         return operandArray[microcode][element];
     }
 
-    public static boolean hasExternalEffect(int element, int microcode)
-    {
-    return externalEffectsArray[microcode][element];
+    public static boolean hasExternalEffect(int element, int microcode) {
+        return externalEffectsArray[microcode][element];
     }
 
-    public static boolean hasExplicitThrow(int element, int microcode)
-    {
-    return explicitThrowArray[microcode][element];
+    public static boolean hasExplicitThrow(int element, int microcode) {
+        return explicitThrowArray[microcode][element];
     }
 }

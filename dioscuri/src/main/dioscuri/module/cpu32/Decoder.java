@@ -22,15 +22,14 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-
-public interface Decoder
-{
+public interface Decoder {
     public InstructionSource decodeReal(ByteSource source);
 
-    public InstructionSource decodeProtected(ByteSource source, boolean operandSize);
+    public InstructionSource decodeProtected(ByteSource source,
+            boolean operandSize);
 
     public InstructionSource decodeVirtual8086(ByteSource source);
 }

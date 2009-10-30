@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 /*
  * Information used in this module was taken from:
  * - http://en.wikipedia.org/wiki/AT_Attachment
@@ -45,70 +44,53 @@
  */
 package dioscuri.module.ata;
 
-public class InterruptReason
-{
+public class InterruptReason {
     private int cd = 1;
     private int io = 1;
     private int rel = 1;
     private int tag = 5;
-    
-    public int getCd()
-    {
+
+    public int getCd() {
         return cd;
     }
-    
-    public void setCd(int cd)
-    {
+
+    public void setCd(int cd) {
         this.cd = cd;
     }
-    
-    public int getIo()
-    {
+
+    public int getIo() {
         return io;
     }
-    
-    public void setIo(int io)
-    {
+
+    public void setIo(int io) {
         this.io = io;
     }
-    
-    public int getRel()
-    {
+
+    public int getRel() {
         return rel;
     }
-    public void setRel(int rel)
-    {
+
+    public void setRel(int rel) {
         this.rel = rel;
     }
-    
-    public int getTag()
-    {
+
+    public int getTag() {
         return tag;
     }
-    
-    public void setTag(int tag)
-    {
+
+    public void setTag(int tag) {
         this.tag = tag;
     }
-    
-    
-    //Original BOCHS code 
-    //TODO:
-/**    
-    #ifdef BX_LITTLE_ENDIAN
-    unsigned c_d : 1;
-    unsigned i_o : 1;
-    unsigned rel : 1;
-    unsigned tag : 5;
-#else  /* BX_BIG_ENDIAN */
-/*  unsigned tag : 5;
-    unsigned rel : 1;
-    unsigned i_o : 1;
-    unsigned c_d : 1;
-#endif
-*/
-    
-    
-    
+
+    // Original BOCHS code
+    // TODO:
+    /**
+     * #ifdef BX_LITTLE_ENDIAN unsigned c_d : 1; unsigned i_o : 1; unsigned rel
+     * : 1; unsigned tag : 5; #else /* BX_BIG_ENDIAN
+     */
+    /*
+     * unsigned tag : 5; unsigned rel : 1; unsigned i_o : 1; unsigned c_d : 1;
+     * #endif
+     */
 
 }

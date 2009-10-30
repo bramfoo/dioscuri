@@ -37,7 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
@@ -47,8 +46,7 @@ package dioscuri.module.cpu;
  * The addressbyte determines the source (rrr bits) and destination (sss bits).<BR>
  * Flags modified: OF, SF, ZF, AF, PF, CF
  */
-public class Instruction_AND_EvGv implements Instruction
-{
+public class Instruction_AND_EvGv implements Instruction {
 
     // Attributes
     private CPU cpu;
@@ -67,17 +65,16 @@ public class Instruction_AND_EvGv implements Instruction
     /**
      * Class constructor
      */
-    public Instruction_AND_EvGv()
-    {
+    public Instruction_AND_EvGv() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_AND_EvGv(CPU processor)
-    {
+    public Instruction_AND_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -90,8 +87,7 @@ public class Instruction_AND_EvGv implements Instruction
      * Logical AND of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
@@ -106,49 +102,59 @@ public class Instruction_AND_EvGv implements Instruction
 
         // Determine source value using addressbyte. AND it with 0011 1000 and
         // right-shift 3 to get rrr bits
-        sourceValue = (cpu.decodeRegister(operandWordSize, (addressByte & 0x38) >> 3));
+        sourceValue = (cpu.decodeRegister(operandWordSize,
+                (addressByte & 0x38) >> 3));
 
         // Execute AND on reg,reg or mem,reg. Determine this from mm bits of
         // addressbyte
-        if (((addressByte >> 6) & 0x03) == 3)
-        {
+        if (((addressByte >> 6) & 0x03) == 3) {
             // AND reg,reg
             // Determine destination register from addressbyte, ANDing it with
             // 0000 0111
-            destinationRegister = cpu.decodeRegister(operandWordSize, addressByte & 0x07);
+            destinationRegister = cpu.decodeRegister(operandWordSize,
+                    addressByte & 0x07);
 
             // AND source and destination, storing result in destination.
             destinationRegister[CPU.REGISTER_GENERAL_HIGH] &= sourceValue[CPU.REGISTER_GENERAL_HIGH];
             destinationRegister[CPU.REGISTER_GENERAL_LOW] &= sourceValue[CPU.REGISTER_GENERAL_LOW];
 
             // Test ZF on particular byte of destinationRegister
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0 && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
+                    && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                    : false;
             // Test SF on particular byte of destinationRegister (set when MSB
             // is 1, occurs when destReg >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
             // Set PF on lower byte of destinationRegister
-            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(destinationRegister[CPU.REGISTER_GENERAL_LOW]);
-        }
-        else
-        {
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(destinationRegister[CPU.REGISTER_GENERAL_LOW]);
+        } else {
             // AND mem,reg
             // Determine memory location
-            memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte, memoryReferenceDisplacement);
+            memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
+                    memoryReferenceDisplacement);
 
             // Get byte from memory and AND with source register
-            byte[] memVal = cpu.getWordFromMemorySegment(addressByte, memoryReferenceLocation);
+            byte[] memVal = cpu.getWordFromMemorySegment(addressByte,
+                    memoryReferenceLocation);
             logicalANDResult[CPU.REGISTER_GENERAL_HIGH] = (byte) (memVal[CPU.REGISTER_GENERAL_HIGH] & sourceValue[CPU.REGISTER_GENERAL_HIGH]);
             logicalANDResult[CPU.REGISTER_GENERAL_LOW] = (byte) (memVal[CPU.REGISTER_GENERAL_LOW] & sourceValue[CPU.REGISTER_GENERAL_LOW]);
-            
+
             // Store result in memory
-            cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation, logicalANDResult);
+            cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation,
+                    logicalANDResult);
 
             // Test ZF on result
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] == 0 && logicalANDResult[CPU.REGISTER_GENERAL_LOW] == 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] == 0
+                    && logicalANDResult[CPU.REGISTER_GENERAL_LOW] == 0 ? true
+                    : false;
             // Test SF on result (set when MSB is 1, occurs when result >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] < 0 ? true : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = logicalANDResult[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
+                    : false;
             // Set PF on lower byte of result
-            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(logicalANDResult[CPU.REGISTER_GENERAL_LOW]);
+            cpu.flags[CPU.REGISTER_FLAGS_PF] = Util
+                    .checkParityOfByte(logicalANDResult[CPU.REGISTER_GENERAL_LOW]);
 
         }
     }

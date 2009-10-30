@@ -37,38 +37,36 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.module.cpu;
 
 /**
  * Intel opcode E1<BR>
- * Loop while CX is not zero and ZF == 1, performing short jump indicated by immediate signed byte.<BR>
+ * Loop while CX is not zero and ZF == 1, performing short jump indicated by
+ * immediate signed byte.<BR>
  * Displacement is relative to next instruction.<BR>
  * Flags modified: none
  */
-public class Instruction_LOOPE_LOOPZ_Jb implements Instruction
-{
+public class Instruction_LOOPE_LOOPZ_Jb implements Instruction {
 
     // Attributes
     private CPU cpu;
     byte displacement;
-    byte[] decrement = new byte[]{0x00, 0x01};  // Decrement by one
+    byte[] decrement = new byte[] { 0x00, 0x01 }; // Decrement by one
 
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_LOOPE_LOOPZ_Jb()
-    {
+    public Instruction_LOOPE_LOOPZ_Jb() {
     }
 
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_LOOPE_LOOPZ_Jb(CPU processor)
-    {
+    public Instruction_LOOPE_LOOPZ_Jb(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,10 +74,10 @@ public class Instruction_LOOPE_LOOPZ_Jb implements Instruction
     // Methods
 
     /**
-     * Loop while CX is not zero and ZF == 1, performing short jump indicated by immediate signed byte
+     * Loop while CX is not zero and ZF == 1, performing short jump indicated by
+     * immediate signed byte
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // This byte is interpreted signed, so cast to Java byte
         displacement = (byte) cpu.getByteFromCode();
@@ -88,11 +86,13 @@ public class Instruction_LOOPE_LOOPZ_Jb implements Instruction
         cpu.cx = Util.subtractWords(cpu.cx, decrement, 0);
 
         // Test LOOP condition, jump if CX is not zero and ZF == 1
-        if (cpu.flags[CPU.REGISTER_FLAGS_ZF] == true && (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00 || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00))
-        {
-            // Jump is relative to _next_ instruction, but by the time we change 
-            // the IP, it has already been incremented twice, so no extra arithmetic necessary      
-            cpu.ip = Util.addWords(cpu.ip, new byte[]{Util.signExtend(displacement), displacement}, 0);
+        if (cpu.flags[CPU.REGISTER_FLAGS_ZF] == true
+                && (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00 || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00)) {
+            // Jump is relative to _next_ instruction, but by the time we change
+            // the IP, it has already been incremented twice, so no extra
+            // arithmetic necessary
+            cpu.ip = Util.addWords(cpu.ip, new byte[] {
+                    Util.signExtend(displacement), displacement }, 0);
         }
     }
 }

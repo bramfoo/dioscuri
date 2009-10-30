@@ -22,14 +22,15 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public interface CodeBlockFactory
-{
-public RealModeCodeBlock getRealModeCodeBlock(ByteSource source);
+public interface CodeBlockFactory {
+    public RealModeCodeBlock getRealModeCodeBlock(ByteSource source);
 
-public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source, boolean operandSize);
+    public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
+            boolean operandSize);
 
-public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(ByteSource source);
+    public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
+            ByteSource source);
 }

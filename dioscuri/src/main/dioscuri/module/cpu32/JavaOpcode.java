@@ -22,11 +22,10 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
-public class JavaOpcode
-{
+public class JavaOpcode {
     public static final int NOP = 0;
     public static final int ACONST_NULL = 1;
     public static final int ICONST_M1 = 2;
@@ -233,277 +232,59 @@ public class JavaOpcode
     public static final int IMPDEP1 = 254;
     public static final int IMPDEP2 = 255;
 
-    private static final String[] opcodes = 
-    {
-        "NOP",
-        "ACONST_NULL",
-        "ICONST_M1",
-        "ICONST_0",
-        "ICONST_1",
-        "ICONST_2",
-        "ICONST_3",
-        "ICONST_4",
-        "ICONST_5",
-        "LCONST_0",
-        "LCONST_1",
-        "FCONST_0",
-        "FCONST_1",
-        "FCONST_2",
-        "DCONST_0",
-        "DCONST_1",
-        "BIPUSH",
-        "SIPUSH",
-        "LDC",
-        "LDC_W",
-        "LDC2_W",
-        "ILOAD",
-        "LLOAD",
-        "FLOAD",
-        "DLOAD",
-        "ALOAD",
-        "ILOAD_0",
-        "ILOAD_1",
-        "ILOAD_2",
-        "ILOAD_3",
-        "LLOAD_0",
-        "LLOAD_1",
-        "LLOAD_2",
-        "LLOAD_3",
-        "FLOAD_0",
-        "FLOAD_1",
-        "FLOAD_2",
-        "FLOAD_3",
-        "DLOAD_0",
-        "DLOAD_1",
-        "DLOAD_2",
-        "DLOAD_3",
-        "ALOAD_0",
-        "ALOAD_1",
-        "ALOAD_2",
-        "ALOAD_3",
-        "IALOAD",
-        "LALOAD",
-        "FALOAD",
-        "DALOAD",
-        "AALOAD",
-        "BALOAD",
-        "CALOAD",
-        "SALOAD",
-        "ISTORE",
-        "LSTORE",
-        "FSTORE",
-        "DSTORE",
-        "ASTORE",
-        "ISTORE_0",
-        "ISTORE_1",
-        "ISTORE_2",
-        "ISTORE_3",
-        "LSTORE_0",
-        "LSTORE_1",
-        "LSTORE_2",
-        "LSTORE_3",
-        "FSTORE_0",
-        "FSTORE_1",
-        "FSTORE_2",
-        "FSTORE_3",
-        "DSTORE_0",
-        "DSTORE_1",
-        "DSTORE_2",
-        "DSTORE_3",
-        "ASTORE_0",
-        "ASTORE_1",
-        "ASTORE_2",
-        "ASTORE_3",
-        "IASTORE",
-        "LASTORE",
-        "FASTORE",
-        "DASTORE",
-        "AASTORE",
-        "BASTORE",
-        "CASTORE",
-        "SASTORE",
-        "POP",
-        "POP2",
-        "DUP",
-        "DUP_X1",
-        "DUP_X2",
-        "DUP2",
-        "DUP2_X1",
-        "DUP2_X2",
-        "SWAP",
-        "IADD",
-        "LADD",
-        "FADD",
-        "DADD",
-        "ISUB",
-        "LSUB",
-        "FSUB",
-        "DSUB",
-        "IMUL",
-        "LMUL",
-        "FMUL",
-        "DMUL",
-        "IDIV",
-        "LDIV",
-        "FDIV",
-        "DDIV",
-        "IREM",
-        "LREM",
-        "FREM",
-        "DREM",
-        "INEG",
-        "LNEG",
-        "FNEG",
-        "DNEG",
-        "ISHL",
-        "LSHL",
-        "ISHR",
-        "LSHR",
-        "IUSHR",
-        "LUSHR",
-        "IAND",
-        "LAND",
-        "IOR",
-        "LOR",
-        "IXOR",
-        "LXOR",
-        "IINC",
-        "I2L",
-        "I2F",
-        "I2D",
-        "L2I",
-        "L2F",
-        "L2D",
-        "F2I",
-        "F2L",
-        "F2D",
-        "D2I",
-        "D2L",
-        "D2F",
-        "I2B",
-        "I2C",
-        "I2S",
-        "LCMP",
-        "FCMPL",
-        "FCMPG",
-        "DCMPL",
-        "DCMPG",
-        "IFEQ",
-        "IFNE",
-        "IFLT",
-        "IFGE",
-        "IFGT",
-        "IFLE",
-        "IF_ICMPEQ",
-        "IF_ICMPNE",
-        "IF_ICMPLT",
-        "IF_ICMPGE",
-        "IF_ICMPGT",
-        "IF_ICMPLE",
-        "IF_ACMPEQ",
-        "IF_ACMPNE",
-        "GOTO",
-        "JSR",
-        "RET",
-        "TABLESWITCH",
-        "LOOKUPSWITCH",
-        "IRETURN",
-        "LRETURN",
-        "FRETURN",
-        "DRETURN",
-        "ARETURN",
-        "RETURN",
-        "GETSTATIC",
-        "PUTSTATIC",
-        "GETFIELD",
-        "PUTFIELD",
-        "INVOKEVIRTUAL",
-        "INVOKESPECIAL",
-        "INVOKESTATIC",
-        "INVOKEINTERFACE",
-        "XXXUNUSEDXXX",
-        "NEW",
-        "NEWARRAY",
-        "ANEWARRAY",
-        "ARRAYLENGTH",
-        "ATHROW",
-        "CHECKCAST",
-        "INSTANCEOF",
-        "MONITORENTER",
-        "MONITOREXIT",
-        "WIDE",
-        "MULTIANEWARRAY",
-        "IFNULL",
-        "IFNONNULL",
-        "GOTO_W",
-        "JSR_W",
-        "BREAKPOINT",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "RESERVED",
-        "IMPDEP1",
-        "IMPDEP2"
-    };
-
-
+    private static final String[] opcodes = { "NOP", "ACONST_NULL",
+            "ICONST_M1", "ICONST_0", "ICONST_1", "ICONST_2", "ICONST_3",
+            "ICONST_4", "ICONST_5", "LCONST_0", "LCONST_1", "FCONST_0",
+            "FCONST_1", "FCONST_2", "DCONST_0", "DCONST_1", "BIPUSH", "SIPUSH",
+            "LDC", "LDC_W", "LDC2_W", "ILOAD", "LLOAD", "FLOAD", "DLOAD",
+            "ALOAD", "ILOAD_0", "ILOAD_1", "ILOAD_2", "ILOAD_3", "LLOAD_0",
+            "LLOAD_1", "LLOAD_2", "LLOAD_3", "FLOAD_0", "FLOAD_1", "FLOAD_2",
+            "FLOAD_3", "DLOAD_0", "DLOAD_1", "DLOAD_2", "DLOAD_3", "ALOAD_0",
+            "ALOAD_1", "ALOAD_2", "ALOAD_3", "IALOAD", "LALOAD", "FALOAD",
+            "DALOAD", "AALOAD", "BALOAD", "CALOAD", "SALOAD", "ISTORE",
+            "LSTORE", "FSTORE", "DSTORE", "ASTORE", "ISTORE_0", "ISTORE_1",
+            "ISTORE_2", "ISTORE_3", "LSTORE_0", "LSTORE_1", "LSTORE_2",
+            "LSTORE_3", "FSTORE_0", "FSTORE_1", "FSTORE_2", "FSTORE_3",
+            "DSTORE_0", "DSTORE_1", "DSTORE_2", "DSTORE_3", "ASTORE_0",
+            "ASTORE_1", "ASTORE_2", "ASTORE_3", "IASTORE", "LASTORE",
+            "FASTORE", "DASTORE", "AASTORE", "BASTORE", "CASTORE", "SASTORE",
+            "POP", "POP2", "DUP", "DUP_X1", "DUP_X2", "DUP2", "DUP2_X1",
+            "DUP2_X2", "SWAP", "IADD", "LADD", "FADD", "DADD", "ISUB", "LSUB",
+            "FSUB", "DSUB", "IMUL", "LMUL", "FMUL", "DMUL", "IDIV", "LDIV",
+            "FDIV", "DDIV", "IREM", "LREM", "FREM", "DREM", "INEG", "LNEG",
+            "FNEG", "DNEG", "ISHL", "LSHL", "ISHR", "LSHR", "IUSHR", "LUSHR",
+            "IAND", "LAND", "IOR", "LOR", "IXOR", "LXOR", "IINC", "I2L", "I2F",
+            "I2D", "L2I", "L2F", "L2D", "F2I", "F2L", "F2D", "D2I", "D2L",
+            "D2F", "I2B", "I2C", "I2S", "LCMP", "FCMPL", "FCMPG", "DCMPL",
+            "DCMPG", "IFEQ", "IFNE", "IFLT", "IFGE", "IFGT", "IFLE",
+            "IF_ICMPEQ", "IF_ICMPNE", "IF_ICMPLT", "IF_ICMPGE", "IF_ICMPGT",
+            "IF_ICMPLE", "IF_ACMPEQ", "IF_ACMPNE", "GOTO", "JSR", "RET",
+            "TABLESWITCH", "LOOKUPSWITCH", "IRETURN", "LRETURN", "FRETURN",
+            "DRETURN", "ARETURN", "RETURN", "GETSTATIC", "PUTSTATIC",
+            "GETFIELD", "PUTFIELD", "INVOKEVIRTUAL", "INVOKESPECIAL",
+            "INVOKESTATIC", "INVOKEINTERFACE", "XXXUNUSEDXXX", "NEW",
+            "NEWARRAY", "ANEWARRAY", "ARRAYLENGTH", "ATHROW", "CHECKCAST",
+            "INSTANCEOF", "MONITORENTER", "MONITOREXIT", "WIDE",
+            "MULTIANEWARRAY", "IFNULL", "IFNONNULL", "GOTO_W", "JSR_W",
+            "BREAKPOINT", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
+            "RESERVED", "RESERVED", "IMPDEP1", "IMPDEP2" };
 
     public static final int CALC_FROM_CONST_POOL = 0xBEEF;
 
-    public static String toString(int value)
-    {
+    public static String toString(int value) {
         return opcodes[value];
     }
 
-    public static boolean isBranchInstruction(int code)
-    {
+    public static boolean isBranchInstruction(int code) {
         switch (code) {
         case IFEQ:
         case IFNE:
@@ -525,32 +306,30 @@ public class JavaOpcode
 
         default:
             return false;
-//         case GOTO:
-//         case JSR:
-//         case RET:
-//         case GOTO_W:
-//         case JSR_W:
+            // case GOTO:
+            // case JSR:
+            // case RET:
+            // case GOTO_W:
+            // case JSR_W:
         }
     }
 
-    public static boolean isReturn(int code)
-    {
-    switch (code) {
-    case IRETURN:
-    case LRETURN:
-    case FRETURN:
-    case DRETURN:
-    case ARETURN:
-    case RETURN:
+    public static boolean isReturn(int code) {
+        switch (code) {
+        case IRETURN:
+        case LRETURN:
+        case FRETURN:
+        case DRETURN:
+        case ARETURN:
+        case RETURN:
         case ATHROW:
-        return true;
-    default:
-        return false;
-    }
+            return true;
+        default:
+            return false;
+        }
     }
 
-    public static int getJumpOffset(int[] code, int i)
-    {
+    public static int getJumpOffset(int[] code, int i) {
         switch (code[i]) {
         case IFEQ:
         case IFNE:
@@ -568,28 +347,28 @@ public class JavaOpcode
         case IF_ACMPNE:
         case IFNULL:
         case IFNONNULL:
-            return (short)((code[i+1] << 8) | code[i+2]);
+            return (short) ((code[i + 1] << 8) | code[i + 2]);
 
         case GOTO:
         case JSR:
-            return (short)((code[i+1] << 8) | code[i+2]);
+            return (short) ((code[i + 1] << 8) | code[i + 2]);
 
         case GOTO_W:
         case JSR_W:
-            return  (code[i+1] << 24) | (code[i+2] << 16) | (code[i+3] << 8) | code[i+4];
+            return (code[i + 1] << 24) | (code[i + 2] << 16)
+                    | (code[i + 3] << 8) | code[i + 4];
 
         case RET:
-        throw new IllegalStateException("Must fix stack delta measurement on methods with subroutines");
+            throw new IllegalStateException(
+                    "Must fix stack delta measurement on methods with subroutines");
 
         default:
             return 0;
         }
     }
 
-    public static int getStackDelta(int[] code, int i)
-    {
-        switch (code[i])
-        {
+    public static int getStackDelta(int[] code, int i) {
+        switch (code[i]) {
         case AALOAD:
             return -1;
         case AASTORE:
@@ -845,8 +624,8 @@ public class JavaOpcode
             return 0;
         case INVOKEINTERFACE:
             return CALC_FROM_CONST_POOL;
-//         case INVOKEINTERFACE:
-//             return -(code[i+3] + 1);
+            // case INVOKEINTERFACE:
+            // return -(code[i+3] + 1);
         case INVOKESPECIAL:
             return CALC_FROM_CONST_POOL;
         case INVOKESTATIC:
@@ -954,7 +733,7 @@ public class JavaOpcode
         case MONITOREXIT:
             return -1;
         case MULTIANEWARRAY:
-            return 1 - code[i+3];
+            return 1 - code[i + 3];
         case NEW:
             return +1;
         case NEWARRAY:
@@ -982,8 +761,8 @@ public class JavaOpcode
         case TABLESWITCH:
             return -1;
         case WIDE:
-            return getStackDelta(code, i+1);
-        // all returns actually flatten the stack completely....
+            return getStackDelta(code, i + 1);
+            // all returns actually flatten the stack completely....
         case ARETURN:
         case FRETURN:
         case IRETURN:
@@ -998,17 +777,15 @@ public class JavaOpcode
         case IMPDEP2:
         case XXXUNUSEDXXX:
         default:
-            throw new IllegalStateException("JavaOpcode - getStackDelta - reserved instrution!");
+            throw new IllegalStateException(
+                    "JavaOpcode - getStackDelta - reserved instrution!");
         }
     }
 
-
-    public static int getLocalVariableAccess(int[] code, int i)
-    {
-        switch(code[i])
-        {
+    public static int getLocalVariableAccess(int[] code, int i) {
+        switch (code[i]) {
         case ALOAD:
-            return code[i+1];
+            return code[i + 1];
         case ALOAD_0:
             return 0;
         case ALOAD_1:
@@ -1018,7 +795,7 @@ public class JavaOpcode
         case ALOAD_3:
             return 3;
         case ASTORE:
-            return code[i+1];
+            return code[i + 1];
         case ASTORE_0:
             return 0;
         case ASTORE_1:
@@ -1028,7 +805,7 @@ public class JavaOpcode
         case ASTORE_3:
             return 3;
         case DLOAD:
-            return code[i+1] + 1;
+            return code[i + 1] + 1;
         case DLOAD_0:
             return 1;
         case DLOAD_1:
@@ -1038,7 +815,7 @@ public class JavaOpcode
         case DLOAD_3:
             return 4;
         case DSTORE:
-            return code[i+1] + 1;
+            return code[i + 1] + 1;
         case DSTORE_0:
             return 1;
         case DSTORE_1:
@@ -1048,7 +825,7 @@ public class JavaOpcode
         case DSTORE_3:
             return 4;
         case FLOAD:
-            return code[i+1];
+            return code[i + 1];
         case FLOAD_0:
             return 0;
         case FLOAD_1:
@@ -1058,7 +835,7 @@ public class JavaOpcode
         case FLOAD_3:
             return 3;
         case FSTORE:
-            return code[i+1];
+            return code[i + 1];
         case FSTORE_0:
             return 0;
         case FSTORE_1:
@@ -1068,7 +845,7 @@ public class JavaOpcode
         case FSTORE_3:
             return 3;
         case ILOAD:
-            return code[i+1];
+            return code[i + 1];
         case ILOAD_0:
             return 0;
         case ILOAD_1:
@@ -1078,7 +855,7 @@ public class JavaOpcode
         case ILOAD_3:
             return 3;
         case ISTORE:
-            return code[i+1];
+            return code[i + 1];
         case ISTORE_0:
             return 0;
         case ISTORE_1:
@@ -1088,7 +865,7 @@ public class JavaOpcode
         case ISTORE_3:
             return 3;
         case LLOAD:
-            return code[i+1] + 1;
+            return code[i + 1] + 1;
         case LLOAD_0:
             return 1;
         case LLOAD_1:
@@ -1098,7 +875,7 @@ public class JavaOpcode
         case LLOAD_3:
             return 4;
         case LSTORE:
-            return code[i+1] + 1;
+            return code[i + 1] + 1;
         case LSTORE_0:
             return 1;
         case LSTORE_1:
@@ -1108,20 +885,19 @@ public class JavaOpcode
         case LSTORE_3:
             return 4;
         case IINC:
-            return code[i+1];
+            return code[i + 1];
         case RET:
-            return code[i+1];
+            return code[i + 1];
         default:
             return 0;
         }
     }
 
-    public static int getConstantPoolIndexSize(int code)
-    {
-        switch(code) {
+    public static int getConstantPoolIndexSize(int code) {
+        switch (code) {
         case LDC:
             return 1;
-            
+
         case ANEWARRAY:
         case CHECKCAST:
         case GETFIELD:
@@ -1144,10 +920,8 @@ public class JavaOpcode
         }
     }
 
-    public static int getOpcodeLength(int[] code, int i)
-    {
-        switch(code[i])
-        {
+    public static int getOpcodeLength(int[] code, int i) {
+        switch (code[i]) {
         case AALOAD:
         case AASTORE:
         case ACONST_NULL:
@@ -1356,28 +1130,28 @@ public class JavaOpcode
         case TABLESWITCH:
             return getTableSwitchLength(code, i);
         case WIDE:
-            if (code[i+1] == IINC)
+            if (code[i + 1] == IINC)
                 return 6;
             return 4;
         default:
             // reserved instrs -- shouldn't really be here....
-           System.err.println("Java Opcode - getOpcodeLength - reserved instrution!");
+            System.err
+                    .println("Java Opcode - getOpcodeLength - reserved instrution!");
             return 1;
         }
     }
 
-
-    private static int getLookupSwitchLength(int[] code, int i)
-    {
+    private static int getLookupSwitchLength(int[] code, int i) {
         int initPosition = i;
         // skip the zeros
-        for(i = (initPosition + 1); i < (initPosition + 5); i++)
+        for (i = (initPosition + 1); i < (initPosition + 5); i++)
             if ((i % 4) == 0)
                 break;
         // skip the default byte
         i += 4;
         // read the number of pairs
-        int npairs = (code[i] << 24) | (code[i+1] << 16) | (code[i+2] << 8) | (code[i+3]);
+        int npairs = (code[i] << 24) | (code[i + 1] << 16) | (code[i + 2] << 8)
+                | (code[i + 3]);
         i += 4;
         // skip the pairs
         i += 8 * npairs;
@@ -1385,20 +1159,21 @@ public class JavaOpcode
         return i - initPosition;
     }
 
-    private static int getTableSwitchLength(int[] code, int i)
-    {
+    private static int getTableSwitchLength(int[] code, int i) {
         int initPosition = i;
         // skip the zeros
-        for(i = (initPosition + 1); i < (initPosition + 4); i++)
+        for (i = (initPosition + 1); i < (initPosition + 4); i++)
             if ((i % 4) == 0)
                 break;
         // skip the default byte
         i += 4;
         // read the lowbyte
-        int low = (code[i] << 24) | (code[i+1] << 16) | (code[i+2] << 8) | (code[i+3]);
+        int low = (code[i] << 24) | (code[i + 1] << 16) | (code[i + 2] << 8)
+                | (code[i + 3]);
         i += 4;
         // read the highbyte
-        int high = (code[i] << 24) | (code[i+1] << 16) | (code[i+2] << 8) | (code[i+3]);
+        int high = (code[i] << 24) | (code[i + 1] << 16) | (code[i + 2] << 8)
+                | (code[i + 3]);
         i += 4;
         // skip the table
         i += 4 * (high - low + 1);
@@ -1406,215 +1181,46 @@ public class JavaOpcode
         return i - initPosition;
     }
 
-
-
-
-/*
-        case NOP:
-        case ACONST_NULL:
-        case ICONST_M1:
-        case ICONST_0:
-        case ICONST_1:
-        case ICONST_2:
-        case ICONST_3:
-        case ICONST_4:
-        case ICONST_5:
-        case LCONST_0:
-        case LCONST_1:
-        case FCONST_0:
-        case FCONST_1:
-        case FCONST_2:
-        case DCONST_0:
-        case DCONST_1:
-        case BIPUSH:
-        case SIPUSH:
-        case LDC:
-        case LDC_W:
-        case LDC2_W:
-        case ILOAD:
-        case LLOAD:
-        case FLOAD:
-        case DLOAD:
-        case ALOAD:
-        case ILOAD_0:
-        case ILOAD_1:
-        case ILOAD_2:
-        case ILOAD_3:
-        case LLOAD_0:
-        case LLOAD_1:
-        case LLOAD_2:
-        case LLOAD_3:
-        case FLOAD_0:
-        case FLOAD_1:
-        case FLOAD_2:
-        case FLOAD_3:
-        case DLOAD_0:
-        case DLOAD_1:
-        case DLOAD_2:
-        case DLOAD_3:
-        case ALOAD_0:
-        case ALOAD_1:
-        case ALOAD_2:
-        case ALOAD_3:
-        case IALOAD:
-        case LALOAD:
-        case FALOAD:
-        case DALOAD:
-        case AALOAD:
-        case BALOAD:
-        case CALOAD:
-        case SALOAD:
-        case ISTORE:
-        case LSTORE:
-        case FSTORE:
-        case DSTORE:
-        case ASTORE:
-        case ISTORE_0:
-        case ISTORE_1:
-        case ISTORE_2:
-        case ISTORE_3:
-        case LSTORE_0:
-        case LSTORE_1:
-        case LSTORE_2:
-        case LSTORE_3:
-        case FSTORE_0:
-        case FSTORE_1:
-        case FSTORE_2:
-        case FSTORE_3:
-        case DSTORE_0:
-        case DSTORE_1:
-        case DSTORE_2:
-        case DSTORE_3:
-        case ASTORE_0:
-        case ASTORE_1:
-        case ASTORE_2:
-        case ASTORE_3:
-        case IASTORE:
-        case LASTORE:
-        case FASTORE:
-        case DASTORE:
-        case AASTORE:
-        case BASTORE:
-        case CASTORE:
-        case SASTORE:
-        case POP:
-        case POP2:
-        case DUP:
-        case DUP_X1:
-        case DUP_X2:
-        case DUP2:
-        case DUP2_X1:
-        case DUP2_X2:
-        case SWAP:
-        case IADD:
-        case LADD:
-        case FADD:
-        case DADD:
-        case ISUB:
-        case LSUB:
-        case FSUB:
-        case DSUB:
-        case IMUL:
-        case LMUL:
-        case FMUL:
-        case DMUL:
-        case IDIV:
-        case LDIV:
-        case FDIV:
-        case DDIV:
-        case IREM:
-        case LREM:
-        case FREM:
-        case DREM:
-        case INEG:
-        case LNEG:
-        case FNEG:
-        case DNEG:
-        case ISHL:
-        case LSHL:
-        case ISHR:
-        case LSHR:
-        case IUSHR:
-        case LUSHR:
-        case IAND:
-        case LAND:
-        case IOR:
-        case LOR:
-        case IXOR:
-        case LXOR:
-        case IINC:
-        case I2L:
-        case I2F:
-        case I2D:
-        case L2I:
-        case L2F:
-        case L2D:
-        case F2I:
-        case F2L:
-        case F2D:
-        case D2I:
-        case D2L:
-        case D2F:
-        case I2B:
-        case I2C:
-        case I2S:
-        case LCMP:
-        case FCMPL:
-        case FCMPG:
-        case DCMPL:
-        case DCMPG:
-        case IFEQ:
-        case IFNE:
-        case IFLT:
-        case IFGE:
-        case IFGT:
-        case IFLE:
-        case IF_ICMPEQ:
-        case IF_ICMPNE:
-        case IF_ICMPLT:
-        case IF_ICMPGE:
-        case IF_ICMPGT:
-        case IF_ICMPLE:
-        case IF_ACMPEQ:
-        case IF_ACMPNE:
-        case GOTO:
-        case JSR:
-        case RET:
-        case TABLESWITCH:
-        case LOOKUPSWITCH:
-        case IRETURN:
-        case LRETURN:
-        case FRETURN:
-        case DRETURN:
-        case ARETURN:
-        case RETURN:
-        case GETSTATIC:
-        case PUTSTATIC:
-        case GETFIELD:
-        case PUTFIELD:
-        case INVOKEVIRTUAL:
-        case INVOKESPECIAL:
-        case INVOKESTATIC:
-        case INVOKEINTERFACE:
-        case XXXUNUSEDXXX:
-        case NEW:
-        case NEWARRAY:
-        case ANEWARRAY:
-        case ARRAYLENGTH:
-        case ATHROW:
-        case CHECKCAST:
-        case INSTANCEOF:
-        case MONITORENTER:
-        case MONITOREXIT:
-        case WIDE:
-        case MULTIANEWARRAY:
-        case IFNULL:
-        case IFNONNULL:
-        case GOTO_W:
-        case JSR_W:
-        case BREAKPOINT:
-        case IMPDEP1:
-        case IMPDEP2:
-*/
+    /*
+     * case NOP: case ACONST_NULL: case ICONST_M1: case ICONST_0: case ICONST_1:
+     * case ICONST_2: case ICONST_3: case ICONST_4: case ICONST_5: case
+     * LCONST_0: case LCONST_1: case FCONST_0: case FCONST_1: case FCONST_2:
+     * case DCONST_0: case DCONST_1: case BIPUSH: case SIPUSH: case LDC: case
+     * LDC_W: case LDC2_W: case ILOAD: case LLOAD: case FLOAD: case DLOAD: case
+     * ALOAD: case ILOAD_0: case ILOAD_1: case ILOAD_2: case ILOAD_3: case
+     * LLOAD_0: case LLOAD_1: case LLOAD_2: case LLOAD_3: case FLOAD_0: case
+     * FLOAD_1: case FLOAD_2: case FLOAD_3: case DLOAD_0: case DLOAD_1: case
+     * DLOAD_2: case DLOAD_3: case ALOAD_0: case ALOAD_1: case ALOAD_2: case
+     * ALOAD_3: case IALOAD: case LALOAD: case FALOAD: case DALOAD: case AALOAD:
+     * case BALOAD: case CALOAD: case SALOAD: case ISTORE: case LSTORE: case
+     * FSTORE: case DSTORE: case ASTORE: case ISTORE_0: case ISTORE_1: case
+     * ISTORE_2: case ISTORE_3: case LSTORE_0: case LSTORE_1: case LSTORE_2:
+     * case LSTORE_3: case FSTORE_0: case FSTORE_1: case FSTORE_2: case
+     * FSTORE_3: case DSTORE_0: case DSTORE_1: case DSTORE_2: case DSTORE_3:
+     * case ASTORE_0: case ASTORE_1: case ASTORE_2: case ASTORE_3: case IASTORE:
+     * case LASTORE: case FASTORE: case DASTORE: case AASTORE: case BASTORE:
+     * case CASTORE: case SASTORE: case POP: case POP2: case DUP: case DUP_X1:
+     * case DUP_X2: case DUP2: case DUP2_X1: case DUP2_X2: case SWAP: case IADD:
+     * case LADD: case FADD: case DADD: case ISUB: case LSUB: case FSUB: case
+     * DSUB: case IMUL: case LMUL: case FMUL: case DMUL: case IDIV: case LDIV:
+     * case FDIV: case DDIV: case IREM: case LREM: case FREM: case DREM: case
+     * INEG: case LNEG: case FNEG: case DNEG: case ISHL: case LSHL: case ISHR:
+     * case LSHR: case IUSHR: case LUSHR: case IAND: case LAND: case IOR: case
+     * LOR: case IXOR: case LXOR: case IINC: case I2L: case I2F: case I2D: case
+     * L2I: case L2F: case L2D: case F2I: case F2L: case F2D: case D2I: case
+     * D2L: case D2F: case I2B: case I2C: case I2S: case LCMP: case FCMPL: case
+     * FCMPG: case DCMPL: case DCMPG: case IFEQ: case IFNE: case IFLT: case
+     * IFGE: case IFGT: case IFLE: case IF_ICMPEQ: case IF_ICMPNE: case
+     * IF_ICMPLT: case IF_ICMPGE: case IF_ICMPGT: case IF_ICMPLE: case
+     * IF_ACMPEQ: case IF_ACMPNE: case GOTO: case JSR: case RET: case
+     * TABLESWITCH: case LOOKUPSWITCH: case IRETURN: case LRETURN: case FRETURN:
+     * case DRETURN: case ARETURN: case RETURN: case GETSTATIC: case PUTSTATIC:
+     * case GETFIELD: case PUTFIELD: case INVOKEVIRTUAL: case INVOKESPECIAL:
+     * case INVOKESTATIC: case INVOKEINTERFACE: case XXXUNUSEDXXX: case NEW:
+     * case NEWARRAY: case ANEWARRAY: case ARRAYLENGTH: case ATHROW: case
+     * CHECKCAST: case INSTANCEOF: case MONITORENTER: case MONITOREXIT: case
+     * WIDE: case MULTIANEWARRAY: case IFNULL: case IFNONNULL: case GOTO_W: case
+     * JSR_W: case BREAKPOINT: case IMPDEP1: case IMPDEP2:
+     */
 
 }

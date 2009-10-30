@@ -22,43 +22,42 @@
     Details (including contact information) can be found at: 
 
     www.physics.ox.ac.uk/jpc
-*/
+ */
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.*;
 
 @SuppressWarnings("serial")
-public class ModeSwitchException extends RuntimeException
-{
+public class ModeSwitchException extends RuntimeException {
     public static final int REAL_MODE = 0;
     public static final int PROTECTED_MODE = 1;
     public static final int VIRTUAL8086_MODE = 2;
 
-    public static final ModeSwitchException PROTECTED_MODE_EXCEPTION = new ModeSwitchException(PROTECTED_MODE);
-    public static final ModeSwitchException REAL_MODE_EXCEPTION = new ModeSwitchException(REAL_MODE);
-    public static final ModeSwitchException VIRTUAL8086_MODE_EXCEPTION = new ModeSwitchException(VIRTUAL8086_MODE);
+    public static final ModeSwitchException PROTECTED_MODE_EXCEPTION = new ModeSwitchException(
+            PROTECTED_MODE);
+    public static final ModeSwitchException REAL_MODE_EXCEPTION = new ModeSwitchException(
+            REAL_MODE);
+    public static final ModeSwitchException VIRTUAL8086_MODE_EXCEPTION = new ModeSwitchException(
+            VIRTUAL8086_MODE);
 
     private int mode;
 
-    public ModeSwitchException(int mode)
-    {
-    this.mode = mode;
+    public ModeSwitchException(int mode) {
+        this.mode = mode;
     }
 
-    public int getNewMode()
-    {
+    public int getNewMode() {
         return mode;
     }
 
-    public String toString()
-    {
+    public String toString() {
         if (mode == REAL_MODE)
             return "Switched to REAL mode";
         if (mode == PROTECTED_MODE)
             return "Switched to PROTECTED mode";
-    if (mode == VIRTUAL8086_MODE)
-        return "Switched to VIRTUAL 8086 mode";
+        if (mode == VIRTUAL8086_MODE)
+            return "Switched to VIRTUAL 8086 mode";
 
-    return "Switched to unknown mode "+mode;
+        return "Switched to unknown mode " + mode;
     }
 }

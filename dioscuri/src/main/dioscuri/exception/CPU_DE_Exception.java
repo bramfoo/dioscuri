@@ -37,16 +37,13 @@
  * Project Title: DIOSCURI
  */
 
-
 package dioscuri.exception;
 
 @SuppressWarnings("serial")
-public class CPU_DE_Exception extends CPUInstructionException
-{
+public class CPU_DE_Exception extends CPUInstructionException {
 
-	public CPU_DE_Exception(String message)
-	{
-		super(message);
-	}
+    public CPU_DE_Exception(String message) {
+        super(message);
+    }
 
 }

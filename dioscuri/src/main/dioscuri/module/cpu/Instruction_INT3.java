@@ -37,8 +37,6 @@
  * Project Title: DIOSCURI
  */
 
-
-
 package dioscuri.module.cpu;
 
 /**
@@ -46,45 +44,42 @@ package dioscuri.module.cpu;
  * Call to Interrupt 3 - trap to debugger<BR>
  * Flags modified: IF, TF, AC
  */
-public class Instruction_INT3 implements Instruction
-{
+public class Instruction_INT3 implements Instruction {
 
     // Attributes
     private CPU cpu;
 
     boolean operandWordSize;
-    
+
     byte index;
     int offset;
 
     byte[] newCS;
     byte[] newIP;
 
-    
     // Constructors
     /**
      * Class constructor
      */
-    public Instruction_INT3()
-    {
+    public Instruction_INT3() {
         operandWordSize = true;
-        
+
         index = 0;
         offset = 0;
 
         newCS = new byte[2];
         newIP = new byte[2];
     }
-    
+
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor Reference to CPU class
+     * @param processor
+     *            Reference to CPU class
      */
-    public Instruction_INT3(CPU processor)
-    {
+    public Instruction_INT3(CPU processor) {
         this();
-        
+
         // Create reference to cpu class
         cpu = processor;
     }
@@ -92,18 +87,19 @@ public class Instruction_INT3 implements Instruction
     // Methods
 
     /**
-     * Call interrupt procedure 3 (trap to debugger) based on the interrupt vector in the IDT.<BR>
+     * Call interrupt procedure 3 (trap to debugger) based on the interrupt
+     * vector in the IDT.<BR>
      */
-    public void execute()
-    {
-        
+    public void execute() {
+
         // Set index for IDT to 3
         index = 0x03;
-        
+
         // Push flags register (16-bit) onto stack
         cpu.setWordToStack(Util.booleansToBytes(cpu.flags));
 
-        // Clear flags IF, TF, (and Alignment Check AC, but is not implemented on 16-bit)
+        // Clear flags IF, TF, (and Alignment Check AC, but is not implemented
+        // on 16-bit)
         cpu.flags[CPU.REGISTER_FLAGS_IF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_TF] = false;
 
@@ -111,18 +107,22 @@ public class Instruction_INT3 implements Instruction
         cpu.setWordToStack(cpu.cs);
         cpu.setWordToStack(cpu.ip);
 
-        // Retrieve the interrupt vector (IP:CS) from the IDT, based on the index
+        // Retrieve the interrupt vector (IP:CS) from the IDT, based on the
+        // index
         // Reset the CS and IP to interrupt vector in IDT
-        cpu.cs = new byte[] {0x00, 0x00}; // refer to beginning of code segment
+        cpu.cs = new byte[] { 0x00, 0x00 }; // refer to beginning of code
+                                            // segment
         offset = index * 4; // define offset from code segment (index * 4 bytes)
-        cpu.ip = new byte[] {(byte) ((offset >> 8) & 0xFF), (byte) (offset & 0xFF)};
+        cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
+                (byte) (offset & 0xFF) };
 
         // Fetch IP value
         newIP = cpu.getWordFromCode();
 
         // Increment offset by 2 bytes and fetch CS
         offset += 2;
-        cpu.ip = new byte[] {(byte) ((offset >> 8) & 0xFF), (byte) (offset & 0xFF)};
+        cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
+                (byte) (offset & 0xFF) };
         newCS = cpu.getWordFromCode();
 
         // Assign new CS and IP to registers pointing to interrupt procedure
