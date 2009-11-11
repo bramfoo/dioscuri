@@ -229,13 +229,15 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
         });
 
         // Set native look and feel
+        /*
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (Exception e) {
             logger.log(Level.WARNING,
                     "GUI error: not able to load native look and feel.");
         }
-
+        */
+        
         // Set icon image
         String jarIconFile = new String(/* File.separator + */CONFIG_DIR
                 + File.separator + EMULATOR_ICON_IMAGE);
@@ -279,8 +281,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
         // available
         // KeyEvents will be handled here in screen
         this.addKeyListener(this);
-        // Disable moving focus to the next component in the focus cycle root
-        this.setFocusTraversalKeysEnabled(false);
 
         // Build frame
         this.setLocation(GUI_X_LOCATION, GUI_Y_LOCATION);
@@ -455,7 +455,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
         // Assign menubar to frame
         this.setJMenuBar(menuBar);
 
-        // Disable the default behavior of F10 in all major "look-and-feel"-s
+        // Disable the default behavior of F10 and ALT in all major "look-and-feel"-s
         // (set the focus on the first JMenu in the JMenuBar):
         this.menuBar.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
                 KeyStroke.getKeyStroke(KeyEvent.VK_F10, 0), "none");
