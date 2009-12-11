@@ -162,10 +162,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
     dioscuri.config.Emulator emuConfig;
 
     /**
-     * Main method
-     * 
-     * @param String
-     *            args containing command line arguments
+     * Main entry point. 
+     * @param args containing command line arguments
      */
     public static void main(String[] args) {
 
@@ -576,11 +574,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
     /**
      * Set given screen to existing screen of GUI
      * 
-     * @param Canvas
-     *            screen containing a reference to canvas of module screen
-     * @param boolean mouseEnabled to denote if emulated mouse can be used in
-     *        screen
-     * 
+     * @param screen containing a reference to canvas of module screen
      */
     public void setScreen(JPanel screen) {
         // Replace current canvas with new one
@@ -636,8 +630,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
     /**
      * Returns a buffered image loaded from specified location
      * 
-     * @param String
-     *            path location where image resides
+     * @param path location where image resides
      * 
      */
     private BufferedImage getImageFromFile(URL path) {
@@ -680,7 +673,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
     /**
      * Update the GUI, including menu and statusbar.
      * 
-     * @param int activity defining the kind of update is required
+     * @param activity defining the kind of update is required
      */
     public void updateGUI(int activity) {
         switch (activity) {
@@ -834,8 +827,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
     /**
      * Implementation of the interface ActionListener. Takes care of events.
      * 
-     * @param ActionEvent
-     *            e
+     * @param e
      */
     public void actionPerformed(ActionEvent e) {
         JComponent c = (JComponent) e.getSource();
@@ -1067,7 +1059,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
      * Notify GUI about status of emulation process and take appropriate GUI
      * action
      * 
-     * @param int emulatorStatus indicates the state change of the emulator
+     * @param emulatorStatus indicates the state change of the emulator
      * 
      */
     public void notifyGUI(int emulatorStatus) {
