@@ -52,15 +52,13 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Set the Instructions Per Second (ips) for this CPU.
-     * 
-     * @param int ips
+     * @param ips the Instructions Per Second (ips) for this CPU.
      */
     public abstract void setIPS(int ips);
 
     /**
      * Get the Instructions Per Second (ips) for this CPU.
-     * 
-     * @param int ips
+     * @return the Instructions Per Second (ips) for this CPU.
      */
     public abstract int getIPS();
 
@@ -68,8 +66,8 @@ public abstract class ModuleCPU extends Module {
      * Set the Instructions Per Second (ips) for this CPU. Also, define what the
      * smallest period is for sending a clockpulse (in microseconds)
      * 
-     * @param int ips
-     * @param int lowestUpdatePeriod in microseconds
+     * @param ips
+     * @param lowestUpdatePeriod the lowest update period in microseconds
      */
     public abstract void setIPS(int ips, int lowestUpdatePeriod);
 
@@ -113,35 +111,26 @@ public abstract class ModuleCPU extends Module {
     /**
      * Initialise the single and double byte opcode lookup arrays with
      * instructions corresponding to the Intel hexadecimal machinecode values.
-     * 
      */
     protected abstract boolean initInstructionTables();
 
     /**
      * Set the boolean that starts and stops the CPU loop
-     * 
-     * @param status
-     *            sets the isRunning boolean
+     * @param status sets the isRunning boolean
      */
     protected abstract void setRunning(boolean status);
 
     /**
      * Returns the value of a named register.
-     * 
      * @param registerName
-     * 
      * @return int[] with value of register, null otherwise
      */
     protected abstract byte[] getRegisterValue(String registerName);
 
     /**
      * Sets the value of a named register to given value.
-     * 
-     * @param String
-     *            registerName
-     * 
-     * @param int[] containing the value
-     * 
+     * @param registerName
+     * @param value containing the value
      * @return true if set was successful, false otherwise
      */
     protected abstract boolean setRegisterValue(String registerName,
@@ -150,8 +139,7 @@ public abstract class ModuleCPU extends Module {
     /**
      * Returns the value (byte) in I/O address space at given port address.
      * 
-     * @param int portAddress
-     * 
+     * @param portAddress
      * @return byte value
      * @throws ModuleException
      */
@@ -160,11 +148,8 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Sets the value (byte) in I/O address space at given port address.
-     * 
-     * @param int portAddress
-     * 
-     * @param byte value
-     * 
+     * @param portAddress
+     * @param value
      * @throws ModuleException
      */
     protected abstract void setIOPortByte(int portAddress, byte value)
@@ -172,9 +157,7 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Returns the value (word) in I/O address space at given port address.
-     * 
-     * @param int portAddress
-     * 
+     * @param portAddress
      * @return byte[] value (word)
      * @throws ModuleException
      */
@@ -183,11 +166,8 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Sets the value (word) in I/O address space at given port address.
-     * 
-     * @param int portAddress
-     * 
-     * @param byte[] value (word)
-     * 
+     * @param portAddress
+     * @param value (word)
      * @throws ModuleException
      */
     protected abstract void setIOPortWord(int portAddress, byte[] value)
@@ -196,9 +176,7 @@ public abstract class ModuleCPU extends Module {
     /**
      * Returns the value (double word) in I/O address space at given port
      * address.
-     * 
-     * @param int portAddress
-     * 
+     * @param portAddress
      * @return byte[] value (double word)
      * @throws ModuleException
      */
@@ -207,11 +185,8 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Sets the value (double word) in I/O address space at given port address.
-     * 
-     * @param int portAddress
-     * 
-     * @param byte[] value (double word)
-     * 
+     * @param portAddress
+     * @param value (double word)
      * @throws ModuleException
      */
     protected abstract void setIOPortDoubleWord(int portAddress, byte[] value)
@@ -219,7 +194,6 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Set the interrupt request (IRQ).
-     * 
      * @return true if CPU takes care, false otherwise
      */
     public abstract void interruptRequest(boolean value);
@@ -230,15 +204,13 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Get CPU instruction debug.
-     * 
      * @return cpuInstructionDebug.
      */
     public abstract boolean getCpuInstructionDebug();
 
     /**
      * Set the CPU instruction debug.
-     * 
-     * @param boolean status of instructionDebug (on/off)
+     * @param isDebugMode status of instructionDebug (on/off)
      */
     public abstract void setCpuInstructionDebug(boolean isDebugMode);
 
