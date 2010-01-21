@@ -311,7 +311,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         CommandLineParser parser = new PosixParser();
         CommandLine cmd = parser.parse(options, arguments);
 
-        if(cmd.hasOption("e")) {
+        if(cmd.hasOption("e")) {          
             testing = true;
         }
         if(cmd.hasOption("?")) {
