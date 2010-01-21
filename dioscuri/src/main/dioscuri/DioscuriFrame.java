@@ -400,7 +400,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
             File cfg = new File(configFilePath);
             if(cfg.exists() == false) {
                 throw new RuntimeException("config file '"+configFilePath+
-                        "' does not exist in '"+cfg.getAbsolutePath()+"'");
+                        "' does not exist in folder '"+cfg.getParentFile().getAbsolutePath()+"'");
             }
         }
 
