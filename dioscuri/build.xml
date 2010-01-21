@@ -158,7 +158,7 @@
 	</target>
 
     <!-- Execute the jar file -->
-    <target name="run" depends="jar">
+    <target name="run" depends="compile, jar">
         <java jar="${jar.dir}/${ant.project.name}-${version}.jar" fork="true"/>
     </target>
 
