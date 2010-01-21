@@ -85,6 +85,7 @@ import javax.swing.event.MouseInputListener;
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
+import org.apache.commons.cli.*;
 
 /**
  * 
@@ -165,8 +166,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
      * Main entry point. 
      * @param args containing command line arguments
      */
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws ParseException {
         // Load logging.properties
         try {
             // Check for a local system logging.properties file
@@ -205,7 +205,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
 
         // Create GUI
         new DioscuriFrame(args);
-
     }
 
     // Constructor
@@ -226,16 +225,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
             }
         });
 
-        // Set native look and feel
-        /*
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            logger.log(Level.WARNING,
-                    "GUI error: not able to load native look and feel.");
-        }
-        */
-        
         // Set icon image
         String jarIconFile = new String(/* File.separator + */CONFIG_DIR
                 + File.separator + EMULATOR_ICON_IMAGE);
@@ -302,10 +291,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
         configFilePath = CONFIG_DIR + File.separator + CONFIG_XML;
     }
 
-    public DioscuriFrame(String[] arguments) {
+    public DioscuriFrame(String[] arguments) throws ParseException {
         // Define GUI
         this();
 
+        /*
         // Interpret arguments (if any)
         // The following arguments are allowed:
         // -c "<CONFIGPATH_FILE>" : uses given config.xml file instead of
@@ -368,6 +358,62 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
 
         // Automatically start emulation process
         if (autorun) {
+            emu = new Emulator(this);
+            new Thread(emu).start();
+            this.updateGUI(EMU_PROCESS_START);
+        }
+        */
+        // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
+        boolean testing = false;
+        Options options = new Options();
+        options.addOption("?", "help", false, "print this message");
+        options.addOption("h", "hide", false, "hide the GUI");
+        options.addOption("a", "autorun", false, "emulator will directly start emulation process");
+        options.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
+        options.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
+
+        Option config = new Option("c", "config", true, "use a custom config file");
+        config.setArgName("file");
+        options.addOption(config);
+
+        CommandLineParser parser = new PosixParser();
+        CommandLine cmd = parser.parse(options, arguments);
+
+        if(cmd.hasOption("e")) {
+            testing = true;
+        }
+        if(cmd.hasOption("?")) {
+            HelpFormatter formatter = new HelpFormatter();
+            formatter.printHelp( "java -jar Dioscuri.jar [OPTIONS]", options);
+        }
+        if(cmd.hasOption("h")) {
+            guiVisible = false;
+        }
+        if(cmd.hasOption("a")) {
+            autorun = true;
+        }
+        if(cmd.hasOption("s")) {
+            autoshutdown = true;
+        }
+        if(cmd.hasOption("c")) {
+            configFilePath = cmd.getOptionValue("c");
+            File cfg = new File(configFilePath);
+            if(cfg.exists() == false) {
+                throw new RuntimeException("config file '"+configFilePath+
+                        "' does not exist in '"+cfg.getAbsolutePath()+"'");
+            }
+        }
+
+        if(testing) return;
+
+        // Perform argument actions
+        // Show / hide GUI (based on command line parameter)
+        this.setVisible(guiVisible);
+        if(guiVisible) this.requestFocus();
+        String output = guiVisible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden";
+        logger.log(Level.SEVERE, output);
+
+        if(autorun) {
             emu = new Emulator(this);
             new Thread(emu).start();
             this.updateGUI(EMU_PROCESS_START);
