@@ -37,5 +37,73 @@
  */
 package dioscuri;
 
+import org.apache.commons.cli.ParseException;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class TestDioscuriFrame {
+
+    private void testParams(String... params) throws ParseException {
+        List<String> paramList = new ArrayList<String>(Arrays.asList(params));
+        paramList.add("-e"); // use -e to exit immediately after the command line parameters are tested
+        new DioscuriFrame(paramList.toArray(new String[]{}));
+    }
+
+    @Test(expected=ParseException.class)  
+    public void mainTestInvalidParamA() throws ParseException {
+        testParams("-foo");
+    }
+
+    @Test(expected=ParseException.class)
+    public void mainTestInvalidParamB() throws ParseException {
+        testParams("-unknown");
+    }
+
+    @Test(expected=ParseException.class)
+    public void mainTestInvalidParamC() throws ParseException {
+        testParams("-H");
+    }
+
+    @Test(expected=ParseException.class)
+    public void mainTestInvalidParamD() throws ParseException {
+        testParams("-c", "aNoneExistingFile.xml");
+    }
+
+    @Test
+    public void mainTestValidParamsA() throws ParseException {
+        // single parameters
+        testParams("-?");
+        testParams("-h");
+        testParams("-a");
+        testParams("-s");
+
+        // multiple single parameters
+        testParams("-sha");
+        testParams("-s", "-?", "-a", "-h");
+        testParams("-?h");
+
+        // long parameters
+        testParams("-help");
+        testParams("-hide");
+        testParams("-autorun");
+        testParams("-autoshutdown");
+
+        // multiple long parameters
+        testParams("-autorun", "-help");
+        testParams("-autoshutdown", "-hide");
+    }
+
+    @Test
+    public void mainTestValidParamsB() throws ParseException, IOException {
+        File temp = new File(System.getProperty("java.io.tmpdir")+"/~TEMP"+System.currentTimeMillis()+".xml");
+        temp.createNewFile();
+        testParams("-c", temp.getAbsolutePath());
+        testParams("-config", temp.getAbsolutePath());
+        temp.deleteOnExit();
+    }
 }

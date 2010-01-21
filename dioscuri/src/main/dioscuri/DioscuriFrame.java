@@ -92,8 +92,8 @@ import org.apache.commons.cli.*;
  * Graphical User Interface for emulator.
  */
 @SuppressWarnings("serial")
-public class DioscuriFrame extends JFrame implements GUI, ActionListener,
-        KeyListener {
+public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyListener {
+    
     // Attributes
     private Emulator emu;
     private TextTransfer textTransfer;
@@ -295,74 +295,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
         // Define GUI
         this();
 
-        /*
-        // Interpret arguments (if any)
-        // The following arguments are allowed:
-        // -c "<CONFIGPATH_FILE>" : uses given config.xml file instead of
-        // default. If not available, default will be used
-        // -h : hide GUI
-        // autorun : emulator will directly start emulation process
-        // autoshutdown : emulator will shutdown automatically when emulation
-        // process is finished
-        // Example: java -jar Dioscuri.jar -c
-        // "c:\emulators\configs\dioscuri_config.xml" autorun
-
-        // Check arguments
-        for (int a = 0; a < arguments.length; a++) {
-            // Argument -c
-            if (arguments[a].equalsIgnoreCase("-c")) {
-                // Fetch next argument
-                a++;
-                if (a < arguments.length) {
-                    configFilePath = arguments[a];
-                    logger.log(Level.SEVERE,
-                            "[gui] Configuration path changed to "
-                                    + configFilePath);
-                } else {
-                    logger.log(Level.SEVERE,
-                            "[gui] No path provided after '-c' option.");
-                }
-            }
-
-            // Argument -h
-            else if (arguments[a].equalsIgnoreCase("-h")) {
-                guiVisible = false;
-            }
-
-            // Argument autorun
-            else if (arguments[a].equalsIgnoreCase("autorun")) {
-                autorun = true;
-            }
-
-            // Argument autoshutdown
-            else if (arguments[a].equalsIgnoreCase("autoshutdown")) {
-                autoshutdown = true;
-            }
-
-            // Wrong argument
-            else {
-                logger
-                        .log(Level.SEVERE,
-                                "[gui] Error in command line parameters during invocation of Dioscuri");
-            }
-        }
-
-        // Perform argument actions
-        // Show / hide GUI (based on command line parameter)
-        this.setVisible(guiVisible);
-        if (guiVisible)
-            this.requestFocus();
-        String output = guiVisible ? "[gui] GUI is visible and has focus"
-                : "[gui] GUI is hidden";
-        logger.log(Level.SEVERE, output);
-
-        // Automatically start emulation process
-        if (autorun) {
-            emu = new Emulator(this);
-            new Thread(emu).start();
-            this.updateGUI(EMU_PROCESS_START);
-        }
-        */
         // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
         boolean testing = false;
         Options options = new Options();
@@ -396,12 +328,12 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener,
             autoshutdown = true;
         }
         if(cmd.hasOption("c")) {
-            configFilePath = cmd.getOptionValue("c");
-            File cfg = new File(configFilePath);
+            File cfg = new File(cmd.getOptionValue("c"));
             if(cfg.exists() == false) {
-                throw new RuntimeException("config file '"+configFilePath+
+                throw new RuntimeException("config file '"+cfg.getName()+
                         "' does not exist in folder '"+cfg.getParentFile().getAbsolutePath()+"'");
             }
+            configFilePath = cfg.getAbsolutePath();
         }
 
         if(testing) return;
