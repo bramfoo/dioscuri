@@ -48,10 +48,33 @@ package dioscuri.config;
  * An enumeration representing the types of "plug-in" modules available.
  * 
  */
-public class ModuleType {
+public enum ModuleType {
+    // Define each module types:
+    ATA("ata", "ATA / IDE Controller"),
+    BIOS("bios"),
+    BOOT("boot"),
+    CPU("cpu"),
+    CLOCK("clock"),
+    DMA("dma"),
+    FDC("fdc"),
+    KEYBOARD("keyboard"),
+    MOUSE("mouse"),
+    MEMORY("memory"),
+    MOTHERBOARD("motherboard"),
+    PIC("pic"),
+    PIT("pit"),
+    RTC("rtc"),
 
-    private String type;
-    private String name;
+    SCREEN("screen"),
+    VGA("video");
+
+    // Define all module types as a array
+    public final static ModuleType[] moduleTypes = { ATA, BIOS, BOOT, CPU,
+            CLOCK, DMA, FDC, KEYBOARD, MOUSE, MEMORY, MOTHERBOARD, PIC, PIT,
+            RTC, SCREEN, VGA };
+
+    private final String type;
+    private final String name;
 
     /**
      * Class constructor, with only the string type specified.
@@ -60,7 +83,7 @@ public class ModuleType {
      *            the string type of the module
      */
     private ModuleType(String theType) {
-        this.type = theType;
+        this(theType, null);
     }
 
     /**
@@ -75,31 +98,6 @@ public class ModuleType {
         this.type = theType;
         this.name = theName;
     }
-
-    // Define each module types:
-    public final static ModuleType ATA = new ModuleType("ata",
-            "ATA / IDE Controller");
-    public final static ModuleType BIOS = new ModuleType("bios");
-    public final static ModuleType BOOT = new ModuleType("boot");
-    public final static ModuleType CPU = new ModuleType("cpu");
-    public final static ModuleType CLOCK = new ModuleType("clock");
-    public final static ModuleType DMA = new ModuleType("dma");
-    public final static ModuleType FDC = new ModuleType("fdc");
-    public final static ModuleType KEYBOARD = new ModuleType("keyboard");
-    public final static ModuleType MOUSE = new ModuleType("mouse");
-    public final static ModuleType MEMORY = new ModuleType("memory");
-    public final static ModuleType MOTHERBOARD = new ModuleType("motherboard");
-    public final static ModuleType PIC = new ModuleType("pic");
-    public final static ModuleType PIT = new ModuleType("pit");
-    public final static ModuleType RTC = new ModuleType("rtc");
-
-    public final static ModuleType SCREEN = new ModuleType("screen");
-    public final static ModuleType VGA = new ModuleType("video");
-
-    // Define all module types as a array
-    public final static ModuleType[] moduleTypes = { ATA, BIOS, BOOT, CPU,
-            CLOCK, DMA, FDC, KEYBOARD, MOUSE, MEMORY, MOTHERBOARD, PIC, PIT,
-            RTC, SCREEN, VGA };
 
     /**
      * Gets the string type of the module.

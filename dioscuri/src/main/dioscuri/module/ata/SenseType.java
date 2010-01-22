@@ -48,9 +48,13 @@ package dioscuri.module.ata;
  * Enumeration class for sense type.
  * 
  */
-public final class SenseType {
+public enum SenseType {
+    NONE(0),
+    NOT_READY(2),
+    ILLEGAL_REQUEST(5),
+    UNIT_ATTENTION(6);
 
-    private int value;
+    private final int value;
 
     /*
      * Constructor
@@ -58,14 +62,6 @@ public final class SenseType {
     private SenseType(int theValue) {
         this.value = theValue;
     }
-
-    public final static SenseType NONE = new SenseType(0);
-    public final static SenseType NOT_READY = new SenseType(2);
-    public final static SenseType ILLEGAL_REQUEST = new SenseType(5);
-    public final static SenseType UNIT_ATTENTION = new SenseType(6);
-
-    public final static SenseType[] sense = { NONE, NOT_READY, ILLEGAL_REQUEST,
-            UNIT_ATTENTION };
 
     /**
      * get the value associated with the enum entry.

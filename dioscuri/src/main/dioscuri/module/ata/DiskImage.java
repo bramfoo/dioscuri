@@ -115,15 +115,15 @@ public class DiskImage {
         RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile,
                 "rw");
 
-        if (theOffset > 0) {
-            randomAccessFile.seek(theOffset);
+        try {
+            if (theOffset > 0) {
+                randomAccessFile.seek(theOffset);
+            }
+    
+            randomAccessFile.write(theData, 0, theLength);
+        } finally {
+            randomAccessFile.close();
         }
-
-        randomAccessFile.write(theData, 0, theLength);
-
-        randomAccessFile.close();
-
-        return;
     }
 
     /**

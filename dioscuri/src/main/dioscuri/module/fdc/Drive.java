@@ -93,32 +93,65 @@ public class Drive {
     // bit 0 datarate select0
     // bit 0 FIXED DISK drive 0 select (conflicting!)
     protected byte dir;
-
-    // Constants
-    // Supported floppy disk types
-    private final static byte FLOPPY_DISKTYPE_NONE = 0x00;
-    private final static byte FLOPPY_DISKTYPE_360K = 0x01;
-    private final static byte FLOPPY_DISKTYPE_1_2 = 0x02;
-    private final static byte FLOPPY_DISKTYPE_720K = 0x03;
-    private final static byte FLOPPY_DISKTYPE_1_44 = 0x04;
-    private final static byte FLOPPY_DISKTYPE_2_88 = 0x05;
-    private final static byte FLOPPY_DISKTYPE_160K = 0x06;
-    private final static byte FLOPPY_DISKTYPE_180K = 0x07;
-    private final static byte FLOPPY_DISKTYPE_320K = 0x08;
-
-    // Floppy geometry formats
-    // Format: floppy type, tracks, heads, sectors per track, sectors, ???
-    private final static int[][] FLOPPY_TYPES = new int[][] {
-            { FLOPPY_DISKTYPE_NONE, 0, 0, 0, 0, 0x00 },
-            { FLOPPY_DISKTYPE_360K, 40, 2, 9, 720, 0x05 },
-            { FLOPPY_DISKTYPE_1_2, 80, 2, 15, 2400, 0x04 },
-            { FLOPPY_DISKTYPE_720K, 80, 2, 9, 1440, 0x1f },
-            { FLOPPY_DISKTYPE_1_44, 80, 2, 18, 2880, 0x18 },
-            { FLOPPY_DISKTYPE_2_88, 80, 2, 36, 5760, 0x10 },
-            { FLOPPY_DISKTYPE_160K, 40, 1, 8, 320, 0x05 },
-            { FLOPPY_DISKTYPE_180K, 40, 1, 9, 360, 0x05 },
-            { FLOPPY_DISKTYPE_320K, 40, 2, 8, 640, 0x05 } };
-
+    
+    private static enum FloppyType {
+        TYPE_NONE((byte) 0x00, 0, 0, 0, 0, 0x00),
+        TYPE_360K((byte) 0x01, 40, 2, 9, 720, 0x05),
+        TYPE_1_2((byte) 0x02, 80, 2, 15, 2400, 0x04),
+        TYPE_720K((byte) 0x03, 80, 2, 9, 1440, 0x1f),
+        TYPE_1_44((byte) 0x04, 80, 2, 18, 2880, 0x18),
+        TYPE_2_88((byte) 0x05, 80, 2, 36, 5760, 0x10),
+        TYPE_160K((byte) 0x06, 40, 1, 8, 320, 0x05),
+        TYPE_180K((byte) 0x07, 40, 1, 9, 360, 0x05),
+        TYPE_320K((byte) 0x08, 40, 2, 8, 640, 0x05);
+        
+        private final byte id;
+        private final int tracks;
+        private final int heads;
+        private final int sectorsPerTrack;
+        private final int sectors;
+        private final int value; // TODO find what that value represents + add a getter when found
+        
+        private FloppyType(byte id, int tracks, int heads, int sectorsPerTrack, int sectors, int value) {
+            this.id = id;
+            this.tracks = tracks;
+            this.heads = heads;
+            this.sectorsPerTrack = sectorsPerTrack;
+            this.sectors = sectors;
+            this.value = value;
+        }
+        public byte getId() {
+            return id;
+        }
+        public int getTracks() {
+            return tracks;
+        }
+        public int getHeads() {
+            return heads;
+        }
+        public int getSectorsPerTrack() {
+            return sectorsPerTrack;
+        }
+        public int getSectors() {
+            return sectors;
+        }
+        
+        /**
+         * @param floppyType
+         * @return
+         */
+        public static FloppyType fromId(byte id) {
+            FloppyType result = TYPE_NONE; // default to none
+            for (FloppyType type : values()) {
+                if (type.getId() == id) {
+                    result = type;
+                    break;
+                }
+            }
+            return result;
+        }
+    };
+    
     // Constructor
 
     /**
@@ -251,9 +284,10 @@ public class Drive {
 
             // Support for different floppy sizes
             if (floppy.getSize() <= 1474560) {
-                tracks = FLOPPY_TYPES[floppyType][1];
-                heads = FLOPPY_TYPES[floppyType][2];
-                sectorsPerTrack = FLOPPY_TYPES[floppyType][3];
+                FloppyType type = FloppyType.fromId(floppyType);
+                tracks = type.getTracks();
+                heads = type.getHeads();
+                sectorsPerTrack = type.getSectorsPerTrack();
             } else if (floppy.getSize() == 1720320) {
                 tracks = 80;
                 heads = 2;

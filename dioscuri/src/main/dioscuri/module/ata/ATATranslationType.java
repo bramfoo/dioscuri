@@ -48,20 +48,14 @@ package dioscuri.module.ata;
  * An enumeration representing the translation types for a ATA drive.
  * 
  */
-public class ATATranslationType {
+public enum ATATranslationType {
+    NONE("None"),
+    LBA("LBA"),
+    LARGE("Large"),
+    RECHS("Rechs"),
+    AUTO("Auto");
 
-    private String name;
-
-    public final static ATATranslationType NONE = new ATATranslationType("None");
-    public final static ATATranslationType LBA = new ATATranslationType("LBA");
-    public final static ATATranslationType LARGE = new ATATranslationType(
-            "Large");
-    public final static ATATranslationType RECHS = new ATATranslationType(
-            "Rechs");
-    public final static ATATranslationType AUTO = new ATATranslationType("Auto");
-
-    public final static ATATranslationType[] driveType = { NONE, LBA, LARGE,
-            RECHS, AUTO };
+    private final String name;
 
     /**
      * Class constructor.

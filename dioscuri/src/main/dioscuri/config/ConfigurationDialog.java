@@ -305,7 +305,7 @@ public abstract class ConfigurationDialog extends JDialog {
      * 
      */
     protected void launchFileChooser() {
-        JFileChooser fileChooser = new JFileChooser();
+        JFileChooser fileChooser = new JFileChooser(selectedfile);
 
         int returnVal = fileChooser.showOpenDialog(this);
 

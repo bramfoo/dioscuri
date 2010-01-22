@@ -48,15 +48,12 @@ package dioscuri.module.ata;
  * An enumeration representing the types of drives available for the ATA Module.
  * 
  */
-public class ATADriveType {
+public enum ATADriveType {
+    NONE("None"),
+    HARD_DISK("Hard Disk"),
+    CDROM("CD ROM");
 
-    private String name;
-
-    public final static ATADriveType NONE = new ATADriveType("None");
-    public final static ATADriveType HARD_DISK = new ATADriveType("Hard Disk");
-    public final static ATADriveType CDROM = new ATADriveType("CD ROM");
-
-    public final static ATADriveType[] driveType = { NONE, HARD_DISK, CDROM };
+    private final String name;
 
     /**
      * Class constructor.
