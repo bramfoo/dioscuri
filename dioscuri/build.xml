@@ -52,7 +52,7 @@
         Build file for Dioscuri, the modular emulator
     </description>
 
-	<property name="version"            value="0.4.1"/>
+	<property name="version"            value="0.4.3"/>
 	<property name="main-class"         value="dioscuri.DioscuriFrame"/>
 
 	<!-- Directories in this tree -->
@@ -74,7 +74,7 @@
         <fileset dir="${libs.dir}">
             <include name="*.jar"/>
         </fileset>
-	<pathelement location="."/>
+	    <pathelement location="."/>
     </path>
 
     <!-- JAXB compiler task definition -->
@@ -128,7 +128,7 @@
 				<attribute name="Built-By" value="KEEP project"/>
 				<attribute name="Built-On" value="${TODAY}"/>
 				<attribute name="Main-Class" value="${main-class}"/>
-				<attribute name="Class-Path" value="libs/jaxb-api.jar libs/jaxb-impl.jar"/>
+				<attribute name="Class-Path" value="libs/jaxb-api.jar libs/jaxb-impl.jar libs/commons-cli-1.2.jar"/>
 			</manifest>
         </jar>
     </target>
@@ -137,8 +137,8 @@
     <target name="release" description="Create a complete release" depends="javadoc, jar">
 		<zip destfile="${build.dir}/${ant.project.name}-${version}.zip">
 			<fileset dir="${jar.dir}" />
-			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties"/>
-			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar" />
+			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
+			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
 			<zipfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
 			<zipfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
@@ -147,8 +147,8 @@
 		</zip>
     	<tar destfile="${build.dir}/${ant.project.name}-${version}.tar.gz" compression="gzip">
 			<fileset dir="${jar.dir}" />
-			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties"/>
-			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar" />
+			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
+			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
     		<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
 			<tarfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>

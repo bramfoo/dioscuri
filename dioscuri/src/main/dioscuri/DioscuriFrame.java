@@ -59,6 +59,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -78,7 +79,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.KeyStroke;
-import javax.swing.UIManager;
 import javax.swing.border.Border;
 import javax.swing.event.MouseInputListener;
 
@@ -186,37 +186,17 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Load logging.properties
         try {
             // Check for a local system logging.properties file
-            File localLogFile = new File(CONFIG_DIR + File.separator
-                    + EMULATOR_LOGGING_PROPERTIES);
+            File localLogFile = new File(EMULATOR_LOGGING_PROPERTIES);
             if (localLogFile.exists() && localLogFile.canRead()) {
                 LogManager.getLogManager().readConfiguration(
                         new BufferedInputStream(new FileInputStream(
                                 localLogFile)));
-                logger.log(Level.INFO,
-                        "Logging.properties loaded from local file "
-                                + localLogFile);
+                logger.log(Level.INFO, "Logging.properties loaded from local file " + localLogFile);
             } else {
-                // Use log file included in jar
-                String jarLogFile = File.separator + CONFIG_DIR
-                        + File.separator + EMULATOR_LOGGING_PROPERTIES;
-                InputStream loggingFileStream = GUI.class
-                        .getResourceAsStream(jarLogFile);
-                if (loggingFileStream == null) {
-                    System.out
-                            .println("No Logging.properties file found locally ("
-                                    + localLogFile
-                                    + " or in jar ("
-                                    + jarLogFile + ")");
-                } else {
-                    LogManager.getLogManager().readConfiguration(
-                            new BufferedInputStream(loggingFileStream));
-                    logger.log(Level.INFO,
-                            "Logging.properties loaded from jar " + jarLogFile);
-                }
+                logger.log(Level.WARNING, "No Logging.properties file found locally");
             }
         } catch (Exception e) {
-            System.out.println("Error initialising the logging system: "
-                    + e.toString());
+            System.out.println("Error initialising the logging system: " + e.toString());
         }
 
         // Create GUI
@@ -241,17 +221,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             }
         });
 
-        // Set icon image
-        String jarIconFile = new String(/* File.separator + */CONFIG_DIR
-                + File.separator + EMULATOR_ICON_IMAGE);
-        URL iconURL = GUI.class.getResource(jarIconFile);
-        if (iconURL == null) {
-            logger.log(Level.SEVERE, "Icon image not found in jar: "
-                    + jarIconFile);
-        } else {
-            logger.log(Level.INFO, "Icon image loaded from " + jarIconFile);
-            this.setIconImage(getImageFromFile(iconURL));
-        }
+        super.setIconImage(new ImageIcon(EMULATOR_ICON_IMAGE).getImage());
 
         // Create menubar
         this.initMenuBar();
@@ -304,12 +274,14 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         autoshutdown = false;
 
         // Default location, outside jar
-        configFilePath = CONFIG_DIR + File.separator + CONFIG_XML;
+        configFilePath = CONFIG_XML;
     }
 
     public DioscuriFrame(String[] arguments) throws ParseException {
         // Define GUI
         this();
+
+        logger.log(Level.SEVERE, "[gui] executing from: "+GUI.EXE_PATH);
 
         // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
         boolean testing = false;
@@ -318,9 +290,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         CommandLineParser parser = new PosixParser();
         CommandLine commandLine = parser.parse(commandLineOptions, arguments);
 
+        logger.log(Level.SEVERE, "[gui] parsed: "+Arrays.toString(commandLine.getOptions()));
+
         // check for single parameters (without a value)
         testing = commandLine.hasOption("e");
-        guiVisible = commandLine.hasOption("h");
+        guiVisible = commandLine.hasOption("h") == false;
         autorun = commandLine.hasOption("a");
         autoshutdown = commandLine.hasOption("s");
 
@@ -537,17 +511,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         StartupPanel startup = new StartupPanel();
         startup.setSize(720, 400);
 
-        String jarSplashFile = new String(/* File.separator + */CONFIG_DIR
-                + File.separator + EMULATOR_SPLASHSCREEN_IMAGE);
-        URL imageURL = GUI.class.getResource(jarSplashFile);
-        if (imageURL == null) {
-            logger.log(Level.SEVERE, "Splash screen image not found in jar: "
-                    + jarSplashFile);
-        } else {
-            logger.log(Level.INFO, "Splash screen image loaded from "
-                    + jarSplashFile);
-            startup.setImage(this.getImageFromFile(imageURL));
-        }
+        ImageIcon pic = new ImageIcon(EMULATOR_SPLASHSCREEN_IMAGE);
+        startup.add(new JLabel(pic));
 
         return startup;
     }
@@ -877,10 +842,10 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                 try {
                     if (!config.exists() || !config.canRead()) {
                         InputStream fallBack = GUI.class
-                                .getResourceAsStream(JAR_CONFIG_XML);
+                                .getResourceAsStream(CONFIG_XML);
                         emuConfig = ConfigController.loadFromXML(fallBack);
                         readOnlyConfig = true;
-                        configFilePath = JAR_CONFIG_XML;
+                        configFilePath = CONFIG_XML;
                         fallBack.close();
                     } else {
                         emuConfig = ConfigController.loadFromXML(config);
@@ -1078,17 +1043,13 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      */
     @Override
     public String toString() {
-        String info = "---------------------------------------------------------------------------------------"
-                + "\n";
-        info += "| " + EMULATOR_NAME + ": version " + EMULATOR_VERSION
-                + "                 |" + "\r\n";
-        info += "| " + "Copyright (C) " + EMULATOR_DATE
-                + "                                                        |"
-                + "\r\n";
-        info += "| " + EMULATOR_CREATOR + " |" + "\r\n";
-        info += "---------------------------------------------------------------------------------------"
-                + "\n";
-        return info;
+        String bar = "+-------------------------------------------------------------------------------------+";
+        return
+                "\r\n" + bar +
+                String.format("%n| %1$-" + (bar.length()-4) + "s |%n", EMULATOR_NAME) +
+                String.format("| %1$-" + (bar.length()-4) + "s |%n", "Copyright (C) "+EMULATOR_DATE) +
+                String.format("| %1$-" + (bar.length()-4) + "s |%n", EMULATOR_CREATOR) +
+                bar + "\r\n";
     }
 
     /**
@@ -1152,7 +1113,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         }
     }
-
+    
     public String getConfigFilePath() {
         return configFilePath;
     }

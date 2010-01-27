@@ -213,7 +213,7 @@ public class Emulator implements Runnable {
                             .log(Level.WARNING,
                                     "[emu] No local config file accessible, using read-only jar settings");
                     InputStream fallBack = GUI.class
-                            .getResourceAsStream(GUI.JAR_CONFIG_XML);
+                            .getResourceAsStream(GUI.CONFIG_XML);
                     emuConfig = ConfigController.loadFromXML(fallBack);
                     fallBack.close();
                 } else {

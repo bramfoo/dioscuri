@@ -49,18 +49,21 @@ import dioscuri.config.Emulator;
 public interface GUI {
 
     // Constants
-    // Emulator characteristics
+
+    // EXE_PATH is only used for the other constants later in GUI.
+    File FILE_OR_PATH = new File(GUI.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    String EXE_PATH = (FILE_OR_PATH.isFile() ? FILE_OR_PATH.getParentFile() : FILE_OR_PATH).getAbsolutePath();
+
+    // Emulator characteristics.
     public final static String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
-    public final static String EMULATOR_VERSION = "0.4.2";
-    public final static String EMULATOR_DATE = "April, 2009";
+    public final static String EMULATOR_VERSION = "0.4.3";
+    public final static String EMULATOR_DATE = "January, 2010";
     public final static String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
-    public final static String CONFIG_DIR = "config";
-    public final static String EMULATOR_ICON_IMAGE = "dioscuri_icon.gif";
-    public final static String EMULATOR_SPLASHSCREEN_IMAGE = "dioscuri_splashscreen_2008_v040.gif";
-    public final static String EMULATOR_LOGGING_PROPERTIES = "logging.properties";
-    public final static String CONFIG_XML = "DioscuriConfig.xml";
-    public final static String JAR_CONFIG_XML = File.separator + CONFIG_DIR
-            + File.separator + CONFIG_XML;
+    public final static String CONFIG_DIR = EXE_PATH+"/config";
+    public final static String EMULATOR_ICON_IMAGE = CONFIG_DIR+"/dioscuri_icon.gif";
+    public final static String EMULATOR_SPLASHSCREEN_IMAGE = CONFIG_DIR+"/dioscuri_splashscreen_2010_v043.gif";
+    public final static String EMULATOR_LOGGING_PROPERTIES = CONFIG_DIR+"/logging.properties";
+    public final static String CONFIG_XML = CONFIG_DIR+"/DioscuriConfig.xml";
 
     // Dimension settings
     public static final int GUI_X_LOCATION = 200;
