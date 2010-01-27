@@ -162,6 +162,22 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     // Emulator configuration
     dioscuri.config.Emulator emuConfig;
 
+    // command line parsing
+    static Options commandLineOptions;
+    static {
+        commandLineOptions = new Options();
+
+        commandLineOptions.addOption("?", "help", false, "print this message");
+        commandLineOptions.addOption("h", "hide", false, "hide the GUI");
+        commandLineOptions.addOption("a", "autorun", false, "emulator will directly start emulation process");
+        commandLineOptions.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
+        commandLineOptions.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
+
+        Option config = new Option("c", "config", true, "use a custom config file");
+        config.setArgName("file");
+        commandLineOptions.addOption(config);
+    }
+
     /**
      * Main entry point. 
      * @param args containing command line arguments
@@ -297,45 +313,32 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
         boolean testing = false;
-        Options options = new Options();
-        options.addOption("?", "help", false, "print this message");
-        options.addOption("h", "hide", false, "hide the GUI");
-        options.addOption("a", "autorun", false, "emulator will directly start emulation process");
-        options.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
-        options.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
 
-        Option config = new Option("c", "config", true, "use a custom config file");
-        config.setArgName("file");
-        options.addOption(config);
-
+        // create the command line parser
         CommandLineParser parser = new PosixParser();
-        CommandLine cmd = parser.parse(options, arguments);
+        CommandLine commandLine = parser.parse(commandLineOptions, arguments);
 
-        if(cmd.hasOption("e")) {          
-            testing = true;
-        }
-        if(cmd.hasOption("?")) {
+        // check for single parameters (without a value)
+        testing = commandLine.hasOption("e");
+        guiVisible = commandLine.hasOption("h");
+        autorun = commandLine.hasOption("a");
+        autoshutdown = commandLine.hasOption("s");
+
+        if(commandLine.hasOption("?")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp( "java -jar Dioscuri.jar [OPTIONS]", options);
+            formatter.printHelp("java -jar Dioscuri.jar [OPTIONS]", commandLineOptions);
         }
-        if(cmd.hasOption("h")) {
-            guiVisible = false;
-        }
-        if(cmd.hasOption("a")) {
-            autorun = true;
-        }
-        if(cmd.hasOption("s")) {
-            autoshutdown = true;
-        }
-        if(cmd.hasOption("c")) {
-            File cfg = new File(cmd.getOptionValue("c"));
-            if(cfg.exists() == false) {
+
+        if(commandLine.hasOption("c")) {
+            File cfg = new File(commandLine.getOptionValue("c"));
+            if(cfg == null || !cfg.exists()) {
                 throw new RuntimeException("config file '"+cfg.getName()+
                         "' does not exist in folder '"+cfg.getParentFile().getAbsolutePath()+"'");
             }
             configFilePath = cfg.getAbsolutePath();
         }
 
+        //  used for unit tests so that the GUI does not show up 
         if(testing) return;
 
         // Perform argument actions

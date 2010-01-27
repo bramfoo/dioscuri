@@ -37,6 +37,7 @@
  */
 package dioscuri;
 
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 import org.junit.Test;
 
@@ -44,10 +45,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 public class TestDioscuriFrame {
 
+    /*
+     * A helper method used by the @Test-cases.
+     */
     private void testParams(String... params) throws ParseException {
         List<String> paramList = new ArrayList<String>(Arrays.asList(params));
         paramList.add("-e"); // use -e to exit immediately after the command line parameters are tested
@@ -56,46 +61,58 @@ public class TestDioscuriFrame {
 
     @Test(expected=ParseException.class)  
     public void mainTestInvalidParamA() throws ParseException {
+        // a non-existant parameter
         testParams("-foo");
     }
 
     @Test(expected=ParseException.class)
     public void mainTestInvalidParamB() throws ParseException {
+        // a non-existant parameter
         testParams("-unknown");
     }
 
     @Test(expected=ParseException.class)
     public void mainTestInvalidParamC() throws ParseException {
+        // a non-existant parameter
         testParams("-H");
     }
 
-    @Test(expected=ParseException.class)
+    @Test(expected=RuntimeException.class)
     public void mainTestInvalidParamD() throws ParseException {
+        // a non-existant file: aNoneExistingFile.xml
         testParams("-c", "aNoneExistingFile.xml");
     }
 
+    /**
+     * Testing all valid parameters
+     * @throws ParseException
+     */
     @Test
     public void mainTestValidParamsA() throws ParseException {
-        // single parameters
-        testParams("-?");
-        testParams("-h");
-        testParams("-a");
-        testParams("-s");
+        // test all parameters without a value
+        Collection options = DioscuriFrame.commandLineOptions.getOptions();
+        for(Object o : options) {
+            Option op = (Option)o;
+            if(!op.hasArg()) {
+                testParams("-"+op.getLongOpt());
+                testParams("--"+op.getLongOpt());
+                testParams("-"+op.getOpt());
+                testParams("--"+op.getOpt());
+            }
+        }
 
         // multiple single parameters
         testParams("-sha");
         testParams("-s", "-?", "-a", "-h");
         testParams("-?h");
 
-        // long parameters
-        testParams("-help");
-        testParams("-hide");
-        testParams("-autorun");
-        testParams("-autoshutdown");
-
         // multiple long parameters
         testParams("-autorun", "-help");
         testParams("-autoshutdown", "-hide");
+
+        // multiple single- and long parameters
+        testParams("-autorun", "--h");
+        testParams("--autoshutdown", "-?", "-s");
     }
 
     @Test
