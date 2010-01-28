@@ -46,7 +46,7 @@
  Automated tasks for the Dioscuri project
 -->
 
-<project name="Dioscuri" basedir="." default="main">
+<project name="Dioscuri" basedir="." default="run">
 
     <description>
         Build file for Dioscuri, the modular emulator
@@ -119,10 +119,10 @@
 
     <!-- Create a runnable jar file -->
     <target name="jar" description="Create the Dioscuri jar file" depends="compile">
-		<mkdir dir="${jar.dir}"/>
+		<!--  <mkdir dir="${jar.dir}"/> -->
 		<tstamp/>
-        <jar destfile="${jar.dir}/${ant.project.name}-${version}.jar" whenmanifestonly="fail">
-        	<fileset dir="${basedir}/" includes="config/**" />
+        <jar destfile="${ant.project.name}-${version}.jar" whenmanifestonly="fail">
+        	<!--  <fileset dir="${basedir}/" includes="config/**" /> -->
         	<fileset dir="${classes.dir}/" />
 			<manifest>
 				<attribute name="Built-By" value="KEEP project"/>
@@ -159,10 +159,7 @@
 
     <!-- Execute the jar file -->
     <target name="run" depends="compile, jar">
-        <java jar="${jar.dir}/${ant.project.name}-${version}.jar" fork="true"/>
+        <java jar="${ant.project.name}-${version}.jar" fork="true"/>
     </target>
-
-    <!-- Default target -->
-    <target name="main" depends="clean, run"/>
 
 </project>
