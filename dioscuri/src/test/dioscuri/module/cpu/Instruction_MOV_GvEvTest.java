@@ -21,7 +21,6 @@ public class Instruction_MOV_GvEvTest {
     int startAddress = 80448;
     String testASMfilename = "test/asm/MOV_GvEv.bin";
 
-
     @Before
     protected void setUp() throws Exception {
         emu = new DummyEmulator();
