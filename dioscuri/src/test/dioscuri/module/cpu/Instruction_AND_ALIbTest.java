@@ -5,9 +5,10 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-import dioscuri.DummyEmulator;
+
 import dioscuri.Emulator;
-import dioscuri.module.memory.DummyMemory;
+import dioscuri.DummyGUI;
+
 import dioscuri.module.memory.*;
 
 import org.junit.*;
@@ -25,9 +26,9 @@ public class Instruction_AND_ALIbTest {
 
     @Before
     protected void setUp() throws Exception {
-        emu = new DummyEmulator();
+        emu = new Emulator(new DummyGUI());
         cpu = new CPU(emu);
-        mem = new DummyMemory();
+        mem = new Memory(emu);
         cpu.setConnection(mem);
         cpu.setDebugMode(true);
 

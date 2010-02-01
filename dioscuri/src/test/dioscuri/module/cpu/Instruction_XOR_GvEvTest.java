@@ -1,5 +1,3 @@
-
-
 package dioscuri.module.cpu;
 
 import java.io.BufferedInputStream;
@@ -7,7 +5,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 
-import dioscuri.DummyEmulator;
+
 import dioscuri.*;
 import dioscuri.module.memory.*;
 
@@ -26,9 +24,9 @@ public class Instruction_XOR_GvEvTest {
 
     @Before
     protected void setUp() throws Exception {
-        emu = new DummyEmulator();
+        emu = new Emulator(new DummyGUI());
         cpu = new CPU(emu);
-        mem = new DummyMemory();
+        mem = new Memory(emu);
         cpu.setConnection(mem);
         cpu.setDebugMode(true);
 

@@ -1,5 +1,3 @@
-
-
 package dioscuri.module.cpu;
 
 import java.io.BufferedInputStream;
@@ -8,12 +6,13 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import dioscuri.Emulator;
-import dioscuri.module.memory.DummyMemory;
+import dioscuri.DummyGUI;
+
 import org.junit.*;
 
 import static org.junit.Assert.*;
 
-import dioscuri.DummyEmulator;
+
 import dioscuri.module.memory.*;
 
 public class Instruction_AND_AXIvTest {
@@ -27,9 +26,9 @@ public class Instruction_AND_AXIvTest {
 
     @Before
     protected void setUp() throws Exception {
-        emu = new DummyEmulator();
+        emu = new Emulator(new DummyGUI());
         cpu = new CPU(emu);
-        mem = new DummyMemory();
+        mem = new Memory(emu);
         cpu.setConnection(mem);
         cpu.setDebugMode(true);
 

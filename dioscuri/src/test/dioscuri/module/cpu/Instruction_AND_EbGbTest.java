@@ -1,5 +1,3 @@
-
-
 package dioscuri.module.cpu;
 
 import java.io.BufferedInputStream;
@@ -11,39 +9,19 @@ import org.junit.*;
 
 import static org.junit.Assert.*;
 
-import dioscuri.DummyEmulator;
+
 import dioscuri.*;
 import dioscuri.module.memory.*;
 
-public class Instruction_AND_EbGbTest {
+public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
 
-    Emulator emu = null;
-    CPU cpu = null;
-    Memory mem = null;
-
-    int startAddress = 80448;
-    String testASMfilename = "test/asm/AND_EbGb.bin";
-
-    @Before
-    protected void setUp() throws Exception {
-        emu = new DummyEmulator();
-        cpu = new CPU(emu);
-        mem = new DummyMemory();
-        cpu.setConnection(mem);
-        cpu.setDebugMode(true);
-
-        BufferedInputStream bis = new BufferedInputStream(new DataInputStream(new FileInputStream(new File(testASMfilename))));
-        byte[] byteArray = new byte[bis.available()];
-        bis.read(byteArray, 0, byteArray.length);
-        bis.close();
-
-        mem.setBytes(startAddress, byteArray);
+    public Instruction_AND_EbGbTest() throws Exception {
+        super(80448, "AND_EbGb.bin");
     }
 
-
     /*
-    * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_EbGb.execute()'
-    */
+     * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_EbGb.execute()'
+     */
     @Test
     public void testExecute() {
         String AX_ERROR = "AX contains wrong value";
@@ -92,8 +70,5 @@ public class Instruction_AND_EbGbTest {
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
         assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
         cpu.startDebug();    // HLT
-
-
     }
-
 }
