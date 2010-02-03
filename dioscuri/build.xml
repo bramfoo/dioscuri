@@ -66,7 +66,7 @@
     <property name="images.dir"         value="${basedir}/images"/>
     <property name="build.dir"          value="${basedir}/build"/>
     <property name="classes.dir"        value="${build.dir}/classes/main"/>
-    <property name="jar.dir"            value="${build.dir}/jar"/>
+    <property name="jar.dir"            value="."/>
     <property name="javadoc.dir"        value="${build.dir}/javadoc"/>
 
     <!-- Classpath -->
@@ -134,9 +134,9 @@
     </target>
 
     <!-- Create a complete release (zip/gzip file, including jar, libs, docs, logs, config and images) -->
-    <target name="release" description="Create a complete release" depends="javadoc, jar">
+    <target name="release" description="Create a complete release" depends="jar"> <!-- include javadoc -->
 		<zip destfile="${build.dir}/${ant.project.name}-${version}.zip">
-			<fileset dir="${jar.dir}" />
+			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
 			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
 			<zipfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
@@ -146,7 +146,7 @@
 			<zipfileset dir="${javadoc.dir}" prefix="api"/>
 		</zip>
     	<tar destfile="${build.dir}/${ant.project.name}-${version}.tar.gz" compression="gzip">
-			<fileset dir="${jar.dir}" />
+			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
 			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
     		<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
@@ -158,7 +158,7 @@
 	</target>
 
     <!-- Execute the jar file -->
-    <target name="run" depends="compile, jar">
+    <target name="run" depends="jar" description="Execute the current JAR file">
         <java jar="${ant.project.name}-${version}.jar" fork="true"/>
     </target>
 

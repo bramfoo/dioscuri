@@ -8,9 +8,12 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.logging.Logger;
 
 public abstract class AbstractInstructionTest {
 
+    public static Logger logger = Logger.getLogger(AbstractInstructionTest.class.getClass().getName());
+    
     final Emulator emu;
     final CPU cpu;
     final Memory mem;
