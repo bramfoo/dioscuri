@@ -309,8 +309,7 @@ public class CPU extends ModuleCPU {
     /**
      * Class constructor specifying memory
      * 
-     * @param mem
-     *            the memory array associated with the CPU module
+     * @param owner
      */
     public CPU(Emulator owner) {
         emu = owner;
@@ -748,8 +747,7 @@ public class CPU extends ModuleCPU {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester, the requester of the data
      * @return byte[] with data
      * 
      * @see Module
@@ -761,8 +759,8 @@ public class CPU extends ModuleCPU {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
+     * @param data containing data
+     * @param
      *            sender, the sender of the data
      * 
      * @return true if data is set successfully, false otherwise
@@ -775,9 +773,8 @@ public class CPU extends ModuleCPU {
      * Store given String[] data in register, defined by name in first element
      * of array
      * 
-     * @param String
-     *            [] containing the register name [0] and data [1 and 2]
-     * @param Module
+     * @param data containing the register name [0] and data [1 and 2]
+     * @param
      *            sender, the sender of the data
      * 
      * @return true if data is set successfully, false otherwise
@@ -1377,7 +1374,7 @@ public class CPU extends ModuleCPU {
     /**
      * Set shutdown status
      * 
-     * @param boolean status true if emulator should shutdown, false otherwise
+     * @param status true if emulator should shutdown, false otherwise
      */
     protected void setShutdown(boolean status) {
         shutDown = status;
@@ -1470,7 +1467,7 @@ public class CPU extends ModuleCPU {
     /**
      * Set the Instructions Per Second (ips) for this CPU.
      * 
-     * @param int ips
+     * @param ips
      */
     public void setIPS(int ips) {
         this.ips = ips;
@@ -1483,8 +1480,8 @@ public class CPU extends ModuleCPU {
      * Set the Instructions Per Second (ips) for this CPU. Also, define what the
      * smallest period is for sending a clockpulse (in microseconds)
      * 
-     * @param int ips
-     * @param int lowestUpdatePeriod in microseconds
+     * @param ips
+     * @param lowestUpdatePeriod in microseconds
      */
     public void setIPS(int ips, int lowestUpdatePeriod) {
         this.ips = ips;
@@ -3681,10 +3678,10 @@ public class CPU extends ModuleCPU {
     /**
      * Sets the value of a named register to given value.
      * 
-     * @param String
+     * @param
      *            registerName
      * 
-     * @param byte[] containing the value
+     * @param  value containing the value
      * 
      * @return true if set was successful, false otherwise
      */
@@ -3834,7 +3831,7 @@ public class CPU extends ModuleCPU {
     /**
      * Returns the value (byte) in I/O address space at given port address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
      * @return byte value
      * @throws ModuleException
@@ -3848,9 +3845,9 @@ public class CPU extends ModuleCPU {
     /**
      * Sets the value (byte) in I/O address space at given port address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
-     * @param byte value
+     * @param data
      * 
      * @throws ModuleException
      */
@@ -3863,7 +3860,7 @@ public class CPU extends ModuleCPU {
     /**
      * Returns the value (word) in I/O address space at given port address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
      * @return byte[] word value
      * @throws ModuleException
@@ -3877,9 +3874,9 @@ public class CPU extends ModuleCPU {
     /**
      * Sets the value (word) in I/O address space at given port address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
-     * @param byte[] word value
+     * @param data word value
      * 
      * @throws ModuleException
      */
@@ -3893,7 +3890,7 @@ public class CPU extends ModuleCPU {
      * Returns the value (double word) in I/O address space at given port
      * address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
      * @return byte[] double word value
      * @throws ModuleException
@@ -3908,9 +3905,9 @@ public class CPU extends ModuleCPU {
     /**
      * Sets the value (double word) in I/O address space at given port address.
      * 
-     * @param int portAddress
+     * @param portAddress
      * 
-     * @param byte[] double word value
+     * @param data double word value
      * 
      * @throws ModuleException
      */
@@ -4372,7 +4369,7 @@ public class CPU extends ModuleCPU {
      * @param addressByte
      *            byte whose R/M bits indicate which segment register is to be
      *            used
-     * @param disp
+     * @param offset
      *            byte[] indicating displacement of word in segment
      * 
      * @return byte at memory address SS:disp or DS:disp
@@ -4558,8 +4555,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * Sets byte in memory at ES:DI in the extra memory segment
-     * 
-     * @param byte value
+     * @param displacement
+     * @param value
      */
     protected void setByteToExtra(byte[] displacement, byte value) {
         try {
@@ -4572,7 +4569,7 @@ public class CPU extends ModuleCPU {
 
     /**
      * Sets word in memory at ES:DI in the extra memory segment
-     * 
+     * @param displacement
      * @param word
      *            Value of word to assign
      */
@@ -4589,7 +4586,7 @@ public class CPU extends ModuleCPU {
      * Pushes a byte on the stack memory segment (SS:SP) Note: do not use this
      * method, use setWordToMemorySegment instead
      * 
-     * @param byte value to be pushed on the stack
+     * @param value to be pushed on the stack
      */
     protected void setByteToStack(byte value) {
         try {
@@ -4604,8 +4601,8 @@ public class CPU extends ModuleCPU {
      * Pushes a byte on the stack memory segment Note: do not use this method,
      * use setByteToMemorySegment instead
      * 
-     * @param byte[] displacement
-     * @param byte value to be pushed onto the stack
+     * @param displacement
+     * @param value to be pushed onto the stack
      */
     protected void setByteToStack(byte[] displacement, byte value) {
         try {
@@ -4621,7 +4618,7 @@ public class CPU extends ModuleCPU {
      * pointer SP by two. Note: do not use this method, use
      * setWordToMemorySegment instead
      * 
-     * @param byte[] word to be pushed on the stack
+     * @param value word to be pushed on the stack
      */
     protected void setWordToStack(byte[] value) {
         // According to MS-DOS debug.exe, the stack pointer is decrement FIRST
@@ -4642,8 +4639,8 @@ public class CPU extends ModuleCPU {
      * Sets a word in SS segment Note: when using addressbytes, do not use this
      * method, use setWordToMemorySegment instead
      * 
-     * @param byte[] displacement Displacement within SS segment
-     * @param byte[] word to be stored in SS
+     * @param displacement Displacement within SS segment
+     * @param value word to be stored in SS
      * 
      */
     protected void setWordToStack(byte[] displacement, byte[] value) {
@@ -5262,18 +5259,78 @@ public class CPU extends ModuleCPU {
     /**
      * Set the CPU instruction debug.
      * 
-     * @param boolean status of instructionDebug (on/off)
+     * @param cpuInstructionDebug status of instructionDebug (on/off)
      */
     public void setCpuInstructionDebug(boolean cpuInstructionDebug) {
         this.cpuInstructionDebug = cpuInstructionDebug;
     }
 
     // TODO return debug info
-    public void startDebug() {
+    public String startDebug() {
+        StringBuilder b = new StringBuilder();
+        b.append("***************************\nBEFORE\n").append(registerDump());
         this.start();
+        b.append("***************************\nAFTER\n").append(registerDump());
+        return b.toString()+"***************************";
     }
 
+    /**
+     *
+     * @return
+     */
     public String registerDump() {
-        return "REG DUMP"; // TODO
+        StringBuilder b = new StringBuilder();
+        b.append(toHexString(ax)).append('\n');
+        b.append(toHexString(eax)).append('\n');
+        b.append(toHexString(bx)).append('\n');
+        b.append(toHexString(ebx)).append('\n');
+        b.append(toHexString(cx)).append('\n');
+        b.append(toHexString(ecx)).append('\n');
+        b.append(toHexString(dx)).append('\n');
+        b.append(toHexString(edx)).append('\n');
+        b.append(toHexString(sp)).append('\n');
+        b.append(toHexString(esp)).append('\n');
+        b.append(toHexString(bp)).append('\n');
+        b.append(toHexString(ebp)).append('\n');
+        b.append(toHexString(si)).append('\n');
+        b.append(toHexString(esi)).append('\n');
+        b.append(toHexString(di)).append('\n');
+        b.append(toHexString(edi)).append('\n');
+        b.append(toHexString(cs)).append('\n');
+        b.append(toHexString(ds)).append('\n');
+        b.append(toHexString(ss)).append('\n');
+        b.append(toHexString(es)).append('\n');
+        b.append(toHexString(ip)).append('\n');
+        b.append(toHexString(oldIP)).append('\n');
+        b.append(toHexString(flags)).append('\n');
+        b.append(toHexString(cr0)).append('\n');
+        b.append(toHexString(cr1)).append('\n');
+        b.append(toHexString(cr2)).append('\n');
+        b.append(toHexString(cr3)).append('\n');
+        b.append(toHexString(cr4)).append('\n');
+        b.append(toHexString(gdtr)).append('\n');
+        b.append(toHexString(idtr)).append('\n');
+        b.append(toHexString(ldtr)).append('\n');
+        return b.toString();
+    }
+
+    private String toHexString(byte[] values) {
+        if(values == null) return "<<NULL>>";
+        if(values.length == 0) return "[]";
+        StringBuilder b = new StringBuilder("["+Integer.toHexString(values[0]));
+        for(int i = 1; i < values.length; i++) {
+            b.append(", "+Integer.toHexString(values[i]));
+        }
+        return b.toString()+"]";
+    }
+
+    private String toHexString(boolean[] values) {
+        if(values == null) return "<<NULL>>";
+        if(values.length == 0) return "[]";
+        StringBuilder b = new StringBuilder("["+(values[0] ? "1" : "0"));
+        for(int i = 1; i < values.length; i++) {
+            b.append(", "+(values[i] ? "1" : "0"));
+        }
+        return b.toString()+"]";
     }
 }
