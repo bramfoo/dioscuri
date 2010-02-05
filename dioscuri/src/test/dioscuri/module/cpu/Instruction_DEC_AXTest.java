@@ -1,44 +1,14 @@
 package dioscuri.module.cpu;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-
-
-import dioscuri.*;
-import dioscuri.module.memory.*;
-
-import org.junit.*;
+import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class Instruction_DEC_AXTest {
+public class Instruction_DEC_AXTest extends AbstractInstructionTest {
 
-    Emulator emu = null;
-    CPU cpu = null;
-    Memory mem = null;
-
-    int startAddress = 80448;
-    String testASMfilename = "test/asm/DEC_AX.bin";
-
-
-    @Before
-    protected void setUp() throws Exception {
-        emu = new Emulator(new DummyGUI());
-        cpu = new CPU(emu);
-        mem = new Memory(emu);
-        cpu.setConnection(mem);
-        cpu.setDebugMode(true);
-
-        BufferedInputStream bis = new BufferedInputStream(new DataInputStream(new FileInputStream(new File(testASMfilename))));
-        byte[] byteArray = new byte[bis.available()];
-        bis.read(byteArray, 0, byteArray.length);
-        bis.close();
-
-        mem.setBytes(startAddress, byteArray);
+    public Instruction_DEC_AXTest() throws Exception {
+        super(80448, "DEC_AX.bin");
     }
-
 
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_AX.execute()'

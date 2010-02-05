@@ -1,43 +1,15 @@
 package dioscuri.module.cpu;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import dioscuri.*;
-import dioscuri.module.memory.*;
+public class Instruction_LOOP_JbTest extends AbstractInstructionTest {
 
-import org.junit.*;
-
-import static org.junit.Assert.*;
-
-public class Instruction_LOOP_JbTest {
-    Emulator emu = null;
-    CPU cpu = null;
-    Memory mem = null;
-
-    int startAddress = 80448;
-    String testASMfilename = "test/asm/LOOP_Jb.bin";
-
-
-    @Before
-    protected void setUp() throws Exception {
-        emu = new Emulator(new DummyGUI());
-        cpu = new CPU(emu);
-        mem = new Memory(emu);
-        cpu.setConnection(mem);
-        cpu.setDebugMode(true);
-
-        BufferedInputStream bis = new BufferedInputStream(new DataInputStream(new FileInputStream(new File(testASMfilename))));
-        byte[] byteArray = new byte[bis.available()];
-        bis.read(byteArray, 0, byteArray.length);
-        bis.close();
-
-        mem.setBytes(startAddress, byteArray);
+    public Instruction_LOOP_JbTest() throws Exception {
+        super(80448, "LOOP_Jb.bin");
     }
-
 
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_LOOP_Jb.execute()'

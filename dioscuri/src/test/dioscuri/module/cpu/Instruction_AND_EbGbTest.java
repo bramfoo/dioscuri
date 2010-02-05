@@ -1,23 +1,15 @@
 package dioscuri.module.cpu;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import org.junit.Test;
+
 import java.util.logging.Level;
 
-import org.junit.*;
-
 import static org.junit.Assert.*;
-
-
-import dioscuri.*;
-import dioscuri.module.memory.*;
 
 public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
 
     public Instruction_AND_EbGbTest() throws Exception {
-        super(0xFFEF, "AND_EbGb.bin");
+        super(80448, "AND_EbGb.bin");
     }
 
     /*
@@ -32,14 +24,14 @@ public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
         String PF_ERROR = "PF incorrect";
 
         // Load registers, memory with prearranged values (4 instructions)
-        logger.log(Level.INFO, "\n>>> Before:\n"+cpu.getDump()+"\nregisters:\n"+cpu.registerDump());
+        logger.log(Level.INFO, "\n>>> Before:\n" + cpu.getDump() + "\nregisters:\n" + cpu.registerDump());
         cpu.startDebug();    // MOV AX, 0xFFFF
         cpu.startDebug();    // MOV [0000], AX
         cpu.startDebug();    // MOV AX, 0x0000
         cpu.startDebug();    // MOV CX, 0xAA55
-        logger.log(Level.INFO, "\n>>> After:\n"+cpu.getDump()+"\nregisters:\n"+cpu.registerDump());
-        assertEquals(CX_ERROR, (byte)0xAA, cpu.getRegisterValue("CX")[0]);
-        assertEquals(CX_ERROR, (byte)0x55, cpu.getRegisterValue("CX")[1]);
+        logger.log(Level.INFO, "\n>>> After:\n" + cpu.getDump() + "\nregisters:\n" + cpu.registerDump());
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x55, cpu.getRegisterValue("CX")[1]);
 
         // AND mem, reg
         cpu.startDebug();    // AND [BX+SI], CL

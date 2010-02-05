@@ -1,42 +1,15 @@
 package dioscuri.module.cpu;
 
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
+import org.junit.Test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
-import dioscuri.Emulator;
-import dioscuri.DummyGUI;
-import dioscuri.module.memory.*;
-import org.junit.*;
+public class Instruction_XCHG_EbGbTest extends AbstractInstructionTest {
 
-import static org.junit.Assert.*;
-
-public class Instruction_XCHG_EbGbTest {
-    Emulator emu = null;
-    CPU cpu = null;
-    Memory mem = null;
-
-    int startAddress = 80448;
-    String testASMfilename = "test/asm/XCHG_EbGb.bin";
-
-    @Before
-    protected void setUp() throws Exception {
-        emu = new Emulator(new DummyGUI());
-        cpu = new CPU(emu);
-        mem = new Memory(emu);
-        cpu.setConnection(mem);
-        cpu.setDebugMode(true);
-
-        BufferedInputStream bis = new BufferedInputStream(new DataInputStream(new FileInputStream(new File(testASMfilename))));
-        byte[] byteArray = new byte[bis.available()];
-        bis.read(byteArray, 0, byteArray.length);
-        bis.close();
-
-        mem.setBytes(startAddress, byteArray);
+    public Instruction_XCHG_EbGbTest() throws Exception {
+        super(80448, "XCHG_EbGb.bin");
     }
-
 
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_XCHG_EbGb.execute()'
