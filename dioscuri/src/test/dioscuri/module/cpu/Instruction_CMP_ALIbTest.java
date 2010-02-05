@@ -38,8 +38,8 @@ public class Instruction_CMP_ALIbTest extends AbstractInstructionTest {
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));
 
         cpu.startDebug(); // MOV ax, 0x0185
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x85);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x85, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // CMP al, 0x06
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
@@ -58,8 +58,8 @@ public class Instruction_CMP_ALIbTest extends AbstractInstructionTest {
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));
 
         cpu.startDebug(); // MOV ax, 0x017F  ; Move value into al
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7F);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // CMP al, 0xFF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));

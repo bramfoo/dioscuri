@@ -33,31 +33,31 @@ public class Instruction_LOOP_JbTest extends AbstractInstructionTest {
         assertFalse(AF_ERROR, cpu.getFlagValue('A'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(CF_ERROR, cpu.getFlagValue('C'));
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[0], (byte) 0x01);
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x00);
+        assertEquals(IP_ERROR, (byte) 0x01, cpu.getRegisterValue("IP")[0]);
+        assertEquals(IP_ERROR, (byte) 0x00, cpu.getRegisterValue("IP")[1]);
 
         // Load loop counter CX
         cpu.startDebug(); // MOV CL, 0x03
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x03);
+        assertEquals(CX_ERROR, (byte) 0x03, cpu.getRegisterValue("CX")[1]);
 
         // Start loop
         cpu.startDebug(); // INC ax
         cpu.startDebug(); // LOOP 
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x01);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x02);
+        assertEquals(IP_ERROR, (byte) 0x02, cpu.getRegisterValue("IP")[1]);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0x02, cpu.getRegisterValue("CX")[1]);
 
         cpu.startDebug(); // INC ax
         cpu.startDebug(); // LOOP 
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x02);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x01);
+        assertEquals(IP_ERROR, (byte) 0x02, cpu.getRegisterValue("IP")[1]);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0x01, cpu.getRegisterValue("CX")[1]);
 
         cpu.startDebug(); // INC ax
         cpu.startDebug(); // LOOP 
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x05);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x03);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x00);
+        assertEquals(IP_ERROR, (byte) 0x05, cpu.getRegisterValue("IP")[1]);
+        assertEquals(AX_ERROR, (byte) 0x03, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[1]);
 
         cpu.startDebug(); // HLT
     }

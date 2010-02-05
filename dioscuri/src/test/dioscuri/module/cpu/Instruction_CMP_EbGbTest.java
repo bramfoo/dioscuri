@@ -30,14 +30,14 @@ public class Instruction_CMP_EbGbTest extends AbstractInstructionTest {
         cpu.startDebug(); // MOV AX, 0x8500
         cpu.startDebug(); // MOV [0000], AX
         cpu.startDebug(); // MOV AX, 0x8006
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x80);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x06);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x06, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV CX, 0xFF7F
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xFF);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x7F);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x7F, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // MOV DX, 0x8586
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0x85);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x86);
+        assertEquals(DX_ERROR, (byte) 0x85, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x86, cpu.getRegisterValue("DX")[1]);
 
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));

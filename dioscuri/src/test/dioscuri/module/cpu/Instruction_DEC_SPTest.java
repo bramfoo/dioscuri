@@ -37,15 +37,15 @@ public class Instruction_DEC_SPTest extends AbstractInstructionTest {
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV SP, 0x8000  ; Prepare for OF
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0x80);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0x00);
+        assertEquals(SP_ERROR, (byte) 0x80, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0x00, cpu.getRegisterValue("SP")[1]);
         cpu.startDebug(); // DEC SP          ; Decrement SP, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
 
         cpu.startDebug(); // MOV SP, 0x0001  ; Prepare for ZF
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0x00);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0x01);
+        assertEquals(SP_ERROR, (byte) 0x00, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0x01, cpu.getRegisterValue("SP")[1]);
         cpu.startDebug(); // DEC SP          ; Decrement SP, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));

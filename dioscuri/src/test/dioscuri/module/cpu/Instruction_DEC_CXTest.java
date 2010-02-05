@@ -36,15 +36,15 @@ public class Instruction_DEC_CXTest extends AbstractInstructionTest {
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV CX, 0x8000  ; Prepare for OF
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0x80);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x00);
+        assertEquals(CX_ERROR, (byte) 0x80, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // DEC CX          ; Decrement CX, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
 
         cpu.startDebug(); // MOV CX, 0x0001  ; Prepare for ZF
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0x00);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x01);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x01, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // DEC CX          ; Decrement CX, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));

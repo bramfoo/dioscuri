@@ -41,79 +41,79 @@ public class Instruction_PUSHATest extends AbstractInstructionTest {
 
         // Load registers with pre-arranged values
         cpu.startDebug(); // MOV ax, 0x1111  ; Move value into ax
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x11);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x11);
+        assertEquals(AX_ERROR, (byte) 0x11, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x11, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV cx, 0xaaaa  ; Move value into cx
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xAA);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0xAA);
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // MOV dx, 0xbbbb  ; Move value into dx
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xBB);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xBB);
+        assertEquals(DX_ERROR, (byte) 0xBB, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xBB, cpu.getRegisterValue("DX")[1]);
         cpu.startDebug(); // MOV bx, 0xcccc  ; Move value into bx
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[0], (byte) 0xCC);
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[1], (byte) 0xCC);
+        assertEquals(BX_ERROR, (byte) 0xCC, cpu.getRegisterValue("BX")[0]);
+        assertEquals(BX_ERROR, (byte) 0xCC, cpu.getRegisterValue("BX")[1]);
         cpu.startDebug(); // MOV bp, 0xdddd  ; Move value into bp
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[0], (byte) 0xDD);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[1], (byte) 0xDD);
+        assertEquals(BP_ERROR, (byte) 0xDD, cpu.getRegisterValue("BP")[0]);
+        assertEquals(BP_ERROR, (byte) 0xDD, cpu.getRegisterValue("BP")[1]);
         cpu.startDebug(); // MOV si, 0xeeee  ; Move value into si
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[0], (byte) 0xEE);
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[1], (byte) 0xEE);
+        assertEquals(SI_ERROR, (byte) 0xEE, cpu.getRegisterValue("SI")[0]);
+        assertEquals(SI_ERROR, (byte) 0xEE, cpu.getRegisterValue("SI")[1]);
         cpu.startDebug(); // MOV di, 0xffff  ; Move value into di
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[0], (byte) 0xFF);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0xFF);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[0]);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[1]);
 
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0xFF);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0xEE);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0xEE, cpu.getRegisterValue("SP")[1]);
 
         // Test PUSHA operation
         cpu.startDebug(); // PUSHA           ; Push all registers onto stack
 
         // Clear all registers
         cpu.startDebug(); // MOV ax, 0x0000  ; Clear register
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV cx, 0x0000  ; Clear register
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0x00);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x00);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // MOV dx, 0x0000  ; Clear register
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0x00);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x00);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[1]);
         cpu.startDebug(); // MOV bx, 0x0000  ; Clear register
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[0], (byte) 0x00);
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[1], (byte) 0x00);
+        assertEquals(BX_ERROR, (byte) 0x00, cpu.getRegisterValue("BX")[0]);
+        assertEquals(BX_ERROR, (byte) 0x00, cpu.getRegisterValue("BX")[1]);
         cpu.startDebug(); // MOV bp, 0x0000  ; Clear register
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[0], (byte) 0x00);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[1], (byte) 0x00);
+        assertEquals(BP_ERROR, (byte) 0x00, cpu.getRegisterValue("BP")[0]);
+        assertEquals(BP_ERROR, (byte) 0x00, cpu.getRegisterValue("BP")[1]);
         cpu.startDebug(); // MOV si, 0x0000  ; Clear register
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[0], (byte) 0x00);
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[1], (byte) 0x00);
+        assertEquals(SI_ERROR, (byte) 0x00, cpu.getRegisterValue("SI")[0]);
+        assertEquals(SI_ERROR, (byte) 0x00, cpu.getRegisterValue("SI")[1]);
         cpu.startDebug(); // MOV di, 0x0000  ; Clear register
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[0], (byte) 0x00);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0x00);
+        assertEquals(DI_ERROR, (byte) 0x00, cpu.getRegisterValue("DI")[0]);
+        assertEquals(DI_ERROR, (byte) 0x00, cpu.getRegisterValue("DI")[1]);
 
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0xFF);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0xDE);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0xDE, cpu.getRegisterValue("SP")[1]);
 
         // Test POPA operation
         cpu.startDebug(); // POPA            ; Pop all registers from stack
 
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x11);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x11);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xAA);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0xAA);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xBB);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xBB);
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[0], (byte) 0xCC);
-        assertEquals(BX_ERROR, cpu.getRegisterValue("BX")[1], (byte) 0xCC);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[0], (byte) 0xDD);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[1], (byte) 0xDD);
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[0], (byte) 0xEE);
-        assertEquals(SI_ERROR, cpu.getRegisterValue("SI")[1], (byte) 0xEE);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[0], (byte) 0xFF);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0x11, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x11, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[1]);
+        assertEquals(DX_ERROR, (byte) 0xBB, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xBB, cpu.getRegisterValue("DX")[1]);
+        assertEquals(BX_ERROR, (byte) 0xCC, cpu.getRegisterValue("BX")[0]);
+        assertEquals(BX_ERROR, (byte) 0xCC, cpu.getRegisterValue("BX")[1]);
+        assertEquals(BP_ERROR, (byte) 0xDD, cpu.getRegisterValue("BP")[0]);
+        assertEquals(BP_ERROR, (byte) 0xDD, cpu.getRegisterValue("BP")[1]);
+        assertEquals(SI_ERROR, (byte) 0xEE, cpu.getRegisterValue("SI")[0]);
+        assertEquals(SI_ERROR, (byte) 0xEE, cpu.getRegisterValue("SI")[1]);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[0]);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[1]);
 
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0xFF);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0xEE);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0xEE, cpu.getRegisterValue("SP")[1]);
 
         cpu.startDebug(); // HLT             ; Stop execution
 

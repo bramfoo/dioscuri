@@ -31,16 +31,16 @@ public class Instruction_JMP_shortJbTest extends AbstractInstructionTest {
         assertFalse(AF_ERROR, cpu.getFlagValue('A'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(CF_ERROR, cpu.getFlagValue('C'));
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[0], (byte) 0x01);
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x00);
+        assertEquals(IP_ERROR, (byte) 0x01, cpu.getRegisterValue("IP")[0]);
+        assertEquals(IP_ERROR, (byte) 0x00, cpu.getRegisterValue("IP")[1]);
 
         // Test JMP instruction
         cpu.startDebug(); // JMP +4
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[0], (byte) 0x01);
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x04);
+        assertEquals(IP_ERROR, (byte) 0x01, cpu.getRegisterValue("IP")[0]);
+        assertEquals(IP_ERROR, (byte) 0x04, cpu.getRegisterValue("IP")[1]);
         cpu.startDebug(); // JMP -103
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[0], (byte) 0x00);
-        assertEquals(IP_ERROR, cpu.getRegisterValue("IP")[1], (byte) 0x99);
+        assertEquals(IP_ERROR, (byte) 0x00, cpu.getRegisterValue("IP")[0]);
+        assertEquals(IP_ERROR, (byte) 0x99, cpu.getRegisterValue("IP")[1]);
     }
 
 }

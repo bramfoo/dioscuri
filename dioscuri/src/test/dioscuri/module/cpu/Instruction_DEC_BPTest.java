@@ -36,15 +36,15 @@ public class Instruction_DEC_BPTest extends AbstractInstructionTest {
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV bp, 0x8000  ; Prepare for OF
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[0], (byte) 0x80);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[1], (byte) 0x00);
+        assertEquals(BP_ERROR, (byte) 0x80, cpu.getRegisterValue("BP")[0]);
+        assertEquals(BP_ERROR, (byte) 0x00, cpu.getRegisterValue("BP")[1]);
         cpu.startDebug(); // DEC bp          ; Decrement BP, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
 
         cpu.startDebug(); // MOV bp, 0x0001  ; Prepare for ZF
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[0], (byte) 0x00);
-        assertEquals(BP_ERROR, cpu.getRegisterValue("BP")[1], (byte) 0x01);
+        assertEquals(BP_ERROR, (byte) 0x00, cpu.getRegisterValue("BP")[0]);
+        assertEquals(BP_ERROR, (byte) 0x01, cpu.getRegisterValue("BP")[1]);
         cpu.startDebug(); // DEC bp          ; Decrement BP, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));

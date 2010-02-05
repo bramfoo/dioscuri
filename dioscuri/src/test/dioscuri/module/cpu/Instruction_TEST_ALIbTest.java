@@ -33,8 +33,8 @@ public class Instruction_TEST_ALIbTest extends AbstractInstructionTest {
 
         // Test TEST instruction
         cpu.startDebug(); // DEC ax          ; Set AL to FF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xFF);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));

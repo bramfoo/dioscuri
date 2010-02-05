@@ -20,14 +20,14 @@ public class Instruction_CBWTest extends AbstractInstructionTest {
 
         // Test byte to word extension
         cpu.startDebug();    // MOV AL, 0x80
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x80);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();    // CBW
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[0]);
 
         cpu.startDebug();    // MOV AL, 0x7F
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7F);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();    // CBW
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
 
         cpu.startDebug();    // HLT
 

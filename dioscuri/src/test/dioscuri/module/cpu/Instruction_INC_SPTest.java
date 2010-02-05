@@ -33,13 +33,13 @@ public class Instruction_INC_SPTest extends AbstractInstructionTest {
 
         // Test INC instruction
         cpu.startDebug(); // MOV al, 0x0F    ; Prepare for AF
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0x0F);
+        assertEquals(SP_ERROR, (byte) 0x0F, cpu.getRegisterValue("SP")[1]);
         cpu.startDebug(); // INC sp          ; Increment SP, test AF
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV sp, 0x7FFF  ; Prepare for OF
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0x7F);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0xFF);
+        assertEquals(SP_ERROR, (byte) 0x7F, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[1]);
         cpu.startDebug(); // INC sp          ; Increment SP, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
@@ -47,8 +47,8 @@ public class Instruction_INC_SPTest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
 
         cpu.startDebug(); // MOV sp, 0xFFFF  ; Prepare for ZF
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[0], (byte) 0xFF);
-        assertEquals(SP_ERROR, cpu.getRegisterValue("SP")[1], (byte) 0xFF);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[0]);
+        assertEquals(SP_ERROR, (byte) 0xFF, cpu.getRegisterValue("SP")[1]);
         cpu.startDebug(); // INC sp          ; Increment SP, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));

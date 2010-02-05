@@ -33,13 +33,13 @@ public class Instruction_INC_DITest extends AbstractInstructionTest {
 
         // Test INC instruction
         cpu.startDebug(); // MOV al, 0x0F    ; Prepare for AF
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0x0F);
+        assertEquals(DI_ERROR, (byte) 0x0F, cpu.getRegisterValue("DI")[1]);
         cpu.startDebug(); // INC di          ; Increment DI, test AF
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV di, 0x7FFF  ; Prepare for OF
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[0], (byte) 0x7F);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0xFF);
+        assertEquals(DI_ERROR, (byte) 0x7F, cpu.getRegisterValue("DI")[0]);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[1]);
         cpu.startDebug(); // INC di          ; Increment DI, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
@@ -47,8 +47,8 @@ public class Instruction_INC_DITest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
 
         cpu.startDebug(); // MOV di, 0xFFFF  ; Prepare for ZF
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[0], (byte) 0xFF);
-        assertEquals(DI_ERROR, cpu.getRegisterValue("DI")[1], (byte) 0xFF);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[0]);
+        assertEquals(DI_ERROR, (byte) 0xFF, cpu.getRegisterValue("DI")[1]);
         cpu.startDebug(); // INC di          ; Increment DI, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));

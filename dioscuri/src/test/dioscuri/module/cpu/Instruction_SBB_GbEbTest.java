@@ -35,26 +35,26 @@ public class Instruction_SBB_GbEbTest extends AbstractInstructionTest {
         cpu.startDebug(); // MOV AX, 0x7FFF
         cpu.startDebug(); // MOV [0000], AX
         cpu.startDebug(); // MOV AX, 0x017F
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7F);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[1]);
 
         // SBB mem,reg
         cpu.startDebug(); // CMC             ; Set carry flag
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));
         cpu.startDebug(); // SBB AL, [BX+SI] ; 7F - (FF + CF), test AF flag
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7F);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[1]);
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));
 
         // SBB mem+8b,reg
         cpu.startDebug(); // INC AX                  ; Set AX
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x80);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // SBB AL, [BX+DI+04]      ; 80 - (00 + CF), test OF, SF, AF, PF flags
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7F);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[1]);
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
@@ -64,15 +64,15 @@ public class Instruction_SBB_GbEbTest extends AbstractInstructionTest {
         cpu.startDebug(); // INC BP                  ; Set BP to 1
         cpu.startDebug(); // INC BP                  ; Set BP to 2
         cpu.startDebug(); // SBB AL, [BP+0x0100]     ; 7F - 7F, test ZF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
 
         // SBB reg, reg
         cpu.startDebug(); // SBB AL, AH      ; 00 - 01, test CF, SBB, overflow
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
@@ -80,8 +80,8 @@ public class Instruction_SBB_GbEbTest extends AbstractInstructionTest {
         assertTrue(CF_ERROR, cpu.getFlagValue('C'));
 
         cpu.startDebug(); // SBB AL, BL      ; FF - (00 + CF), test CF, PF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x01);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFE);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFE, cpu.getRegisterValue("AX")[1]);
         assertFalse(AF_ERROR, cpu.getFlagValue('A'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(CF_ERROR, cpu.getFlagValue('C'));

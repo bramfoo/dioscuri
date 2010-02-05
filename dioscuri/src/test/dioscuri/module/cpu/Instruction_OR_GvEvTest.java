@@ -38,44 +38,44 @@ public class Instruction_OR_GvEvTest extends AbstractInstructionTest {
         cpu.startDebug(); // MOV [0002], AX
         cpu.startDebug(); // MOV AX, 0xAA55  ; Move AA55 into AX
         cpu.startDebug(); // MOV DX, 0xAA55  ; Move AA55 into DX  
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x55);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xAA);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x55);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x55, cpu.getRegisterValue("AX")[1]);
+        assertEquals(DX_ERROR, (byte) 0xAA, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x55, cpu.getRegisterValue("DX")[1]);
 
 
         // OR reg,mem
         cpu.startDebug(); // OR AX, [BX+SI]  ; OR reg and mem, store in AX (ffff)
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xFF);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         cpu.startDebug(); // INC AX          ; Reset AX
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
 
         // OR reg,mem+8b
         cpu.startDebug(); // OR DX, [BX+DI+02]       ; OR reg and mem+8b, store in DX (ffff)
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xFF);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xFF);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         cpu.startDebug(); // INC DX                  ; Reset DX
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0x00);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x00);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[1]);
 
         // OR reg,mem+16b
         cpu.startDebug(); // INC BP                  ; Set BP to 1
         cpu.startDebug(); // OR DX, [BP+0x0100]      ; OR reg and mem+16b, store in AL (55aa)
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0x55);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xAA);
+        assertEquals(DX_ERROR, (byte) 0x55, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xAA, cpu.getRegisterValue("DX")[1]);
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
 
         // OR reg, reg
         cpu.startDebug(); // OR AX, BX       ; OR 2 registers (00), check flags
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));

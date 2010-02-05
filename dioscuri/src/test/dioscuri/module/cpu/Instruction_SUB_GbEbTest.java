@@ -35,19 +35,19 @@ public class Instruction_SUB_GbEbTest extends AbstractInstructionTest {
         cpu.startDebug(); // MOV AX, 0x7B05
         cpu.startDebug(); // MOV [0000], AX
         cpu.startDebug(); // MOV AX, 0x0285
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x85);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x85, cpu.getRegisterValue("AX")[1]);
 
         // SUB mem,reg
         cpu.startDebug(); // SUB AL, [BX+SI] ; 85 - 05, test SF, PF flags
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x80);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertFalse(PF_ERROR, cpu.getFlagValue('P'));
 
         cpu.startDebug(); // SUB AL, [BX+SI] ; 80 - 05, test OF, SF, AF, PF flags
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x7B);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x7B, cpu.getRegisterValue("AX")[1]);
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
@@ -55,8 +55,8 @@ public class Instruction_SUB_GbEbTest extends AbstractInstructionTest {
 
         // SUB mem+8b,reg
         cpu.startDebug(); // SUB AL, [BX+SI+01]      ; 7B - 7B, test ZF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
@@ -66,8 +66,8 @@ public class Instruction_SUB_GbEbTest extends AbstractInstructionTest {
         // SUB mem+16b,reg
         cpu.startDebug(); // INC BP                  ; Set BP to 1
         cpu.startDebug(); // SUB AL, [BP+0x0100]     ; 00 - 05, test CF, overflow
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFB);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFB, cpu.getRegisterValue("AX")[1]);
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
@@ -76,8 +76,8 @@ public class Instruction_SUB_GbEbTest extends AbstractInstructionTest {
 
         // SUB reg, reg
         cpu.startDebug(); // SUB AL, AH      ; FB - 02, test CF, PF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x02);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xF9);
+        assertEquals(AX_ERROR, (byte) 0x02, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xF9, cpu.getRegisterValue("AX")[1]);
         assertFalse(AF_ERROR, cpu.getFlagValue('A'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(CF_ERROR, cpu.getFlagValue('C'));

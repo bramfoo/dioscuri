@@ -30,12 +30,12 @@ public class Instruction_AND_GvEvTest extends AbstractInstructionTest {
         cpu.startDebug();    // MOV AX, 0xFFFF  ; Move FFFF into AX
         cpu.startDebug();    // MOV CX, 0xFFFF  ; Move FFFF into CX
         cpu.startDebug();    // MOV DX, 0xFFFF  ; Move FFFF into DX
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xFF);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xFF);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xFF);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0xFF);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xFF);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xFF);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xFF, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[1]);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[1]);
 
 
         // AND reg,mem
@@ -43,16 +43,16 @@ public class Instruction_AND_GvEvTest extends AbstractInstructionTest {
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x55);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x55, cpu.getRegisterValue("AX")[1]);
 
         // AND reg,mem+8b
         cpu.startDebug();    // AND CX, [BX+DI+02]
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xAA);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x55);
+        assertEquals(CX_ERROR, (byte) 0xAA, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x55, cpu.getRegisterValue("CX")[1]);
 
         // AND reg,mem+16b
         cpu.startDebug();    // INC BP
@@ -60,16 +60,16 @@ public class Instruction_AND_GvEvTest extends AbstractInstructionTest {
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xAA);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x55);
+        assertEquals(DX_ERROR, (byte) 0xAA, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x55, cpu.getRegisterValue("DX")[1]);
 
         // AND reg, reg
         cpu.startDebug();    // AND AX, BX
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();    // HLT
 
     }

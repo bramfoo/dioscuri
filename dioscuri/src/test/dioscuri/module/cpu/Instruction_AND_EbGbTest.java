@@ -40,7 +40,7 @@ public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
         cpu.startDebug();    // MOV AL, [0000]
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x55);
+        assertEquals(AX_ERROR, (byte) 0x55, cpu.getRegisterValue("AX")[1]);
 
         // AND mem+8b,reg
         cpu.startDebug();    // AND [BX+DI+01], CH
@@ -48,7 +48,7 @@ public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
         cpu.startDebug();    // MOV AL, [0001]
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xAA);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[1]);
 
         // AND mem+16b,reg
         cpu.startDebug();    // INC BP
@@ -57,14 +57,14 @@ public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertFalse(ZF_ERROR, cpu.getFlagValue('Z'));
         cpu.startDebug();    // MOV AL, [0x0101]
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xAA);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[1]);
 
         // AND reg, reg
         cpu.startDebug();    // AND AL, CL
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();    // HLT
     }
 }

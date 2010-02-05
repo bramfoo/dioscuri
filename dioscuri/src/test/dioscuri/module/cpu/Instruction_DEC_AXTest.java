@@ -36,15 +36,15 @@ public class Instruction_DEC_AXTest extends AbstractInstructionTest {
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV ax, 0x8000  ; Prepare for OF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x80);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // DEC ax          ; Decrement AX, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
 
         cpu.startDebug(); // MOV ax, 0x0001  ; Prepare for ZF
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x00);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x01);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x01, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // DEC ax          ; Decrement AX, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(ZF_ERROR, cpu.getFlagValue('Z'));

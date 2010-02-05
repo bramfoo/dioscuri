@@ -37,40 +37,40 @@ public class Instruction_XCHG_EbGbTest extends AbstractInstructionTest {
         cpu.startDebug(); // MOV AX, 0xAABB
         cpu.startDebug(); // MOV [0000], AX
         cpu.startDebug(); // MOV AX, 0xCCDD
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xCC);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xDD);
+        assertEquals(AX_ERROR, (byte) 0xCC, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xDD, cpu.getRegisterValue("AX")[1]);
 
         // XCHG mem,reg
         cpu.startDebug(); // XCHG [BX+SI], AL; XCHG reg and mem, store in memory
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xCC);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xBB);
+        assertEquals(AX_ERROR, (byte) 0xCC, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xBB, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV AL, [0000]  ; Retrieve result from memory (result = bb)
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xCC);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xDD);
+        assertEquals(AX_ERROR, (byte) 0xCC, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xDD, cpu.getRegisterValue("AX")[1]);
 
         // XCHG mem+8b,reg
         cpu.startDebug(); // XCHG [BX+DI+01], AH     ; XCHG reg and mem+8b, store in memory
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xDD);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xDD, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV AL, [0001]          ; Retrieve result from memory (result = aa)
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xCC);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xCC, cpu.getRegisterValue("AX")[1]);
 
         // XCHG mem+16b,reg
         cpu.startDebug(); // INC BP                  ; Set BP to 1
         cpu.startDebug(); // XCHG [BP+0x0100], AL    ; XCHG reg and mem+16b, store in memory
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xBB);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xBB, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug(); // MOV AL, [0x0101]        ; Retrieve result from memory (result = aa) [NOTE: ACCESSING BYTE 2 OF OWN CODE]
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0xCC);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0xCC, cpu.getRegisterValue("AX")[1]);
 
         // XCHG reg, reg
         cpu.startDebug(); // XCHG AL, CH     ; XCHG 2 registers (result = 00)
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0xAA);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xCC);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0xAA, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
+        assertEquals(CX_ERROR, (byte) 0xCC, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0x00, cpu.getRegisterValue("CX")[1]);
 
         cpu.startDebug(); // HLT             ; Stop execution
     }

@@ -21,18 +21,18 @@ public class Instruction_CWDTest extends AbstractInstructionTest {
 
         // Test byte to word extension
         cpu.startDebug();   // MOV AH, 0x80
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x80);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x80, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();   // CWD
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0xFF);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0xFF);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0xFF, cpu.getRegisterValue("DX")[1]);
 
         cpu.startDebug();   // MOV AH, 0x7F
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[0], (byte) 0x7F);
-        assertEquals(AX_ERROR, cpu.getRegisterValue("AX")[1], (byte) 0x00);
+        assertEquals(AX_ERROR, (byte) 0x7F, cpu.getRegisterValue("AX")[0]);
+        assertEquals(AX_ERROR, (byte) 0x00, cpu.getRegisterValue("AX")[1]);
         cpu.startDebug();   // CWD
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[0], (byte) 0x00);
-        assertEquals(DX_ERROR, cpu.getRegisterValue("DX")[1], (byte) 0x00);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[0]);
+        assertEquals(DX_ERROR, (byte) 0x00, cpu.getRegisterValue("DX")[1]);
 
         cpu.startDebug();   // HLT
 

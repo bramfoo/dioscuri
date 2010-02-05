@@ -33,13 +33,13 @@ public class Instruction_INC_CXTest extends AbstractInstructionTest {
 
         // Test INC instruction
         cpu.startDebug(); // MOV al, 0x0F    ; Prepare for AF
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0x0F);
+        assertEquals(CX_ERROR, (byte) 0x0F, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // INC cx          ; Increment CX, test AF
         assertTrue(AF_ERROR, cpu.getFlagValue('A'));
 
         cpu.startDebug(); // MOV cx, 0x7FFF  ; Prepare for OF
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0x7F);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0xFF);
+        assertEquals(CX_ERROR, (byte) 0x7F, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // INC cx          ; Increment CX, test OF, SF
         assertTrue(OF_ERROR, cpu.getFlagValue('O'));
         assertTrue(SF_ERROR, cpu.getFlagValue('S'));
@@ -47,8 +47,8 @@ public class Instruction_INC_CXTest extends AbstractInstructionTest {
         assertTrue(PF_ERROR, cpu.getFlagValue('P'));
 
         cpu.startDebug(); // MOV cx, 0xFFFF  ; Prepare for ZF
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[0], (byte) 0xFF);
-        assertEquals(CX_ERROR, cpu.getRegisterValue("CX")[1], (byte) 0xFF);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[0]);
+        assertEquals(CX_ERROR, (byte) 0xFF, cpu.getRegisterValue("CX")[1]);
         cpu.startDebug(); // INC cx          ; Increment CX, test ZF
         assertFalse(OF_ERROR, cpu.getFlagValue('O'));
         assertFalse(SF_ERROR, cpu.getFlagValue('S'));
