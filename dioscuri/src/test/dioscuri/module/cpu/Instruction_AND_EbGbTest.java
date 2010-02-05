@@ -1,5 +1,6 @@
 package dioscuri.module.cpu;
 
+import dioscuri.AbstractInstructionTest;
 import org.junit.Test;
 
 import java.util.logging.Level;

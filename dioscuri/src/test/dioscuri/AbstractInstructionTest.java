@@ -1,7 +1,7 @@
-package dioscuri.module.cpu;
+package dioscuri;
 
-import dioscuri.Emulator;
-import dioscuri.GUI;
+import dioscuri.config.ConfigController;
+import dioscuri.module.cpu.CPU;
 import dioscuri.module.memory.Memory;
 
 import javax.swing.*;
@@ -15,11 +15,11 @@ public abstract class AbstractInstructionTest {
 
     public static Logger logger = Logger.getLogger(AbstractInstructionTest.class.getClass().getName());
 
-    final Emulator emu;
-    final CPU cpu;
-    final Memory mem;
+    public final Emulator emu;
+    public final CPU cpu;
+    public final Memory mem;
 
-    final String rootTestASMfiles = "src/test-asm/";
+    private final String rootTestASMfiles = "src/test-asm/";
 
     /**
      * @param startAddress
@@ -29,9 +29,11 @@ public abstract class AbstractInstructionTest {
     public AbstractInstructionTest(final int startAddress, final String testASMfilename) throws Exception {
         // initialize Emulator, Memory and CPU 
         emu = new Emulator(new DummyGUI());
+        emu.emuConfig = ConfigController.loadFromXML(new File("C:/BK/IntelliJ/dioscuri_043/config/DioscuriConfig.xml")); // TODO: use relative path
+        emu.moduleConfig = emu.emuConfig.getArchitecture().getModules();
         emu.setupEmu();
-        mem = (Memory) emu.getModules().getModule("memory");
-        cpu = (CPU) emu.getModules().getModule("cpu");
+        mem = (Memory)emu.getModules().getModule("memory");
+        cpu = (CPU)emu.getModules().getModule("cpu");
         cpu.setDebugMode(true);
 
         // load the assembly test in an InputStream

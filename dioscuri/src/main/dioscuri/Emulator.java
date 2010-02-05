@@ -114,8 +114,8 @@ public class Emulator implements Runnable {
     private ArrayList<HardwareComponent> hwComponents;
     private IO io;
     private GUI gui;
-    private dioscuri.config.Emulator emuConfig;
-    private dioscuri.config.Emulator.Architecture.Modules moduleConfig;
+    protected dioscuri.config.Emulator emuConfig;
+    protected dioscuri.config.Emulator.Architecture.Modules moduleConfig;
 
     // Toggles
     private boolean isAlive;
@@ -202,7 +202,7 @@ public class Emulator implements Runnable {
         int total = 0;
         int loop = 0;
 
-        while (isAlive == true) {
+        while (isAlive) {
             // Start emulator, start all threads
 
             // Get the module settings from the configuration file
@@ -753,7 +753,7 @@ public class Emulator implements Runnable {
         }
 
         // Create RAM
-        if (cpu32bit) {
+        if (cpu32bit) {       
             PhysicalAddressSpace physicalAddr = new PhysicalAddressSpace();
             LinearAddressSpace linearAddr = new LinearAddressSpace();
             for (int i = 0; i < PhysicalAddressSpace.SYS_RAM_SIZE; i += AddressSpace.BLOCK_SIZE)
