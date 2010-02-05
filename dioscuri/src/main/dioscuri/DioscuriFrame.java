@@ -39,53 +39,24 @@
 
 package dioscuri;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+import dioscuri.config.ConfigController;
+import dioscuri.config.SelectionConfigDialog;
+import dioscuri.datatransfer.TextTransfer;
+import org.apache.commons.cli.*;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.event.MouseInputListener;
+import java.awt.*;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.ImageIcon;
-import javax.swing.JComponent;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.KeyStroke;
-import javax.swing.border.Border;
-import javax.swing.event.MouseInputListener;
-
-import dioscuri.config.ConfigController;
-import dioscuri.config.SelectionConfigDialog;
-import dioscuri.datatransfer.TextTransfer;
-import org.apache.commons.cli.*;
 
 /**
  * 
@@ -280,8 +251,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     public DioscuriFrame(String[] arguments) throws ParseException {
         // Define GUI
         this();
-
-        logger.log(Level.SEVERE, "[gui] executing from: "+GUI.EXE_PATH);
 
         // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
         boolean testing = false;
