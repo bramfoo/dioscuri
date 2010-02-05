@@ -5267,4 +5267,13 @@ public class CPU extends ModuleCPU {
     public void setCpuInstructionDebug(boolean cpuInstructionDebug) {
         this.cpuInstructionDebug = cpuInstructionDebug;
     }
+
+    // TODO return debug info
+    public void startDebug() {
+        this.start();
+    }
+
+    public String registerDump() {
+        return "REG DUMP"; // TODO
+    }
 }
