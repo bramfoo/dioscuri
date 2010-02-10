@@ -72,7 +72,7 @@ public class Util {
             false, true };
 
     // Temporary flag variables
-    protected static boolean cf;
+    protected static boolean cf = false;
 
     // Temporary registers
     // protected static byte[] result = new byte[2];
@@ -86,8 +86,8 @@ public class Util {
     private final static int CARRY_FLAG = 1;
 
     // Constructor
-    public Util() {
-        cf = false;
+    private Util() {
+        //cf = false;
     }
 
     // Methods

@@ -39,22 +39,15 @@
 
 package dioscuri.module.cpu;
 
-import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.CPUInstructionException;
 import dioscuri.exception.CPU_DE_Exception;
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleClock;
-import dioscuri.module.ModuleDMA;
-import dioscuri.module.ModuleDevice;
-import dioscuri.module.ModuleMemory;
-import dioscuri.module.ModuleMotherboard;
-import dioscuri.module.ModulePIC;
+import dioscuri.module.*;
+
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of an Intel 8086 hardware CPU module.
@@ -5265,7 +5258,10 @@ public class CPU extends ModuleCPU {
         this.cpuInstructionDebug = cpuInstructionDebug;
     }
 
-    // TODO return debug info
+    /**
+     * 
+     * @return
+     */
     public String startDebug() {
         StringBuilder b = new StringBuilder();
         b.append("***************************\nBEFORE\n").append(registerDump());
@@ -5280,46 +5276,46 @@ public class CPU extends ModuleCPU {
      */
     public String registerDump() {
         StringBuilder b = new StringBuilder();
-        b.append(toHexString(ax)).append('\n');
-        b.append(toHexString(eax)).append('\n');
-        b.append(toHexString(bx)).append('\n');
-        b.append(toHexString(ebx)).append('\n');
-        b.append(toHexString(cx)).append('\n');
-        b.append(toHexString(ecx)).append('\n');
-        b.append(toHexString(dx)).append('\n');
-        b.append(toHexString(edx)).append('\n');
-        b.append(toHexString(sp)).append('\n');
-        b.append(toHexString(esp)).append('\n');
-        b.append(toHexString(bp)).append('\n');
-        b.append(toHexString(ebp)).append('\n');
-        b.append(toHexString(si)).append('\n');
-        b.append(toHexString(esi)).append('\n');
-        b.append(toHexString(di)).append('\n');
-        b.append(toHexString(edi)).append('\n');
-        b.append(toHexString(cs)).append('\n');
-        b.append(toHexString(ds)).append('\n');
-        b.append(toHexString(ss)).append('\n');
-        b.append(toHexString(es)).append('\n');
-        b.append(toHexString(ip)).append('\n');
-        b.append(toHexString(oldIP)).append('\n');
-        b.append(toHexString(flags)).append('\n');
-        b.append(toHexString(cr0)).append('\n');
-        b.append(toHexString(cr1)).append('\n');
-        b.append(toHexString(cr2)).append('\n');
-        b.append(toHexString(cr3)).append('\n');
-        b.append(toHexString(cr4)).append('\n');
-        b.append(toHexString(gdtr)).append('\n');
-        b.append(toHexString(idtr)).append('\n');
-        b.append(toHexString(ldtr)).append('\n');
+        b.append("ax="+toHexString(ax)).append('\n');
+        b.append("eax="+toHexString(eax)).append('\n');
+        b.append("bx="+toHexString(bx)).append('\n');
+        b.append("ebx="+toHexString(ebx)).append('\n');
+        b.append("cx="+toHexString(cx)).append('\n');
+        b.append("ecx="+toHexString(ecx)).append('\n');
+        b.append("dx="+toHexString(dx)).append('\n');
+        b.append("edx="+toHexString(edx)).append('\n');
+        b.append("sp="+toHexString(sp)).append('\n');
+        b.append("esp="+toHexString(esp)).append('\n');
+        b.append("bp="+toHexString(bp)).append('\n');
+        b.append("ebp="+toHexString(ebp)).append('\n');
+        b.append("si="+toHexString(si)).append('\n');
+        b.append("esi="+toHexString(esi)).append('\n');
+        b.append("di="+toHexString(di)).append('\n');
+        b.append("edi="+toHexString(edi)).append('\n');
+        b.append("cs="+toHexString(cs)).append('\n');
+        b.append("ds="+toHexString(ds)).append('\n');
+        b.append("ss="+toHexString(ss)).append('\n');
+        b.append("es="+toHexString(es)).append('\n');
+        b.append("ip="+toHexString(ip)).append('\n');
+        b.append("oldIP="+toHexString(oldIP)).append('\n');
+        b.append("flags="+toHexString(flags)).append('\n');
+        b.append("cr0="+toHexString(cr0)).append('\n');
+        b.append("cr1="+toHexString(cr1)).append('\n');
+        b.append("cr2="+toHexString(cr2)).append('\n');
+        b.append("cr3="+toHexString(cr3)).append('\n');
+        b.append("cr4="+toHexString(cr4)).append('\n');
+        b.append("gdtr="+toHexString(gdtr)).append('\n');
+        b.append("idtr="+toHexString(idtr)).append('\n');
+        b.append("ldtr="+toHexString(ldtr)).append('\n');
         return b.toString();
     }
 
     private String toHexString(byte[] values) {
         if(values == null) return "<<NULL>>";
         if(values.length == 0) return "[]";
-        StringBuilder b = new StringBuilder("["+Integer.toHexString(values[0]));
+        StringBuilder b = new StringBuilder("["+byteToHex(values[0]));
         for(int i = 1; i < values.length; i++) {
-            b.append(", "+Integer.toHexString(values[i]));
+            b.append(", "+byteToHex(values[i]));
         }
         return b.toString()+"]";
     }
@@ -5332,5 +5328,15 @@ public class CPU extends ModuleCPU {
             b.append(", "+(values[i] ? "1" : "0"));
         }
         return b.toString()+"]";
+    }
+
+    private String byteToHex(byte b) {
+        String intHex = Integer.toHexString(b);
+        if(intHex.length() == 1) {
+            intHex = "0"+intHex;
+        } else {
+            intHex = intHex.substring(intHex.length()-2);
+        }
+        return "0x"+intHex;
     }
 }

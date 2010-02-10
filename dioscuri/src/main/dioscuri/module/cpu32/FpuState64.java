@@ -27,6 +27,7 @@ package dioscuri.module.cpu32;
 
 //import java.math.BigDecimal;
 //import org.jpc.emulator.processor.*;
+
 import java.io.*;
 
 public class FpuState64 extends FpuState {
@@ -56,6 +57,16 @@ public class FpuState64 extends FpuState {
     private boolean underflow;
     private boolean precision;
     private boolean stackFault;
+
+    // constructor
+    public FpuState64(Processor owner) {
+        cpu = owner;
+
+        data = new double[STACK_DEPTH];
+        tag = new int[STACK_DEPTH];
+        specialTag = new int[STACK_DEPTH];
+        init();
+    }
 
     public void dumpState(DataOutput output) throws IOException {
         output.writeInt(statusWord);
@@ -285,16 +296,6 @@ public class FpuState64 extends FpuState {
         roundingControl = FPU_ROUNDING_CONTROL_EVEN;
     }
 
-    // constructor
-
-    public FpuState64(Processor owner) {
-        cpu = owner;
-
-        data = new double[STACK_DEPTH];
-        tag = new int[STACK_DEPTH];
-        specialTag = new int[STACK_DEPTH];
-        init();
-    }
 
     public void init() {
         // tag word (and non-x87 special tags)
@@ -357,7 +358,7 @@ public class FpuState64 extends FpuState {
             return FPU_SPECIAL_TAG_NAN; // QNaN by default
         else if (Double.isInfinite(x))
             return FPU_SPECIAL_TAG_INFINITY;
-        // else if (Math.abs(x) < UNDERFLOW_THRESHOLD)
+            // else if (Math.abs(x) < UNDERFLOW_THRESHOLD)
         else if (isDenormal(x))
             return FPU_SPECIAL_TAG_DENORMAL;
         else
