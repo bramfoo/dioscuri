@@ -739,6 +739,8 @@ public class Emulator implements Runnable {
         // pointless without one, really)
         cpu32bit = moduleConfig.getCpu().isCpu32Bit();
 
+        this.getGui().setCpyTypeLabel(cpu32bit);
+
         // Add clock first, as it is needed for 32-bit RAM
         Clock clk = new Clock(this);
         modules.addModule(clk);

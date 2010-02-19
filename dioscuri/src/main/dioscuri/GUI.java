@@ -89,21 +89,23 @@ public interface GUI {
     public static final int KEY_RELEASED = 1;
     public static final int KEY_TYPED = 2;
 
-    public JFrame asJFrame();
+    JFrame asJFrame();
 
-    public boolean saveXML(Emulator params);
+    boolean saveXML(Emulator params);
 
-    public Emulator getEmuConfig();
+    Emulator getEmuConfig();
 
-    public String getConfigFilePath();
+    String getConfigFilePath();
 
-    public void notifyGUI(int emuProcess);
+    void notifyGUI(int emuProcess);
 
-    public void updateGUI(int activity);
+    void updateGUI(int activity);
 
-    public void setScreen(JPanel screen);
+    void setScreen(JPanel screen);
 
-    public boolean setMouseEnabled();
+    boolean setMouseEnabled();
 
-    public boolean setMouseDisabled();
+    boolean setMouseDisabled();
+
+    void setCpyTypeLabel(boolean cpu32bit);
 }

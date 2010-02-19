@@ -96,6 +96,11 @@ public abstract class AbstractInstructionTest {
         public boolean setMouseDisabled() {
             return false;  //To change body of implemented methods use File | Settings | File Templates.
         }
+
+        @Override
+        public void setCpyTypeLabel(boolean cpu32bit) {
+            //To change body of implemented methods use File | Settings | File Templates.
+        }
     }
 
 }

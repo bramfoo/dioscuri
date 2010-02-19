@@ -117,6 +117,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     // File selection
     private JFileChooser fcFloppy;
 
+    private JLabel cpyTypeLabel;
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.gui");
 
@@ -135,6 +137,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     // command line parsing
     static Options commandLineOptions;
+
     static {
         commandLineOptions = new Options();
 
@@ -441,6 +444,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         statusPanel.add(floppyAPanel);
         statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         statusPanel.add(hd1Panel);
+
+        cpyTypeLabel = new JLabel("");
+        statusPanel.add(cpyTypeLabel);
     }
 
     /**
@@ -618,6 +624,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             floppyAPanel.setVisible(false);
             hd1Panel.setVisible(false);
             miEditConfig.setEnabled(true);
+            cpyTypeLabel.setText("");
             break;
 
         case EMU_PROCESS_RESET:
@@ -1091,4 +1098,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         return this;
     }
 
+    @Override
+    public void setCpyTypeLabel(boolean cpu32bit) {
+        cpyTypeLabel.setText("  " + (cpu32bit ? "32 bit" : "16 bit"));
+    }
 }
