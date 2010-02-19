@@ -44,23 +44,16 @@
  */
 package dioscuri.config;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import dioscuri.GUI;
+import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
+import dioscuri.util.Utilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
-
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import dioscuri.GUI;
-import dioscuri.config.Emulator;
-import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 
 @SuppressWarnings("serial")
 public class AtaConfigDialog extends ConfigurationDialog {
@@ -101,7 +94,8 @@ public class AtaConfigDialog extends ConfigurationDialog {
         int cylinders = hddConfig.getCylinders().intValue();
         int heads = hddConfig.getHeads().intValue();
         int sectors = hddConfig.getSectorspertrack().intValue();
-        String imageFormatPath = hddConfig.getImagefilepath();
+        //String imageFormatPath = hddConfig.getImagefilepath();
+        String imageFormatPath = Utilities.resolvePathAsString(hddConfig.getImagefilepath());
 
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(isEnabled);

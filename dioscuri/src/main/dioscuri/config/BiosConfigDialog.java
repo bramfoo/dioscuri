@@ -44,23 +44,16 @@
  */
 package dioscuri.config;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import dioscuri.GUI;
+import dioscuri.config.Emulator.Architecture.Modules.Bios;
+import dioscuri.util.Utilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
-
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import dioscuri.GUI;
-import dioscuri.config.Emulator;
-import dioscuri.config.Emulator.Architecture.Modules.Bios;
 
 @SuppressWarnings("serial")
 public class BiosConfigDialog extends ConfigurationDialog {
@@ -87,8 +80,8 @@ public class BiosConfigDialog extends ConfigurationDialog {
         emuConfig = parent.getEmuConfig();
         Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
 
-        String sysPath = bios.getSysbiosfilepath();
-        String vgaPath = bios.getVgabiosfilepath();
+        String sysPath = Utilities.resolvePathAsString(bios.getSysbiosfilepath());
+        String vgaPath = Utilities.resolvePathAsString(bios.getVgabiosfilepath());
 
         Integer ramSysBiosAddressStart = bios.getRamaddresssysbiosstartdec()
                 .intValue();

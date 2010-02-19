@@ -160,7 +160,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Load logging.properties
         try {
             // Check for a local system logging.properties file
-            File localLogFile = new File(EMULATOR_LOGGING_PROPERTIES);
+            File localLogFile = new File(Constants.EMULATOR_LOGGING_PROPERTIES);
             if (localLogFile.exists() && localLogFile.canRead()) {
                 LogManager.getLogManager().readConfiguration(
                         new BufferedInputStream(new FileInputStream(
@@ -195,7 +195,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             }
         });
 
-        super.setIconImage(new ImageIcon(EMULATOR_ICON_IMAGE).getImage());
+        super.setIconImage(new ImageIcon(Constants.EMULATOR_ICON_IMAGE).getImage());
 
         // Create menubar
         this.initMenuBar();
@@ -248,7 +248,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         autoshutdown = false;
 
         // Default location, outside jar
-        configFilePath = CONFIG_XML;
+        configFilePath = Constants.CONFIG_XML;
     }
 
     public DioscuriFrame(String[] arguments) throws ParseException {
@@ -455,7 +455,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @return String containing name
      */
     public String getEmulatorName() {
-        return EMULATOR_NAME;
+        return Constants.EMULATOR_NAME;
     }
 
     /**
@@ -464,7 +464,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @return String containing version
      */
     public String getEmulatorVersion() {
-        return EMULATOR_VERSION;
+        return Constants.EMULATOR_VERSION;
     }
 
     /**
@@ -473,7 +473,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @return String containing date
      */
     public String getEmulatorDate() {
-        return EMULATOR_DATE;
+        return Constants.EMULATOR_DATE;
     }
 
     /**
@@ -486,7 +486,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         StartupPanel startup = new StartupPanel();
         startup.setSize(720, 400);
 
-        ImageIcon pic = new ImageIcon(EMULATOR_SPLASHSCREEN_IMAGE);
+        ImageIcon pic = new ImageIcon(Constants.EMULATOR_SPLASHSCREEN_IMAGE);
         startup.add(new JLabel(pic));
 
         return startup;
@@ -818,10 +818,10 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                 try {
                     if (!config.exists() || !config.canRead()) {
                         InputStream fallBack = GUI.class
-                                .getResourceAsStream(CONFIG_XML);
+                                .getResourceAsStream(Constants.CONFIG_XML);
                         emuConfig = ConfigController.loadFromXML(fallBack);
                         readOnlyConfig = true;
-                        configFilePath = CONFIG_XML;
+                        configFilePath = Constants.CONFIG_XML;
                         fallBack.close();
                     } else {
                         emuConfig = ConfigController.loadFromXML(config);
@@ -1022,9 +1022,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         String bar = "+-------------------------------------------------------------------------------------+";
         return
                 "\r\n" + bar +
-                String.format("%n| %1$-" + (bar.length()-4) + "s |%n", EMULATOR_NAME) +
-                String.format("| %1$-" + (bar.length()-4) + "s |%n", "Copyright (C) "+EMULATOR_DATE) +
-                String.format("| %1$-" + (bar.length()-4) + "s |%n", EMULATOR_CREATOR) +
+                String.format("%n| %1$-" + (bar.length()-4) + "s |%n", Constants.EMULATOR_NAME) +
+                String.format("| %1$-" + (bar.length()-4) + "s |%n", "Copyright (C) "+ Constants.EMULATOR_DATE) +
+                String.format("| %1$-" + (bar.length()-4) + "s |%n", Constants.EMULATOR_CREATOR) +
                 bar + "\r\n";
     }
 

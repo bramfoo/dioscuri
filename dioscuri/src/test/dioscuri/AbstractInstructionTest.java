@@ -29,7 +29,7 @@ public abstract class AbstractInstructionTest {
     public AbstractInstructionTest(final int startAddress, final String testASMfilename) throws Exception {
         // initialize Emulator, Memory and CPU 
         emu = new Emulator(new DummyGUI());
-        emu.emuConfig = ConfigController.loadFromXML(new File(GUI.CONFIG_XML));
+        emu.emuConfig = ConfigController.loadFromXML(new File(Constants.CONFIG_XML));
         emu.moduleConfig = emu.emuConfig.getArchitecture().getModules();
         emu.setupEmu();
         mem = (Memory)emu.getModules().getModule("memory");
@@ -69,7 +69,7 @@ public abstract class AbstractInstructionTest {
 
         @Override
         public String getConfigFilePath() {
-            return GUI.CONFIG_XML;
+            return Constants.CONFIG_XML;
         }
 
         @Override

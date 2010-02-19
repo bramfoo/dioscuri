@@ -44,25 +44,16 @@
  */
 package dioscuri.config;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import dioscuri.GUI;
+import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
+import dioscuri.util.Utilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-
-import dioscuri.GUI;
-import dioscuri.config.Emulator;
-import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 
 @SuppressWarnings("serial")
 public class FdcConfigDialog extends ConfigurationDialog {
@@ -97,7 +88,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
         String driveLetterIndex = drive.getDriveletter();
         String diskFormatIndex = drive.getDiskformat();
         boolean writeProtected = drive.isWriteprotected();
-        String imageFormatPath = drive.getImagefilepath();
+        String imageFormatPath = Utilities.resolvePathAsString(drive.getImagefilepath());
 
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(enabled);

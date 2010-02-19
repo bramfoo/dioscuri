@@ -39,54 +39,21 @@
 
 package dioscuri;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.image.BufferedImage;
-import java.io.BufferedInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.config.ConfigController;
-import dioscuri.config.ModuleType;
-import dioscuri.config.Emulator.Architecture.Modules.Bios;
 import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
+import dioscuri.config.Emulator.Architecture.Modules.Bios;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
+import dioscuri.config.ModuleType;
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleATA;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleDevice;
-import dioscuri.module.ModuleFDC;
-import dioscuri.module.ModuleKeyboard;
-import dioscuri.module.ModuleMemory;
-import dioscuri.module.ModuleMouse;
-import dioscuri.module.ModulePIT;
-import dioscuri.module.ModuleScreen;
-import dioscuri.module.ModuleVideo;
+import dioscuri.module.*;
 import dioscuri.module.ata.ATA;
 import dioscuri.module.ata.ATAConstants;
 import dioscuri.module.ata.ATATranslationType;
 import dioscuri.module.bios.BIOS;
 import dioscuri.module.clock.Clock;
 import dioscuri.module.cpu.CPU;
-import dioscuri.module.cpu32.AddressSpace;
-import dioscuri.module.cpu32.DMAController;
-import dioscuri.module.cpu32.HardwareComponent;
-import dioscuri.module.cpu32.IOPortHandler;
-import dioscuri.module.cpu32.LazyMemory;
-import dioscuri.module.cpu32.LinearAddressSpace;
-import dioscuri.module.cpu32.ModeSwitchException;
-import dioscuri.module.cpu32.PhysicalAddressSpace;
-import dioscuri.module.cpu32.Processor;
-import dioscuri.module.cpu32.SystemBIOS;
-import dioscuri.module.cpu32.VGABIOS;
+import dioscuri.module.cpu32.*;
 import dioscuri.module.dma.DMA;
 import dioscuri.module.fdc.FDC;
 import dioscuri.module.keyboard.Keyboard;
@@ -102,6 +69,15 @@ import dioscuri.module.rtc.RTC;
 import dioscuri.module.screen.Screen;
 import dioscuri.module.serialport.SerialPort;
 import dioscuri.module.video.Video;
+import dioscuri.util.Utilities;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Top class owning all classes of the emulator. Entry point
@@ -213,16 +189,14 @@ public class Emulator implements Runnable {
                             .log(Level.WARNING,
                                     "[emu] No local config file accessible, using read-only jar settings");
                     InputStream fallBack = GUI.class
-                            .getResourceAsStream(GUI.CONFIG_XML);
+                            .getResourceAsStream(Constants.CONFIG_XML);
                     emuConfig = ConfigController.loadFromXML(fallBack);
                     fallBack.close();
                 } else {
                     emuConfig = ConfigController.loadFromXML(configFile);
                 }
                 moduleConfig = emuConfig.getArchitecture().getModules();
-                logger.log(Level.SEVERE, "[emu] Config contents: "
-                        + moduleConfig.getFdc().getFloppy().get(0)
-                                .getImagefilepath());
+                logger.log(Level.SEVERE, "[emu] Config contents: "+ moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "[emu] Config file not readable: "
                         + ex.toString());
@@ -1082,10 +1056,10 @@ public class Emulator implements Runnable {
             SystemBIOS sysBIOS;
             VGABIOS vgaBIOS;
             try {
+                System.err.println(">>> Constants.BOCHS_BIOS -> "+Constants.BOCHS_BIOS);
                 // open input stream
                 BufferedInputStream bdis = new BufferedInputStream(
-                        new DataInputStream(new FileInputStream(new File(
-                                "images/bios/BIOS-bochs-latest"))));
+                        new DataInputStream(new FileInputStream(new File(Constants.BOCHS_BIOS))));
 
                 // read all bytes (as unsigned) in byte array
                 byte[] byteArray = new byte[bdis.available()];
@@ -1100,8 +1074,7 @@ public class Emulator implements Runnable {
 
                 // open input stream
                 BufferedInputStream bdis2 = new BufferedInputStream(
-                        new DataInputStream(new FileInputStream(new File(
-                                "images/bios/VGABIOS-lgpl-latest"))));
+                        new DataInputStream(new FileInputStream(new File(Constants.VGA_BIOS))));
 
                 // read all bytes (as unsigned) in byte array
                 byte[] byteArray2 = new byte[bdis2.available()];
@@ -1133,15 +1106,11 @@ public class Emulator implements Runnable {
             BIOS bios = (BIOS) modules.getModule(ModuleType.BIOS.toString());
 
             // FIXME: Do iteration over BIOS list???
-            String sysBiosFilePath = moduleConfig.getBios().get(0)
-                    .getSysbiosfilepath();
-            String vgaBiosFilePath = moduleConfig.getBios().get(0)
-                    .getVgabiosfilepath();
+            String sysBiosFilePath = Utilities.resolvePathAsString(moduleConfig.getBios().get(0).getSysbiosfilepath());
+            String vgaBiosFilePath = Utilities.resolvePathAsString(moduleConfig.getBios().get(0).getVgabiosfilepath());
 
-            int ramAddressSysBiosStart = moduleConfig.getBios().get(0)
-                    .getRamaddresssysbiosstartdec().intValue();
-            int ramAddressVgaBiosStart = moduleConfig.getBios().get(0)
-                    .getRamaddressvgabiosstartdec().intValue();
+            int ramAddressSysBiosStart = moduleConfig.getBios().get(0).getRamaddresssysbiosstartdec().intValue();
+            int ramAddressVgaBiosStart = moduleConfig.getBios().get(0).getRamaddressvgabiosstartdec().intValue();
 
             try {
                 // Fetch System BIOS binaries from file system and store it in
@@ -1230,7 +1199,7 @@ public class Emulator implements Runnable {
             String diskformat = floppyConfig.getDiskformat();
             byte carrierType = 0x0;
             boolean writeProtected = floppyConfig.isWriteprotected();
-            String imageFilePath = floppyConfig.getImagefilepath();
+            String imageFilePath = Utilities.resolvePathAsString(floppyConfig.getImagefilepath());
 
             if (diskformat.equals("360K"))
                 carrierType = 0x01;
@@ -1285,8 +1254,7 @@ public class Emulator implements Runnable {
 
         // FIXME: loop on number of disks defined
         for (int i = 0; i < 1; i++) {
-            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive()
-                    .get(0);
+            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(0);
             boolean enabled = hddConfig.isEnabled();
             int ideChannelIndex = hddConfig.getChannelindex().intValue();
             boolean isMaster = hddConfig.isMaster();
@@ -1294,7 +1262,9 @@ public class Emulator implements Runnable {
             int numCylinders = hddConfig.getCylinders().intValue();
             int numHeads = hddConfig.getHeads().intValue();
             int numSectorsPerTrack = hddConfig.getSectorspertrack().intValue();
-            String imageFilePath = hddConfig.getImagefilepath();
+
+            //String imageFilePath = hddConfig.getImagefilepath();
+            String imageFilePath = Utilities.resolvePathAsString(hddConfig.getImagefilepath());
 
             if (enabled && ideChannelIndex >= 0 && ideChannelIndex < 4) {
                 if (autoDetectCylinders) {
