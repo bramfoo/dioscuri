@@ -537,7 +537,7 @@ public class Motherboard extends ModuleMotherboard {
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getByte) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -600,7 +600,7 @@ public class Motherboard extends ModuleMotherboard {
             } catch (ModuleUnknownPort e) {
                 // Print warning
                 logger
-                        .log(Level.WARNING, "["
+                        .log(Level.INFO, "["
                                 + MODULE_TYPE
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
@@ -610,14 +610,14 @@ public class Motherboard extends ModuleMotherboard {
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  Requested I/O port (0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ", setByte) is not available/registered.");
-            // FIXME: Add proper error handling for unknown I/O ports, no value
-            // is passed forward
-            // throw new ModuleException("Requested I/O port [" + portAddress +
-            // "] (setByte) is not available.");
+            // TODO: Add proper error handling for unknown I/O ports, no value
+            // TODO: is passed forward
+            // TODO: throw new ModuleException("Requested I/O port [" + portAddress +
+            // TODO: "] (setByte) is not available.");
         }
     }
 

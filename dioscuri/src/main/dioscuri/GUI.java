@@ -94,5 +94,5 @@ public interface GUI {
 
     boolean setMouseDisabled();
 
-    void setCpyTypeLabel(boolean cpu32bit);
+    void setCpyTypeLabel(String cpuType);
 }

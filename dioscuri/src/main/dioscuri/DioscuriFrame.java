@@ -42,7 +42,6 @@ package dioscuri;
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
-import org.apache.commons.cli.*;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -51,9 +50,11 @@ import javax.swing.event.MouseInputListener;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -126,64 +127,21 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private int guiWidth;
     private int guiHeight;
 
-    // Command line parameter settings
-    private boolean guiVisible;
     private String configFilePath;
-    private boolean autorun;
-    private boolean autoshutdown;
 
     // Emulator configuration
     dioscuri.config.Emulator emuConfig;
 
-    // command line parsing
-    static Options commandLineOptions;
+    // command line parsing options
+    CommandLineInterface cli;
 
-    static {
-        commandLineOptions = new Options();
-
-        commandLineOptions.addOption("?", "help", false, "print this message");
-        commandLineOptions.addOption("h", "hide", false, "hide the GUI");
-        commandLineOptions.addOption("a", "autorun", false, "emulator will directly start emulation process");
-        commandLineOptions.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
-        commandLineOptions.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
-
-        Option config = new Option("c", "config", true, "use a custom config file");
-        config.setArgName("file");
-        commandLineOptions.addOption(config);
-    }
-
-    /**
-     * Main entry point. 
-     * @param args containing command line arguments
-     */
-    public static void main(String[] args) throws ParseException {
-        // Load logging.properties
-        try {
-            // Check for a local system logging.properties file
-            File localLogFile = new File(Constants.EMULATOR_LOGGING_PROPERTIES);
-            if (localLogFile.exists() && localLogFile.canRead()) {
-                LogManager.getLogManager().readConfiguration(
-                        new BufferedInputStream(new FileInputStream(
-                                localLogFile)));
-                logger.log(Level.INFO, "Logging.properties loaded from local file " + localLogFile);
-            } else {
-                logger.log(Level.WARNING, "No Logging.properties file found locally");
-            }
-        } catch (Exception e) {
-            System.out.println("Error initialising the logging system: " + e.toString());
-        }
-
-        // Create GUI
-        new DioscuriFrame(args);
-    }
-
-    // Constructor
+    // Constructors
     /**
      * Class constructor
      */
     public DioscuriFrame() {
         // Print startup information of modular emulator
-        logger.log(Level.SEVERE, this.toString());
+        logger.log(Level.INFO, this.toString());
 
         // Create graphical user interface
 
@@ -243,58 +201,29 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // component-traversals.
         super.setFocusTraversalKeysEnabled(false);
 
-        guiVisible = true;
-        autorun = false;
-        autoshutdown = false;
+        //guiVisible = true;
+        //autorun = false;
+        //autoshutdown = false;
 
         // Default location, outside jar
-        configFilePath = Constants.CONFIG_XML;
+        // TODO configFilePath = Constants.CONFIG_XML;
     }
 
-    public DioscuriFrame(String[] arguments) throws ParseException {
+    public DioscuriFrame(String[] arguments) throws Exception {
         // Define GUI
         this();
 
-        // create the command line parameter options, see: http://commons.apache.org/cli/usage.html
-        boolean testing = false;
+        cli = new CommandLineInterface(arguments);
+        
+        configFilePath = cli.configFilePath;
 
-        // create the command line parser
-        CommandLineParser parser = new PosixParser();
-        CommandLine commandLine = parser.parse(commandLineOptions, arguments);
-
-        logger.log(Level.SEVERE, "[gui] parsed: "+Arrays.toString(commandLine.getOptions()));
-
-        // check for single parameters (without a value)
-        testing = commandLine.hasOption("e");
-        guiVisible = commandLine.hasOption("h") == false;
-        autorun = commandLine.hasOption("a");
-        autoshutdown = commandLine.hasOption("s");
-
-        if(commandLine.hasOption("?")) {
-            HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar Dioscuri.jar [OPTIONS]", commandLineOptions);
-        }
-
-        if(commandLine.hasOption("c")) {
-            File cfg = new File(commandLine.getOptionValue("c"));
-            if(cfg == null || !cfg.exists()) {
-                throw new RuntimeException("config file '"+cfg.getName()+
-                        "' does not exist in folder '"+cfg.getParentFile().getAbsolutePath()+"'");
-            }
-            configFilePath = cfg.getAbsolutePath();
-        }
-
-        //  used for unit tests so that the GUI does not show up 
-        if(testing) return;
-
-        // Perform argument actions
         // Show / hide GUI (based on command line parameter)
-        this.setVisible(guiVisible);
-        if(guiVisible) this.requestFocus();
-        String output = guiVisible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden";
-        logger.log(Level.SEVERE, output);
+        this.setVisible(cli.visible);
+        if(cli.visible) {
+            logger.log(Level.INFO, cli.visible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden");
+        }
 
-        if(autorun) {
+        if(cli.autorun) {
             emu = new Emulator(this);
             new Thread(emu).start();
             this.updateGUI(EMU_PROCESS_START);
@@ -520,7 +449,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         mouseHandler = new MouseHandler();
         screen.addMouseListener(mouseHandler);
         screen.addMouseMotionListener(mouseHandler);
-        logger.log(Level.SEVERE, "[gui] Mouse in GUI enabled");
+        logger.log(Level.INFO, "[gui] Mouse in GUI enabled");
 
         return true;
     }
@@ -537,13 +466,12 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             screen.removeMouseMotionListener(mouseHandler);
             mouseHandler.setMouseCursorVisibility(true);
             mouseHandler = null;
-            logger.log(Level.SEVERE, "[gui] Mouse in GUI disabled");
+            logger.log(Level.INFO, "[gui] Mouse in GUI disabled");
 
             return true;
         }
 
-        logger.log(Level.SEVERE,
-                "[gui] Mouse does not exist or is already disabled");
+        logger.log(Level.INFO, "[gui] Mouse does not exist or is already disabled");
 
         return true;
     }
@@ -814,30 +742,18 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             this.updateGUI(EMU_DEVICES_MOUSE_DISABLED);
         } else if (c == (JComponent) miEditConfig) {
             if (emuConfig == null) {
-                File config = new File(configFilePath);
+                File config = new File(this.configFilePath);
                 try {
-                    if (!config.exists() || !config.canRead()) {
-                        InputStream fallBack = GUI.class
-                                .getResourceAsStream(Constants.CONFIG_XML);
-                        emuConfig = ConfigController.loadFromXML(fallBack);
-                        readOnlyConfig = true;
-                        configFilePath = Constants.CONFIG_XML;
-                        fallBack.close();
-                    } else {
-                        emuConfig = ConfigController.loadFromXML(config);
-                    }
+                    emuConfig = ConfigController.loadFromXML(config);
                 } catch (Exception ex) {
-                    logger.log(Level.SEVERE, "[GUI] Config file not readable: "
-                            + ex.toString());
+                    logger.log(Level.SEVERE, "[GUI] Config file not readable: " + ex.toString());
                     return;
                 }
             }
 
             // Load edit screen or show warning config is read-only
             if (readOnlyConfig) {
-                JOptionPane
-                        .showMessageDialog(
-                                this,
+                JOptionPane.showMessageDialog(this,
                                 "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
                                 "Configuration", JOptionPane.WARNING_MESSAGE);
             } else {
@@ -845,9 +761,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             }
         } else if (c == (JComponent) miHelpAbout) {
             // Show About dialog
-            JOptionPane
-                    .showMessageDialog(
-                            this,
+            JOptionPane.showMessageDialog(this,
                             this.getEmulatorName()
                                     + "\n"
                                     + "Version "
@@ -967,9 +881,14 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         return emuConfig;
     }
 
+    @Override
+    public String getConfigFilePath() {
+        return this.configFilePath;
+    }
+
     public boolean saveXML(dioscuri.config.Emulator emuObject) {
         try {
-            ConfigController.saveToXML(emuObject, new File(configFilePath));
+            ConfigController.saveToXML(emuObject, new File(this.configFilePath));
         } catch (Exception e) {
             logger.log(Level.SEVERE, " [gui] Failed to save config file");
             return false;
@@ -987,7 +906,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     public void notifyGUI(int emulatorStatus) {
         // Check which kind of notification is given
         if (emulatorStatus == GUI.EMU_PROCESS_STOP) {
-            if (this.autoshutdown == true) {
+            if (cli.autoshutdown) {
                 // Exit application
                 this.exitDioscuri();
             } else {
@@ -1090,16 +1009,50 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         }
     }
     
-    public String getConfigFilePath() {
-        return configFilePath;
-    }
+    //public String getConfigFilePath() {
+    //    return configFilePath;
+    //}
 
     public JFrame asJFrame() {
         return this;
     }
 
     @Override
-    public void setCpyTypeLabel(boolean cpu32bit) {
-        cpyTypeLabel.setText("  " + (cpu32bit ? "32 bit" : "16 bit"));
+    public void setCpyTypeLabel(String cpuType) {
+        cpyTypeLabel.setText("  " + cpuType);
+    }
+
+    /**
+     * Main entry point.
+     * @param args containing command line arguments
+     */    
+    public static void main(final String[] args) {
+        // Load logging.properties
+        try {
+            // Check for a local system logging.properties file
+            File localLogFile = new File(Constants.EMULATOR_LOGGING_PROPERTIES);
+            if (localLogFile.exists() && localLogFile.canRead()) {
+                LogManager.getLogManager().readConfiguration(
+                        new BufferedInputStream(new FileInputStream(localLogFile)));
+                logger.log(Level.INFO, "Logging.properties loaded from local file " + localLogFile);
+            } else {
+                logger.log(Level.WARNING, "No Logging.properties file found locally");
+            }
+        } catch (Exception e) {
+            logger.log(Level.WARNING, "Error initialising the logging system: " + e.toString());
+        }
+
+        // Create GUI
+        SwingUtilities.invokeLater(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    new DioscuriFrame(args);
+                } catch(Exception e) {
+                    logger.log(Level.WARNING, "Wrong command line option(s): "+e.toString());
+                }
+            }
+        });
+
     }
 }

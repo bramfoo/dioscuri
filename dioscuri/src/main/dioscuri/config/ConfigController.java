@@ -39,20 +39,18 @@
 
 package dioscuri.config;
 
+import dioscuri.GUI;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import dioscuri.GUI;
-import dioscuri.config.Emulator;
 
 public class ConfigController {
     // Logging
@@ -67,11 +65,9 @@ public class ConfigController {
         try {
             jc = JAXBContext.newInstance(EMULATOR_XML);
         } catch (JAXBException e) {
-            logger
-                    .log(
-                            Level.SEVERE,
-                            "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: "
-                                    + e.getMessage());
+            logger.log(Level.SEVERE,
+                    "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: "
+                    + e.getMessage());
         }
     }
 

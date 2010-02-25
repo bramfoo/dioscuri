@@ -17,7 +17,7 @@ public final class Constants {
     public static final String EMULATOR_ICON_IMAGE = new File(CONFIG_DIR, "dioscuri_icon.gif").getAbsolutePath();
     public static final String EMULATOR_SPLASHSCREEN_IMAGE = new File(CONFIG_DIR, "dioscuri_splashscreen_2010_v043.gif").getAbsolutePath();
     public static final String EMULATOR_LOGGING_PROPERTIES = new File(CONFIG_DIR, "logging.properties").getAbsolutePath();
-    public static final String CONFIG_XML = new File(CONFIG_DIR, "DioscuriConfig.xml").getAbsolutePath();
+    public static final String DEFAULT_CONFIG_XML = new File(CONFIG_DIR, "DioscuriConfig.xml").getAbsolutePath();
     public static final String BOCHS_BIOS = new File(EXE_FOLDER, "images/bios/BIOS-bochs-latest").getAbsolutePath();
     public static final String VGA_BIOS = new File(EXE_FOLDER, "images/bios/VGABIOS-lgpl-latest").getAbsolutePath();
 }

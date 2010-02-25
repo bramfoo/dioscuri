@@ -151,7 +151,7 @@ public class Emulator implements Runnable {
     /**
      * Class constructor
      * 
-     * @param GUI
+     * @param owner
      *            graphical user interface (owner of emulation process)
      * 
      */
@@ -183,20 +183,20 @@ public class Emulator implements Runnable {
 
             // Get the module settings from the configuration file
             try {
-                File configFile = new File(gui.getConfigFilePath());
+                File configFile = new File(Utilities.resolvePathAsString(gui.getConfigFilePath()));
                 if (!configFile.exists() || !configFile.canRead()) {
                     logger
                             .log(Level.WARNING,
                                     "[emu] No local config file accessible, using read-only jar settings");
                     InputStream fallBack = GUI.class
-                            .getResourceAsStream(Constants.CONFIG_XML);
+                            .getResourceAsStream(gui.getConfigFilePath());
                     emuConfig = ConfigController.loadFromXML(fallBack);
                     fallBack.close();
                 } else {
                     emuConfig = ConfigController.loadFromXML(configFile);
                 }
                 moduleConfig = emuConfig.getArchitecture().getModules();
-                logger.log(Level.SEVERE, "[emu] Config contents: "+ moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());
+                logger.log(Level.INFO, "[emu] Config contents: "+ moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "[emu] Config file not readable: "
                         + ex.toString());
@@ -392,7 +392,7 @@ public class Emulator implements Runnable {
                 Module mod = modules.getModule(moduleType);
                 if (mod != null) {
                     // Show dump of module
-                    logger.log(Level.SEVERE, mod.getDump());
+                    logger.log(Level.INFO, mod.getDump());
                 } else {
                     logger.log(Level.SEVERE, "[emu] Module not recognised.");
                 }
@@ -440,9 +440,8 @@ public class Emulator implements Runnable {
     }
 
     /**
-     * Method setRunning.
      * 
-     * @param boolean setRunning
+     * @param state
      */
     protected void setActive(boolean state) {
         // Define running state
@@ -515,8 +514,7 @@ public class Emulator implements Runnable {
     /**
      * Return reference to module from given type
      * 
-     * @param String
-     *            moduleType stating the type of the requested module
+     * @param moduleType stating the type of the requested module
      * 
      * @return Module requested module, or null if module does not exist
      */
@@ -713,7 +711,7 @@ public class Emulator implements Runnable {
         // pointless without one, really)
         cpu32bit = moduleConfig.getCpu().isCpu32Bit();
 
-        this.getGui().setCpyTypeLabel(cpu32bit);
+        this.getGui().setCpyTypeLabel(cpu32bit ? "32 bit" : "16 bit");
 
         // Add clock first, as it is needed for 32-bit RAM
         Clock clk = new Clock(this);
@@ -1056,7 +1054,6 @@ public class Emulator implements Runnable {
             SystemBIOS sysBIOS;
             VGABIOS vgaBIOS;
             try {
-                System.err.println(">>> Constants.BOCHS_BIOS -> "+Constants.BOCHS_BIOS);
                 // open input stream
                 BufferedInputStream bdis = new BufferedInputStream(
                         new DataInputStream(new FileInputStream(new File(Constants.BOCHS_BIOS))));

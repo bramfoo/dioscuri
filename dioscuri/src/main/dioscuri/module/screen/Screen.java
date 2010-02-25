@@ -39,26 +39,17 @@
 
 package dioscuri.module.screen;
 
-import java.awt.Color;
-import java.awt.image.BufferedImage;
-import java.awt.image.ColorModel;
-import java.awt.image.DataBuffer;
-import java.awt.image.DataBufferByte;
-import java.awt.image.IndexColorModel;
-import java.awt.image.MultiPixelPackedSampleModel;
-import java.awt.image.Raster;
-import java.awt.image.SampleModel;
-import java.awt.image.WritableRaster;
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import javax.swing.JPanel;
-
 import dioscuri.Emulator;
 import dioscuri.module.Module;
 import dioscuri.module.ModuleScreen;
 import dioscuri.module.ModuleVideo;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.*;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of a hardware visual screen module.
@@ -588,310 +579,315 @@ public class Screen extends ModuleScreen {
         codePageReqsUpdate = true;
     }
 
+    // BK TODO fix the RasterFormatException properly
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
-        int oldLine, newLine, textBase;
-        int currentChar; // 'Current character to display' index into font table
-        int newForeground, newBackground; // Fore-/background colour attributes
-                                          // for cChar
-        int oldCursorPos; // Previous cursor position calculated as number of
-                          // bytes in memory array
+        try {
+            int oldLine, newLine, textBase;
+            int currentChar; // 'Current character to display' index into font table
+            int newForeground, newBackground; // Fore-/background colour attributes
+                                              // for cChar
+            int oldCursorPos; // Previous cursor position calculated as number of
+                              // bytes in memory array
 
-        int charsPerRow; // Number of characters per row
-        int numRows; // Number of rows in display
+            int charsPerRow; // Number of characters per row
+            int numRows; // Number of rows in display
 
-        int offset; // Current location (in bytes) in video memory array
+            int offset; // Current location (in bytes) in video memory array
 
-        int x, y, xc, yc, yc2, cs_y;
-        byte cfwidth, cfheight, cfheight2, font_col, font_row, font_row2;
-        byte splitTextRow, splitFontRows;
-        byte forceUpdate = 0, splitScreen;
+            int x, y, xc, yc, yc2, cs_y;
+            byte cfwidth, cfheight, cfheight2, font_col, font_row, font_row2;
+            byte splitTextRow, splitFontRows;
+            byte forceUpdate = 0, splitScreen;
 
-        short newFullStartAddress = textModeAttribs[0];
-        byte newCursorStartLine = (byte) textModeAttribs[1];
-        byte newCursorEndLine = (byte) textModeAttribs[2];
-        short newLineOffset = textModeAttribs[3];
-        short newLineCompare = textModeAttribs[4];
-        byte newHorizPanning = (byte) textModeAttribs[5];
-        byte newVertPanning = (byte) textModeAttribs[6];
-        byte newLineGraphics = (byte) textModeAttribs[7];
-        byte newSplitHorizPanning = (byte) textModeAttribs[8];
+            short newFullStartAddress = textModeAttribs[0];
+            byte newCursorStartLine = (byte) textModeAttribs[1];
+            byte newCursorEndLine = (byte) textModeAttribs[2];
+            short newLineOffset = textModeAttribs[3];
+            short newLineCompare = textModeAttribs[4];
+            byte newHorizPanning = (byte) textModeAttribs[5];
+            byte newVertPanning = (byte) textModeAttribs[6];
+            byte newLineGraphics = (byte) textModeAttribs[7];
+            byte newSplitHorizPanning = (byte) textModeAttribs[8];
 
-        // Check if all character fonts are up to date
-        if (codePageReqsUpdate) {
-            logger.log(Level.CONFIG, "[" + this.getType()
-                    + "] Character map update. New font height: " + fontHeight
-                    + "; width: " + fontWidth);
-            for (int c = 0; c < 256; c++) {
-                if (codePageUpdateIndex[c]) {
-                    // Create new bitmap for character
-                    int[] data = new int[16];
-                    for (int k = 0; k < 16; k++) {
-                        data[k] = codePage[(c << 5) + k];
+            // Check if all character fonts are up to date
+            if (codePageReqsUpdate) {
+                logger.log(Level.CONFIG, "[" + this.getType()
+                        + "] Character map update. New font height: " + fontHeight
+                        + "; width: " + fontWidth);
+                for (int c = 0; c < 256; c++) {
+                    if (codePageUpdateIndex[c]) {
+                        // Create new bitmap for character
+                        int[] data = new int[16];
+                        for (int k = 0; k < 16; k++) {
+                            data[k] = codePage[(c << 5) + k];
+                        }
+                        this.updateFontImage(c, data, fontWidth, fontHeight);
+                        if (this.fontImages[c] == null) {
+                            logger.log(Level.SEVERE, "[" + this.getType()
+                                    + "] Can't create vga font " + c
+                                    + " while updating codepage.");
+                        }
+                        codePageUpdateIndex[c] = false;
                     }
-                    this.updateFontImage(c, data, fontWidth, fontHeight);
-                    if (this.fontImages[c] == null) {
-                        logger.log(Level.SEVERE, "[" + this.getType()
-                                + "] Can't create vga font " + c
-                                + " while updating codepage.");
-                    }
-                    codePageUpdateIndex[c] = false;
                 }
+                forceUpdate = 1;
+                codePageReqsUpdate = false;
             }
-            forceUpdate = 1;
-            codePageReqsUpdate = false;
-        }
 
-        // Check for horizontal/vertical scrolling of image [panning]
-        if ((newHorizPanning != horizPanning)
-                || (newVertPanning != vertPanning)) {
-            forceUpdate = 1;
-            horizPanning = newHorizPanning;
-            vertPanning = newVertPanning;
-        }
-
-        if (newLineCompare != lineCompare) {
-            forceUpdate = 1;
-            lineCompare = newLineCompare;
-        }
-
-        // Invalidate character at old and new cursor location,
-        // to ensure it is redrawn (old removed, new displayed)
-        if ((cursorPosPrevY < textRows) && (cursorPosPrevX < textColumns)) {
-            // Previous cursor was drawn on screen, so invalidate its position
-            // in the array
-            oldCursorPos = cursorPosPrevY * newLineOffset + cursorPosPrevX * 2;
-            video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
-                    .getVideoBufferByte(newText + oldCursorPos));
-        }
-
-        if ((newCursorStartLine <= newCursorEndLine)
-                && (newCursorStartLine < fontHeight) && (cursorYPos < textRows)
-                && (cursorXPos < textColumns)) {
-            // Current cursor is on screen and needs to be displayed, so
-            // invalidate its position in the array
-            oldCursorPos = (int) (cursorYPos * newLineOffset + cursorXPos * 2);
-            video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
-                    .getVideoBufferByte(newText + oldCursorPos));
-        } else {
-            // No cursor on screen, so provide unreachable value
-            oldCursorPos = 0xFFFF;
-        }
-
-        numRows = textRows;
-        if (vertPanning != 0) {
-            // Vertical scrolling required
-            numRows++;
-        }
-
-        y = 0;
-        cs_y = 0;
-        textBase = (byte) (newText - newFullStartAddress);
-        splitTextRow = (byte) ((lineCompare + vertPanning) / fontHeight);
-        splitFontRows = (byte) (((lineCompare + vertPanning) % fontHeight) + 1);
-        splitScreen = 0;
-
-        // START row loop
-        do {
-            charsPerRow = textColumns;
-            if (horizPanning != 0)
-                // Horizontal scrolling required
-                charsPerRow++;
-            if (splitScreen != 0) {
-                yc = lineCompare + cs_y * fontHeight + 1;
-                font_row = 0;
-                if (numRows == 1) {
-                    cfheight = (byte) ((screenHeight - lineCompare - 1) % fontHeight);
-                    if (cfheight == 0)
-                        cfheight = (byte) fontHeight;
-                } else {
-                    cfheight = (byte) fontHeight;
-                }
+            // Check for horizontal/vertical scrolling of image [panning]
+            if ((newHorizPanning != horizPanning)
+                    || (newVertPanning != vertPanning)) {
+                forceUpdate = 1;
+                horizPanning = newHorizPanning;
+                vertPanning = newVertPanning;
             }
-            // Check for vertical scrolling of image
-            else if (vertPanning != 0) {
-                if (y == 0) {
-                    yc = 0;
-                    font_row = vertPanning;
-                    cfheight = (byte) (fontHeight - vertPanning);
-                } else {
-                    yc = y * fontHeight - vertPanning;
+
+            if (newLineCompare != lineCompare) {
+                forceUpdate = 1;
+                lineCompare = newLineCompare;
+            }
+
+            // Invalidate character at old and new cursor location,
+            // to ensure it is redrawn (old removed, new displayed)
+            if ((cursorPosPrevY < textRows) && (cursorPosPrevX < textColumns)) {
+                // Previous cursor was drawn on screen, so invalidate its position
+                // in the array
+                oldCursorPos = cursorPosPrevY * newLineOffset + cursorPosPrevX * 2;
+                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
+                        .getVideoBufferByte(newText + oldCursorPos));
+            }
+
+            if ((newCursorStartLine <= newCursorEndLine)
+                    && (newCursorStartLine < fontHeight) && (cursorYPos < textRows)
+                    && (cursorXPos < textColumns)) {
+                // Current cursor is on screen and needs to be displayed, so
+                // invalidate its position in the array
+                oldCursorPos = (int) (cursorYPos * newLineOffset + cursorXPos * 2);
+                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
+                        .getVideoBufferByte(newText + oldCursorPos));
+            } else {
+                // No cursor on screen, so provide unreachable value
+                oldCursorPos = 0xFFFF;
+            }
+
+            numRows = textRows;
+            if (vertPanning != 0) {
+                // Vertical scrolling required
+                numRows++;
+            }
+
+            y = 0;
+            cs_y = 0;
+            textBase = (byte) (newText - newFullStartAddress);
+            splitTextRow = (byte) ((lineCompare + vertPanning) / fontHeight);
+            splitFontRows = (byte) (((lineCompare + vertPanning) % fontHeight) + 1);
+            splitScreen = 0;
+
+            // START row loop
+            do {
+                charsPerRow = textColumns;
+                if (horizPanning != 0)
+                    // Horizontal scrolling required
+                    charsPerRow++;
+                if (splitScreen != 0) {
+                    yc = lineCompare + cs_y * fontHeight + 1;
                     font_row = 0;
                     if (numRows == 1) {
-                        cfheight = vertPanning;
+                        cfheight = (byte) ((screenHeight - lineCompare - 1) % fontHeight);
+                        if (cfheight == 0)
+                            cfheight = (byte) fontHeight;
                     } else {
                         cfheight = (byte) fontHeight;
                     }
                 }
-            } else
-            // No horizontal/vertical scrolling required, determine current line
-            // location
-            {
-                yc = y * fontHeight;
-                font_row = 0;
-                cfheight = (byte) fontHeight;
-            }
-            if (!(splitScreen != 0) && (y == splitTextRow)) {
-                if (splitFontRows < cfheight)
-                    cfheight = splitFontRows;
-            }
-            newLine = newText;
-            oldLine = oldText;
-            x = 0;
-            offset = cs_y * newLineOffset;
-
-            // START character loop
-            do {
-                // Check for horizontal scrolling of text
-                if (horizPanning != 0) {
-                    if (charsPerRow > textColumns) {
-                        xc = 0;
-                        font_col = horizPanning;
-                        cfwidth = (byte) (fontWidth - horizPanning);
+                // Check for vertical scrolling of image
+                else if (vertPanning != 0) {
+                    if (y == 0) {
+                        yc = 0;
+                        font_row = vertPanning;
+                        cfheight = (byte) (fontHeight - vertPanning);
                     } else {
-                        xc = x * fontWidth - horizPanning;
-                        font_col = 0;
-                        if (charsPerRow == 1) {
-                            cfwidth = horizPanning;
+                        yc = y * fontHeight - vertPanning;
+                        font_row = 0;
+                        if (numRows == 1) {
+                            cfheight = vertPanning;
                         } else {
-                            cfwidth = (byte) fontWidth;
+                            cfheight = (byte) fontHeight;
                         }
                     }
+                } else
+                // No horizontal/vertical scrolling required, determine current line
+                // location
+                {
+                    yc = y * fontHeight;
+                    font_row = 0;
+                    cfheight = (byte) fontHeight;
                 }
-                // No horizontal panning, determine current character position
-                else {
-                    xc = x * fontWidth;
-                    font_col = 0;
-                    cfwidth = (byte) fontWidth;
+                if (!(splitScreen != 0) && (y == splitTextRow)) {
+                    if (splitFontRows < cfheight)
+                        cfheight = splitFontRows;
                 }
+                newLine = newText;
+                oldLine = oldText;
+                x = 0;
+                offset = cs_y * newLineOffset;
 
-                // Determine if character needs to be redrawn at current
-                // position -
-                // due to forced update, new character, or character attribute
-                // change
-                if ((forceUpdate != 0)
-                        || (video.getTextSnapshot(oldText) != video
-                                .getVideoBufferByte(newText))
-                        || (video.getTextSnapshot(oldText + 1) != video
-                                .getVideoBufferByte(newText + 1))) {
-
-                    // Select character (index into font table) from from video
-                    // memory
-                    currentChar = video.getVideoBufferByte(newText);
-                    currentChar &= 0xFF; // Convert to unsigned to avoid array
-                                         // out of bounds
-
-                    // Determine attributes for character - take font colour
-                    // from the video's Internal Palette Index
-                    newForeground = video.getAttributePaletteRegister(video
-                            .getVideoBufferByte(newText + 1) & 0x0f);
-                    newBackground = video.getAttributePaletteRegister((video
-                            .getVideoBufferByte(newText + 1) & 0xf0) >> 4);
-
-                    // Assign correct CRT colours to character
-                    WritableRaster wr = this.fontImages[currentChar].getData()
-                            .createCompatibleWritableRaster();
-                    for (int pixX = wr.getMinX(); pixX < wr.getWidth(); pixX++) {
-                        for (int pixY = wr.getMinY(); pixY < wr.getHeight(); pixY++) {
-                            switch (this.fontImages[currentChar].getData()
-                                    .getSample(pixX, pixY, 0)) {
-
-                            case 0:
-                                wr.setSample(pixX, pixY, 0, newBackground);
-                                break;
-                            case 1:
-                                wr.setSample(pixX, pixY, 0, newForeground);
-                                break;
-                            default:
-                                break;
-                            }
-                        }
-                    }
-                    // Draw 'bitmap' of character at current line, character
-                    // location
-                    this.image.setData(wr.createTranslatedChild(xc, yc));
-
-                    // Display cursor (usually '_') at current location
-                    if (offset == oldCursorPos) {
-                        if (font_row == 0) {
-                            yc2 = yc + newCursorStartLine;
-                            font_row2 = newCursorStartLine;
-                            cfheight2 = (byte) (newCursorEndLine
-                                    - newCursorStartLine + 1);
-                            if ((yc2 + cfheight2) > screenHeight) {
-                                cfheight2 = (byte) (screenHeight - yc2);
-                            }
+                // START character loop
+                do {
+                    // Check for horizontal scrolling of text
+                    if (horizPanning != 0) {
+                        if (charsPerRow > textColumns) {
+                            xc = 0;
+                            font_col = horizPanning;
+                            cfwidth = (byte) (fontWidth - horizPanning);
                         } else {
-                            if (vertPanning > newCursorStartLine) {
-                                yc2 = yc;
-                                font_row2 = font_row;
-                                cfheight2 = (byte) (newCursorEndLine
-                                        - vertPanning + 1);
+                            xc = x * fontWidth - horizPanning;
+                            font_col = 0;
+                            if (charsPerRow == 1) {
+                                cfwidth = horizPanning;
                             } else {
-                                yc2 = yc + newCursorStartLine - vertPanning;
+                                cfwidth = (byte) fontWidth;
+                            }
+                        }
+                    }
+                    // No horizontal panning, determine current character position
+                    else {
+                        xc = x * fontWidth;
+                        font_col = 0;
+                        cfwidth = (byte) fontWidth;
+                    }
+
+                    // Determine if character needs to be redrawn at current
+                    // position -
+                    // due to forced update, new character, or character attribute
+                    // change
+                    if ((forceUpdate != 0)
+                            || (video.getTextSnapshot(oldText) != video
+                                    .getVideoBufferByte(newText))
+                            || (video.getTextSnapshot(oldText + 1) != video
+                                    .getVideoBufferByte(newText + 1))) {
+
+                        // Select character (index into font table) from from video
+                        // memory
+                        currentChar = video.getVideoBufferByte(newText);
+                        currentChar &= 0xFF; // Convert to unsigned to avoid array
+                                             // out of bounds
+
+                        // Determine attributes for character - take font colour
+                        // from the video's Internal Palette Index
+                        newForeground = video.getAttributePaletteRegister(video
+                                .getVideoBufferByte(newText + 1) & 0x0f);
+                        newBackground = video.getAttributePaletteRegister((video
+                                .getVideoBufferByte(newText + 1) & 0xf0) >> 4);
+
+                        // Assign correct CRT colours to character
+                        WritableRaster wr = this.fontImages[currentChar].getData()
+                                .createCompatibleWritableRaster();
+                        for (int pixX = wr.getMinX(); pixX < wr.getWidth(); pixX++) {
+                            for (int pixY = wr.getMinY(); pixY < wr.getHeight(); pixY++) {
+                                switch (this.fontImages[currentChar].getData()
+                                        .getSample(pixX, pixY, 0)) {
+
+                                case 0:
+                                    wr.setSample(pixX, pixY, 0, newBackground);
+                                    break;
+                                case 1:
+                                    wr.setSample(pixX, pixY, 0, newForeground);
+                                    break;
+                                default:
+                                    break;
+                                }
+                            }
+                        }
+                        // Draw 'bitmap' of character at current line, character
+                        // location
+                        this.image.setData(wr.createTranslatedChild(xc, yc));
+
+                        // Display cursor (usually '_') at current location
+                        if (offset == oldCursorPos) {
+                            if (font_row == 0) {
+                                yc2 = yc + newCursorStartLine;
                                 font_row2 = newCursorStartLine;
                                 cfheight2 = (byte) (newCursorEndLine
                                         - newCursorStartLine + 1);
+                                if ((yc2 + cfheight2) > screenHeight) {
+                                    cfheight2 = (byte) (screenHeight - yc2);
+                                }
+                            } else {
+                                if (vertPanning > newCursorStartLine) {
+                                    yc2 = yc;
+                                    font_row2 = font_row;
+                                    cfheight2 = (byte) (newCursorEndLine
+                                            - vertPanning + 1);
+                                } else {
+                                    yc2 = yc + newCursorStartLine - vertPanning;
+                                    font_row2 = newCursorStartLine;
+                                    cfheight2 = (byte) (newCursorEndLine
+                                            - newCursorStartLine + 1);
+                                }
+                            }
+                            if (yc2 < screenHeight) {
+                                // Draw cursor as 2 line high 'bitmap' underneath
+                                // character
+                                // This works because most characters have blank
+                                // space underneath
+                                WritableRaster wr2 = this.fontImages[currentChar]
+                                        .getData().createChild(
+                                                this.image.getMinX(),
+                                                this.image.getMinY(), cfwidth,
+                                                cfheight2, xc, yc2, null)
+                                        .createCompatibleWritableRaster();
+                                for (int pix_x = wr2.getMinX(); pix_x < wr2
+                                        .getWidth(); pix_x++)
+                                    for (int pix_y = wr2.getMinY(); pix_y < wr2
+                                            .getHeight(); pix_y++) {
+                                        // Set all values to foreground colour
+                                        wr2.setSample(pix_x, pix_y, 0,
+                                                newForeground);
+                                    }
+                                this.image.setData(wr2.createTranslatedChild(xc,
+                                        yc2));
                             }
                         }
-                        if (yc2 < screenHeight) {
-                            // Draw cursor as 2 line high 'bitmap' underneath
-                            // character
-                            // This works because most characters have blank
-                            // space underneath
-                            WritableRaster wr2 = this.fontImages[currentChar]
-                                    .getData().createChild(
-                                            this.image.getMinX(),
-                                            this.image.getMinY(), cfwidth,
-                                            cfheight2, xc, yc2, null)
-                                    .createCompatibleWritableRaster();
-                            for (int pix_x = wr2.getMinX(); pix_x < wr2
-                                    .getWidth(); pix_x++)
-                                for (int pix_y = wr2.getMinY(); pix_y < wr2
-                                        .getHeight(); pix_y++) {
-                                    // Set all values to foreground colour
-                                    wr2.setSample(pix_x, pix_y, 0,
-                                            newForeground);
-                                }
-                            this.image.setData(wr2.createTranslatedChild(xc,
-                                    yc2));
-                        }
                     }
+                    // Increment character location, as well as locations in display
+                    // memory
+                    x++;
+                    newText += 2;
+                    oldText += 2;
+                    offset += 2;
+                } while (--charsPerRow != 0);
+                // END character loop
+
+                if (!(splitScreen != 0) && (y == splitTextRow)) {
+                    newText = textBase;
+                    forceUpdate = 1;
+                    cs_y = 0;
+                    if (newSplitHorizPanning != 0) {
+                        horizPanning = 0;
+                    }
+                    numRows = ((screenHeight - lineCompare + fontHeight - 2) / fontHeight) + 1;
+                    splitScreen = 1;
+                } else {
+                    y++;
+                    cs_y++;
+                    newText = newLine + newLineOffset;
+                    oldText = oldLine + newLineOffset;
                 }
-                // Increment character location, as well as locations in display
-                // memory
-                x++;
-                newText += 2;
-                oldText += 2;
-                offset += 2;
-            } while (--charsPerRow != 0);
-            // END character loop
+            } while (--numRows != 0);
+            // END row loop
 
-            if (!(splitScreen != 0) && (y == splitTextRow)) {
-                newText = textBase;
-                forceUpdate = 1;
-                cs_y = 0;
-                if (newSplitHorizPanning != 0) {
-                    horizPanning = 0;
-                }
-                numRows = ((screenHeight - lineCompare + fontHeight - 2) / fontHeight) + 1;
-                splitScreen = 1;
-            } else {
-                y++;
-                cs_y++;
-                newText = newLine + newLineOffset;
-                oldText = oldLine + newLineOffset;
-            }
-        } while (--numRows != 0);
-        // END row loop
+            // Retain values for next update
+            horizPanning = newHorizPanning;
+            cursorPosPrevX = (int) cursorXPos;
+            cursorPosPrevY = (int) cursorYPos;
 
-        // Retain values for next update
-        horizPanning = newHorizPanning;
-        cursorPosPrevX = (int) cursorXPos;
-        cursorPosPrevY = (int) cursorYPos;
-
-        // Refresh screen
-        screenPanel.repaint();
+            // Refresh screen
+            screenPanel.repaint();
+        } catch(RasterFormatException e) {
+            logger.log(Level.SEVERE, "RasterFormatException details: "+e.getMessage());
+        }
     }
 
     /**

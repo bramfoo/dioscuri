@@ -118,7 +118,7 @@
     </target>
 
     <!-- Create a runnable jar file -->
-    <target name="jar" description="Create the Dioscuri jar file" depends="compile">
+    <target name="jar" description="Create the Dioscuri jar file" depends="clean, compile">
 		<!--  <mkdir dir="${jar.dir}"/> -->
 		<tstamp/>
         <jar destfile="${ant.project.name}-${version}.jar" whenmanifestonly="fail">

@@ -38,6 +38,7 @@
 package dioscuri.util;
 
 import dioscuri.Constants;
+import dioscuri.config.ConfigController;
 
 import java.io.File;
 import java.util.logging.Level;
@@ -73,10 +74,20 @@ public final class Utilities {
             // assume `path` is relative and Dioscuri is not executed from it's "root" folder
             validPath = new File(Constants.EXE_FOLDER, path);
             if(!validPath.exists()) {
-                // the relative and absolute paths are invalid
+                // both the relative- and absolute paths do not exist
                 logger.log(Level.SEVERE, "neither '"+path+"' nor '"+validPath.getAbsolutePath()+"' exists");
             }
         }
         return validPath;
+    }
+
+    public static boolean saveXML(dioscuri.config.Emulator emuObject, String path) {
+        try {
+            ConfigController.saveToXML(emuObject, Utilities.resolvePathAsFile(path));
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, " [util] Failed to save config file");
+            return false;
+        }
+        return true;
     }
 }
