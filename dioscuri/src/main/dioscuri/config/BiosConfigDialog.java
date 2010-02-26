@@ -55,6 +55,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class BiosConfigDialog extends ConfigurationDialog {
 
@@ -69,6 +74,10 @@ public class BiosConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public BiosConfigDialog(GUI parent) {
         super(parent, "BIOS Configuration", false, ModuleType.BIOS);
     }
@@ -76,6 +85,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
@@ -118,6 +128,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
 
         JLabel sysBiosFileLabel = new JLabel("Sys Bios File");
@@ -237,6 +248,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
 

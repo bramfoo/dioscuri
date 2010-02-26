@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_LOOP_JbTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_LOOP_JbTest() throws Exception {
         super(80448, "LOOP_Jb.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_LOOP_JbTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_LOOP_Jb.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String IP_ERROR = "IP contains wrong value";

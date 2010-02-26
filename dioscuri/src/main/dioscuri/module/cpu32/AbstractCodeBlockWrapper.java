@@ -27,21 +27,38 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.Processor;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class AbstractCodeBlockWrapper implements CodeBlock {
     private static long nextBlockIndex = 0;
 
     private long blockIndex;
     private CodeBlock actualBlock;
 
+    /**
+     *
+     * @param target
+     */
     public AbstractCodeBlockWrapper(CodeBlock target) {
         blockIndex = nextBlockIndex++;
         actualBlock = target;
     }
 
+    /**
+     *
+     * @return
+     */
     public final int getX86Length() {
         return actualBlock.getX86Length();
     }
 
+    /**
+     *
+     * @return
+     */
     public final int getX86Count() {
         return actualBlock.getX86Count();
     }
@@ -52,22 +69,44 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
         return actualBlock.execute(cpu);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return "WRAP[" + blockIndex + "] " + actualBlock.getDisplayString();
     }
 
+    /**
+     *
+     * @param block
+     */
     public final void setBlock(CodeBlock block) {
         this.actualBlock = block;
     }
 
+    /**
+     *
+     * @return
+     */
     public final CodeBlock getBlock() {
         return actualBlock;
     }
 
+    /**
+     *
+     * @return
+     */
     public final long getBlockIndex() {
         return blockIndex;
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return actualBlock.handleMemoryRegionChange(startAddress, endAddress);
     }

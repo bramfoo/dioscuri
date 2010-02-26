@@ -41,9 +41,18 @@ package dioscuri.module.cpu;
 
 import dioscuri.exception.CPUInstructionException;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface Instruction {
 
     // Methods
+    /**
+     *
+     * @throws CPUInstructionException
+     */
     public void execute() throws CPUInstructionException;
 
 }

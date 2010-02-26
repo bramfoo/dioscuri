@@ -33,6 +33,11 @@ import java.util.*;
 //import org.jpc.classfile.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class UCodeMethodParser implements MicrocodeSet {
     private Object[][][] operations;
     private int[][][] operandArray;
@@ -117,6 +122,13 @@ public class UCodeMethodParser implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param operations
+     * @param operandArray
+     * @param externalEffectsArray
+     * @param explicitThrowArray
+     */
     public UCodeMethodParser(Object[][][] operations, int[][][] operandArray,
             boolean[][] externalEffectsArray, boolean[][] explicitThrowArray) {
         this.operations = operations;
@@ -291,6 +303,10 @@ public class UCodeMethodParser implements MicrocodeSet {
                 explicitThrow, instructions);
     }
 
+    /**
+     *
+     * @return
+     */
     public int parse() {
         Method[] methods = UCodeStaticMethods.class.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
@@ -302,6 +318,10 @@ public class UCodeMethodParser implements MicrocodeSet {
         return methods.length;
     }
 
+    /**
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         // If using main(), make sure the static in BytecodeFragments that cause
         // this to parse() is disabled!!

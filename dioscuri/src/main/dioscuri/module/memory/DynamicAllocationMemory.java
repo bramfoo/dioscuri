@@ -97,6 +97,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     private int blockIndex; // Index into ram; shifting by this index determines
                             // corresponding ramBlock for memory address
 
+    /**
+     *
+     */
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
                                    // addresses
 
@@ -106,8 +109,17 @@ public class DynamicAllocationMemory extends ModuleMemory {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "memory";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "RAM";
 
     private final static int BYTES_IN_MB = 1048576;
@@ -124,7 +136,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Class constructor
      * 
+     * @param owner
      */
+    @SuppressWarnings("empty-statement")
     public DynamicAllocationMemory(Emulator owner) {
         emu = owner;
 
@@ -203,9 +217,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Sets up a connection with another module
      * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
+     * @param module
      * @return true if connection has been established successfully, false
      *         otherwise
      * 
@@ -324,8 +336,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -337,10 +348,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -352,11 +360,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Sets given String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @see Module
      */
     public boolean setData(String[] data, Module sender) {
@@ -622,8 +626,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * common way words are used by instructions. However, storage takes place
      * in Little Endian order.
      * 
-     * @param int address where data is stored
-     * @param byte[] array containing word [MSB, LSB]
      */
     public void setWord(int address, byte[] value) {
         // Mask 20th address bit
@@ -692,9 +694,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * 
      * @param address
      *            Flat-address where data is stored
-     * @param value
-     *            Byte array to be placed in memory
-     * 
      * @throws ModuleException
      */
     public void setBytes(int address, byte[] binaryStream)
@@ -735,7 +734,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Set the status of A20 address line
      * 
-     * @param boolean status true = wrapping is on, false = wrapping turned off
      * 
      */
     public void setA20AddressLine(boolean status) {
@@ -768,6 +766,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * 
      * @param ramSizeMB
      */
+    @SuppressWarnings("empty-statement")
     public void setRamSizeInMB(int ramSizeMB) {
         this.ramSize = ramSizeMB * BYTES_IN_MB;
 

@@ -90,7 +90,13 @@ public class Emulator implements Runnable {
     private ArrayList<HardwareComponent> hwComponents;
     private IO io;
     private GUI gui;
+    /**
+     *
+     */
     protected dioscuri.config.Emulator emuConfig;
+    /**
+     *
+     */
     protected dioscuri.config.Emulator.Architecture.Modules moduleConfig;
 
     // Toggles
@@ -105,45 +111,126 @@ public class Emulator implements Runnable {
 
     // Constants
     // General commands
+    /**
+     *
+     */
     protected final static int CMD_START = 0x00; // start the emulator
+    /**
+     *
+     */
     protected final static int CMD_STOP = 0x01; // stop the emulator
+    /**
+     *
+     */
     protected final static int CMD_RESET = 0x02; // stop the emulator
+    /**
+     *
+     */
     protected final static int CMD_DEBUG = 0x04; // turn on debug mode
+    /**
+     *
+     */
     protected final static int CMD_LOGGING = 0x05; // turn on logging
+    /**
+     *
+     */
     protected final static int CMD_OBSERVE = 0x06; // turn on observation
+    /**
+     *
+     */
     protected final static int CMD_LOAD_MODULES = 0x07; // load modules
+    /**
+     *
+     */
     protected final static int CMD_LOAD_DATA = 0x08; // load initial data
                                                      // (program code)
+    /**
+     *
+     */
     protected final static int CMD_LOGTOFILE = 0x09; // write logging
                                                      // information to file
 
     // Debug commands
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_HELP = 0x03; // show help information
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_STEP = 0x10; // execute one processor
                                                       // cycle
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_DUMP = 0x11; // show dump of observed
                                                       // modules
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_ENTER = 0x12; // enter given values at
                                                        // given memory address
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_STOP = 0x13; // stop the emulator
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_SHOWREG = 0x14; // Simple CPU register
                                                          // view
+    /**
+     *
+     */
     protected final static int CMD_DEBUG_MEM_DUMP = 0x15; // Show contents of
                                                           // memory location(s)
 
     // Special case commands
+    /**
+     *
+     */
     protected final static int CMD_MISMATCH = 0xFF; // command mismatch
 
     // Module status
+    /**
+     *
+     */
     public final static int MODULE_FDC_TRANSFER_START = 0;
+    /**
+     *
+     */
     public final static int MODULE_FDC_TRANSFER_STOP = 1;
+    /**
+     *
+     */
     public static final int MODULE_ATA_HD1_TRANSFER_START = 2;
+    /**
+     *
+     */
     public static final int MODULE_ATA_HD1_TRANSFER_STOP = 3;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_NUMLOCK_ON = 4;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_NUMLOCK_OFF = 5;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_CAPSLOCK_ON = 6;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_CAPSLOCK_OFF = 7;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_SCROLLLOCK_ON = 8;
+    /**
+     *
+     */
     public static final int MODULE_KEYBOARD_SCROLLLOCK_OFF = 9;
 
     // Constructors
@@ -311,6 +398,9 @@ public class Emulator implements Runnable {
         }
     }
 
+    /**
+     *
+     */
     protected void stop() {
         // End life of this emulation process
         isAlive = false;
@@ -328,6 +418,9 @@ public class Emulator implements Runnable {
         }
     }
 
+    /**
+     *
+     */
     protected void reset() {
         // TODO: fix this approach by avoiding deadlock (by using synchronized)
         // Check if emulation process exists
@@ -343,6 +436,10 @@ public class Emulator implements Runnable {
         resetBusy = false;
     }
 
+    /**
+     *
+     * @param command
+     */
     protected void debug(int command) {
         // Debug commands
         switch (command) {
@@ -505,7 +602,7 @@ public class Emulator implements Runnable {
     /**
      * Set cold start.
      * 
-     * @return coldStart
+     * @param coldStart
      */
     public void setColdStart(boolean coldStart) {
         this.coldStart = coldStart;
@@ -522,6 +619,11 @@ public class Emulator implements Runnable {
         return modules.getModule(moduleType);
     }
 
+    /**
+     *
+     * @param keyEvent
+     * @param keyEventType
+     */
     protected void notifyKeyboard(KeyEvent keyEvent, int keyEventType) {
         ModuleKeyboard keyboard = (ModuleKeyboard) modules
                 .getModule("keyboard");
@@ -530,6 +632,10 @@ public class Emulator implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param mouseEvent
+     */
     protected void notifyMouse(MouseEvent mouseEvent) {
         ModuleMouse mouse = (ModuleMouse) modules.getModule("mouse");
         if (mouse != null) {
@@ -537,6 +643,14 @@ public class Emulator implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param driveLetter
+     * @param carrierType
+     * @param imageFile
+     * @param writeProtected
+     * @return
+     */
     protected boolean insertFloppy(String driveLetter, byte carrierType,
             File imageFile, boolean writeProtected) {
         ModuleFDC fdc = (ModuleFDC) modules.getModule("fdc");
@@ -547,6 +661,11 @@ public class Emulator implements Runnable {
         return false;
     }
 
+    /**
+     *
+     * @param driveLetter
+     * @return
+     */
     protected boolean ejectFloppy(String driveLetter) {
         ModuleFDC fdc = (ModuleFDC) modules.getModule("fdc");
         if (fdc != null) {
@@ -555,6 +674,10 @@ public class Emulator implements Runnable {
         return false;
     }
 
+    /**
+     *
+     * @param status
+     */
     public void statusChanged(int status) {
         switch (status) {
         case MODULE_FDC_TRANSFER_START:
@@ -602,6 +725,10 @@ public class Emulator implements Runnable {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getScreenText() {
         // Request characters on screen from video module (if available)
         ModuleVideo video = (ModuleVideo) modules.getModule("video");
@@ -611,15 +738,27 @@ public class Emulator implements Runnable {
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public BufferedImage getScreenImage() {
         // TODO: implement
         return null;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCpu32bit() {
         return cpu32bit;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean setupEmu() {
         boolean result = true;
 
@@ -704,6 +843,10 @@ public class Emulator implements Runnable {
 
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean createModules() {
         modules = new Modules(20);
 
@@ -823,6 +966,7 @@ public class Emulator implements Runnable {
 
     /**
      * Connect the modules together.
+     * @return
      */
     public boolean connectModules() {
 
@@ -925,6 +1069,8 @@ public class Emulator implements Runnable {
 
     /**
      * Set the timing parameters
+     * @param module
+     * @return
      */
     public boolean setTimingParams(Module module) {
         boolean result = true;
@@ -963,6 +1109,7 @@ public class Emulator implements Runnable {
 
     /**
      * Reset all modules.
+     * @return
      */
     public boolean resetModules() {
         boolean result = true;
@@ -986,6 +1133,7 @@ public class Emulator implements Runnable {
 
     /**
      * Init Screen Output Device.
+     * @return
      */
     public boolean initScreenOutputDevice() {
 
@@ -1004,6 +1152,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set mouse parameters
+     * @return
      */
     public boolean setMouseParams() {
 
@@ -1032,6 +1181,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set memory parameters
+     * @return
      */
     public boolean setMemoryParams() {
         ModuleMemory mem = (ModuleMemory) modules.getModule(ModuleType.MEMORY
@@ -1046,6 +1196,7 @@ public class Emulator implements Runnable {
 
     /**
      * Load the BIOS into memory
+     * @return
      */
     public boolean loadBIOS() {
         boolean result = true;
@@ -1176,6 +1327,7 @@ public class Emulator implements Runnable {
 
     /**
      * Get and set floppy parameters
+     * @return
      */
     public boolean setFloppyParams() {
         // Module FDC: set number of drives (max 4), insert floppy and set
@@ -1238,6 +1390,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read and set the hard drive parameters
+     * @return
      */
     public boolean setHardDriveParams() {
         // TODO: replace ATA reference by ModuleATA
@@ -1283,6 +1436,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set the boot params.
+     * @return
      */
     public boolean setBootParams() {
 
@@ -1335,6 +1489,7 @@ public class Emulator implements Runnable {
 
     /**
      * Set the debug mode.
+     * @return
      */
     public boolean setDebugMode() {
         boolean result = true;

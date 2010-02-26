@@ -76,82 +76,160 @@ public class ATAStatus {
         err = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getBusy() {
         return busy;
     }
 
+    /**
+     *
+     * @param busy
+     */
     public void setBusy(int busy) {
         this.busy = busy;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDriveReady() {
         return driveReady;
     }
 
+    /**
+     *
+     * @param driveReady
+     */
     public void setDriveReady(int driveReady) {
         this.driveReady = driveReady;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getWriteFault() {
         return writeFault;
     }
 
+    /**
+     *
+     * @param writeFault
+     */
     public void setWriteFault(int writeFault) {
         this.writeFault = writeFault;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getSeekComplete() {
         return seekComplete;
     }
 
+    /**
+     *
+     * @param seekComplete
+     */
     public void setSeekComplete(int seekComplete) {
         this.seekComplete = seekComplete;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDrq() {
         return drq;
     }
 
+    /**
+     *
+     * @param drq
+     */
     public void setDrq(int drq) {
         this.drq = drq;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCorrectedData() {
         return correctedData;
     }
 
+    /**
+     *
+     * @param correctedData
+     */
     public void setCorrectedData(int correctedData) {
         this.correctedData = correctedData;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIndexPulse() {
         return indexPulse;
     }
 
+    /**
+     *
+     * @param indexPulse
+     */
     public void setIndexPulse(int indexPulse) {
         this.indexPulse = indexPulse;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIndexPulseCount() {
         return indexPulseCount;
     }
 
+    /**
+     *
+     */
     public void decrementIndexPulseCount() {
         indexPulseCount--;
     }
 
+    /**
+     *
+     */
     public void incrementIndexPulseCount() {
         indexPulseCount++;
     }
 
+    /**
+     *
+     * @param indexPulseCount
+     */
     public void setIndexPulseCount(int indexPulseCount) {
         this.indexPulseCount = indexPulseCount;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getErr() {
         return err;
     }
 
+    /**
+     *
+     * @param err
+     */
     public void setErr(int err) {
         this.err = err;
     }

@@ -49,6 +49,9 @@ package dioscuri.module.dma;
  */
 public abstract class DMA8Handler {
     // Name of the device that provides the methods
+    /**
+     *
+     */
     protected String owner;
 
     /**

@@ -28,16 +28,30 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
         RealModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
+    /**
+     *
+     * @param factories
+     */
     public SpanningRealModeCodeBlock(CodeBlockFactory[] factories) {
         this.factories = factories;
     }
 
+    /**
+     *
+     * @param cpu
+     * @return
+     */
     protected CodeBlock decode(Processor cpu) {
         RealModeCodeBlock block = null;
         AddressSpace memory = cpu.physicalMemory;
@@ -54,6 +68,10 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
         return block;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return "Spanning Real Mode CodeBlock";
     }

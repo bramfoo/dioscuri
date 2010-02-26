@@ -48,15 +48,39 @@ import dioscuri.module.dma.DMA8Handler;
 
 public abstract class ModuleDMA extends ModuleDevice {
     // Methods
+    /**
+     *
+     * @param chanNum
+     * @param dma8handler
+     * @return
+     */
     public abstract boolean registerDMAChannel(int chanNum,
             DMA8Handler dma8handler);
 
+    /**
+     *
+     * @param chanNum
+     * @param dma16handler
+     * @return
+     */
     public abstract boolean registerDMAChannel(int chanNum,
             DMA16Handler dma16handler);
 
+    /**
+     *
+     * @param chanNum
+     * @param request
+     */
     public abstract void setDMARequest(int chanNum, boolean request);
 
+    /**
+     *
+     */
     public abstract void acknowledgeBusHold();
 
+    /**
+     *
+     * @return
+     */
     public abstract boolean isTerminalCountReached();
 }

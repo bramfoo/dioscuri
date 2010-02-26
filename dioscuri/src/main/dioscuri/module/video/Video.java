@@ -93,6 +93,9 @@ public class Video extends ModuleVideo {
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
 
+    /**
+     *
+     */
     public DiosJPCVideoConnect vidMemConnect = new DiosJPCVideoConnect();
 
     // Toggles
@@ -115,8 +118,17 @@ public class Video extends ModuleVideo {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "video";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Video Graphics Array (VGA) adapter";
 
     private final static int MAX_TEXT_LINES = 100;
@@ -124,6 +136,7 @@ public class Video extends ModuleVideo {
     // Constructor
     /**
      * Class constructor
+     * @param owner
      */
     public Video(Emulator owner) {
         emu = owner;
@@ -344,8 +357,7 @@ public class Video extends ModuleVideo {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * @see Module
      */
@@ -356,9 +368,7 @@ public class Video extends ModuleVideo {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * @see Module
      */
@@ -369,10 +379,7 @@ public class Video extends ModuleVideo {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
+     * @param sender
      * @return boolean true is successful, false otherwise
      * @see Module
      */
@@ -413,7 +420,6 @@ public class Video extends ModuleVideo {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -1958,8 +1964,6 @@ public class Video extends ModuleVideo {
     /**
      * Returns a byte from video buffer at position index
      * 
-     * @param int index
-     * 
      * @return byte from video buffer
      */
     public byte getVideoBufferByte(int index) {
@@ -1969,8 +1973,6 @@ public class Video extends ModuleVideo {
     /**
      * Stores a byte in video buffer at position index
      * 
-     * @param int index
-     * @param byte data
      */
     public void setVideoBufferByte(int index, byte data) {
         this.videocard.vgaMemory[index] = data;
@@ -2012,8 +2014,6 @@ public class Video extends ModuleVideo {
     /**
      * Returns a byte from text snapshot at position index
      * 
-     * @param int index
-     * 
      * @return byte from textsnapshot
      */
     public byte getTextSnapshot(int index) {
@@ -2023,8 +2023,6 @@ public class Video extends ModuleVideo {
     /**
      * Stores a byte in text snapshot at position index
      * 
-     * @param int index
-     * @param byte data
      */
     public void setTextSnapshot(int index, byte data) {
         this.videocard.textSnapshot[index] = data;
@@ -2097,6 +2095,7 @@ public class Video extends ModuleVideo {
 
     /**
      * VGA memory Read Modes 0 and 1 functionality
+     * @param address
      */
     public byte readMode(int address) {
         int i; // Counter
@@ -2179,6 +2178,7 @@ public class Video extends ModuleVideo {
 
     /**
      * VGA memory Write Modes 0, 1, 2 and 3 functionality
+     * @param value
      */
     public void writeMode(int address, byte value) {
         int offset;
@@ -2583,6 +2583,9 @@ public class Video extends ModuleVideo {
      * used to connect the memory range A0000 - C0000 to the vgaMemory array in
      * VideoCard
      */
+    /**
+     *
+     */
     @SuppressWarnings("unused")
     public class DiosJPCVideoConnect extends Memory {
         // Added because needed - need to check if used elsewhere in JPC
@@ -2594,46 +2597,92 @@ public class Video extends ModuleVideo {
                 0xffff0000, 0xffff00ff, 0xffffff00, 0xffffffff };
         private int planeUpdated;
 
+        /**
+         *
+         * @return
+         */
         public boolean isCacheable() {
             return false;
         }
 
+        /**
+         *
+         * @return
+         */
         public boolean isVolatile() {
             return true;
         }
 
+        /**
+         *
+         * @param address
+         * @param buffer
+         * @param off
+         * @param len
+         */
         public void copyContentsInto(int address, byte[] buffer, int off,
                 int len) {
             throw new IllegalStateException(
                     "copyContentsInto: Invalid Operation for VGA Card");
         }
 
+        /**
+         *
+         * @param address
+         * @param buffer
+         * @param off
+         * @param len
+         */
         public void copyContentsFrom(int address, byte[] buffer, int off,
                 int len) {
             throw new IllegalStateException(
                     "copyContentsFrom: Invalid Operation for VGA Card");
         }
 
+        /**
+         *
+         * @return
+         */
         public long getSize() {
             return 0x20000;
         }
 
+        /**
+         *
+         * @return
+         */
+        @Override
         public boolean isAllocated() {
             return false;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public byte getByte(int offset) {
             // All functionality already implemented. Just need to call with
             // correct parameters.
             return readMode(offset + 0xA0000);
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public short getWord(int offset) {
             int v = 0xFF & getByte(offset);
             v |= getByte(offset + 1) << 8;
             return (short) v;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public int getDoubleWord(int offset) {
             int v = 0xFF & getByte(offset);
             v |= (0xFF & getByte(offset + 1)) << 8;
@@ -2642,6 +2691,11 @@ public class Video extends ModuleVideo {
             return v;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getQuadWord(int offset) {
             long v = 0xFFl & getByte(offset);
             v |= (0xFFl & getByte(offset + 1)) << 8;
@@ -2654,26 +2708,51 @@ public class Video extends ModuleVideo {
             return v;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getLowerDoubleQuadWord(int offset) {
             return getQuadWord(offset);
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getUpperDoubleQuadWord(int offset) {
             return getQuadWord(offset + 8);
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setByte(int offset, byte data) {
             // All functionality already implemented. Just need to call with
             // correct parameters.
             writeMode(offset + 0xA0000, data);
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setWord(int offset, short data) {
             setByte(offset++, (byte) data);
             data >>>= 8;
             setByte(offset, (byte) data);
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setDoubleWord(int offset, int data) {
             setByte(offset++, (byte) data);
             data >>>= 8;
@@ -2684,41 +2763,80 @@ public class Video extends ModuleVideo {
             setByte(offset, (byte) data);
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setQuadWord(int offset, long data) {
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setLowerDoubleQuadWord(int offset, long data) {
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setUpperDoubleQuadWord(int offset, long data) {
             offset += 8;
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
 
+        /**
+         *
+         */
         public void clear() {
             // Do we need this?
             // internalReset();
         }
 
+        /**
+         *
+         * @param start
+         * @param length
+         */
         public void clear(int start, int length) {
             clear();
         }
 
+        /**
+         *
+         * @param cpu
+         * @param offset
+         * @return
+         */
         public int execute(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");
         }
 
+        /**
+         *
+         * @param cpu
+         * @param offset
+         * @return
+         */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");
         }
 
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace)
                 && component.initialised()) {

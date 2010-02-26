@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_MOV_GvEvTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_MOV_GvEvTest() throws Exception {
         super(80448, "MOV_GvEv.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_MOV_GvEvTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_MOV_GvEv.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String AX_ERROR = "AX contains wrong value";

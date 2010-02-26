@@ -64,16 +64,34 @@ public class Counter {
     private boolean signalOut; // Output signal OUT
 
     // Mode settings
+    /**
+     *
+     */
     protected int counterMode; // States the counter mode: 0,1,2,3,4,5
+    /**
+     *
+     */
     protected int rwMode; // States the mode to R/W counter: 0 (latched), 1
                           // (LSB), 2 (MSB), 3 (LSB -> MSB)
+    /**
+     *
+     */
     protected boolean bcd; // false = Binary counter, true = Binary Code Decimal
                            // counter
 
     // Registers
+    /**
+     *
+     */
     protected byte[] ce; // Counting element, the actual counter
+    /**
+     *
+     */
     protected byte[] cr; // Count Register, holding the count value to be loaded
                          // in counter
+    /**
+     *
+     */
     protected byte[] ol; // Output Latch, holding a snapshot of the count of the
                          // counter
 
@@ -88,6 +106,9 @@ public class Counter {
     private boolean isTriggered; // Defines if this counter has been triggered
                                  // (used for modes 1 and 5)
     private boolean isGateRising; // Defines if GATE signal is on rising edge
+    /**
+     *
+     */
     protected boolean readBackCmd; // Defines if this counter is in read-back
                                    // mode
 
@@ -95,7 +116,13 @@ public class Counter {
     private static Logger logger = Logger.getLogger("dioscuri.module.pit");
 
     // Constants
+    /**
+     *
+     */
     protected final static int LSB = 1;
+    /**
+     *
+     */
     protected final static int MSB = 0;
 
     private final static boolean ODD = false;
@@ -121,6 +148,8 @@ public class Counter {
     /**
      * Constructor of the counter class
      * 
+     * @param pit
+     * @param counterNumber 
      */
     public Counter(PIT pit, int counterNumber) {
         // Initialise relations
@@ -655,7 +684,7 @@ public class Counter {
      * set to true If GATE is falling (high -> low), signal OUT is turned high
      * immediately for some counter modes
      * 
-     * @param boolean status, containing the new value for GATE
+     * @param status
      */
     protected void setGateSignal(boolean status) {
         // FIXME: this method is never used!
@@ -752,7 +781,7 @@ public class Counter {
      * Set counter value depending on the R/W mode Note: it is assumed that data
      * is always loaded in LSB, MSB order. So, first LSB then MSB.
      * 
-     * @param byte data containing the LSB/MSB for counter
+     * @param data
      */
     protected void setCounterValue(byte data) {
         // Check the R/W mode
@@ -815,7 +844,7 @@ public class Counter {
     /**
      * Set counter mode
      * 
-     * @param int mode ranging from 0 to 5
+     * @param mode
      */
     protected void setCounterMode(int mode) {
         counterMode = mode;
@@ -934,8 +963,7 @@ public class Counter {
     /**
      * Enable/disable the counter
      * 
-     * @param boolean status defining the status of this counter (true=enabled,
-     *        false=disabled)
+     * @param status
      */
     protected void setEnabled(boolean status) {
         // Set current counter in given state

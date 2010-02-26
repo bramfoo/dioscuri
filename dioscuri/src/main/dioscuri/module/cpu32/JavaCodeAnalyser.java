@@ -27,7 +27,19 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.classfile.JavaOpcode;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class JavaCodeAnalyser {
+    /**
+     *
+     * @param code
+     * @param start
+     * @param cf
+     * @return
+     */
     public static int getMaxStackDepth(int[] code, int start, ClassFile cf) {
         // Note this algorithm only works when jumps are forwards only!!
         int[] delta = new int[code.length];
@@ -113,6 +125,11 @@ public class JavaCodeAnalyser {
         return maxDepth;
     }
 
+    /**
+     *
+     * @param code
+     * @return
+     */
     public static int getMaxLocalVariables(int[] code) {
         int currentMax = 0;
         int varAccess = 0;

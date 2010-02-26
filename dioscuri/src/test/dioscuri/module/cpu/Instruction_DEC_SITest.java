@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_DEC_SITest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_DEC_SITest() throws Exception {
         super(80448, "DEC_SI.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_DEC_SITest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_SI.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String SI_ERROR = "SI contains wrong value";

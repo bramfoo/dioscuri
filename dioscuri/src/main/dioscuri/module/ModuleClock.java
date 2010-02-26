@@ -49,11 +49,9 @@ public abstract class ModuleClock extends Module {
     /**
      * Register a device to clock and assign a timer to it
      * 
-     * @param ModuleDevice
-     *            device that requires a timer
-     * @param int updateInterval in microseconds
-     * @param boolean continuous type of timer requested, one-shot or continuous
-     * 
+     * @param device 
+     * @param intervalLength
+     * @param continuousOneShot
      * @return boolean true if timer assigned successfully, false otherwise
      */
     public abstract boolean registerDevice(ModuleDevice device,
@@ -62,10 +60,8 @@ public abstract class ModuleClock extends Module {
     /**
      * Reset the timer of given device (if any)
      * 
-     * @param ModuleDevice
-     *            device that request a timer reset
-     * @param int updateInterval in microseconds
-     * 
+     * @param device
+     * @param intervalLength
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean resetTimer(ModuleDevice device, int intervalLength);
@@ -73,10 +69,8 @@ public abstract class ModuleClock extends Module {
     /**
      * Set a timer to start/stop running
      * 
-     * @param ModuleDevice
-     *            device that request a timer to be set
-     * @param boolean runState the state to set the timer to (start/stop)
-     * 
+     * @param device
+     * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean setTimerActiveState(ModuleDevice device,

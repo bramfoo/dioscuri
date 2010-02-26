@@ -39,9 +39,18 @@
 
 package dioscuri.exception;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class CPU_DE_Exception extends CPUInstructionException {
 
+    /**
+     *
+     * @param message
+     */
     public CPU_DE_Exception(String message) {
         super(message);
     }

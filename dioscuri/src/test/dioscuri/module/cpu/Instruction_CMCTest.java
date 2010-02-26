@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_CMCTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_CMCTest() throws Exception {
         super(80448, "CMC.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_CMCTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_CMC.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String CF_ERROR = "CF incorrect";

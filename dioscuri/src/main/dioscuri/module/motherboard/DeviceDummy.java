@@ -78,8 +78,17 @@ public class DeviceDummy extends ModuleDevice {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 5000;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "dummy device";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Dummy Device";
 
     // Constructor
@@ -87,6 +96,7 @@ public class DeviceDummy extends ModuleDevice {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public DeviceDummy(Emulator owner) {
         emu = owner;
@@ -255,8 +265,7 @@ public class DeviceDummy extends ModuleDevice {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -268,10 +277,7 @@ public class DeviceDummy extends ModuleDevice {
     /**
      * Set data for this module
      * 
-     * @param byte[] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
@@ -283,11 +289,7 @@ public class DeviceDummy extends ModuleDevice {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -323,7 +325,6 @@ public class DeviceDummy extends ModuleDevice {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }
@@ -337,8 +338,6 @@ public class DeviceDummy extends ModuleDevice {
 
     /**
      * Return a byte from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
@@ -368,9 +367,6 @@ public class DeviceDummy extends ModuleDevice {
 
     /**
      * Set a byte in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException

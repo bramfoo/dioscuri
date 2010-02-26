@@ -45,29 +45,70 @@ import java.util.Arrays;
 
 import dioscuri.exception.StorageDeviceException;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class Drive {
     // Attributes
 
     // Drive parameters
     private int driveType; // Type of drive this is
     private boolean motorRunning; // Denotes if motor of drive is on or off
+    /**
+     *
+     */
     protected int eot; // End of track, contains the number of the final sector
                        // of a cylinder
+    /**
+     *
+     */
     protected int hds; // Current head (Head Select)
+    /**
+     *
+     */
     protected int cylinder; // Current cylinder
+    /**
+     *
+     */
     protected int sector; // Current sector
 
     // Floppy parameters
     private Floppy floppy; // Floppy in drive (if any, else null)
+    /**
+     *
+     */
     protected int floppyType; // Type of floppy that is in drive
+    /**
+     *
+     */
     protected int tracks; // Total number of tracks on floppy
+    /**
+     *
+     */
     protected int heads; // Total number of heads on floppy
+    /**
+     *
+     */
     protected int cylinders; // Total number of cylinders on floppy (identical
                              // to tracks for floppies)
+    /**
+     *
+     */
     protected int sectorsPerTrack; // Total number of sectors per track
+    /**
+     *
+     */
     protected int sectors; // Total number of sectors on a disk
+    /**
+     *
+     */
     protected boolean writeProtected; // Indicates if the floppy is write
                                       // protected
+    /**
+     * 
+     */
     protected boolean multiTrack; // The floppy has two sides, a cylinder under
                                   // both HD0 and HD1 will be accessed
 
@@ -92,6 +133,9 @@ public class Drive {
     // bit 1 datarate select1
     // bit 0 datarate select0
     // bit 0 FIXED DISK drive 0 select (conflicting!)
+    /**
+     *
+     */
     protected byte dir;
     
     private static enum FloppyType {
@@ -186,6 +230,7 @@ public class Drive {
     /**
      * Reset drive All geometry parameters for sector selection are reset.
      * 
+     * @return
      */
     protected boolean reset() {
         // Reset registers
@@ -220,7 +265,7 @@ public class Drive {
     /**
      * Set type of drive
      * 
-     * @param byte drive type
+     * @param type
      */
     protected void setDriveType(byte type) {
         driveType = type;
@@ -229,7 +274,7 @@ public class Drive {
     /**
      * Set motor status
      * 
-     * @param boolean state of drive motor
+     * @param state
      */
     protected void setMotor(boolean state) {
         motorRunning = state;
@@ -268,10 +313,10 @@ public class Drive {
     /**
      * Inserts a floppy into the drive
      * 
-     * @param byte floppyType that defines the type of the floppy
-     * @param File
-     *            containing the disk image raw bytes of the floppy
-     * @param boolean write protected
+     * @param floppyType
+     * @param imageFile
+     * @param writeProtected
+     * @throws StorageDeviceException
      */
     protected void insertFloppy(byte floppyType, File imageFile,
             boolean writeProtected) throws StorageDeviceException {
@@ -320,6 +365,7 @@ public class Drive {
     /**
      * Ejects a floppy from the drive
      * 
+     * @throws StorageDeviceException
      */
     protected void ejectFloppy() throws StorageDeviceException {
         try {
@@ -346,9 +392,10 @@ public class Drive {
     /**
      * Read data from floppy into buffer
      * 
-     * @param int offset from beginning of floppy
-     * @param int totalBytes denoting the number of bytes to read
-     * @param byte[] floppyBuffer the buffer to store read data in
+     * @param offset
+     * @param totalBytes
+     * @param floppyBuffer
+     * @throws StorageDeviceException
      */
     protected void readData(int offset, int totalBytes, byte[] floppyBuffer)
             throws StorageDeviceException {
@@ -392,9 +439,10 @@ public class Drive {
     /**
      * Write data to floppy from buffer
      * 
-     * @param int offset from beginning of floppy
-     * @param int totalBytes denoting the number of bytes to write
-     * @param byte[] floppyBuffer containing the data to write
+     * @param offset
+     * @param totalBytes
+     * @param floppyBuffer
+     * @throws StorageDeviceException
      */
     protected void writeData(int offset, int totalBytes, byte[] floppyBuffer)
             throws StorageDeviceException {
@@ -462,6 +510,7 @@ public class Drive {
      * Get String representation of this class
      * 
      */
+    @Override
     public String toString() {
         String driveInfo, floppyInfo, ret, tab;
 

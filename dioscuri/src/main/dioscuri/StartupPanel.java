@@ -56,6 +56,9 @@ public class StartupPanel extends JPanel {
     private boolean paint = false;
 
     // Constructor
+    /**
+     *
+     */
     public StartupPanel() {
     }
 
@@ -73,10 +76,9 @@ public class StartupPanel extends JPanel {
     /**
      * Draw an image on the panel This is a standard method used by Graphics
      * 
-     * @param Graphics
-     *            g - standard graphics component
      * 
      */
+    @Override
     public void paintComponent(Graphics g) {
         // Paint image on panel
         if (paint && image != null) {
@@ -93,9 +95,8 @@ public class StartupPanel extends JPanel {
      * called. It is necesarry to doublebuffer the panel (to prevent it from
      * blinking when updated).
      * 
-     * @param Graphics
-     *            g - the standard graphics component
      */
+    @Override
     public void update(Graphics g) {
         paint(g);
     }
@@ -103,8 +104,7 @@ public class StartupPanel extends JPanel {
     /**
      * Set the given image to current and redraw panel
      * 
-     * @param Image
-     *            i
+     * @param i
      */
     public void setImage(BufferedImage i) {
         // Paint image object

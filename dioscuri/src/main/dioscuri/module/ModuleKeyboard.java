@@ -49,10 +49,24 @@ import java.awt.event.KeyEvent;
 public abstract class ModuleKeyboard extends ModuleDevice {
     // Methods
 
+    /**
+     *
+     * @param keyEvent
+     * @param i
+     */
     public abstract void generateScancode(KeyEvent keyEvent, int i);
 
+    /**
+     *
+     * @param data
+     * @param source
+     */
     public abstract void enqueueControllerBuffer(byte data, int source);
 
+    /**
+     *
+     * @param status
+     */
     public abstract void setTimeOut(byte status);
 
 }

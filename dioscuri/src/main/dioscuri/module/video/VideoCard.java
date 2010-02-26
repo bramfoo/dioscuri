@@ -67,7 +67,13 @@ public class VideoCard {
 
     // The display is divided into tiles of size 16x24, which can be updated
     // individually
+    /**
+     *
+     */
     protected final static int X_TILESIZE = 16;
+    /**
+     *
+     */
     protected final static int Y_TILESIZE = 24;
     private final static int X_NUM_TILES = (XRES_MAX / X_TILESIZE);
     private final static int Y_NUM_TILES = (YRES_MAX / Y_TILESIZE);
@@ -117,10 +123,16 @@ public class VideoCard {
     // 0: Do not use memory; 1: Memory access enabled
 
     // Video memory variables
+    /**
+     *
+     */
     public byte[] vgaMemory = new byte[256 * 1024]; // VGA memory contents 2 *
                                                     // [A0000 - BFFFF] (??)
     boolean vgaMemReqUpdate; // Indicates if the vga memory has been updated,
                              // and a redraw is necessary
+    /**
+     *
+     */
     public byte[] textSnapshot = new byte[128 * 1024]; // Current text snapshot,
                                                        // is used to compare
                                                        // current screen
@@ -142,6 +154,9 @@ public class VideoCard {
 
     // Constructor
     // Initialises Pixel array
+    /**
+     *
+     */
     public VideoCard() {
         Arrays.fill(pixels, new Pixel());
     }

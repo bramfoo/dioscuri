@@ -37,6 +37,10 @@
  */
 package dioscuri;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class TestCommandLineInterface {
     /*
     private CommandLineInterface getCommandLineInterface() throws Exception {

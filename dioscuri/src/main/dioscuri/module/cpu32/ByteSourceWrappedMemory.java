@@ -27,28 +27,55 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ByteSourceWrappedMemory implements ByteSource {
     private Memory source;
     private int offset, startingPosition;
 
+    /**
+     *
+     * @param source
+     * @param offset
+     */
     public void set(Memory source, int offset) {
         this.source = source;
         this.offset = offset;
         startingPosition = offset;
     }
 
+    /**
+     *
+     * @return
+     */
     public Memory getMemory() {
         return source;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getOffset() {
         return offset;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte getByte() {
         return source.getByte(offset++);
     }
 
+    /**
+     *
+     * @param count
+     * @return
+     */
     public boolean skip(int count) {
         if (offset + count >= source.getSize())
             return false;
@@ -56,6 +83,11 @@ public class ByteSourceWrappedMemory implements ByteSource {
         return true;
     }
 
+    /**
+     *
+     * @param count
+     * @return
+     */
     public boolean rewind(int count) {
         if (offset - count < startingPosition)
             return false;
@@ -63,6 +95,10 @@ public class ByteSourceWrappedMemory implements ByteSource {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean reset() {
         offset = startingPosition;
         return true;

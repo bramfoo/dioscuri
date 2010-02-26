@@ -54,6 +54,9 @@ import java.io.RandomAccessFile;
 public class DiskImage {
     // Attributes
 
+    /**
+     *
+     */
     protected File imageFile;
 
     /**
@@ -66,8 +69,7 @@ public class DiskImage {
     /**
      * Class constructor with disk image file.
      * 
-     * @param the
-     *            disk image file
+     * @param theImageFile
      * @throws IOException
      */
     public DiskImage(File theImageFile) throws IOException {
@@ -129,6 +131,7 @@ public class DiskImage {
     /**
      * Gets the size of the disk image in bytes.
      * 
+     * @return
      * @returns the size of the disk image in bytes
      */
     protected long getSize() {

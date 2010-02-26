@@ -27,6 +27,11 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         InstructionSource {
     private static final boolean[] modrmArray = new boolean[] { // true for
@@ -214,24 +219,43 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
     private boolean blockComplete;
     private boolean addressModeDecoded;
 
+    /**
+     *
+     */
     public RealModeUDecoder() {
         this.current = new Operation();
         this.waiting = new Operation();
         this.working = new Operation();
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeReal(ByteSource source) {
         reset();
         this.source = source;
         return this;
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeVirtual8086(ByteSource source) {
         reset();
         this.source = source;
         return this;
     }
 
+    /**
+     *
+     * @param source
+     * @param operandSize
+     * @return
+     */
     public InstructionSource decodeProtected(ByteSource source,
             boolean operandSize) {
         return null;
@@ -248,6 +272,10 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         working = temp;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getNext() {
         decode(); // will put new block in working
         rotate(); // moves buffer around
@@ -267,14 +295,26 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         blockComplete = false;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMicrocode() {
         return current.getMicrocode();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLength() {
         return current.getLength();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         return current.getX86Length();
     }
@@ -6384,6 +6424,12 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         return 0;
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isFarJump(int opcode, int modrm) {
         switch (opcode) {
         case 0x9a: // CALLF Ap
@@ -6411,6 +6457,12 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isNearJump(int opcode, int modrm) {
         switch (opcode) {
         case 0x70: // Jcc Jb
@@ -6471,6 +6523,12 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isModeSwitch(int opcode, int modrm) {
         switch (opcode) {
         case 0x0f22: // MOV Cd, Ed
@@ -6485,6 +6543,12 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isBlockTerminating(int opcode, int modrm) {
         switch (opcode) {
         case 0xf4: // HLT
@@ -6494,6 +6558,12 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isJump(int opcode, int modrm) {
         return isNearJump(opcode, modrm) || isFarJump(opcode, modrm)
                 || isModeSwitch(opcode, modrm)

@@ -39,9 +39,18 @@
 
 package dioscuri.exception;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class ModuleWriteOnlyPortException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
     public ModuleWriteOnlyPortException(String message) {
         super(message);
     }

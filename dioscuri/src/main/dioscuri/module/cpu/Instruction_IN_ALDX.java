@@ -87,8 +87,6 @@ public class Instruction_IN_ALDX implements Instruction {
     /**
      * Input byte from I/O port address specified by DX into AL
      * 
-     * @throws ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
      */
     public void execute() {
 

@@ -25,5 +25,10 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface Virtual8086ModeCodeBlock extends CodeBlock {
 }

@@ -27,25 +27,79 @@ package dioscuri.module.cpu32;
 
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class ConstantPoolInfo {
+    /**
+     *
+     */
     public static final int CLASS = 7;
+    /**
+     *
+     */
     public static final int FIELDREF = 9;
+    /**
+     *
+     */
     public static final int METHODREF = 10;
+    /**
+     *
+     */
     public static final int INTERFACEMETHODREF = 11;
+    /**
+     *
+     */
     public static final int STRING = 8;
+    /**
+     *
+     */
     public static final int INTEGER = 3;
+    /**
+     *
+     */
     public static final int FLOAT = 4;
+    /**
+     *
+     */
     public static final int LONG = 5;
+    /**
+     *
+     */
     public static final int DOUBLE = 6;
+    /**
+     *
+     */
     public static final int NAMEANDTYPE = 12;
+    /**
+     *
+     */
     public static final int UTF8 = 1;
 
+    /**
+     *
+     * @return
+     */
     public abstract int getTag();
 
+    /**
+     *
+     * @param out
+     * @throws IOException
+     */
     public abstract void write(DataOutputStream out) throws IOException;
 
+    @Override
     public abstract boolean equals(Object obj);
 
+    /**
+     *
+     * @param in
+     * @return
+     * @throws IOException
+     */
     public static ConstantPoolInfo construct(DataInputStream in)
             throws IOException {
         int tag = in.readUnsignedByte();
@@ -76,6 +130,9 @@ public abstract class ConstantPoolInfo {
         return null;
     }
 
+    /**
+     *
+     */
     public static class ClassInfo extends ConstantPoolInfo {
         private final int nameIndex;
         private final int hashCode;
@@ -90,19 +147,33 @@ public abstract class ConstantPoolInfo {
             hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return CLASS;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getNameIndex() {
             return nameIndex;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(CLASS);
             out.writeShort(nameIndex);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -117,6 +188,7 @@ public abstract class ConstantPoolInfo {
             return getNameIndex() == ((ClassInfo) obj).getNameIndex();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Class_info : name=" + getNameIndex();
         }
@@ -155,6 +227,7 @@ public abstract class ConstantPoolInfo {
             out.writeShort(nameAndTypeIndex);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -175,6 +248,9 @@ public abstract class ConstantPoolInfo {
         }
     }
 
+    /**
+     *
+     */
     public static class FieldRefInfo extends RefInfo {
         FieldRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -184,16 +260,24 @@ public abstract class ConstantPoolInfo {
             super(classIndex, nameAndTypeIndex);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return FIELDREF;
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_FieldRef_info : class=" + getClassIndex()
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
+    /**
+     *
+     */
     public static class MethodRefInfo extends RefInfo {
         MethodRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -203,16 +287,24 @@ public abstract class ConstantPoolInfo {
             super(classIndex, nameAndTypeIndex);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return METHODREF;
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_MethodRef_info : class=" + getClassIndex()
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
+    /**
+     *
+     */
     public static class InterfaceMethodRefInfo extends MethodRefInfo {
         InterfaceMethodRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -222,10 +314,16 @@ public abstract class ConstantPoolInfo {
             super(classIndex, nameAndTypeIndex);
         }
 
+        /**
+         *
+         * @return
+         */
+        @Override
         public int getTag() {
             return INTERFACEMETHODREF;
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_InterfaceMethodRef_info : class="
                     + getClassIndex() + " : nameandtype="
@@ -233,6 +331,9 @@ public abstract class ConstantPoolInfo {
         }
     }
 
+    /**
+     *
+     */
     public static class StringInfo extends ConstantPoolInfo {
         private final int stringIndex;
         private final int hashCode;
@@ -247,19 +348,33 @@ public abstract class ConstantPoolInfo {
             hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return STRING;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getStringIndex() {
             return stringIndex;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(STRING);
             out.writeShort(stringIndex);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -274,11 +389,15 @@ public abstract class ConstantPoolInfo {
             return getStringIndex() == ((StringInfo) obj).getStringIndex();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_String_info : string=" + getStringIndex();
         }
     }
 
+    /**
+     *
+     */
     public static class IntegerInfo extends ConstantPoolInfo {
         private final int bytes;
         private final int hashCode;
@@ -293,19 +412,33 @@ public abstract class ConstantPoolInfo {
             hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return INTEGER;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getBytes() {
             return bytes;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(INTEGER);
             out.writeInt(bytes);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -320,11 +453,15 @@ public abstract class ConstantPoolInfo {
             return getBytes() == ((IntegerInfo) obj).getBytes();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Integer_info : value=" + getBytes();
         }
     }
 
+    /**
+     *
+     */
     public static class FloatInfo extends ConstantPoolInfo {
         private final float bytes;
         private final int hashCode;
@@ -341,19 +478,33 @@ public abstract class ConstantPoolInfo {
                     ^ (Float.floatToRawIntBits(bytes) * 37);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return FLOAT;
         }
 
+        /**
+         *
+         * @return
+         */
         public float getBytes() {
             return bytes;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(FLOAT);
             out.writeFloat(bytes);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -368,11 +519,15 @@ public abstract class ConstantPoolInfo {
             return getBytes() == ((FloatInfo) obj).getBytes();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Float_info : value=" + getBytes();
         }
     }
 
+    /**
+     *
+     */
     public static class LongInfo extends ConstantPoolInfo {
         private final long bytes;
         private final int hashCode;
@@ -389,19 +544,33 @@ public abstract class ConstantPoolInfo {
                     ^ (((int) (bytes >>> 32)) * 41);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return LONG;
         }
 
+        /**
+         *
+         * @return
+         */
         public long getBytes() {
             return bytes;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(LONG);
             out.writeLong(bytes);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -416,11 +585,15 @@ public abstract class ConstantPoolInfo {
             return getBytes() == ((LongInfo) obj).getBytes();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Long_info : value=" + getBytes();
         }
     }
 
+    /**
+     *
+     */
     public static class DoubleInfo extends ConstantPoolInfo {
         private final double bytes;
         private final int hashCode;
@@ -441,19 +614,33 @@ public abstract class ConstantPoolInfo {
                     ^ (((int) (longBytes >>> 32)) * 41);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return DOUBLE;
         }
 
+        /**
+         *
+         * @return
+         */
         public double getBytes() {
             return bytes;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(DOUBLE);
             out.writeDouble(bytes);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -468,11 +655,15 @@ public abstract class ConstantPoolInfo {
             return getBytes() == ((DoubleInfo) obj).getBytes();
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Double_info : value=" + getBytes();
         }
     }
 
+    /**
+     *
+     */
     public static class NameAndTypeInfo extends ConstantPoolInfo {
         private final int nameIndex;
         private final int descriptorIndex;
@@ -492,24 +683,42 @@ public abstract class ConstantPoolInfo {
                     ^ (descriptorIndex * 41);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return NAMEANDTYPE;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getNameIndex() {
             return nameIndex;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getDescriptorIndex() {
             return descriptorIndex;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(NAMEANDTYPE);
             out.writeShort(nameIndex);
             out.writeShort(descriptorIndex);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -526,12 +735,16 @@ public abstract class ConstantPoolInfo {
                             .getDescriptorIndex());
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_NameAndType_info : descriptor="
                     + getDescriptorIndex() + " : name=" + getNameIndex();
         }
     }
 
+    /**
+     *
+     */
     public static class Utf8Info extends ConstantPoolInfo {
         private final String bytes;
         private final int hashCode;
@@ -548,19 +761,33 @@ public abstract class ConstantPoolInfo {
                     ^ (bytes.hashCode() * 37);
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTag() {
             return UTF8;
         }
 
+        /**
+         *
+         * @return
+         */
         public String getBytes() {
             return bytes;
         }
 
+        /**
+         *
+         * @param out
+         * @throws IOException
+         */
         public void write(DataOutputStream out) throws IOException {
             out.writeByte(UTF8);
             out.writeUTF(bytes);
         }
 
+        @Override
         public int hashCode() {
             return hashCode;
         }
@@ -575,8 +802,15 @@ public abstract class ConstantPoolInfo {
             return getBytes().equals(((Utf8Info) obj).getBytes());
         }
 
+        @Override
         public String toString() {
             return "CONSTANT_Utf8_info : value=" + getBytes();
         }
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        return hash;
     }
 }

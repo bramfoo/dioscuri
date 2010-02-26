@@ -67,58 +67,117 @@ public class SenseInfo {
     private byte[] specificInf = new byte[4];
     private byte[] keySpec = new byte[3];
 
+    /**
+     *
+     * @return
+     */
     public byte getFruc() {
         return fruc;
     }
 
+    /**
+     *
+     * @param fruc
+     */
     public void setFruc(byte fruc) {
         this.fruc = fruc;
     }
 
+    /**
+     *
+     * @return
+     */
     public AscType getAsc() {
         return this.ascType;
     }
 
+    /**
+     *
+     * @param ascType
+     */
     public void setAsc(AscType ascType) {
         this.ascType = ascType;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte getAscq() {
         return this.ascq;
     }
 
+    /**
+     *
+     * @param ascq
+     */
     public void setAscq(byte ascq) {
         this.ascq = ascq;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getInformation() {
         return information;
     }
 
+    /**
+     *
+     * @param index
+     * @param information
+     */
     public void setInformation(int index, byte information) {
         this.information[index] = information;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getSpecificInf() {
         return specificInf;
     }
 
+    /**
+     *
+     * @param index
+     * @param specificInf
+     */
     public void setSpecificInf(int index, byte specificInf) {
         this.specificInf[index] = specificInf;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getKeySpec() {
         return keySpec;
     }
 
+    /**
+     *
+     * @param index
+     * @param keySpec
+     */
     public void setKeySpec(int index, byte keySpec) {
         this.keySpec[index] = keySpec;
     }
 
+    /**
+     *
+     * @return
+     */
     public SenseType getSenseKey() {
         return senseKey;
     }
 
+    /**
+     *
+     * @param senseKey
+     */
     public void setSenseKey(SenseType senseKey) {
         this.senseKey = senseKey;
     }

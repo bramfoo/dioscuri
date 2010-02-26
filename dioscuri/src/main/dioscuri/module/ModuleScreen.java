@@ -51,6 +51,7 @@ public abstract class ModuleScreen extends Module {
     // Methods
     /**
      * Return a reference to the actual screen
+     * @return
      */
     public abstract JPanel getScreen();
 
@@ -61,39 +62,43 @@ public abstract class ModuleScreen extends Module {
 
     /**
      * Return the number of rows on screen (text based)
+     * @return
      */
     public abstract int getScreenRows();
 
     /**
      * Return the number of columns on screen (text based)
+     * @return
      */
     public abstract int getScreenColumns();
 
     /**
      * Return width of screen in number of pixels
+     * @return
      */
     public abstract int getScreenWidth();
 
     /**
      * Return height of screen in number of pixels
+     * @return
      */
     public abstract int getScreenHeight();
 
     /**
      * Set the screen size in number of pixels
      * 
-     * @param int width New width of the screen in pixels
-     * @param int height New height of the screen in pixels
+     * @param width
+     * @param height
      */
     public abstract void setScreenSize(int width, int height);
 
     /**
      * Update screen size
      * 
-     * @param int screenWidth
-     * @param int screenHeight
-     * @param int fontWidth (zero if not relevant)
-     * @param int fontHeight (zero if not relevant)
+     * @param screenWidth
+     * @param screenHeight
+     * @param fontWidth
+     * @param fontHeight
      */
     public abstract void updateScreenSize(int screenWidth, int screenHeight,
             int fontWidth, int fontHeight);
@@ -101,25 +106,26 @@ public abstract class ModuleScreen extends Module {
     /**
      * Update the code page The code page is the character encoding table
      * 
-     * @param int startAddress
+     * @param startAddress
      */
     public abstract void updateCodePage(int startAddress);
 
     /**
      * Set a byte in Code page The code page is the character encoding table
      * 
-     * @param int index
-     * @param byte data
+     * @param index
+     * @param data
      */
     public abstract void setByteInCodePage(int index, byte data);
 
     /**
      * Set a particular colour in palette with RGB-values
      * 
-     * @param byte index denoting position of colour in palette
-     * @param int red
-     * @param int green
-     * @param int blue
+     * @param index
+     * @param red
+     * @param green
+     * @param blue
+     * @return
      */
     public abstract boolean setPaletteColour(byte index, int red, int green,
             int blue);
@@ -128,9 +134,9 @@ public abstract class ModuleScreen extends Module {
      * Update a tile on screen with given bytes Graphics mode. A tile is a part
      * of the screenbuffer
      * 
-     * @param byte[] tile containing the bytes of the tile to be updated
-     * @param int startPositionX
-     * @param int startPositionY
+     * @param tile
+     * @param startPositionX
+     * @param startPositionY
      */
     public abstract void updateGraphicsTile(byte[] tile, int startPositionX,
             int startPositionY);
@@ -139,14 +145,12 @@ public abstract class ModuleScreen extends Module {
      * Update text on screen at given position Text mode. Selected text will
      * replace existing text at given position
      * 
-     * @param int oldText is start position of old text
-     * @param int newText is start position of new text
-     * @param long cursorXpos
-     * @param long cursorYpos
-     * @param short[] textModeAttribs contains (in order): fullStartAddress,
-     *        cursorStartLine, cursorEndLine, lineOffset, lineCompare,
-     *        horizPanning, vertPanning, lineGraphics, splitHorizPanning
-     * @param int numberOfRows denoting the number of text rows to update
+     * @param oldText
+     * @param newText
+     * @param cursorYPos
+     * @param cursorXPos
+     * @param numberOfRows 
+     * @param textModeAttribs
      */
     public abstract void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberOfRows);

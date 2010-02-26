@@ -25,6 +25,11 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public final class ProcessorException extends RuntimeException {
     private int vector;
@@ -32,6 +37,12 @@ public final class ProcessorException extends RuntimeException {
     private boolean pointsToSelf;
     private boolean hasErrorCode;
 
+    /**
+     *
+     * @param vector
+     * @param errorCode
+     * @param pointsToSelf
+     */
     public ProcessorException(int vector, int errorCode, boolean pointsToSelf) {
         this.vector = vector;
         this.hasErrorCode = true;
@@ -39,6 +50,11 @@ public final class ProcessorException extends RuntimeException {
         this.pointsToSelf = pointsToSelf;
     }
 
+    /**
+     *
+     * @param vector
+     * @param pointsToSelf
+     */
     public ProcessorException(int vector, boolean pointsToSelf) {
         this.vector = vector;
         this.hasErrorCode = false;
@@ -46,18 +62,34 @@ public final class ProcessorException extends RuntimeException {
         this.pointsToSelf = pointsToSelf;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getVector() {
         return vector;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasErrorCode() {
         return hasErrorCode;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getErrorCode() {
         return errorCode;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean pointsToSelf() {
         return pointsToSelf;
     }
@@ -79,6 +111,11 @@ public final class ProcessorException extends RuntimeException {
         return (vector == Processor.PROC_EXCEPTION_PF);
     }
 
+    /**
+     *
+     * @param vector
+     * @return
+     */
     public boolean combinesToDoubleFault(int vector) {
         // Here we are the "second exception"
         return isContributory(vector)
@@ -88,6 +125,7 @@ public final class ProcessorException extends RuntimeException {
                         .getVector()));
     }
 
+    @Override
     public String toString() {
         if (hasErrorCode())
             return "Processor Exception: " + getVector() + " [errorcode:0x"

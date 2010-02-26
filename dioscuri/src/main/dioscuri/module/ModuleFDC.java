@@ -53,7 +53,7 @@ public abstract class ModuleFDC extends ModuleDevice {
      * Defines the total number of available drives Note: total number may not
      * exceed 4
      * 
-     * @param int total number of drives
+     * @param totalDrives
      * @return boolean true if drives set successfully, false otherwise
      */
     public abstract boolean setNumberOfDrives(int totalDrives);
@@ -61,14 +61,10 @@ public abstract class ModuleFDC extends ModuleDevice {
     /**
      * Inserts a new carrier into a selected drive
      * 
-     * @param String
-     *            drive to which carrier has to be inserted
-     * @param byte carrierType that defines the type of the carrier
-     * @param File
-     *            containing the disk image raw bytes of the carrier
-     * @param boolean writeProtected denoting the inserted floppy is write
-     *        protected or not
-     * 
+     * @param drive
+     * @param carrierType
+     * @param imageFile
+     * @param writeProtected
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
     public abstract boolean insertCarrier(String drive, byte carrierType,
@@ -77,9 +73,7 @@ public abstract class ModuleFDC extends ModuleDevice {
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
-     * @param String
-     *            drive of which carrier has to be ejected
-     * 
+     * @param drive
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
     public abstract boolean ejectCarrier(String drive);
@@ -87,13 +81,10 @@ public abstract class ModuleFDC extends ModuleDevice {
     /**
      * Inserts a new carrier into a selected drive
      * 
-     * @param int driveIndex to which carrier has to be inserted
-     * @param byte carrierType that defines the type of the carrier
-     * @param File
-     *            containing the disk image raw bytes of the carrier
-     * @param boolean writeProtected denoting the inserted floppy is write
-     *        protected or not
-     * 
+     * @param driveIndex 
+     * @param carrierType
+     * @param imageFile
+     * @param writeProtected
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
     public abstract boolean insertCarrier(int driveIndex, byte carrierType,
@@ -102,8 +93,7 @@ public abstract class ModuleFDC extends ModuleDevice {
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
-     * @param int driveIndex of which carrier has to be ejected
-     * 
+     * @param driveIndex
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
     public abstract boolean ejectCarrier(int driveIndex);

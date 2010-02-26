@@ -100,6 +100,9 @@ public class RTC extends ModuleRTC {
     // IRQ number
     private int irqNumber;
 
+    /**
+     *
+     */
     protected int lookupRegister; // Register set by OUT instruction for
                                   // retrieval of data for next IN
 
@@ -108,8 +111,17 @@ public class RTC extends ModuleRTC {
     private final static int IN_PORT = 0x71; // Read/write port
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "rtc";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Real Time Clock (RTC)";
 
     // Constructor
@@ -117,6 +129,7 @@ public class RTC extends ModuleRTC {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public RTC(Emulator owner) {
         emu = owner;
@@ -335,8 +348,7 @@ public class RTC extends ModuleRTC {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -348,10 +360,7 @@ public class RTC extends ModuleRTC {
     /**
      * Set data for this module
      * 
-     * @param byte[] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
@@ -371,11 +380,7 @@ public class RTC extends ModuleRTC {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -431,7 +436,6 @@ public class RTC extends ModuleRTC {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }
@@ -601,8 +605,6 @@ public class RTC extends ModuleRTC {
     /**
      * Return requested CMOS register
      * 
-     * @param int register
-     * 
      * @return byte containing value of register
      */
     public byte getCMOSRegister(int register) {
@@ -617,8 +619,6 @@ public class RTC extends ModuleRTC {
     /**
      * Set given CMOS register with value
      * 
-     * @param int register
-     * @param byte value
      */
     public void setCMOSRegister(int register, byte value) {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Set CMOS register "

@@ -49,8 +49,17 @@ package dioscuri.module.ata;
  * 
  */
 public enum ATADriveType {
+    /**
+     *
+     */
     NONE("None"),
+    /**
+     *
+     */
     HARD_DISK("Hard Disk"),
+    /**
+     *
+     */
     CDROM("CD ROM");
 
     private final String name;
@@ -70,6 +79,7 @@ public enum ATADriveType {
      * 
      * @return the name of the drive type
      */
+    @Override
     public String toString() {
         return this.name;
     }

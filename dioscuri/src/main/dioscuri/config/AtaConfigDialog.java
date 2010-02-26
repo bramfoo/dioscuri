@@ -55,6 +55,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class AtaConfigDialog extends ConfigurationDialog {
 
@@ -71,6 +76,10 @@ public class AtaConfigDialog extends ConfigurationDialog {
     private JButton imageBrowseButton;
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public AtaConfigDialog(GUI parent) {
         super(parent, "ATA Configuration", false, ModuleType.ATA);
 
@@ -79,6 +88,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
 
         emuConfig = parent.getEmuConfig();
@@ -121,6 +131,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
         // Create labels
         JLabel updateIntLabel = new JLabel("Update Interval");
@@ -278,6 +289,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
 
         Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules()

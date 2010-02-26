@@ -31,6 +31,11 @@ import dioscuri.module.clock.Clock;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class CodeBlockManager {
     private CodeBlockFactory realModeChain, protectedModeChain,
             virtual8086ModeChain;
@@ -48,6 +53,10 @@ public class CodeBlockManager {
     @SuppressWarnings("unused")
     private Clock clock;
 
+    /**
+     *
+     * @param clk
+     */
     public CodeBlockManager(Clock clk) {
         this.clock = clk;
 
@@ -162,6 +171,12 @@ public class CodeBlockManager {
         }
     }
 
+    /**
+     *
+     * @param memory
+     * @param offset
+     * @return
+     */
     public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         RealModeCodeBlock block = null;
 
@@ -179,6 +194,13 @@ public class CodeBlockManager {
 
     }
 
+    /**
+     *
+     * @param memory
+     * @param offset
+     * @param operandSizeFlag
+     * @return
+     */
     public ProtectedModeCodeBlock getProtectedModeCodeBlockAt(Memory memory,
             int offset, boolean operandSizeFlag) {
         ProtectedModeCodeBlock block = null;
@@ -194,6 +216,12 @@ public class CodeBlockManager {
         return block;
     }
 
+    /**
+     *
+     * @param memory
+     * @param offset
+     * @return
+     */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlockAt(
             Memory memory, int offset) {
         Virtual8086ModeCodeBlock block = null;
@@ -207,6 +235,9 @@ public class CodeBlockManager {
         return block;
     }
 
+    /**
+     *
+     */
     public void dispose() {
         if (bgc != null)
             bgc.stop();

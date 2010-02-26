@@ -27,11 +27,25 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class RealModeRPNNode extends RPNNode {
+    /**
+     *
+     * @param id
+     * @param parent
+     */
     public RealModeRPNNode(int id, MicrocodeNode parent) {
         super(id, parent);
     }
 
+    /**
+     *
+     * @return
+     */
     protected Object[] getByteCodes() {
         if (getMicrocode() == -1)
             return RealModeBytecodeFragments.pushCode(getID());
@@ -44,6 +58,10 @@ public class RealModeRPNNode extends RPNNode {
                     getMicrocode(), getX86Position());
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasExternalEffect() {
         if (getMicrocode() == -1)
             return false;
@@ -52,6 +70,10 @@ public class RealModeRPNNode extends RPNNode {
                 getMicrocode());
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean canThrowException() {
         if (getMicrocode() == -1)
             return false;

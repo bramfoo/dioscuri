@@ -60,8 +60,7 @@ public abstract class ModuleBIOS extends Module {
     /**
      * Sets the system BIOS code in ROM
      * 
-     * @param byte[] biosCode containing the binary code of System BIOS
-     * 
+     * @param biosCode
      * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
      *         is successful, false otherwise
      * @throws ModuleException
@@ -79,8 +78,7 @@ public abstract class ModuleBIOS extends Module {
     /**
      * Sets the Video BIOS code in ROM
      * 
-     * @param byte[] biosCode containing the binary code of Video BIOS
-     * 
+     * @param biosCode
      * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
      *         successful, false otherwise
      * @throws ModuleException

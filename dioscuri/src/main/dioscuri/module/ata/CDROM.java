@@ -61,6 +61,9 @@ public class CDROM {
 
     int[] errorRecovery = new int[8];
 
+    /**
+     *
+     */
     public CDROM() {
 
         this.errorRecovery[0] = 0x01;
@@ -81,50 +84,98 @@ public class CDROM {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isReady() {
         return isReady;
     }
 
+    /**
+     *
+     * @param isReady
+     */
     public void setReady(boolean isReady) {
         this.isReady = isReady;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isLocked() {
         return isLocked;
     }
 
+    /**
+     *
+     * @param isLocked
+     */
     public void setLocked(boolean isLocked) {
         this.isLocked = isLocked;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCapacity() {
         return capacity;
     }
 
+    /**
+     *
+     * @param capacity
+     */
     public void setCapacity(int capacity) {
         this.capacity = capacity;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNextLba() {
         return nextLba;
     }
 
+    /**
+     *
+     * @param nextLba
+     */
     public void setNextLba(int nextLba) {
         this.nextLba = nextLba;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRemainingBlocks() {
         return remainingBlocks;
     }
 
+    /**
+     *
+     * @param remainingBlocks
+     */
     public void setRemainingBlocks(int remainingBlocks) {
         this.remainingBlocks = remainingBlocks;
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] getErrorRecovery() {
         return errorRecovery;
     }
 
+    /**
+     *
+     * @param errorRecovery
+     */
     public void setErrorRecovery(int[] errorRecovery) {
         this.errorRecovery = errorRecovery;
     }

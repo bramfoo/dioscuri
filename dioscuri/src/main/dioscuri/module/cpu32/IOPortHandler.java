@@ -50,12 +50,20 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         defaultDevice = new UnconnectedIOPort();
     }
 
+    /**
+     *
+     */
     public IOPortHandler() {
         ioPortDevice = new IOPortCapable[MAX_IOPORTS];
         for (int i = 0; i < ioPortDevice.length; i++)
             ioPortDevice[i] = defaultDevice;
     }
 
+    /**
+     *
+     * @param mod
+     * @return
+     */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
         if (mod.getType().equalsIgnoreCase("motherboard")) {
@@ -65,13 +73,29 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
             return false;
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
         reset();
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     */
     public int ioPortReadByte(int address) throws ModuleException {
         // return ioPortDevice[address].ioPortReadByte(address);
         int result = mb.getIOPortByte(address);
@@ -79,6 +103,12 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     */
     public int ioPortReadWord(int address) throws ModuleException {
         // return ioPortDevice[address].ioPortReadWord(address);
         byte[] bytes = mb.getIOPortWord(address);
@@ -89,6 +119,12 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     */
     public int ioPortReadLong(int address) throws ModuleException {
         // return ioPortDevice[address].ioPortReadLong(address);
         byte[] bytes = mb.getIOPortDoubleWord(address);
@@ -101,11 +137,23 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     * @throws ModuleException
+     */
     public void ioPortWriteByte(int address, int data) throws ModuleException {
         // ioPortDevice[address].ioPortWriteByte(address, data);
         mb.setIOPortByte(address, (byte) data);
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     * @throws ModuleException
+     */
     public void ioPortWriteWord(int address, int data) throws ModuleException {
         // ioPortDevice[address].ioPortWriteWord(address, data);
         byte[] dataWord = new byte[] { ((byte) ((data >> 8) & 0xFF)),
@@ -113,6 +161,12 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         mb.setIOPortWord(address, dataWord);
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     * @throws ModuleException
+     */
     public void ioPortWriteLong(int address, int data) throws ModuleException {
         // ioPortDevice[address].ioPortWriteLong(address, data);
         byte[] dataDWord = new byte[] { ((byte) ((data >> 24) & 0xFF)),
@@ -121,10 +175,18 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         mb.setIOPortWord(address, dataDWord);
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] ioPortsRequested() {
         return null;
     }
 
+    /**
+     *
+     * @param device
+     */
     public void registerIOPortCapable(IOPortCapable device) {
         int[] portArray = device.ioPortsRequested();
         if (portArray == null)
@@ -139,6 +201,10 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param device
+     */
     public void deregisterIOPortCapable(IOPortCapable device) {
         int[] portArray = device.ioPortsRequested();
         for (int i = 0; i < portArray.length; i++) {
@@ -147,6 +213,10 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String map() {
         String tempString = "";
         tempString += "IO Port Handler:\n";
@@ -160,6 +230,10 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         return tempString;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean reset() {
         ioPortDevice = new IOPortCapable[MAX_IOPORTS];
         for (int i = 0; i < ioPortDevice.length; i++)
@@ -168,13 +242,22 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean initialised() {
         return true;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
     }
 
+    @Override
     public String toString() {
         return "IOPort Bus";
     }
@@ -251,13 +334,24 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(HardwareComponent component) {
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean updated() {
         return true;
     }
 
+    /**
+     *
+     */
     public void timerCallback() {
     }
 }

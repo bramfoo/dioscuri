@@ -87,8 +87,6 @@ public class Instruction_IN_ALIb implements Instruction {
     /**
      * Input byte from I/O port address indicated by immediate byte into AL
      * 
-     * @throws ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
      */
     public void execute() {
 

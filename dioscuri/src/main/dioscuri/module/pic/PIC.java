@@ -107,11 +107,26 @@ public class PIC extends ModulePIC {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "pic";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Programmable Interrupt Controller (Intel 8259A compatible)";
 
+    /**
+     *
+     */
     public final static int MASTER = 0;
+    /**
+     * 
+     */
     public final static int SLAVE = 1;
 
     // I/O ports 0x20-0x21 (Master PIC)
@@ -141,6 +156,7 @@ public class PIC extends ModulePIC {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public PIC(Emulator owner) {
         emu = owner;
@@ -341,8 +357,7 @@ public class PIC extends ModulePIC {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -354,10 +369,7 @@ public class PIC extends ModulePIC {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -369,11 +381,7 @@ public class PIC extends ModulePIC {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -425,7 +433,6 @@ public class PIC extends ModulePIC {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }
@@ -439,8 +446,6 @@ public class PIC extends ModulePIC {
 
     /**
      * Return a byte from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleUnknownPort
@@ -526,8 +531,6 @@ public class PIC extends ModulePIC {
     /**
      * Set a byte in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      */
     public void setIOPortByte(int portAddress, byte data) {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x"
@@ -961,8 +964,6 @@ public class PIC extends ModulePIC {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
      * @return byte[] containing the data at given I/O address port
      */
     public byte[] getIOPortWord(int portAddress) {
@@ -979,8 +980,6 @@ public class PIC extends ModulePIC {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] dataWord
      */
     public void setIOPortWord(int portAddress, byte[] dataWord) {
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -994,8 +993,6 @@ public class PIC extends ModulePIC {
 
     /**
      * Return a doubleword from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte[] containing the data at given I/O address port
      */
@@ -1013,8 +1010,6 @@ public class PIC extends ModulePIC {
     /**
      * Set a doubleword in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] dataDoubleWord
      */
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) {
         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -1097,7 +1092,6 @@ public class PIC extends ModulePIC {
     /**
      * Raises an interrupt request (IRQ) of given IRQ number
      * 
-     * @param int irqNumber the number of IRQ to be raised
      */
     public void setIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
@@ -1125,7 +1119,6 @@ public class PIC extends ModulePIC {
     /**
      * Lowers an interrupt request (IRQ) of given IRQ number
      * 
-     * @param int irqNumber the number of IRQ to be cleared
      */
     public void clearIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"

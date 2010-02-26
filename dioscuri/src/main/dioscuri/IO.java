@@ -60,6 +60,9 @@ public class IO {
     private String[] cmd;
     private String[] prevCmd;
     private int cmdPointer;
+    /**
+     *
+     */
     public String imageFilename;
     private String[] arguments;
 
@@ -84,9 +87,7 @@ public class IO {
     /**
      * Fetches data from input stream and returns it as a byte array.
      * 
-     * @param String
-     *            filename specifying the name of the inputstream from the
-     *            filesystem
+     * @param filename
      * @return byte[] byte array containing machinecode
      * @throws IOException
      */
@@ -108,11 +109,8 @@ public class IO {
     /**
      * Exports data from emulator to the file system in given filename.
      * 
-     * @param String
-     *            filename specifying the name of the file
-     * @param String
-     *            data
-     * @return boolean, true is successful, false otherwise
+     * @param filename
+     * @param data
      * @throws IOException
      */
     public void exportBinaryStream(String filename, String data)
@@ -159,8 +157,7 @@ public class IO {
      * Parses an input string into commands along with their arguments, execute
      * a command if recognised, otherwise ignore.
      * 
-     * @param cmd
-     *            input string array containing commands and arguments
+     * @return
      */
     public int getCommand() {
         // Declare returnCommand
@@ -364,6 +361,7 @@ public class IO {
      * 
      * @return string with help information
      */
+    @Override
     public String toString() {
         // String of this class
         String info = "Emulator help" + "\r\n";

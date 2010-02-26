@@ -25,6 +25,16 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface ComparableObject {
+    /**
+     *
+     * @param o
+     * @return
+     */
     public int compareTo(Object o);
 }

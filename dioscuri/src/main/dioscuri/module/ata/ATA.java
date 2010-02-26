@@ -84,7 +84,13 @@ public class ATA extends ModuleATA {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "ata";
 
     // Attributes
@@ -126,6 +132,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Class constructor
+     * @param owner
      */
     public ATA(Emulator owner) {
         emu = owner;
@@ -364,8 +371,7 @@ public class ATA extends ModuleATA {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * @see Module
      */
@@ -378,9 +384,8 @@ public class ATA extends ModuleATA {
     /**
      * Set data for this module.
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
+     * @param data
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * @see Module
      */
@@ -393,10 +398,8 @@ public class ATA extends ModuleATA {
     /**
      * Set String[] data for this module.
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
+     * @param data
+     * @param sender
      * @return boolean true is successful, false otherwise
      * @see Module
      */
@@ -458,7 +461,7 @@ public class ATA extends ModuleATA {
     /**
      * Defines the interval between subsequent updates.
      * 
-     * @param int interval in microseconds
+     * @param interval
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -507,10 +510,12 @@ public class ATA extends ModuleATA {
     /**
      * Return a byte from I/O address space at given port.
      * 
-     * @param int portAddress containing the address of the I/O port
+     * @param originalPortAddress
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
@@ -527,10 +532,11 @@ public class ATA extends ModuleATA {
      * both drives of a channel - this seems wrong but kept in this code to adi
      * debugging and comparison with BOCHS
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
+     * @param originalAddress 
+     * @param data
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public void setIOPortByte(int originalAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
@@ -547,10 +553,12 @@ public class ATA extends ModuleATA {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
+     * @param portAddress
      * @return byte[] containing the word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
@@ -564,10 +572,11 @@ public class ATA extends ModuleATA {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] word
+     * @param portAddress 
+     * @param dataWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort {
@@ -583,10 +592,12 @@ public class ATA extends ModuleATA {
     /**
      * Return a double word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
+     * @param portAddress
      * @return byte[] containing the double word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
@@ -600,10 +611,11 @@ public class ATA extends ModuleATA {
     /**
      * Set a double word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] double word
+     * @param portAddress 
+     * @param dataDoubleWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException, ModuleUnknownPort {
@@ -698,7 +710,6 @@ public class ATA extends ModuleATA {
     /**
      * Set CMOS values
      * 
-     * @param translationType
      * @param bootDrives
      * @param floppySigCheckDisabled
      */
@@ -1290,6 +1301,7 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the data read.
      */
+    @SuppressWarnings("empty-statement")
     private byte[] readSectors(int originalAddress, int ioLength) {
         // Clear buffer
         byte[] value = new byte[ioLength];

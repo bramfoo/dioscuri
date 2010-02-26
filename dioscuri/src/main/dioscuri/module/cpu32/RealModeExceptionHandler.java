@@ -34,12 +34,29 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.ExceptionHandler;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class RealModeExceptionHandler extends ExceptionHandler {
+    /**
+     *
+     * @param lastX86Position
+     * @param initialNode
+     * @param stateMap
+     */
     public RealModeExceptionHandler(int lastX86Position,
             RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
         super(lastX86Position, initialNode, stateMap);
     }
 
+    /**
+     *
+     * @param byteCodes
+     * @param cf
+     * @throws IOException
+     */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
             ClassFile cf) throws IOException {
         byteCodes.write(JavaOpcode.INVOKEVIRTUAL);

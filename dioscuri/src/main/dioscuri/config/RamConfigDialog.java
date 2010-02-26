@@ -58,9 +58,13 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Memory;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class RamConfigDialog extends ConfigurationDialog {
 
@@ -68,6 +72,10 @@ public class RamConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public RamConfigDialog(GUI parent) {
         super(parent, "RAM Configuration", false, ModuleType.MEMORY);
     }
@@ -75,6 +83,7 @@ public class RamConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Memory mem = emuConfig.getArchitecture().getModules().getMemory();
@@ -84,6 +93,10 @@ public class RamConfigDialog extends ConfigurationDialog {
 
     }
 
+    /**
+     *
+     */
+    @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -96,6 +109,7 @@ public class RamConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
 
         JLabel sizeLabel = new JLabel("  Size (MB)");
@@ -129,6 +143,7 @@ public class RamConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Memory mem = emuConfig.getArchitecture().getModules().getMemory();
         mem.setSizemb(BigDecimal.valueOf(((Number) sizeField.getValue())

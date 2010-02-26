@@ -70,7 +70,6 @@ public abstract class ModuleATA extends ModuleDevice {
     /**
      * Set CMOS values
      * 
-     * @param translationType
      * @param bootDrives
      * @param floppySigCheckDisabled
      */

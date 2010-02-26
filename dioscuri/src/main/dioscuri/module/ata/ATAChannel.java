@@ -56,7 +56,13 @@ public class ATAChannel {
 
     private static Logger logger = Logger.getLogger("dioscuri.module.ata");
 
+    /**
+     *
+     */
     public static final int IDE_MASTER_INDEX = 0;
+    /**
+     *
+     */
     public static final int IDE_SLAVE_INDEX = 1;
 
     private ATADrive[] drives = new ATADrive[ATAConstants.MAX_NUMBER_DRIVES_PER_CHANNEL];
@@ -170,6 +176,10 @@ public class ATAChannel {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSelectedDrivePresent() {
         if (drives[selectedDriveIndex].getDriveType() == ATADriveType.NONE) {
             return false;
@@ -181,8 +191,6 @@ public class ATAChannel {
     /**
      * Set a disk including disk image.
      * 
-     * @param isMaster
-     *            is the drive master?
      * @param drive
      *            the drive object to set
      */
@@ -231,22 +239,42 @@ public class ATAChannel {
         return ioAddress2;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIrqNumber() {
         return this.irqNumber;
     }
 
+    /**
+     *
+     * @return
+     */
     public ATADrive getSelectedDrive() {
         return this.drives[selectedDriveIndex];
     }
 
+    /**
+     *
+     * @return
+     */
     public int getSelectedDriveIndex() {
         return this.selectedDriveIndex;
     }
 
+    /**
+     *
+     * @param theSelectedDriveIndex
+     */
     public void setSelectedDriveIndex(int theSelectedDriveIndex) {
         this.selectedDriveIndex = theSelectedDriveIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMasterDrivePresent() {
         boolean isMasterPresent = false;
         if (getDrives()[IDE_MASTER_INDEX] != null
@@ -257,6 +285,10 @@ public class ATAChannel {
         return isMasterPresent;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSlaveDrivePresent() {
         boolean isSlavePresent = false;
         if (getDrives()[IDE_SLAVE_INDEX] != null
@@ -267,6 +299,10 @@ public class ATAChannel {
         return isSlavePresent;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isAnyDrivePresent() {
 
         boolean isAnyDrivePresent = false;
@@ -278,10 +314,18 @@ public class ATAChannel {
         return isAnyDrivePresent;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSlaveSelected() {
         return selectedDriveIndex == IDE_SLAVE_INDEX;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMasterSelected() {
         return selectedDriveIndex == IDE_MASTER_INDEX;
     }

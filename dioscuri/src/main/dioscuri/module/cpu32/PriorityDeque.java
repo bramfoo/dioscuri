@@ -29,6 +29,11 @@ package dioscuri.module.cpu32;
 
 import java.util.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class PriorityDeque extends AbstractQueue<Object> implements
         dioscuri.util.Deque<Object> {
     private static final int DEFAULT_INITIAL_CAPACITY = 11;
@@ -39,10 +44,17 @@ public class PriorityDeque extends AbstractQueue<Object> implements
 
     private transient int modCount = 0;
 
+    /**
+     *
+     */
     public PriorityDeque() {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
+    /**
+     *
+     * @param initialCapacity
+     */
     public PriorityDeque(int initialCapacity) {
         if (initialCapacity < 1)
             throw new IllegalArgumentException();
@@ -69,10 +81,12 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return size;
     }
 
+    @Override
     public boolean contains(Object o) {
         return indexOf(o) != -1;
     }
 
+    @Override
     public boolean remove(Object o) {
         int i = indexOf(o);
         if (i == -1)
@@ -339,6 +353,10 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         }
     }
 
+    /**
+     *
+     * @param args
+     */
     @SuppressWarnings("unchecked")
     public static final void main(String[] args) {
         Random rndm = new Random();
@@ -401,6 +419,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         }
     }
 
+    @Override
     public String toString() {
         Object[] temp = new Object[size];
         System.arraycopy(queue, 0, temp, 0, temp.length);

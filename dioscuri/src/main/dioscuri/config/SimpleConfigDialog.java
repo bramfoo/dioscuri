@@ -58,8 +58,12 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class SimpleConfigDialog extends ConfigurationDialog {
 
@@ -67,6 +71,11 @@ public class SimpleConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     * @param moduleType
+     */
     public SimpleConfigDialog(GUI parent, ModuleType moduleType) {
         super(parent, moduleType.toString().toUpperCase() + " Configuration",
                 false, moduleType);
@@ -76,6 +85,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Integer updateInt = 0;
@@ -95,6 +105,10 @@ public class SimpleConfigDialog extends ConfigurationDialog {
 
     }
 
+    /**
+     *
+     */
+    @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -107,6 +121,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
         String labelText = "  Update Int (microSecs)";
         if (this.moduleType == ModuleType.PIT) {
@@ -144,6 +159,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
 
         if (moduleType.equals(ModuleType.PIT)) {

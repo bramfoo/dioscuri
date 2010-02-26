@@ -53,17 +53,35 @@ import dioscuri.module.ModuleDevice;
  */
 public class Timer {
     // Attributes
+    /**
+     *
+     */
     protected ModuleDevice user;
+    /**
+     *
+     */
     protected int intervalLength;
+    /**
+     *
+     */
     protected int currentCount;
+    /**
+     *
+     */
     protected boolean active; // Timer state: active - timer is running
     // inactive - timer is stopped
+    /**
+     *
+     */
     protected boolean typeContinuous; // Timer type : continuous automatically
                                       // resets and runs again
 
     // one-shot runs once then stops
 
     // Constructors
+    /**
+     *
+     */
     public Timer() {
         this.user = null;
         this.intervalLength = -1;
@@ -72,6 +90,12 @@ public class Timer {
         this.typeContinuous = false;
     }
 
+    /**
+     *
+     * @param user
+     * @param intervalLength
+     * @param type
+     */
     public Timer(ModuleDevice user, int intervalLength, boolean type) {
         this.user = user;
         this.intervalLength = intervalLength;
@@ -82,6 +106,9 @@ public class Timer {
 
     // Methods
 
+    /**
+     *
+     */
     protected void reset() {
         // Reset countdown to initial update interval
         this.currentCount = intervalLength;
@@ -92,6 +119,10 @@ public class Timer {
         }
     }
 
+    /**
+     *
+     * @param intervalLength
+     */
     protected void reset(int intervalLength) {
         // Reset update interval
         this.intervalLength = intervalLength;

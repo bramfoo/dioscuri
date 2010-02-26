@@ -48,21 +48,36 @@ import java.util.ArrayList;
  */
 @SuppressWarnings("serial")
 public class MouseBuffer extends ArrayList<Byte> {
+    /**
+     *
+     */
     protected final static int NUM_ELEMENTS = 16;
 
     byte keyPressDelay; // Delay between keypresses
     byte keyRepeatRate; // Key repeat rate
     byte scanningEnabled; // Keyboard enabled
 
+    /**
+     * 
+     * @param capacity
+     */
     public MouseBuffer(int capacity) {
         super(capacity);
     }
 
     // Methods
+    /**
+     *
+     * @param data
+     */
     protected void setByte(byte data) {
         super.add(Byte.valueOf(data));
     }
 
+    /**
+     *
+     * @return
+     */
     protected byte getByte() {
         byte data = ((Byte) super.get(0)).byteValue();
         super.remove(0);

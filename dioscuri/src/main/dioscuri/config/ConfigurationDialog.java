@@ -44,52 +44,99 @@
  */
 package dioscuri.config;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.GridLayout;
+import dioscuri.GUI;
+import dioscuri.util.Utilities;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-
-import dioscuri.GUI;
-import dioscuri.config.Emulator;
-
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public abstract class ConfigurationDialog extends JDialog {
 
+    /**
+     *
+     */
     protected JPanel mainEntryPanel;
+    /**
+     *
+     */
     protected JPanel statusPanel;
 
+    /**
+     *
+     */
     protected JButton doButton;
+    /**
+     *
+     */
     protected JButton okButton;
+    /**
+     *
+     */
     protected JButton cancelButton;
 
+    /**
+     *
+     */
     protected JLabel imageFilePathLabel;
+    /**
+     *
+     */
     protected File selectedfile;
 
+    /**
+     *
+     */
     protected int dialogWidth;
+    /**
+     *
+     */
     protected int dialogHeight;
 
+    /**
+     *
+     */
     protected int dialogXPosition;
+    /**
+     *
+     */
     protected int dialogYPosition;
 
+    /**
+     *
+     */
     protected GUI parent;
+    /**
+     *
+     */
     protected boolean isMainConfigScreen;
 
+    /**
+     *
+     */
     protected ModuleType moduleType;
 
+    /**
+     * 
+     */
     public ConfigurationDialog() {
     }
 
+    /**
+     *
+     * @param parent
+     * @param title
+     * @param isMainConfigScreen
+     * @param moduleType
+     */
     public ConfigurationDialog(GUI parent, String title,
             boolean isMainConfigScreen, ModuleType moduleType) {
         super(parent.asJFrame(), title, true);
@@ -159,9 +206,15 @@ public abstract class ConfigurationDialog extends JDialog {
         this.requestFocus();
     }
 
+    /**
+     *
+     */
     protected void initMainEntryPanel() {
     }
 
+    /**
+     *
+     */
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -187,6 +240,9 @@ public abstract class ConfigurationDialog extends JDialog {
         });
     }
 
+    /**
+     *
+     */
     protected void saveParams() {
 
         dioscuri.config.Emulator params = null;
@@ -218,7 +274,7 @@ public abstract class ConfigurationDialog extends JDialog {
             return;
         }
 
-        if (!parent.saveXML(params)) {
+        if (!Utilities.saveXML(params, parent.getConfigFilePath())) {
             JOptionPane.showMessageDialog(this, "Error saving " + moduleText
                     + " parameter to configuration file.", "DIOSCURI",
                     JOptionPane.WARNING_MESSAGE);
@@ -289,6 +345,9 @@ public abstract class ConfigurationDialog extends JDialog {
 
     }
 
+    /**
+     *
+     */
     protected void initConfirmButton() {
         okButton = new JButton("Cancel");
 

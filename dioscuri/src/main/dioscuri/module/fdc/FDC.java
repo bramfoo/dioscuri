@@ -161,6 +161,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     private boolean pendingIRQ; // IRQ is still in progress
     private int resetSenseInterrupt; // TODO: Maybe this variable has to be
                                      // extended for multiple drives
+    /**
+     *
+     */
     public DMA8Handler dma8Handler; // 8-bit DMA handler for transfer of bytes
     private boolean tc; // TC, Terminal Count status from DMA controller
     private boolean dmaAndInterruptEnabled; // DMA and IRQ are both enabled
@@ -188,6 +191,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                  // value
 
     // Buffer for DMA transfer
+    /**
+     *
+     */
     protected byte[] floppyBuffer; // Buffer for data transfer between DMA and
                                    // floppy
     private int floppyBufferIndex; // Index for floppy buffer
@@ -313,8 +319,17 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "fdc";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Floppy Disk Controller";
 
     // I/O ports 03F0-03F7 - Floppy Disk Controller
@@ -385,6 +400,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public FDC(Emulator owner) {
         emu = owner;
@@ -776,8 +792,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -789,10 +804,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -804,11 +816,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -860,7 +868,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -981,8 +988,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Return a byte from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
      *             , ModuleUnknownPort, ModuleWriteOnlyPortException
@@ -1010,9 +1015,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             break;
 
         case 0x03F3: // Tape Drive Register
-            int drive = dor & 0x03;
-            if (drives[drive].containsFloppy()) {
-                switch (drives[drive].getFloppyType()) {
+            int drv = dor & 0x03;
+            if (drives[drv].containsFloppy()) {
+                switch (drives[drv].getFloppyType()) {
                 case FLOPPY_DISKTYPE_160K:
                 case FLOPPY_DISKTYPE_180K:
                 case FLOPPY_DISKTYPE_320K:
@@ -1089,10 +1094,10 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             value &= 0x7f;
 
             // Add in diskette change line if motor is on
-            drive = dor & 0x03;
-            if ((dor & (1 << (drive + 4))) == 1) {
-                if (drives[drive] != null) {
-                    value |= (drives[drive].dir & 0x80);
+            drv = dor & 0x03;
+            if ((dor & (1 << (drv + 4))) == 1) {
+                if (drives[drv] != null) {
+                    value |= (drives[drv].dir & 0x80);
                 } else {
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                             + " Non-existing drive requested at port "
@@ -1115,9 +1120,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Set a byte in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte value
-     * 
+     * @param value
      * @throws ModuleException
      *             , ModuleUnknownPort, ModuleWriteOnlyPortException
      */
@@ -1277,7 +1280,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 msr |= FDC_CMD_MRQ | FDC_CMD_BUSY;
 
                 // Check the size of command (number of bytes to be expected)
-                int command = value & 0xFF;
+                int cmd = value & 0xFF;
                 // Also based on values for diskette commands:
                 // MFM = MFM (Modified Frequency Mode) selected, opposite to FM
                 // mode. Assumed to be 1 all times
@@ -1285,7 +1288,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 // DS = drive select
                 // MT = multi track operation
                 // SK = skip deleted data address mark
-                switch (command) {
+                switch (cmd) {
                 case 0x03: // Specify
                     commandSize = 3;
                     break;
@@ -1332,7 +1335,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 case 0x14: // Unlock command (Enhanced)
                 case 0x94: // Lock command (Enhanced)
                     commandSize = 0;
-                    commandPending = command;
+                    commandPending = cmd;
                     this.enterResultPhase();
                     break;
 
@@ -1499,7 +1502,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * Defines the total number of available drives Note: total number may not
      * exceed 4, but must be more than 0
      * 
-     * @param int total number of drives
      * @return boolean true if drives set successfully, false otherwise
      */
     public boolean setNumberOfDrives(int totalDrives) {
@@ -1537,13 +1539,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Inserts a new carrier into a selected drive
      * 
-     * @param String
-     *            drive to which carrier has to be inserted
-     * @param byte carrierType that defines the type of the carrier
-     * @param File
-     *            containing the disk image raw bytes of the carrier
-     * @param boolean write protected
-     * 
+     * @param driveLetter
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
     public boolean insertCarrier(String driveLetter, byte carrierType,
@@ -1563,9 +1559,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
-     * @param String
-     *            drive of which carrier has to be ejected
-     * 
+     * @param driveLetter
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
     public boolean ejectCarrier(String driveLetter) {
@@ -1583,12 +1577,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * Inserts a new carrier into a selected drive
-     * 
-     * @param int driveIndex to which carrier has to be inserted
-     * @param byte carrierType that defines the type of the carrier
-     * @param File
-     *            containing the disk image raw bytes of the carrier
-     * @param boolean write protected
      * 
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
@@ -1818,8 +1806,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     /**
      * Ejects a carrier (if any) from a selected drive
      * 
-     * @param int driveIndex of which carrier has to be ejected
-     * 
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
     public boolean ejectCarrier(int driveIndex) {
@@ -1867,7 +1853,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     private void executeCommand() {
         // Drive parameters
-        int drive, hds, cylinder, sector, eot;
+        int drv, hds, cylinder, sector, eot;
         int sectorSize, sectorTime, logicalSector, dataLength;
         boolean ableToTransfer;
 
@@ -1899,12 +1885,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
                     + " CMD: sense drive status");
 
-            drive = (command[1] & 0x03);
-            drives[drive].hds = (command[1] >> 2) & 0x01;
-            statusRegister3 = (byte) (0x28 | (drives[drive].hds << 2) | drive);
-            statusRegister3 |= (drives[drive].writeProtected ? 0x40 : 0x00);
+            drv = (command[1] & 0x03);
+            drives[drv].hds = (command[1] >> 2) & 0x01;
+            statusRegister3 = (byte) (0x28 | (drives[drv].hds << 2) | drv);
+            statusRegister3 |= (drives[drv].writeProtected ? 0x40 : 0x00);
             // check if 'track 0'-bit should be set in status register 3
-            if (drives[drive].cylinder == 0) {
+            if (drives[drv].cylinder == 0) {
                 statusRegister3 |= 0x10;
             }
             // Ready, goto result phase
@@ -1931,12 +1917,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: read/write normal data -> DMA is disabled");
             }
-            drive = command[1] & 0x03;
+            drv = command[1] & 0x03;
             dor &= 0xFC;
-            dor |= drive;
+            dor |= drv;
 
             // Set drive parameters
-            drives[drive].multiTrack = (((command[0] >> 7) & 0x01) == 0x01 ? true
+            drives[drv].multiTrack = (((command[0] >> 7) & 0x01) == 0x01 ? true
                     : false);
             cylinder = command[2]; // 0..79 depending
             hds = command[3] & 0x01;
@@ -1949,7 +1935,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             ableToTransfer = true;
 
             // Check if motor is running
-            if (!(drives[drive].isMotorRunning())) {
+            if (!(drives[drv].isMotorRunning())) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -1957,13 +1943,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + MODULE_TYPE
                                         + "]"
                                         + " CMD: read/write normal data -> drive motor of drive "
-                                        + drive + " is not running.");
+                                        + drv + " is not running.");
                 msr = FDC_CMD_BUSY;
                 ableToTransfer = false;
             }
 
             // Check drive type
-            if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
+            if (drives[drv].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -1971,7 +1957,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + MODULE_TYPE
                                         + "]"
                                         + " CMD: read/write normal data -> incorrect drive type if drive "
-                                        + drive + ".");
+                                        + drv + ".");
                 msr = FDC_CMD_BUSY;
                 ableToTransfer = false;
             }
@@ -1984,7 +1970,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + MODULE_TYPE
                                         + "] head number in command[1] doesn't match head field");
                 ableToTransfer = false;
-                statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive; // abnormal
+                statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv; // abnormal
                                                                            // termination
                 statusRegister1 = 0x04; // 0000 0100
                 statusRegister2 = 0x00; // 0000 0000
@@ -1992,7 +1978,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             }
             // Check if floppy is present
-            if (!drives[drive].containsFloppy()) {
+            if (!drives[drv].containsFloppy()) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -2000,7 +1986,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + MODULE_TYPE
                                         + "]"
                                         + " CMD: read/write normal data -> floppy is not inserted in drive "
-                                        + drive + ".");
+                                        + drv + ".");
                 msr = FDC_CMD_BUSY;
                 ableToTransfer = false;
             }
@@ -2018,7 +2004,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             }
             // Check if cylinder is not higher than highest available cylinder
             // on disk
-            if (cylinder >= drives[drive].tracks) {
+            if (cylinder >= drives[drv].tracks) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -2030,23 +2016,23 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             }
             // Check if sector number is not higher than maximum available
             // sectors per track
-            if (sector > drives[drive].sectorsPerTrack) {
+            if (sector > drives[drv].sectorsPerTrack) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: read/write normal data -> sector number ("
                         + sector + ") exceeds sectors per track ("
-                        + drives[drive].sectorsPerTrack + ").");
-                drives[drive].cylinder = cylinder;
-                drives[drive].hds = hds;
-                drives[drive].sector = sector;
+                        + drives[drv].sectorsPerTrack + ").");
+                drives[drv].cylinder = cylinder;
+                drives[drv].hds = hds;
+                drives[drv].sector = sector;
 
-                statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive;
+                statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv;
                 statusRegister1 = 0x04;
                 statusRegister2 = 0x00;
                 enterResultPhase();
                 return;
             }
             // Check if cylinder does not differ from drive parameter
-            if (cylinder != drives[drive].cylinder) {
+            if (cylinder != drives[drv].cylinder) {
                 logger
                         .log(
                                 Level.CONFIG,
@@ -2054,19 +2040,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + MODULE_TYPE
                                         + "]"
                                         + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
-                drives[drive].resetChangeline();
+                drives[drv].resetChangeline();
             }
 
             // Compute logical sector
-            logicalSector = (cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
-                    + (hds * drives[drive].sectorsPerTrack) + (sector - 1);
+            logicalSector = (cylinder * drives[drv].heads * drives[drv].sectorsPerTrack)
+                    + (hds * drives[drv].sectorsPerTrack) + (sector - 1);
 
             logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
                     + " Logical sectors calculated: " + logicalSector);
 
             // Check if logical sector does not exceed total number of available
             // sectors on disk
-            if (logicalSector >= drives[drive].sectors) {
+            if (logicalSector >= drives[drv].sectors) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -2082,19 +2068,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 // Check if end of track is 0, if so assign total sectors per
                 // track as upper boundary
                 if (eot == 0) {
-                    eot = drives[drive].sectorsPerTrack;
+                    eot = drives[drv].sectorsPerTrack;
                 }
 
                 // Now that parameters are validated, assign them to drive
-                drives[drive].cylinder = cylinder;
-                drives[drive].hds = hds;
-                drives[drive].sector = sector;
-                drives[drive].eot = eot;
+                drives[drv].cylinder = cylinder;
+                drives[drv].hds = hds;
+                drives[drv].sector = sector;
+                drives[drv].eot = eot;
 
                 if ((command[0] & 0x4F) == 0x46) {
                     // Read data from floppy
                     try {
-                        drives[drive].readData(logicalSector * 512, 512,
+                        drives[drv].readData(logicalSector * 512, 512,
                                 floppyBuffer);
                     } catch (StorageDeviceException e) {
                         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
@@ -2109,7 +2095,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     msr |= FDC_CMD_DIO;
 
                     // Activate timer
-                    sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                    sectorTime = 200000 / drives[drv].sectorsPerTrack;
                     motherboard.resetTimer(this, sectorTime);
                     motherboard.setTimerActiveState(this, true);
 
@@ -2150,21 +2136,21 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
                     + " CMD: recalibrate drive");
 
-            drive = (command[1] & 0x03);
+            drv = (command[1] & 0x03);
             // Make sure FDC parameters in DOR are all enabled
             dor &= 0xFC;
-            dor |= drive;
+            dor |= drv;
 
             // Delay calibration
-            motherboard.resetTimer(this, calculateStepDelay(drive, 0));
+            motherboard.resetTimer(this, calculateStepDelay(drv, 0));
             motherboard.setTimerActiveState(this, true);
 
             // Head retracked to track 0
-            drives[drive].cylinder = 0;
+            drives[drv].cylinder = 0;
             // Controller set to non-busy
             // FDC is busy, 1=active, 0=not active (this is different from what
             // Bochs does!!!)
-            msr = (byte) (1 << drive);
+            msr = (byte) (1 << drv);
             break;
 
         case 0x08: // Sense interrupt status (1 byte)
@@ -2177,9 +2163,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             // Set status register 0 based on interrupt
             if (resetSenseInterrupt > 0) {
-                drive = 4 - resetSenseInterrupt;
+                drv = 4 - resetSenseInterrupt;
                 statusRegister0 &= 0xF8;
-                statusRegister0 |= (drives[drive].hds << 2) | drive;
+                statusRegister0 |= (drives[drv].hds << 2) | drv;
                 resetSenseInterrupt--;
             } else if (!pendingIRQ) {
                 statusRegister0 = 0x80;
@@ -2193,38 +2179,38 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Result : status info + sector ID
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: read ID");
 
-            drive = command[1] & 0x03;
-            drives[drive].hds = (command[1] >> 2) & 0x01;
+            drv = command[1] & 0x03;
+            drives[drv].hds = (command[1] >> 2) & 0x01;
             dor &= 0xFC;
-            dor |= drive;
+            dor |= drv;
 
             // Check if motor is running
-            if (drives[drive].isMotorRunning()) {
+            if (drives[drv].isMotorRunning()) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: read ID -> drive motor is not running.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check drive type
-            if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
+            if (drives[drv].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: read ID -> incorrect drive type.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check if floppy is present
-            if (!drives[drive].containsFloppy()) {
+            if (!drives[drv].containsFloppy()) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: read ID -> floppy is not inserted.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
 
-            statusRegister0 = (drives[drive].hds << 2) | drive;
+            statusRegister0 = (drives[drv].hds << 2) | drv;
             // time to read one sector at 300 rpm
 
             // Activate timer
-            sectorTime = 200000 / drives[drive].sectorsPerTrack;
+            sectorTime = 200000 / drives[drv].sectorsPerTrack;
             motherboard.resetTimer(this, sectorTime);
             motherboard.setTimerActiveState(this, true);
 
@@ -2239,12 +2225,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
                     + " CMD: format track");
 
-            drive = command[1] & 0x03;
+            drv = command[1] & 0x03;
             dor &= 0xFC;
-            dor |= drive;
+            dor |= drv;
 
             // Check if motor is running
-            if (drives[drive].isMotorRunning()) {
+            if (drives[drv].isMotorRunning()) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: format track -> drive motor is not running.");
                 msr = FDC_CMD_BUSY;
@@ -2252,17 +2238,17 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             }
 
             // Determine head
-            drives[drive].hds = (command[1] >> 2) & 0x01;
+            drives[drv].hds = (command[1] >> 2) & 0x01;
 
             // Check drive type
-            if (drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
+            if (drives[drv].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: format track -> incorrect drive type.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check if floppy is present
-            if (!drives[drive].containsFloppy()) {
+            if (!drives[drv].containsFloppy()) {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " CMD: format track -> floppy is not inserted.");
                 msr = FDC_CMD_BUSY;
@@ -2288,7 +2274,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + " CMD: format track -> sector size (bytes per sector) not supported.");
             }
             // Check expected number of sectors
-            if (formatCount != drives[drive].sectorsPerTrack) {
+            if (formatCount != drives[drv].sectorsPerTrack) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -2298,11 +2284,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                         + " CMD: format track -> wrong number of sectors per track encountered.");
             }
             // Check if floppy is write protected
-            if (drives[drive].writeProtected) {
+            if (drives[drv].writeProtected) {
                 // Floppy is write-protected
                 logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
                         + " CMD: format track -> floppy is write protected.");
-                statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive; // abnormal
+                statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv; // abnormal
                                                                            // termination
                 statusRegister1 = 0x27; // 0010 0111
                 statusRegister2 = 0x31; // 0011 0001
@@ -2328,22 +2314,22 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Result : none, issues an interrupt
             logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: seek");
 
-            drive = command[1] & 0x03;
+            drv = command[1] & 0x03;
             dor &= 0xFC;
-            dor |= drive;
+            dor |= drv;
 
             // Set current head number
-            drives[drive].hds = (command[1] >> 2) & 0x01;
+            drives[drv].hds = (command[1] >> 2) & 0x01;
 
             // Activate timer
-            motherboard.resetTimer(this, calculateStepDelay(drive, command[2]));
+            motherboard.resetTimer(this, calculateStepDelay(drv, command[2]));
             motherboard.setTimerActiveState(this, true);
 
             // Go to the specified cylinder
-            drives[drive].cylinder = command[2];
+            drives[drv].cylinder = command[2];
 
             // Data register not ready, drive busy
-            msr = (byte) (1 << drive);
+            msr = (byte) (1 << drv);
             break;
 
         // Enhanced drives (EHD) commands
@@ -2380,10 +2366,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * 
      */
     private void enterResultPhase() {
-        int drive;
-
         // Init variables
-        drive = dor & 0x03;
+        int drv = dor & 0x03;
         resultIndex = 0;
         msr &= 0x0f; // leave drive status untouched
         msr |= FDC_CMD_MRQ | FDC_CMD_DIO | FDC_CMD_BUSY;
@@ -2407,7 +2391,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x08: // Sense interrupt status
             resultSize = 2;
             result[0] = (byte) statusRegister0;
-            result[1] = (byte) drives[drive].cylinder;
+            result[1] = (byte) drives[drv].cylinder;
             break;
 
         case 0x45:
@@ -2422,9 +2406,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             result[0] = (byte) statusRegister0;
             result[1] = (byte) statusRegister1;
             result[2] = (byte) statusRegister2;
-            result[3] = (byte) drives[drive].cylinder;
-            result[4] = (byte) drives[drive].hds;
-            result[5] = (byte) drives[drive].sector;
+            result[3] = (byte) drives[drv].cylinder;
+            result[4] = (byte) drives[drv].hds;
+            result[5] = (byte) drives[drv].sector;
             result[6] = 2; // Sector size code
             // Raise interrupt
             this.setInterrupt();
@@ -2443,7 +2427,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Dump other FDC variables
             result[4] = (byte) (((srt << 4) & 0xF0) | hut);
             result[5] = (byte) (((hlt << 1) & 0xFE) | nonDMA);
-            result[6] = (byte) drives[drive].eot;
+            result[6] = (byte) drives[drv].eot;
             result[7] = (byte) ((lock << 7) | (perpMode & 0x7f));
             result[8] = config;
             result[9] = preTrack;
@@ -2501,7 +2485,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return byte current byte from floppy buffer
      */
     protected byte getDMAByte() {
-        int drive, logicalSector, sectorTime;
+        int drv, logicalSector, sectorTime;
 
         // if (floppyBufferIndex > 500)
         // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " MEM(DMA) byte: " +
@@ -2519,11 +2503,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         if ((floppyBufferIndex >= 512) || tc == true) {
 
-            drive = dor & 0x03;
+            drv = dor & 0x03;
 
             if (floppyBufferIndex >= 512) {
                 // Increment the sector
-                drives[drive].incrementSector();
+                drives[drv].incrementSector();
 
                 // Reset the bufferindex to 0;
                 floppyBufferIndex = 0;
@@ -2532,7 +2516,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Check if transfer has completed
             if (tc == true) {
                 // End of transfer
-                statusRegister0 = ((drives[drive].hds) << 2) | drive;
+                statusRegister0 = ((drives[drv].hds) << 2) | drv;
                 statusRegister1 = 0;
                 statusRegister2 = 0;
 
@@ -2544,13 +2528,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 // be reloaded)
 
                 // Recompute logical sector
-                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
-                        + (drives[drive].hds * drives[drive].sectorsPerTrack)
-                        + (drives[drive].sector - 1);
+                logicalSector = (drives[drv].cylinder * drives[drv].heads * drives[drv].sectorsPerTrack)
+                        + (drives[drv].hds * drives[drv].sectorsPerTrack)
+                        + (drives[drv].sector - 1);
 
                 // Read new data into floppy buffer
                 try {
-                    drives[drive].readData(logicalSector * 512, 512,
+                    drives[drv].readData(logicalSector * 512, 512,
                             floppyBuffer);
                 } catch (StorageDeviceException e) {
                     logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
@@ -2562,7 +2546,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
 
                 // Activate timer to be ready for the next read
-                sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                sectorTime = 200000 / drives[drv].sectorsPerTrack;
                 logger.log(Level.CONFIG, motherboard
                         .getCurrentInstructionNumber()
                         + " "
@@ -2584,16 +2568,16 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * Set byte in floppy buffer for DMA transfer This method is used for DMA
      * transfer a byte from memory to FDC
      * 
-     * @param byte data to be stored in floppy buffer
+     * @param data
      */
     protected void setDMAByte(byte data) {
-        int drive, logicalSector, sectorTime;
+        int drv, logicalSector, sectorTime;
 
         // Get Terminal Count from DMA
         tc = dma.isTerminalCountReached();
 
         // Select drive
-        drive = dor & 0x03;
+        drv = dor & 0x03;
 
         if (commandPending == 0x4D) {
             // Format track in progress
@@ -2602,11 +2586,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             switch (3 - (formatCount & 0x03)) {
             case 0: // Set cylinder
-                drives[drive].cylinder = data;
+                drives[drv].cylinder = data;
                 break;
 
             case 1: // Check head number
-                if (data != drives[drive].hds) {
+                if (data != drives[drv].hds) {
                     logger
                             .log(
                                     Level.WARNING,
@@ -2618,7 +2602,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 break;
 
             case 2: // Set sector
-                drives[drive].sector = data;
+                drives[drv].sector = data;
                 break;
 
             case 3: // Format buffer
@@ -2633,9 +2617,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 } else {
                     logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
                             + " DMA transfer formatting track: cyl="
-                            + drives[drive].cylinder + ", head="
-                            + drives[drive].hds + ", sector="
-                            + drives[drive].sector);
+                            + drives[drv].cylinder + ", head="
+                            + drives[drv].hds + ", sector="
+                            + drives[drv].sector);
 
                     // Format buffer with given fillbyte (set earlier with
                     // command)
@@ -2644,14 +2628,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     }
 
                     // Recompute logical sector
-                    logicalSector = (drives[drive].cylinder
-                            * drives[drive].heads * drives[drive].sectorsPerTrack)
-                            + (drives[drive].hds * drives[drive].sectorsPerTrack)
-                            + (drives[drive].sector - 1);
+                    logicalSector = (drives[drv].cylinder
+                            * drives[drv].heads * drives[drv].sectorsPerTrack)
+                            + (drives[drv].hds * drives[drv].sectorsPerTrack)
+                            + (drives[drv].sector - 1);
 
                     // Write new data from buffer to floppy
                     try {
-                        drives[drive].writeData(logicalSector * 512, 512,
+                        drives[drv].writeData(logicalSector * 512, 512,
                                 floppyBuffer);
                     } catch (StorageDeviceException e) {
                         logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
@@ -2663,7 +2647,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
 
                     // Activate timer to be ready for the next read
-                    sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                    sectorTime = 200000 / drives[drv].sectorsPerTrack;
                     motherboard.resetTimer(this, sectorTime);
                     motherboard.setTimerActiveState(this, true);
                 }
@@ -2682,11 +2666,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Check if buffer is full and ready to write to floppy
             if ((floppyBufferIndex >= 512) || (tc == true)) {
                 // Recompute logical sector
-                logicalSector = (drives[drive].cylinder * drives[drive].heads * drives[drive].sectorsPerTrack)
-                        + (drives[drive].hds * drives[drive].sectorsPerTrack)
-                        + (drives[drive].sector - 1);
+                logicalSector = (drives[drv].cylinder * drives[drv].heads * drives[drv].sectorsPerTrack)
+                        + (drives[drv].hds * drives[drv].sectorsPerTrack)
+                        + (drives[drv].sector - 1);
 
-                if (drives[drive].writeProtected == true) {
+                if (drives[drv].writeProtected == true) {
                     // Floppy is write protected
                     logger
                             .log(
@@ -2697,7 +2681,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                             + " DMA transfer to floppy failed: floppy is write protected.");
                     // ST0: IC1,0=01 (abnormal termination: started execution
                     // but failed)
-                    statusRegister0 = 0x40 | (drives[drive].hds << 2) | drive;
+                    statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv;
                     // ST1: DataError=1, NDAT=1, NotWritable=1, NID=1
                     statusRegister1 = 0x27; // 0010 0111
                     // ST2: CRCE=1, SERR=1, BCYL=1, NDAM=1.
@@ -2708,9 +2692,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
                 // Write new data from buffer to floppy
                 try {
-                    drives[drive].writeData(logicalSector * 512, 512,
+                    drives[drv].writeData(logicalSector * 512, 512,
                             floppyBuffer);
-                    drives[drive].incrementSector(); // increment to next sector
+                    drives[drv].incrementSector(); // increment to next sector
                                                      // after writing current
                                                      // one
 
@@ -2726,7 +2710,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 dma.setDMARequest(FDC.FDC_DMA_CHANNEL, false);
 
                 // Activate timer to be ready for the next read
-                sectorTime = 200000 / drives[drive].sectorsPerTrack;
+                sectorTime = 200000 / drives[drv].sectorsPerTrack;
                 motherboard.resetTimer(this, sectorTime);
                 motherboard.setTimerActiveState(this, true);
             }
@@ -2738,8 +2722,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * delay in the drive It does this based on the gap between current position
      * of head in cylinder and desired cylinder
      * 
-     * @param int drive
-     * @param int desired cylinder to go to
+     * @param drive
+     * @param newCylinder
+     * @return
      */
     protected int calculateStepDelay(int drive, int newCylinder) {
         int numSteps;
@@ -2770,28 +2755,35 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return boolean true if succesfully, false otherwise
      */
     private boolean unregisterDevices() {
-        boolean result = false;
+        boolean reslt = false;
 
         // Unregister IRQ number
         // Make sure no interrupt is pending
         pic.clearIRQ(irqNumber);
         // result = pic.unregisterIRQNumber(this);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
-                + " IRQ unregister result: " + result);
+                + " IRQ unregister result: " + reslt);
 
         // Unregister timer
         // result = motherboard.unregisterTimer(this);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
-                + " Timer unregister result: " + result);
+                + " Timer unregister result: " + reslt);
 
         // Unregister DMA channel
         // result = dma.unregisterDMAChannel(FDC_DMA_CHANNEL);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
-                + " DMA unregister result: " + result);
+                + " DMA unregister result: " + reslt);
 
-        return result;
+        return reslt;
     }
 
+    /**
+     *
+     * @param nchan
+     * @param pos
+     * @param size
+     * @return
+     */
     public int transferHandler(int nchan, int pos, int size) {
         final int SECTOR_LENGTH = 512; // Standard length of a sector
 
@@ -2875,6 +2867,10 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return startOffset;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
         if ((component instanceof DMAController) && component.initialised()) {
             if (((DMAController) component).isFirst()) {

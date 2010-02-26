@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_JB_JNAE_JCTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_JB_JNAE_JCTest() throws Exception {
         super(80448, "JB_JNAE_JC.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_JB_JNAE_JCTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_JB_JNAE_JC.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String IP_ERROR = "IP contains wrong value";

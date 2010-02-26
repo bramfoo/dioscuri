@@ -54,53 +54,143 @@ public class ATAConstants {
     // I/O ports 01F0-01F7 - Primary ATA controller - HDC 1 (1st Fixed Disk
     // Controller) (ISA, EISA)
 
+    /**
+     *
+     */
     public static final int PORT_IDE_DATA = 0x01F0;
+    /**
+     *
+     */
     public static final int PORT_IDE_ERROR_WPC = 0x01F1;
+    /**
+     *
+     */
     public static final int PORT_IDE_SECTOR_COUNT = 0x01F2;
+    /**
+     *
+     */
     public static final int PORT_IDE_SECTOR_NUMBER = 0x01F3;
+    /**
+     *
+     */
     public static final int PORT_IDE_CYLINDER_LOW = 0x01F4;
+    /**
+     *
+     */
     public static final int PORT_IDE_CYLINDER_HIGH = 0x01F5;
+    /**
+     *
+     */
     public static final int PORT_IDE_DRIVE_HEAD = 0x01F6;
+    /**
+     *
+     */
     public static final int PORT_IDE_STATUS_CMD = 0x01F7;
+    /**
+     *
+     */
     public static final int PORT_IDE_ALT_STATUS_DEVICE = 0x03F6;
+    /**
+     *
+     */
     public static final int PORT_IDE_DRIVE_ADDRESS = 0x03F7;
 
+    /**
+     *
+     */
     public static final int DEFAULT_IO_ADDR_1[] = { 0x1f0, 0x170, 0x1e8, 0x168 };
+    /**
+     *
+     */
     public static final int DEFAULT_IO_ADDR_2[] = { 0x3f0, 0x370, 0x3e0, 0x360 };
 
     // Other Constants
+    /**
+     *
+     */
     public static final int IDE_DMA_CHANNEL = 3;
 
+    /**
+     *
+     */
     public static final int INDEX_PULSE_CYCLE = 10;
+    /**
+     *
+     */
     public static final int PACKET_SIZE = 12;
+    /**
+     *
+     */
     public static final int NUM_BYTES_PER_BLOCK = 512;
+    /**
+     *
+     */
     public static final int SECTORS_PER_BLOCK = 0x80;
 
+    /**
+     *
+     */
     public static final int MAX_NUMBER_IDE_CHANNELS = 4;
+    /**
+     *
+     */
     public static final int MAX_NUMBER_DRIVES_PER_CHANNEL = 2;
 
+    /**
+     *
+     */
     public static final boolean SUPPORT_REPEAT_SPEEDUPS = true; // TODO: what is
                                                                 // this?
+    /**
+     *
+     */
     public static final boolean IS_LOW_LEVEL_CDROM = false;
 
+    /**
+     *
+     */
     public static final boolean WITH_WIN32 = true;
 
+    /**
+     *
+     */
     public static final String IDE_MODEL = "Generic 1234                            "; // 40
                                                                                        // char's
                                                                                        // long
 
     // boot devices
     // (using the same values as the rombios)
+    /**
+     *
+     */
     public static final int BOOT_NONE = 0;
+    /**
+     *
+     */
     public static final int BOOT_FLOPPYA = 1;
+    /**
+     *
+     */
     public static final int BOOT_DISKC = 2;
+    /**
+     *
+     */
     public static final int BOOT_CDROM = 3;
 
+    /**
+     *
+     */
     public static final boolean IS_CONNER_CFA540A_DEFINED = false; // not
                                                                    // apparently
                                                                    // defined in
                                                                    // BOCHS
+    /**
+     *
+     */
     public static final boolean SUPPORTS_PCI = false;
 
+    /**
+     *
+     */
     public static final int MAX_MULTIPLE_SECTORS = 16;
 }

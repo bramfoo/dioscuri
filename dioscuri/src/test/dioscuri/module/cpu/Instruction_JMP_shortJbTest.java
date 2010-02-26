@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_JMP_shortJbTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_JMP_shortJbTest() throws Exception {
         super(80448, "JMP_shortJb.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_JMP_shortJbTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_JMP_shortJb.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String IP_ERROR = "IP contains wrong value";

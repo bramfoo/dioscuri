@@ -85,6 +85,7 @@ public class Instruction_2ByteEscape implements Instruction {
 
     /**
      * Execute doubleByteInstructions[instruction]
+     * @throws CPUInstructionException
      */
     public void execute() throws CPUInstructionException {
         // Retrieve instruction number after escape byte

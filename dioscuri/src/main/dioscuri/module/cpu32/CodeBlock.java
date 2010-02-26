@@ -27,10 +27,23 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface CodeBlock {
     
+    /**
+     *
+     * @return
+     */
     public int getX86Length();
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count();
 
     /**
@@ -42,7 +55,17 @@ public interface CodeBlock {
      */
     public int execute(Processor cpu);
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString();
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress);
 }

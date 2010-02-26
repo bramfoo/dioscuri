@@ -27,27 +27,43 @@ package dioscuri.module.cpu32;
 
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class CountingOutputStream extends OutputStream {
     private final OutputStream backing;
     private int count;
 
+    /**
+     *
+     * @param wraps
+     */
     public CountingOutputStream(OutputStream wraps) {
         backing = wraps;
         count = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int position() {
         return count;
     }
 
+    @Override
     public void close() throws IOException {
         backing.close();
     }
 
+    @Override
     public void flush() throws IOException {
         backing.flush();
     }
 
+    @Override
     public void write(byte[] b) throws IOException {
         if ((count + b.length) > 0xffff)
             throw new IllegalStateException("Oversize Method");
@@ -56,6 +72,7 @@ public class CountingOutputStream extends OutputStream {
         count += b.length;
     }
 
+    @Override
     public void write(byte[] b, int off, int len) throws IOException {
         if ((count + len) > 0xffff)
             throw new IllegalStateException("Oversize Method");

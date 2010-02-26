@@ -28,21 +28,50 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.*;
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class SegmentFactory {
     private static final long DESCRIPTOR_TYPE = 0x100000000000l;
     private static final long SEGMENT_TYPE = 0xf0000000000l;
 
+    /**
+     *
+     */
     public static final Segment NULL_SEGMENT = new NullSegment();
 
+    /**
+     *
+     */
     public static final int DESCRIPTOR_TYPE_CODE_DATA = 0x10;
 
+    /**
+     *
+     */
     public static final int TYPE_ACCESSED = 0x1;
+    /**
+     *
+     */
     public static final int TYPE_CODE = 0x8;
 
+    /**
+     *
+     */
     public static final int TYPE_DATA_WRITABLE = 0x2;
+    /**
+     *
+     */
     public static final int TYPE_DATA_EXPAND_DOWN = 0x4;
 
+    /**
+     *
+     */
     public static final int TYPE_CODE_READABLE = 0x2;
+    /**
+     *
+     */
     public static final int TYPE_CODE_CONFORMING = 0x4;
 
     abstract static class DefaultSegment extends Segment {
@@ -161,22 +190,27 @@ public class SegmentFactory {
             return 8;
         }
 
+        @Override
         public boolean getDefaultSizeFlag() {
             return false;
         }
 
+        @Override
         public int getLimit() {
             return limit;
         }
 
+        @Override
         public int getBase() {
             return base;
         }
 
+        @Override
         public int getSelector() {
             return selector;
         }
 
+        @Override
         public boolean setSelector(int selector) {
             this.selector = selector;
             base = selector << 4;
@@ -194,11 +228,18 @@ public class SegmentFactory {
             return base + offset;
         }
 
+        @Override
         public int getRPL() {
             return 0;
         }
     }
 
+    /**
+     *
+     * @param memory
+     * @param selector
+     * @return
+     */
     public static Segment createRealModeSegment(Memory memory, int selector) {
         if (memory == null)
             throw new NullPointerException("Null reference to memory");
@@ -223,19 +264,23 @@ public class SegmentFactory {
             return 12;
         }
 
+        @Override
         public int getLimit() {
             return (int) limit;
         }
 
+        @Override
         public int getBase() {
             return base;
         }
 
+        @Override
         public int getSelector() {
             throw new IllegalStateException(
                     "No selector for a descriptor table segment");
         }
 
+        @Override
         public boolean setSelector(int selector) {
             throw new IllegalStateException(
                     "Cannot set a selector for a descriptor table segment");
@@ -256,6 +301,13 @@ public class SegmentFactory {
         }
     }
 
+    /**
+     *
+     * @param memory
+     * @param base
+     * @param limit
+     * @return
+     */
     public static Segment createDescriptorTableSegment(Memory memory, int base,
             int limit) {
         if (memory == null)
@@ -298,6 +350,7 @@ public class SegmentFactory {
             return 12;
         }
 
+        @Override
         public boolean isPresent() {
             return present;
         }
@@ -322,30 +375,37 @@ public class SegmentFactory {
             }
         }
 
+        @Override
         public boolean getDefaultSizeFlag() {
             return defaultSize;
         }
 
+        @Override
         public int getLimit() {
             return limit;
         }
 
+        @Override
         public int getBase() {
             return base;
         }
 
+        @Override
         public int getSelector() {
             return selector;
         }
 
+        @Override
         public int getRPL() {
             return rpl;
         }
 
+        @Override
         public int getDPL() {
             return dpl;
         }
 
+        @Override
         public void setRPL(int cpl) {
             rpl = cpl;
         }
@@ -362,18 +422,22 @@ public class SegmentFactory {
             throw new IllegalStateException();
         }
 
+        @Override
         public void setByte(int offset, byte data) {
             writeAttempted();
         }
 
+        @Override
         public void setWord(int offset, short data) {
             writeAttempted();
         }
 
+        @Override
         public void setDoubleWord(int offset, int data) {
             writeAttempted();
         }
 
+        @Override
         public void setQuadWord(int offset, long data) {
             writeAttempted();
         }
@@ -384,10 +448,12 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA;
         }
 
+        @Override
         void writeAttempted() {
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, 0, true);
         }
@@ -400,10 +466,12 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_ACCESSED;
         }
 
+        @Override
         void writeAttempted() {
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, 0, true);
         }
@@ -414,6 +482,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_DATA_WRITABLE;
         }
@@ -426,6 +495,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_DATA_WRITABLE
                     | TYPE_ACCESSED;
@@ -439,6 +509,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE;
         }
@@ -451,6 +522,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE | TYPE_CODE_READABLE
                     | TYPE_ACCESSED;
@@ -464,6 +536,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE | TYPE_CODE_READABLE;
         }
@@ -476,6 +549,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE | TYPE_CODE_CONFORMING
                     | TYPE_ACCESSED;
@@ -489,6 +563,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE | TYPE_CODE_CONFORMING
                     | TYPE_CODE_READABLE | TYPE_ACCESSED;
@@ -502,18 +577,32 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return DESCRIPTOR_TYPE_CODE_DATA | TYPE_CODE | TYPE_CODE_CONFORMING
                     | TYPE_CODE_READABLE;
         }
     }
 
+    /**
+     *
+     */
     static public abstract class AbstractTSS extends
             ReadOnlyProtectedModeSegment {
+        /**
+         *
+         * @param memory
+         * @param selector
+         * @param descriptor
+         */
         public AbstractTSS(Memory memory, int selector, long descriptor) {
             super(memory, selector, descriptor);
         }
 
+        /**
+         *
+         * @param cpu
+         */
         public void saveCPUState(Processor cpu) {
             int initialAddress = translateAddressWrite(0);
             memory.setDoubleWord(initialAddress + 32, cpu.eip);
@@ -534,6 +623,10 @@ public class SegmentFactory {
             memory.setDoubleWord(initialAddress + 92, cpu.gs.getSelector());
         }
 
+        /**
+         *
+         * @param cpu
+         */
         public void restoreCPUState(Processor cpu) {
             int initialAddress = translateAddressRead(0);
             cpu.eip = memory.getDoubleWord(initialAddress + 32);
@@ -564,6 +657,12 @@ public class SegmentFactory {
             cpu.setCR3(memory.getDoubleWord(initialAddress + 28));
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
+        @Override
         public byte getByte(int offset) {
             boolean isSup = ((LinearAddressSpace) memory).isSupervisor();
             try {
@@ -574,6 +673,12 @@ public class SegmentFactory {
             }
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
+        @Override
         public short getWord(int offset) {
             boolean isSup = ((LinearAddressSpace) memory).isSupervisor();
             try {
@@ -584,6 +689,12 @@ public class SegmentFactory {
             }
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
+        @Override
         public int getDoubleWord(int offset) {
             boolean isSup = ((LinearAddressSpace) memory).isSupervisor();
             try {
@@ -594,6 +705,12 @@ public class SegmentFactory {
             }
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
+        @Override
         public long getQuadWord(int offset) {
             boolean isSup = ((LinearAddressSpace) memory).isSupervisor();
             try {
@@ -611,6 +728,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x09;
         }
@@ -621,6 +739,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x0b;
         }
@@ -631,14 +750,24 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x02;
         }
     }
 
+    /**
+     *
+     */
     public static class GateSegment extends ReadOnlyProtectedModeSegment {
         private int targetSegment, targetOffset;
 
+        /**
+         *
+         * @param memory
+         * @param selector
+         * @param descriptor
+         */
         public GateSegment(Memory memory, int selector, long descriptor) {
             super(memory, selector, descriptor);
 
@@ -646,10 +775,18 @@ public class SegmentFactory {
             targetOffset = (int) ((descriptor & 0xffff) | ((descriptor >>> 32) & 0xffff0000));
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTargetSegment() {
             return targetSegment;
         }
 
+        /**
+         *
+         * @return
+         */
         public int getTargetOffset() {
             return targetOffset;
         }
@@ -660,10 +797,12 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public final int getTargetOffset() {
             throw new IllegalStateException();
         }
 
+        @Override
         public int getType() {
             return 0x05;
         }
@@ -674,6 +813,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x0e;
         }
@@ -684,6 +824,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x06;
         }
@@ -694,6 +835,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x0f;
         }
@@ -704,40 +846,77 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x07;
         }
     }
 
+    /**
+     *
+     */
     public static final class CallGate32Bit extends GateSegment {
         private int parameterCount;
 
+        /**
+         *
+         * @param memory
+         * @param selector
+         * @param descriptor
+         */
         public CallGate32Bit(Memory memory, int selector, long descriptor) {
             super(memory, selector, descriptor);
             parameterCount = (int) ((descriptor >> 32) & 0xF);
         }
 
+        /**
+         *
+         * @return
+         */
+        @Override
         public int getType() {
             return 0x0c;
         }
 
+        /**
+         *
+         * @return
+         */
         public final int getParameterCount() {
             return parameterCount;
         }
     }
 
+    /**
+     *
+     */
     public static final class CallGate16Bit extends GateSegment {
         private int parameterCount;
 
+        /**
+         *
+         * @param memory
+         * @param selector
+         * @param descriptor
+         */
         public CallGate16Bit(Memory memory, int selector, long descriptor) {
             super(memory, selector, descriptor);
             parameterCount = (int) ((descriptor >> 32) & 0xF);
         }
 
+        /**
+         *
+         * @return
+         */
+        @Override
         public int getType() {
             return 0x04;
         }
 
+        /**
+         *
+         * @return
+         */
         public final int getParameterCount() {
             return parameterCount;
         }
@@ -748,6 +927,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x01;
         }
@@ -758,6 +938,7 @@ public class SegmentFactory {
             super(memory, selector, descriptor);
         }
 
+        @Override
         public int getType() {
             return 0x03;
         }
@@ -776,10 +957,12 @@ public class SegmentFactory {
         public void loadState(DataInput input) {
         }
 
+        @Override
         public int getType() {
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, 0, true);
         }
 
+        @Override
         public int getSelector() {
             return 0;
         }
@@ -796,11 +979,19 @@ public class SegmentFactory {
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, 0, true);
         }
 
+        @Override
         public void invalidateAddress(int offset) {
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, 0, true);
         }
     }
 
+    /**
+     *
+     * @param memory
+     * @param selector
+     * @param descriptor
+     * @return
+     */
     public static Segment createProtectedModeSegment(Memory memory,
             int selector, long descriptor) {
         switch ((int) ((descriptor & (DESCRIPTOR_TYPE | SEGMENT_TYPE)) >>> 40)) {

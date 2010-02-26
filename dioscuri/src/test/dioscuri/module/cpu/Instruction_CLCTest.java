@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_CLCTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_CLCTest() throws Exception {
         super(80448, "CLC.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_CLCTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_CLC.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String CF_ERROR = "CF incorrect";

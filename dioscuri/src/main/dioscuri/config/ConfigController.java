@@ -52,6 +52,11 @@ import java.io.InputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ConfigController {
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri");
@@ -59,6 +64,9 @@ public class ConfigController {
     // File config and schema paths (set to default)
 
     private static JAXBContext jc;
+    /**
+     *
+     */
     public static String EMULATOR_XML = "dioscuri.config";
 
     static {
@@ -72,6 +80,10 @@ public class ConfigController {
     }
 
     // Constructor
+    /**
+     *
+     * @param gui
+     */
     public ConfigController(GUI gui) {
     }
 
@@ -138,6 +150,12 @@ public class ConfigController {
         }
     }
 
+    /**
+     *
+     * @param is
+     * @return
+     * @throws Exception
+     */
     public static Emulator loadFromXML(InputStream is) throws Exception {
         return (Emulator) jc.createUnmarshaller().unmarshal(is);
     }

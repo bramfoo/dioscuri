@@ -31,10 +31,21 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class MicrocodeNode implements MicrocodeSet {
     private boolean hasImmediate;
     private int microcode, x86Position, immediate, x86Index;
 
+    /**
+     *
+     * @param microcode
+     * @param x86Position
+     * @param x86Index
+     */
     public MicrocodeNode(int microcode, int x86Position, int x86Index) {
         this.x86Index = x86Index;
         this.x86Position = x86Position;
@@ -42,6 +53,13 @@ public class MicrocodeNode implements MicrocodeSet {
         hasImmediate = false;
     }
 
+    /**
+     *
+     * @param microcode
+     * @param x86Position
+     * @param x86Index
+     * @param immediate
+     */
     public MicrocodeNode(int microcode, int x86Position, int x86Index,
             int immediate) {
         this.x86Index = x86Index;
@@ -51,30 +69,56 @@ public class MicrocodeNode implements MicrocodeSet {
         hasImmediate = true;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMicrocode() {
         return microcode;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Index() {
         return x86Index;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Position() {
         return x86Position;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasImmediate() {
         return hasImmediate;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getImmediate() {
         return immediate;
     }
 
+    @Override
     public String toString() {
         return getName(microcode);
     }
 
+    /**
+     *
+     * @param microcode
+     * @return
+     */
     public static String getName(int microcode) {
         try {
             return microcodeNames[microcode];
@@ -120,6 +164,11 @@ public class MicrocodeNode implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public static MicrocodeNode[] getMicrocodes(InstructionSource source) {
         int x86Length = 0, x86Count = 0;
         Vector<MicrocodeNode> buffer = new Vector<MicrocodeNode>();

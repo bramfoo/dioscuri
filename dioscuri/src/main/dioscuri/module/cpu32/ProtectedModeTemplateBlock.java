@@ -28,17 +28,37 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.emulator.processor.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class ProtectedModeTemplateBlock implements
         ProtectedModeCodeBlock {
+    /**
+     *
+     */
     protected static final ProcessorException exceptionDE = new ProcessorException(
             Processor.PROC_EXCEPTION_DE, true);
+    /**
+     *
+     */
     protected static final ProcessorException exceptionGP = new ProcessorException(
             Processor.PROC_EXCEPTION_GP, true);
+    /**
+     *
+     */
     protected static final ProcessorException exceptionSS = new ProcessorException(
             Processor.PROC_EXCEPTION_SS, true);
+    /**
+     *
+     */
     protected static final ProcessorException exceptionUD = new ProcessorException(
             Processor.PROC_EXCEPTION_UD, true);
 
+    /**
+     *
+     */
     protected static final boolean[] parityMap;
 
     static {
@@ -53,14 +73,25 @@ public abstract class ProtectedModeTemplateBlock implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return getClass().getName();
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 
+    @Override
     public String toString() {
         return "ByteCodeCompiled ProtectedModeUBlock";
     }

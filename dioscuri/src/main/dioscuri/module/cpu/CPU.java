@@ -114,6 +114,9 @@ public class CPU extends ModuleCPU {
     private boolean irqWaited; // Denotes if CPU has waited an extra instruction
                                // before handling IRQ (as stated by Intel spec)
     private boolean holdReQuest; // Bus hold request for CPU
+    /**
+     *
+     */
     protected boolean asyncEvent; // Denotes an asynchronous event (could be an
                                   // IRQ or DMA)
     private ModuleDevice hRQorigin; // Device generating a Hold Request
@@ -135,12 +138,24 @@ public class CPU extends ModuleCPU {
     private long instructionCounter; // total number of executed instructions
     private byte prefixCounter; // total number of prefixes set before execution
                                 // of current instruction
+    /**
+     *
+     */
     public int ips; // instructions per second
+    /**
+     *
+     */
     public int ipus; // instructions per microsecond
     private int lowestUpdatePeriod; // maximum suspend time in microseconds that
                                     // clockpulse may given to clock
+    /**
+     *
+     */
     protected int codeByte; // Current single byte from code (prefix or
                             // instruction)
+    /**
+     *
+     */
     protected int codeByte2; // Current double byte from code (prefix or
                              // instruction)
 
@@ -153,67 +168,184 @@ public class CPU extends ModuleCPU {
 
     // Registers
     // General purpose registers
+    /**
+     *
+     */
     protected byte[] ax;
+    /**
+     *
+     */
     protected byte[] eax;
+    /**
+     *
+     */
     protected byte[] bx;
+    /**
+     *
+     */
     protected byte[] ebx;
+    /**
+     *
+     */
     protected byte[] cx;
+    /**
+     *
+     */
     protected byte[] ecx;
+    /**
+     *
+     */
     protected byte[] dx;
+    /**
+     *
+     */
     protected byte[] edx;
 
     // General and index registers
+    /**
+     *
+     */
     protected byte[] sp;
+    /**
+     *
+     */
     protected byte[] esp;
+    /**
+     *
+     */
     protected byte[] bp;
+    /**
+     *
+     */
     protected byte[] ebp;
+    /**
+     *
+     */
     protected byte[] si;
+    /**
+     *
+     */
     protected byte[] esi;
+    /**
+     *
+     */
     protected byte[] di;
+    /**
+     *
+     */
     protected byte[] edi;
 
     // Segment registers
+    /**
+     *
+     */
     protected byte[] cs; // code segment register (16 bit)
+    /**
+     *
+     */
     protected byte[] ds; // data segment register (16 bit)
+    /**
+     *
+     */
     protected byte[] ss; // stack segment register (16 bit)
+    /**
+     *
+     */
     protected byte[] es; // extra segment register (16 bit)
 
     // Special registers
+    /**
+     *
+     */
     protected byte[] ip; // instruction pointer register (16 bit)
+    /**
+     * 
+     */
     protected byte[] oldIP; // backup IP
+    /**
+     *
+     */
     protected boolean[] flags; // flags register (16 bit)
 
     // Control registers
+    /**
+     *
+     */
     protected boolean[] cr0; // Control register 0 (32 bit)
+    /**
+     *
+     */
     protected boolean[] cr1; // Control register 1 (32 bit)
+    /**
+     *
+     */
     protected boolean[] cr2; // Control register 2 (32 bit)
+    /**
+     *
+     */
     protected boolean[] cr3; // Control register 3 (32 bit)
+    /**
+     *
+     */
     protected boolean[] cr4; // Control register 4 (32 bit)
 
     // GDTR and IDTR
+    /**
+     *
+     */
     protected byte[] gdtr; // Global Descriptor Table Register (48 bits, 32 bit
                            // base and 16 bit limit)
+    /**
+     *
+     */
     protected byte[] idtr; // Interrupt Descriptor Table Register (48 bits, 32
                            // bit base and 16 bit limit)
+    /**
+     *
+     */
     protected byte[] ldtr; // Local Descriptor Table Register
 
     // Instruction prefix settings
+    /**
+     *
+     */
     protected int prefixInstruction; // Indicating a prefix instruction is
                                      // encountered
+    /**
+     *
+     */
     protected boolean prefixRep;
+    /**
+     *
+     */
     protected int prefixRepType;
+    /**
+     *
+     */
     protected boolean doubleWord; // Indicates if the extended registers are
                                   // used (e.g. eax), this is set by instruction
                                   // 66h
+    /**
+     *
+     */
     protected boolean segmentOverride; // Overrides the segment to be read from
                                        // or written to by selected segment (see
                                        // next variable)
+    /**
+     *
+     */
     protected int segmentOverridePointer; // Contains a pointer to: 0=CS, 1=DS,
                                           // 2=ES, 3=SS
 
     // Opcode lookup arrays
     // These arrays contains functions which implement the instructions
+    /**
+     *
+     */
     protected Instruction[] singleByteInstructions;
+    /**
+     *
+     */
     protected Instruction[] doubleByteInstructions;
 
     // Extra variables
@@ -234,67 +366,187 @@ public class CPU extends ModuleCPU {
     // Register sizes
     private final static int BYTE = 8; // size of byte in bits
 
+    /**
+     *
+     */
     public final static int REGISTER_SIZE_GENERAL = 16; // size of general
                                                         // registers in bits
+    /**
+     *
+     */
     public final static int REGISTER_SIZE_INDEX = 16; // size of general and
                                                       // index registers in bits
+    /**
+     *
+     */
     public final static int REGISTER_SIZE_SEGMENT = 16; // size of segment
                                                         // registers in bits
+    /**
+     *
+     */
     public final static int REGISTER_SIZE_SPECIAL = 16; // size of special
                                                         // registers in bits
 
     // Register array locations
     // NOTE: Intel uses Little-Endian byte order (LSB is left-most byte)
+    /**
+     *
+     */
     public final static int REGISTER_LOW = 1; // location of register in array
+    /**
+     *
+     */
     public final static int REGISTER_HIGH = 0; // location of register in array
 
+    /**
+     *
+     */
     public final static int REGISTER_GENERAL_LOW = 1; // location of register in
                                                       // array
+    /**
+     *
+     */
     public final static int REGISTER_GENERAL_HIGH = 0; // location of register
                                                        // in array
+    /**
+     *
+     */
     public final static int REGISTER_INDEX_LOW = 1; // location of register in
                                                     // array
+    /**
+     *
+     */
     public final static int REGISTER_INDEX_HIGH = 0; // location of register in
                                                      // array
+    /**
+     *
+     */
     public final static int REGISTER_SEGMENT_LOW = 1; // location of register in
                                                       // array
+    /**
+     *
+     */
     public final static int REGISTER_SEGMENT_HIGH = 0; // location of register
                                                        // in array
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_CF = 0; // Carry Flag (unsigned)
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_PF = 2; // Parity Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_AF = 4; // Auxiliary Carry Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_ZF = 6; // Zero Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_SF = 7; // Sign Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_TF = 8; // Trap Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_IF = 9; // Interrupt Enable Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_DF = 10; // Direction Flag
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_OF = 11; // Overflow Flag (signed)
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_IOPL1 = 12; // I/O Privilege level,
                                                        // bit 0
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_IOPL2 = 13; // I/O Privilege level,
                                                        // bit 1
+    /**
+     *
+     */
     public final static int REGISTER_FLAGS_NT = 14; // Nested Task
 
     // Control register constants
+    /**
+     *
+     */
     public final static int REGISTER_CR0_PE = 0; // Protection enable
+    /**
+     *
+     */
     public final static int REGISTER_CR0_MP = 1; // Monitor coprocessor
+    /**
+     *
+     */
     public final static int REGISTER_CR0_EM = 2; // Emulation
+    /**
+     *
+     */
     public final static int REGISTER_CR0_TS = 3; // Task switched
+    /**
+     *
+     */
     public final static int REGISTER_CR0_ET = 4; // Extension type
+    /**
+     *
+     */
     public final static int REGISTER_CR0_NE = 5; // Numeric error
+    /**
+     *
+     */
     public final static int REGISTER_CR0_WP = 16; // Write protect
+    /**
+     *
+     */
     public final static int REGISTER_CR0_AM = 18; // Aligment mask
+    /**
+     *
+     */
     public final static int REGISTER_CR0_NW = 29; // Not write-through
+    /**
+     *
+     */
     public final static int REGISTER_CR0_CD = 30; // Cache disable
+    /**
+     *
+     */
     public final static int REGISTER_CR0_PG = 31; // Paging
 
     // Segment override constants
+    /**
+     *
+     */
     public final static int SEGMENT_OVERRIDE_CS = 0; // Override with segment CS
+    /**
+     *
+     */
     public final static int SEGMENT_OVERRIDE_DS = 1; // Override with segment DS
+    /**
+     *
+     */
     public final static int SEGMENT_OVERRIDE_ES = 2; // Override with segment ES
+    /**
+     *
+     */
     public final static int SEGMENT_OVERRIDE_SS = 3; // Override with segment SS
 
     // Standard word values
+    /**
+     *
+     */
     public final static byte[] WORD_0X0001 = new byte[] { 0x00, 0x01 };
 
     // Constructors
@@ -740,7 +992,7 @@ public class CPU extends ModuleCPU {
     /**
      * Returns data from this module
      * 
-     * @param requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -753,9 +1005,7 @@ public class CPU extends ModuleCPU {
      * Set data for this module
      * 
      * @param data containing data
-     * @param
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      */
     public boolean setData(byte[] data, Module sender) {
@@ -767,9 +1017,7 @@ public class CPU extends ModuleCPU {
      * of array
      * 
      * @param data containing the register name [0] and data [1 and 2]
-     * @param
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      */
     public boolean setData(String[] data, Module sender) {
@@ -1270,6 +1518,11 @@ public class CPU extends ModuleCPU {
         return dump;
     }
 
+    /**
+     *
+     * @param data
+     * @return
+     */
     public String dumpDebug(String data) {
         String dump = data;
         String space = " ";
@@ -1381,6 +1634,7 @@ public class CPU extends ModuleCPU {
      * 
      * @param value
      *            state of the Hold Request
+     * @param originator
      */
     public void setHoldRequest(boolean value, ModuleDevice originator) {
         holdReQuest = value;
@@ -3913,7 +4167,7 @@ public class CPU extends ModuleCPU {
     /**
      * Sets the value of the interrupt request (IRQ).
      * 
-     * @return true if CPU takes care, false otherwise
+     * @param value
      */
     public void interruptRequest(boolean value) {
         irqPending = value;
@@ -4225,6 +4479,7 @@ public class CPU extends ModuleCPU {
      * with addressbytes, do not use this method, use getByteFromMemorySegment
      * instead
      * 
+     * @param displacement
      * @return byte at memory address ES:DI
      */
     protected byte getByteFromExtra(byte[] displacement) {
@@ -4264,6 +4519,7 @@ public class CPU extends ModuleCPU {
      * Retrieves a word from the code memory segment at given displacement Note:
      * does not update IP
      * 
+     * @param displacement
      * @return byte[] with word at memory address displacement
      */
     protected byte[] getWordFromCode(byte[] displacement) {
@@ -5222,6 +5478,11 @@ public class CPU extends ModuleCPU {
         return result;
     }
 
+    /**
+     *
+     * @param register
+     * @return
+     */
     public String getRegisterHex(int register) {
         switch (register) {
         case 0: // CS

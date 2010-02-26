@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_AND_EvGvTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_AND_EvGvTest() throws Exception {
         super(80448, "AND_EvGv.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_AND_EvGvTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_EvGv.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String AX_ERROR = "AX contains wrong value";

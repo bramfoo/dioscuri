@@ -27,31 +27,69 @@ package dioscuri.module.cpu32;
 
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class AbstractHardwareComponent implements HardwareComponent {
+    /**
+     *
+     * @return
+     */
     public boolean initialised() {
         return true;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean updated() {
         return true;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(HardwareComponent component) {
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean reset() {
         return true;
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
     }
 
+    /**
+     *
+     */
     public void timerCallback() {
     }
 }

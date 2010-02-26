@@ -117,8 +117,17 @@ public class Mouse extends ModuleMouse implements UART {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "mouse";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Serial mouse";
 
     // Mouse type
@@ -148,6 +157,7 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public Mouse(Emulator owner) {
         emu = owner;
@@ -332,8 +342,7 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -345,10 +354,7 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -360,11 +366,7 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module

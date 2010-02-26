@@ -56,6 +56,9 @@ public class ScreenPanel extends JPanel {
     private boolean paint = false;
 
     // Constructor
+    /**
+     *
+     */
     public ScreenPanel() {
     }
 
@@ -73,10 +76,9 @@ public class ScreenPanel extends JPanel {
     /**
      * Draw an image on the canvas This is a standard method used by Graphics
      * 
-     * @param Graphics
-     *            g - standard graphics component
      * 
      */
+    @Override
     public void paintComponent(Graphics g) {
         // Paint image on canvas
         if (paint) {
@@ -92,9 +94,8 @@ public class ScreenPanel extends JPanel {
      * Update the canvas This method is called automatically when repaint() is
      * called. It is necesarry to doublebuffer the canvas.
      * 
-     * @param Graphics
-     *            g - the standard graphics component
      */
+    @Override
     public void update(Graphics g) {
         paint(g);
     }
@@ -102,8 +103,7 @@ public class ScreenPanel extends JPanel {
     /**
      * Set the given image to current and redraw canvas
      * 
-     * @param Image
-     *            i
+     * @param i
      */
     public void setImage(Image i) {
         // Paint image object

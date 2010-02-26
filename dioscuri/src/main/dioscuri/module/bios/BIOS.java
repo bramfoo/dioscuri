@@ -94,8 +94,17 @@ public class BIOS extends ModuleBIOS {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "bios";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "BIOS ROM";
 
     // Memory size
@@ -107,6 +116,7 @@ public class BIOS extends ModuleBIOS {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public BIOS(Emulator owner) {
         emu = owner;
@@ -174,9 +184,7 @@ public class BIOS extends ModuleBIOS {
     /**
      * Sets up a connection with another module
      * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
+     * @param module
      * @return true if connection has been established successfully, false
      *         otherwise
      * 
@@ -278,8 +286,7 @@ public class BIOS extends ModuleBIOS {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -291,10 +298,8 @@ public class BIOS extends ModuleBIOS {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param data
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -306,11 +311,8 @@ public class BIOS extends ModuleBIOS {
     /**
      * Sets given String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param data
+     * @param sender 
      * @see Module
      */
     public boolean setData(String[] data, Module sender) {
@@ -387,8 +389,7 @@ public class BIOS extends ModuleBIOS {
     /**
      * Sets the system BIOS code in ROM Note: System BIOS must be exactly 64 KB
      * 
-     * @param byte[] biosCode containing the binary code of BIOS
-     * 
+     * @param biosCode
      * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
      *         is successful, false otherwise
      * @throws ModuleException
@@ -437,8 +438,7 @@ public class BIOS extends ModuleBIOS {
     /**
      * Sets the Video BIOS code in ROM
      * 
-     * @param byte[] biosCode containing the binary code of Video BIOS
-     * 
+     * @param biosCode
      * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
      *         successful, false otherwise
      * @throws ModuleException

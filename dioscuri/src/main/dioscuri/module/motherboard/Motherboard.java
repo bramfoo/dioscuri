@@ -92,9 +92,15 @@ public class Motherboard extends ModuleMotherboard {
                                 // turned off
 
     // Configuration parameters
+    /**
+     *
+     */
     protected int ioSpaceSize;
 
     // I/O address space containing references to devices
+    /**
+     *
+     */
     public ModuleDevice[] ioAddressSpace; // Using signed bytes as both
                                           // signed/unsigned
 
@@ -105,23 +111,42 @@ public class Motherboard extends ModuleMotherboard {
     // Constants
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "motherboard";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "General x86 motherboard";
 
     // Memory size
+    /**
+     *
+     */
     public final static int IOSPACE_ISA_SIZE = 1024; // ISA: 1024 (2^10) spaces,
                                                      // 0x000 - 0x3FF
+    /**
+     *
+     */
     public final static int IOSPACE_EISA_SIZE = 65536; // EISA: 65536 (2^16)
                                                        // spaces, 0x0000 -
                                                        // 0xFFFF
 
+    /**
+     * 
+     */
     public final static int SYSTEM_CONTROL_PORT_A = 0x92; // A20 port, amongst
                                                           // others
 
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public Motherboard(Emulator owner) {
         emu = owner;
@@ -200,7 +225,7 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Sets up a connection with another module
      * 
-     * @param mod
+     * @param module
      *            Module that is to be connected to this class
      * 
      * @return true if connection has been established successfully, false
@@ -341,7 +366,7 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Returns data from this module
      * 
-     * @param Module
+     * @param requester
      *            requester, the requester of the data
      * @return byte[] with data
      * 
@@ -354,10 +379,8 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Set data for this module
      * 
-     * @param byte[] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param data
+     * @param sender
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
@@ -369,11 +392,7 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -429,11 +448,7 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Requests a timer for given device at clock
      * 
-     * @param ModuleDevice
-     *            device that requests the timer
-     * @param int updateInterval defining the frequency that update has to be
-     *        done in microseconds
-     * 
+     * @param updateInterval
      * @return boolean true if registration is successfully, false otherwise
      */
     public boolean requestTimer(ModuleDevice device, int updateInterval,
@@ -449,10 +464,7 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Set a timer to start/stop running
      * 
-     * @param ModuleDevice
-     *            device that request a timer to be set
-     * @param boolean runState the state to set the timer to (start/stop)
-     * 
+     * @param activeState
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public boolean setTimerActiveState(ModuleDevice device, boolean activeState) {
@@ -467,11 +479,6 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Resets the timer of device (if any)
      * 
-     * @param ModuleDevice
-     *            device that requests the timer reset
-     * @param int updateInterval defining the frequency that update has to be
-     *        done in microseconds
-     * 
      * @return boolean true if reset is successfully, false otherwise
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
@@ -484,10 +491,6 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * Set I/O address port to given device
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param ModuleDevice
-     *            device
      * 
      * @return boolean true if data is set successfully, false otherwise
      */
@@ -508,8 +511,6 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * Return I/O port data from I/O address space
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
@@ -549,9 +550,6 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * Set a byte in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -624,8 +622,6 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
      * @return byte[] containing the word at given I/O address port
      * @throws ModuleException
      */
@@ -666,9 +662,6 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] word
-     * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
@@ -704,8 +697,6 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * Return a double word from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte[] containing the double word at given I/O address port
      * @throws ModuleException
@@ -750,9 +741,6 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * Set a double word in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] double word
      * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -804,7 +792,6 @@ public class Motherboard extends ModuleMotherboard {
     /**
      * Set A20 address line status
      * 
-     * @param boolean true to enable A20, false otherwise
      */
     public void setA20(boolean a20) {
         // Set status of A20 address line

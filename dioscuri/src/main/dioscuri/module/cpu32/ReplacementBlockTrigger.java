@@ -27,19 +27,36 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.Processor;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ReplacementBlockTrigger implements CodeBlock {
     private CodeBlock replacement;
     private CodeBlockReplacementException exception;
 
+    /**
+     *
+     * @param block
+     */
     public ReplacementBlockTrigger(CodeBlock block) {
         replacement = block;
         exception = new CodeBlockReplacementException(block);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         return replacement.getX86Length();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count() {
         return replacement.getX86Count();
     }
@@ -50,10 +67,20 @@ public class ReplacementBlockTrigger implements CodeBlock {
         throw exception;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return replacement.getDisplayString();
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }

@@ -50,25 +50,76 @@ package dioscuri.config;
  */
 public enum ModuleType {
     // Define each module types:
+    /**
+     *
+     */
     ATA("ata", "ATA / IDE Controller"),
+    /**
+     *
+     */
     BIOS("bios"),
+    /**
+     *
+     */
     BOOT("boot"),
+    /**
+     *
+     */
     CPU("cpu"),
+    /**
+     *
+     */
     CLOCK("clock"),
+    /**
+     *
+     */
     DMA("dma"),
+    /**
+     *
+     */
     FDC("fdc"),
+    /**
+     *
+     */
     KEYBOARD("keyboard"),
+    /**
+     *
+     */
     MOUSE("mouse"),
+    /**
+     *
+     */
     MEMORY("memory"),
+    /**
+     *
+     */
     MOTHERBOARD("motherboard"),
+    /**
+     *
+     */
     PIC("pic"),
+    /**
+     *
+     */
     PIT("pit"),
+    /**
+     *
+     */
     RTC("rtc"),
 
+    /**
+     *
+     */
     SCREEN("screen"),
+    /**
+     *
+     */
     VGA("video");
 
     // Define all module types as a array
+    /**
+     *
+     */
     public final static ModuleType[] moduleTypes = { ATA, BIOS, BOOT, CPU,
             CLOCK, DMA, FDC, KEYBOARD, MOUSE, MEMORY, MOTHERBOARD, PIC, PIT,
             RTC, SCREEN, VGA };
@@ -104,6 +155,7 @@ public enum ModuleType {
      * 
      * @return the string type of the module
      */
+    @Override
     public String toString() {
 
         return this.type;

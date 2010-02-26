@@ -27,6 +27,11 @@ package dioscuri.module.cpu32;
 
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class MethodInfo {
     private int accessFlags;
     private int nameIndex;
@@ -34,19 +39,61 @@ public class MethodInfo {
     private int attributesCount;
     private AttributeInfo[] attributes;
 
+    /**
+     *
+     */
     public static final int PUBLIC = 0x0001;
+    /**
+     *
+     */
     public static final int PRIVATE = 0x0002;
+    /**
+     *
+     */
     public static final int PROTECTED = 0x0004;
+    /**
+     *
+     */
     public static final int STATIC = 0x0008;
+    /**
+     *
+     */
     public static final int FINAL = 0x0010;
+    /**
+     *
+     */
     public static final int SYNCHRONIZED = 0x0020;
+    /**
+     *
+     */
     public static final int BRIDGE = 0x0040;
+    /**
+     *
+     */
     public static final int VARARGS = 0x0080;
+    /**
+     *
+     */
     public static final int NATIVE = 0x0100;
+    /**
+     *
+     */
     public static final int ABSTRACT = 0x0400;
+    /**
+     *
+     */
     public static final int STRICT = 0x0800;
+    /**
+     *
+     */
     public static final int SYTHETIC = 0x1000;
 
+    /**
+     *
+     * @param in
+     * @param pool
+     * @throws IOException
+     */
     public MethodInfo(DataInputStream in, ConstantPoolInfo[] pool)
             throws IOException {
         accessFlags = in.readUnsignedShort();
@@ -59,6 +106,11 @@ public class MethodInfo {
             attributes[i] = AttributeInfo.construct(in, pool);
     }
 
+    /**
+     *
+     * @param out
+     * @throws IOException
+     */
     public void write(DataOutputStream out) throws IOException {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
@@ -69,14 +121,26 @@ public class MethodInfo {
             attributes[i].write(out);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getNameIndex() {
         return nameIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDescriptorIndex() {
         return descriptorIndex;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaxStack() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
@@ -85,6 +149,10 @@ public class MethodInfo {
         return 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMaxLocals() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
@@ -93,6 +161,10 @@ public class MethodInfo {
         return 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] getCode() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
@@ -100,10 +172,21 @@ public class MethodInfo {
         return null;
     }
 
+    /**
+     *
+     * @param code
+     * @param cf
+     */
     public void setCode(int[] code, ClassFile cf) {
         setCode(code, code.length, cf);
     }
 
+    /**
+     *
+     * @param code
+     * @param codeLength
+     * @param cf
+     */
     public void setCode(int[] code, int codeLength, ClassFile cf) {
         String descriptor = cf.getConstantPoolUtf8(this.getDescriptorIndex());
         int argLength = cf.getMethodArgLength(descriptor);
@@ -116,6 +199,10 @@ public class MethodInfo {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable() {
         for (int i = 0; i < attributesCount; i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
@@ -124,6 +211,11 @@ public class MethodInfo {
         return null;
     }
 
+    /**
+     *
+     * @param exceptionTable
+     * @param cf
+     */
     public void setExceptionTable(
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
             ClassFile cf) {
@@ -137,6 +229,12 @@ public class MethodInfo {
         }
     }
 
+    /**
+     *
+     * @param exceptionTable
+     * @param exceptionTableLength
+     * @param cf
+     */
     public void setExceptionTable(
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
             int exceptionTableLength, ClassFile cf) {

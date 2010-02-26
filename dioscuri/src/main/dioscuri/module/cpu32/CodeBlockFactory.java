@@ -25,12 +25,33 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface CodeBlockFactory {
+    /**
+     *
+     * @param source
+     * @return
+     */
     public RealModeCodeBlock getRealModeCodeBlock(ByteSource source);
 
+    /**
+     *
+     * @param source
+     * @param operandSize
+     * @return
+     */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
             boolean operandSize);
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             ByteSource source);
 }

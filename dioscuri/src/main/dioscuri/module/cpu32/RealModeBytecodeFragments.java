@@ -28,6 +28,11 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.BytecodeFragments;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.FASTCompiler;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class RealModeBytecodeFragments extends BytecodeFragments {
     private static Object[][][] operationArray = new Object[MICROCODE_LIMIT][][];
     private static int[][][] operandArray = new int[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT][];
@@ -50,6 +55,13 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
         }
     }
 
+    /**
+     *
+     * @param element
+     * @param microcode
+     * @param x86Position
+     * @return
+     */
     public static Object[] getOperation(int element, int microcode,
             int x86Position) {
         Object[] ops = operationArray[microcode][element];
@@ -67,6 +79,14 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
         return temp;
     }
 
+    /**
+     *
+     * @param element
+     * @param microcode
+     * @param x86Position
+     * @param immediate
+     * @return
+     */
     public static Object[] getOperation(int element, int microcode,
             int x86Position, int immediate) {
         Object[] temp = getOperation(element, microcode, x86Position);
@@ -81,18 +101,41 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
         return temp;
     }
 
+    /**
+     *
+     * @param microcode
+     * @return
+     */
     public static Object[] getTargetsOf(int microcode) {
         return operationArray[microcode];
     }
 
+    /**
+     *
+     * @param element
+     * @param microcode
+     * @return
+     */
     public static int[] getOperands(int element, int microcode) {
         return operandArray[microcode][element];
     }
 
+    /**
+     *
+     * @param element
+     * @param microcode
+     * @return
+     */
     public static boolean hasExternalEffect(int element, int microcode) {
         return externalEffectsArray[microcode][element];
     }
 
+    /**
+     *
+     * @param element
+     * @param microcode
+     * @return
+     */
     public static boolean hasExplicitThrow(int element, int microcode) {
         return explicitThrowArray[microcode][element];
     }

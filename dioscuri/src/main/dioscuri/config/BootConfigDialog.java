@@ -56,9 +56,13 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class BootConfigDialog extends ConfigurationDialog {
 
@@ -69,6 +73,10 @@ public class BootConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public BootConfigDialog(GUI parent) {
         super(parent, "Boot Configuration", false, ModuleType.BOOT);
     }
@@ -76,6 +84,7 @@ public class BootConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Bootdrives boot = emuConfig.getArchitecture().getModules().getBios()
@@ -97,6 +106,7 @@ public class BootConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
 
         JLabel boot1Label = new JLabel("  Select Boot Drive 1");
@@ -175,6 +185,7 @@ public class BootConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Bootdrives boot = emuConfig.getArchitecture().getModules().getBios()
                 .get(0).getBootdrives();

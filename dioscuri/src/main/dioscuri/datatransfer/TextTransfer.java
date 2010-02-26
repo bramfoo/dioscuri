@@ -59,6 +59,10 @@ public final class TextTransfer implements ClipboardOwner {
     GUI gui;
 
     // Constructor
+    /**
+     * 
+     * @param parent
+     */
     public TextTransfer(GUI parent) {
         gui = parent;
     }
@@ -66,6 +70,8 @@ public final class TextTransfer implements ClipboardOwner {
     // Methods
     /**
      * Empty implementation of the ClipboardOwner interface.
+     * @param aClipboard
+     * @param aContents
      */
     public void lostOwnership(Clipboard aClipboard, Transferable aContents) {
         // do nothing
@@ -74,6 +80,7 @@ public final class TextTransfer implements ClipboardOwner {
     /**
      * Set String on clipboard, and make this class the owner of the Clipboard's
      * contents.
+     * @param text
      */
     public void setClipboardContents(String text) {
         // Wrap String

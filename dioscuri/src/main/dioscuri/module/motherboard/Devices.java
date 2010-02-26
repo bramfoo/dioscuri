@@ -43,6 +43,11 @@ import java.util.ArrayList;
 
 import dioscuri.module.ModuleDevice;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class Devices extends ArrayList<ModuleDevice> {
     // Attributes
@@ -69,9 +74,7 @@ public class Devices extends ArrayList<ModuleDevice> {
     /**
      * Add a device to array
      * 
-     * @param ModuleDevice
-     *            device
-     * 
+     * @param device
      * @return boolean true if succesful, false otherwise
      */
     public boolean addDevice(ModuleDevice device) {
@@ -81,9 +84,7 @@ public class Devices extends ArrayList<ModuleDevice> {
     /**
      * Return a device from array based on given type
      * 
-     * @param String
-     *            type defining the type of the requested device
-     * 
+     * @param type
      * @return ModuleDevice
      */
     public ModuleDevice getDevice(String type) {
@@ -98,8 +99,7 @@ public class Devices extends ArrayList<ModuleDevice> {
     /**
      * Return a device from array based on given index
      * 
-     * @param int index of the device
-     * 
+     * @param index
      * @return ModuleDevice
      */
     public ModuleDevice getDevice(int index) {

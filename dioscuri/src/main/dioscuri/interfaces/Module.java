@@ -97,8 +97,7 @@ public interface Module {
     /**
      * Set configuration for this module
      * 
-     * @param byte[] containing data
-     * 
+     * @param data 
      * @return true if configured successfully, false otherwise
      */
     public boolean setConfig(byte[] data);
@@ -113,6 +112,7 @@ public interface Module {
     /**
      * Reset all parameters of module
      * 
+     * @return
      */
     public boolean reset();
 
@@ -131,12 +131,15 @@ public interface Module {
     /**
      * Save the current state of module
      * 
+     * @return
      */
     public byte[] saveState();
 
     /**
      * Load the given state in module
      * 
+     * @param variables
+     * @return
      */
     public boolean loadState(byte[] variables);
 
@@ -150,7 +153,7 @@ public interface Module {
     /**
      * Set toggle to define if this module is in debug mode or not
      * 
-     * @param boolean to set the status of debug mode
+     * @param status
      */
     public void setDebugMode(boolean status);
 

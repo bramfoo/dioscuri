@@ -75,6 +75,9 @@ public class Screen extends ModuleScreen {
     private Emulator emu;
     private String[] moduleConnections = new String[] { "video" };
     private ScreenPanel screenPanel;
+    /**
+     *
+     */
     protected ModuleVideo video;
 
     // Toggles
@@ -83,27 +86,57 @@ public class Screen extends ModuleScreen {
 
     // TODO: these properties should be set by configuration data of ESD
     // Data and color properties
+    /**
+     *
+     */
     protected byte[] pixels = null; // Array of pixel data, used in databuffer
+    /**
+     *
+     */
     protected DataBuffer dataBuffer = null; // Databuffer holding pixel data,
                                             // used in raster
+    /**
+     *
+     */
     protected SampleModel sampleModel = null; // Samplemodel holding pixel
                                               // storage info, used in raster
+    /**
+     *
+     */
     protected WritableRaster raster = null; // Raster containing image data,
                                             // used in BufferedImage
+    /**
+     *
+     */
     protected byte[][] palette = new byte[3][256]; // Array holding red, green,
                                                    // blue values for ColorModel
+    /**
+     *
+     */
     protected ColorModel colourModel = null; // ColourModel used in
                                              // BufferedImage
+    /**
+     *
+     */
     protected BufferedImage image = null; // Image displayed on canvas
+    /**
+     *
+     */
     protected int imageType; // Defines the type of the created image
 
     // Text font
+    /**
+     *
+     */
     protected BufferedImage[] fontImages = new BufferedImage[256]; // Array
                                                                    // containing
                                                                    // font
                                                                    // images
 
     // Graphics tile
+    /**
+     *
+     */
     protected BufferedImage graphicTile; // Tile used for updating in graphics
                                          // mode
 
@@ -153,12 +186,22 @@ public class Screen extends ModuleScreen {
     private final static String MODULE_NAME = "Compatible CRT/LCD computer screen";
 
     // Raster, ColourModel and BufferedImage properties
+    /**
+     *
+     */
     protected static final int RED = 0;
+    /**
+     *
+     */
     protected static final int GREEN = 1;
+    /**
+     *
+     */
     protected static final int BLUE = 2;
 
     /**
      * Class constructor
+     * @param owner
      */
     public Screen(Emulator owner) {
         emu = owner;
@@ -181,7 +224,7 @@ public class Screen extends ModuleScreen {
         int[] pixelArray = new int[xTileSize * yTileSize * 8];
         graphicTile = new BufferedImage(xTileSize, yTileSize,
                 BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) colourModel);
-        WritableRaster raster = graphicTile.getRaster();
+        WritableRaster ras = graphicTile.getRaster();
         for (int j = 0; j < yTileSize; j++) {
             // Zero-based so start at bits-1
             for (int k = (xTileSize - 1); k >= 0; k--) {
@@ -189,7 +232,7 @@ public class Screen extends ModuleScreen {
                 pixelArray[j * xTileSize + Math.abs(k - (8 - 1))] = 0;
             }
         }
-        raster.setPixels(0, 0, fontWidth, fontHeight, pixelArray);
+        ras.setPixels(0, 0, fontWidth, fontHeight, pixelArray);
 
         // Create creen canvas
         screenPanel = new ScreenPanel();
@@ -348,8 +391,7 @@ public class Screen extends ModuleScreen {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * @see Module
      */
@@ -360,9 +402,7 @@ public class Screen extends ModuleScreen {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * @see Module
      */
@@ -373,10 +413,7 @@ public class Screen extends ModuleScreen {
     /**
      * Sets given String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
+     * @param sender
      * @see Module
      */
     public boolean setData(String[] data, Module sender) {
@@ -441,9 +478,8 @@ public class Screen extends ModuleScreen {
 
     /**
      * Set the screen size in number of pixels
-     * 
-     * @param int width New width of the screen in pixels
-     * @param int height New height of the screen in pixels
+     * @param width
+     * @param height
      */
     public void setScreenSize(int width, int height) {
         // Update image size
@@ -498,14 +534,15 @@ public class Screen extends ModuleScreen {
         // "I see a red door and I want it painted black; No colours anymore I want them to turn black"
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
         Arrays.fill(pixelArray, (byte) 0);
-        DataBuffer dataBuffer = new DataBufferByte(pixelArray,
+        // TODO should local DataBuffer be used here? Or was the global variable meant to be used
+        DataBuffer buffer = new DataBufferByte(pixelArray,
                 pixelArray.length);
-        SampleModel sampleModel = new MultiPixelPackedSampleModel(
+        SampleModel model = new MultiPixelPackedSampleModel(
                 DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 8);
-        WritableRaster raster = Raster.createWritableRaster(sampleModel,
-                dataBuffer, null);
+        WritableRaster ras = Raster.createWritableRaster(model,
+                buffer, null);
 
-        image.setData(raster);
+        image.setData(ras);
     }
 
     /**
@@ -894,9 +931,8 @@ public class Screen extends ModuleScreen {
      * Update a tile on screen with given bytes A tile is a part of the
      * screenbuffer
      * 
-     * @param byte[] tile containing the bytes of the tile to be updated
-     * @param int x0 the start position X
-     * @param int y0 the start position Y
+     * @param x0
+     * @param y0
      */
     public void updateGraphicsTile(byte[] tile, int x0, int y0) {
 
@@ -908,17 +944,17 @@ public class Screen extends ModuleScreen {
             y_size = yTileSize;
         }
 
-        WritableRaster raster = graphicTile.getRaster();
+        WritableRaster ras = graphicTile.getRaster();
 
         // Only support 8 bits/pixel at the moment
         for (y = 0; y < y_size; y++) {
             for (x = 0; x < xTileSize; x++) {
                 // Set each colour (as found in the tile) in the graphicsTile
-                raster.setSample(x, y, 0, tile[y * xTileSize + x]);
+                ras.setSample(x, y, 0, tile[y * xTileSize + x]);
             }
         }
         // Draw tile at current location
-        this.image.setData(raster.createTranslatedChild(x0, y0));
+        this.image.setData(ras.createTranslatedChild(x0, y0));
         screenPanel.repaint();
     }
 
@@ -985,23 +1021,23 @@ public class Screen extends ModuleScreen {
      */
     private void createCodePage437Images() {
         // Default code page 437 values
-        int fontWidth = 8;
-        int fontHeight = 16;
+        int fntWidth = 8;
+        int fntHeight = 16;
 
         // Create image using data from standard font table
         for (int i = 0; i < CodePage437.codePageArray.length; i++) {
-            int[] pixels = new int[fontWidth * fontHeight];
-            fontImages[i] = new BufferedImage(fontWidth, fontHeight,
+            int[] pxels = new int[fntWidth * fntHeight];
+            fontImages[i] = new BufferedImage(fntWidth, fntHeight,
                     BufferedImage.TYPE_BYTE_BINARY);
-            WritableRaster raster = fontImages[i].getRaster();
+            WritableRaster rastr = fontImages[i].getRaster();
 
             // Translate each hex value (16 values) to binary (8 bits/hex value)
-            for (int j = 0; j < fontHeight; j++) {
-                for (int k = 0; k < fontWidth; k++) {
-                    pixels[j * fontWidth + k] = ((CodePage437.codePageArray[i][j]) >>> k) & 0x01;
+            for (int j = 0; j < fntHeight; j++) {
+                for (int k = 0; k < fntWidth; k++) {
+                    pxels[j * fntWidth + k] = ((CodePage437.codePageArray[i][j]) >>> k) & 0x01;
                 }
             }
-            raster.setPixels(0, 0, fontWidth, fontHeight, pixels);
+            rastr.setPixels(0, 0, fntWidth, fntHeight, pxels);
 
             if (fontImages[i] == null) {
                 logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
@@ -1030,7 +1066,7 @@ public class Screen extends ModuleScreen {
         // Use an IndexColorModel here to allow different colour text
         fontImages[index] = new BufferedImage(fontWidth, fontHeight,
                 BufferedImage.TYPE_BYTE_INDEXED, (IndexColorModel) colourModel);
-        WritableRaster raster = fontImages[index].getRaster();
+        WritableRaster rster = fontImages[index].getRaster();
 
         // Translate each hex value (16 values) to binary (8 bits/hex value), in
         // reverse order
@@ -1041,7 +1077,7 @@ public class Screen extends ModuleScreen {
                 pixelArray[j * fontWidth + Math.abs(k - (bits - 1))] = ((fontData[j]) >>> k) & 0x01;
             }
         }
-        raster.setPixels(0, 0, fontWidth, fontHeight, pixelArray);
+        rster.setPixels(0, 0, fontWidth, fontHeight, pixelArray);
     }
 
 }

@@ -101,12 +101,21 @@ public class DMA extends ModuleDMA {
     // cascaded to DREQ4, which results in an HRQ from
     // the "slave" that is passed to the CPU. So the "slave" controller actually
     // raises the HRQ to the CPU!
+    /**
+     *
+     */
     public DMAController[] controller = new DMAController[] {
             new DMAController(), new DMAController() };
 
     // Create two 4-channel handlers: 8-bit (controller 0) and 16-bit
     // (controller 1)
+    /**
+     *
+     */
     public DMA8Handler[] dma8Handler = new DMA8Handler[4];
+    /**
+     *
+     */
     public DMA16Handler[] dma16Handler = new DMA16Handler[4];
 
     // Relations
@@ -126,8 +135,17 @@ public class DMA extends ModuleDMA {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "dma";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "8237 DMA Controller";
 
     // Master/Slave identifiers
@@ -196,6 +214,7 @@ public class DMA extends ModuleDMA {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public DMA(Emulator owner) {
         emu = owner;
@@ -499,8 +518,7 @@ public class DMA extends ModuleDMA {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -512,10 +530,7 @@ public class DMA extends ModuleDMA {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -527,11 +542,7 @@ public class DMA extends ModuleDMA {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -589,7 +600,6 @@ public class DMA extends ModuleDMA {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }
@@ -603,8 +613,6 @@ public class DMA extends ModuleDMA {
 
     /**
      * Return a byte from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleUnknownPort
@@ -746,9 +754,6 @@ public class DMA extends ModuleDMA {
 
     /**
      * Set a byte in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      * 
      * @throws ModuleUnknownPort
      */
@@ -1081,8 +1086,6 @@ public class DMA extends ModuleDMA {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
      * @return byte[] containing the data at given I/O address port
      * @throws ModuleUnknownPort
      */
@@ -1097,9 +1100,6 @@ public class DMA extends ModuleDMA {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] dataWord
-     * 
      * @throws ModuleUnknownPort
      */
     public void setIOPortWord(int portAddress, byte[] dataWord)
@@ -1112,10 +1112,7 @@ public class DMA extends ModuleDMA {
     /**
      * Return a doubleword from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
      * @return byte[] containing the data at given I/O address port
-     * @throws ModuleUnknownPort
      */
     public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleWriteOnlyPortException {
@@ -1131,9 +1128,6 @@ public class DMA extends ModuleDMA {
 
     /**
      * Set a doubleword in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] dataDoubleWord
      * 
      * @throws ModuleUnknownPort
      */
@@ -1154,10 +1148,6 @@ public class DMA extends ModuleDMA {
     /**
      * Allows a device to register an 8-bit DMA Handler providing
      * implementations for the ReadFromMem and WriteToMem
-     * 
-     * @param int chanNum The channel to register the handler on (0 - 4)
-     * @param DMA8Handler
-     *            dma8Handler The handler to register for the channel
      * 
      * @return true if succesfully registered, false otherwise
      */
@@ -1185,9 +1175,6 @@ public class DMA extends ModuleDMA {
      * Allows a device to register an 16-bit DMA Handler providing
      * implementations for the ReadFromMem and WriteToMem
      * 
-     * @param int chanNum The channel to register the handler on (4 - 7)
-     * @param DMA16Handler
-     *            dma16Handler The handler to register for the channel
      * @return true if succesfully registered, false otherwise
      */
     public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
@@ -1213,8 +1200,7 @@ public class DMA extends ModuleDMA {
     /**
      * Allows a device to unregister a previously registered handler
      * 
-     * @param int chanNum The channel to unregister the handler from (0 - 7)
-     * 
+     * @param chanNum
      * @return true if succesfully unregistered, false otherwise
      * 
      */
@@ -1483,7 +1469,6 @@ public class DMA extends ModuleDMA {
      * necessary parameters (address, count, memory), the DMA transfer is
      * initiated
      * 
-     * @throws ModuleException
      * 
      */
     public void acknowledgeBusHold() {

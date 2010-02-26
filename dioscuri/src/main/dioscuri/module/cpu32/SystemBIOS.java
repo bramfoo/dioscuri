@@ -31,12 +31,22 @@ import java.io.*;
 
 import dioscuri.module.clock.Clock;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class SystemBIOS extends AbstractHardwareComponent implements
         IOPortCapable {
     private byte[] imageData;
     private boolean ioportRegistered, loaded;
     private Clock clock;
 
+    /**
+     *
+     * @param image
+     * @param clk
+     */
     public SystemBIOS(byte[] image, Clock clk) {
         loaded = false;
         ioportRegistered = false;
@@ -46,6 +56,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         System.arraycopy(image, 0, imageData, 0, image.length);
     }
 
+    /**
+     *
+     * @param imagefile
+     * @throws IOException
+     */
     public SystemBIOS(String imagefile) throws IOException {
         InputStream in = null;
         try {
@@ -68,11 +83,23 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
+    @Override
     public void dumpState(DataOutput output) throws IOException {
         output.writeInt(imageData.length);
         output.write(imageData);
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
+    @Override
     public void loadState(DataInput input) throws IOException {
         loaded = false;
         ioportRegistered = false;
@@ -81,22 +108,46 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         input.readFully(imageData, 0, len);
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] ioPortsRequested() {
         return new int[] { 0x400, 0x401, 0x402, 0x403, 0x8900 };
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadByte(int address) {
         return 0xff;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadWord(int address) {
         return 0xffff;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadLong(int address) {
         return (int) 0xffffffff;
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteByte(int address, int data) {
         switch (address) {
         /* Bochs BIOS Messages */
@@ -116,6 +167,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteWord(int address, int data) {
         switch (address) {
         /* Bochs BIOS Messages */
@@ -126,9 +182,18 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteLong(int address, int data) {
     }
 
+    /**
+     *
+     * @param physicalAddress
+     */
     public void load(PhysicalAddressSpace physicalAddress) {
         int blockSize = AddressSpace.BLOCK_SIZE;
         int len = ((imageData.length - 1) / blockSize + 1) * blockSize;
@@ -147,14 +212,28 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public byte[] getImage() {
         return (byte[]) imageData.clone();
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public boolean updated() {
         return (loaded && ioportRegistered);
     }
 
+    /**
+     *
+     * @param component
+     */
+    @Override
     public void updateComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace) && component.updated()) {
             this.load((PhysicalAddressSpace) component);
@@ -167,10 +246,20 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public boolean initialised() {
         return (loaded && ioportRegistered);
     }
 
+    /**
+     *
+     * @param component
+     */
+    @Override
     public void acceptComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace)
                 && component.initialised()) {
@@ -184,6 +273,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public boolean reset() {
         loaded = false;
         ioportRegistered = false;

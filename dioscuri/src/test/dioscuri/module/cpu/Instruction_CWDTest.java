@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_CWDTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_CWDTest() throws Exception {
         super(80448, "CWD.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_CWDTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_CBW.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String AX_ERROR = "AX contains wrong value";

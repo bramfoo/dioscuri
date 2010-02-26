@@ -34,6 +34,11 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.real.RealModeSkeletonBlock;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.prot.ProtectedModeSkeletonBlock;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ClassFileBuilder {
     private static final int CLASSES_PER_LOADER = 10;
 
@@ -78,6 +83,10 @@ public class ClassFileBuilder {
     private ClassFileBuilder() {
     }
 
+    /**
+     *
+     * @return
+     */
     public static ClassFile createNewRealModeSkeletonClass() {
         ClassFile cf = new ClassFile();
 
@@ -92,6 +101,10 @@ public class ClassFileBuilder {
         return cf;
     }
 
+    /**
+     *
+     * @return
+     */
     public static ClassFile createNewProtectedModeSkeletonClass() {
         ClassFile cf = new ClassFile();
 
@@ -106,6 +119,11 @@ public class ClassFileBuilder {
         return cf;
     }
 
+    /**
+     *
+     * @param cf
+     * @return
+     */
     public static CodeBlock instantiateClass(ClassFile cf) {
         cf.update();
         String className = cf.getClassName();
@@ -160,6 +178,7 @@ public class ClassFileBuilder {
             return newClass;
         }
 
+        @Override
         public Class<?> findClass(String name) throws ClassNotFoundException {
             Class<?> myClass = (Class<?>) classes.get(name);
             if (myClass != null)

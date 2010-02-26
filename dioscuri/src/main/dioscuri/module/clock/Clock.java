@@ -89,16 +89,29 @@ public class Clock extends ModuleClock {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "clock";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Crystal clock";
 
+    /**
+     *
+     */
     public final static int TIMER_ARRAY_SIZE = 10;
 
     // Constructor
     /**
      * Constructor Clock
      * 
+     * @param owner
      */
     public Clock(Emulator owner) {
         emu = owner;
@@ -284,8 +297,7 @@ public class Clock extends ModuleClock {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -297,10 +309,8 @@ public class Clock extends ModuleClock {
     /**
      * Set data for this module
      * 
-     * @param byte[] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param data
+     * @param sender
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
@@ -312,11 +322,8 @@ public class Clock extends ModuleClock {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param data
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -356,12 +363,9 @@ public class Clock extends ModuleClock {
     /**
      * Register a device to clock and assign a timer to it
      * 
-     * @param ModuleDevice
-     *            device that requires a timer
-     * @param int intervalLength in microseconds
-     * @param boolean continuous type of timer requested, true = continuous,
-     *        false = one-shot
-     * 
+     * @param device 
+     * @param continuous
+     * @param intervalLength
      * @return boolean true if timer assigned successfully, false otherwise
      */
     public boolean registerDevice(ModuleDevice device, int intervalLength,
@@ -385,10 +389,8 @@ public class Clock extends ModuleClock {
     /**
      * Reset the countdown of a timer to the interval length
      * 
-     * @param ModuleDevice
-     *            device that request a timer reset
-     * @param int updateInterval in microseconds
-     * 
+     * @param device 
+     * @param updateInterval
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
@@ -410,10 +412,8 @@ public class Clock extends ModuleClock {
     /**
      * Set a timer to start/stop running
      * 
-     * @param ModuleDevice
-     *            device that request a timer to be set
-     * @param boolean runState the state to set the timer to (start/stop)
-     * 
+     * @param device 
+     * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public boolean setTimerActiveState(ModuleDevice device, boolean runState) {
@@ -500,7 +500,7 @@ public class Clock extends ModuleClock {
      * Sets the keepRunning toggle keepRunning states if the clockthread should
      * keep running or not
      * 
-     * @param boolean status
+     * @param status
      */
     protected void setKeepRunning(boolean status) {
         keepRunning = status;
@@ -520,8 +520,7 @@ public class Clock extends ModuleClock {
     /**
      * Sets the rate for this clock
      * 
-     * @param long milliseconds defines how long the clock should wait
-     *        periodically before sending a pulse
+     * @param milliseconds
      */
     public void setClockRate(long milliseconds) {
         // Set the number of milliseconds before a pulse is generated
@@ -531,7 +530,8 @@ public class Clock extends ModuleClock {
     /**
      * Sets the active state for this clock
      * 
-     * @param boolean state the type of active state the timer is set to
+     * @param device
+     * @param state
      */
     public void setActiveState(ModuleDevice device, boolean state) {
         // Check if timer exists for given device

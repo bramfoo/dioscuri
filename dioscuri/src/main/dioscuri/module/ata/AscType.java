@@ -49,11 +49,29 @@ package dioscuri.module.ata;
  * 
  */
 public enum AscType {
+    /**
+     *
+     */
     NOT_SET(0x00),
+    /**
+     *
+     */
     ILLEGAL_OPCODE(0x20),
+    /**
+     *
+     */
     LOGICAL_BLOCK_OOR(0x21),
+    /**
+     *
+     */
     INV_FIELD_IN_CMD_PACKET(0x24),
+    /**
+     *
+     */
     SAVING_PARAMETERS_NOT_SUPPORTED(0x39),
+    /**
+     *
+     */
     MEDIUM_NOT_PRESENT(0x3a);
 
     private final int value;

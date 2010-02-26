@@ -104,8 +104,14 @@ public class PIT extends ModulePIT {
     // BRAM: Removed CPU connection, as it was unnecessary
     private String[] moduleConnections = new String[] { "motherboard", "pic" };// ,
                                                                                // "cpu"};
+    /**
+     *
+     */
     protected ModuleMotherboard motherboard;
     // private ModuleCPU cpu;
+    /**
+     *
+     */
     protected ModulePIC pic;
     private Counter[] counters;
 
@@ -114,6 +120,9 @@ public class PIT extends ModulePIT {
     private boolean debugMode;
 
     // IRQ number
+    /**
+     *
+     */
     protected int irqNumber;
 
     // Timing
@@ -125,8 +134,17 @@ public class PIT extends ModulePIT {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "pit";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Intel 8254 Programmable Interval Timer (PIT)";
 
     // I/O ports PIT
@@ -153,6 +171,7 @@ public class PIT extends ModulePIT {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public PIT(Emulator owner) {
         emu = owner;
@@ -383,8 +402,7 @@ public class PIT extends ModulePIT {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -396,10 +414,7 @@ public class PIT extends ModulePIT {
     /**
      * Set data for this module
      * 
-     * @param byte[] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true if successful, false otherwise
      * 
      * @see Module
@@ -411,11 +426,7 @@ public class PIT extends ModulePIT {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -482,7 +493,6 @@ public class PIT extends ModulePIT {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -507,8 +517,6 @@ public class PIT extends ModulePIT {
 
     /**
      * Return a byte from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
@@ -561,9 +569,6 @@ public class PIT extends ModulePIT {
 
     /**
      * Set a byte in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -758,7 +763,7 @@ public class PIT extends ModulePIT {
     /**
      * Sets the clock rate for this PIT
      * 
-     * @param long milliseconds, the time between two consequtive clock pulses
+     * @param counter
      */
     /*
      * public void setClockRate(long milliseconds) { // Set the clockrate of
@@ -772,6 +777,10 @@ public class PIT extends ModulePIT {
         pic.setIRQ(irqNumber);
     }
 
+    /**
+     *
+     * @param counter
+     */
     protected void lowerIRQ(Counter counter) {
         pic.clearIRQ(irqNumber);
     }

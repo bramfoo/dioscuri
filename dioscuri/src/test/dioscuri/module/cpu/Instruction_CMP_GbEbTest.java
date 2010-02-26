@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_CMP_GbEbTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_CMP_GbEbTest() throws Exception {
         super(80448, "CMP_GbEb.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_CMP_GbEbTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_CMP_GbEb.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String AX_ERROR = "AX contains wrong value";

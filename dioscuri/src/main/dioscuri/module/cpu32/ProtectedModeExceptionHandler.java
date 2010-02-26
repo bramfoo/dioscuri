@@ -34,12 +34,29 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.ExceptionHandler;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ProtectedModeExceptionHandler extends ExceptionHandler {
+    /**
+     *
+     * @param lastX86Position
+     * @param initialNode
+     * @param stateMap
+     */
     public ProtectedModeExceptionHandler(int lastX86Position,
             ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
         super(lastX86Position, initialNode, stateMap);
     }
 
+    /**
+     *
+     * @param byteCodes
+     * @param cf
+     * @throws IOException
+     */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
             ClassFile cf) throws IOException {
         // update eip?

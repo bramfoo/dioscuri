@@ -66,8 +66,7 @@ public class Instruction_PUSH_SS implements Instruction {
     /**
      * Class constructor specifying processor reference
      * 
-     * @param processor
-     *            Reference to CPU class
+     * @param procsssor
      */
     public Instruction_PUSH_SS(CPU procsssor) {
         this();

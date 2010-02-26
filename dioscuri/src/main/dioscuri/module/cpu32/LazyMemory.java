@@ -30,6 +30,11 @@ import dioscuri.module.clock.Clock;
 //import org.jpc.emulator.processor.Processor;
 //import org.jpc.emulator.memory.codeblock.CodeBlock;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class LazyMemory extends AbstractMemory {
     private int size;
     boolean allocated = false;
@@ -38,22 +43,39 @@ public class LazyMemory extends AbstractMemory {
     private Clock clock;
 
     // Needed for LazyCBMemory
+    /**
+     *
+     * @param size
+     */
     public LazyMemory(int size) {
         this.size = size;
         buffer = null;
     }
 
+    /**
+     *
+     * @param size
+     * @param clk
+     */
     public LazyMemory(int size, Clock clk) {
         this.size = size;
         buffer = null;
         this.clock = clk;
     }
 
+    /**
+     *
+     * @param data
+     */
     public LazyMemory(byte[] data) {
         this.size = data.length;
         buffer = data;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isCacheable() {
         return true;
     }
@@ -65,6 +87,14 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param buf
+     * @param off
+     * @param len
+     */
+    @Override
     public void copyContentsInto(int address, byte[] buf, int off, int len) {
         try {
             System.arraycopy(buffer, address, buf, off, len);
@@ -74,6 +104,14 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param buf
+     * @param off
+     * @param len
+     */
+    @Override
     public void copyContentsFrom(int address, byte[] buf, int off, int len) {
         try {
             System.arraycopy(buf, off, buffer, address, len);
@@ -83,14 +121,28 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public long getSize() {
         return size;
     }
 
+    /**
+     *
+     * @return
+     */
+    @Override
     public boolean isAllocated() {
         return allocated;
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public byte getByte(int offset) {
         try {
             return buffer[offset];
@@ -100,6 +152,11 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
     public void setByte(int offset, byte data) {
         try {
             buffer[offset] = data;
@@ -109,6 +166,12 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public short getWord(int offset) {
         try {
             int result = 0xFF & buffer[offset];
@@ -124,6 +187,12 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public int getDoubleWord(int offset) {
         try {
             int result = 0xFF & buffer[offset];
@@ -147,6 +216,12 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setWord(int offset, short data) {
         try {
             buffer[offset] = (byte) data;
@@ -160,6 +235,12 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setDoubleWord(int offset, int data) {
         try {
             buffer[offset] = (byte) data;
@@ -187,14 +268,30 @@ public class LazyMemory extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     */
+    @Override
     public void clear() {
         buffer = null;
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
     public int execute(Processor cpu, int offset) {
         return convertMemory(cpu).execute(cpu, offset);
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         CodeBlock block = convertMemory(cpu).decodeCodeBlockAt(cpu, offset);
         return block;
@@ -207,6 +304,7 @@ public class LazyMemory extends AbstractMemory {
         return newMemory;
     }
 
+    @Override
     public String toString() {
         return "LazyMemory[" + getSize() + "] {Allocated=" + (buffer != null)
                 + "}";

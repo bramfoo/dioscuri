@@ -39,9 +39,18 @@
 
 package dioscuri.exception;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class CommandException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
     public CommandException(String message) {
         super(message);
     }

@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_INC_DXTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_INC_DXTest() throws Exception {
         super(80448, "INC_DX.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_INC_DXTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_DX.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String DX_ERROR = "DX contains wrong value";

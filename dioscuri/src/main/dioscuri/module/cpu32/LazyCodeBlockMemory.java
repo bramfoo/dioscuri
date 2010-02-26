@@ -31,18 +31,37 @@ import dioscuri.module.clock.Clock;
 //import org.jpc.emulator.processor.Processor;
 //import org.jpc.emulator.processor.ProcessorException;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class LazyCodeBlockMemory extends LazyMemory {
     private static CodeBlockManager codeBlockManager;
 
     private static final BlankCodeBlock PLACEHOLDER = new BlankCodeBlock(0, 0);
 
+    /**
+     *
+     */
     protected RealModeCodeBlock[] realCodeBuffer;
+    /**
+     *
+     */
     protected ProtectedModeCodeBlock[] protectedCodeBuffer;
+    /**
+     *
+     */
     protected Virtual8086ModeCodeBlock[] virtual8086CodeBuffer;
 
     @SuppressWarnings("unused")
     private Clock clock;
 
+    /**
+     *
+     * @param src
+     * @param clk
+     */
     public LazyCodeBlockMemory(Memory src, Clock clk) {
         super((int) src.getSize());
         if (src.getSize() > 1024 * 1024 * 32)
@@ -60,6 +79,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         this.clock = clk;
     }
 
+    /**
+     *
+     * @param buf
+     * @param clk
+     */
     public LazyCodeBlockMemory(byte[] buf, Clock clk) {
         super(buf);
         constructCodeBlocksArray();
@@ -68,6 +92,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
             codeBlockManager = new CodeBlockManager(clk);
     }
 
+    /**
+     *
+     * @param size
+     * @param clk
+     */
     public LazyCodeBlockMemory(int size, Clock clk) {
         super(size);
         constructCodeBlocksArray();
@@ -76,15 +105,28 @@ public class LazyCodeBlockMemory extends LazyMemory {
             codeBlockManager = new CodeBlockManager(clk);
     }
 
+    /**
+     *
+     */
     protected void constructCodeBlocksArray() {
         realCodeBuffer = new RealModeCodeBlock[(int) getSize()];
         protectedCodeBuffer = new ProtectedModeCodeBlock[(int) getSize()];
         virtual8086CodeBuffer = new Virtual8086ModeCodeBlock[(int) getSize()];
     }
 
+    /**
+     *
+     */
     public void relinquishCache() {
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
+    @Override
     public int execute(Processor cpu, int offset) {
         if (cpu.isProtectedMode())
             if (cpu.isVirtual8086Mode())
@@ -95,6 +137,13 @@ public class LazyCodeBlockMemory extends LazyMemory {
             return executeReal(cpu, offset);
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
+    @Override
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         if (cpu.isProtectedMode())
             if (cpu.isVirtual8086Mode())
@@ -363,6 +412,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param block
+     */
     public void setVirtual8086CodeBlockAt(int offset,
             Virtual8086ModeCodeBlock block) {
         removeVirtual8086CodeBlockAt(offset);
@@ -378,6 +432,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param block
+     */
     public void setProtectedCodeBlockAt(int offset, ProtectedModeCodeBlock block) {
         removeProtectedCodeBlockAt(offset);
         if (block == null)
@@ -392,6 +451,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param block
+     */
     public void setRealCodeBlockAt(int offset, RealModeCodeBlock block) {
         removeRealCodeBlockAt(offset);
         if (block == null)
@@ -406,6 +470,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         }
     }
 
+    /**
+     *
+     * @param start
+     * @param end
+     */
     protected void regionAltered(int start, int end) {
         for (int i = end; i >= 0; i--) {
             RealModeCodeBlock b = realCodeBuffer[i];
@@ -456,11 +525,25 @@ public class LazyCodeBlockMemory extends LazyMemory {
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param buf
+     * @param off
+     * @param len
+     */
+    @Override
     public void copyContentsFrom(int address, byte[] buf, int off, int len) {
         super.copyContentsFrom(address, buf, off, len);
         regionAltered(address, address + len - 1);
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setByte(int offset, byte data) {
         if (super.getByte(offset) == data)
             return;
@@ -468,6 +551,12 @@ public class LazyCodeBlockMemory extends LazyMemory {
         regionAltered(offset, offset);
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setWord(int offset, short data) {
         if (super.getWord(offset) == data)
             return;
@@ -475,6 +564,12 @@ public class LazyCodeBlockMemory extends LazyMemory {
         regionAltered(offset, offset + 1);
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setDoubleWord(int offset, int data) {
         if (super.getDoubleWord(offset) == data)
             return;
@@ -482,15 +577,23 @@ public class LazyCodeBlockMemory extends LazyMemory {
         regionAltered(offset, offset + 3);
     }
 
+    /**
+     *
+     */
+    @Override
     public void clear() {
         constructCodeBlocksArray();
         super.clear();
     }
 
+    @Override
     public String toString() {
         return "LazyCodeBlockMemory[" + getSize() + "]";
     }
 
+    /**
+     *
+     */
     public static void dispose() {
         if (codeBlockManager != null)
             codeBlockManager.dispose();

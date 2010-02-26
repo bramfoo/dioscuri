@@ -46,6 +46,11 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class CommandLineInterface {
 
     private final Logger logger = Logger.getLogger(CommandLineInterface.class.getName());
@@ -62,6 +67,11 @@ public class CommandLineInterface {
     final boolean autoshutdown;
     String configFilePath;
 
+    /**
+     *
+     * @param parameters
+     * @throws Exception
+     */
     public CommandLineInterface(String... parameters) throws Exception {
 
         initOptions();
@@ -190,6 +200,11 @@ public class CommandLineInterface {
         commandLineOptions.addOption(config);
     }
 
+    /**
+     *
+     * @param parameters
+     * @throws ParseException
+     */
     protected void parse(String[] parameters) throws ParseException {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(commandLineOptions, parameters);

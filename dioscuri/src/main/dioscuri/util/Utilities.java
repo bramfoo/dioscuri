@@ -44,6 +44,11 @@ import java.io.File;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public final class Utilities {
 
     private static final Logger logger = Logger.getLogger(Utilities.class.getName());
@@ -81,6 +86,12 @@ public final class Utilities {
         return validPath;
     }
 
+    /**
+     *
+     * @param emuObject
+     * @param path
+     * @return
+     */
     public static boolean saveXML(dioscuri.config.Emulator emuObject, String path) {
         try {
             ConfigController.saveToXML(emuObject, Utilities.resolvePathAsFile(path));

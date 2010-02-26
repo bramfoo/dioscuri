@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_DEC_DITest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_DEC_DITest() throws Exception {
         super(80448, "DEC_DI.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_DEC_DITest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_DI.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String DI_ERROR = "DI contains wrong value";

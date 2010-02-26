@@ -300,9 +300,9 @@ public class Instruction_ImmGRP1_EvIv implements Instruction {
                         destinationRegister.length);
 
                 // ADD source and destination, storing result in destination.
-                byte[] temp = Util.addWords(destinationRegister, sourceValue,
+                byte[] tmp = Util.addWords(destinationRegister, sourceValue,
                         iCarryFlag);
-                System.arraycopy(temp, 0, destinationRegister, 0, temp.length);
+                System.arraycopy(tmp, 0, destinationRegister, 0, tmp.length);
 
                 // Test AF
                 cpu.flags[CPU.REGISTER_FLAGS_AF] = Util.test_AF_ADD(

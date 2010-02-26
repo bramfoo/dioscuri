@@ -47,6 +47,9 @@ import dioscuri.exception.ModuleException;
  */
 
 public abstract class ModuleMotherboard extends Module {
+    /**
+     *
+     */
     public int ioSpaceSize;
 
     // Methods
@@ -54,6 +57,7 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Registers a clock to motherboard
      * 
+     * @param clock
      * @return boolean true if registration is successfully, false otherwise
      */
     public abstract boolean registerClock(ModuleClock clock);
@@ -61,12 +65,9 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Requests a timer for given device at clock
      * 
-     * @param ModuleDevice
-     *            device that requests the timer
-     * @param int updatePeriod defining the frequency that update has to be done
-     *        in microseconds
-     * @param boolean continuous type of timer requested, one-shot or continuous
-     * 
+     * @param device 
+     * @param continuous
+     * @param updatePeriod
      * @return boolean true if registration is successfully, false otherwise
      */
     public abstract boolean requestTimer(ModuleDevice device, int updatePeriod,
@@ -75,10 +76,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Set a timer to start/stop running
      * 
-     * @param ModuleDevice
-     *            device that request a timer to be set
-     * @param boolean runState the state to set the timer to (start/stop)
-     * 
+     * @param device
+     * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean setTimerActiveState(ModuleDevice device,
@@ -87,11 +86,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Resets the timer of device (if any)
      * 
-     * @param ModuleDevice
-     *            device that requests the timer reset
-     * @param int updateInterval defining the frequency that update has to be
-     *        done in microseconds
-     * 
+     * @param device
+     * @param updateInterval
      * @return boolean true if reset is successfully, false otherwise
      */
     public abstract boolean resetTimer(ModuleDevice device, int updateInterval);
@@ -99,10 +95,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Set I/O address port to given device
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param ModuleDevice
-     *            device
-     * 
+     * @param portAddress 
+     * @param device
      * @return boolean true if data is set successfully, false otherwise
      */
     public abstract boolean setIOPort(int portAddress, ModuleDevice device);
@@ -110,8 +104,7 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Return a byte from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -121,9 +114,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Set a byte in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
-     * 
+     * @param portAddress
+     * @param dataByte
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
@@ -133,8 +125,7 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress
      * @return byte[] containing the word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -145,9 +136,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] word
-     * 
+     * @param portAddress
+     * @param dataWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
@@ -157,8 +147,7 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Return a double word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress
      * @return byte[] containing the double word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -169,9 +158,8 @@ public abstract class ModuleMotherboard extends Module {
     /**
      * Set a double word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] double word
-     * 
+     * @param portAddress 
+     * @param dataDoubleWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */

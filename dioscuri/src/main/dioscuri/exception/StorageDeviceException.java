@@ -39,9 +39,18 @@
 
 package dioscuri.exception;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class StorageDeviceException extends Exception {
 
+    /**
+     *
+     * @param message
+     */
     public StorageDeviceException(String message) {
         super(message);
     }

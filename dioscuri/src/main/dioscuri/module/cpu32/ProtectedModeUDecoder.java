@@ -26,6 +26,11 @@
 package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.memory.codeblock.*;
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unused")
 public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         InstructionSource {
@@ -215,20 +220,39 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
     private boolean addressModeDecoded;
     private boolean operandSizeIs32Bit;
 
+    /**
+     *
+     */
     public ProtectedModeUDecoder() {
         this.current = new Operation();
         this.waiting = new Operation();
         this.working = new Operation();
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeReal(ByteSource source) {
         return null;
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeVirtual8086(ByteSource source) {
         return null;
     }
 
+    /**
+     *
+     * @param source
+     * @param operandSize
+     * @return
+     */
     public InstructionSource decodeProtected(ByteSource source,
             boolean operandSize) {
         reset();
@@ -248,6 +272,10 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         working = temp;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getNext() {
         decode(); // will put new block in working
         rotate(); // moves buffer around
@@ -267,14 +295,26 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         blockComplete = false;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMicrocode() {
         return current.getMicrocode();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLength() {
         return current.getLength();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         return current.getX86Length();
     }
@@ -6394,6 +6434,12 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         return 0;
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isFarJump(int opcode, int modrm) {
         switch (opcode) {
         case 0x9a: // CALLF Ap
@@ -6423,6 +6469,12 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isNearJump(int opcode, int modrm) {
         switch (opcode) {
         case 0x70: // Jcc Jb
@@ -6483,6 +6535,12 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isModeSwitch(int opcode, int modrm) {
         switch (opcode) {
         case 0x0f22: // MOV Cd, Ed
@@ -6497,6 +6555,12 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isBlockTerminating(int opcode, int modrm) {
         switch (opcode) {
         case 0xfb: // STI
@@ -6507,6 +6571,12 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
+    /**
+     *
+     * @param opcode
+     * @param modrm
+     * @return
+     */
     public static boolean isJump(int opcode, int modrm) {
         return isNearJump(opcode, modrm) || isFarJump(opcode, modrm)
                 || isModeSwitch(opcode, modrm)

@@ -58,6 +58,9 @@ public class ATADrive {
     // Attributes
 
     // Drive parameters
+    /**
+     *
+     */
     protected ATADriveType driveType; // Type of drive
 
     // 512 byte buffer for ID drive command
@@ -65,35 +68,80 @@ public class ATADrive {
     // they are fetched and returned via a return(), so
     // there's no need to keep them in x86 endian format.
     // protected Bit16u id_drive[256]; //TODO
+    /**
+     *
+     */
     protected int[] idDrive = new int[256];
 
+    /**
+     * 
+     */
     protected char[] modelNo = new char[40]; // TODO: originally 41 - but last
                                              // char not used
 
     // TODO:in lba mode the values in the below are not local
+    /**
+     *
+     */
     protected int currentHead; // Current head, Head Select
+    /**
+     *
+     */
     protected int currentCylinder; // Current cylinder
+    /**
+     *
+     */
     protected int currentSector; // Current sector
 
+    /**
+     *
+     */
     protected int totalNumHeads; // Total number of heads on disk
+    /**
+     *
+     */
     protected int totalNumCylinders; // Total number of cylinders on disk
                                      // (identical to tracks for floppies)
+    /**
+     *
+     */
     protected int totalNumSectors; // Total number of sectors on a disk
 
+    /**
+     *
+     */
     protected int sectorCount; // TODO: should this be moved?
 
     // TODO: implement this and multi-drives
+    /**
+     *
+     */
     protected boolean isMaster; // Is the drive the master?
 
     // Disk parameters
     private DiskImage disk; // Disk in drive (if any, else null)
+    /**
+     *
+     */
     protected boolean containsDisk;
 
+    /**
+     *
+     */
     protected boolean isWriteProtected; // Indicates if the floppy is write
                                         // protected
 
+    /**
+     *
+     */
     protected int ioLightCounter;
+    /**
+     *
+     */
     protected int statusbarId;
+    /**
+     *
+     */
     protected int features;
 
     private ATADriveController control;
@@ -102,17 +150,26 @@ public class ATADrive {
 
     private CDROM cdRom;
 
+    /**
+     *
+     */
     protected Atpi atpi;
 
+    /**
+     *
+     */
     protected ATATranslationType translationType;
 
+    /**
+     *
+     */
     protected int deviceNum; // for ATAPI identify & inquiry
 
     /**
      * Class Constructor with input parameter IDE drive type.
      * 
-     * @param the
-     *            IDE drive type
+     * @param theDriveType 
+     * @param parent
      * @param enabled
      */
     public ATADrive(ATADriveType theDriveType, ATA parent, boolean enabled) {
@@ -144,6 +201,13 @@ public class ATADrive {
 
     }
 
+    /**
+     *
+     * @param theDriveType
+     * @param parent
+     * @param enabled
+     * @param cdromCount
+     */
     public ATADrive(ATADriveType theDriveType, ATA parent, boolean enabled,
             int cdromCount) {
         this(theDriveType, parent, enabled);
@@ -197,6 +261,11 @@ public class ATADrive {
 
     // Methods
 
+    /**
+     *
+     * @param sector
+     * @return
+     */
     public boolean calculateLogicalAddress(int sector) {
         int logicalSector;
 
@@ -212,10 +281,10 @@ public class ATADrive {
         }
 
         // TODO: use total C H S?
-        int sectorCount = this.getTotalNumCylinders() * this.getTotalNumHeads()
+        int secCount = this.getTotalNumCylinders() * this.getTotalNumHeads()
                 * this.getTotalNumSectors();
 
-        if (logicalSector >= sectorCount) {
+        if (logicalSector >= secCount) {
             // BX_ERROR (("calc_log_addr: out of bounds (%d/%d)",
             // (Bit32u)logical_sector, sector_count));
             return false;
@@ -226,6 +295,10 @@ public class ATADrive {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public int calculateLogicalAddress() {
         int logicalSector;
 
@@ -241,10 +314,10 @@ public class ATADrive {
         }
 
         // TODO: use total C H S?
-        int sectorCount = this.getTotalNumCylinders() * this.getTotalNumHeads()
+        int secCount = this.getTotalNumCylinders() * this.getTotalNumHeads()
                 * this.getTotalNumSectors();
 
-        if (logicalSector >= sectorCount) {
+        if (logicalSector >= secCount) {
             // BX_ERROR (("calc_log_addr: out of bounds (%d/%d)",
             // (Bit32u)logical_sector, sector_count));
             return -1;
@@ -253,6 +326,9 @@ public class ATADrive {
         return logicalSector;
     }
 
+    /**
+     *
+     */
     public void incrementAddress() {
 
         this.decrementSectorCount();
@@ -307,6 +383,7 @@ public class ATADrive {
 
     /**
      * Reset drive All geometry parameters for sector selection are reset.
+     * @return
      */
     protected boolean reset() {
 
@@ -330,6 +407,10 @@ public class ATADrive {
         return this.control;
     }
 
+    /**
+     *
+     * @return
+     */
     public SenseInfo getSenseInfo() {
         return this.senseInfo;
     }
@@ -355,7 +436,7 @@ public class ATADrive {
     /**
      * Sets type of drive.
      * 
-     * @param byte drive type
+     * @param type
      */
     protected void setDriveType(ATADriveType type) {
         driveType = type;
@@ -444,7 +525,8 @@ public class ATADrive {
      *            the total number of bytes
      * @param diskBuffer
      *            the disk buffer
-     * @throws StorageDeviceException
+     * @return
+     * @throws IOException
      */
     public byte[] readData(byte[] diskBuffer, int offset, int totalBytes)
             throws IOException {
@@ -472,7 +554,7 @@ public class ATADrive {
      *            the total number of bytes
      * @param diskBuffer
      *            the disk buffer
-     * @throws StorageDeviceException
+     * @throws IOException
      */
     public void writeData(byte[] diskBuffer, int offset, int totalBytes)
             throws IOException {
@@ -511,6 +593,7 @@ public class ATADrive {
      * 
      * @return the string representation of the class
      */
+    @Override
     public String toString() {
         return "Drive status info:" + "  drivetype=" + driveType.toString()
                 + ", diskPresent=" + this.containsDisk() + ", writeProtected="
@@ -521,122 +604,241 @@ public class ATADrive {
                 + totalNumSectors;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isMaster() {
         return isMaster;
     }
 
+    /**
+     *
+     * @param isMaster
+     */
     public void setMaster(boolean isMaster) {
         this.isMaster = isMaster;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentHead() {
         return currentHead;
     }
 
+    /**
+     *
+     * @param currentHead
+     */
     public void setCurrentHead(int currentHead) {
         this.currentHead = currentHead;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentCylinder() {
         return currentCylinder;
     }
 
+    /**
+     *
+     * @param currentCylinder
+     */
     public void setCurrentCylinder(int currentCylinder) {
         this.currentCylinder = currentCylinder;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCurrentSector() {
         return currentSector;
     }
 
+    /**
+     *
+     * @param currentSector
+     */
     public void setCurrentSector(int currentSector) {
         this.currentSector = currentSector;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTotalNumSectors() {
         return totalNumSectors;
     }
 
+    /**
+     *
+     * @return
+     */
     public Atpi getAtpi() {
         return atpi;
     }
 
+    /**
+     *
+     * @param atpi
+     */
     public void setAtpi(Atpi atpi) {
         this.atpi = atpi;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getIoLightCounter() {
         return ioLightCounter;
     }
 
+    /**
+     *
+     * @param ioLightCounter
+     */
     public void setIoLightCounter(int ioLightCounter) {
         this.ioLightCounter = ioLightCounter;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTotalNumHeads() {
         return totalNumHeads;
     }
 
+    /**
+     *
+     * @param totalNumHeads
+     */
     public void setTotalNumHeads(int totalNumHeads) {
         this.totalNumHeads = totalNumHeads;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTotalNumCylinders() {
         return totalNumCylinders;
     }
 
+    /**
+     *
+     * @param totalNumCylinders
+     */
     public void setTotalNumCylinders(int totalNumCylinders) {
         this.totalNumCylinders = totalNumCylinders;
     }
 
+    /**
+     *
+     */
     public void incrementSectorCount() {
         this.sectorCount++;
     }
 
+    /**
+     *
+     */
     public void decrementSectorCount() {
         this.sectorCount--;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getSectorCount() {
         return sectorCount;
     }
 
+    /**
+     *
+     * @param sectorCount
+     */
     public void setSectorCount(int sectorCount) {
         this.sectorCount = sectorCount;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getFeatures() {
         return features;
     }
 
+    /**
+     *
+     * @param features
+     */
     public void setFeatures(int features) {
         this.features = features;
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] getIdDrive() {
         return idDrive;
     }
 
+    /**
+     *
+     * @param index
+     * @param idDrive
+     */
     public void setIdDrive(int index, int idDrive) {
         this.idDrive[index] = idDrive;
     }
 
+    /**
+     *
+     * @return
+     */
     public char[] getModelNo() {
         return modelNo;
     }
 
+    /**
+     *
+     * @return
+     */
     public CDROM getCdRom() {
         return cdRom;
     }
 
+    /**
+     *
+     * @param cdRom
+     */
     public void setCdRom(CDROM cdRom) {
         this.cdRom = cdRom;
     }
 
+    /**
+     *
+     * @return
+     */
     public ATATranslationType getTranslationType() {
         return translationType;
     }
 
+    /**
+     *
+     * @param translationType
+     */
     public void setTranslationType(ATATranslationType translationType) {
         this.translationType = translationType;
     }

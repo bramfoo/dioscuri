@@ -30,14 +30,40 @@ package dioscuri.module.cpu32;
 
 import java.io.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class FpuState64 extends FpuState {
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_NONE = 0;
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_NAN = 1;
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_UNSUPPORTED = 2;
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_INFINITY = 3;
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_DENORMAL = 4;
+    /**
+     *
+     */
     public final static int FPU_SPECIAL_TAG_SNAN = 5;
 
+    /**
+     *
+     */
     public final static double UNDERFLOW_THRESHOLD = Math.pow(2.0, -1022.0);
 
     private final Processor cpu;
@@ -59,6 +85,10 @@ public class FpuState64 extends FpuState {
     private boolean stackFault;
 
     // constructor
+    /**
+     *
+     * @param owner
+     */
     public FpuState64(Processor owner) {
         cpu = owner;
 
@@ -68,6 +98,11 @@ public class FpuState64 extends FpuState {
         init();
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
         output.writeInt(statusWord);
         output.writeInt(maskWord);
@@ -91,6 +126,11 @@ public class FpuState64 extends FpuState {
             output.writeInt(specialTag[i]);
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
         statusWord = input.readInt();
         maskWord = input.readInt();
@@ -117,76 +157,140 @@ public class FpuState64 extends FpuState {
             specialTag[i] = input.readInt();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getInvalidOperation() {
         return ((statusWord & 0x01) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getDenormalizedOperand() {
         return ((statusWord & 0x02) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getZeroDivide() {
         return ((statusWord & 0x04) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getOverflow() {
         return ((statusWord & 0x08) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getUnderflow() {
         return ((statusWord & 0x10) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getPrecision() {
         return ((statusWord & 0x20) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getStackFault() {
         return ((statusWord & 0x40) != 0);
     }
 
+    /**
+     *
+     */
     public void setInvalidOperation() {
         statusWord |= 0x01;
     }
 
+    /**
+     *
+     */
     public void setDenormalizedOperand() {
         statusWord |= 0x02;
     }
 
+    /**
+     *
+     */
     public void setZeroDivide() {
         statusWord |= 0x04;
     }
 
+    /**
+     *
+     */
     public void setOverflow() {
         statusWord |= 0x08;
     }
 
+    /**
+     *
+     */
     public void setUnderflow() {
         statusWord |= 0x10;
     }
 
+    /**
+     *
+     */
     public void setPrecision() {
         statusWord |= 0x20;
     }
 
+    /**
+     *
+     */
     public void setStackFault() {
         statusWord |= 0x40;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getBusy() {
         return getErrorSummaryStatus();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getErrorSummaryStatus() {
         // (note stack fault is a subset of invalid operation)
         return (((statusWord & 0x3f) & ~maskWord) != 0);
     }
 
+    /**
+     *
+     * @throws ProcessorException
+     */
     public void checkExceptions() throws ProcessorException {
         if (getErrorSummaryStatus())
             cpu.reportFPUException();
     }
 
+    /**
+     *
+     */
     public void clearExceptions() {
         statusWord = 0;
     }
@@ -197,38 +301,74 @@ public class FpuState64 extends FpuState {
     private int precisionControl;
     private int roundingControl;
 
+    /**
+     *
+     * @return
+     */
     public boolean getInvalidOperationMask() {
         return ((maskWord & 1) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getDenormalizedOperandMask() {
         return ((maskWord & 2) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getZeroDivideMask() {
         return ((maskWord & 4) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getOverflowMask() {
         return ((maskWord & 8) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getUnderflowMask() {
         return ((maskWord & 0x10) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean getPrecisionMask() {
         return ((maskWord & 0x20) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getPrecisionControl() {
         return precisionControl;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getRoundingControl() {
         return roundingControl;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setInvalidOperationMask(boolean value) {
         if (value)
             maskWord |= 1;
@@ -236,6 +376,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~1;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDenormalizedOperandMask(boolean value) {
         if (value)
             maskWord |= 2;
@@ -243,6 +387,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~2;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setZeroDivideMask(boolean value) {
         if (value)
             maskWord |= 4;
@@ -250,6 +398,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~4;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setOverflowMask(boolean value) {
         if (value)
             maskWord |= 8;
@@ -257,6 +409,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~8;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setUnderflowMask(boolean value) {
         if (value)
             maskWord |= 0x10;
@@ -264,6 +420,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~0x10;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPrecisionMask(boolean value) {
         if (value)
             maskWord |= 0x20;
@@ -271,6 +431,10 @@ public class FpuState64 extends FpuState {
             maskWord &= ~0x20;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setAllMasks(boolean value) {
         if (value)
             maskWord |= 0x3f;
@@ -278,6 +442,10 @@ public class FpuState64 extends FpuState {
             maskWord = 0;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPrecisionControl(int value) {
         if (value != FPU_PRECISION_CONTROL_DOUBLE) {
             // trying to set precision to other than double
@@ -287,6 +455,10 @@ public class FpuState64 extends FpuState {
         precisionControl = FPU_PRECISION_CONTROL_DOUBLE;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setRoundingControl(int value) {
         if (value != FPU_ROUNDING_CONTROL_EVEN) {
             // trying to set directed or truncate rounding
@@ -297,6 +469,9 @@ public class FpuState64 extends FpuState {
     }
 
 
+    /**
+     *
+     */
     public void init() {
         // tag word (and non-x87 special tags)
         for (int i = 0; i < STACK_DEPTH; ++i)
@@ -316,6 +491,11 @@ public class FpuState64 extends FpuState {
         lastIP = lastData = lastOpcode = 0;
     }
 
+    /**
+     *
+     * @param x
+     * @return
+     */
     public int tagCode(double x) {
         if (x == 0.0)
             return FPU_TAG_ZERO;
@@ -325,6 +505,11 @@ public class FpuState64 extends FpuState {
             return FPU_TAG_VALID;
     }
 
+    /**
+     *
+     * @param x
+     * @return
+     */
     public static boolean isDenormal(double x) {
         long n = Double.doubleToRawLongBits(x);
         int exponent = (int) ((n >> 52) & 0x7ff);
@@ -336,6 +521,11 @@ public class FpuState64 extends FpuState {
         return true;
     }
 
+    /**
+     *
+     * @param n
+     * @return
+     */
     public static boolean isSNaN(long n) {
         // have to determine this based on 64-bit bit pattern,
         // since reassignment might cause Java to rationalize it to infinity
@@ -352,6 +542,11 @@ public class FpuState64 extends FpuState {
     // detected when they are read in from memory. So if you push()
     // from memory, find out before whether it's an SNaN, then push(),
     // then set the tag word accordingly.
+    /**
+     *
+     * @param x
+     * @return
+     */
     public static int specialTagCode(double x) {
         // decode special: NaN, unsupported, infinity, or denormal
         if (Double.isNaN(x))
@@ -365,6 +560,11 @@ public class FpuState64 extends FpuState {
             return FPU_SPECIAL_TAG_NONE;
     }
 
+    /**
+     *
+     * @param x
+     * @throws ProcessorException
+     */
     public void push(double x) throws ProcessorException {
         if (--top < 0)
             top = STACK_DEPTH - 1;
@@ -385,6 +585,11 @@ public class FpuState64 extends FpuState {
     // push(x.doubleValue());
     // }
 
+    /**
+     *
+     * @return
+     * @throws ProcessorException
+     */
     public double pop() throws ProcessorException {
         if (tag[top] == FPU_TAG_EMPTY) {
             setInvalidOperation();
@@ -411,6 +616,12 @@ public class FpuState64 extends FpuState {
     // return new BigDecimal(pop());
     // }
 
+    /**
+     *
+     * @param index
+     * @return
+     * @throws ProcessorException
+     */
     public double ST(int index) throws ProcessorException {
         int i = ((top + index) & 0x7);
         if (tag[i] == FPU_TAG_EMPTY) {
@@ -433,16 +644,31 @@ public class FpuState64 extends FpuState {
     // return new BigDecimal(ST(index));
     // }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public int getTag(int index) {
         int i = ((top + index) & 0x7);
         return tag[i];
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public int getSpecialTag(int index) {
         int i = ((top + index) & 0x7);
         return specialTag[i];
     }
 
+    /**
+     *
+     * @param index
+     * @param value
+     */
     public void setST(int index, double value) {
         // FST says that no exception is generated if the destination
         // is a non-empty register, so we don't generate an exception
@@ -458,6 +684,10 @@ public class FpuState64 extends FpuState {
     // setST(index, value.doubleValue());
     // }
 
+    /**
+     *
+     * @return
+     */
     public int getStatus() {
         int w = statusWord;
         if (getErrorSummaryStatus())
@@ -470,6 +700,10 @@ public class FpuState64 extends FpuState {
         return w;
     }
 
+    /**
+     *
+     * @param w
+     */
     public void setStatus(int w) {
         statusWord &= ~0x7f;
         statusWord |= (w & 0x7f);
@@ -478,6 +712,10 @@ public class FpuState64 extends FpuState {
         conditionCode |= ((w >>> 14) & 1);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getControl() {
         int w = maskWord;
         w |= ((precisionControl & 0x3) << 8);
@@ -487,6 +725,10 @@ public class FpuState64 extends FpuState {
         return w;
     }
 
+    /**
+     *
+     * @param w
+     */
     public void setControl(int w) {
         maskWord &= ~0x3f;
         maskWord |= (w & 0x3f);
@@ -495,6 +737,10 @@ public class FpuState64 extends FpuState {
         setRoundingControl((w >> 10) & 3);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTagWord() {
         int w = 0;
         for (int i = STACK_DEPTH - 1; i >= 0; --i)
@@ -502,6 +748,10 @@ public class FpuState64 extends FpuState {
         return w;
     }
 
+    /**
+     *
+     * @param w
+     */
     public void setTagWord(int w) {
         for (int i = 0; i < STACK_DEPTH; ++i) {
             int t = (w & 0x3);
@@ -524,6 +774,12 @@ public class FpuState64 extends FpuState {
     // it understands (which looks like an infinity). For now we
     // simply don't support using NaN bits in this way.
 
+    /**
+     *
+     * @param x
+     * @param isSignalNaN
+     * @return
+     */
     public static byte[] doubleToExtended(double x, boolean isSignalNaN) {
         byte[] b = new byte[10];
         long fraction = 0;
@@ -553,6 +809,11 @@ public class FpuState64 extends FpuState {
         return b;
     }
 
+    /**
+     *
+     * @param b
+     * @return
+     */
     public static int specialTagCode(byte[] b) {
         long fraction = 0;
         for (int i = 7; i >= 0; --i) {
@@ -603,6 +864,11 @@ public class FpuState64 extends FpuState {
         }
     }
 
+    /**
+     *
+     * @param b
+     * @return
+     */
     public static double extendedToDouble(byte[] b) {
         long fraction = 0;
         for (int i = 7; i >= 0; --i) {

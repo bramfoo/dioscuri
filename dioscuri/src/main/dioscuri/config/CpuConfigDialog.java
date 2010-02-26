@@ -60,9 +60,13 @@ import javax.swing.JRadioButton;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Cpu;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class CpuConfigDialog extends ConfigurationDialog {
     private JFormattedTextField speedField;
@@ -71,6 +75,10 @@ public class CpuConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public CpuConfigDialog(GUI parent) {
         super(parent, "CPU Configuration", false, ModuleType.CPU);
 
@@ -79,6 +87,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
@@ -92,6 +101,10 @@ public class CpuConfigDialog extends ConfigurationDialog {
             this.cpu16Button.setSelected(true);
     }
 
+    /**
+     *
+     */
+    @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -104,6 +117,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
         JLabel bitLabel = new JLabel("  CPU bits:");
         JLabel speedLabel = new JLabel("  Speed (MHz)");
@@ -154,6 +168,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Cpu cpu = emuConfig.getArchitecture().getModules().getCpu();
 

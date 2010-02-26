@@ -30,6 +30,11 @@ import java.util.*;
 
 //import org.jpc.classfile.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class RPNNode {
     private int id, count, useCount, subtreeIndex;
     private List<RPNNode> argLinks;
@@ -44,6 +49,11 @@ public abstract class RPNNode {
 
     private static int counter = 0;
 
+    /**
+     *
+     * @param id
+     * @param parent
+     */
     public RPNNode(int id, MicrocodeNode parent) {
         this.id = id;
         this.parent = parent;
@@ -56,32 +66,68 @@ public abstract class RPNNode {
         writeCountMax = 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public abstract boolean hasExternalEffect();
 
+    /**
+     *
+     * @return
+     */
     public abstract boolean canThrowException();
 
+    /**
+     *
+     * @return
+     */
     protected abstract Object[] getByteCodes();
 
+    /**
+     *
+     * @return
+     */
     public int getX86Index() {
         return parent.getX86Index();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Position() {
         return parent.getX86Position();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getImmediate() {
         return parent.getImmediate();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasImmediate() {
         return parent.hasImmediate();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getID() {
         return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMicrocode() {
         if (parent == null)
             return -1;
@@ -89,14 +135,27 @@ public abstract class RPNNode {
         return parent.getMicrocode();
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean hasLinks() {
         return argLinks.size() > 0;
     }
 
+    /**
+     *
+     * @param link
+     */
     public void linkTo(RPNNode link) {
         argLinks.add(link);
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public int markSubtrees(int index) {
         useCount++;
         if ((id != FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE)
@@ -119,10 +178,18 @@ public abstract class RPNNode {
         return index;
     }
 
+    /**
+     *
+     * @param handler
+     */
     public void attachExceptionHandler(ExceptionHandler handler) {
         exceptionHandler = handler;
     }
 
+    /**
+     *
+     * @param indent
+     */
     public void print(String indent) {
         System.out.println(indent + "[" + id + "] by "
                 + MicrocodeNode.getName(getMicrocode()) + "  {" + count
@@ -135,10 +202,20 @@ public abstract class RPNNode {
         System.out.println(indent + "}");
     }
 
+    /**
+     *
+     */
     public void print() {
         print("");
     }
 
+    /**
+     *
+     * @param output
+     * @param cf
+     * @param bytecodes
+     * @throws IOException
+     */
     public static void writeBytecodes(CountingOutputStream output,
             ClassFile cf, Object[] bytecodes) throws IOException {
         int lastByte = -1;
@@ -178,6 +255,13 @@ public abstract class RPNNode {
         }
     }
 
+    /**
+     *
+     * @param output
+     * @param cf
+     * @param leaveResultOnStack
+     * @throws IOException
+     */
     public void write(CountingOutputStream output, ClassFile cf,
             boolean leaveResultOnStack) throws IOException {
         reset = false;
@@ -282,6 +366,13 @@ public abstract class RPNNode {
         }
     }
 
+    /**
+     *
+     * @param output
+     * @param cf
+     * @param leaveResultOnStack
+     * @throws IOException
+     */
     public void writeExceptionCleanup(CountingOutputStream output,
             ClassFile cf, boolean leaveResultOnStack) throws IOException {
         reset = false;
@@ -373,6 +464,10 @@ public abstract class RPNNode {
 
     private boolean reset;
 
+    /**
+     *
+     * @param location
+     */
     public void reset(int location) {
         if (reset)
             return;

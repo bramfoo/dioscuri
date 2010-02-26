@@ -102,8 +102,17 @@ public class ParallelPort extends ModuleParallelPort {
     private final static int CONTROL_PORT2 = 0x27A; // Read/Write port
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "parallelport";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "25-pin IEEE 1284 parallel port";
 
     // Constructor
@@ -111,6 +120,7 @@ public class ParallelPort extends ModuleParallelPort {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public ParallelPort(Emulator owner) {
         emu = owner;
@@ -287,8 +297,7 @@ public class ParallelPort extends ModuleParallelPort {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -300,10 +309,7 @@ public class ParallelPort extends ModuleParallelPort {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -315,11 +321,7 @@ public class ParallelPort extends ModuleParallelPort {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -358,7 +360,6 @@ public class ParallelPort extends ModuleParallelPort {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }

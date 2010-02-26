@@ -29,6 +29,11 @@ import java.io.*;
 import java.lang.reflect.*;
 import java.util.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ClassFile {
     private int magic;
     private int minorVersion;
@@ -49,14 +54,37 @@ public class ClassFile {
     private int attributesCount;
     private AttributeInfo[] attributes;
 
+    /**
+     *
+     */
     public static final short PUBLIC = (short) 0x0001;
+    /**
+     *
+     */
     public static final short FINAL = (short) 0x0010;
+    /**
+     *
+     */
     public static final short SUPER = (short) 0x0020;
+    /**
+     *
+     */
     public static final short INTERFACE = (short) 0x0200;
+    /**
+     *
+     */
     public static final short ABSTRACT = (short) 0x0400;
 
+    /**
+     *
+     */
     public static final int MAX_CONSTANT_POOL_SIZE = 64 * 1024;
 
+    /**
+     *
+     * @param in
+     * @throws IOException
+     */
     public void read(DataInputStream in) throws IOException {
         readMagic(in);
         // System.out.println("magic");
@@ -81,6 +109,11 @@ public class ClassFile {
         return;
     }
 
+    /**
+     *
+     * @param out
+     * @throws IOException
+     */
     public void write(DataOutputStream out) throws IOException {
         writeMagic(out);
         // System.out.println("magic");
@@ -105,6 +138,9 @@ public class ClassFile {
         return;
     }
 
+    /**
+     *
+     */
     public void update() {
         /*
          * this function will supposibly sync all class info. for now I am
@@ -115,6 +151,10 @@ public class ClassFile {
         majorVersion = 46;
     }
 
+    /**
+     *
+     * @return
+     */
     public String[] getMethodNames() {
         String[] names = new String[methodsCount];
         for (int i = 0; (i < methodsCount); i++) {
@@ -125,33 +165,65 @@ public class ClassFile {
         return names;
     }
 
+    /**
+     *
+     * @param methodName
+     * @return
+     */
     public int[] getMethodCode(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
         return mi.getCode();
     }
 
+    /**
+     *
+     * @param methodName
+     * @param codeBytes
+     */
     public void setMethodCode(String methodName, int[] codeBytes) {
         setMethodCode(methodName, codeBytes, codeBytes.length);
     }
 
+    /**
+     *
+     * @param methodName
+     * @param codeBytes
+     * @param codeBytesLength
+     */
     public void setMethodCode(String methodName, int[] codeBytes,
             int codeBytesLength) {
         MethodInfo mi = getMethodInfo(methodName);
         mi.setCode(codeBytes, codeBytesLength, this);
     }
 
+    /**
+     *
+     * @param methodName
+     * @return
+     */
     public AttributeInfo.CodeAttribute.ExceptionEntry[] getMethodExceptionTable(
             String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
         return mi.getExceptionTable();
     }
 
+    /**
+     *
+     * @param methodName
+     * @param exceptionTable
+     */
     public void setMethodExceptionTable(String methodName,
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable) {
         setMethodExceptionTable(methodName, exceptionTable,
                 exceptionTable.length);
     }
 
+    /**
+     *
+     * @param methodName
+     * @param exceptionTable
+     * @param exceptionTableLength
+     */
     public void setMethodExceptionTable(String methodName,
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
             int exceptionTableLength) {
@@ -159,6 +231,10 @@ public class ClassFile {
         mi.setExceptionTable(exceptionTable, exceptionTableLength, this);
     }
 
+    /**
+     *
+     * @return
+     */
     public String getClassName() {
         if (constantPool[thisClass].getTag() != ConstantPoolInfo.CLASS)
             throw new ClassFormatError(
@@ -175,6 +251,10 @@ public class ClassFile {
                 .replace('/', '.');
     }
 
+    /**
+     *
+     * @param name
+     */
     public void setClassName(String name) {
         if (constantPool[thisClass].getTag() != ConstantPoolInfo.CLASS)
             throw new ClassFormatError(
@@ -191,7 +271,9 @@ public class ClassFile {
                 '.', '/'));
     }
 
-    /** @return index into constant pool where value is stored */
+    /**
+     * @param o
+     * @return index into constant pool where value is stored */
     @SuppressWarnings("unchecked")
     public int addToConstantPool(Object o) {
         ConstantPoolInfo cpInfo = null;
@@ -287,16 +369,31 @@ public class ClassFile {
         }
     }
 
+    /**
+     *
+     * @param methodName
+     * @return
+     */
     public int getMethodMaxStack(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
         return mi.getMaxStack();
     }
 
+    /**
+     *
+     * @param methodName
+     * @return
+     */
     public int getMethodMaxLocals(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
         return mi.getMaxLocals();
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     protected String getConstantPoolFieldDescriptor(int index) {
         ConstantPoolInfo cpi = constantPool[index];
         // get name and type index from method ref
@@ -309,6 +406,11 @@ public class ClassFile {
         return ((ConstantPoolInfo.Utf8Info) cpi).getBytes();
     }
 
+    /**
+     *
+     * @param fieldDescriptor
+     * @return
+     */
     protected int getFieldLength(String fieldDescriptor) {
         return getFieldLength(fieldDescriptor.charAt(0));
     }
@@ -333,10 +435,20 @@ public class ClassFile {
         throw new IllegalStateException();
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     protected String getConstantPoolUtf8(int index) {
         return ((ConstantPoolInfo.Utf8Info) constantPool[index]).getBytes();
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     protected String getConstantPoolMethodDescriptor(int index) {
         ConstantPoolInfo cpi = constantPool[index];
         // get name and type index from method ref
@@ -350,6 +462,7 @@ public class ClassFile {
     }
 
     /**
+     * @param methodDescriptor
      * @return stack delta caused by an invoke on this method descriptor -- delta
      *         = within () - outside ()
      */
@@ -378,7 +491,7 @@ public class ClassFile {
     }
 
     /** @return count of arguments -- within () */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "empty-statement", "empty-statement"})
     int getMethodArgLength(String methodDescriptor) {
         int count = 0;
         boolean inReference = false;

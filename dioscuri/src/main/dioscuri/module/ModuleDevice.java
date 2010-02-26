@@ -63,7 +63,7 @@ public abstract class ModuleDevice extends Module {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
+     * @param interval
      */
     public abstract void setUpdateInterval(int interval);
 
@@ -76,11 +76,12 @@ public abstract class ModuleDevice extends Module {
     /**
      * Return a byte from I/O address space at given I/O port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
      *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public abstract byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException;
@@ -88,11 +89,11 @@ public abstract class ModuleDevice extends Module {
     /**
      * Set a byte in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
-     * 
+     * @param portAddress 
+     * @param data
      * @throws ModuleException
      *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public abstract void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort;
@@ -100,11 +101,12 @@ public abstract class ModuleDevice extends Module {
     /**
      * Return a word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress 
      * @return byte[] containing the word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public abstract byte[] getIOPortWord(int portAddress)
             throws ModuleException, ModuleUnknownPort,
@@ -113,11 +115,11 @@ public abstract class ModuleDevice extends Module {
     /**
      * Set a word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] word
-     * 
+     * @param portAddress
+     * @param dataWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public abstract void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort;
@@ -125,11 +127,12 @@ public abstract class ModuleDevice extends Module {
     /**
      * Return a double word from I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * 
+     * @param portAddress
      * @return byte[] containing the double word at given I/O address port
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     public abstract byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException, ModuleUnknownPort,
@@ -138,11 +141,11 @@ public abstract class ModuleDevice extends Module {
     /**
      * Set a double word in I/O address space at given port
      * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte[] double word
-     * 
+     * @param portAddress
+     * @param dataDoubleWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
      */
     public abstract void setIOPortDoubleWord(int portAddress,
             byte[] dataDoubleWord) throws ModuleException, ModuleUnknownPort;

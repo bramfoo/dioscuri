@@ -54,26 +54,50 @@ public class Atpi {
     int drqBytes;
     int totalBytesRemaining;
 
+    /**
+     *
+     * @return
+     */
     public int getCommand() {
         return command;
     }
 
+    /**
+     *
+     * @param command
+     */
     public void setCommand(int command) {
         this.command = command;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDrqBytes() {
         return drqBytes;
     }
 
+    /**
+     *
+     * @param drqBytes
+     */
     public void setDrqBytes(int drqBytes) {
         this.drqBytes = drqBytes;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getTotalBytesRemaining() {
         return totalBytesRemaining;
     }
 
+    /**
+     *
+     * @param totalBytesRemaining
+     */
     public void setTotalBytesRemaining(int totalBytesRemaining) {
         this.totalBytesRemaining = totalBytesRemaining;
     }

@@ -60,11 +60,20 @@ import javax.swing.border.Border;
 
 import dioscuri.DioscuriFrame;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class SelectionConfigDialog extends ConfigurationDialog {
 
     private JList modulesList;
 
+    /**
+     *
+     * @param parent
+     */
     public SelectionConfigDialog(DioscuriFrame parent) {
         super(parent, "Configuration Selector", true, null);
     }
@@ -72,6 +81,7 @@ public class SelectionConfigDialog extends ConfigurationDialog {
     /**
      * Initialize the edit button
      */
+    @Override
     protected void initDoButton() {
         doButton = new JButton("Edit");
 
@@ -84,6 +94,10 @@ public class SelectionConfigDialog extends ConfigurationDialog {
         });
     }
 
+    /**
+     *
+     */
+    @Override
     protected void initConfirmButton() {
         okButton = new JButton("OK");
 
@@ -126,6 +140,7 @@ public class SelectionConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
         DefaultListModel listModel = new DefaultListModel();
 
@@ -165,6 +180,7 @@ public class SelectionConfigDialog extends ConfigurationDialog {
 
         modulesList.addMouseListener(new MouseAdapter() {
 
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
                     launchSpecificConfigDialog();

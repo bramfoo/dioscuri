@@ -31,6 +31,11 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.processor.*;
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unused")
 public class BackgroundCompiler implements CodeBlockCompiler {
     private static final int COMPILER_QUEUE_SIZE = 20;
@@ -41,6 +46,11 @@ public class BackgroundCompiler implements CodeBlockCompiler {
 
     private boolean running;
 
+    /**
+     *
+     * @param immediate
+     * @param delayed
+     */
     public BackgroundCompiler(CodeBlockCompiler immediate,
             CodeBlockCompiler delayed) {
         this.immediate = immediate;
@@ -51,6 +61,9 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         new CompilerThread();
     }
 
+    /**
+     *
+     */
     public void stop() {
         running = false;
     }
@@ -63,6 +76,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
                     .getPriority() - 1));
         }
 
+        @Override
         public void run() {
             while (running) {
                 ExecuteCountingCodeBlockWrapper target = compilerQueue
@@ -100,11 +114,21 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         }
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         RealModeCodeBlock imm = immediate.getRealModeCodeBlock(source);
         return new RealModeCodeBlockWrapper(imm);
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source) {
         ProtectedModeCodeBlock imm = immediate
@@ -112,6 +136,11 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         return new ProtectedModeCodeBlockWrapper(imm);
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source) {
         // Virtual8086ModeCodeBlock imm =
@@ -132,6 +161,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
             super(block);
         }
 
+        @Override
         public int execute(Processor cpu) {
             if ((++executeCount & COMPILE_REQUEST_THRESHOLD) == 0) {
                 loadedExecuteCount = executeCount;
@@ -193,6 +223,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         }
     }
 
+    @Override
     protected void finalize() {
         stop();
     }

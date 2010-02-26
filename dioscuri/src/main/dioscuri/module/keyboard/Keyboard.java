@@ -123,8 +123,17 @@ public class Keyboard extends ModuleKeyboard {
     private final static int MOUSE = 1; // Source is mouse
 
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "keyboard";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "101-key PS/2 QWERTY keyboard";
 
     // Constructor
@@ -132,6 +141,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public Keyboard(Emulator owner) {
         emu = owner;
@@ -401,8 +411,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -414,10 +423,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -429,11 +435,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -475,7 +477,6 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -1130,12 +1131,20 @@ public class Keyboard extends ModuleKeyboard {
         return;
     }
 
+    /**
+     *
+     * @param irqNumber
+     */
     protected void setInterrupt(int irqNumber) {
         // Raise an interrupt at PIC (IRQ 1 or 12)
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
     }
 
+    /**
+     *
+     * @param irqNumber
+     */
     protected void clearInterrupt(int irqNumber) {
         // Clear interrupt at PIC (IRQ 1 or 12)
         pic.clearIRQ(irqNumber);
@@ -1376,8 +1385,6 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Queue data in the keyboard controller buffer<BR>
      * 
-     * @param byte data the data to be added to the end of the queue
-     * @param int source 0=keyboard and 1=mouse
      * 
      */
     public void enqueueControllerBuffer(byte data, int source) {

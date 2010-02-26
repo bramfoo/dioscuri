@@ -31,6 +31,11 @@ import java.util.*;
 //import org.jpc.classfile.*;
 //import org.jpc.emulator.processor.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class ExceptionHandler {
     private Map<Integer, RPNNode> rootNodes;
     private RPNNode initialNode;
@@ -39,6 +44,12 @@ public abstract class ExceptionHandler {
 
     private int lastX86Position;
 
+    /**
+     *
+     * @param lastX86Position
+     * @param initialNode
+     * @param stateMap
+     */
     public ExceptionHandler(int lastX86Position, RPNNode initialNode,
             Map<Integer, RPNNode> stateMap) {
         rootNodes = stateMap;
@@ -52,27 +63,54 @@ public abstract class ExceptionHandler {
         maxPC = Integer.MIN_VALUE;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Index() {
         return initialNode.getX86Index();
     }
 
+    /**
+     *
+     * @param min
+     * @param max
+     */
     public void assignRange(int min, int max) {
         minPC = Math.min(minPC, min);
         maxPC = Math.max(maxPC, max);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean used() {
         return (minPC != Integer.MAX_VALUE);
     }
 
+    /**
+     *
+     * @return
+     */
     public int start() {
         return minPC;
     }
 
+    /**
+     *
+     * @return
+     */
     public int end() {
         return maxPC;
     }
 
+    /**
+     *
+     * @param byteCodes
+     * @param cf
+     * @throws IOException
+     */
     public void write(CountingOutputStream byteCodes, ClassFile cf)
             throws IOException {
         int affectedCount = 0;
@@ -129,6 +167,12 @@ public abstract class ExceptionHandler {
         byteCodes.write(JavaOpcode.IRETURN);
     }
 
+    /**
+     *
+     * @param byteCodes
+     * @param cf
+     * @throws IOException
+     */
     protected abstract void writeHandlerRoutine(CountingOutputStream byteCodes,
             ClassFile cf) throws IOException;
 }

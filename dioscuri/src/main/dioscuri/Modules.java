@@ -43,24 +43,46 @@ import java.util.ArrayList;
 
 import dioscuri.module.Module;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class Modules extends ArrayList<Module> {
     // Attributes
 
     // Constructors
+    /**
+     *
+     */
     public Modules() {
         super();
     }
 
+    /**
+     *
+     * @param capacity
+     */
     public Modules(int capacity) {
         super(capacity);
     }
 
     // Methods
+    /**
+     *
+     * @param module
+     * @return
+     */
     public boolean addModule(Module module) {
         return super.add(module);
     }
 
+    /**
+     *
+     * @param type
+     * @return
+     */
     public Module getModule(String type) {
         for (int i = 0; i < super.size(); i++) {
             if ((this.getModule(i)).getType().equalsIgnoreCase(type)) {
@@ -70,6 +92,11 @@ public class Modules extends ArrayList<Module> {
         return null;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public Module getModule(int index) {
         return (Module) super.get(index);
     }

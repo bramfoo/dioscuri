@@ -36,6 +36,11 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
 import dioscuri.module.ModuleDevice;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unused")
 public class DMAController extends ModuleDevice implements IOPortCapable,
         HardwareComponent {
@@ -124,6 +129,11 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     private DMARegister[] dmaRegs;
 
+    /**
+     *
+     * @param highPageEnable
+     * @param zeroth
+     */
     public DMAController(boolean highPageEnable, boolean zeroth) {
         ioportRegistered = false;
         this.dShift = zeroth ? 0 : 1;
@@ -140,6 +150,11 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         // dmaTask.start();
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
         output.writeInt(status);
         output.writeInt(command);
@@ -155,6 +170,11 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
             dmaRegs[i].dumpState(output);
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
         ioportRegistered = false;
         status = input.readInt();
@@ -174,6 +194,10 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isFirst() {
         return (this.dShift == 0);
     }
@@ -330,6 +354,11 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         return 0xff & dmaRegs[channelNumber].pageh;
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteByte(int address, int data) {
         switch ((address - iobase) >>> dShift) {
         case 0x0:
@@ -378,16 +407,31 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteWord(int address, int data) {
         this.ioPortWriteByte(address, data);
         this.ioPortWriteByte(address + 1, data >>> 8);
     }
 
+    /**
+     *
+     * @param address
+     * @param data
+     */
     public void ioPortWriteLong(int address, int data) {
         this.ioPortWriteWord(address, data);
         this.ioPortWriteWord(address + 2, data >>> 16);
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadByte(int address) {
         switch ((address - iobase) >>> dShift) {
         case 0x0:
@@ -433,16 +477,30 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         return 0xff;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadWord(int address) {
         return (0xff & this.ioPortReadByte(address))
                 | ((this.ioPortReadByte(address) << 8) & 0xff);
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public int ioPortReadLong(int address) {
         return (0xffff & this.ioPortReadByte(address))
                 | ((this.ioPortReadByte(address) << 16) & 0xffff);
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] ioPortsRequested() {
         int[] temp;
         if (pageHBase >= 0) {
@@ -479,6 +537,9 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         r.nowCount = 0;
     }
 
+    /**
+     *
+     */
     public void runTransfers() {
         int value = ~mask & (status >>> 4) & 0xf;
         if (value == 0)
@@ -508,23 +569,50 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         r.nowCount = n;
     }
 
+    /**
+     *
+     * @param channelNumber
+     * @return
+     */
     public int getChannelMode(int channelNumber) {
         return dmaRegs[channelNumber].mode;
     }
 
+    /**
+     *
+     * @param channelNumber
+     */
     public void holdDREQ(int channelNumber) {
         status |= 1 << (channelNumber + 4);
         runTransfers();
     }
 
+    /**
+     *
+     * @param channelNumber
+     */
     public void releaseDREQ(int channelNumber) {
         status &= ~(1 << (channelNumber + 4));
     }
 
+    /**
+     *
+     * @param channelNumber
+     * @param device
+     */
     public void registerChannel(int channelNumber, DMATransferCapable device) {
         dmaRegs[channelNumber].transferDevice = device;
     }
 
+    /**
+     *
+     * @param channelNumber
+     * @param buffer
+     * @param bufferOffset
+     * @param position
+     * @param length
+     * @return
+     */
     public int readMemory(int channelNumber, byte[] buffer, int bufferOffset,
             int position, int length) {
         DMARegister r = dmaRegs[channelNumber];
@@ -552,6 +640,15 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     }
 
+    /**
+     *
+     * @param channelNumber
+     * @param buffer
+     * @param bufferOffset
+     * @param position
+     * @param length
+     * @return
+     */
     public int writeMemory(int channelNumber, byte[] buffer, int bufferOffset,
             int position, int length) {
         DMARegister r = dmaRegs[channelNumber];
@@ -579,14 +676,26 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     private boolean ioportRegistered;
 
+    /**
+     *
+     * @return
+     */
     public boolean initialised() {
         return ((memory != null) && ioportRegistered);
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean updated() {
         return memory.updated() && ioportRegistered;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
         if (component instanceof PhysicalAddressSpace)
             this.memory = (PhysicalAddressSpace) component;
@@ -596,6 +705,10 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         }
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(HardwareComponent component) {
         if (component instanceof IOPortHandler) {
             ((IOPortHandler) component).registerIOPortCapable(this);
@@ -603,9 +716,13 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         }
     }
 
+    /**
+     *
+     */
     public void timerCallback() {
     }
 
+    @Override
     public String toString() {
         return "DMA Controller [element " + dShift + "]";
     }
@@ -657,6 +774,9 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
                 + (((int) dataDoubleWord[0]) & 0xFF));
     }
 
+    /**
+     *
+     */
     public void notImplemented() {
         System.out
                 .println("[DMAController]: ModuleDevice method not implemented");

@@ -42,6 +42,11 @@ package dioscuri.module.cpu;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class Instruction_HLT implements Instruction {
 
     // Attributes

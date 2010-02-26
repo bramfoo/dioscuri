@@ -32,9 +32,20 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.Processor;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.classfile.*;
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unchecked")
 public class BytecodeFragments implements MicrocodeSet {
+    /**
+     *
+     */
     public static final Object IMMEDIATE = new Object();
+    /**
+     *
+     */
     public static final Object X86LENGTH = new Object();
 
     private static Object[][] pushCodeArray = new Object[FASTCompiler.ELEMENT_COUNT][];
@@ -305,9 +316,17 @@ public class BytecodeFragments implements MicrocodeSet {
                 JavaOpcode.POP) };
     }
 
+    /**
+     *
+     */
     protected BytecodeFragments() {
     }
 
+    /**
+     *
+     * @param element
+     * @return
+     */
     public static Object[] pushCode(int element) {
         Object[] temp = pushCodeArray[element];
         if (temp == null)
@@ -316,6 +335,11 @@ public class BytecodeFragments implements MicrocodeSet {
         return temp;
     }
 
+    /**
+     *
+     * @param element
+     * @return
+     */
     public static Object[] popCode(int element) {
         Object[] temp = popCodeArray[element];
         if (temp == null)
@@ -324,6 +348,11 @@ public class BytecodeFragments implements MicrocodeSet {
         return temp;
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public static Object field(String name) {
         try {
             return new ConstantPoolSymbol(Processor.class
@@ -333,6 +362,12 @@ public class BytecodeFragments implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @return
+     */
     public static Object field(Class cls, String name) {
         try {
             return new ConstantPoolSymbol(cls.getDeclaredField(name));
@@ -341,18 +376,42 @@ public class BytecodeFragments implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public static Object method(String name) {
         return method(name, new Class[0]);
     }
 
+    /**
+     *
+     * @param name
+     * @param arg
+     * @return
+     */
     public static Object method(String name, Class arg) {
         return method(name, new Class[] { arg });
     }
 
+    /**
+     *
+     * @param name
+     * @param arg0
+     * @param arg1
+     * @return
+     */
     public static Object method(String name, Class arg0, Class arg1) {
         return method(name, new Class[] { arg0, arg1 });
     }
 
+    /**
+     *
+     * @param name
+     * @param args
+     * @return
+     */
     public static Object method(String name, Class[] args) {
         try {
             return new ConstantPoolSymbol(Processor.class.getDeclaredMethod(
@@ -362,23 +421,60 @@ public class BytecodeFragments implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @return
+     */
     public static Object method(Class cls, String name) {
         return method(cls, name, new Class[0]);
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @param arg
+     * @return
+     */
     public static Object method(Class cls, String name, Class arg) {
         return method(cls, name, new Class[] { arg });
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @param arg0
+     * @param arg1
+     * @return
+     */
     public static Object method(Class cls, String name, Class arg0, Class arg1) {
         return method(cls, name, new Class[] { arg0, arg1 });
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @param arg0
+     * @param arg1
+     * @param arg2
+     * @return
+     */
     public static Object method(Class cls, String name, Class arg0, Class arg1,
             Class arg2) {
         return method(cls, name, new Class[] { arg0, arg1, arg2 });
     }
 
+    /**
+     *
+     * @param cls
+     * @param name
+     * @param args
+     * @return
+     */
     public static Object method(Class cls, String name, Class[] args) {
         try {
             return new ConstantPoolSymbol(cls.getMethod(name, args));
@@ -387,10 +483,20 @@ public class BytecodeFragments implements MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     public static Object integer(int value) {
         return new ConstantPoolSymbol(new Integer(value));
     }
 
+    /**
+     *
+     * @param value
+     * @return
+     */
     public static Object longint(long value) {
         return new ConstantPoolSymbol(new Long(value));
     }

@@ -140,10 +140,22 @@ public class SerialPort extends ModuleSerialPort {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "serialport";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "UART 16550A serial port";
 
+    /**
+     * 
+     */
     public final static int TOTALCOMPORTS = 4; // Defines the total number of
                                                // COM ports
 
@@ -181,6 +193,7 @@ public class SerialPort extends ModuleSerialPort {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public SerialPort(Emulator owner) {
         emu = owner;
@@ -397,8 +410,7 @@ public class SerialPort extends ModuleSerialPort {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -410,10 +422,7 @@ public class SerialPort extends ModuleSerialPort {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -425,11 +434,7 @@ public class SerialPort extends ModuleSerialPort {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -468,7 +473,6 @@ public class SerialPort extends ModuleSerialPort {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0

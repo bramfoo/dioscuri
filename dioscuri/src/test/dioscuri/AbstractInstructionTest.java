@@ -11,12 +11,28 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.logging.Logger;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public abstract class AbstractInstructionTest {
 
+    /**
+     *
+     */
     public static Logger logger = Logger.getLogger(AbstractInstructionTest.class.getClass().getName());
 
+    /**
+     *
+     */
     public final Emulator emu;
+    /**
+     *
+     */
     public final CPU cpu;
+    /**
+     *
+     */
     public final Memory mem;
 
     private final String rootTestASMfiles = "src/test-asm/";
@@ -55,11 +71,6 @@ public abstract class AbstractInstructionTest {
         @Override
         public JFrame asJFrame() {
             return null;  //To change body of implemented methods use File | Settings | File Templates.
-        }
-
-        @Override
-        public boolean saveXML(dioscuri.config.Emulator params) {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
         }
 
         @Override

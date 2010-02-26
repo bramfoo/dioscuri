@@ -39,11 +39,28 @@
 
 package dioscuri.interfaces;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface UART {
 
+    /**
+     *
+     * @return
+     */
     public boolean isDataAvailable();
 
+    /**
+     *
+     * @return
+     */
     public byte getSerialData();
 
+    /**
+     *
+     * @param data
+     */
     public void setSerialData(byte data);
 }

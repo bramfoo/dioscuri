@@ -28,12 +28,25 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class CombiningRealCodeBlock implements RealModeCodeBlock {
     private CodeBlock block0, block1, block2;
     private int x86Length = 0;
     private int block2Start, block1Start, block0Start;
     private boolean selfModified = false;
 
+    /**
+     *
+     * @param block0
+     * @param block1
+     * @param block2
+     * @param start
+     * @param jumpSize
+     */
     public CombiningRealCodeBlock(CodeBlock block0, CodeBlock block1,
             CodeBlock block2, int start, int jumpSize) {
         this.block0 = block0;
@@ -49,15 +62,26 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
         this.block2Start = block1Start + jumpSize;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         return x86Length;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count() {
         return block0.getX86Count() + block1.getX86Count()
                 + block2.getX86Count();
     }
 
+    /**
+     *
+     */
     public void invalidate() {
         this.selfModified = true;
     }
@@ -106,11 +130,21 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
         return count;
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         invalidate();
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return "\nBlock0:\n" + block0.getDisplayString() + "\nBlock1:\n"
                 + block1.getDisplayString() + "\nBlock2:\n"

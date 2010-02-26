@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_DEC_SPTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_DEC_SPTest() throws Exception {
         super(80448, "DEC_SP.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_DEC_SPTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_SP.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String SP_ERROR = "SP contains wrong value";

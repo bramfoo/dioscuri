@@ -41,25 +41,46 @@ package dioscuri.module.serialport;
 
 import java.util.ArrayList;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class FIFObuffer extends ArrayList<Byte> {
 
     // Attributes
 
     // Constructors
+    /**
+     *
+     */
     public FIFObuffer() {
         super();
     }
 
+    /**
+     *
+     * @param capacity
+     */
     public FIFObuffer(int capacity) {
         super(capacity);
     }
 
     // Methods
+    /**
+     *
+     * @param data
+     * @return
+     */
     public boolean setByte(byte data) {
         return super.add(Byte.valueOf(data));
     }
 
+    /**
+     *
+     * @return
+     */
     public byte getByte() {
         byte data = ((Byte) super.get(0)).byteValue();
         super.remove(0);

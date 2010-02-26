@@ -25,6 +25,11 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface Hibernatable {
     // public void loadState(DataInputStream din) throws IOException;
 

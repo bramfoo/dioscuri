@@ -55,6 +55,11 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.math.BigInteger;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class FdcConfigDialog extends ConfigurationDialog {
 
@@ -69,6 +74,10 @@ public class FdcConfigDialog extends ConfigurationDialog {
 
     dioscuri.config.Emulator emuConfig;
 
+    /**
+     *
+     * @param parent
+     */
     public FdcConfigDialog(GUI parent) {
         super(parent, "FDC Configuration", false, ModuleType.FDC);
     }
@@ -76,6 +85,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Floppy drive = emuConfig.getArchitecture().getModules().getFdc()
@@ -113,6 +123,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
 
         JLabel updateIntLabel = new JLabel("Update Interval");
@@ -256,6 +267,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Floppy drive = emuConfig.getArchitecture().getModules().getFdc()
                 .getFloppy().get(0);

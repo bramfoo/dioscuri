@@ -28,16 +28,31 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.emulator.memory.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class CodeBlockCombiner {
     private CodeBlockFactory factory;
     private RealModeUDecoder decoder = new RealModeUDecoder();
     private ByteSourceWrappedMemory source = new ByteSourceWrappedMemory();
     private int depth;
 
+    /**
+     *
+     * @param factory
+     */
     public CodeBlockCombiner(CodeBlockFactory factory) {
         this.factory = factory;
     }
 
+    /**
+     *
+     * @param memory
+     * @param offset
+     * @return
+     */
     public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         source.set(memory, offset & AddressSpace.BLOCK_MASK);
         RealModeCodeBlock block = null;
@@ -180,6 +195,12 @@ public class CodeBlockCombiner {
         return combinedBlock;
     }
 
+    /**
+     *
+     * @param source
+     * @param operandSize
+     * @return
+     */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
             boolean operandSize) {
         return factory.getProtectedModeCodeBlock(source, operandSize);

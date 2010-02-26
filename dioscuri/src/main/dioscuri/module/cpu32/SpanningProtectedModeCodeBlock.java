@@ -28,16 +28,30 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
         ProtectedModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
+    /**
+     *
+     * @param factories
+     */
     public SpanningProtectedModeCodeBlock(CodeBlockFactory[] factories) {
         this.factories = factories;
     }
 
+    /**
+     *
+     * @param cpu
+     * @return
+     */
     protected CodeBlock decode(Processor cpu) {
         ProtectedModeCodeBlock block = null;
         AddressSpace memory = cpu.linearMemory;
@@ -55,6 +69,10 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
         return block;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return "Spanning Protected Mode CodeBlock";
     }

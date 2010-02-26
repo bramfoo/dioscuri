@@ -59,14 +59,14 @@ public abstract class ModulePIC extends ModuleDevice {
     /**
      * Lowers an interrupt request (IRQ) of given IRQ number
      * 
-     * @param int irqNumber the number of IRQ to be cleared
+     * @param irqNumber
      */
     public abstract void clearIRQ(int irqNumber);
 
     /**
      * Raises an interrupt request (IRQ) of given IRQ number
      * 
-     * @param int irqNumber the number of IRQ to be raised
+     * @param irqNumber
      */
     public abstract void setIRQ(int irqNumber);
 

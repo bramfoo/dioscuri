@@ -27,15 +27,28 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class RealModeSkeletonBlock extends RealModeTemplateBlock {
     public int execute(Processor cpu) {
         return 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         return 0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count() {
         return 0;
     }

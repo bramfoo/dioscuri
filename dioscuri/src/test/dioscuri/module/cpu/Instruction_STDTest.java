@@ -6,8 +6,16 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_STDTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_STDTest() throws Exception {
         super(80448, "STD.bin");
     }
@@ -15,6 +23,9 @@ public class Instruction_STDTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_STD.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String DF_ERROR = "DF incorrect";

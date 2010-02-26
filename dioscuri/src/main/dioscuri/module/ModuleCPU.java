@@ -111,6 +111,7 @@ public abstract class ModuleCPU extends Module {
     /**
      * Initialise the single and double byte opcode lookup arrays with
      * instructions corresponding to the Intel hexadecimal machinecode values.
+     * @return
      */
     protected abstract boolean initInstructionTables();
 
@@ -142,6 +143,7 @@ public abstract class ModuleCPU extends Module {
      * @param portAddress
      * @return byte value
      * @throws ModuleException
+     * @throws ModuleWriteOnlyPortException
      */
     protected abstract byte getIOPortByte(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException;
@@ -160,6 +162,7 @@ public abstract class ModuleCPU extends Module {
      * @param portAddress
      * @return byte[] value (word)
      * @throws ModuleException
+     * @throws ModuleWriteOnlyPortException
      */
     protected abstract byte[] getIOPortWord(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException;
@@ -179,6 +182,7 @@ public abstract class ModuleCPU extends Module {
      * @param portAddress
      * @return byte[] value (double word)
      * @throws ModuleException
+     * @throws ModuleWriteOnlyPortException
      */
     protected abstract byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException;
@@ -194,12 +198,22 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Set the interrupt request (IRQ).
-     * @return true if CPU takes care, false otherwise
+     * @param value
      */
     public abstract void interruptRequest(boolean value);
 
+    /**
+     *
+     * @param value
+     * @param origin
+     */
     public abstract void setHoldRequest(boolean value, ModuleDevice origin);
 
+    /**
+     *
+     * @param register
+     * @return
+     */
     public abstract String getRegisterHex(int register);
 
     /**

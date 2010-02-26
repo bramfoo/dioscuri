@@ -33,6 +33,11 @@ import dioscuri.module.clock.Clock;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
     private static final ProcessorException exceptionDE = new ProcessorException(
             Processor.PROC_EXCEPTION_DE, true);
@@ -72,13 +77,28 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
 
     private int x86Count;
 
+    /**
+     *
+     */
     protected int[] microcodes;
+    /**
+     *
+     */
     protected int[] cumulativeX86Length;
     private int executeCount;
 
+    /**
+     *
+     */
     public RealModeUBlock() {
     }
 
+    /**
+     *
+     * @param microcodes
+     * @param x86lengths
+     * @param clk
+     */
     public RealModeUBlock(int[] microcodes, int[] x86lengths, Clock clk) {
         this.clock = clk;
 
@@ -96,16 +116,28 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         if (microcodes.length == 0)
             return 0;
         return cumulativeX86Length[microcodes.length - 1];
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count() {
         return x86Count;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         StringBuffer buf = new StringBuffer();
         buf.append(this.toString() + "\n");
@@ -114,14 +146,25 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
         return buf.toString();
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 
+    @Override
     public String toString() {
         return "Real Mode Interpreted Block: " + hashCode();
     }
 
+    /**
+     *
+     * @return
+     */
     public InstructionSource getAsInstructionSource() {
         int[] codes = new int[microcodes.length];
         int[] positions = new int[microcodes.length];
@@ -133,6 +176,10 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
         return new ArrayBackedInstructionSource(codes, positions);
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] getMicrocodes() {
         int[] result = new int[microcodes.length];
         System.arraycopy(microcodes, 0, result, 0, result.length);
@@ -151,7 +198,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
     private boolean uCodeXferLoaded = false;
 
     private void fullExecute(Processor cpu) {
-        FpuState fpu = cpu.fpu;
+        FpuState tmpFpu = cpu.fpu;
 
         // recover variables from instance storage
         Segment seg0 = transferSeg0;
@@ -1705,7 +1752,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FWAIT:
-                fpu.checkExceptions();
+                tmpFpu.checkExceptions();
                 break;
             case HALT:
                 halt();
@@ -1982,11 +2029,11 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FLOAD0_ST0:
-                freg0 = fpu.ST(0);
+                freg0 = tmpFpu.ST(0);
                 validateOperand(freg0);
                 break;
             case FLOAD0_STN:
-                freg0 = fpu.ST(microcodes[position++]);
+                freg0 = tmpFpu.ST(microcodes[position++]);
                 validateOperand(freg0);
                 break;
             case FLOAD0_MEM_SINGLE: {
@@ -1997,7 +2044,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 int n = seg0.getDoubleWord(addr0);
                 freg0 = Float.intBitsToFloat(n);
                 if ((Double.isNaN(freg0)) && ((n & (1 << 22)) == 0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 validateOperand(freg0);
             }
                 break;
@@ -2005,7 +2052,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 long n = seg0.getQuadWord(addr0);
                 freg0 = Double.longBitsToDouble(n);
                 if ((Double.isNaN(freg0)) && ((n & (0x01l << 51)) == 0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 validateOperand(freg0);
             }
                 break;
@@ -2047,18 +2094,18 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FLOAD1_ST0:
-                freg1 = fpu.ST(0);
+                freg1 = tmpFpu.ST(0);
                 validateOperand(freg1);
                 break;
             case FLOAD1_STN:
-                freg1 = fpu.ST(microcodes[position++]);
+                freg1 = tmpFpu.ST(microcodes[position++]);
                 validateOperand(freg1);
                 break;
             case FLOAD1_MEM_SINGLE: {
                 int n = seg0.getDoubleWord(addr0);
                 freg1 = Float.intBitsToFloat(n);
                 if ((Double.isNaN(freg1)) && ((n & (1 << 22)) == 0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 validateOperand(freg1);
             }
                 break;
@@ -2066,7 +2113,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 long n = seg0.getQuadWord(addr0);
                 freg1 = Double.longBitsToDouble(n);
                 if ((Double.isNaN(freg1)) && ((n & (0x01l << 51)) == 0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 validateOperand(freg1);
             }
                 break;
@@ -2080,10 +2127,10 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FSTORE0_ST0:
-                fpu.setST(0, freg0);
+                tmpFpu.setST(0, freg0);
                 break;
             case FSTORE0_STN:
-                fpu.setST(microcodes[position++], freg0);
+                tmpFpu.setST(microcodes[position++], freg0);
                 break;
             case FSTORE0_MEM_SINGLE: {
                 int n = Float.floatToRawIntBits((float) freg0);
@@ -2100,10 +2147,10 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FSTORE1_ST0:
-                fpu.setST(0, freg1);
+                tmpFpu.setST(0, freg1);
                 break;
             case FSTORE1_STN:
-                fpu.setST(microcodes[position++], freg1);
+                tmpFpu.setST(microcodes[position++], freg1);
                 break;
             case FSTORE1_MEM_SINGLE: {
                 int n = Float.floatToRawIntBits((float) freg1);
@@ -2120,23 +2167,23 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case STORE0_FPUCW:
-                fpu.setControl(reg0);
+                tmpFpu.setControl(reg0);
                 break;
             case LOAD0_FPUCW:
-                reg0 = fpu.getControl();
+                reg0 = tmpFpu.getControl();
                 break;
 
             case STORE0_FPUSW:
-                fpu.setStatus(reg0);
+                tmpFpu.setStatus(reg0);
                 break;
             case LOAD0_FPUSW:
-                reg0 = fpu.getStatus();
+                reg0 = tmpFpu.getStatus();
                 break;
 
             case FCOM: {
                 int newcode = 0xd;
                 if (Double.isNaN(freg0) || Double.isNaN(freg1))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 else {
                     if (freg0 > freg1)
                         newcode = 0;
@@ -2145,8 +2192,8 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                     else
                         newcode = 8;
                 }
-                fpu.conditionCode &= 2;
-                fpu.conditionCode |= newcode;
+                tmpFpu.conditionCode &= 2;
+                tmpFpu.conditionCode |= newcode;
             }
                 break;
             case FUCOM: {
@@ -2159,16 +2206,16 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                     else
                         newcode = 8;
                 }
-                fpu.conditionCode &= 2;
-                fpu.conditionCode |= newcode;
+                tmpFpu.conditionCode &= 2;
+                tmpFpu.conditionCode |= newcode;
             }
                 break;
 
             case FPOP:
-                fpu.pop();
+                tmpFpu.pop();
                 break;
             case FPUSH:
-                fpu.push(freg0);
+                tmpFpu.push(freg0);
                 break;
 
             case FCHS:
@@ -2181,7 +2228,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
             case FADD: {
                 if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY)
                         || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 freg0 = freg0 + freg1;
             }
                 break;
@@ -2189,14 +2236,14 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
             case FMUL: {
                 if ((Double.isInfinite(freg0) && (freg1 == 0.0))
                         || (Double.isInfinite(freg1) && (freg0 == 0.0)))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 freg0 = freg0 * freg1;
             }
                 break;
             case FSUB: {
                 if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY)
                         || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 freg0 = freg0 - freg1;
             }
                 break;
@@ -2204,26 +2251,26 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 if (((freg0 == 0.0) && (freg1 == 0.0))
                         || (Double.isInfinite(freg0) && Double
                                 .isInfinite(freg1)))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 if ((freg1 == 0.0) && !Double.isNaN(freg0)
                         && !Double.isInfinite(freg0))
-                    fpu.setZeroDivide();
+                    tmpFpu.setZeroDivide();
                 freg0 = freg0 / freg1;
             }
                 break;
 
             case FSQRT: {
                 if (freg0 < 0)
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 freg0 = Math.sqrt(freg0);
             }
                 break;
 
             case FSIN: {
                 if (Double.isInfinite(freg0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
-                    fpu.conditionCode |= 4; // set C2
+                    tmpFpu.conditionCode |= 4; // set C2
                 else
                     freg0 = Math.sin(freg0);
             }
@@ -2231,9 +2278,9 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
 
             case FCOS: {
                 if (Double.isInfinite(freg0))
-                    fpu.setInvalidOperation();
+                    tmpFpu.setInvalidOperation();
                 if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
-                    fpu.conditionCode |= 4; // set C2
+                    tmpFpu.conditionCode |= 4; // set C2
                 else
                     freg0 = Math.cos(freg0);
             }
@@ -2282,20 +2329,20 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                         - dioscuri.module.cpu.Util.getExponent(freg1);
                 if (d < 64) {
                     // full remainder
-                    fpu.conditionCode &= ~4; // clear C2
+                    tmpFpu.conditionCode &= ~4; // clear C2
                     freg0 = freg0 % freg1;
                     // compute least significant bits -> C0 C3 C1
                     long i = (long) Math.rint(freg0 / freg1);
-                    fpu.conditionCode &= 4;
+                    tmpFpu.conditionCode &= 4;
                     if ((i & 1) != 0)
-                        fpu.conditionCode |= 2;
+                        tmpFpu.conditionCode |= 2;
                     if ((i & 2) != 0)
-                        fpu.conditionCode |= 8;
+                        tmpFpu.conditionCode |= 8;
                     if ((i & 4) != 0)
-                        fpu.conditionCode |= 1;
+                        tmpFpu.conditionCode |= 1;
                 } else {
                     // partial remainder
-                    fpu.conditionCode |= 4; // set C2
+                    tmpFpu.conditionCode |= 4; // set C2
                     int n = 63; // implementation dependent in manual
                     double f = Math.pow(2.0, (double) (d - n));
                     double z = (freg0 / freg1) / f;
@@ -2309,21 +2356,21 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                         - dioscuri.module.cpu.Util.getExponent(freg1);
                 if (d < 64) {
                     // full remainder
-                    fpu.conditionCode &= ~4; // clear C2
+                    tmpFpu.conditionCode &= ~4; // clear C2
                     double z = Math.IEEEremainder(freg0, freg1);
                     // compute least significant bits -> C0 C3 C1
                     long i = (long) Math.rint(freg0 / freg1);
-                    fpu.conditionCode &= 4;
+                    tmpFpu.conditionCode &= 4;
                     if ((i & 1) != 0)
-                        fpu.conditionCode |= 2;
+                        tmpFpu.conditionCode |= 2;
                     if ((i & 2) != 0)
-                        fpu.conditionCode |= 8;
+                        tmpFpu.conditionCode |= 8;
                     if ((i & 4) != 0)
-                        fpu.conditionCode |= 1;
-                    fpu.setST(0, z);
+                        tmpFpu.conditionCode |= 1;
+                    tmpFpu.setST(0, z);
                 } else {
                     // partial remainder
-                    fpu.conditionCode |= 4; // set C2
+                    tmpFpu.conditionCode |= 4; // set C2
                     int n = 63; // implementation dependent in manual
                     double f = Math.pow(2.0, (double) (d - n));
                     double z = (freg0 / freg1) / f;
@@ -2337,10 +2384,10 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 if ((freg0 > Math.pow(2.0, 63.0))
                         || (freg0 < -1.0 * Math.pow(2.0, 63.0))) {
                     if (Double.isInfinite(freg0))
-                        fpu.setInvalidOperation();
-                    fpu.conditionCode |= 4;
+                        tmpFpu.setInvalidOperation();
+                    tmpFpu.conditionCode |= 4;
                 } else {
-                    fpu.conditionCode &= ~4;
+                    tmpFpu.conditionCode &= ~4;
                     freg0 = Math.tan(freg0);
                 }
             }
@@ -2373,7 +2420,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 if (Double.isInfinite(freg0))
                     break; // preserve infinities
 
-                switch (fpu.getRoundingControl()) {
+                switch (tmpFpu.getRoundingControl()) {
                 case FpuState.FPU_ROUNDING_CONTROL_EVEN:
                     freg0 = Math.rint(freg0);
                     break;
@@ -2403,7 +2450,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
                 break;
 
             case FINIT:
-                fpu.init();
+                tmpFpu.init();
                 break;
 
             // case FSAVE_108: {

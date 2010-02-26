@@ -39,6 +39,11 @@
 
 package dioscuri.module.cpu;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unused")
 public class Util {
 
@@ -72,10 +77,16 @@ public class Util {
             false, true };
 
     // Temporary flag variables
+    /**
+     *
+     */
     protected static boolean cf = false;
 
     // Temporary registers
     // protected static byte[] result = new byte[2];
+    /**
+     *
+     */
     protected static int lowerByteCarry = 0;
 
     // Constants
@@ -116,8 +127,7 @@ public class Util {
      *            first word
      * @param word2
      *            second word
-     * @param int carry bit
-     * 
+     * @param carryBit
      * @return sum of both words including possible carry between LSB and MSB
      */
     protected static byte[] addWords(byte[] word1, byte[] word2, int carryBit) {
@@ -145,8 +155,7 @@ public class Util {
      *            first word
      * @param word2
      *            second word
-     * @param int borrow bit
-     * 
+     * @param borrowBit
      * @return subtraction of both words plus borrow including possible borrow
      *         between LSB and MSB
      */
@@ -172,9 +181,7 @@ public class Util {
      *            first register to be added
      * @param reg2
      *            second register to be added
-     * @param disp
-     *            displacement following ModR/M byte
-     * 
+     * @param displacement
      * @return sum of both registers and memory displacement
      */
     protected static byte[] addRegRegDisp(byte[] reg1, byte[] reg2,
@@ -206,11 +213,8 @@ public class Util {
      * Test the auxiliary flag (AF) for addition with possible carry.<BR>
      * AF is set when carry occurs to higher nibble.
      * 
-     * @param unsigned
-     *            byte input
-     * @param unsigned
-     *            byte result
-     * 
+     * @param input
+     * @param result
      * @return true if carry occurs, false otherwise
      */
     protected static boolean test_AF_ADD(byte input, byte result) {
@@ -226,11 +230,8 @@ public class Util {
      * Test the auxiliary flag (AF) for subtraction with possible borrow.<BR>
      * AF is set when borrow occurs from higher nibble.
      * 
-     * @param unsigned
-     *            byte input
-     * @param unsigned
-     *            byte result
-     * 
+     * @param input
+     * @param result
      * @return true if borrow occurs, false otherwise
      */
     protected static boolean test_AF_SUB(byte input, byte result) {
@@ -247,8 +248,7 @@ public class Util {
      * AF is set when carry occurs. This happens when last shift causes a carry
      * out of lowest nibble
      * 
-     * @param unsigned
-     *            byte input
+     * @param input
      * @param shifts
      * 
      * @return true if carry/borrow occurs, false otherwise
@@ -272,10 +272,8 @@ public class Util {
      * from 255 to 0 while adding or cross over from 0 to 255 while subtracting.
      * The operation is (input1 + carry) + input2
      * 
-     * @param unsigned
-     *            byte input1
-     * @param unsigned
-     *            byte input2
+     * @param input1
+     * @param input2
      * @param carry
      * 
      * @return true if carry occurs, false otherwise
@@ -295,10 +293,9 @@ public class Util {
      * from 65535 (0xFFFF) to 0 while adding or cross over from 0 to 65535
      * (0xFFFF) while subtracting. The operation is (input1 + carry) + input2
      * 
-     * @param byte[] unsigned word input1
-     * @param byte[] unsigned word input2
-     * @param int carry
-     * 
+     * @param input1
+     * @param input2
+     * @param carry
      * @return true if carry occurs, false otherwise
      */
     protected static boolean test_CF_ADD(byte[] input1, byte[] input2, int carry) {
@@ -344,10 +341,9 @@ public class Util {
      * from 255 to 0 while adding or cross over from 0 to 255 while subtracting.
      * The operation is input1 - (input2 + carry)
      * 
-     * @param byte[] input1 unsigned input1 of operation
-     * @param byte[] input2 unsigned input2 of operation
-     * @param int carry possible carry bit
-     * 
+     * @param input1
+     * @param input2
+     * @param carry
      * @return true if borrow occurs, false otherwise
      */
     protected static boolean test_CF_SUB(byte[] input1, byte[] input2, int carry) {
@@ -367,11 +363,10 @@ public class Util {
      * cross over from 127 to -128 while adding or cross over from -128 to 127
      * while subtracting.
      * 
-     * @param byte signed input1 of operation
-     * @param byte signed input2 of operation
-     * @param byte signed result of operation
-     * @param int carry bit
-     * 
+     * @param input1
+     * @param input2 
+     * @param result
+     * @param carry
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte input1, byte input2, byte result,
@@ -404,11 +399,10 @@ public class Util {
      * cross over from 32767 (0x7FFF) to -32768 (0x8000) while adding or cross
      * over from -32768 to 32767 while subtracting.
      * 
-     * @param byte[] signed input1 of operation
-     * @param byte[] signed input2 of operation
-     * @param byte[] signed result of operation
-     * @param int carry bit
-     * 
+     * @param input1
+     * @param result 
+     * @param input2
+     * @param carry
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte[] input1, byte[] input2,
@@ -448,11 +442,10 @@ public class Util {
      * we cross over from 127 to -128 while adding or cross over from -128 to
      * 127 while subtracting.
      * 
-     * @param byte signed input1 of operation
-     * @param byte signed input2 of operation
-     * @param byte signed result of operation
-     * @param int carry bit
-     * 
+     * @param input1
+     * @param input2
+     * @param carry
+     * @param result
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte input1, byte input2, byte result,
@@ -485,11 +478,10 @@ public class Util {
      * we cross over from 32767 (0x7FFF) to -32768 (0x8000) while adding or
      * cross over from -32768 to 32767 while subtracting.
      * 
-     * @param byte[] signed input1 of operation
-     * @param byte[] signed input2 of operation
-     * @param byte[] signed result of operation
-     * @param int carry bit
-     * 
+     * @param input1
+     * @param input2
+     * @param result
+     * @param carry
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte[] input1, byte[] input2,
@@ -543,8 +535,7 @@ public class Util {
      * hexadecimal (0 or 1) value and placed in a byte[]. Note: boolean[] must
      * be of multiple of 8 booleans.
      * 
-     * @param boolean[] value containing all booleans (multiple of 8 values)
-     * 
+     * @param booleans
      * @return byte[] containing the converted booleans
      */
     protected static byte[] booleansToBytes(boolean[] booleans) {
@@ -578,8 +569,7 @@ public class Util {
      * Converts a byte[] into a boolean[] Each bit is converted into a boolean
      * value and placed in a boolean[].
      * 
-     * @param byte[] value containing all bits
-     * 
+     * @param bytes
      * @return boolean[] containing the converted bytes
      */
     protected static boolean[] bytesToBooleans(byte[] bytes) {
@@ -601,10 +591,20 @@ public class Util {
         return booleans;
     }
 
+    /**
+     *
+     * @param b
+     * @return
+     */
     protected static String convertByteToString(byte b) {
         return (Integer.toHexString(0x100 | (b & 0xFF)).substring(1));
     }
 
+    /**
+     *
+     * @param word
+     * @return
+     */
     protected static String convertWordToString(byte[] word) {
         return (Integer.toHexString(0x100 | (word[0] & 0xFF)).substring(1) + Integer
                 .toHexString(0x100 | (word[1] & 0xFF)).substring(1));
@@ -613,9 +613,7 @@ public class Util {
     /**
      * Converts a given string into a byte of one integer
      * 
-     * @param string
-     *            value
-     * 
+     * @param strValue
      * @return int as byte
      */
     protected static byte convertStringToByte(String strValue) {
@@ -639,9 +637,7 @@ public class Util {
     /**
      * Converts a given string into a word of bytes
      * 
-     * @param string
-     *            value
-     * 
+     * @param strValue
      * @return byte[] as word
      */
     protected static byte[] convertStringToWord(String strValue) {
@@ -675,10 +671,20 @@ public class Util {
      * "getExponent("+d+") = "+getExponent(d)+ " != "+
      * "Math.getExponent("+d+") = "+Math.getExponent(d)); } } }
      */
+    /**
+     *
+     * @param val
+     * @return
+     */
     public static int getExponent(double val) {
         return (int) (((Double.doubleToRawLongBits(val) & 0x7ff0000000000000L) >> 52) - 1023L);
     }
 
+    /**
+     *
+     * @param val
+     * @return
+     */
     public static int getExponent(float val) {
         return ((Float.floatToRawIntBits(val) & 0x7f800000) >> 23) - 127;
     }
@@ -694,6 +700,12 @@ public class Util {
      * Math.scalb(f, i)) { System.out.println("ERROR -> "+
      * "scalb("+f+", "+i+") = "+scalb(f, i)+ " != "+
      * "Math.scalb("+f+", "+i+") = "+Math.scalb(f, i)); } } }
+     */
+    /**
+     *
+     * @param d
+     * @param i
+     * @return
      */
     public static double scalb(double d, int i) {
         int j = 0;
@@ -717,6 +729,12 @@ public class Util {
         return d;
     }
 
+    /**
+     *
+     * @param f
+     * @param i
+     * @return
+     */
     public static float scalb(float f, int i) {
         i = Math.max(Math.min(i, 278), -278);
         return (float) ((double) f * Math.pow(2, i));

@@ -28,44 +28,115 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public abstract class AddressSpace extends AbstractMemory {
+    /**
+     *
+     */
     public static final int BLOCK_SIZE = 4 * 1024;
+    /**
+     *
+     */
     public static final int BLOCK_MASK = BLOCK_SIZE - 1;
+    /**
+     *
+     */
     public static final int INDEX_MASK = ~(BLOCK_MASK);
+    /**
+     *
+     */
     public static final int INDEX_SHIFT = 12;
+    /**
+     *
+     */
     public static final int INDEX_SIZE = 1 << (32 - INDEX_SHIFT);
 
+    /**
+     *
+     */
     public AddressSpace() {
     }
 
+    /**
+     *
+     * @return
+     */
     public final long getSize() {
         return 0x100000000l;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public final int getBlockStart(int address) {
         return address & INDEX_MASK;
     }
 
+    /**
+     *
+     * @param address
+     * @return
+     */
     public final int getBlockEnd(int address) {
         return (address & INDEX_MASK) + BLOCK_SIZE;
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public abstract Memory getReadMemoryBlockAt(int offset);
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public abstract Memory getWriteMemoryBlockAt(int offset);
 
+    /**
+     *
+     */
+    @Override
     public abstract void clear();
 
+    /**
+     *
+     * @return
+     */
     public abstract boolean updated();
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public byte getByte(int offset) {
         return getReadMemoryBlockAt(offset).getByte(offset & BLOCK_MASK);
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
     public void setByte(int offset, byte data) {
         getWriteMemoryBlockAt(offset).setByte(offset & BLOCK_MASK, data);
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public short getWord(int offset) {
         try {
             return getReadMemoryBlockAt(offset).getWord(offset & BLOCK_MASK);
@@ -74,6 +145,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public int getDoubleWord(int offset) {
         try {
             return getReadMemoryBlockAt(offset).getDoubleWord(
@@ -83,6 +160,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public long getQuadWord(int offset) {
         try {
             return getReadMemoryBlockAt(offset)
@@ -92,6 +175,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public long getLowerDoubleQuadWord(int offset) {
         try {
             return getReadMemoryBlockAt(offset).getLowerDoubleQuadWord(
@@ -101,6 +190,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public long getUpperDoubleQuadWord(int offset) {
         try {
             return getReadMemoryBlockAt(offset).getUpperDoubleQuadWord(
@@ -110,6 +205,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setWord(int offset, short data) {
         try {
             getWriteMemoryBlockAt(offset).setWord(offset & BLOCK_MASK, data);
@@ -118,6 +219,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setDoubleWord(int offset, int data) {
         try {
             getWriteMemoryBlockAt(offset).setDoubleWord(offset & BLOCK_MASK,
@@ -127,6 +234,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setQuadWord(int offset, long data) {
         try {
             getWriteMemoryBlockAt(offset)
@@ -136,6 +249,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setLowerDoubleQuadWord(int offset, long data) {
         try {
             getWriteMemoryBlockAt(offset).setLowerDoubleQuadWord(
@@ -145,6 +264,12 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setUpperDoubleQuadWord(int offset, long data) {
         try {
             getWriteMemoryBlockAt(offset).setUpperDoubleQuadWord(
@@ -154,6 +279,14 @@ public abstract class AddressSpace extends AbstractMemory {
         }
     }
 
+    /**
+     *
+     * @param address
+     * @param buffer
+     * @param off
+     * @param len
+     */
+    @Override
     public void copyContentsFrom(int address, byte[] buffer, int off, int len) {
         do {
             int partialLength = Math.min(BLOCK_SIZE - (address & BLOCK_MASK),
@@ -166,6 +299,14 @@ public abstract class AddressSpace extends AbstractMemory {
         } while (len > 0);
     }
 
+    /**
+     *
+     * @param address
+     * @param buffer
+     * @param off
+     * @param len
+     */
+    @Override
     public void copyContentsInto(int address, byte[] buffer, int off, int len) {
         do {
             int partialLength = Math.min(BLOCK_SIZE - (address & BLOCK_MASK),

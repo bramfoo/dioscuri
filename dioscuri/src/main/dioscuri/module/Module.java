@@ -102,6 +102,7 @@ public abstract class Module {
     /**
      * Reset all parameters of module
      * 
+     * @return
      */
     public abstract boolean reset();
 
@@ -127,7 +128,7 @@ public abstract class Module {
     /**
      * Set toggle to define if this module is observed or not
      * 
-     * @param boolean to set the observation on true or false
+     * @param status
      */
     public abstract void setObserved(boolean status);
 
@@ -141,16 +142,14 @@ public abstract class Module {
     /**
      * Set toggle to define if this module is in debug mode or not
      * 
-     * @param boolean to set the status of debug mode
+     * @param status
      */
     public abstract void setDebugMode(boolean status);
 
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            module, the requester of the data
-     * 
+     * @param module
      * @return byte[] with data
      */
     public abstract byte[] getData(Module module);
@@ -158,10 +157,8 @@ public abstract class Module {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            module, the sender of the data
-     * 
+     * @param data
+     * @param module
      * @return true if data is set successfully, false otherwise
      */
     public abstract boolean setData(byte[] data, Module module);
@@ -169,11 +166,8 @@ public abstract class Module {
     /**
      * Set data for this module
      * 
-     * @param String
-     *            [] containing data
-     * @param Module
-     *            module, the sender of the data
-     * 
+     * @param data
+     * @param module
      * @return true if data is set successfully, false otherwise
      */
     public abstract boolean setData(String[] data, Module module);

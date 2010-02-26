@@ -48,19 +48,47 @@ import java.awt.event.MouseEvent;
 
 public abstract class ModuleMouse extends Module {
     // Methods
+    /**
+     *
+     * @param status
+     */
     public abstract void setMouseEnabled(boolean status);
 
+    /**
+     *
+     * @param type
+     */
     public abstract void setMouseType(String type);
 
+    /**
+     *
+     * @return
+     */
     public abstract boolean isBufferEmpty();
 
+    /**
+     *
+     * @return
+     */
     public abstract byte getDataFromBuffer(); // returns the head of the buffer
                                               // FIFO, data is automatically
                                               // removed from buffer
 
+    /**
+     *
+     * @param forceEnqueue
+     */
     public abstract void storeBufferData(boolean forceEnqueue);
 
+    /**
+     *
+     * @param value
+     */
     public abstract void controlMouse(byte value);
 
+    /**
+     *
+     * @param mouseEvent
+     */
     public abstract void mouseMotion(MouseEvent mouseEvent);
 }

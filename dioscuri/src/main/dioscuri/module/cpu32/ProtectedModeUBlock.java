@@ -32,6 +32,11 @@ import dioscuri.exception.ModuleException;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         MicrocodeSet {
     private static final ProcessorException exceptionDE = new ProcessorException(
@@ -68,13 +73,27 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     private int x86Count;
 
+    /**
+     *
+     */
     protected int[] microcodes;
+    /**
+     *
+     */
     protected int[] cumulativeX86Length;
     private int executeCount;
 
+    /**
+     *
+     */
     public ProtectedModeUBlock() {
     }
 
+    /**
+     *
+     * @param microcodes
+     * @param x86lengths
+     */
     public ProtectedModeUBlock(int[] microcodes, int[] x86lengths) {
         this.microcodes = microcodes;
         cumulativeX86Length = x86lengths;
@@ -90,20 +109,38 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Length() {
         if (microcodes.length == 0)
             return 0;
         return cumulativeX86Length[microcodes.length - 1];
     }
 
+    /**
+     *
+     * @return
+     */
     public int getX86Count() {
         return x86Count;
     }
 
+    /**
+     *
+     * @param startAddress
+     * @param endAddress
+     * @return
+     */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         StringBuffer buf = new StringBuffer();
         buf.append(this.toString() + "\n");
@@ -112,10 +149,15 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return buf.toString();
     }
 
+    @Override
     public String toString() {
         return "Protected Mode Interpreted Block";
     }
 
+    /**
+     *
+     * @return
+     */
     public InstructionSource getAsInstructionSource() {
         int[] codes = new int[microcodes.length];
         int[] positions = new int[microcodes.length];
@@ -127,6 +169,10 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return new ArrayBackedInstructionSource(codes, positions);
     }
 
+    /**
+     *
+     * @return
+     */
     public int[] getMicrocodes() {
         int[] result = new int[microcodes.length];
         System.arraycopy(microcodes, 0, result, 0, result.length);

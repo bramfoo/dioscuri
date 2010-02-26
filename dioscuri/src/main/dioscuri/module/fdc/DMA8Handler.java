@@ -39,6 +39,11 @@
 
 package dioscuri.module.fdc;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
     // Attributes
     private FDC fdc;
@@ -47,8 +52,7 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
     /**
      * Class Constructor
      * 
-     * @param FDC
-     *            pointer
+     * @param fdc
      */
     public DMA8Handler(FDC fdc) {
         this.fdc = fdc;

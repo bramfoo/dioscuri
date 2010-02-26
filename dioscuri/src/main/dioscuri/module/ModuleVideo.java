@@ -48,6 +48,8 @@ public abstract class ModuleVideo extends ModuleDevice {
     // Methods
     /**
      * Video read mode implementations
+     * @param addr 
+     * @return
      */
     public abstract byte readMode(int addr);
 
@@ -69,8 +71,7 @@ public abstract class ModuleVideo extends ModuleDevice {
     /**
      * Returns a byte from video buffer at position index
      * 
-     * @param int index
-     * 
+     * @param index
      * @return byte from video buffer
      */
     public abstract byte getVideoBufferByte(int index);
@@ -78,8 +79,8 @@ public abstract class ModuleVideo extends ModuleDevice {
     /**
      * Stores a byte in video buffer at position index
      * 
-     * @param int index
-     * @param byte data
+     * @param index
+     * @param data
      */
     public abstract void setVideoBufferByte(int index, byte data);
 
@@ -94,8 +95,7 @@ public abstract class ModuleVideo extends ModuleDevice {
     /**
      * Returns a byte from text snapshot at position index
      * 
-     * @param int index
-     * 
+     * @param index
      * @return byte from textsnapshot
      */
     public abstract byte getTextSnapshot(int index);
@@ -103,16 +103,15 @@ public abstract class ModuleVideo extends ModuleDevice {
     /**
      * Stores a byte in text snapshot at position index
      * 
-     * @param int index
-     * @param byte data
+     * @param index
+     * @param data
      */
     public abstract void setTextSnapshot(int index, byte data);
 
     /**
      * Returns a byte from attribute palette register at position index
      * 
-     * @param int index
-     * 
+     * @param index
      * @return byte from register
      */
     public abstract byte getAttributePaletteRegister(int index);

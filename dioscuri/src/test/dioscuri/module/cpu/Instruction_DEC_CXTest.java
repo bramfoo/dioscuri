@@ -5,8 +5,16 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_DEC_CXTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_DEC_CXTest() throws Exception {
         super(80448, "DEC_CX.bin");
     }
@@ -14,6 +22,9 @@ public class Instruction_DEC_CXTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_CX.execute()'
     */
+    /**
+     *
+     */
     @Test
     public void testExecute() {
         String CX_ERROR = "CX contains wrong value";

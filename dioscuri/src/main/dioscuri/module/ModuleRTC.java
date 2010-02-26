@@ -49,8 +49,7 @@ public abstract class ModuleRTC extends ModuleDevice {
     /**
      * Return requested CMOS register
      * 
-     * @param int register
-     * 
+     * @param register
      * @return byte containing value of register
      */
     public abstract byte getCMOSRegister(int register);
@@ -58,8 +57,8 @@ public abstract class ModuleRTC extends ModuleDevice {
     /**
      * Set given CMOS register with value
      * 
-     * @param int register
-     * @param byte value
+     * @param register
+     * @param value
      */
     public abstract void setCMOSRegister(int register, byte value);
 

@@ -7,14 +7,25 @@ import java.util.logging.Level;
 
 import static org.junit.Assert.*;
 
+/**
+ *
+ * @author Bram Lohman\n@author Bart Kiers
+ */
 public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
 
+    /**
+     *
+     * @throws Exception
+     */
     public Instruction_AND_EbGbTest() throws Exception {
         super(80448, "AND_EbGb.bin");
     }
 
     /*
      * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_EbGb.execute()'
+     */
+    /**
+     *
      */
     @Test
     public void testExecute() {

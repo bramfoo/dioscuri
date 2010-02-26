@@ -52,6 +52,7 @@ public abstract class ModuleMemory extends Module {
     /**
      * Return a byte from memory
      * 
+     * @param address
      * @return int containing the byte at given address
      * @throws ModuleException
      */
@@ -60,9 +61,8 @@ public abstract class ModuleMemory extends Module {
     /**
      * Set a byte in memory at given address
      * 
-     * @param int address
-     * @param int value containing the byte in Big-Endian order
-     * 
+     * @param address 
+     * @param value
      * @throws ModuleException
      */
     public abstract void setByte(int address, byte value)
@@ -71,6 +71,7 @@ public abstract class ModuleMemory extends Module {
     /**
      * Return a word from memory
      * 
+     * @param address
      * @return int[] containing the word at given address
      * @throws ModuleException
      */
@@ -79,9 +80,8 @@ public abstract class ModuleMemory extends Module {
     /**
      * Set a word in memory at given address
      * 
-     * @param int address
-     * @param int[] value containing the word in Big-Endian order
-     * 
+     * @param address 
+     * @param value
      * @throws ModuleException
      */
     public abstract void setWord(int address, byte[] value)
@@ -92,9 +92,7 @@ public abstract class ModuleMemory extends Module {
      * 
      * @param address
      *            Flat-address where data is stored
-     * @param value
-     *            Byte array to be placed in memory
-     * 
+     * @param binaryStream
      * @throws ModuleException
      */
     public abstract void setBytes(int address, byte[] binaryStream)
@@ -103,15 +101,15 @@ public abstract class ModuleMemory extends Module {
     /**
      * Set A20 address line toggle
      * 
-     * @param boolean status (on or off)
+     * @param status
      */
     public abstract void setA20AddressLine(boolean status);
 
     /**
      * Set watch toggle and address to trace in memory
      * 
-     * @param boolean isWatch on
-     * @param int watchAddress
+     * @param isWatchOn
+     * @param watchAddress
      */
     public abstract void setWatchValueAndAddress(boolean isWatchOn,
             int watchAddress);

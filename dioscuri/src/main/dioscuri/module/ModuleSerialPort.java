@@ -48,5 +48,11 @@ import dioscuri.interfaces.UART;
 
 public abstract class ModuleSerialPort extends ModuleDevice {
     // Methods
+    /**
+     *
+     * @param device
+     * @param comPort
+     * @return
+     */
     public abstract boolean setUARTDevice(UART device, int comPort);
 }

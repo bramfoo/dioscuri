@@ -48,9 +48,20 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class Floppy {
     // Attributes
+    /**
+     *
+     */
     protected byte type;
+    /**
+     *
+     */
     protected byte[] bytes;
     private File imageFile;
 
@@ -69,10 +80,8 @@ public class Floppy {
     /**
      * Constructor Floppy
      * 
-     * @param byte type of floppy
-     * @param File
-     *            image
-     * 
+     * @param type
+     * @param imageFile
      * @throws IOException
      *             if file cannot be read (or does not exist)
      */
@@ -94,6 +103,7 @@ public class Floppy {
     /**
      * Get the size of floppy in bytes
      * 
+     * @return
      */
     protected int getSize() {
         return bytes.length;

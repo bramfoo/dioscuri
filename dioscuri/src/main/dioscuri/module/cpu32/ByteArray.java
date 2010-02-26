@@ -25,14 +25,43 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface ByteArray {
+    /**
+     *
+     */
     public void clear();
 
+    /**
+     * 
+     * @return
+     */
     public long getSize();
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public byte getByte(int offset);
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
     public void setByte(int offset, byte data);
 
+    /**
+     *
+     * @param address
+     * @param buffer
+     * @param off
+     * @param len
+     */
     public void copyContentsInto(int address, byte[] buffer, int off, int len);
 }

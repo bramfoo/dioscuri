@@ -124,8 +124,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private static Logger logger = Logger.getLogger("dioscuri.gui");
 
     // Frame and refresh properties
-    private int guiWidth;
-    private int guiHeight;
 
     private String configFilePath;
 
@@ -148,6 +146,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Add handlers and listeners
         // Window closing listener
         this.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent event) {
                 exitDioscuri();
             }
@@ -176,9 +175,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         fcFloppy = new JFileChooser();
 
         // Set dimensions
-        guiWidth = screenPane.getWidth() + 10; // screen width + a random extra
+        int guiWidth = screenPane.getWidth() + 10;
                                                // value
-        guiHeight = screenPane.getHeight() + 2 * 38; // screen height + 2 * menu
+        int guiHeight = screenPane.getHeight() + 2 * 38;
                                                      // & statusbar height
 
         // Actions
@@ -209,6 +208,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // TODO configFilePath = Constants.CONFIG_XML;
     }
 
+    /**
+     *
+     * @param arguments
+     * @throws Exception 
+     */
     public DioscuriFrame(String[] arguments) throws Exception {
         // Define GUI
         this();
@@ -791,6 +795,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Implement the KeyListener method keyTyped Empty method, not used
+     * @param keyEvent
      */
     public void keyTyped(KeyEvent keyEvent) {
         logger.log(Level.FINE, displayInfo(keyEvent, "KEY TYPED: "));
@@ -800,6 +805,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Implement the KeyListener method keyPressed Handles key press events
+     * @param keyEvent
      */
     public void keyPressed(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
@@ -811,6 +817,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Implement the KeyListener method keyReleased Handles key release events
+     * @param keyEvent
      */
     public void keyReleased(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
@@ -886,6 +893,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         return this.configFilePath;
     }
 
+    /**
+     *
+     * @param emuObject
+     * @return
+     */
     public boolean saveXML(dioscuri.config.Emulator emuObject) {
         try {
             ConfigController.saveToXML(emuObject, new File(this.configFilePath));

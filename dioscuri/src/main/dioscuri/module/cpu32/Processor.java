@@ -40,105 +40,410 @@ import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModulePIC;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class Processor extends ModuleCPU implements HardwareComponent {
+    /**
+     *
+     */
     public static final int STATE_VERSION = 1;
+    /**
+     *
+     */
     public static final int STATE_MINOR_VERSION = 0;
 
+    /**
+     *
+     */
     public static final int CLOCK_SPEED = 50; // CPU "Clock Speed" in MHz
 
+    /**
+     *
+     */
     public static final int IFLAGS_HARDWARE_INTERRUPT = 0x1;
+    /**
+     *
+     */
     public static final int IFLAGS_PROCESSOR_EXCEPTION = 0x2;
+    /**
+     *
+     */
     public static final int IFLAGS_RESET_REQUEST = 0x4;
 
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_DE = 0x00; // Divide Error
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_DB = 0x01; // Debug
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_BP = 0x03; // Breakpoint
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_OF = 0x04; // Overflow
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_BR = 0x05; // BOUND Range Exceeded
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_UD = 0x06; // Invalid Opcode
                                                       // (UnDefined)
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_NM = 0x07; // Device Not Available
                                                       // (No Math Coprocessor)
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_DF = 0x08; // Double Fault
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_MF_09 = 0x09; // Coprocessor Segment
                                                          // Overrun
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_TS = 0x0a; // Invalid TSS
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_NP = 0x0b; // Segment Not Present
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_SS = 0x0c; // Stack Segment Fault
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_GP = 0x0d; // General Protection
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_PF = 0x0e; // Page Fault
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_MF_10 = 0x10; // Floating-Point Error
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_AC = 0x11; // Alignment Check
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_MC = 0x12; // Machine Check
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_XF = 0x13; // SIMD Floating-Point
                                                       // Error
+    /**
+     *
+     */
     public static final int PROC_EXCEPTION_MAX = 0x13; // Maximum exception
                                                        // vector value
 
+    /**
+     *
+     */
     public static final int CR0_PROTECTION_ENABLE = 0x1;
+    /**
+     *
+     */
     public static final int CR0_MONITOR_COPROCESSOR = 0x2;
+    /**
+     *
+     */
     public static final int CR0_FPU_EMULATION = 0x4;
+    /**
+     *
+     */
     public static final int CR0_TASK_SWITCHED = 0x8;
+    /**
+     *
+     */
     public static final int CR0_NUMERIC_ERROR = 0x20;
+    /**
+     *
+     */
     public static final int CR0_WRITE_PROTECT = 0x10000;
+    /**
+     *
+     */
     public static final int CR0_ALIGNMENT_MASK = 0x40000;
+    /**
+     *
+     */
     public static final int CR0_NOT_WRITETHROUGH = 0x20000000;
+    /**
+     *
+     */
     public static final int CR0_CACHE_DISABLE = 0x40000000;
+    /**
+     *
+     */
     public static final int CR0_PAGING = 0x80000000;
 
+    /**
+     *
+     */
     public static final int CR3_PAGE_CACHE_DISABLE = 0x10;
+    /**
+     *
+     */
     public static final int CR3_PAGE_WRITES_TRANSPARENT = 0x8;
 
+    /**
+     *
+     */
     public static final int CR4_VIRTUAL8086_MODE_EXTENSIONS = 0x1;
+    /**
+     *
+     */
     public static final int CR4_PROTECTED_MODE_VIRTUAL_INTERRUPTS = 0x2;
+    /**
+     *
+     */
     public static final int CR4_TIME_STAMP_DISABLE = 0x4;
+    /**
+     *
+     */
     public static final int CR4_DEBUGGING_EXTENSIONS = 0x8;
+    /**
+     *
+     */
     public static final int CR4_PAGE_SIZE_EXTENSIONS = 0x10;
+    /**
+     *
+     */
     public static final int CR4_PHYSICAL_ADDRESS_EXTENSION = 0x20;
+    /**
+     *
+     */
     public static final int CR4_MACHINE_CHECK_ENABLE = 0x40;
+    /**
+     *
+     */
     public static final int CR4_PAGE_GLOBAL_ENABLE = 0x80;
+    /**
+     *
+     */
     public static final int CR4_PERFORMANCE_MONITORING_COUNTER_ENABLE = 0x100;
+    /**
+     *
+     */
     public static final int CR4_OS_SUPPORT_FXSAVE_FXSTORE = 0x200;
+    /**
+     *
+     */
     public static final int CR4_OS_SUPPORT_UNMASKED_SIMD_EXCEPTIONS = 0x400;
 
+    /**
+     *
+     */
     public static final int SYSENTER_CS_MSR = 0x174;
+    /**
+     *
+     */
     public static final int SYSENTER_ESP_MSR = 0x175;
+    /**
+     *
+     */
     public static final int SYSENTER_EIP_MSR = 0x176;
 
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
     public int eax, ebx, edx, ecx;
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
     public int esi, edi, esp, ebp;
+    /**
+     *
+     */
     public int eip;
 
     private int cr0, cr1, cr2, cr3, cr4;
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
     public int dr0, dr1, dr2, dr3, dr4, dr5, dr6, dr7;
 
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
     public Segment cs, ds, ss, es, fs, gs;
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
+    /**
+     *
+     */
     public Segment idtr, gdtr, ldtr, tss;
 
     // protected int eflags;
     // program status and control register
+    /**
+     *
+     */
     public boolean eflagsCarry; // done
+    /**
+     *
+     */
     public boolean eflagsParity; // done
+    /**
+     *
+     */
     public boolean eflagsAuxiliaryCarry; // done
+    /**
+     *
+     */
     public boolean eflagsZero; // to do
+    /**
+     *
+     */
     public boolean eflagsSign; // to do
+    /**
+     *
+     */
     public boolean eflagsTrap;
+    /**
+     *
+     */
     public boolean eflagsInterruptEnable;
+    /**
+     *
+     */
     public boolean eflagsDirection;
+    /**
+     *
+     */
     public boolean eflagsOverflow; // done
+    /**
+     *
+     */
     public int eflagsIOPrivilegeLevel;
+    /**
+     *
+     */
     public boolean eflagsNestedTask;
+    /**
+     *
+     */
     public boolean eflagsResume;
+    /**
+     *
+     */
     public boolean eflagsVirtual8086Mode;
+    /**
+     *
+     */
     public boolean eflagsAlignmentCheck;
+    /**
+     *
+     */
     public boolean eflagsVirtualInterrupt;
+    /**
+     *
+     */
     public boolean eflagsVirtualInterruptPending;
+    /**
+     *
+     */
     public boolean eflagsID;
+    /**
+     *
+     */
     public boolean eflagsInterruptEnableSoon;
 
+    /**
+     *
+     */
     public LinearAddressSpace linearMemory;
+    /**
+     *
+     */
     public PhysicalAddressSpace physicalMemory;
+    /**
+     *
+     */
     public AlignmentCheckedAddressSpace alignmentCheckedMemory;
+    /**
+     *
+     */
     public IOPortHandler ioports;
 
     private int interruptFlags;
@@ -154,8 +459,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private int currentPrivilegeLevel;
     private boolean started = false;
 
+    /**
+     *
+     */
     public FpuState fpu;
 
+    /**
+     *
+     */
     public Processor() {
         fpu = new FpuState64(this);
         linearMemory = null;
@@ -166,6 +477,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         modelSpecificRegisters = new Hashtable<Integer, Long>();
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
         output.writeInt(this.eax);
         output.writeInt(this.ebx);
@@ -235,6 +551,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         tss.dumpState(output);
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
         eax = input.readInt();
         ebx = input.readInt();
@@ -356,6 +677,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             throw new IOException();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getEFlags() {
         int result = 0x2;
         if (getCarryFlag())
@@ -395,6 +720,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param eflags
+     */
     public void setEFlags(int eflags) {
         // TODO: check that there aren't flags which can't be set this way!
         setCarryFlag((eflags & 1) != 0);
@@ -429,21 +758,35 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     */
     public void processClock() {
         System.out.println("JPC CPU called Clock.process()");
         // virtualClock.process();
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setCPL(int value) {
         currentPrivilegeLevel = value;
         linearMemory.setSupervisor(currentPrivilegeLevel == 0);
         checkAlignmentChecking();
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCPL() {
         return currentPrivilegeLevel;
     }
 
+    /**
+     *
+     */
     public void reportFPUException() {
         if ((cr0 & CR0_NUMERIC_ERROR) == 0) {
             System.err.println("Reporting FPU Error Via IRQ#13");
@@ -455,6 +798,9 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     */
     public void raiseInterrupt() {
         synchronized (this) {
             interruptFlags |= IFLAGS_HARDWARE_INTERRUPT;
@@ -462,10 +808,19 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     */
     public void clearInterrupt() {
         interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
     }
 
+    /**
+     *
+     * @param time
+     * @return
+     */
+    @SuppressWarnings("empty-statement")
     public boolean waitForInterrupt(long time) {
         synchronized (this) {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0)
@@ -480,24 +835,43 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     */
     public void requestReset() {
         interruptFlags |= IFLAGS_RESET_REQUEST;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getInterruptFlags() {
         return interruptFlags;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isProtectedMode() {
         return (cr0 & CR0_PROTECTION_ENABLE) == 1;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isVirtual8086Mode() {
         return eflagsVirtual8086Mode;
     }
 
     // Need to think about the TS flag for when we have an FPU - Section 2.5 Vol
     // 3
+    /**
+     *
+     * @param value
+     */
     public void setCR0(int value) {
         value |= 0x10;
         int changedBits = value ^ cr0;
@@ -549,10 +923,18 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCR0() {
         return cr0;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setCR3(int value) {
         cr3 = value;
         linearMemory
@@ -561,18 +943,34 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         linearMemory.setPageDirectoryBaseAddress(value);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCR3() {
         return cr3;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCR2() {
         return cr2;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setCR2(int value) {
         cr2 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setCR4(int value) {
         if (cr4 == value)
             return;
@@ -603,58 +1001,115 @@ public class Processor extends ModuleCPU implements HardwareComponent {
                 .setPageSizeExtensionsEnabled((cr4 & CR4_PAGE_SIZE_EXTENSIONS) != 0);
     }
 
+    /**
+     *
+     * @return
+     */
     public int getCR4() {
         return cr4;
     }
 
+    /**
+     * 
+     * @param value
+     */
     public void setDR0(int value) {
         dr0 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDR1(int value) {
         dr1 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDR2(int value) {
         dr2 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDR3(int value) {
         dr3 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDR6(int value) {
         dr6 = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setDR7(int value) {
         dr7 = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR0() {
         return dr0;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR1() {
         return dr1;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR2() {
         return dr2;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR3() {
         return dr3;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR6() {
         return dr6;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getDR7() {
         return dr7;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public long getMSR(int index) {
         try {
             return ((Long) modelSpecificRegisters.get(new Integer(index)))
@@ -666,6 +1121,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     }
 
+    /**
+     *
+     * @param index
+     * @param value
+     */
     public void setMSR(int index, long value) {
         modelSpecificRegisters.put(new Integer(index), new Long(value));
     }
@@ -728,15 +1188,30 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param selector
+     * @return
+     */
     public Segment createRealModeSegment(int selector) {
         return SegmentFactory.createRealModeSegment(physicalMemory, selector);
     }
 
+    /**
+     *
+     * @param base
+     * @param limit
+     * @return
+     */
     public Segment createDescriptorTableSegment(int base, int limit) {
         return SegmentFactory.createDescriptorTableSegment(linearMemory, base,
                 limit);
     }
 
+    /**
+     *
+     * @param segment
+     */
     public void correctAlignmentChecking(Segment segment) {
         if (alignmentChecking) {
             if ((segment.getType() & 0x18) == 0x10) // Should make this a data
@@ -745,6 +1220,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param segmentSelector
+     * @return
+     */
     public Segment getSegment(int segmentSelector) {
         boolean isSup = linearMemory.isSupervisor();
         try {
@@ -772,6 +1252,13 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param segmentSelector
+     * @param local
+     * @param global
+     * @return
+     */
     public Segment getSegment(int segmentSelector, Segment local, Segment global) {
         boolean isSup = linearMemory.isSupervisor();
         try {
@@ -853,15 +1340,26 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public long getClockCount() {
         return (System.currentTimeMillis() - resetTime) * 1000
                 * Processor.CLOCK_SPEED;
     }
 
+    /**
+     *
+     * @return
+     */
     public final int getInstructionPointer() {
         return cs.translateAddressRead(eip);
     }
 
+    /**
+     *
+     */
     public final void processRealModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -880,6 +1378,9 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
 
+    /**
+     *
+     */
     public final void processProtectedModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -898,6 +1399,9 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
 
+    /**
+     *
+     */
     public final void processVirtual8086ModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -920,6 +1424,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
 
+    /**
+     *
+     * @param vector
+     */
     public final void handleRealModeException(int vector) {
         if (vector <= PROC_EXCEPTION_MAX)
             handleRealModeInterrupt(vector);
@@ -967,6 +1475,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     * @param hasErrorCode
+     * @param errorCode
+     */
     public final void handleProtectedModeException(int vector,
             boolean hasErrorCode, int errorCode) {
         int savedESP = esp;
@@ -998,6 +1512,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     */
     public final void handleSoftProtectedModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
@@ -1022,6 +1540,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     */
     public final void handleHardProtectedModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
@@ -1665,6 +2187,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     * @param hasErrorCode
+     * @param errorCode
+     */
     public final void handleVirtual8086ModeException(int vector,
             boolean hasErrorCode, int errorCode) {
         int savedESP = esp;
@@ -1696,6 +2224,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     */
     public final void handleSoftVirtual8086ModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
@@ -1725,6 +2257,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param vector
+     */
     public final void handleHardVirtual8086ModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
@@ -2218,6 +2754,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean initialised() {
         boolean result = ((physicalMemory != null) && (linearMemory != null)
                 && (ioports != null) && (interruptController != null)); // &&
@@ -2231,6 +2771,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
         if (component instanceof LinearAddressSpace) {
             linearMemory = (LinearAddressSpace) component;
@@ -2266,12 +2810,31 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private boolean auxiliaryCarryCalculated;
     private int auxiliaryCarryMethod;
 
+    /**
+     *
+     */
     public static final int AC_XOR = 1;
+    /**
+     *
+     */
     public static final int AC_BIT4_NEQ = 2;
+    /**
+     *
+     */
     public static final int AC_LNIBBLE_MAX = 3;
+    /**
+     *
+     */
     public static final int AC_LNIBBLE_ZERO = 4;
+    /**
+     *
+     */
     public static final int AC_LNIBBLE_NZERO = 5;
 
+    /**
+     *
+     * @return
+     */
     public boolean getAuxiliaryCarryFlag() {
         if (auxiliaryCarryCalculated)
             return eflagsAuxiliaryCarry;
@@ -2308,6 +2871,13 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param dataThree
+     * @param method
+     */
     public void setAuxiliaryCarryFlag(int dataOne, int dataTwo, int dataThree,
             int method) {
         auxiliaryCarryCalculated = false;
@@ -2317,6 +2887,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         auxiliaryCarryMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param method
+     */
     public void setAuxiliaryCarryFlag(int dataOne, int dataTwo, int method) {
         auxiliaryCarryCalculated = false;
         auxiliaryCarryOne = dataOne;
@@ -2324,12 +2900,21 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         auxiliaryCarryMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param method
+     */
     public void setAuxiliaryCarryFlag(int dataOne, int method) {
         auxiliaryCarryCalculated = false;
         auxiliaryCarryOne = dataOne;
         auxiliaryCarryMethod = method;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setAuxiliaryCarryFlag(boolean value) {
         auxiliaryCarryCalculated = true;
         eflagsAuxiliaryCarry = value;
@@ -2338,6 +2923,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private int parityOne;
     private boolean parityCalculated;
 
+    /**
+     *
+     * @return
+     */
     public boolean getParityFlag() {
         if (parityCalculated)
             return eflagsParity;
@@ -2348,11 +2937,19 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setParityFlag(boolean value) {
         parityCalculated = true;
         eflagsParity = value;
     }
 
+    /**
+     *
+     * @param data
+     */
     public void setParityFlag(int data) {
         parityCalculated = false;
         parityOne = data;
@@ -2363,41 +2960,126 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private boolean overflowCalculated;
     private int overflowMethod;
 
+    /**
+     *
+     */
     public static final int OF_NZ = 1;
+    /**
+     *
+     */
     public static final int OF_NOT_BYTE = 2;
+    /**
+     *
+     */
     public static final int OF_NOT_SHORT = 3;
+    /**
+     *
+     */
     public static final int OF_NOT_INT = 4;
 
+    /**
+     *
+     */
     public static final int OF_LOW_WORD_NZ = 5;
+    /**
+     *
+     */
     public static final int OF_HIGH_BYTE_NZ = 6;
 
+    /**
+     *
+     */
     public static final int OF_BIT6_XOR_CARRY = 7;
+    /**
+     *
+     */
     public static final int OF_BIT7_XOR_CARRY = 8;
+    /**
+     *
+     */
     public static final int OF_BIT14_XOR_CARRY = 9;
+    /**
+     *
+     */
     public static final int OF_BIT15_XOR_CARRY = 10;
+    /**
+     *
+     */
     public static final int OF_BIT30_XOR_CARRY = 11;
+    /**
+     *
+     */
     public static final int OF_BIT31_XOR_CARRY = 12;
 
+    /**
+     *
+     */
     public static final int OF_BIT7_DIFFERENT = 13;
+    /**
+     *
+     */
     public static final int OF_BIT15_DIFFERENT = 14;
+    /**
+     *
+     */
     public static final int OF_BIT31_DIFFERENT = 15;
 
+    /**
+     *
+     */
     public static final int OF_MAX_BYTE = 16;
+    /**
+     *
+     */
     public static final int OF_MAX_SHORT = 17;
+    /**
+     *
+     */
     public static final int OF_MAX_INT = 18;
 
+    /**
+     *
+     */
     public static final int OF_MIN_BYTE = 19;
+    /**
+     *
+     */
     public static final int OF_MIN_SHORT = 20;
+    /**
+     *
+     */
     public static final int OF_MIN_INT = 21;
 
+    /**
+     *
+     */
     public static final int OF_ADD_BYTE = 22;
+    /**
+     *
+     */
     public static final int OF_ADD_SHORT = 23;
+    /**
+     *
+     */
     public static final int OF_ADD_INT = 24;
 
+    /**
+     *
+     */
     public static final int OF_SUB_BYTE = 25;
+    /**
+     *
+     */
     public static final int OF_SUB_SHORT = 26;
+    /**
+     *
+     */
     public static final int OF_SUB_INT = 27;
 
+    /**
+     *
+     * @return
+     */
     public boolean getOverflowFlag() {
         if (overflowCalculated)
             return eflagsOverflow;
@@ -2470,23 +3152,43 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setOverflowFlag(boolean value) {
         overflowCalculated = true;
         eflagsOverflow = value;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param method
+     */
     public void setOverflowFlag(long dataOne, int method) {
         overflowCalculated = false;
         overflowLong = dataOne;
         overflowMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param method
+     */
     public void setOverflowFlag(int dataOne, int method) {
         overflowCalculated = false;
         overflowOne = dataOne;
         overflowMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param method
+     */
     public void setOverflowFlag(int dataOne, int dataTwo, int method) {
         overflowCalculated = false;
         overflowOne = dataOne;
@@ -2494,6 +3196,13 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         overflowMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param dataThree
+     * @param method
+     */
     public void setOverflowFlag(int dataOne, int dataTwo, int dataThree,
             int method) {
         overflowCalculated = false;
@@ -2509,38 +3218,108 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private boolean carryCalculated;
     private int carryMethod;
 
+    /**
+     *
+     */
     public static final int CY_NZ = 1;
+    /**
+     *
+     */
     public static final int CY_NOT_BYTE = 2;
+    /**
+     *
+     */
     public static final int CY_NOT_SHORT = 3;
+    /**
+     *
+     */
     public static final int CY_NOT_INT = 4;
 
+    /**
+     *
+     */
     public static final int CY_LOW_WORD_NZ = 5;
+    /**
+     *
+     */
     public static final int CY_HIGH_BYTE_NZ = 6;
 
+    /**
+     *
+     */
     public static final int CY_NTH_BIT_SET = 7;
 
+    /**
+     *
+     */
     public static final int CY_GREATER_FF = 8;
 
+    /**
+     *
+     */
     public static final int CY_TWIDDLE_FF = 9;
+    /**
+     *
+     */
     public static final int CY_TWIDDLE_FFFF = 10;
+    /**
+     *
+     */
     public static final int CY_TWIDDLE_FFFFFFFF = 11;
 
+    /**
+     *
+     */
     public static final int CY_SHL_OUTBIT_BYTE = 12;
+    /**
+     *
+     */
     public static final int CY_SHL_OUTBIT_SHORT = 13;
+    /**
+     *
+     */
     public static final int CY_SHL_OUTBIT_INT = 14;
 
+    /**
+     *
+     */
     public static final int CY_SHR_OUTBIT = 15;
 
+    /**
+     *
+     */
     public static final int CY_LOWBIT = 16;
 
+    /**
+     *
+     */
     public static final int CY_HIGHBIT_BYTE = 17;
+    /**
+     *
+     */
     public static final int CY_HIGHBIT_SHORT = 18;
+    /**
+     *
+     */
     public static final int CY_HIGHBIT_INT = 19;
 
+    /**
+     *
+     */
     public static final int CY_OFFENDBIT_BYTE = 20;
+    /**
+     *
+     */
     public static final int CY_OFFENDBIT_SHORT = 21;
+    /**
+     *
+     */
     public static final int CY_OFFENDBIT_INT = 22;
 
+    /**
+     *
+     * @return
+     */
     public boolean getCarryFlag() {
         if (carryCalculated)
             return eflagsCarry;
@@ -2604,23 +3383,43 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setCarryFlag(boolean value) {
         carryCalculated = true;
         eflagsCarry = value;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param method
+     */
     public void setCarryFlag(long dataOne, int method) {
         carryCalculated = false;
         carryLong = dataOne;
         carryMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param method
+     */
     public void setCarryFlag(int dataOne, int method) {
         carryCalculated = false;
         carryOne = dataOne;
         carryMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param method
+     */
     public void setCarryFlag(int dataOne, int dataTwo, int method) {
         carryCalculated = false;
         carryOne = dataOne;
@@ -2628,6 +3427,13 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         carryMethod = method;
     }
 
+    /**
+     *
+     * @param dataOne
+     * @param dataTwo
+     * @param dataThree
+     * @param method
+     */
     public void setCarryFlag(int dataOne, int dataTwo, int dataThree, int method) {
         carryCalculated = false;
         carryOne = dataOne;
@@ -2641,6 +3447,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     @SuppressWarnings("unused")
     private int zeroMethod;
 
+    /**
+     *
+     * @return
+     */
     public boolean getZeroFlag() {
         if (zeroCalculated)
             return eflagsZero;
@@ -2650,11 +3460,19 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setZeroFlag(boolean value) {
         zeroCalculated = true;
         eflagsZero = value;
     }
 
+    /**
+     *
+     * @param data
+     */
     public void setZeroFlag(int data) {
         zeroCalculated = false;
         zeroOne = data;
@@ -2665,6 +3483,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     @SuppressWarnings("unused")
     private int signMethod;
 
+    /**
+     *
+     * @return
+     */
     public boolean getSignFlag() {
         if (signCalculated)
             return eflagsSign;
@@ -2674,16 +3496,28 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setSignFlag(boolean value) {
         signCalculated = true;
         eflagsSign = value;
     }
 
+    /**
+     *
+     * @param data
+     */
     public void setSignFlag(int data) {
         signCalculated = false;
         signOne = data;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean updated() {
         boolean result = (physicalMemory.updated() && linearMemory.updated()
                 && ioports.updated() && interruptController.isConnected());// &&
@@ -2693,6 +3527,10 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return result;
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(HardwareComponent component) {
         if (component instanceof LinearAddressSpace) {
             alignmentCheckedMemory = new AlignmentCheckedAddressSpace(
@@ -2700,6 +3538,9 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     *
+     */
     public void timerCallback() {
     }
 

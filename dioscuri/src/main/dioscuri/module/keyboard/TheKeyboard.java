@@ -43,7 +43,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Keyboard state information
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class TheKeyboard {
+    /**
+     *
+     */
     protected final static int CONTROLLER_QUEUE_SIZE = 5;
 
     // Motherboard side controller chip

@@ -102,8 +102,17 @@ public class PCI extends ModuleDevice {
 
     // Constants
     // Module specifics
+    /**
+     *
+     */
     public final static int MODULE_ID = 1;
+    /**
+     *
+     */
     public final static String MODULE_TYPE = "pci";
+    /**
+     *
+     */
     public final static String MODULE_NAME = "Peripheral Component Interconnect";
 
     // I/O ports 0CF8-0CFF - PCI Configuration Mechanism 1
@@ -115,6 +124,7 @@ public class PCI extends ModuleDevice {
     /**
      * Class constructor
      * 
+     * @param owner
      */
     public PCI(Emulator owner) {
         emu = owner;
@@ -296,8 +306,7 @@ public class PCI extends ModuleDevice {
     /**
      * Returns data from this module
      * 
-     * @param Module
-     *            requester, the requester of the data
+     * @param requester
      * @return byte[] with data
      * 
      * @see Module
@@ -309,10 +318,7 @@ public class PCI extends ModuleDevice {
     /**
      * Set data for this module
      * 
-     * @param byte[] containing data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender
      * @return true if data is set successfully, false otherwise
      * 
      * @see Module
@@ -324,11 +330,7 @@ public class PCI extends ModuleDevice {
     /**
      * Set String[] data for this module
      * 
-     * @param String
-     *            [] data
-     * @param Module
-     *            sender, the sender of the data
-     * 
+     * @param sender 
      * @return boolean true is successful, false otherwise
      * 
      * @see Module
@@ -364,7 +366,6 @@ public class PCI extends ModuleDevice {
     /**
      * Defines the interval between subsequent updates
      * 
-     * @param int interval in microseconds
      */
     public void setUpdateInterval(int interval) {
     }
@@ -378,8 +379,6 @@ public class PCI extends ModuleDevice {
 
     /**
      * Return a byte from I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
      * 
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
@@ -398,9 +397,6 @@ public class PCI extends ModuleDevice {
 
     /**
      * Set a byte in I/O address space at given port
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param byte data
      * 
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException

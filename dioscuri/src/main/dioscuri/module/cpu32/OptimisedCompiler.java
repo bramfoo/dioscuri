@@ -29,14 +29,28 @@ import dioscuri.module.clock.Clock;
 
 //import org.jpc.emulator.memory.codeblock.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class OptimisedCompiler extends AbstractBasicCompiler {
 
     private Clock clock;
 
+    /**
+     *
+     * @param clk
+     */
     public OptimisedCompiler(Clock clk) {
         this.clock = clk;
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         buildCodeBlockBuffers(source);
 
@@ -48,6 +62,11 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
         return new RealModeUBlock(newMicrocodes, newPositions, clock);
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source) {
         buildCodeBlockBuffers(source);
@@ -60,6 +79,11 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
         return new ProtectedModeUBlock(newMicrocodes, newPositions);
     }
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source) {
         buildCodeBlockBuffers(source);

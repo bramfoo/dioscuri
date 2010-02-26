@@ -46,13 +46,34 @@ package dioscuri.module.dma;
  */
 public class DMAModeRegister {
 
+    /**
+     *
+     */
     protected final static int DMA_MODE_DEMAND = 0;
+    /**
+     *
+     */
     protected final static int DMA_MODE_SINGLE = 1;
+    /**
+     *
+     */
     protected final static int DMA_MODE_BLOCK = 2;
+    /**
+     *
+     */
     protected final static int DMA_MODE_CASCADE = 3;
 
+    /**
+     *
+     */
     protected final static int DMA_TRANSFER_VERIFY = 0;
+    /**
+     *
+     */
     protected final static int DMA_TRANSFER_WRITE = 1;
+    /**
+     *
+     */
     protected final static int DMA_TRANSFER_READ = 2;
 
     // Variable // Mode register bits:

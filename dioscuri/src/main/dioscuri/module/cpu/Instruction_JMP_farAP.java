@@ -78,13 +78,13 @@ public class Instruction_JMP_farAP implements Instruction {
      */
     public void execute() {
         // Get displacement words (immediate).
-        byte[] newIP = cpu.getWordFromCode();
-        byte[] newCS = cpu.getWordFromCode();
+        byte[] tmpIP = cpu.getWordFromCode();
+        byte[] tmpCS = cpu.getWordFromCode();
 
         // Assign words to ip and cs
-        cpu.cs[CPU.REGISTER_SEGMENT_LOW] = newCS[CPU.REGISTER_LOW];
-        cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = newCS[CPU.REGISTER_HIGH];
-        cpu.ip[CPU.REGISTER_LOW] = newIP[CPU.REGISTER_LOW];
-        cpu.ip[CPU.REGISTER_HIGH] = newIP[CPU.REGISTER_HIGH];
+        cpu.cs[CPU.REGISTER_SEGMENT_LOW] = tmpCS[CPU.REGISTER_LOW];
+        cpu.cs[CPU.REGISTER_SEGMENT_HIGH] = tmpCS[CPU.REGISTER_HIGH];
+        cpu.ip[CPU.REGISTER_LOW] = tmpIP[CPU.REGISTER_LOW];
+        cpu.ip[CPU.REGISTER_HIGH] = tmpIP[CPU.REGISTER_HIGH];
     }
 }

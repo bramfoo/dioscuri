@@ -28,16 +28,30 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.memory.*;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock
         implements Virtual8086ModeCodeBlock {
     private ByteSourceWrappedMemory byteSource = new ByteSourceWrappedMemory();
 
     private CodeBlockFactory[] factories;
 
+    /**
+     *
+     * @param factories
+     */
     public SpanningVirtual8086ModeCodeBlock(CodeBlockFactory[] factories) {
         this.factories = factories;
     }
 
+    /**
+     *
+     * @param cpu
+     * @return
+     */
     protected CodeBlock decode(Processor cpu) {
         Virtual8086ModeCodeBlock block = null;
         AddressSpace memory = cpu.linearMemory;
@@ -53,6 +67,10 @@ public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock
         return block;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getDisplayString() {
         return "Spanning Virtual8086 Mode CodeBlock";
     }

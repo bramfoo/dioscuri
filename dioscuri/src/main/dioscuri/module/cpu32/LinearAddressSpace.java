@@ -31,6 +31,11 @@ import java.io.*;
 //import org.jpc.emulator.*;
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.emulator.processor.*;
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("unused")
 public final class LinearAddressSpace extends AddressSpace implements
         HardwareComponent {
@@ -70,6 +75,9 @@ public final class LinearAddressSpace extends AddressSpace implements
     private Memory[] readUserIndex, readSupervisorIndex, writeUserIndex,
             writeSupervisorIndex, readIndex, writeIndex;
 
+    /**
+     *
+     */
     public LinearAddressSpace() {
         baseAddress = 0;
         lastAddress = 0;
@@ -90,6 +98,11 @@ public final class LinearAddressSpace extends AddressSpace implements
         writeSupervisorIndex = null;
     }
 
+    /**
+     *
+     * @param output
+     * @throws IOException
+     */
     public void dumpState(DataOutput output) throws IOException {
         output.writeBoolean(isSupervisor);
         output.writeBoolean(globalPagesEnabled);
@@ -147,6 +160,11 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param input
+     * @throws IOException
+     */
     public void loadState(DataInput input) throws IOException {
         reset();
         isSupervisor = input.readBoolean();
@@ -246,14 +264,26 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public int getLastWalkedAddress() {
         return lastAddress;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isSupervisor() {
         return isSupervisor;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setSupervisor(boolean value) {
         isSupervisor = value;
         if (isSupervisor) {
@@ -265,10 +295,18 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isPagingEnabled() {
         return !pagingDisabled;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPagingEnabled(boolean value) {
         if (value) {
             if (!((PhysicalAddressSpace) target).getGateA20State())
@@ -278,19 +316,35 @@ public final class LinearAddressSpace extends AddressSpace implements
         flush();
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPageCacheEnabled(boolean value) {
         pageCacheEnabled = value;
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPageSizeExtensionsEnabled(boolean value) {
         pageSizeExtensions = value;
         flush();
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setPageWriteThroughEnabled(boolean value) {
         // System.err.println("ERR: Write Through Caching enabled for TLBs");
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setGlobalPagesEnabled(boolean value) {
         if (globalPagesEnabled == value)
             return;
@@ -299,6 +353,10 @@ public final class LinearAddressSpace extends AddressSpace implements
         flush();
     }
 
+    /**
+     *
+     * @param value
+     */
     public void setWriteProtectUserPages(boolean value) {
         if (value) {
             for (int i = 0; i < INDEX_SIZE; i++)
@@ -308,10 +366,17 @@ public final class LinearAddressSpace extends AddressSpace implements
         writeProtectUserPages = value;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean pagingDisabled() {
         return pagingDisabled;
     }
 
+    /**
+     *
+     */
     public void flush() {
         for (int i = 0; i < INDEX_SIZE; i++) {
             pageFlags[i] = FOUR_K;
@@ -357,11 +422,19 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param address
+     */
     public void setPageDirectoryBaseAddress(int address) {
         baseAddress = address & 0xFFFFF000;
         partialFlush();
     }
 
+    /**
+     *
+     * @param offset
+     */
     public void invalidateTLBEntry(int offset) {
         int index = offset >>> INDEX_SHIFT;
         if ((pageFlags[index] & IS_4_M_MASK) == 0) {
@@ -382,6 +455,11 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public Memory validateTLBEntryRead(int offset) {
         int idx = offset >>> INDEX_SHIFT;
         if (pagingDisabled) {
@@ -505,6 +583,11 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public Memory validateTLBEntryWrite(int offset) {
         int idx = offset >>> INDEX_SHIFT;
         if (pagingDisabled) {
@@ -664,10 +747,20 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public Memory getReadMemoryBlockAt(int offset) {
         return getReadIndexValue(offset >>> INDEX_SHIFT);
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
     public Memory getWriteMemoryBlockAt(int offset) {
         return getWriteIndexValue(offset >>> INDEX_SHIFT);
     }
@@ -702,6 +795,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public byte getByte(int offset) {
         try {
             return super.getByte(offset);
@@ -712,6 +811,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         return validateTLBEntryRead(offset).getByte(offset & BLOCK_MASK);
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public short getWord(int offset) {
         try {
             return super.getWord(offset);
@@ -727,6 +832,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @return
+     */
+    @Override
     public int getDoubleWord(int offset) {
         try {
             return super.getDoubleWord(offset);
@@ -742,6 +853,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setByte(int offset, byte data) {
         try {
             super.setByte(offset, data);
@@ -753,6 +870,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         validateTLBEntryWrite(offset).setByte(offset & BLOCK_MASK, data);
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setWord(int offset, short data) {
         try {
             super.setWord(offset, data);
@@ -769,6 +892,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param offset
+     * @param data
+     */
+    @Override
     public void setDoubleWord(int offset, int data) {
         try {
             super.setDoubleWord(offset, data);
@@ -785,10 +914,19 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     */
     public void clear() {
         target.clear();
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
     public int execute(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
 
@@ -811,6 +949,12 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
+    /**
+     *
+     * @param cpu
+     * @param offset
+     * @return
+     */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
 
@@ -830,9 +974,16 @@ public final class LinearAddressSpace extends AddressSpace implements
         return block;
     }
 
+    /**
+     *
+     */
     public static final class PageFaultWrapper extends Memory {
         private ProcessorException pageFault;
 
+        /**
+         *
+         * @param errorCode
+         */
         public PageFaultWrapper(int errorCode) {
             pageFault = new ProcessorException(Processor.PROC_EXCEPTION_PF,
                     errorCode, true);
@@ -842,103 +993,209 @@ public final class LinearAddressSpace extends AddressSpace implements
             // pageFault.fillInStackTrace();
         }
 
+        /**
+         *
+         * @return
+         */
         public ProcessorException getFault() {
             return pageFault;
         }
 
+        /**
+         *
+         */
         public void clear() {
         }
 
+        /**
+         *
+         * @param start
+         * @param length
+         */
         public void clear(int start, int length) {
         }
 
+        /**
+         *
+         * @param address
+         * @param buffer
+         * @param off
+         * @param len
+         */
         public void copyContentsInto(int address, byte[] buffer, int off,
                 int len) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param address
+         * @param buffer
+         * @param off
+         * @param len
+         */
         public void copyContentsFrom(int address, byte[] buffer, int off,
                 int len) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @return
+         */
         public long getSize() {
             return 0;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public byte getByte(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public short getWord(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public int getDoubleWord(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getQuadWord(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getLowerDoubleQuadWord(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @return
+         */
         public long getUpperDoubleQuadWord(int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setByte(int offset, byte data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setWord(int offset, short data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setDoubleWord(int offset, int data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setLowerDoubleQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param offset
+         * @param data
+         */
         public void setUpperDoubleQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param cpu
+         * @param offset
+         * @return
+         */
         public int execute(Processor cpu, int offset) {
             fill();
             throw pageFault;
         }
 
+        /**
+         *
+         * @param cpu
+         * @param offset
+         * @return
+         */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             fill();
             throw pageFault;
         }
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean reset() {
         flush();
 
@@ -957,25 +1214,45 @@ public final class LinearAddressSpace extends AddressSpace implements
         return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean updated() {
         return target.updated();
     }
 
+    /**
+     *
+     * @param component
+     */
     public void updateComponent(HardwareComponent component) {
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean initialised() {
         return (target != null);
     }
 
+    /**
+     *
+     * @param component
+     */
     public void acceptComponent(HardwareComponent component) {
         if (component instanceof PhysicalAddressSpace)
             target = (AddressSpace) component;
     }
 
+    /**
+     *
+     */
     public void timerCallback() {
     }
 
+    @Override
     public String toString() {
         return "Linear Address Space";
     }

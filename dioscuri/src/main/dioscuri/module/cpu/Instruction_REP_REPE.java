@@ -81,6 +81,7 @@ public class Instruction_REP_REPE implements Instruction {
 
     /**
      * Repeat string instruction until CX == 0 or ZF == 0
+     * @throws CPUInstructionException
      */
     public void execute() throws CPUInstructionException {
         // Turn on prefix

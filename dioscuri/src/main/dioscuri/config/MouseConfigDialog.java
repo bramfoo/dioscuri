@@ -59,9 +59,13 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 import dioscuri.config.Emulator.Architecture.Modules.Mouse;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class MouseConfigDialog extends ConfigurationDialog {
     // Attributes
@@ -74,6 +78,10 @@ public class MouseConfigDialog extends ConfigurationDialog {
 
     // Constructor
 
+    /**
+     *
+     * @param parent
+     */
     public MouseConfigDialog(GUI parent) {
         super(parent, "Mouse Configuration", false, ModuleType.MOUSE);
     }
@@ -82,6 +90,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
     /**
      * Read in params from XML.
      */
+    @Override
     protected void readInParams() {
         emuConfig = parent.getEmuConfig();
         Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
@@ -94,6 +103,10 @@ public class MouseConfigDialog extends ConfigurationDialog {
         this.mouseTypeComboxBox.setSelectedItem(mouseType);
     }
 
+    /**
+     *
+     */
+    @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -106,6 +119,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
     /**
      * Initialise the panel for data entry.
      */
+    @Override
     protected void initMainEntryPanel() {
         // Create labels
         enabledLabel = new JLabel("Enabled");
@@ -151,6 +165,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
      * 
      * @return object array of params.
      */
+    @Override
     protected Emulator getParamsFromGui() {
         Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
 

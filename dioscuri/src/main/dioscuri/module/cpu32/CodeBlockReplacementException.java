@@ -27,15 +27,28 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.Processor;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 @SuppressWarnings("serial")
 public class CodeBlockReplacementException extends RuntimeException {
     private CodeBlock replacement;
 
+    /**
+     *
+     * @param replacement
+     */
     public CodeBlockReplacementException(CodeBlock replacement) {
         super("CodeBlock replacement trigger exception");
         this.replacement = replacement;
     }
 
+    /**
+     *
+     * @return
+     */
     public CodeBlock getReplacement() {
         return replacement;
     }

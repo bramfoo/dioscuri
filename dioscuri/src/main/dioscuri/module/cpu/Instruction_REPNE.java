@@ -81,6 +81,7 @@ public class Instruction_REPNE implements Instruction {
 
     /**
      * Repeat string instruction until CX == 0 or ZF == 1
+     * @throws CPUInstructionException
      */
     public void execute() throws CPUInstructionException {
         cpu.prefixRep = true;

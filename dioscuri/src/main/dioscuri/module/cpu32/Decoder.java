@@ -25,11 +25,32 @@
  */
 package dioscuri.module.cpu32;
 
+/**
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
+ */
 public interface Decoder {
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeReal(ByteSource source);
 
+    /**
+     *
+     * @param source
+     * @param operandSize
+     * @return
+     */
     public InstructionSource decodeProtected(ByteSource source,
             boolean operandSize);
 
+    /**
+     *
+     * @param source
+     * @return
+     */
     public InstructionSource decodeVirtual8086(ByteSource source);
 }
