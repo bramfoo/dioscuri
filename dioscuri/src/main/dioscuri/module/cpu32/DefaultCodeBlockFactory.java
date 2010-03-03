@@ -47,7 +47,7 @@ public class DefaultCodeBlockFactory implements CodeBlockFactory {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(ByteSource source) {
         return compiler.getRealModeCodeBlock(decoder.decodeReal(source));
@@ -57,7 +57,7 @@ public class DefaultCodeBlockFactory implements CodeBlockFactory {
      *
      * @param source
      * @param operandSize
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
             boolean operandSize) {
@@ -68,7 +68,7 @@ public class DefaultCodeBlockFactory implements CodeBlockFactory {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             ByteSource source) {

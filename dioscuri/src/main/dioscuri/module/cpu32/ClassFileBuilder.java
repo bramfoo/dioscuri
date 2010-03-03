@@ -85,7 +85,7 @@ public class ClassFileBuilder {
 
     /**
      *
-     * @return
+     * @return -
      */
     public static ClassFile createNewRealModeSkeletonClass() {
         ClassFile cf = new ClassFile();
@@ -103,7 +103,7 @@ public class ClassFileBuilder {
 
     /**
      *
-     * @return
+     * @return -
      */
     public static ClassFile createNewProtectedModeSkeletonClass() {
         ClassFile cf = new ClassFile();
@@ -122,7 +122,7 @@ public class ClassFileBuilder {
     /**
      *
      * @param cf
-     * @return
+     * @return -
      */
     public static CodeBlock instantiateClass(ClassFile cf) {
         cf.update();

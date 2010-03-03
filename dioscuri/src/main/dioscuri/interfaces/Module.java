@@ -112,7 +112,7 @@ public interface Module {
     /**
      * Reset all parameters of module
      * 
-     * @return
+     * @return -
      */
     public boolean reset();
 
@@ -131,7 +131,7 @@ public interface Module {
     /**
      * Save the current state of module
      * 
-     * @return
+     * @return -
      */
     public byte[] saveState();
 
@@ -139,7 +139,7 @@ public interface Module {
      * Load the given state in module
      * 
      * @param variables
-     * @return
+     * @return -
      */
     public boolean loadState(byte[] variables);
 

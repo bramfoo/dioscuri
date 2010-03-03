@@ -49,7 +49,7 @@ public abstract class ModuleVideo extends ModuleDevice {
     /**
      * Video read mode implementations
      * @param addr 
-     * @return
+     * @return -
      */
     public abstract byte readMode(int addr);
 

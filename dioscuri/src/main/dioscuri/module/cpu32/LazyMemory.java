@@ -74,7 +74,7 @@ public class LazyMemory extends AbstractMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isCacheable() {
         return true;
@@ -123,7 +123,7 @@ public class LazyMemory extends AbstractMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     public long getSize() {
         return size;
@@ -131,7 +131,7 @@ public class LazyMemory extends AbstractMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean isAllocated() {
@@ -141,7 +141,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public byte getByte(int offset) {
         try {
@@ -169,7 +169,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public short getWord(int offset) {
@@ -190,7 +190,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public int getDoubleWord(int offset) {
@@ -280,7 +280,7 @@ public class LazyMemory extends AbstractMemory {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public int execute(Processor cpu, int offset) {
         return convertMemory(cpu).execute(cpu, offset);
@@ -290,7 +290,7 @@ public class LazyMemory extends AbstractMemory {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         CodeBlock block = convertMemory(cpu).decodeCodeBlockAt(cpu, offset);

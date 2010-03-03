@@ -238,7 +238,7 @@ public class SegmentFactory {
      *
      * @param memory
      * @param selector
-     * @return
+     * @return -
      */
     public static Segment createRealModeSegment(Memory memory, int selector) {
         if (memory == null)
@@ -306,7 +306,7 @@ public class SegmentFactory {
      * @param memory
      * @param base
      * @param limit
-     * @return
+     * @return -
      */
     public static Segment createDescriptorTableSegment(Memory memory, int base,
             int limit) {
@@ -660,7 +660,7 @@ public class SegmentFactory {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         @Override
         public byte getByte(int offset) {
@@ -676,7 +676,7 @@ public class SegmentFactory {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         @Override
         public short getWord(int offset) {
@@ -692,7 +692,7 @@ public class SegmentFactory {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         @Override
         public int getDoubleWord(int offset) {
@@ -708,7 +708,7 @@ public class SegmentFactory {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         @Override
         public long getQuadWord(int offset) {
@@ -777,7 +777,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTargetSegment() {
             return targetSegment;
@@ -785,7 +785,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTargetOffset() {
             return targetOffset;
@@ -871,7 +871,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         @Override
         public int getType() {
@@ -880,7 +880,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         public final int getParameterCount() {
             return parameterCount;
@@ -906,7 +906,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         @Override
         public int getType() {
@@ -915,7 +915,7 @@ public class SegmentFactory {
 
         /**
          *
-         * @return
+         * @return -
          */
         public final int getParameterCount() {
             return parameterCount;
@@ -990,7 +990,7 @@ public class SegmentFactory {
      * @param memory
      * @param selector
      * @param descriptor
-     * @return
+     * @return -
      */
     public static Segment createProtectedModeSegment(Memory memory,
             int selector, long descriptor) {

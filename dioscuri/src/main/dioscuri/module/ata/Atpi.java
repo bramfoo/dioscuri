@@ -56,7 +56,7 @@ public class Atpi {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCommand() {
         return command;
@@ -72,7 +72,7 @@ public class Atpi {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getDrqBytes() {
         return drqBytes;
@@ -88,7 +88,7 @@ public class Atpi {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getTotalBytesRemaining() {
         return totalBytesRemaining;

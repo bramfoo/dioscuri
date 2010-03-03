@@ -35,7 +35,7 @@ import java.io.*;
 public interface HardwareComponent extends Hibernatable {
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised();
 
@@ -47,7 +47,7 @@ public interface HardwareComponent extends Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset();
 
@@ -67,7 +67,7 @@ public interface HardwareComponent extends Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated();
 

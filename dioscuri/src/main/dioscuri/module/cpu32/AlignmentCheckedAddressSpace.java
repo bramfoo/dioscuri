@@ -52,7 +52,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getReadMemoryBlockAt(int offset) {
         return addressSpace.getReadMemoryBlockAt(offset);
@@ -61,7 +61,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getWriteMemoryBlockAt(int offset) {
         return addressSpace.getWriteMemoryBlockAt(offset);
@@ -75,7 +75,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public int execute(Processor cpu, int offset) {
         throw new IllegalStateException("Invalid Operation");
@@ -85,7 +85,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         throw new IllegalStateException("Invalid Operation");
@@ -93,7 +93,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return true;
@@ -109,7 +109,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public byte getByte(int offset) {
@@ -129,7 +129,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public short getWord(int offset) {
@@ -142,7 +142,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public int getDoubleWord(int offset) {
@@ -155,7 +155,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getQuadWord(int offset) {
@@ -168,7 +168,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getLowerDoubleQuadWord(int offset) {
@@ -181,7 +181,7 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getUpperDoubleQuadWord(int offset) {

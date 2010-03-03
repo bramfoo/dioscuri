@@ -50,7 +50,7 @@ public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock
     /**
      *
      * @param cpu
-     * @return
+     * @return -
      */
     protected CodeBlock decode(Processor cpu) {
         Virtual8086ModeCodeBlock block = null;
@@ -69,7 +69,7 @@ public class SpanningVirtual8086ModeCodeBlock extends SpanningCodeBlock
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "Spanning Virtual8086 Mode CodeBlock";

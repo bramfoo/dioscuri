@@ -39,7 +39,7 @@ public class ProtectedModeSkeletonBlock extends ProtectedModeTemplateBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return 0;
@@ -47,7 +47,7 @@ public class ProtectedModeSkeletonBlock extends ProtectedModeTemplateBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return 0;

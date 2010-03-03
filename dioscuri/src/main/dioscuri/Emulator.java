@@ -649,7 +649,7 @@ public class Emulator implements Runnable {
      * @param carrierType
      * @param imageFile
      * @param writeProtected
-     * @return
+     * @return -
      */
     protected boolean insertFloppy(String driveLetter, byte carrierType,
             File imageFile, boolean writeProtected) {
@@ -664,7 +664,7 @@ public class Emulator implements Runnable {
     /**
      *
      * @param driveLetter
-     * @return
+     * @return -
      */
     protected boolean ejectFloppy(String driveLetter) {
         ModuleFDC fdc = (ModuleFDC) modules.getModule("fdc");
@@ -727,7 +727,7 @@ public class Emulator implements Runnable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getScreenText() {
         // Request characters on screen from video module (if available)
@@ -740,7 +740,7 @@ public class Emulator implements Runnable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public BufferedImage getScreenImage() {
         // TODO: implement
@@ -749,7 +749,7 @@ public class Emulator implements Runnable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isCpu32bit() {
         return cpu32bit;
@@ -757,7 +757,7 @@ public class Emulator implements Runnable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean setupEmu() {
         boolean result = true;
@@ -845,7 +845,7 @@ public class Emulator implements Runnable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean createModules() {
         modules = new Modules(20);
@@ -966,7 +966,7 @@ public class Emulator implements Runnable {
 
     /**
      * Connect the modules together.
-     * @return
+     * @return -
      */
     public boolean connectModules() {
 
@@ -1070,7 +1070,7 @@ public class Emulator implements Runnable {
     /**
      * Set the timing parameters
      * @param module
-     * @return
+     * @return -
      */
     public boolean setTimingParams(Module module) {
         boolean result = true;
@@ -1109,7 +1109,7 @@ public class Emulator implements Runnable {
 
     /**
      * Reset all modules.
-     * @return
+     * @return -
      */
     public boolean resetModules() {
         boolean result = true;
@@ -1133,7 +1133,7 @@ public class Emulator implements Runnable {
 
     /**
      * Init Screen Output Device.
-     * @return
+     * @return -
      */
     public boolean initScreenOutputDevice() {
 
@@ -1152,7 +1152,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set mouse parameters
-     * @return
+     * @return -
      */
     public boolean setMouseParams() {
 
@@ -1181,7 +1181,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set memory parameters
-     * @return
+     * @return -
      */
     public boolean setMemoryParams() {
         ModuleMemory mem = (ModuleMemory) modules.getModule(ModuleType.MEMORY
@@ -1196,7 +1196,7 @@ public class Emulator implements Runnable {
 
     /**
      * Load the BIOS into memory
-     * @return
+     * @return -
      */
     public boolean loadBIOS() {
         boolean result = true;
@@ -1327,7 +1327,7 @@ public class Emulator implements Runnable {
 
     /**
      * Get and set floppy parameters
-     * @return
+     * @return -
      */
     public boolean setFloppyParams() {
         // Module FDC: set number of drives (max 4), insert floppy and set
@@ -1390,7 +1390,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read and set the hard drive parameters
-     * @return
+     * @return -
      */
     public boolean setHardDriveParams() {
         // TODO: replace ATA reference by ModuleATA
@@ -1436,7 +1436,7 @@ public class Emulator implements Runnable {
 
     /**
      * Read from config and set the boot params.
-     * @return
+     * @return -
      */
     public boolean setBootParams() {
 
@@ -1489,7 +1489,7 @@ public class Emulator implements Runnable {
 
     /**
      * Set the debug mode.
-     * @return
+     * @return -
      */
     public boolean setDebugMode() {
         boolean result = true;

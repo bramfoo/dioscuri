@@ -65,76 +65,76 @@ public interface Deque<E> extends Queue<E> {
     /**
      *
      * @param e
-     * @return
+     * @return -
      */
     boolean offerFirst(E e);
 
     /**
      *
      * @param e
-     * @return
+     * @return -
      */
     boolean offerLast(E e);
 
     /**
      *
-     * @return
+     * @return -
      */
     E removeFirst();
 
     /**
      *
-     * @return
+     * @return -
      */
     E removeLast();
 
     /**
      *
-     * @return
+     * @return -
      */
     E pollFirst();
 
     /**
      *
-     * @return
+     * @return -
      */
     E pollLast();
 
     /**
      *
-     * @return
+     * @return -
      */
     E getFirst();
 
     /**
      *
-     * @return
+     * @return -
      */
     E getLast();
 
     /**
      *
-     * @return
+     * @return -
      */
     E peekFirst();
 
     /**
      *
-     * @return
+     * @return -
      */
     E peekLast();
 
     /**
      *
      * @param o
-     * @return
+     * @return -
      */
     boolean removeFirstOccurrence(Object o);
 
     /**
      *
      * @param o
-     * @return
+     * @return -
      */
     boolean removeLastOccurrence(Object o);
 
@@ -158,7 +158,7 @@ public interface Deque<E> extends Queue<E> {
 
     /**
      *
-     * @return
+     * @return -
      */
     E pop();
 
@@ -172,7 +172,7 @@ public interface Deque<E> extends Queue<E> {
 
     /**
      *
-     * @return
+     * @return -
      */
     Iterator<E> descendingIterator();
 }

@@ -47,7 +47,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return replacement.getX86Length();
@@ -55,7 +55,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return replacement.getX86Count();
@@ -69,7 +69,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return replacement.getDisplayString();
@@ -79,7 +79,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;

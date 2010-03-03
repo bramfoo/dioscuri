@@ -110,7 +110,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] ioPortsRequested() {
         return new int[] { 0x400, 0x401, 0x402, 0x403, 0x8900 };
@@ -119,7 +119,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadByte(int address) {
         return 0xff;
@@ -128,7 +128,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadWord(int address) {
         return 0xffff;
@@ -137,7 +137,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadLong(int address) {
         return (int) 0xffffffff;
@@ -214,7 +214,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getImage() {
         return (byte[]) imageData.clone();
@@ -222,7 +222,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean updated() {
@@ -248,7 +248,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean initialised() {
@@ -275,7 +275,7 @@ public class SystemBIOS extends AbstractHardwareComponent implements
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean reset() {

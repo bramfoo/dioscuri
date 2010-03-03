@@ -62,7 +62,7 @@ public interface IOPortCapable extends HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadByte(int address) throws ModuleException;
@@ -70,7 +70,7 @@ public interface IOPortCapable extends HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadWord(int address) throws ModuleException;
@@ -78,14 +78,14 @@ public interface IOPortCapable extends HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadLong(int address) throws ModuleException;
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] ioPortsRequested();
 }

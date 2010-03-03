@@ -61,7 +61,7 @@ public final class Utilities {
     /**
      *
      * @param path
-     * @return
+     * @return -
      */
     public static String resolvePathAsString(String path) {
         File file = resolvePathAsFile(path);
@@ -71,7 +71,7 @@ public final class Utilities {
     /**
      *
      * @param path
-     * @return
+     * @return -
      */
     public static File resolvePathAsFile(String path) {
         File validPath = new File(path);
@@ -90,7 +90,7 @@ public final class Utilities {
      *
      * @param emuObject
      * @param path
-     * @return
+     * @return -
      */
     public static boolean saveXML(dioscuri.config.Emulator emuObject, String path) {
         try {

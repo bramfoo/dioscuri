@@ -86,7 +86,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isReady() {
         return isReady;
@@ -102,7 +102,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isLocked() {
         return isLocked;
@@ -118,7 +118,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCapacity() {
         return capacity;
@@ -134,7 +134,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getNextLba() {
         return nextLba;
@@ -150,7 +150,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getRemainingBlocks() {
         return remainingBlocks;
@@ -166,7 +166,7 @@ public class CDROM {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] getErrorRecovery() {
         return errorRecovery;

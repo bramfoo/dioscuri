@@ -2599,7 +2599,7 @@ public class Video extends ModuleVideo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public boolean isCacheable() {
             return false;
@@ -2607,7 +2607,7 @@ public class Video extends ModuleVideo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public boolean isVolatile() {
             return true;
@@ -2641,7 +2641,7 @@ public class Video extends ModuleVideo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public long getSize() {
             return 0x20000;
@@ -2649,7 +2649,7 @@ public class Video extends ModuleVideo {
 
         /**
          *
-         * @return
+         * @return -
          */
         @Override
         public boolean isAllocated() {
@@ -2659,7 +2659,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public byte getByte(int offset) {
             // All functionality already implemented. Just need to call with
@@ -2670,7 +2670,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public short getWord(int offset) {
             int v = 0xFF & getByte(offset);
@@ -2681,7 +2681,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public int getDoubleWord(int offset) {
             int v = 0xFF & getByte(offset);
@@ -2694,7 +2694,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getQuadWord(int offset) {
             long v = 0xFFl & getByte(offset);
@@ -2711,7 +2711,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getLowerDoubleQuadWord(int offset) {
             return getQuadWord(offset);
@@ -2720,7 +2720,7 @@ public class Video extends ModuleVideo {
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getUpperDoubleQuadWord(int offset) {
             return getQuadWord(offset + 8);
@@ -2815,7 +2815,7 @@ public class Video extends ModuleVideo {
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public int execute(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");
@@ -2825,7 +2825,7 @@ public class Video extends ModuleVideo {
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");

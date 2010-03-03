@@ -264,7 +264,7 @@ public class ATADrive {
     /**
      *
      * @param sector
-     * @return
+     * @return -
      */
     public boolean calculateLogicalAddress(int sector) {
         int logicalSector;
@@ -297,7 +297,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int calculateLogicalAddress() {
         int logicalSector;
@@ -383,7 +383,7 @@ public class ATADrive {
 
     /**
      * Reset drive All geometry parameters for sector selection are reset.
-     * @return
+     * @return -
      */
     protected boolean reset() {
 
@@ -409,7 +409,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public SenseInfo getSenseInfo() {
         return this.senseInfo;
@@ -525,7 +525,7 @@ public class ATADrive {
      *            the total number of bytes
      * @param diskBuffer
      *            the disk buffer
-     * @return
+     * @return -
      * @throws IOException
      */
     public byte[] readData(byte[] diskBuffer, int offset, int totalBytes)
@@ -606,7 +606,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isMaster() {
         return isMaster;
@@ -622,7 +622,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCurrentHead() {
         return currentHead;
@@ -638,7 +638,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCurrentCylinder() {
         return currentCylinder;
@@ -654,7 +654,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCurrentSector() {
         return currentSector;
@@ -670,7 +670,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getTotalNumSectors() {
         return totalNumSectors;
@@ -678,7 +678,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public Atpi getAtpi() {
         return atpi;
@@ -694,7 +694,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getIoLightCounter() {
         return ioLightCounter;
@@ -710,7 +710,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getTotalNumHeads() {
         return totalNumHeads;
@@ -726,7 +726,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getTotalNumCylinders() {
         return totalNumCylinders;
@@ -756,7 +756,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getSectorCount() {
         return sectorCount;
@@ -772,7 +772,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getFeatures() {
         return features;
@@ -788,7 +788,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] getIdDrive() {
         return idDrive;
@@ -805,7 +805,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public char[] getModelNo() {
         return modelNo;
@@ -813,7 +813,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public CDROM getCdRom() {
         return cdRom;
@@ -829,7 +829,7 @@ public class ATADrive {
 
     /**
      *
-     * @return
+     * @return -
      */
     public ATATranslationType getTranslationType() {
         return translationType;

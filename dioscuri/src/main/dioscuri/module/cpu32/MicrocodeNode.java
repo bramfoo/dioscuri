@@ -71,7 +71,7 @@ public class MicrocodeNode implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMicrocode() {
         return microcode;
@@ -79,7 +79,7 @@ public class MicrocodeNode implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Index() {
         return x86Index;
@@ -87,7 +87,7 @@ public class MicrocodeNode implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Position() {
         return x86Position;
@@ -95,7 +95,7 @@ public class MicrocodeNode implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean hasImmediate() {
         return hasImmediate;
@@ -103,7 +103,7 @@ public class MicrocodeNode implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getImmediate() {
         return immediate;
@@ -117,7 +117,7 @@ public class MicrocodeNode implements MicrocodeSet {
     /**
      *
      * @param microcode
-     * @return
+     * @return -
      */
     public static String getName(int microcode) {
         try {
@@ -167,7 +167,7 @@ public class MicrocodeNode implements MicrocodeSet {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public static MicrocodeNode[] getMicrocodes(InstructionSource source) {
         int x86Length = 0, x86Count = 0;

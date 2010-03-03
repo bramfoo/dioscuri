@@ -76,7 +76,7 @@ public class MouseBuffer extends ArrayList<Byte> {
 
     /**
      *
-     * @return
+     * @return -
      */
     protected byte getByte() {
         byte data = ((Byte) super.get(0)).byteValue();

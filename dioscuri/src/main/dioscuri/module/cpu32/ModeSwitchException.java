@@ -75,7 +75,7 @@ public class ModeSwitchException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getNewMode() {
         return mode;

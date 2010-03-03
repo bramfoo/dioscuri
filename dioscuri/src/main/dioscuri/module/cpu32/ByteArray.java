@@ -38,14 +38,14 @@ public interface ByteArray {
 
     /**
      * 
-     * @return
+     * @return -
      */
     public long getSize();
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public byte getByte(int offset);
 

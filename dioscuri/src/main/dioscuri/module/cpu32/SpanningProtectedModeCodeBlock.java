@@ -50,7 +50,7 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
     /**
      *
      * @param cpu
-     * @return
+     * @return -
      */
     protected CodeBlock decode(Processor cpu) {
         ProtectedModeCodeBlock block = null;
@@ -71,7 +71,7 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "Spanning Protected Mode CodeBlock";

@@ -50,7 +50,7 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
     /**
      *
      * @param cpu
-     * @return
+     * @return -
      */
     protected CodeBlock decode(Processor cpu) {
         RealModeCodeBlock block = null;
@@ -70,7 +70,7 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "Spanning Real Mode CodeBlock";

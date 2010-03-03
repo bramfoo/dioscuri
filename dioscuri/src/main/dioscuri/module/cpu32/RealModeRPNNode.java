@@ -44,7 +44,7 @@ public class RealModeRPNNode extends RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     protected Object[] getByteCodes() {
         if (getMicrocode() == -1)
@@ -60,7 +60,7 @@ public class RealModeRPNNode extends RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean hasExternalEffect() {
         if (getMicrocode() == -1)
@@ -72,7 +72,7 @@ public class RealModeRPNNode extends RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean canThrowException() {
         if (getMicrocode() == -1)

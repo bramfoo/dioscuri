@@ -111,7 +111,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         if (microcodes.length == 0)
@@ -121,7 +121,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return x86Count;
@@ -131,7 +131,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
@@ -139,7 +139,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         StringBuffer buf = new StringBuffer();
@@ -156,7 +156,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public InstructionSource getAsInstructionSource() {
         int[] codes = new int[microcodes.length];
@@ -171,7 +171,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] getMicrocodes() {
         int[] result = new int[microcodes.length];

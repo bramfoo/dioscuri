@@ -896,7 +896,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      *
      * @param emuObject
-     * @return
+     * @return -
      */
     public boolean saveXML(dioscuri.config.Emulator emuObject) {
         try {

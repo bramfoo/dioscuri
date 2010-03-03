@@ -57,7 +57,7 @@ public class BlankCodeBlock implements RealModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return x86Length;
@@ -65,7 +65,7 @@ public class BlankCodeBlock implements RealModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return x86Count;
@@ -79,7 +79,7 @@ public class BlankCodeBlock implements RealModeCodeBlock,
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
@@ -87,7 +87,7 @@ public class BlankCodeBlock implements RealModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "\n\n<<Blank Block>>\n\n";

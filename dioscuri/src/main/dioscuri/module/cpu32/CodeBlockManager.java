@@ -175,7 +175,7 @@ public class CodeBlockManager {
      *
      * @param memory
      * @param offset
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         RealModeCodeBlock block = null;
@@ -199,7 +199,7 @@ public class CodeBlockManager {
      * @param memory
      * @param offset
      * @param operandSizeFlag
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlockAt(Memory memory,
             int offset, boolean operandSizeFlag) {
@@ -220,7 +220,7 @@ public class CodeBlockManager {
      *
      * @param memory
      * @param offset
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlockAt(
             Memory memory, int offset) {

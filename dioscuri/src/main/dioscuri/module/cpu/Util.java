@@ -107,7 +107,7 @@ public class Util {
      * Check the parity of a given byte and given size in bits.
      * 
      * @param data
-     * @return
+     * @return -
      */
     protected static boolean checkParityOfByte(byte data) {
         // Extend byte to unsigned int
@@ -594,7 +594,7 @@ public class Util {
     /**
      *
      * @param b
-     * @return
+     * @return -
      */
     protected static String convertByteToString(byte b) {
         return (Integer.toHexString(0x100 | (b & 0xFF)).substring(1));
@@ -603,7 +603,7 @@ public class Util {
     /**
      *
      * @param word
-     * @return
+     * @return -
      */
     protected static String convertWordToString(byte[] word) {
         return (Integer.toHexString(0x100 | (word[0] & 0xFF)).substring(1) + Integer
@@ -674,7 +674,7 @@ public class Util {
     /**
      *
      * @param val
-     * @return
+     * @return -
      */
     public static int getExponent(double val) {
         return (int) (((Double.doubleToRawLongBits(val) & 0x7ff0000000000000L) >> 52) - 1023L);
@@ -683,7 +683,7 @@ public class Util {
     /**
      *
      * @param val
-     * @return
+     * @return -
      */
     public static int getExponent(float val) {
         return ((Float.floatToRawIntBits(val) & 0x7f800000) >> 23) - 127;
@@ -705,7 +705,7 @@ public class Util {
      *
      * @param d
      * @param i
-     * @return
+     * @return -
      */
     public static double scalb(double d, int i) {
         int j = 0;
@@ -733,7 +733,7 @@ public class Util {
      *
      * @param f
      * @param i
-     * @return
+     * @return -
      */
     public static float scalb(float f, int i) {
         i = Math.max(Math.min(i, 278), -278);

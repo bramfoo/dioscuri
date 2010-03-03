@@ -265,7 +265,7 @@ public class FASTCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source) {
@@ -308,7 +308,7 @@ public class FASTCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source) {
@@ -319,7 +319,7 @@ public class FASTCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         MicrocodeNode[] microcodes = MicrocodeNode.getMicrocodes(source);

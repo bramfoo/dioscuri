@@ -62,7 +62,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
     /**
      *
      * @param mod
-     * @return
+     * @return -
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
@@ -93,7 +93,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadByte(int address) throws ModuleException {
@@ -106,7 +106,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadWord(int address) throws ModuleException {
@@ -122,7 +122,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
     /**
      *
      * @param address
-     * @return
+     * @return -
      * @throws ModuleException
      */
     public int ioPortReadLong(int address) throws ModuleException {
@@ -177,7 +177,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] ioPortsRequested() {
         return null;
@@ -215,7 +215,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String map() {
         String tempString = "";
@@ -232,7 +232,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset() {
         ioPortDevice = new IOPortCapable[MAX_IOPORTS];
@@ -244,7 +244,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised() {
         return true;
@@ -343,7 +343,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return true;

@@ -196,7 +196,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isFirst() {
         return (this.dShift == 0);
@@ -430,7 +430,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadByte(int address) {
         switch ((address - iobase) >>> dShift) {
@@ -480,7 +480,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadWord(int address) {
         return (0xff & this.ioPortReadByte(address))
@@ -490,7 +490,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadLong(int address) {
         return (0xffff & this.ioPortReadByte(address))
@@ -499,7 +499,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] ioPortsRequested() {
         int[] temp;
@@ -572,7 +572,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     /**
      *
      * @param channelNumber
-     * @return
+     * @return -
      */
     public int getChannelMode(int channelNumber) {
         return dmaRegs[channelNumber].mode;
@@ -611,7 +611,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
      * @param bufferOffset
      * @param position
      * @param length
-     * @return
+     * @return -
      */
     public int readMemory(int channelNumber, byte[] buffer, int bufferOffset,
             int position, int length) {
@@ -647,7 +647,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
      * @param bufferOffset
      * @param position
      * @param length
-     * @return
+     * @return -
      */
     public int writeMemory(int channelNumber, byte[] buffer, int bufferOffset,
             int position, int length) {
@@ -678,7 +678,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised() {
         return ((memory != null) && ioportRegistered);
@@ -686,7 +686,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return memory.updated() && ioportRegistered;

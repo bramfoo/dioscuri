@@ -2724,7 +2724,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * 
      * @param drive
      * @param newCylinder
-     * @return
+     * @return -
      */
     protected int calculateStepDelay(int drive, int newCylinder) {
         int numSteps;
@@ -2782,7 +2782,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @param nchan
      * @param pos
      * @param size
-     * @return
+     * @return -
      */
     public int transferHandler(int nchan, int pos, int size) {
         final int SECTOR_LENGTH = 512; // Standard length of a sector

@@ -68,7 +68,7 @@ public abstract class Memory implements ByteArray {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isAllocated() {
         return true;
@@ -76,49 +76,49 @@ public abstract class Memory implements ByteArray {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract long getSize();
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract byte getByte(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract short getWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract int getDoubleWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract long getQuadWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract long getLowerDoubleQuadWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract long getUpperDoubleQuadWord(int offset);
 
@@ -168,7 +168,7 @@ public abstract class Memory implements ByteArray {
      *
      * @param cpu
      * @param address
-     * @return
+     * @return -
      */
     public abstract int execute(Processor cpu, int address);
 
@@ -176,7 +176,7 @@ public abstract class Memory implements ByteArray {
      *
      * @param cpu
      * @param address
-     * @return
+     * @return -
      */
     public abstract CodeBlock decodeCodeBlockAt(Processor cpu, int address);
 }

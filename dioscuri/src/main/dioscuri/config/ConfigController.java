@@ -153,7 +153,7 @@ public class ConfigController {
     /**
      *
      * @param is
-     * @return
+     * @return -
      * @throws Exception
      */
     public static Emulator loadFromXML(InputStream is) throws Exception {

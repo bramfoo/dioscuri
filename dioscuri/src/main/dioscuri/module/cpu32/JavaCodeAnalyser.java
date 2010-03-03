@@ -38,7 +38,7 @@ public class JavaCodeAnalyser {
      * @param code
      * @param start
      * @param cf
-     * @return
+     * @return -
      */
     public static int getMaxStackDepth(int[] code, int start, ClassFile cf) {
         // Note this algorithm only works when jumps are forwards only!!
@@ -128,7 +128,7 @@ public class JavaCodeAnalyser {
     /**
      *
      * @param code
-     * @return
+     * @return -
      */
     public static int getMaxLocalVariables(int[] code) {
         int currentMax = 0;

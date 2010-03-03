@@ -124,7 +124,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isVolatile() {
         return false;

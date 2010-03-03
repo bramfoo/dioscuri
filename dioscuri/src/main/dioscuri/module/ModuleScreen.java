@@ -51,7 +51,7 @@ public abstract class ModuleScreen extends Module {
     // Methods
     /**
      * Return a reference to the actual screen
-     * @return
+     * @return -
      */
     public abstract JPanel getScreen();
 
@@ -62,25 +62,25 @@ public abstract class ModuleScreen extends Module {
 
     /**
      * Return the number of rows on screen (text based)
-     * @return
+     * @return -
      */
     public abstract int getScreenRows();
 
     /**
      * Return the number of columns on screen (text based)
-     * @return
+     * @return -
      */
     public abstract int getScreenColumns();
 
     /**
      * Return width of screen in number of pixels
-     * @return
+     * @return -
      */
     public abstract int getScreenWidth();
 
     /**
      * Return height of screen in number of pixels
-     * @return
+     * @return -
      */
     public abstract int getScreenHeight();
 
@@ -125,7 +125,7 @@ public abstract class ModuleScreen extends Module {
      * @param red
      * @param green
      * @param blue
-     * @return
+     * @return -
      */
     public abstract boolean setPaletteColour(byte index, int red, int green,
             int blue);

@@ -158,19 +158,19 @@ public interface GUI {
 
     /**
      *
-     * @return
+     * @return -
      */
     JFrame asJFrame();
 
     /**
      *
-     * @return
+     * @return -
      */
     Emulator getEmuConfig();
 
     /**
      *
-     * @return
+     * @return -
      */
     String getConfigFilePath();
 
@@ -194,13 +194,13 @@ public interface GUI {
 
     /**
      *
-     * @return
+     * @return -
      */
     boolean setMouseEnabled();
 
     /**
      *
-     * @return
+     * @return -
      */
     boolean setMouseDisabled();
 

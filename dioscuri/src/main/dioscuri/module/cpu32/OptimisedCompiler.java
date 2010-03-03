@@ -49,7 +49,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         buildCodeBlockBuffers(source);
@@ -65,7 +65,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source) {
@@ -82,7 +82,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source) {

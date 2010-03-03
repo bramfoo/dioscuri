@@ -44,7 +44,7 @@ public abstract class AttributeInfo {
      *
      * @param in
      * @param pool
-     * @return
+     * @return -
      * @throws IOException
      */
     public static AttributeInfo construct(DataInputStream in,
@@ -162,7 +162,7 @@ public abstract class AttributeInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getMaxStack() {
             return maxStack;
@@ -170,7 +170,7 @@ public abstract class AttributeInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getMaxLocals() {
             return maxLocals;
@@ -178,7 +178,7 @@ public abstract class AttributeInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int[] getCode() {
             int[] a = new int[code.length];
@@ -219,7 +219,7 @@ public abstract class AttributeInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public ExceptionEntry[] getExceptionTable() {
             ExceptionEntry[] a = new ExceptionEntry[exceptionTable.length];
@@ -434,7 +434,7 @@ public abstract class AttributeInfo {
 
             /**
              *
-             * @return
+             * @return -
              */
             public int getFrameType() {
                 return frameType;
@@ -658,7 +658,7 @@ public abstract class AttributeInfo {
 
                 /**
                  *
-                 * @return
+                 * @return -
                  */
                 public int getTag() {
                     return tag;

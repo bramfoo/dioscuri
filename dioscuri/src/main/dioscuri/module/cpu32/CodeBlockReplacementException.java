@@ -47,7 +47,7 @@ public class CodeBlockReplacementException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public CodeBlock getReplacement() {
         return replacement;

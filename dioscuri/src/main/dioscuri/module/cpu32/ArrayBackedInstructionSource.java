@@ -58,7 +58,7 @@ public class ArrayBackedInstructionSource implements InstructionSource {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean getNext() {
         if (operationEnd >= microcodes.length)
@@ -79,7 +79,7 @@ public class ArrayBackedInstructionSource implements InstructionSource {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMicrocode() {
         if (readOffset < operationEnd)
@@ -90,7 +90,7 @@ public class ArrayBackedInstructionSource implements InstructionSource {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getLength() {
         return operationEnd - operationStart;
@@ -98,7 +98,7 @@ public class ArrayBackedInstructionSource implements InstructionSource {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return x86End - x86Start;

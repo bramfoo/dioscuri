@@ -34,7 +34,7 @@ public interface Decoder {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public InstructionSource decodeReal(ByteSource source);
 
@@ -42,7 +42,7 @@ public interface Decoder {
      *
      * @param source
      * @param operandSize
-     * @return
+     * @return -
      */
     public InstructionSource decodeProtected(ByteSource source,
             boolean operandSize);
@@ -50,7 +50,7 @@ public interface Decoder {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public InstructionSource decodeVirtual8086(ByteSource source);
 }

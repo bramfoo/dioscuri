@@ -34,7 +34,7 @@ public interface CodeBlockFactory {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(ByteSource source);
 
@@ -42,7 +42,7 @@ public interface CodeBlockFactory {
      *
      * @param source
      * @param operandSize
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
             boolean operandSize);
@@ -50,7 +50,7 @@ public interface CodeBlockFactory {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             ByteSource source);

@@ -103,7 +103,7 @@ public class Floppy {
     /**
      * Get the size of floppy in bytes
      * 
-     * @return
+     * @return -
      */
     protected int getSize() {
         return bytes.length;

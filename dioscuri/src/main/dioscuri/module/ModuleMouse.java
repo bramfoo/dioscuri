@@ -62,13 +62,13 @@ public abstract class ModuleMouse extends Module {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean isBufferEmpty();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract byte getDataFromBuffer(); // returns the head of the buffer
                                               // FIFO, data is automatically

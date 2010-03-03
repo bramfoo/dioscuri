@@ -153,7 +153,7 @@ public class ClassFile {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String[] getMethodNames() {
         String[] names = new String[methodsCount];
@@ -168,7 +168,7 @@ public class ClassFile {
     /**
      *
      * @param methodName
-     * @return
+     * @return -
      */
     public int[] getMethodCode(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
@@ -199,7 +199,7 @@ public class ClassFile {
     /**
      *
      * @param methodName
-     * @return
+     * @return -
      */
     public AttributeInfo.CodeAttribute.ExceptionEntry[] getMethodExceptionTable(
             String methodName) {
@@ -233,7 +233,7 @@ public class ClassFile {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getClassName() {
         if (constantPool[thisClass].getTag() != ConstantPoolInfo.CLASS)
@@ -372,7 +372,7 @@ public class ClassFile {
     /**
      *
      * @param methodName
-     * @return
+     * @return -
      */
     public int getMethodMaxStack(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
@@ -382,7 +382,7 @@ public class ClassFile {
     /**
      *
      * @param methodName
-     * @return
+     * @return -
      */
     public int getMethodMaxLocals(String methodName) {
         MethodInfo mi = getMethodInfo(methodName);
@@ -392,7 +392,7 @@ public class ClassFile {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     protected String getConstantPoolFieldDescriptor(int index) {
         ConstantPoolInfo cpi = constantPool[index];
@@ -409,7 +409,7 @@ public class ClassFile {
     /**
      *
      * @param fieldDescriptor
-     * @return
+     * @return -
      */
     protected int getFieldLength(String fieldDescriptor) {
         return getFieldLength(fieldDescriptor.charAt(0));
@@ -438,7 +438,7 @@ public class ClassFile {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     protected String getConstantPoolUtf8(int index) {
         return ((ConstantPoolInfo.Utf8Info) constantPool[index]).getBytes();
@@ -447,7 +447,7 @@ public class ClassFile {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     protected String getConstantPoolMethodDescriptor(int index) {
         ConstantPoolInfo cpi = constantPool[index];

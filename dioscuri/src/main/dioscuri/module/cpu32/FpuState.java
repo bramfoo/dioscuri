@@ -141,55 +141,55 @@ public abstract class FpuState implements Hibernatable {
     // read accessors
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getInvalidOperation();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getDenormalizedOperand();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getZeroDivide();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getOverflow();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getUnderflow();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getPrecision();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getStackFault();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getErrorSummaryStatus(); // derived from other bits
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getBusy();// same as fpuErrorSummaryStatus()
                                       // (legacy)
@@ -206,37 +206,37 @@ public abstract class FpuState implements Hibernatable {
     // control word
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getInvalidOperationMask();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getDenormalizedOperandMask();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getZeroDivideMask();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getOverflowMask();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getUnderflowMask();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getPrecisionMask();
 
@@ -247,13 +247,13 @@ public abstract class FpuState implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getPrecisionControl(); // 2 bits
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getRoundingControl(); // 2 bits
 
@@ -340,7 +340,7 @@ public abstract class FpuState implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      * @throws ProcessorException
      */
     public abstract double pop() throws ProcessorException;
@@ -348,7 +348,7 @@ public abstract class FpuState implements Hibernatable {
     /**
      *
      * @param index
-     * @return
+     * @return -
      * @throws ProcessorException
      */
     public abstract double ST(int index) throws ProcessorException;
@@ -366,7 +366,7 @@ public abstract class FpuState implements Hibernatable {
     // public abstract void setBigST(int index, BigDecimal value);
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getStatus();
 
@@ -378,7 +378,7 @@ public abstract class FpuState implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getControl();
 
@@ -390,7 +390,7 @@ public abstract class FpuState implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getTagWord();
 
@@ -403,7 +403,7 @@ public abstract class FpuState implements Hibernatable {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     public abstract int getTag(int index);
 

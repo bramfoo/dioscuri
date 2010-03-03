@@ -57,7 +57,7 @@ public class InterruptReason {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCd() {
         return cd;
@@ -73,7 +73,7 @@ public class InterruptReason {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getIo() {
         return io;
@@ -89,7 +89,7 @@ public class InterruptReason {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getRel() {
         return rel;
@@ -105,7 +105,7 @@ public class InterruptReason {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getTag() {
         return tag;

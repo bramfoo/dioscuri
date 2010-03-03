@@ -33,14 +33,14 @@ package dioscuri.module.cpu32;
 public abstract class AbstractMemory extends Memory {
     /**
      *
-     * @return
+     * @return -
      */
     public abstract long getSize();
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract byte getByte(int offset);
 
@@ -100,7 +100,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     protected final short getWordInBytes(int offset) {
         int result = 0xFF & getByte(offset + 1);
@@ -112,7 +112,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     protected final int getDoubleWordInBytes(int offset) {
         int result = 0xFFFF & getWordInBytes(offset + 2);
@@ -124,7 +124,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     protected final long getQuadWordInBytes(int offset) {
         long result = 0xFFFFFFFFl & getDoubleWordInBytes(offset + 4);
@@ -136,7 +136,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public short getWord(int offset) {
         return getWordInBytes(offset);
@@ -145,7 +145,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public int getDoubleWord(int offset) {
         return getDoubleWordInBytes(offset);
@@ -154,7 +154,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public long getQuadWord(int offset) {
         return getQuadWordInBytes(offset);
@@ -163,7 +163,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public long getLowerDoubleQuadWord(int offset) {
         return getQuadWordInBytes(offset);
@@ -172,7 +172,7 @@ public abstract class AbstractMemory extends Memory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public long getUpperDoubleQuadWord(int offset) {
         return getQuadWordInBytes(offset + 8);
@@ -266,7 +266,7 @@ public abstract class AbstractMemory extends Memory {
      *
      * @param offset
      * @param src
-     * @return
+     * @return -
      */
     public static final short getWord(int offset, byte[] src) {
         return (short) ((0xFF & src[offset]) | (0xFF00 & (src[offset + 1] << 8)));
@@ -276,7 +276,7 @@ public abstract class AbstractMemory extends Memory {
      *
      * @param offset
      * @param src
-     * @return
+     * @return -
      */
     public static final int getDoubleWord(int offset, byte[] src) {
         return (0xFFFF & getWord(offset, src))

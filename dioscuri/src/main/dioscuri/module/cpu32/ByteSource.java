@@ -33,27 +33,27 @@ package dioscuri.module.cpu32;
 public interface ByteSource {
     /**
      *
-     * @return
+     * @return -
      */
     public byte getByte();
 
     /**
      *
      * @param count
-     * @return
+     * @return -
      */
     public boolean skip(int count);
 
     /**
      *
      * @param count
-     * @return
+     * @return -
      */
     public boolean rewind(int count);
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset();
 }

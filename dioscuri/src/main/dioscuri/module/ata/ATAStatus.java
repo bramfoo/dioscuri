@@ -78,7 +78,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getBusy() {
         return busy;
@@ -94,7 +94,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getDriveReady() {
         return driveReady;
@@ -110,7 +110,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getWriteFault() {
         return writeFault;
@@ -126,7 +126,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getSeekComplete() {
         return seekComplete;
@@ -142,7 +142,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getDrq() {
         return drq;
@@ -158,7 +158,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCorrectedData() {
         return correctedData;
@@ -174,7 +174,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getIndexPulse() {
         return indexPulse;
@@ -190,7 +190,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getIndexPulseCount() {
         return indexPulseCount;
@@ -220,7 +220,7 @@ public class ATAStatus {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getErr() {
         return err;

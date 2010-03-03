@@ -52,7 +52,7 @@ public abstract class ModuleSerialPort extends ModuleDevice {
      *
      * @param device
      * @param comPort
-     * @return
+     * @return -
      */
     public abstract boolean setUARTDevice(UART device, int comPort);
 }

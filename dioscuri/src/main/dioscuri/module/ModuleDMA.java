@@ -52,7 +52,7 @@ public abstract class ModuleDMA extends ModuleDevice {
      *
      * @param chanNum
      * @param dma8handler
-     * @return
+     * @return -
      */
     public abstract boolean registerDMAChannel(int chanNum,
             DMA8Handler dma8handler);
@@ -61,7 +61,7 @@ public abstract class ModuleDMA extends ModuleDevice {
      *
      * @param chanNum
      * @param dma16handler
-     * @return
+     * @return -
      */
     public abstract boolean registerDMAChannel(int chanNum,
             DMA16Handler dma16handler);
@@ -80,7 +80,7 @@ public abstract class ModuleDMA extends ModuleDevice {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean isTerminalCountReached();
 }

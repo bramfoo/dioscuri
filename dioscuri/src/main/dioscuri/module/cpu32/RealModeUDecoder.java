@@ -231,7 +231,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public InstructionSource decodeReal(ByteSource source) {
         reset();
@@ -242,7 +242,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public InstructionSource decodeVirtual8086(ByteSource source) {
         reset();
@@ -254,7 +254,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param source
      * @param operandSize
-     * @return
+     * @return -
      */
     public InstructionSource decodeProtected(ByteSource source,
             boolean operandSize) {
@@ -274,7 +274,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean getNext() {
         decode(); // will put new block in working
@@ -297,7 +297,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMicrocode() {
         return current.getMicrocode();
@@ -305,7 +305,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getLength() {
         return current.getLength();
@@ -313,7 +313,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return current.getX86Length();
@@ -6428,7 +6428,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param opcode
      * @param modrm
-     * @return
+     * @return -
      */
     public static boolean isFarJump(int opcode, int modrm) {
         switch (opcode) {
@@ -6461,7 +6461,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param opcode
      * @param modrm
-     * @return
+     * @return -
      */
     public static boolean isNearJump(int opcode, int modrm) {
         switch (opcode) {
@@ -6527,7 +6527,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param opcode
      * @param modrm
-     * @return
+     * @return -
      */
     public static boolean isModeSwitch(int opcode, int modrm) {
         switch (opcode) {
@@ -6547,7 +6547,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param opcode
      * @param modrm
-     * @return
+     * @return -
      */
     public static boolean isBlockTerminating(int opcode, int modrm) {
         switch (opcode) {
@@ -6562,7 +6562,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
      *
      * @param opcode
      * @param modrm
-     * @return
+     * @return -
      */
     public static boolean isJump(int opcode, int modrm) {
         return isNearJump(opcode, modrm) || isFarJump(opcode, modrm)

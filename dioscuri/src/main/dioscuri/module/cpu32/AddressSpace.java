@@ -63,7 +63,7 @@ public abstract class AddressSpace extends AbstractMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     public final long getSize() {
         return 0x100000000l;
@@ -72,7 +72,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public final int getBlockStart(int address) {
         return address & INDEX_MASK;
@@ -81,7 +81,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public final int getBlockEnd(int address) {
         return (address & INDEX_MASK) + BLOCK_SIZE;
@@ -90,14 +90,14 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract Memory getReadMemoryBlockAt(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract Memory getWriteMemoryBlockAt(int offset);
 
@@ -109,14 +109,14 @@ public abstract class AddressSpace extends AbstractMemory {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean updated();
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public byte getByte(int offset) {
         return getReadMemoryBlockAt(offset).getByte(offset & BLOCK_MASK);
@@ -134,7 +134,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public short getWord(int offset) {
@@ -148,7 +148,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public int getDoubleWord(int offset) {
@@ -163,7 +163,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getQuadWord(int offset) {
@@ -178,7 +178,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getLowerDoubleQuadWord(int offset) {
@@ -193,7 +193,7 @@ public abstract class AddressSpace extends AbstractMemory {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public long getUpperDoubleQuadWord(int offset) {

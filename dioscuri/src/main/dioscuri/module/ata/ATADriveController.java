@@ -128,7 +128,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public ATAStatus getStatus() {
         return status;
@@ -136,7 +136,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getLbaMode() {
         return lbaMode;
@@ -152,7 +152,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getErrorRegister() {
         return errorRegister;
@@ -168,7 +168,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getBuffer() {
         return buffer;
@@ -185,7 +185,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getBufferSize() {
         return bufferSize;
@@ -201,7 +201,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getBufferIndex() {
         return bufferIndex;
@@ -217,7 +217,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getCurrentCommand() {
         return currentCommand;
@@ -233,7 +233,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getDrqIndex() {
         return drqIndex;
@@ -249,7 +249,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public InterruptReason getInterruptReason() {
         return interruptReason;
@@ -265,7 +265,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getByteCount() {
         return byteCount;
@@ -281,7 +281,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isDisableIrq() {
         return disableIrq;
@@ -297,7 +297,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isReset() {
         return reset;
@@ -313,7 +313,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getResetInProgress() {
         return resetInProgress;
@@ -329,7 +329,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getNumSectorsPerBlock() {
         return numSectorsPerBlock;
@@ -345,7 +345,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getPacketDma() {
         return packetDma;
@@ -361,7 +361,7 @@ public class ATADriveController {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMultipleSectors() {
         return multipleSectors;

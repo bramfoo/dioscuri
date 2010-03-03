@@ -36,7 +36,7 @@ public interface DMATransferCapable {
      * @param nchan
      * @param pos
      * @param size
-     * @return
+     * @return -
      */
     public int transferHandler(int nchan, int pos, int size);
 }

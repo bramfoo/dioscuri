@@ -38,7 +38,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return 0;
@@ -46,7 +46,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         try {
@@ -66,7 +66,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
     /**
      *
      * @param cpu
-     * @return
+     * @return -
      */
     protected abstract CodeBlock decode(Processor cpu);
 
@@ -74,7 +74,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return true;

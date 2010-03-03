@@ -157,7 +157,7 @@ public class IO {
      * Parses an input string into commands along with their arguments, execute
      * a command if recognised, otherwise ignore.
      * 
-     * @return
+     * @return -
      */
     public int getCommand() {
         // Declare returnCommand

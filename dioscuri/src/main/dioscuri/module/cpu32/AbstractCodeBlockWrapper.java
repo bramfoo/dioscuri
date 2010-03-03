@@ -49,7 +49,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public final int getX86Length() {
         return actualBlock.getX86Length();
@@ -57,7 +57,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public final int getX86Count() {
         return actualBlock.getX86Count();
@@ -71,7 +71,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "WRAP[" + blockIndex + "] " + actualBlock.getDisplayString();
@@ -87,7 +87,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public final CodeBlock getBlock() {
         return actualBlock;
@@ -95,7 +95,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public final long getBlockIndex() {
         return blockIndex;
@@ -105,7 +105,7 @@ public class AbstractCodeBlockWrapper implements CodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return actualBlock.handleMemoryRegionChange(startAddress, endAddress);

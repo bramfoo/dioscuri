@@ -51,7 +51,7 @@ public class CodeBlockCombiner {
      *
      * @param memory
      * @param offset
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         source.set(memory, offset & AddressSpace.BLOCK_MASK);
@@ -199,7 +199,7 @@ public class CodeBlockCombiner {
      *
      * @param source
      * @param operandSize
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
             boolean operandSize) {

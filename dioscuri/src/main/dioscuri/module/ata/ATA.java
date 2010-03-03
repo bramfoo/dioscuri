@@ -3482,7 +3482,7 @@ public class ATA extends ModuleATA {
      * @param bufferIndex
      * @param start
      * @param numBits
-     * @return
+     * @return -
      */
     private int getPacketField(int channelIndex, int bufferIndex, int start,
             int numBits) {

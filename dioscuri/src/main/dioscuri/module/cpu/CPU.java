@@ -1521,7 +1521,7 @@ public class CPU extends ModuleCPU {
     /**
      *
      * @param data
-     * @return
+     * @return -
      */
     public String dumpDebug(String data) {
         String dump = data;
@@ -5481,7 +5481,7 @@ public class CPU extends ModuleCPU {
     /**
      *
      * @param register
-     * @return
+     * @return -
      */
     public String getRegisterHex(int register) {
         switch (register) {
@@ -5521,7 +5521,7 @@ public class CPU extends ModuleCPU {
 
     /**
      * 
-     * @return
+     * @return -
      */
     public String startDebug() {
         StringBuilder b = new StringBuilder();
@@ -5533,7 +5533,7 @@ public class CPU extends ModuleCPU {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String registerDump() {
         StringBuilder b = new StringBuilder();

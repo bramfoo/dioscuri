@@ -107,7 +107,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] ioPortsRequested() {
         return new int[] { 0x500, 0x501, 0x502, 0x503 };
@@ -116,7 +116,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadByte(int address) {
         return 0xff;
@@ -125,7 +125,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadWord(int address) {
         return 0xffff;
@@ -134,7 +134,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
     /**
      *
      * @param address
-     * @return
+     * @return -
      */
     public int ioPortReadLong(int address) {
         return (int) 0xffffffff;
@@ -201,7 +201,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getImage() {
         return (byte[]) imageData.clone();
@@ -209,7 +209,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean updated() {
@@ -235,7 +235,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean initialised() {
@@ -261,7 +261,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
 
     /**
      *
-     * @return
+     * @return -
      */
     @Override
     public boolean reset() {

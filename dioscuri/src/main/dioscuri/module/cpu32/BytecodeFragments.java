@@ -325,7 +325,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param element
-     * @return
+     * @return -
      */
     public static Object[] pushCode(int element) {
         Object[] temp = pushCodeArray[element];
@@ -338,7 +338,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param element
-     * @return
+     * @return -
      */
     public static Object[] popCode(int element) {
         Object[] temp = popCodeArray[element];
@@ -351,7 +351,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param name
-     * @return
+     * @return -
      */
     public static Object field(String name) {
         try {
@@ -366,7 +366,7 @@ public class BytecodeFragments implements MicrocodeSet {
      *
      * @param cls
      * @param name
-     * @return
+     * @return -
      */
     public static Object field(Class cls, String name) {
         try {
@@ -379,7 +379,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param name
-     * @return
+     * @return -
      */
     public static Object method(String name) {
         return method(name, new Class[0]);
@@ -389,7 +389,7 @@ public class BytecodeFragments implements MicrocodeSet {
      *
      * @param name
      * @param arg
-     * @return
+     * @return -
      */
     public static Object method(String name, Class arg) {
         return method(name, new Class[] { arg });
@@ -400,7 +400,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @param arg0
      * @param arg1
-     * @return
+     * @return -
      */
     public static Object method(String name, Class arg0, Class arg1) {
         return method(name, new Class[] { arg0, arg1 });
@@ -410,7 +410,7 @@ public class BytecodeFragments implements MicrocodeSet {
      *
      * @param name
      * @param args
-     * @return
+     * @return -
      */
     public static Object method(String name, Class[] args) {
         try {
@@ -425,7 +425,7 @@ public class BytecodeFragments implements MicrocodeSet {
      *
      * @param cls
      * @param name
-     * @return
+     * @return -
      */
     public static Object method(Class cls, String name) {
         return method(cls, name, new Class[0]);
@@ -436,7 +436,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param cls
      * @param name
      * @param arg
-     * @return
+     * @return -
      */
     public static Object method(Class cls, String name, Class arg) {
         return method(cls, name, new Class[] { arg });
@@ -448,7 +448,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @param arg0
      * @param arg1
-     * @return
+     * @return -
      */
     public static Object method(Class cls, String name, Class arg0, Class arg1) {
         return method(cls, name, new Class[] { arg0, arg1 });
@@ -461,7 +461,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param arg0
      * @param arg1
      * @param arg2
-     * @return
+     * @return -
      */
     public static Object method(Class cls, String name, Class arg0, Class arg1,
             Class arg2) {
@@ -473,7 +473,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param cls
      * @param name
      * @param args
-     * @return
+     * @return -
      */
     public static Object method(Class cls, String name, Class[] args) {
         try {
@@ -486,7 +486,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param value
-     * @return
+     * @return -
      */
     public static Object integer(int value) {
         return new ConstantPoolSymbol(new Integer(value));
@@ -495,7 +495,7 @@ public class BytecodeFragments implements MicrocodeSet {
     /**
      *
      * @param value
-     * @return
+     * @return -
      */
     public static Object longint(long value) {
         return new ConstantPoolSymbol(new Long(value));

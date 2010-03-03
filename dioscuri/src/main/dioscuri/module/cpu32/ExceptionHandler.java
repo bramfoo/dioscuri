@@ -65,7 +65,7 @@ public abstract class ExceptionHandler {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Index() {
         return initialNode.getX86Index();
@@ -83,7 +83,7 @@ public abstract class ExceptionHandler {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean used() {
         return (minPC != Integer.MAX_VALUE);
@@ -91,7 +91,7 @@ public abstract class ExceptionHandler {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int start() {
         return minPC;
@@ -99,7 +99,7 @@ public abstract class ExceptionHandler {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int end() {
         return maxPC;

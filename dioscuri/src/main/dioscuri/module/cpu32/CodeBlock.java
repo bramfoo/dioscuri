@@ -36,13 +36,13 @@ public interface CodeBlock {
     
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length();
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count();
 
@@ -57,7 +57,7 @@ public interface CodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString();
 
@@ -65,7 +65,7 @@ public interface CodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress);
 }

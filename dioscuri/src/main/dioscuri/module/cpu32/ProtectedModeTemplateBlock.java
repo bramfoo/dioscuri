@@ -75,7 +75,7 @@ public abstract class ProtectedModeTemplateBlock implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return getClass().getName();
@@ -85,7 +85,7 @@ public abstract class ProtectedModeTemplateBlock implements
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;

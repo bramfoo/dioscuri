@@ -305,7 +305,7 @@ public class UCodeMethodParser implements MicrocodeSet {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int parse() {
         Method[] methods = UCodeStaticMethods.class.getDeclaredMethods();

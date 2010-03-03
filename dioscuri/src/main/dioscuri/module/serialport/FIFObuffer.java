@@ -71,7 +71,7 @@ public class FIFObuffer extends ArrayList<Byte> {
     /**
      *
      * @param data
-     * @return
+     * @return -
      */
     public boolean setByte(byte data) {
         return super.add(Byte.valueOf(data));
@@ -79,7 +79,7 @@ public class FIFObuffer extends ArrayList<Byte> {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte getByte() {
         byte data = ((Byte) super.get(0)).byteValue();

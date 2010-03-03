@@ -35,7 +35,7 @@ import java.io.*;
 public abstract class AbstractHardwareComponent implements HardwareComponent {
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised() {
         return true;
@@ -50,7 +50,7 @@ public abstract class AbstractHardwareComponent implements HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return true;
@@ -65,7 +65,7 @@ public abstract class AbstractHardwareComponent implements HardwareComponent {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset() {
         return true;

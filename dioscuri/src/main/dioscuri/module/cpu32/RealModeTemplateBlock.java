@@ -74,7 +74,7 @@ public abstract class RealModeTemplateBlock implements RealModeCodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return getClass().getName();
@@ -84,7 +84,7 @@ public abstract class RealModeTemplateBlock implements RealModeCodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;

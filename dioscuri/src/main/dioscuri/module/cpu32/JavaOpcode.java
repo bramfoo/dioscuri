@@ -906,7 +906,7 @@ public class JavaOpcode {
     /**
      *
      * @param value
-     * @return
+     * @return -
      */
     public static String toString(int value) {
         return opcodes[value];
@@ -915,7 +915,7 @@ public class JavaOpcode {
     /**
      *
      * @param code
-     * @return
+     * @return -
      */
     public static boolean isBranchInstruction(int code) {
         switch (code) {
@@ -950,7 +950,7 @@ public class JavaOpcode {
     /**
      *
      * @param code
-     * @return
+     * @return -
      */
     public static boolean isReturn(int code) {
         switch (code) {
@@ -971,7 +971,7 @@ public class JavaOpcode {
      *
      * @param code
      * @param i
-     * @return
+     * @return -
      */
     public static int getJumpOffset(int[] code, int i) {
         switch (code[i]) {
@@ -1015,7 +1015,7 @@ public class JavaOpcode {
      *
      * @param code
      * @param i
-     * @return
+     * @return -
      */
     public static int getStackDelta(int[] code, int i) {
         switch (code[i]) {
@@ -1436,7 +1436,7 @@ public class JavaOpcode {
      *
      * @param code
      * @param i
-     * @return
+     * @return -
      */
     public static int getLocalVariableAccess(int[] code, int i) {
         switch (code[i]) {
@@ -1552,7 +1552,7 @@ public class JavaOpcode {
     /**
      *
      * @param code
-     * @return
+     * @return -
      */
     public static int getConstantPoolIndexSize(int code) {
         switch (code) {
@@ -1585,7 +1585,7 @@ public class JavaOpcode {
      *
      * @param code
      * @param i
-     * @return
+     * @return -
      */
     public static int getOpcodeLength(int[] code, int i) {
         switch (code[i]) {

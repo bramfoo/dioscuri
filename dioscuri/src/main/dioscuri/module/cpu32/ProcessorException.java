@@ -64,7 +64,7 @@ public final class ProcessorException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getVector() {
         return vector;
@@ -72,7 +72,7 @@ public final class ProcessorException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean hasErrorCode() {
         return hasErrorCode;
@@ -80,7 +80,7 @@ public final class ProcessorException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getErrorCode() {
         return errorCode;
@@ -88,7 +88,7 @@ public final class ProcessorException extends RuntimeException {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean pointsToSelf() {
         return pointsToSelf;
@@ -114,7 +114,7 @@ public final class ProcessorException extends RuntimeException {
     /**
      *
      * @param vector
-     * @return
+     * @return -
      */
     public boolean combinesToDoubleFault(int vector) {
         // Here we are the "second exception"

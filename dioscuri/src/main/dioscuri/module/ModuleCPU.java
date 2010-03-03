@@ -111,7 +111,7 @@ public abstract class ModuleCPU extends Module {
     /**
      * Initialise the single and double byte opcode lookup arrays with
      * instructions corresponding to the Intel hexadecimal machinecode values.
-     * @return
+     * @return -
      */
     protected abstract boolean initInstructionTables();
 
@@ -212,7 +212,7 @@ public abstract class ModuleCPU extends Module {
     /**
      *
      * @param register
-     * @return
+     * @return -
      */
     public abstract String getRegisterHex(int register);
 

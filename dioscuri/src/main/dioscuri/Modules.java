@@ -72,7 +72,7 @@ public class Modules extends ArrayList<Module> {
     /**
      *
      * @param module
-     * @return
+     * @return -
      */
     public boolean addModule(Module module) {
         return super.add(module);
@@ -81,7 +81,7 @@ public class Modules extends ArrayList<Module> {
     /**
      *
      * @param type
-     * @return
+     * @return -
      */
     public Module getModule(String type) {
         for (int i = 0; i < super.size(); i++) {
@@ -95,7 +95,7 @@ public class Modules extends ArrayList<Module> {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     public Module getModule(int index) {
         return (Module) super.get(index);

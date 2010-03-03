@@ -124,7 +124,7 @@ public class LazyCodeBlockMemory extends LazyMemory {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public int execute(Processor cpu, int offset) {
@@ -141,7 +141,7 @@ public class LazyCodeBlockMemory extends LazyMemory {
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {

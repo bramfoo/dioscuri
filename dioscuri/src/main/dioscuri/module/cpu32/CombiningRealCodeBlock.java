@@ -64,7 +64,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         return x86Length;
@@ -72,7 +72,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return block0.getX86Count() + block1.getX86Count()
@@ -134,7 +134,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         invalidate();
@@ -143,7 +143,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         return "\nBlock0:\n" + block0.getDisplayString() + "\nBlock1:\n"

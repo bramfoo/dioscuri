@@ -47,7 +47,7 @@ public class CountingOutputStream extends OutputStream {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int position() {
         return count;

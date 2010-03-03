@@ -34,14 +34,14 @@ public interface CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source);
 
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source);
@@ -49,7 +49,7 @@ public interface CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source);

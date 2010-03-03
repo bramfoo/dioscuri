@@ -80,7 +80,7 @@ public abstract class ConstantPoolInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getTag();
 
@@ -97,7 +97,7 @@ public abstract class ConstantPoolInfo {
     /**
      *
      * @param in
-     * @return
+     * @return -
      * @throws IOException
      */
     public static ConstantPoolInfo construct(DataInputStream in)
@@ -149,7 +149,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return CLASS;
@@ -157,7 +157,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getNameIndex() {
             return nameIndex;
@@ -262,7 +262,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return FIELDREF;
@@ -289,7 +289,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return METHODREF;
@@ -316,7 +316,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         @Override
         public int getTag() {
@@ -350,7 +350,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return STRING;
@@ -358,7 +358,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getStringIndex() {
             return stringIndex;
@@ -414,7 +414,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return INTEGER;
@@ -422,7 +422,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getBytes() {
             return bytes;
@@ -480,7 +480,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return FLOAT;
@@ -488,7 +488,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public float getBytes() {
             return bytes;
@@ -546,7 +546,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return LONG;
@@ -554,7 +554,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public long getBytes() {
             return bytes;
@@ -616,7 +616,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return DOUBLE;
@@ -624,7 +624,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public double getBytes() {
             return bytes;
@@ -685,7 +685,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return NAMEANDTYPE;
@@ -693,7 +693,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getNameIndex() {
             return nameIndex;
@@ -701,7 +701,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getDescriptorIndex() {
             return descriptorIndex;
@@ -763,7 +763,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public int getTag() {
             return UTF8;
@@ -771,7 +771,7 @@ public abstract class ConstantPoolInfo {
 
         /**
          *
-         * @return
+         * @return -
          */
         public String getBytes() {
             return bytes;

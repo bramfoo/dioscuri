@@ -69,7 +69,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte getFruc() {
         return fruc;
@@ -85,7 +85,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public AscType getAsc() {
         return this.ascType;
@@ -101,7 +101,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte getAscq() {
         return this.ascq;
@@ -117,7 +117,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getInformation() {
         return information;
@@ -134,7 +134,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getSpecificInf() {
         return specificInf;
@@ -151,7 +151,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte[] getKeySpec() {
         return keySpec;
@@ -168,7 +168,7 @@ public class SenseInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public SenseType getSenseKey() {
         return senseKey;

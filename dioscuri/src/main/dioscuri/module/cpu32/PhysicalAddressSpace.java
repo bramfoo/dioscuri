@@ -233,7 +233,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean getGateA20State() {
         return gateA20MaskState;
@@ -241,7 +241,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getAllocatedBufferSize() {
         return mappedRegionCount * BLOCK_SIZE;
@@ -250,7 +250,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getReadMemoryBlockAt(int offset) {
         return getMemoryBlockAt(offset);
@@ -259,7 +259,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getWriteMemoryBlockAt(int offset) {
         return getMemoryBlockAt(offset);
@@ -269,7 +269,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public int execute(Processor cpu, int offset) {
         return getReadMemoryBlockAt(offset).execute(cpu,
@@ -280,7 +280,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         CodeBlock block = getReadMemoryBlockAt(offset).decodeCodeBlockAt(cpu,
@@ -333,7 +333,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
         /**
          *
-         * @return
+         * @return -
          */
         public long getSize() {
             return BLOCK_SIZE;
@@ -386,7 +386,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public byte getByte(int offset) {
             offset = baseAddress | offset;
@@ -396,7 +396,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public short getWord(int offset) {
             offset = baseAddress | offset;
@@ -406,7 +406,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public int getDoubleWord(int offset) {
             offset = baseAddress | offset;
@@ -416,7 +416,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getQuadWord(int offset) {
             offset = baseAddress | offset;
@@ -426,7 +426,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getLowerDoubleQuadWord(int offset) {
             offset = baseAddress | offset;
@@ -436,7 +436,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getUpperDoubleQuadWord(int offset) {
             offset += 8;
@@ -509,7 +509,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public int execute(Processor cpu, int offset) {
             offset = baseAddress | offset;
@@ -520,7 +520,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             offset = baseAddress | offset;
@@ -678,7 +678,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
         /**
          *
-         * @return
+         * @return -
          */
         public long getSize() {
             return BLOCK_SIZE;
@@ -687,7 +687,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public byte getByte(int offset) {
             return (byte) 0xFF;
@@ -696,7 +696,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public short getWord(int offset) {
             return (short) 0xFFFF;
@@ -705,7 +705,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public int getDoubleWord(int offset) {
             return 0xFFFFFFFF;
@@ -714,7 +714,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getQuadWord(int offset) {
             return -1l;
@@ -723,7 +723,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getLowerDoubleQuadWord(int offset) {
             return -1l;
@@ -732,7 +732,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getUpperDoubleQuadWord(int offset) {
             return -1l;
@@ -790,7 +790,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public int execute(Processor cpu, int offset) {
             throw new IllegalStateException(
@@ -802,7 +802,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             throw new IllegalStateException(
@@ -813,7 +813,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset() {
         clear();
@@ -825,7 +825,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return true;
@@ -840,7 +840,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised() {
         return (linearAddr != null);

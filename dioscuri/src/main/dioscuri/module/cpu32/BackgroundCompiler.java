@@ -117,7 +117,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         RealModeCodeBlock imm = immediate.getRealModeCodeBlock(source);
@@ -127,7 +127,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
             InstructionSource source) {
@@ -139,7 +139,7 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     /**
      *
      * @param source
-     * @return
+     * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
             InstructionSource source) {

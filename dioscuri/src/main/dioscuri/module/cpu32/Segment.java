@@ -37,7 +37,7 @@ import java.io.*;
 public abstract class Segment implements Hibernatable {
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean isPresent();
 
@@ -49,37 +49,37 @@ public abstract class Segment implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getType();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getSelector();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getLimit();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getBase();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean getDefaultSizeFlag();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getRPL();
 
@@ -91,14 +91,14 @@ public abstract class Segment implements Hibernatable {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract int getDPL();
 
     /**
      *
      * @param selector
-     * @return
+     * @return -
      */
     public abstract boolean setSelector(int selector);
 
@@ -112,42 +112,42 @@ public abstract class Segment implements Hibernatable {
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract int translateAddressRead(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract int translateAddressWrite(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract byte getByte(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract short getWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract int getDoubleWord(int offset);
 
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public abstract long getQuadWord(int offset);
 
@@ -182,7 +182,7 @@ public abstract class Segment implements Hibernatable {
     /**
      *
      * @param output
-     * @return
+     * @return -
      * @throws IOException
      */
     public abstract int dumpState(DataOutput output) throws IOException;

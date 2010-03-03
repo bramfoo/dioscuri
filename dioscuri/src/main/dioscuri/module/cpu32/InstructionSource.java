@@ -33,25 +33,25 @@ package dioscuri.module.cpu32;
 public interface InstructionSource {
     /**
      *
-     * @return
+     * @return -
      */
     public boolean getNext();
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMicrocode();
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getLength();
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length();
 }

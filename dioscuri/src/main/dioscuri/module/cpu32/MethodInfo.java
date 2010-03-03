@@ -123,7 +123,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getNameIndex() {
         return nameIndex;
@@ -131,7 +131,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getDescriptorIndex() {
         return descriptorIndex;
@@ -139,7 +139,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMaxStack() {
         for (int i = 0; (i < attributesCount); i++)
@@ -151,7 +151,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMaxLocals() {
         for (int i = 0; (i < attributesCount); i++)
@@ -163,7 +163,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] getCode() {
         for (int i = 0; (i < attributesCount); i++)
@@ -201,7 +201,7 @@ public class MethodInfo {
 
     /**
      *
-     * @return
+     * @return -
      */
     public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable() {
         for (int i = 0; i < attributesCount; i++)

@@ -182,7 +182,7 @@ public class Drive {
         
         /**
          * @param floppyType
-         * @return
+         * @return -
          */
         public static FloppyType fromId(byte id) {
             FloppyType result = TYPE_NONE; // default to none
@@ -230,7 +230,7 @@ public class Drive {
     /**
      * Reset drive All geometry parameters for sector selection are reset.
      * 
-     * @return
+     * @return -
      */
     protected boolean reset() {
         // Reset registers

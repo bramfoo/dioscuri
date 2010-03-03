@@ -96,7 +96,7 @@ public class TextModeAttributes {
 
     /**
      *
-     * @return
+     * @return -
      */
     public short[] getAttributes() {
         return new short[] { fullStartAddress, cursorStartLine, cursorEndLine,

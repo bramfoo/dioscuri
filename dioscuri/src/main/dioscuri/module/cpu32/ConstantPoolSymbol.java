@@ -53,7 +53,7 @@ public class ConstantPoolSymbol {
 
     /**
      *
-     * @return
+     * @return -
      */
     public Object poolEntity() {
         return poolEntity;

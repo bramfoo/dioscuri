@@ -130,9 +130,7 @@ public class DiskImage {
 
     /**
      * Gets the size of the disk image in bytes.
-     * 
-     * @return
-     * @returns the size of the disk image in bytes
+     * @return the size of the disk image in bytes
      */
     protected long getSize() {
 

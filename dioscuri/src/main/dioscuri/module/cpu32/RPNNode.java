@@ -68,25 +68,25 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean hasExternalEffect();
 
     /**
      *
-     * @return
+     * @return -
      */
     public abstract boolean canThrowException();
 
     /**
      *
-     * @return
+     * @return -
      */
     protected abstract Object[] getByteCodes();
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Index() {
         return parent.getX86Index();
@@ -94,7 +94,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Position() {
         return parent.getX86Position();
@@ -102,7 +102,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getImmediate() {
         return parent.getImmediate();
@@ -110,7 +110,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean hasImmediate() {
         return parent.hasImmediate();
@@ -118,7 +118,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getID() {
         return id;
@@ -126,7 +126,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getMicrocode() {
         if (parent == null)
@@ -137,7 +137,7 @@ public abstract class RPNNode {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean hasLinks() {
         return argLinks.size() > 0;
@@ -154,7 +154,7 @@ public abstract class RPNNode {
     /**
      *
      * @param index
-     * @return
+     * @return -
      */
     public int markSubtrees(int index) {
         useCount++;

@@ -266,7 +266,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getLastWalkedAddress() {
         return lastAddress;
@@ -274,7 +274,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isSupervisor() {
         return isSupervisor;
@@ -297,7 +297,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isPagingEnabled() {
         return !pagingDisabled;
@@ -368,7 +368,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean pagingDisabled() {
         return pagingDisabled;
@@ -458,7 +458,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory validateTLBEntryRead(int offset) {
         int idx = offset >>> INDEX_SHIFT;
@@ -586,7 +586,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory validateTLBEntryWrite(int offset) {
         int idx = offset >>> INDEX_SHIFT;
@@ -750,7 +750,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getReadMemoryBlockAt(int offset) {
         return getReadIndexValue(offset >>> INDEX_SHIFT);
@@ -759,7 +759,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     public Memory getWriteMemoryBlockAt(int offset) {
         return getWriteIndexValue(offset >>> INDEX_SHIFT);
@@ -798,7 +798,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public byte getByte(int offset) {
@@ -814,7 +814,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public short getWord(int offset) {
@@ -835,7 +835,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      *
      * @param offset
-     * @return
+     * @return -
      */
     @Override
     public int getDoubleWord(int offset) {
@@ -925,7 +925,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public int execute(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
@@ -953,7 +953,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      *
      * @param cpu
      * @param offset
-     * @return
+     * @return -
      */
     public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
@@ -995,7 +995,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
         /**
          *
-         * @return
+         * @return -
          */
         public ProcessorException getFault() {
             return pageFault;
@@ -1043,7 +1043,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
         /**
          *
-         * @return
+         * @return -
          */
         public long getSize() {
             return 0;
@@ -1052,7 +1052,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public byte getByte(int offset) {
             fill();
@@ -1062,7 +1062,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public short getWord(int offset) {
             fill();
@@ -1072,7 +1072,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public int getDoubleWord(int offset) {
             fill();
@@ -1082,7 +1082,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getQuadWord(int offset) {
             fill();
@@ -1092,7 +1092,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getLowerDoubleQuadWord(int offset) {
             fill();
@@ -1102,7 +1102,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          *
          * @param offset
-         * @return
+         * @return -
          */
         public long getUpperDoubleQuadWord(int offset) {
             fill();
@@ -1173,7 +1173,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public int execute(Processor cpu, int offset) {
             fill();
@@ -1184,7 +1184,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          *
          * @param cpu
          * @param offset
-         * @return
+         * @return -
          */
         public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             fill();
@@ -1194,7 +1194,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean reset() {
         flush();
@@ -1216,7 +1216,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean updated() {
         return target.updated();
@@ -1231,7 +1231,7 @@ public final class LinearAddressSpace extends AddressSpace implements
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean initialised() {
         return (target != null);

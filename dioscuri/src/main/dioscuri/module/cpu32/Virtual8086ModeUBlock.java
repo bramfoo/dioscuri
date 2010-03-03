@@ -113,7 +113,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Length() {
         if (microcodes.length == 0)
@@ -123,7 +123,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int getX86Count() {
         return x86Count;
@@ -131,7 +131,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public String getDisplayString() {
         StringBuffer buf = new StringBuffer();
@@ -145,7 +145,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
      *
      * @param startAddress
      * @param endAddress
-     * @return
+     * @return -
      */
     public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
@@ -158,7 +158,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public InstructionSource getAsInstructionSource() {
         int[] codes = new int[microcodes.length];
@@ -173,7 +173,7 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
 
     /**
      *
-     * @return
+     * @return -
      */
     public int[] getMicrocodes() {
         int[] result = new int[microcodes.length];

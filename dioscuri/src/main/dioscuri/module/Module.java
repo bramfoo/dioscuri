@@ -102,7 +102,7 @@ public abstract class Module {
     /**
      * Reset all parameters of module
      * 
-     * @return
+     * @return -
      */
     public abstract boolean reset();
 

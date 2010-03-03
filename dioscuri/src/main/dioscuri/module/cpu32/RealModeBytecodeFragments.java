@@ -60,7 +60,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
      * @param element
      * @param microcode
      * @param x86Position
-     * @return
+     * @return -
      */
     public static Object[] getOperation(int element, int microcode,
             int x86Position) {
@@ -85,7 +85,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
      * @param microcode
      * @param x86Position
      * @param immediate
-     * @return
+     * @return -
      */
     public static Object[] getOperation(int element, int microcode,
             int x86Position, int immediate) {
@@ -104,7 +104,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
     /**
      *
      * @param microcode
-     * @return
+     * @return -
      */
     public static Object[] getTargetsOf(int microcode) {
         return operationArray[microcode];
@@ -114,7 +114,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
      *
      * @param element
      * @param microcode
-     * @return
+     * @return -
      */
     public static int[] getOperands(int element, int microcode) {
         return operandArray[microcode][element];
@@ -124,7 +124,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
      *
      * @param element
      * @param microcode
-     * @return
+     * @return -
      */
     public static boolean hasExternalEffect(int element, int microcode) {
         return externalEffectsArray[microcode][element];
@@ -134,7 +134,7 @@ public class RealModeBytecodeFragments extends BytecodeFragments {
      *
      * @param element
      * @param microcode
-     * @return
+     * @return -
      */
     public static boolean hasExplicitThrow(int element, int microcode) {
         return explicitThrowArray[microcode][element];

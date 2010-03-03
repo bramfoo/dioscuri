@@ -48,13 +48,13 @@ public interface UART {
 
     /**
      *
-     * @return
+     * @return -
      */
     public boolean isDataAvailable();
 
     /**
      *
-     * @return
+     * @return -
      */
     public byte getSerialData();
 
