@@ -46,7 +46,6 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author Bram Lohman
  * @author Bart Kiers
  */
 public final class Utilities {

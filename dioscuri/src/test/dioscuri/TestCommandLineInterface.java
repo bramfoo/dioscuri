@@ -37,84 +37,154 @@
  */
 package dioscuri;
 
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.junit.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
- * @author Bram Lohman\n@author Bart Kiers
+ * Unit tests for all command line options from CommandLineInterface
+ * @author Bart Kiers
  */
 public class TestCommandLineInterface {
+
+    private static Logger logger = Logger.getLogger(TestCommandLineInterface.class.getName());
+
     /*
-    private CommandLineInterface getCommandLineInterface() throws Exception {
-        boolean testing = true;
-        CommandLineInterface cli = new CommandLineInterface(testing,
-                "C:/BK/IntelliJ/dioscuri_043_paths/config/DioscuriConfig.xml");
-        return cli;
+     * Create and return a temp file in the system's temp-folder. If this is not possible, return null.
+     */
+    private File createTempFile() {
+        File tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-dioscuri"+System.currentTimeMillis());
+        try {
+            tmp.createNewFile();
+            tmp.deleteOnExit();
+        } catch(IOException e) {
+            tmp = null;
+        }
+       return tmp;
     }
 
-    private void testParams(String... params) throws Exception {
-        getCommandLineInterface().parse(params);
-    }
-    
-    @Test(expected=ParseException.class)  
-    public void mainTestInvalidParamA() throws Exception {
-        // a non-existant parameter
-        testParams("-FOO");
-    }
-
-    @Test(expected=ParseException.class)
-    public void mainTestInvalidParamB() throws Exception {
-        // a non-existant parameter
-        testParams("-unknown");
+    /*
+     * Create a CommandLineInterface with a custom config file
+     */
+    private CommandLineInterface parseCommandLineInterface(String... params) throws Exception {
+        logger.log(Level.INFO, " [test] trying to parse: "+ Arrays.toString(params));
+        String[] allParams = new String[params.length+2];
+        allParams[0] = "-c";
+        allParams[1] = "C:\\BK\\IntelliJ\\dioscuri_043_paths\\config\\DioscuriConfig.xml";
+        System.arraycopy(params, 0, allParams, 2, params.length);
+        return new CommandLineInterface(allParams);
     }
 
-    @Test(expected=ParseException.class)
-    public void mainTestInvalidParamC() throws Exception {
-        // a non-existant parameter
-        testParams("-H");
+    // UnrecognizedOptionException
+    /*
+     * Test some invalid command line parameters
+     */
+    private void testInValid(String... params) throws Exception {
+        try {
+            parseCommandLineInterface(params);
+        } catch(Exception e) {
+            // exception is expected
+            return;
+        }
+        throw new RuntimeException("exception expected for input: "+Arrays.toString(params));
     }
 
-    @Test(expected= IOException.class)
-    public void mainTestInvalidParamD() throws Exception {
-        // a non-existant file: aNoneExistingFile.xml
-        testParams("-c", "aNoneExistingFile.xml");
+    /*
+     * Test some valid command line parameters
+     */
+    private void testValid(String... params) throws Exception {
+        parseCommandLineInterface(params);
     }
 
+    /**
+     * Test all valid parameters:
+     * <pre>
+     *   -?,--help                         print this message
+     *   -a,--architecture <'16'|'32'>     the cpu's architecture
+     *   -b,--boot <'floppy'|'harddisk'>   the boot drive
+     *   -c,--config <file>                a custom config xml file
+     *   -d,--harddisk <file>              a custom hard disk image
+     *   -e,--exit                         used for testing purposes, will cause
+     *                                     Dioscuri to exit immediately
+     *   -f,--floppy <file>                a custom floppy image
+     *   -h,--hide                         hide the GUI
+     *   -r,--autorun                      emulator will directly start emulatio
+     *                                     process
+     *   -s,--autoshutdown                 emulator will shutdown automatically
+     *                                     when emulation process is finished
+     * </pre>
+     * @throws Exception  -
+     */
     @Test
-    public void mainTestValidParamsA() throws Exception {
-        // test all parameters without a value
-        CommandLineInterface cli = getCommandLineInterface();
-        for(Object o : cli.commandLineOptions.getOptions()) {
+    public void testAllValid() throws Exception {
+        Options options = parseCommandLineInterface().commandLineOptions;
+
+        // no parameters is valid, of course
+        testValid("");
+
+        // test all single options
+        for(Object o : options.getOptions()) {
             Option op = (Option)o;
             if(!op.hasArg()) {
-                testParams("-"+op.getLongOpt());
-                testParams("--"+op.getLongOpt());
-                testParams("-"+op.getOpt());
-                testParams("--"+op.getOpt());
+                testValid("-"+op.getOpt());
+                testValid("--"+op.getLongOpt());
             }
         }
+        // test some multiple params
+        testValid("-he");
+        testValid("-h", "-e", "-s");
 
-        // multiple single parameters
-        testParams("-sha");
-        testParams("-s", "-?", "-a", "-h");
-        testParams("-?eh");
+        // test the options that need a valid input as 2nd parameter
+        File temp = createTempFile();
+        if(temp != null) {
+            // couldn't create a temp file, skip : -cfd
+            testValid("-c", temp.getAbsolutePath());
+            testValid("-f", temp.getAbsolutePath());
+            testValid("-d", temp.getAbsolutePath());
+        }
 
-        // multiple long parameters
-        testParams("-autorun", "-help");
-        testParams("-autoshutdown", "-hide");
+        testValid("-b", "floppy");
+        testValid("-b", "HARDdisk"); // case insensitive
 
-        // multiple single- and long parameters
-        testParams("-autorun", "--h");
-        testParams("--autoshutdown", "-?", "-s");
+        testValid("-a", "16");
+        testValid("-a", "32");  
     }
 
+    /**
+     * Test all invalid parameters. Valid ones are:
+     * <pre>
+     *   -?,--help                         print this message
+     *   -a,--architecture <'16'|'32'>     the cpu's architecture
+     *   -b,--boot <'floppy'|'harddisk'>   the boot drive
+     *   -c,--config <file>                a custom config xml file
+     *   -d,--harddisk <file>              a custom hard disk image
+     *   -e,--exit                         used for testing purposes, will cause
+     *                                     Dioscuri to exit immediately
+     *   -f,--floppy <file>                a custom floppy image
+     *   -h,--hide                         hide the GUI
+     *   -r,--autorun                      emulator will directly start emulatio
+     *                                     process
+     *   -s,--autoshutdown                 emulator will shutdown automatically
+     *                                     when emulation process is finished
+     * </pre>
+     * @throws Exception  -
+     */
     @Test
-    public void mainTestValidParamsB() throws Exception {
-        File temp = new File(System.getProperty("java.io.tmpdir")+"/~TEMP"+System.currentTimeMillis()+".xml");
-        temp.createNewFile();
-        testParams("-c", temp.getAbsolutePath());
-        testParams("-config", temp.getAbsolutePath());
-        temp.deleteOnExit();
-    }
-    */
+    public void testAllInvalid() throws Exception {
+        testInValid("-b", "flopy"); // missing 'p'
+        testInValid("-b", "hd");
 
-    //TODO rewrite tests
+        testInValid("-a", "-16");
+        testInValid("-a", "166");
+        testInValid("-a", "31");
+
+        testInValid("-FOO", "--BAR");
+        testInValid("-X");
+    }
 }

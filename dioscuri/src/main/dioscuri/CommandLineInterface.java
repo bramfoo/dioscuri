@@ -37,6 +37,7 @@
  */
 package dioscuri;
 
+import dioscuri.Constants;
 import dioscuri.config.ConfigController;
 import dioscuri.util.Utilities;
 import org.apache.commons.cli.*;
@@ -47,8 +48,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A class that handles the parameters provided by the user through
+ * the command line. The actual parsing is done by Apache's CLI:
+ * <a href="http://commons.apache.org/cli/">http://commons.apache.org/cli/</a>
  *
- * @author Bram Lohman
  * @author Bart Kiers
  */
 public class CommandLineInterface {
@@ -68,9 +71,9 @@ public class CommandLineInterface {
     String configFilePath;
 
     /**
-     *
-     * @param parameters
-     * @throws Exception
+     * Creates a CommandLineInterface with the provided parameters
+     * @param parameters the parameters to be parsed
+     * @throws Exception when there are invalid parameters
      */
     public CommandLineInterface(String... parameters) throws Exception {
 
@@ -86,8 +89,8 @@ public class CommandLineInterface {
 
         if(commandLine.hasOption("?")) {
             HelpFormatter formatter = new HelpFormatter();
-            formatter.printHelp("java -jar Dioscuri.jar <OPTIONS>\n", commandLineOptions);
-            System.exit(0);
+            formatter.printHelp("java -jar Dioscuri.jar [OPTIONS]\n", commandLineOptions);
+            return;
         }
 
         // a custom config file is used
@@ -109,6 +112,10 @@ public class CommandLineInterface {
         if(commandLine.hasOption("f")) {
             File floppyImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("f"));
             logger.log(Level.INFO, " [cli] using custom floppy image: "+floppyImg);
+            if(floppyImg == null || !floppyImg.exists()) {
+                throw new IOException(" [cli] floppy image '"+floppyImg.getName()+
+                        "' does not exist in folder '"+floppyImg.getParentFile().getAbsolutePath()+"'");
+            }
             emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0).setImagefilepath(floppyImg.getAbsolutePath());
             changes = true;
         }
@@ -116,18 +123,21 @@ public class CommandLineInterface {
         if(commandLine.hasOption("d")) {
             File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d"));
             logger.log(Level.INFO, " [cli] using custom hard disk image: "+hdImg);
+            if(hdImg == null || !hdImg.exists()) {
+                throw new IOException(" [cli] floppy image '"+hdImg.getName()+
+                        "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
+            }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setImagefilepath(hdImg.getAbsolutePath());
             changes = true;
         }
 
         if(commandLine.hasOption("a")) {
             String val = commandLine.getOptionValue("a");
-            int bits = -1;
+            int bits;
             if(val.matches("16|32")) {
                 bits = Integer.valueOf(val);
             } else {
-                bits = 32;
-                logger.log(Level.INFO, " [cli] illegal value: "+val+", setting cpu architecture to: "+bits+" bits");
+                throw new UnrecognizedOptionException("illegal architecture value: "+val);
             }
             logger.log(Level.INFO, " [cli] setting cpu architecture to: "+bits+" bits");
             emuConfig.getArchitecture().getModules().getCpu().setCpu32Bit(bits == 32);
@@ -147,7 +157,7 @@ public class CommandLineInterface {
                 }
             }
             else {
-                logger.log(Level.INFO, " [cli] illegal boot value, using: "+boot);
+                throw new UnrecognizedOptionException("illegal boot value: "+boot);
             }
             logger.log(Level.INFO, " [cli] setting boot drive: "+val);
             emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives().setBootdrive0(boot);
@@ -165,11 +175,17 @@ public class CommandLineInterface {
         }
     }
 
+    /*
+     * load the config file
+     */
     private void loadConfigFile() throws Exception {
         File config = Utilities.resolvePathAsFile(configFilePath);
         emuConfig = ConfigController.loadFromXML(config);
     }
 
+    /*
+     * initialize the options
+     */
     private void initOptions() {
         commandLineOptions = new Options();
 
@@ -200,12 +216,10 @@ public class CommandLineInterface {
         commandLineOptions.addOption(config);
     }
 
-    /**
-     *
-     * @param parameters
-     * @throws ParseException
+    /*
+     * parse the parameters
      */
-    protected void parse(String[] parameters) throws ParseException {
+    private void parse(String[] parameters) throws ParseException {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(commandLineOptions, parameters);
     }

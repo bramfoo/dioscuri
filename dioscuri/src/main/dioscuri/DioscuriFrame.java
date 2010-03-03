@@ -42,6 +42,7 @@ package dioscuri;
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
+import dioscuri.CommandLineInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
