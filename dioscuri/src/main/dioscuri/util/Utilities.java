@@ -45,7 +45,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * Utility class
  * @author Bart Kiers
  */
 public final class Utilities {
@@ -58,9 +58,14 @@ public final class Utilities {
     private Utilities() {}
 
     /**
+     * Resolves a <code>path</code>:  if <code>path</code> exists, it's directly returned.
+     * Else, the execution folder of the Dioscuri JAR is prepend to <code>path</code> and
+     * then the absolute path of that <code>File</code> is returned
      *
-     * @param path
-     * @return -
+     * @param path      the relative or absolute path of a file
+     * @return          the absolute path of a file denoted by the relative-
+     *                  or absolute <code>path</code> (the parameter)
+     * @see Utilities#resolvePathAsFile(String)
      */
     public static String resolvePathAsString(String path) {
         File file = resolvePathAsFile(path);
@@ -68,9 +73,16 @@ public final class Utilities {
     }
 
     /**
+     * Resolves a <code>path</code>:  if <code>path</code> exists, a <code>File</code>
+     * is directly constructed of it. Else, the execution folder of the Dioscuri JAR is
+     * prepend to <code>path</code> and then a <code>File</code> is constructed and returned
      *
-     * @param path
-     * @return -
+     * @param path      the relative or absolute path of a file
+     * @return          if <code>path</code> exists, a <code>File</code> is directly
+     *                  constructed of it. Else, the execution folder of the Dioscuri JAR is
+     *                  prepend to <code>path</code> and then a <code>File</code> is directly
+     *                  constructed and returned
+     * @see Utilities#resolvePathAsString(String)
      */
     public static File resolvePathAsFile(String path) {
         File validPath = new File(path);
@@ -86,10 +98,15 @@ public final class Utilities {
     }
 
     /**
+     * Saves the settings of an <code>dioscuri.config.Emulator</code>
+     * object to the file denoted by <code>path</code>.
      *
-     * @param emuObject
-     * @param path
-     * @return -
+     * @param emuObject     the settings to be saved
+     * @param               path the path of the XML config file
+     * @return              <code>true</code> if the settings from
+     *                      <code>dioscuri.config.Emulator</code>
+     *                      are successfully saved in
+     *                      <code>path</code>, else <code>false</code>
      */
     public static boolean saveXML(dioscuri.config.Emulator emuObject, String path) {
         try {
