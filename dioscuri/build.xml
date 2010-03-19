@@ -52,7 +52,7 @@
         Build file for Dioscuri, the modular emulator
     </description>
 
-	<property name="version"            value="0.4.3"/>
+	<property name="version"            value="0.5.0"/>
 	<property name="main-class"         value="dioscuri.DioscuriFrame"/>
 
 	<!-- Directories in this tree -->
@@ -89,6 +89,7 @@
 		<delete>
 		    <fileset dir="${log.dir}" includes="**/emulator*.txt" excludes="**/emulator0.txt"/>
 	  	</delete>
+        <mkdir dir="${javadoc.dir}"/>
     </target>
 
     <!-- Generate Java classes from XML using JAXB -->

@@ -8,7 +8,7 @@
                 <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
                 <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
                 <bootdrives>
-                    <bootdrive0>Hard Drive</bootdrive0>
+                    <bootdrive0>Floppy Drive</bootdrive0>
                     <bootdrive1>None</bootdrive1>
                     <bootdrive2>None</bootdrive2>
                 </bootdrives>
@@ -29,7 +29,7 @@
                     <driveletter>A</driveletter>
                     <diskformat>1.44M</diskformat>
                     <writeprotected>false</writeprotected>
-                    <imagefilepath>c:\Temp\floppy.ima</imagefilepath>
+                    <imagefilepath>images/floppy/FreeDOS/fd_odin07_1440.ima</imagefilepath>
                 </floppy>
             </fdc>
             <pit debug="false">
@@ -45,14 +45,14 @@
             <ata debug="false">
                 <updateintervalmicrosecs>100000</updateintervalmicrosecs>
                 <harddiskdrive>
-                    <enabled>true</enabled>
+                    <enabled>false</enabled>
                     <channelindex>0</channelindex>
                     <master>true</master>
                     <autodetectcylinders>true</autodetectcylinders>
                     <cylinders>0</cylinders>
                     <heads>4</heads>
                     <sectorspertrack>17</sectorspertrack>
-                    <imagefilepath>c:\Temp\hd.img</imagefilepath>
+                    <imagefilepath></imagefilepath>
                 </harddiskdrive>
             </ata>
             <video debug="false">

@@ -350,8 +350,7 @@ public class Emulator implements Runnable {
                     // Start CPU process
                     ((ModuleCPU) modules.getModule("cpu")).start();
 
-                    // Check if CPU terminated abnormally -> stop emulation
-                    // process
+                    // Check if CPU terminated abnormally -> stop emulation process
                     if (((ModuleCPU) modules.getModule("cpu"))
                             .isAbnormalTermination() == true) {
                         logger

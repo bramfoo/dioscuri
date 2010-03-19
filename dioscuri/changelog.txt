@@ -1,10 +1,26 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date          : 01 April 2009
-Organisations : Koninklijke Bibliotheek,
-                Nationaal Archief of the Netherlands,
-                Tessella Support Services plc.
-Projects      : Dioscuri project, Planets, KEEP
+Date            : 19 March 2010
+Organisations   : Koninklijke Bibliotheek,
+                  Nationaal Archief of the Netherlands,
+                  Tessella Support Services plc.
+Projects        : Dioscuri project, Planets, KEEP
+
+0.5.0 : 19-03-2010
+-------------------------------------------------------
+- improved command line interface options
+- added a label on the GUI that shows in which mode the emulator
+  is running: 16- or 32 bit
+- Dioscuri can now be executed from any location and still finds
+  it's configuration- and image files stored in the application 
+  folder
+- separated some logic from the GUI class and moved it to the
+  util.dioscuri.Utilities class
+- extracted an interface from the main JFrame so that it will
+  be easier to create an applet of Dioscuri
+- started working on unit tests for CPU instructions
+- improved Javadoc API
+- various bug fixes
 
 0.4.2 : 24-04-2009
 -------------------------------------------------------

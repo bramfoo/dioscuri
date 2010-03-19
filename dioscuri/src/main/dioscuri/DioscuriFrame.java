@@ -207,6 +207,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Default location, outside jar
         // TODO configFilePath = Constants.CONFIG_XML;
+        System.out.println(this);
     }
 
     /**

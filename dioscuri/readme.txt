@@ -1,17 +1,24 @@
 Dioscuri user instructions - Modular emulator for Digital Preservation
 ============================================================
-Date             : 2 April 2009
-Date last update : 2 April 2009
+Date             : 19 March 2010
 Organisations    : Koninklijke Bibliotheek,
                    Nationaal Archief of the Netherlands
+Projects         : Dioscuri project, Planets, KEEP
 
 Command line arguments
 ------------------------------------------------------------
+usage: java -jar Dioscuri.jar [OPTIONS]
 
-The following arguments are allowed (in any particular order):
- -c "<CONFIGPATH_FILE>" : uses given config.xml file instead of default. If not available, default will be used
- -h                     : hide GUI
- autorun                : emulator will directly start emulation process
- autoshutdown           : emulator will shutdown automatically when emulation process is finished
-
-Example: java -jar Dioscuri.jar -c "c:\emulators\configs\dioscuri_config.xml" autorun
+ -?,--help                         print this message
+ -a,--architecture <'16'|'32'>     the cpu's architecture
+ -b,--boot <'floppy'|'harddisk'>   the boot drive
+ -c,--config <file>                a custom config xml file
+ -d,--harddisk <file>              a custom hard disk image
+ -e,--exit                         used for testing purposes, will cause
+                                   Dioscuri to exit immediately
+ -f,--floppy <file>                a custom floppy image
+ -h,--hide                         hide the GUI
+ -r,--autorun                      emulator will directly start emulation
+                                   process
+ -s,--autoshutdown                 emulator will shutdown automatically
+                                   when emulation process is finished

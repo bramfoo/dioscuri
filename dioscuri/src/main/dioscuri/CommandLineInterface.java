@@ -90,7 +90,7 @@ public class CommandLineInterface {
         if(commandLine.hasOption("?")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar Dioscuri.jar [OPTIONS]\n", commandLineOptions);
-            return;
+            System.exit(0);
         }
 
         // a custom config file is used

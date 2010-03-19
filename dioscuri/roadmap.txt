@@ -1,6 +1,6 @@
 Roadmap Dioscuri - Modular emulator for Digital Preservation
 ============================================================
-Date             : 29 January 2007
+Date             : 19 March 2010
 Date last update : 11 December 2008
 Organisations    : Koninklijke Bibliotheek,
                    Nationaal Archief of the Netherlands
