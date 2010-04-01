@@ -1050,7 +1050,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                         new BufferedInputStream(new FileInputStream(localLogFile)));
                 logger.log(Level.INFO, "Logging.properties loaded from local file " + localLogFile);
             } else {
-                logger.log(Level.WARNING, "No Logging.properties file found locally");
+                logger.log(Level.WARNING, "No logging.properties file found locally: " + localLogFile.getAbsolutePath());
             }
         } catch (Exception e) {
             logger.log(Level.WARNING, "Error initialising the logging system: " + e.toString());
