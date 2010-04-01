@@ -156,8 +156,8 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
      */
     public void ioPortWriteWord(int address, int data) throws ModuleException {
         // ioPortDevice[address].ioPortWriteWord(address, data);
-        byte[] dataWord = new byte[] { ((byte) ((data >> 8) & 0xFF)),
-                ((byte) (data & 0xFF)) };
+        byte[] dataWord = new byte[] { ((byte) (data & 0xFF)),
+        		((byte) ((data >> 8) & 0xFF))};
         mb.setIOPortWord(address, dataWord);
     }
 
@@ -169,10 +169,11 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
      */
     public void ioPortWriteLong(int address, int data) throws ModuleException {
         // ioPortDevice[address].ioPortWriteLong(address, data);
-        byte[] dataDWord = new byte[] { ((byte) ((data >> 24) & 0xFF)),
-                ((byte) ((data >> 16) & 0xFF)), ((byte) ((data >> 8) & 0xFF)),
-                ((byte) (data & 0xFF)) };
-        mb.setIOPortWord(address, dataDWord);
+        byte[] dataDWord = new byte[] { ((byte) (data & 0xFF)),
+        		((byte) ((data >> 8) & 0xFF)),
+        		((byte) ((data >> 16) & 0xFF)),
+        		((byte) ((data >> 24) & 0xFF))};
+        mb.setIOPortDoubleWord(address, dataDWord);
     }
 
     /**
