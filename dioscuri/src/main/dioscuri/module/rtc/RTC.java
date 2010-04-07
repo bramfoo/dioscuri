@@ -91,7 +91,7 @@ public class RTC extends ModuleRTC {
                                 // machine, FALSE = user-defined
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.rtc");
+    private static final Logger logger = Logger.getLogger(RTC.class.getName());
 
     // Register settings
     private boolean disableNMI; // Set by bit 7 of port data. Uses inverse

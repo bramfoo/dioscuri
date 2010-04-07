@@ -133,7 +133,7 @@ public class VideoCard {
     /**
      *
      */
-    public byte[] textSnapshot = new byte[128 * 1024]; // Current text snapshot,
+    public byte[] textSnapshot = new byte[128 * 1024]; // Currenttext snapshot,
                                                        // is used to compare
                                                        // current screen
                                                        // characters with newly

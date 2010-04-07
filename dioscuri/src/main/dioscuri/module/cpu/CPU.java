@@ -131,7 +131,7 @@ public class CPU extends ModuleCPU {
                               // shutdown
 
     // Logging
-    private static Logger logger = Logger.getLogger(CPU.class.getPackage()
+    private static final Logger logger = Logger.getLogger(CPU.class.getPackage()
             .getName());
 
     // Instruction and timing

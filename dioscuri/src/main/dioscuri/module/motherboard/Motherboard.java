@@ -105,7 +105,7 @@ public class Motherboard extends ModuleMotherboard {
                                           // signed/unsigned
 
     // Logging
-    private static Logger logger = Logger.getLogger(Motherboard.class
+    private static final Logger logger = Logger.getLogger(Motherboard.class
             .getPackage().getName());
 
     // Constants

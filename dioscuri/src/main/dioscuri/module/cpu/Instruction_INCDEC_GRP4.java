@@ -65,7 +65,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction {
     byte registerHighLow = 0;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_INCDEC_GRP4.class.getName());
 
     // Constructors
     /**

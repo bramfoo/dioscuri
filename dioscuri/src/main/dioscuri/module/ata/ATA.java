@@ -112,7 +112,7 @@ public class ATA extends ModuleATA {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.ata");
+    private static final Logger logger = Logger.getLogger(ATA.class.getName());
 
     // Timing
     private int updateInterval;

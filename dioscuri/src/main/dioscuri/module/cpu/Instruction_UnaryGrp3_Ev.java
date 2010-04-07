@@ -76,7 +76,7 @@ public class Instruction_UnaryGrp3_Ev implements Instruction {
     byte[] tempResult;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_UnaryGrp3_Ev.class.getName());
 
     // Constructors
     /**

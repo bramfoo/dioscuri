@@ -176,7 +176,7 @@ public class Screen extends ModuleScreen {
     private int yTileSize = 24; // TODO: Make these adjustable
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.screen");
+    private static final Logger logger = Logger.getLogger(Screen.class.getName());
 
     // Constants
 
@@ -491,7 +491,7 @@ public class Screen extends ModuleScreen {
         screenPanel.setSize(width, height);
         screenPanel.setBackground(Color.black);
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " Size of screen has been set.");
     }
 
@@ -535,12 +535,11 @@ public class Screen extends ModuleScreen {
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
         Arrays.fill(pixelArray, (byte) 0);
         // TODO should local DataBuffer be used here? Or was the global variable meant to be used
-        DataBuffer buffer = new DataBufferByte(pixelArray,
+        /*<DataBuffer>*/ dataBuffer = new DataBufferByte(pixelArray,
                 pixelArray.length);
         SampleModel model = new MultiPixelPackedSampleModel(
                 DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 8);
-        WritableRaster ras = Raster.createWritableRaster(model,
-                buffer, null);
+        WritableRaster ras = Raster.createWritableRaster(model, dataBuffer, null);
 
         image.setData(ras);
     }
@@ -619,6 +618,9 @@ public class Screen extends ModuleScreen {
     // BK TODO fix the RasterFormatException properly
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
+        logger.log(Level.INFO, String.format(
+                "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 
+                oldText, newText, cursorXPos, cursorYPos, Arrays.toString(textModeAttribs), numberRows));
         try {
             int oldLine, newLine, textBase;
             int currentChar; // 'Current character to display' index into font table
@@ -648,8 +650,9 @@ public class Screen extends ModuleScreen {
             byte newSplitHorizPanning = (byte) textModeAttribs[8];
 
             // Check if all character fonts are up to date
+            //logger.log(Level.INFO, "codePageReqsUpdate="+codePageReqsUpdate);
             if (codePageReqsUpdate) {
-                logger.log(Level.CONFIG, "[" + this.getType()
+                logger.log(Level.INFO, "[" + this.getType()
                         + "] Character map update. New font height: " + fontHeight
                         + "; width: " + fontWidth);
                 for (int c = 0; c < 256; c++) {
@@ -673,13 +676,14 @@ public class Screen extends ModuleScreen {
             }
 
             // Check for horizontal/vertical scrolling of image [panning]
-            if ((newHorizPanning != horizPanning)
-                    || (newVertPanning != vertPanning)) {
+            //logger.log(Level.INFO, "((newHorizPanning != horizPanning) || (newVertPanning != vertPanning))="+((newHorizPanning != horizPanning) || (newVertPanning != vertPanning)));
+            if ((newHorizPanning != horizPanning) || (newVertPanning != vertPanning)) {
                 forceUpdate = 1;
                 horizPanning = newHorizPanning;
                 vertPanning = newVertPanning;
             }
 
+            //logger.log(Level.INFO, "(newLineCompare != lineCompare)="+(newLineCompare != lineCompare));
             if (newLineCompare != lineCompare) {
                 forceUpdate = 1;
                 lineCompare = newLineCompare;
@@ -687,22 +691,20 @@ public class Screen extends ModuleScreen {
 
             // Invalidate character at old and new cursor location,
             // to ensure it is redrawn (old removed, new displayed)
+            //logger.log(Level.INFO, "((cursorPosPrevY < textRows) && (cursorPosPrevX < textColumns))="+((cursorPosPrevY < textRows) && (cursorPosPrevX < textColumns)));
             if ((cursorPosPrevY < textRows) && (cursorPosPrevX < textColumns)) {
                 // Previous cursor was drawn on screen, so invalidate its position
                 // in the array
                 oldCursorPos = cursorPosPrevY * newLineOffset + cursorPosPrevX * 2;
-                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
-                        .getVideoBufferByte(newText + oldCursorPos));
+                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video.getVideoBufferByte(newText + oldCursorPos));
             }
 
-            if ((newCursorStartLine <= newCursorEndLine)
-                    && (newCursorStartLine < fontHeight) && (cursorYPos < textRows)
-                    && (cursorXPos < textColumns)) {
+            //logger.log(Level.INFO, "((newCursorStartLine <= newCursorEndLine) && (newCursorStartLine < fontHeight) && (cursorYPos < textRows) && (cursorXPos < textColumns))="+((newCursorStartLine <= newCursorEndLine) && (newCursorStartLine < fontHeight) && (cursorYPos < textRows) && (cursorXPos < textColumns)));
+            if ((newCursorStartLine <= newCursorEndLine) && (newCursorStartLine < fontHeight) && (cursorYPos < textRows) && (cursorXPos < textColumns)) {
                 // Current cursor is on screen and needs to be displayed, so
                 // invalidate its position in the array
                 oldCursorPos = (int) (cursorYPos * newLineOffset + cursorXPos * 2);
-                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video
-                        .getVideoBufferByte(newText + oldCursorPos));
+                video.setTextSnapshot(oldText + oldCursorPos, (byte) ~video.getVideoBufferByte(newText + oldCursorPos));
             } else {
                 // No cursor on screen, so provide unreachable value
                 oldCursorPos = 0xFFFF;
@@ -732,8 +734,7 @@ public class Screen extends ModuleScreen {
                     font_row = 0;
                     if (numRows == 1) {
                         cfheight = (byte) ((screenHeight - lineCompare - 1) % fontHeight);
-                        if (cfheight == 0)
-                            cfheight = (byte) fontHeight;
+                        if (cfheight == 0) cfheight = (byte) fontHeight;
                     } else {
                         cfheight = (byte) fontHeight;
                     }
@@ -800,54 +801,48 @@ public class Screen extends ModuleScreen {
                     // due to forced update, new character, or character attribute
                     // change
                     if ((forceUpdate != 0)
-                            || (video.getTextSnapshot(oldText) != video
-                                    .getVideoBufferByte(newText))
-                            || (video.getTextSnapshot(oldText + 1) != video
-                                    .getVideoBufferByte(newText + 1))) {
+                            || (video.getTextSnapshot(oldText) != video.getVideoBufferByte(newText))
+                            || (video.getTextSnapshot(oldText + 1) != video.getVideoBufferByte(newText + 1))) {
 
-                        // Select character (index into font table) from from video
-                        // memory
+                        // Select character (index into font table) from from video memory
                         currentChar = video.getVideoBufferByte(newText);
-                        currentChar &= 0xFF; // Convert to unsigned to avoid array
-                                             // out of bounds
+                        currentChar &= 0xFF; // Convert to unsigned to avoid array out of bounds
 
                         // Determine attributes for character - take font colour
                         // from the video's Internal Palette Index
-                        newForeground = video.getAttributePaletteRegister(video
-                                .getVideoBufferByte(newText + 1) & 0x0f);
-                        newBackground = video.getAttributePaletteRegister((video
-                                .getVideoBufferByte(newText + 1) & 0xf0) >> 4);
+                        newForeground = video.getAttributePaletteRegister(video.getVideoBufferByte(newText + 1) & 0x0f);
+                        newBackground = video.getAttributePaletteRegister((video.getVideoBufferByte(newText + 1) & 0xf0) >> 4);
 
                         // Assign correct CRT colours to character
-                        WritableRaster wr = this.fontImages[currentChar].getData()
-                                .createCompatibleWritableRaster();
+                        WritableRaster wr = this.fontImages[currentChar].getData().createCompatibleWritableRaster();
+
                         for (int pixX = wr.getMinX(); pixX < wr.getWidth(); pixX++) {
                             for (int pixY = wr.getMinY(); pixY < wr.getHeight(); pixY++) {
-                                switch (this.fontImages[currentChar].getData()
-                                        .getSample(pixX, pixY, 0)) {
 
-                                case 0:
-                                    wr.setSample(pixX, pixY, 0, newBackground);
-                                    break;
-                                case 1:
-                                    wr.setSample(pixX, pixY, 0, newForeground);
-                                    break;
-                                default:
-                                    break;
+                                switch (this.fontImages[currentChar].getData().getSample(pixX, pixY, 0)) {
+
+                                    case 0:
+                                        wr.setSample(pixX, pixY, 0, newBackground);
+                                        break;
+                                    case 1:
+                                        wr.setSample(pixX, pixY, 0, newForeground);
+                                        break;
+                                    default:
+                                        break;
                                 }
                             }
                         }
-                        // Draw 'bitmap' of character at current line, character
-                        // location
+
+                        // Draw 'bitmap' of character at current line, character location
                         this.image.setData(wr.createTranslatedChild(xc, yc));
 
                         // Display cursor (usually '_') at current location
+
                         if (offset == oldCursorPos) {
                             if (font_row == 0) {
                                 yc2 = yc + newCursorStartLine;
                                 font_row2 = newCursorStartLine;
-                                cfheight2 = (byte) (newCursorEndLine
-                                        - newCursorStartLine + 1);
+                                cfheight2 = (byte) (newCursorEndLine - newCursorStartLine + 1);
                                 if ((yc2 + cfheight2) > screenHeight) {
                                     cfheight2 = (byte) (screenHeight - yc2);
                                 }
@@ -875,21 +870,17 @@ public class Screen extends ModuleScreen {
                                                 this.image.getMinY(), cfwidth,
                                                 cfheight2, xc, yc2, null)
                                         .createCompatibleWritableRaster();
-                                for (int pix_x = wr2.getMinX(); pix_x < wr2
-                                        .getWidth(); pix_x++)
-                                    for (int pix_y = wr2.getMinY(); pix_y < wr2
-                                            .getHeight(); pix_y++) {
+                                for (int pix_x = wr2.getMinX(); pix_x < wr2.getWidth(); pix_x++) {
+                                    for (int pix_y = wr2.getMinY(); pix_y < wr2.getHeight(); pix_y++) {
                                         // Set all values to foreground colour
-                                        wr2.setSample(pix_x, pix_y, 0,
-                                                newForeground);
+                                        wr2.setSample(pix_x, pix_y, 0, newForeground);
                                     }
-                                this.image.setData(wr2.createTranslatedChild(xc,
-                                        yc2));
+                                }
+                                this.image.setData(wr2.createTranslatedChild(xc, yc2));
                             }
                         }
                     }
-                    // Increment character location, as well as locations in display
-                    // memory
+                    // Increment character location, as well as locations in display memory
                     x++;
                     newText += 2;
                     oldText += 2;

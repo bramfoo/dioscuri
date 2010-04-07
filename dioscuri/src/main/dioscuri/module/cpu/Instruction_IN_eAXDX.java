@@ -58,7 +58,7 @@ public class Instruction_IN_eAXDX implements Instruction {
     int portAddress;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_IN_eAXDX.class.getName());
 
     // Constructors
     /**

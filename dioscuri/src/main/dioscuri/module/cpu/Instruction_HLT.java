@@ -53,7 +53,7 @@ public class Instruction_HLT implements Instruction {
     private CPU cpu;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_HLT.class.getName());
 
     // Constructors
     /**

@@ -67,7 +67,7 @@ public class IO {
     private String[] arguments;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.io");
+    private static final Logger logger = Logger.getLogger(IO.class.getName());
 
     // Constructors
 

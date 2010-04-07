@@ -107,7 +107,7 @@ public class Keyboard extends ModuleKeyboard {
     private int updateInterval;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.keyboard");
+    private static final Logger logger = Logger.getLogger(Keyboard.class.getName());
 
     // Constants
     // I/O ports

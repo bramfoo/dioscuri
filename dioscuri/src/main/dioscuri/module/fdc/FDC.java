@@ -154,7 +154,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.fdc");
+    private static final Logger logger = Logger.getLogger(FDC.class.getName());
 
     // IRQ and DMA variables
     private int irqNumber; // Interrupt number assigned by PIC

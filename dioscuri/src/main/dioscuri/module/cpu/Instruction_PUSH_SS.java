@@ -53,7 +53,7 @@ public class Instruction_PUSH_SS implements Instruction {
     private CPU cpu;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_PUSH_SS.class.getName());
 
     // Constructors
     /**

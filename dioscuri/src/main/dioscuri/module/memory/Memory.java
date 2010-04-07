@@ -100,7 +100,7 @@ public class Memory extends ModuleMemory {
                                    // addresses
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.memory");
+    private static final Logger logger = Logger.getLogger(Memory.class.getName());
 
     // Constants
 

@@ -62,7 +62,7 @@ public class Instruction_ESC_FPU implements Instruction {
     byte[] sourceValue;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_ESC_FPU.class.getName());
 
     // Constructors
     /**

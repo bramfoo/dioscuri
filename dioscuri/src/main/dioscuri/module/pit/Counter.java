@@ -113,7 +113,7 @@ public class Counter {
                                    // mode
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.pit");
+    private static final Logger logger = Logger.getLogger(Counter.class.getName());
 
     // Constants
     /**

@@ -74,7 +74,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction {
     byte[] temp;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_INCDEC_GRP5.class.getName());
 
     // Constructors
     /**

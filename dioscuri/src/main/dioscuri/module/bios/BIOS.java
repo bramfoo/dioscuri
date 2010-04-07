@@ -89,7 +89,7 @@ public class BIOS extends ModuleBIOS {
     private byte[] optionalROM; // TODO: can contain optional BIOSes
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.bios");
+    private static final Logger logger = Logger.getLogger(BIOS.class.getName());
 
     // Constants
 

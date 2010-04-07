@@ -59,7 +59,7 @@ import java.util.logging.Logger;
  */
 public class ConfigController {
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri");
+    private static final Logger logger = Logger.getLogger(ConfigController.class.getName());
 
     // File config and schema paths (set to default)
 
@@ -76,6 +76,7 @@ public class ConfigController {
             logger.log(Level.SEVERE,
                     "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: "
                     + e.getMessage());
+            e.printStackTrace();
         }
     }
 

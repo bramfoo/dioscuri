@@ -55,7 +55,7 @@ public class Instruction_PUSH_Iv implements Instruction {
     private byte[] word;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_PUSH_Iv.class.getName());
 
     // Constructors
     /**

@@ -72,8 +72,7 @@ public class DeviceDummy extends ModuleDevice {
     private ModuleMotherboard motherboard;
 
     // Logging
-    private static Logger logger = Logger
-            .getLogger("dioscuri.module.deviceDummy");
+    private static final Logger logger = Logger.getLogger(DeviceDummy.class.getName());
 
     // Constants
 

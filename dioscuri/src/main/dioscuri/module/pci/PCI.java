@@ -98,7 +98,7 @@ public class PCI extends ModuleDevice {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.pci");
+    private static final Logger logger = Logger.getLogger(PCI.class.getName());
 
     // Constants
     // Module specifics

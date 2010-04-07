@@ -122,7 +122,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private JLabel cpyTypeLabel;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.gui");
+    private static final Logger logger = Logger.getLogger(DioscuriFrame.class.getName());
 
     // Frame and refresh properties
 

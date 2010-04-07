@@ -131,7 +131,7 @@ public class DMA extends ModuleDMA {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.dma");
+    private static final Logger logger = Logger.getLogger(DMA.class.getName());
 
     // Constants
     // Module specifics

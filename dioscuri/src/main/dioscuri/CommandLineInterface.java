@@ -56,7 +56,7 @@ import java.util.logging.Logger;
  */
 public class CommandLineInterface {
 
-    private final Logger logger = Logger.getLogger(CommandLineInterface.class.getName());
+    private static final Logger logger = Logger.getLogger(CommandLineInterface.class.getName());
 
     dioscuri.config.Emulator emuConfig;
     Options commandLineOptions;

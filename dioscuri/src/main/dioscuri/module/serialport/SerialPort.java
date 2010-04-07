@@ -127,8 +127,7 @@ public class SerialPort extends ModuleSerialPort {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger
-            .getLogger("dioscuri.module.serialport");
+    private static final Logger logger = Logger.getLogger(SerialPort.class.getName());
 
     // Timing
     private int updateInterval;

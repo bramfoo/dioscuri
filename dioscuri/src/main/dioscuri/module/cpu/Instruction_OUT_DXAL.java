@@ -58,7 +58,7 @@ public class Instruction_OUT_DXAL implements Instruction {
     int portAddress;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_OUT_DXAL.class.getName());
 
     // Constructors
     /**

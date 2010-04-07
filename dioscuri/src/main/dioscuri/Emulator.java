@@ -107,7 +107,7 @@ public class Emulator implements Runnable {
     private boolean dynamicMem;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri");
+    private static final Logger logger = Logger.getLogger(Emulator.class.getName());
 
     // Constants
     // General commands

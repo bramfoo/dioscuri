@@ -55,7 +55,7 @@ public class Instruction_NULL implements Instruction {
     private CPU cpu;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_NULL.class.getName());
 
     // Constructors
     /**

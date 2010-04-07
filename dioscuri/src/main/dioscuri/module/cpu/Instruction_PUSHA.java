@@ -55,7 +55,7 @@ public class Instruction_PUSHA implements Instruction {
     byte[] tempSP;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_PUSHA.class.getName());
 
     // Constructors
     /**

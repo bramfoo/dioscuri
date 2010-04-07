@@ -130,7 +130,7 @@ public class PIT extends ModulePIT {
                                 // timer
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.pit");
+    private static final Logger logger = Logger.getLogger(PIT.class.getName());
 
     // Constants
     // Module specifics

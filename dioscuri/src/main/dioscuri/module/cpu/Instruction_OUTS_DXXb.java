@@ -66,7 +66,7 @@ public class Instruction_OUTS_DXXb implements Instruction {
     byte[] transition;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_OUTS_DXXb.class.getName());
 
     // Constructors
     /**

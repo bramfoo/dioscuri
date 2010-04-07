@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  */
 public class ATAChannel {
 
-    private static Logger logger = Logger.getLogger("dioscuri.module.ata");
+    private static final Logger logger = Logger.getLogger(ATAChannel.class.getName());
 
     /**
      *

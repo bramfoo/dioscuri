@@ -85,7 +85,7 @@ public class Clock extends ModuleClock {
     private int arrayIndex;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.clock");
+    private static final Logger logger = Logger.getLogger(Clock.class.getName());
 
     // Constants
     // Module specifics

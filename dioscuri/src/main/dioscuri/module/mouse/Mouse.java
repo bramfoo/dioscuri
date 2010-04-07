@@ -112,7 +112,7 @@ public class Mouse extends ModuleMouse implements UART {
     private byte buttonStatus;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.mouse");
+    private static final Logger logger = Logger.getLogger(Mouse.class.getName());
 
     // Constants
 
@@ -689,9 +689,7 @@ public class Mouse extends ModuleMouse implements UART {
                 // packets?
                 mouseMode = MOUSE_MODE_REMOTE;
                 keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                logger
-                        .log(Level.CONFIG, "[" + MODULE_TYPE
-                                + "] Remote mode on");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Remote mode on");
                 break;
 
             case (byte) 0xF2: // Read Device Type
@@ -720,8 +718,7 @@ public class Mouse extends ModuleMouse implements UART {
                 if (isMousePS2) {
                     mouseEnabled = true;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                            + "] Mouse enabled (stream mode)");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse enabled (stream mode)");
                 } else {
                     // No mouse present. A 0xFE (resend) need to be returned
                     // instead of a 0xFA (ACK)
@@ -733,8 +730,7 @@ public class Mouse extends ModuleMouse implements UART {
             case (byte) 0xF5: // Disable (in stream mode)
                 mouseEnabled = false;
                 keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                        + "] Mouse disabled (stream mode)");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse disabled (stream mode)");
                 break;
 
             case (byte) 0xF6: // Set mouse to defaults
@@ -744,8 +740,7 @@ public class Mouse extends ModuleMouse implements UART {
                 mouseEnabled = false;
                 mouseMode = MOUSE_MODE_STREAM;
                 keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                        + "] Mouse set to default settings");
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse set to default settings");
                 break;
 
             case (byte) 0xFF: // Reset
@@ -757,8 +752,7 @@ public class Mouse extends ModuleMouse implements UART {
                     mouseEnabled = false;
                     mouseMode = MOUSE_MODE_RESET;
                     if (imMode == true) {
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                                + "] Wheel mouse mode disabled");
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wheel mouse mode disabled");
                     }
                     imMode = false;
 
@@ -766,8 +760,7 @@ public class Mouse extends ModuleMouse implements UART {
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_COMPLETION, 1); // COMPLETION
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ID, 1); // ID
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                            + "] Mouse has been reset");
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse has been reset");
                 } else {
                     // No mouse present. A 0xFE (resend) need to be returned
                     // instead of a 0xFA (ACK)
@@ -780,8 +773,7 @@ public class Mouse extends ModuleMouse implements UART {
                 // If PS/2 mouse present, send NACK for unknown commands,
                 // otherwise ignore
                 if (isMousePS2) {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE
-                            + "] kbd_ctrl_to_mouse(): no command match");
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse(): no command match");
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND/NACK
                 }
             }

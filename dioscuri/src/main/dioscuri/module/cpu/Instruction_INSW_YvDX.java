@@ -59,7 +59,7 @@ public class Instruction_INSW_YvDX implements Instruction {
     byte[] transition;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.cpu");
+    private static final Logger logger = Logger.getLogger(Instruction_INSW_YvDX.class.getName());
 
     // Constructors
     /**

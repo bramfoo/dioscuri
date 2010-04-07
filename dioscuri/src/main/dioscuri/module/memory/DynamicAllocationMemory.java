@@ -104,7 +104,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
                                    // addresses
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.memory");
+    private static final Logger logger = Logger.getLogger(DynamicAllocationMemory.class.getName());
 
     // Constants
 

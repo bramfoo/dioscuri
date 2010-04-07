@@ -98,7 +98,7 @@ public class PIC extends ModulePIC {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger.getLogger("dioscuri.module.pic");
+    private static final Logger logger = Logger.getLogger(PIC.class.getName());
 
     // IRQ list
     private Module[] irqList; // Contains references to modules that registered

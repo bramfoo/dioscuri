@@ -88,8 +88,7 @@ public class ParallelPort extends ModuleParallelPort {
     private boolean debugMode;
 
     // Logging
-    private static Logger logger = Logger
-            .getLogger("dioscuri.module.parallelport");
+    private static final Logger logger = Logger.getLogger(ParallelPort.class.getName());
 
     // Constants
     // FIXME: Separate ports into different parallel devices
