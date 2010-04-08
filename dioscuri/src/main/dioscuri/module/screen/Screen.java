@@ -509,7 +509,7 @@ public class Screen extends ModuleScreen {
      */
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
             int newFontHeight) {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " call to updateScreenSize() w/ fonts");
 
         // Check if the font size needs updating
@@ -572,7 +572,7 @@ public class Screen extends ModuleScreen {
         palette[BLUE][indx] = (byte) blue;
         this.updatePalette();
 
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Palette[" + indx
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Palette[" + indx
                 + "] changed to: {" + (byte) red + "," + (byte) green + ","
                 + (byte) blue + "}");
 
@@ -596,7 +596,7 @@ public class Screen extends ModuleScreen {
         codePageUpdateIndex[index >> 5] = true;
         codePageReqsUpdate = true;
 
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " codePage[" + index
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " codePage[" + index
                 + "] = " + data);
     }
 

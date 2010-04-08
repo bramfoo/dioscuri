@@ -1664,7 +1664,7 @@ public class CPU extends ModuleCPU {
         // executed on NEXT instruction boundary.
         // Also check if interrupt flag is enabled
         if (irqPending == true && irqWaited == true && flags[REGISTER_FLAGS_IF]) {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " handleAsyncEvent: priority 5 - async int");
             // Handle IRQ; irqWaited has ensured this interrupt is executed one
             // instruction after it was generated
@@ -1681,7 +1681,7 @@ public class CPU extends ModuleCPU {
 
         // DMA
         if (holdReQuest) {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
             if (hRQorigin.getType().equalsIgnoreCase("dma")) {
@@ -4929,7 +4929,7 @@ public class CPU extends ModuleCPU {
             // Segment is overriden, check which one
             switch (segmentOverridePointer) {
             case 0: // SEG=CS
-            // logger.log(Level.FINE, "[" + MODULE_TYPE + "]" +
+            // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
             // " Writing to segment CS (may be dangerous!) [" +
             // instructionCounter + "]");
                 setByteToCode(disp, value);
@@ -4994,7 +4994,7 @@ public class CPU extends ModuleCPU {
             // Segment is overriden, check which one
             switch (segmentOverridePointer) {
             case 0: // SEG=CS
-            // logger.log(Level.FINE, "[" + MODULE_TYPE +
+            // logger.log(Level.INFO, "[" + MODULE_TYPE +
             // "] Writing to segment CS (may be dangerous!) [" +
             // instructionCounter + "]");
                 setWordToCode(disp, value);
@@ -5433,7 +5433,7 @@ public class CPU extends ModuleCPU {
 
         offset = vector * 4; // define offset from code segment (index * 4
                              // bytes); remember to take in account intOffset
-        // logger.log(Level.FINE, "[" + MODULE_TYPE + "] " + "IRQ raised: 0x" +
+        // logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + "IRQ raised: 0x" +
         // Integer.toHexString(vector).toUpperCase());
 
         ip[CPU.REGISTER_LOW] = tempIP[CPU.REGISTER_SEGMENT_LOW] = (byte) (offset & 0xFF);

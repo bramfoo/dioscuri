@@ -391,29 +391,29 @@ public class ParallelPort extends ModuleParallelPort {
         switch (portAddress) {
         // Return identical values to Bochs during BIOS boot:
         case (DATA_PORT):
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] returning default value 'available'");
             return (byte) 0xAA;
 
         case (DATA_PORT2):
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
         case (STATUS_PORT):
         case (STATUS_PORT2):
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] returning default value 0x58");
             return 0x58;
 
             // Return identical values to Bochs during BIOS boot:
         case (CONTROL_PORT):
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] returning default value 'available'");
             return (byte) 0x0C;
 
         case (CONTROL_PORT2):
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
@@ -441,13 +441,13 @@ public class ParallelPort extends ModuleParallelPort {
 
         switch (portAddress) {
         case (DATA_PORT):
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
                     + Integer.toHexString(DATA_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (DATA_PORT2):
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
@@ -455,19 +455,19 @@ public class ParallelPort extends ModuleParallelPort {
         case (STATUS_PORT):
         case (STATUS_PORT2):
             // Do nothing
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT):
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT2):
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT2).toUpperCase()
                     + " received, not handled");
             return;

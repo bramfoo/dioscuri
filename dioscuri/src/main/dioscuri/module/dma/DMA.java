@@ -1509,7 +1509,7 @@ public class DMA extends ModuleDMA {
 
         logger
                 .log(
-                        Level.FINE,
+                        Level.INFO,
                         "["
                                 + MODULE_TYPE
                                 + "]"
@@ -1524,7 +1524,7 @@ public class DMA extends ModuleDMA {
         // Determine memory address - this is stored in the DMA channel
         memoryAddress = ((controller[ctrlNum].channel[chanNum].pageRegister << 16) | (controller[ctrlNum].channel[chanNum].currentAddress << ctrlNum));
 
-        logger.log(Level.FINE, "BaseAddress="
+        logger.log(Level.INFO, "BaseAddress="
                 + controller[ctrlNum].channel[chanNum].baseAddress
                 + ", currentAddress="
                 + controller[ctrlNum].channel[chanNum].currentAddress

@@ -886,7 +886,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     public void update() {
         // Perform an update on FDC
         // Cannot guarantee the following instruction since 32-bit update:
-        // logger.log(Level.FINE, motherboard.getCurrentInstructionNumber() +
+        // logger.log(Level.INFO, motherboard.getCurrentInstructionNumber() +
         // " " + "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
 
         // Check if there is a command pending (= zero if nothing to do)
@@ -926,7 +926,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     statusRegister1 = 0;
                     statusRegister2 = 0;
 
-                    // logger.log(Level.FINE, "[" + MODULE_TYPE + "]" +
+                    // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
                     // " WRITE DONE: drive=" + drive + ", hds=" +
                     // drives[drive].hds + ", cylinder=" +
                     // drives[drive].cylinder + ", sector=" +
@@ -994,7 +994,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
 
@@ -1126,7 +1126,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleException, ModuleUnknownPort {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " OUT (byte) to port "
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " OUT (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(((int) value) & 0xFF).toUpperCase());
 
@@ -1198,7 +1198,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 commandPending = 0xFE; // is reset command, see update()
             }
 
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " OUT (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ", DMA/IRQ=" + dmaAndInterruptEnabled + ", FDC="
@@ -1382,7 +1382,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         case 0x03F6: // Reserved I/O address
 
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " OUT (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ": reserved port.");
@@ -1396,19 +1396,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             dataRate = value & 0x03;
             switch (dataRate) {
             case 0:
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Datarate is set to 500 Kbps");
                 break;
             case 1:
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Datarate is set to 300 Kbps");
                 break;
             case 2:
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Datarate is set to 250 Kbps");
                 break;
             case 3:
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Datarate is set to 1 Mbps");
                 break;
             }
@@ -1869,7 +1869,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x03: // Specify (3 bytes)
             // Execution : specified parameters are loaded
             // Result : none, no interrupt
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: specify");
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: specify");
 
             srt = (byte) ((command[1] >> 4) & 0x0F);
             hut = (byte) (command[1] & 0x0F);
@@ -1882,7 +1882,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x04: // Sense drive status (2 bytes)
             // Execution :
             // Result : status register 3 is set
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: sense drive status");
 
             drv = (command[1] & 0x03);
@@ -1905,7 +1905,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0xE6: // read normal data, MT=1, SK=1
             // Execution : data transfer between the FDD and CPU/memory
             // Result : status info (st0,st1,st2) + sector ID
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: Read/write data");
 
             // Update status to emulator
@@ -2133,7 +2133,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x07: // Recalibrate (2 bytes)
             // Execution : head retracked to track 0
             // Result : none, no interrupt
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: recalibrate drive");
 
             drv = (command[1] & 0x03);
@@ -2158,7 +2158,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Result : status information (status reg0 + current cylinder
             // number) at the end of each seek operation about the FDC, no
             // interrupt
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: sense interrupt status");
 
             // Set status register 0 based on interrupt
@@ -2177,7 +2177,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Execution : the first correct ID information on the cylinder is
             // stored in data register
             // Result : status info + sector ID
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: read ID");
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: read ID");
 
             drv = command[1] & 0x03;
             drives[drv].hds = (command[1] >> 2) & 0x01;
@@ -2222,7 +2222,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x4D: // Format track (10 bytes)
             // Execution : FDC formats an entire cylinder
             // Result : status info + sector ID
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: format track");
 
             drv = command[1] & 0x03;
@@ -2312,7 +2312,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x0F: // Seek (3 bytes)
             // Execution : position head over specified cylinder
             // Result : none, issues an interrupt
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " CMD: seek");
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: seek");
 
             drv = command[1] & 0x03;
             dor &= 0xFC;
@@ -2334,20 +2334,20 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         // Enhanced drives (EHD) commands
         case 0x0E: // Dump registers (Enhanced, 1 byte)
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: dump registers (EHD)");
             this.enterResultPhase();
             break;
 
         case 0x12: // Perpendicular mode (Enhanced, 2 bytes)
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: perpendicular mode (EHD)");
             perpMode = command[1];
             this.enterIdlePhase();
             break;
 
         case 0x13: // Configure (Enhanced, 4 bytes)
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " CMD: configure (EHD)");
             config = command[2];
             preTrack = command[3];
@@ -2474,7 +2474,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         floppyBufferIndex = 0;
 
         logger
-                .log(Level.FINE, "[" + MODULE_TYPE + "]"
+                .log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " idle phase finished");
     }
 
@@ -2615,7 +2615,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                             + "]"
                                             + " DMA transfer formatting track: sector size is not supported.");
                 } else {
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " DMA transfer formatting track: cyl="
                             + drives[drv].cylinder + ", head="
                             + drives[drv].hds + ", sector="
@@ -2743,7 +2743,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         // Calculate the delay for one step (this value is based on Bochs)
         oneStepDelayTime = ((srt ^ 0x0f) + 1) * 500000 / dataRates[dataRate];
 
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " Calculated step delay: " + numSteps * oneStepDelayTime);
 
         return (numSteps * oneStepDelayTime);

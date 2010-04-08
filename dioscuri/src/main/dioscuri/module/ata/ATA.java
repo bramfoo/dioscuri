@@ -1833,7 +1833,7 @@ public class ATA extends ModuleATA {
                 value[1] = channels[this.curChannelIndex]
                         .getSelectedController().getBuffer()[index];
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  IO identify drive for index " + (index - 1)
                         + " returns values " + value[0] + " and " + value[1]);
                 index++;
@@ -2037,18 +2037,18 @@ public class ATA extends ModuleATA {
                 + getSelectedDriveController().isDisableIrq() + ".");
 
         if (!getSelectedDriveController().isDisableIrq()) {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  raising interrupt.");
 
         } else {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  not raising interrupt.");
         }
 
         if (!getSelectedDriveController().isDisableIrq()) {
             int irq = getSelectedChannel().getIrqNumber();
 
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  Raising interrupt " + irq + " on channel " + channel
                     + ".");
 
@@ -2099,7 +2099,7 @@ public class ATA extends ModuleATA {
 
         if (getSelectedChannel().getSelectedController().getLbaMode() == 0
                 && ((data[0] >> 6) & 1) == 1) {
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  Enabling LBA mode.");
         }
 
@@ -2210,7 +2210,7 @@ public class ATA extends ModuleATA {
                 && !getSelectedDriveController().isReset()) {
             // Clear BSY and DRDY
 
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  Reset complete for channel " + curChannelIndex);
 
             for (int driveId = 0; driveId < 2; driveId++) {
@@ -3718,7 +3718,7 @@ public class ATA extends ModuleATA {
         case 0x10: // CALIBRATE DRIVE
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  Calibrate drive for channel " + curChannelIndex
                         + ", issued to non-disk, with index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3740,7 +3740,7 @@ public class ATA extends ModuleATA {
 
                 raiseInterrupt(curChannelIndex);
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  Calibrate drive for channel " + curChannelIndex
                         + ", not present, with index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3787,7 +3787,7 @@ public class ATA extends ModuleATA {
                     && !(getSelectedDrive().getCurrentHead() > 0)
                     && !(getSelectedDrive().getCurrentCylinder() > 0)
                     && !(getSelectedDrive().getCurrentSector() > 0)) {
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  read from 0/0/0, for channel " + curChannelIndex
                         + ", with device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -3859,7 +3859,7 @@ public class ATA extends ModuleATA {
              */
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  Write sectors, for channel " + curChannelIndex
                         + ", issued to non-disk with device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3961,7 +3961,7 @@ public class ATA extends ModuleATA {
             }
 
             // sets logical geometry of specified drive
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  Initialize drive parameters, for channel "
                     + curChannelIndex + ", issued to disk, with device index "
                     + getSelectedChannel().getSelectedDrive()
@@ -4135,7 +4135,7 @@ public class ATA extends ModuleATA {
                 break;
             }
 
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + "  verify command : 0x40, for channel " + curChannelIndex
                     + ", issued to device with device index "
                     + getSelectedChannel().getSelectedDrive() + ".");
@@ -4306,7 +4306,7 @@ public class ATA extends ModuleATA {
 
             if (getSelectedDrive().getDriveType() == ATADriveType.HARD_DISK) {
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  write cmd 0x70 (SEEK) executing, for channel "
                         + curChannelIndex + ", issued to device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -4336,7 +4336,7 @@ public class ATA extends ModuleATA {
                 getSelectedDriveController().getStatus().setErr(0);
                 getSelectedDriveController().setBufferIndex(0);
 
-                logger.log(Level.FINE, "["
+                logger.log(Level.INFO, "["
                         + MODULE_TYPE
                         + "]"
                         + "  SEEK disable ird set to "
@@ -4344,7 +4344,7 @@ public class ATA extends ModuleATA {
                                 .isDisableIrq() + ", for channel "
                         + curChannelIndex + ", with device index " + 0 + ".");
 
-                logger.log(Level.FINE, "["
+                logger.log(Level.INFO, "["
                         + MODULE_TYPE
                         + "]"
                         + "  SEEK disable ird set to "
@@ -4352,7 +4352,7 @@ public class ATA extends ModuleATA {
                                 .isDisableIrq() + ", for channel "
                         + curChannelIndex + ", with device index " + 1 + ".");
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  SEEK completed. error_register "
                         + getSelectedDriveController().getErrorRegister()
                         + ", for channel " + curChannelIndex
@@ -4361,7 +4361,7 @@ public class ATA extends ModuleATA {
 
                 raiseInterrupt(curChannelIndex);
 
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "  SEEK interrupt completed, for channel "
                         + curChannelIndex + ", issued to device index "
                         + getSelectedChannel().getSelectedDrive());

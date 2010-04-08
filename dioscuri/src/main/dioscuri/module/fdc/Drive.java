@@ -415,13 +415,13 @@ public class Drive {
                     // Fill the rest of the read with zeroes
                     Arrays.fill(floppyBuffer, partialBytes, totalBytes,
                             (byte) 0);
-                    // logger.log(Level.FINE, "[" + MODULE_TYPE + "]" +
+                    // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
                     // " Calculated step delay: " + numSteps *
                     // oneStepDelayTime);
                 } else {
                     // No read possible at all, fill zeroes
                     Arrays.fill(floppyBuffer, 0, totalBytes, (byte) 0);
-                    // logger.log(Level.FINE, "[" + MODULE_TYPE + "]" +
+                    // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
                     // " Calculated step delay: " + numSteps *
                     // oneStepDelayTime);
                 }

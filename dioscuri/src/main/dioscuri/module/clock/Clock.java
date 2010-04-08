@@ -399,7 +399,7 @@ public class Clock extends ModuleClock {
         while (timers[t] != null) {
             if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer reset to "
                         + timers[t].intervalLength + " instructions");
                 return true;
@@ -422,7 +422,7 @@ public class Clock extends ModuleClock {
         while (timers[t] != null) {
             if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
                 timers[t].active = runState;
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
                         + runState);
                 return true;

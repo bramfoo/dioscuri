@@ -40,7 +40,7 @@
 package dioscuri.interfaces;
 
 /**
- *
+ * universal asynchronous receiver/transmitter
  * @author Bram Lohman
  * @author Bart Kiers
  */

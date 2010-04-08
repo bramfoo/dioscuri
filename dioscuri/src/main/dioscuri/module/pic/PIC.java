@@ -478,20 +478,20 @@ public class PIC extends ModulePIC {
         case 0x20:
             if (thePIC[MASTER].readRegisterSelect != 0) {
                 // ISR
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " read master ISR = "
                         + thePIC[MASTER].inServiceRegister);
                 return (thePIC[MASTER].inServiceRegister);
             } else {
                 // IRR
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " read master IRR = "
                         + thePIC[MASTER].interruptRequestRegister);
                 return (thePIC[MASTER].interruptRequestRegister);
             }
 
         case 0x21:
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " read master IMR = "
                     + thePIC[MASTER].interruptMaskRegister);
             return (thePIC[MASTER].interruptMaskRegister);
@@ -499,20 +499,20 @@ public class PIC extends ModulePIC {
         case 0xA0:
             if (thePIC[SLAVE].readRegisterSelect != 0) {
                 // ISR
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " read slave ISR = "
                         + thePIC[SLAVE].inServiceRegister);
                 return (thePIC[SLAVE].inServiceRegister);
             } else {
                 // IRR
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " read slave IRR = "
                         + thePIC[SLAVE].interruptRequestRegister);
                 return (thePIC[SLAVE].interruptRequestRegister);
             }
 
         case 0xA1:
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " read slave IMR = "
                     + thePIC[SLAVE].interruptMaskRegister);
             return (thePIC[SLAVE].interruptMaskRegister);
@@ -628,7 +628,7 @@ public class PIC extends ModulePIC {
 
             case (byte) 0xA0: // Rotate on non-specific end of interrupt
             case 0x20: // end of interrupt command
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " OCW2: Clear highest interrupt");
                 this.clearHighestInterrupt(MASTER);
 
@@ -645,7 +645,7 @@ public class PIC extends ModulePIC {
 
             case 0x40: // Intel PIC spec-sheet seems to indicate this should be
                        // ignored
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IRQ no-op");
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " IRQ no-op");
                 break;
 
             case 0x60: // specific EOI 0
@@ -669,7 +669,7 @@ public class PIC extends ModulePIC {
             case (byte) 0xC5: // 5 4 3 2 1 0 7 6
             case (byte) 0xC6: // 6 5 4 3 2 1 0 7
             case (byte) 0xC7: // 7 6 5 4 3 2 1 0
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " IRQ lowest command " + data);
                 thePIC[MASTER].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
                 break;
@@ -701,15 +701,15 @@ public class PIC extends ModulePIC {
                 case 2:
                     thePIC[MASTER].interruptOffset = (((int) data) & 0xFF) & 0xF8;
                     thePIC[MASTER].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " master: init command 2 = " + data);
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + "         offset = INT "
                             + thePIC[MASTER].interruptOffset);
                     return;
 
                 case 3:
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " master: init command 3 = " + data);
                     if (thePIC[MASTER].initSequence.numComWordsReq != 0) {
                         thePIC[MASTER].initSequence.currentComWordExpected = 4;
@@ -719,19 +719,19 @@ public class PIC extends ModulePIC {
                     return;
 
                 case 4:
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " master: init command 4 = " + data);
                     if ((data & 0x02) != 0) {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + "        auto EOI");
                         thePIC[MASTER].autoEndOfInt = true;
                     } else {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + " normal EOI interrupt");
                         thePIC[MASTER].autoEndOfInt = false;
                     }
                     if ((data & 0x01) != 0) {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + "        80x86 mode");
                     } else
                         logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
@@ -746,7 +746,7 @@ public class PIC extends ModulePIC {
             }
 
             // normal operation
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " setting master pic IMR to %02x", data);
             thePIC[MASTER].interruptMaskRegister = data;
             serviceMasterPIC();
@@ -755,11 +755,11 @@ public class PIC extends ModulePIC {
         case 0xA0:
             if ((data & 0x10) != 0) {
                 // initialization command 1: slave
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " slave: init command 1 found");
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "        requires 4 = " + (data & 0x01));
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + "        cascade mode: [0=cascade,1=single] "
                         + ((data & 0x02) >> 1));
                 thePIC[SLAVE].initSequence.inInitSequence = true;
@@ -788,7 +788,7 @@ public class PIC extends ModulePIC {
                                             + "]"
                                             + " slave: ICW1: level sensitive mode not supported");
                 } else {
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " slave: ICW1: edge triggered mode selected");
                 }
                 return;
@@ -849,7 +849,7 @@ public class PIC extends ModulePIC {
 
             case 0x40: // Intel PIC spec-sheet seems to indicate this should be
                        // ignored
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " IRQ no-op");
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " IRQ no-op");
                 break;
 
             case 0x60: // specific EOI 0
@@ -873,7 +873,7 @@ public class PIC extends ModulePIC {
             case (byte) 0xC5: // 5 4 3 2 1 0 7 6
             case (byte) 0xC6: // 6 5 4 3 2 1 0 7
             case (byte) 0xC7: // 7 6 5 4 3 2 1 0
-                logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " IRQ lowest command " + data);
                 thePIC[SLAVE].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
                 break;
@@ -905,15 +905,15 @@ public class PIC extends ModulePIC {
                 case 2:
                     thePIC[SLAVE].interruptOffset = (((int) data) & 0xFF) & 0xF8;
                     thePIC[SLAVE].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " slave: init command 2 = " + data);
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + "        offset = INT "
                             + thePIC[SLAVE].interruptOffset);
                     return;
 
                 case 3:
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " slave: init command 3 = " + data);
                     if (thePIC[SLAVE].initSequence.numComWordsReq != 0) {
                         thePIC[SLAVE].initSequence.currentComWordExpected = 4;
@@ -923,19 +923,19 @@ public class PIC extends ModulePIC {
                     return;
 
                 case 4:
-                    logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                             + " slave: init command 4 = " + data);
                     if ((data & 0x02) != 0) {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + "        auto EOI");
                         thePIC[SLAVE].autoEndOfInt = true;
                     } else {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + " normal EOI interrupt");
                         thePIC[SLAVE].autoEndOfInt = false;
                     }
                     if ((data & 0x01) != 0) {
-                        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                                 + "        80x86 mode");
                     } else
                         logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
@@ -953,7 +953,7 @@ public class PIC extends ModulePIC {
 
         default:
             // normal operation
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " setting slave pic IMR to %02x", data);
             thePIC[SLAVE].interruptMaskRegister = data;
             serviceSlavePIC();

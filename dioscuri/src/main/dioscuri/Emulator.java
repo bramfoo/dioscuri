@@ -1156,6 +1156,7 @@ public class Emulator implements Runnable {
     public boolean setMouseParams() {
 
         Mouse mouse = (Mouse) modules.getModule(ModuleType.MOUSE.toString());
+        logger.log(Level.INFO, "mouse = "+mouse);
         if (mouse != null) {
 
             // Init mouse enabled

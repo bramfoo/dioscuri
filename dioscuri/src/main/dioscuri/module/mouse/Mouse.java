@@ -75,10 +75,13 @@ import dioscuri.module.ModuleSerialPort;
  */
 @SuppressWarnings("unused")
 public class Mouse extends ModuleMouse implements UART {
+
+    // Logging
+    private static final Logger logger = Logger.getLogger(Mouse.class.getName());
+
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "keyboard",
-            "serialport" };
+    private String[] moduleConnections = new String[] { "keyboard", "serialport" };
     private ModuleKeyboard keyboard;
     private ModuleSerialPort serialPort;
     private MouseBuffer buffer;
@@ -88,31 +91,23 @@ public class Mouse extends ModuleMouse implements UART {
     private boolean debugMode;
 
     // Variables
-    private boolean mouseEnabled; // Defines if this mouse if enabled
-    private int mouseType; // Defines the type of mouse (PS/2, serial)
-    private int mouseMode; // Defines the mode of mouse (wrap, stream, remote,
-                           // ...) (default=stream)
-    private int mousePreviousMode; // Remembers the previous mode (only set when
-                                   // going into wrap mode)
-    private byte lastMouseCommand; // Remembers the last mouse command
-    private boolean expectingMouseParameter; // Denotes if mouse expects another
-                                             // mouse parameter
-    private int imRequest; // Wheel mouse mode request
-    private boolean imMode; // Wheel mouse mode
-    private byte sampleRate; // Defines the sample rate of the mouse
-                             // (default=100)
-    private int resolutionCpmm; // Defines the resolution of the mouse
-                                // (default=4)
-    private int scaling; // Defines the scaling of the mouse (default=1 (1:1))
+    private boolean mouseEnabled;               // Defines if this mouse if enabled
+    private int mouseType;                      // Defines the type of mouse (PS/2, serial)
+    private int mouseMode;                      // Defines the mode of mouse (wrap, stream, remote, ...) (default=stream)
+    private int mousePreviousMode;              // Remembers the previous mode (only set when going into wrap mode)
+    private byte lastMouseCommand;              // Remembers the last mouse command
+    private boolean expectingMouseParameter;    // Denotes if mouse expects another mouse parameter
+    private int imRequest;                      // Wheel mouse mode request
+    private boolean imMode;                     // Wheel mouse mode
+    private byte sampleRate;                    // Defines the sample rate of the mouse (default=100)
+    private int resolutionCpmm;                 // Defines the resolution of the mouse (default=4)
+    private int scaling;                        // Defines the scaling of the mouse (default=1 (1:1))
     private int previousX;
     private int previousY;
     private int delayed_dx = 0;
     private int delayed_dy = 0;
     private int delayed_dz = 0;
     private byte buttonStatus;
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(Mouse.class.getName());
 
     // Constants
 
@@ -131,10 +126,10 @@ public class Mouse extends ModuleMouse implements UART {
     public final static String MODULE_NAME = "Serial mouse";
 
     // Mouse type
-    private final static int MOUSE_TYPE_PS2 = 1; // PS/2 mouse
-    private final static int MOUSE_TYPE_IMPS2 = 2; // PS/2 wheel mouse
-    private final static int MOUSE_TYPE_SERIAL = 3; // Serial mouse
-    private final static int MOUSE_TYPE_SERIAL_WHEEL = 4; // Serial wheel mouse
+    private final static int MOUSE_TYPE_PS2 = 1;            // PS/2 mouse
+    private final static int MOUSE_TYPE_IMPS2 = 2;          // PS/2 wheel mouse
+    private final static int MOUSE_TYPE_SERIAL = 3;         // Serial mouse
+    private final static int MOUSE_TYPE_SERIAL_WHEEL = 4;   // Serial wheel mouse
 
     // Mouse mode (PS/2)
     private final static int MOUSE_MODE_WRAP = 1;
@@ -160,6 +155,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @param owner
      */
     public Mouse(Emulator owner) {
+
         emu = owner;
 
         // Create mouse buffer
@@ -396,6 +392,7 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
     public void setMouseType(String type) {
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Trying to setting mouse type to '"+type+"'");
         // Check the type of mouse by matching string
         if (type.equalsIgnoreCase("serial")) {
             // Serial mouse
@@ -404,7 +401,7 @@ public class Mouse extends ModuleMouse implements UART {
                     + "] Mouse type set to serial");
             // Connect mouse to serialport on COM 1 (port 0)
             if (serialPort.setUARTDevice(this, 0) == true) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE
+                logger.log(Level.INFO, "[" + MODULE_TYPE
                         + "] Mouse connected to COM port 1");
             } else {
                 logger.log(Level.SEVERE, "[" + MODULE_TYPE
@@ -819,8 +816,7 @@ public class Mouse extends ModuleMouse implements UART {
         previousY = event.getY();
 
         // Check mouse type
-        if (mouseType == MOUSE_TYPE_SERIAL
-                || mouseType == MOUSE_TYPE_SERIAL_WHEEL) {
+        if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL) {
             // Serial mouse: store data in internal mouse buffer
             // scale down the motion
             if ((deltaX < -1) || (deltaX > 1)) {
@@ -885,19 +881,14 @@ public class Mouse extends ModuleMouse implements UART {
             buffer.setByte(byte2);
             buffer.setByte(byte3);
 
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] Mouse movement! dX=" + deltaX + ", dY=" + deltaY
                     + ", dZ=" + deltaZ + ", buttonLeft=" + buttonLeft);
             // logger.log(Level.SEVERE, "[" + MODULE_TYPE +
             // "] Mouse movement vervolg: b1=" + b1 + ", b2=" + b2 + ", b3=" +
             // b3 + ", b4=" + b4);
-            logger
-                    .log(
-                            Level.SEVERE,
-                            "["
-                                    + MODULE_TYPE
-                                    + "] Mouse (serial) data stored in mouse buffer. Total bytes in buffer: "
-                                    + buffer.size());
+            logger.log(Level.INFO, "[" + MODULE_TYPE +
+                    "] Mouse (serial) data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
         } else {
             // PS/2 mouse
             // Scale down the motion

@@ -800,7 +800,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @param keyEvent
      */
     public void keyTyped(KeyEvent keyEvent) {
-        logger.log(Level.FINE, displayInfo(keyEvent, "KEY TYPED: "));
+        logger.log(Level.INFO, displayInfo(keyEvent, "KEY TYPED: "));
         // FIXME: handle key typed event emu.generateScancode(keyEvent ,
         // KEY_TYPED);
     }
@@ -811,7 +811,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      */
     public void keyPressed(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
-        logger.log(Level.FINE, displayInfo(keyEvent, "KEY PRESSED: "));
+        logger.log(Level.INFO, displayInfo(keyEvent, "KEY PRESSED: "));
         if (emu != null) {
             emu.notifyKeyboard(keyEvent, KEY_PRESSED);
         }
@@ -823,7 +823,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      */
     public void keyReleased(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
-        logger.log(Level.FINE, displayInfo(keyEvent, "KEY RELEASED: "));
+        logger.log(Level.INFO, displayInfo(keyEvent, "KEY RELEASED: "));
         if (emu != null) {
             emu.notifyKeyboard(keyEvent, KEY_RELEASED);
         }

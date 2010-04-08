@@ -524,7 +524,7 @@ public class PIT extends ModulePIT {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " I/O read from address 0x"
                 + Integer.toHexString(portAddress));
 
@@ -575,7 +575,7 @@ public class PIT extends ModulePIT {
      */
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " I/O write to 0x"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " I/O write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
 

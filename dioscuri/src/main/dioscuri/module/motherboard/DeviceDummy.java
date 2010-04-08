@@ -348,7 +348,7 @@ public class DeviceDummy extends ModuleDevice {
                     + " IN command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " Returned A20 value: "
                     + Boolean.toString(motherboard.getA20()));
             return (byte) (motherboard.getA20() ? (1 << 1) : 0);
@@ -357,7 +357,7 @@ public class DeviceDummy extends ModuleDevice {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " Returned default value 0xFF to AL");
 
         // Return dummy value 0xFF
@@ -377,7 +377,7 @@ public class DeviceDummy extends ModuleDevice {
                     + " OUT command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Set A20 value: "
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Set A20 value: "
                     + data);
             motherboard.setA20((data & 0x02) == 2 ? true : false);
             return;
@@ -398,7 +398,7 @@ public class DeviceDummy extends ModuleDevice {
                     + " IN command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " Returned A20 value");
             return (motherboard.getA20() ? new byte[] { 0x00, (byte) (1 << 1) }
                     : new byte[] { 0x00, 0x00 });
@@ -420,7 +420,7 @@ public class DeviceDummy extends ModuleDevice {
                     + " OUT command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]" + " Set A20 value");
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Set A20 value");
             motherboard.setA20((dataWord[1] & 0x02) == 2 ? true : false);
             return;
         }

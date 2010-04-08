@@ -368,7 +368,7 @@ public class RTC extends ModuleRTC {
     public boolean setData(byte[] data, Module sender) {
         // Check if data comes from PIT
         if (sender.getType().equalsIgnoreCase("pit")) {
-            logger.log(Level.FINE, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] Received out signal from PIT.");
 
             // Update Timer settings of CMOS
@@ -467,7 +467,7 @@ public class RTC extends ModuleRTC {
         switch (portAddress) {
         case (OUT_PORT):
             // Undefined
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " IN command (byte) from port 0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + "; Returned 0xFF");
@@ -478,7 +478,7 @@ public class RTC extends ModuleRTC {
 
         case (IN_PORT):
             // Return data from previously indicated CMOS register
-            logger.log(Level.FINE, "["
+            logger.log(Level.INFO, "["
                     + MODULE_TYPE
                     + "]"
                     + " IN command (byte) from register 0x"
@@ -525,7 +525,7 @@ public class RTC extends ModuleRTC {
             // 'data' sets the register for the next port instruction;
             // Limited range to 127 to fit within CMOS array size
             lookupRegister = data & 0x7F;
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " OUT command (byte) to port 0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ": lookup byte set to 0x"
@@ -539,7 +539,7 @@ public class RTC extends ModuleRTC {
             } else {
                 cmos.ram[lookupRegister] = data;
             }
-            logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " OUT command (byte) to port 0x"
                     + Integer.toHexString(portAddress).toUpperCase() + " [0x"
                     + Integer.toHexString(lookupRegister).toUpperCase()
@@ -634,7 +634,7 @@ public class RTC extends ModuleRTC {
     public void updateClock() {
         // Update with one second
         cmos.setClockValue(1);
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "] CMOS clock updated: "
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] CMOS clock updated: "
                 + cmos.getClockValue());
     }
 
