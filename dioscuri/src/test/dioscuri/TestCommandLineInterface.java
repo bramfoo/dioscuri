@@ -37,6 +37,7 @@
  */
 package dioscuri;
 
+import dioscuri.CommandLineInterface;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.junit.Test;

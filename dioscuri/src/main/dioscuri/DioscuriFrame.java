@@ -39,10 +39,10 @@
 
 package dioscuri;
 
+import dioscuri.CommandLineInterface;
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
-import dioscuri.CommandLineInterface;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -201,12 +201,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // component-traversals.
         super.setFocusTraversalKeysEnabled(false);
 
-        //guiVisible = true;
-        //autorun = false;
-        //autoshutdown = false;
-
-        // Default location, outside jar
-        // TODO configFilePath = Constants.CONFIG_XML;
         System.out.println(this);
     }
 
@@ -215,12 +209,17 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @param arguments
      * @throws Exception 
      */
-    public DioscuriFrame(String[] arguments) throws Exception {
+    public DioscuriFrame(String[] arguments) {
         // Define GUI
         this();
 
-        cli = new CommandLineInterface(arguments);
-        
+        try {
+            cli = new CommandLineInterface(arguments);
+        } catch(Exception e) {
+            logger.log(Level.SEVERE, "Error while paring the command line parameters:");
+            e.printStackTrace();
+        }
+
         configFilePath = cli.configFilePath;
 
         // Show / hide GUI (based on command line parameter)

@@ -170,6 +170,19 @@ public class CommandLineInterface {
             changes = true;
         }
 
+        if(commandLine.hasOption("m")) {
+            String val = commandLine.getOptionValue("m").toLowerCase();
+            boolean enabled;
+            if(val.matches("enabled|disabled")) {
+                enabled = val.equals("enabled");
+            } else {
+                throw new UnrecognizedOptionException("illegal architecture value: "+val);
+            }
+            logger.log(Level.INFO, " [cli] mouse enabled? "+enabled);
+            emuConfig.getArchitecture().getModules().getMouse().setEnabled(enabled);
+            changes = true;
+        }
+
         if(changes) {
             Utilities.saveXML(emuConfig, configFilePath);
         }
@@ -190,29 +203,33 @@ public class CommandLineInterface {
         commandLineOptions = new Options();
 
 /* ? */ commandLineOptions.addOption("?", "help", false, "print this message");
-/* h */ commandLineOptions.addOption("h", "hide", false, "hide the GUI");
+/* h */ commandLineOptions.addOption("h", "hide", false, "hides the GUI");
 /* r */ commandLineOptions.addOption("r", "autorun", false, "emulator will directly start emulation process");
 /* e */ commandLineOptions.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
 /* s */ commandLineOptions.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
 
-/* c */ Option config = new Option("c", "config", true, "a custom config xml file");
+/* c */ Option config = new Option("c", "config", true, "loads a custom config xml file");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* f */ config = new Option("f", "floppy", true, "a custom floppy image");
+/* f */ config = new Option("f", "floppy", true, "loads a custom floppy image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* d */ config = new Option("d", "harddisk", true, "a custom hard disk image");
+/* d */ config = new Option("d", "harddisk", true, "loads a custom hard disk image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* a */ config = new Option("a", "architecture", true, "the cpu's architecture");
+/* a */ config = new Option("a", "architecture", true, "sets the cpu's architecture");
         config.setArgName("'16'|'32'");
         commandLineOptions.addOption(config);
 
-/* b */ config = new Option("b", "boot", true, "the boot drive");
+/* b */ config = new Option("b", "boot", true, "sets the boot drive");
         config.setArgName("'floppy'|'harddisk'");
+        commandLineOptions.addOption(config);
+
+/* m */ config = new Option("m", "mouse", true, "enables or disables th mouse");
+        config.setArgName("'enabled'|'disabled'");
         commandLineOptions.addOption(config);
     }
 
