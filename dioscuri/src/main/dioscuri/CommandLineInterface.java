@@ -176,7 +176,7 @@ public class CommandLineInterface {
             if(val.matches("enabled|disabled")) {
                 enabled = val.equals("enabled");
             } else {
-                throw new UnrecognizedOptionException("illegal architecture value: "+val);
+                throw new UnrecognizedOptionException("illegal value: "+val+", expected 'enabled' or 'disabled'.");
             }
             logger.log(Level.INFO, " [cli] mouse enabled? "+enabled);
             emuConfig.getArchitecture().getModules().getMouse().setEnabled(enabled);
