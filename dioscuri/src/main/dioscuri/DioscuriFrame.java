@@ -224,9 +224,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Show / hide GUI (based on command line parameter)
         this.setVisible(cli.visible);
-        if(cli.visible) {
-            logger.log(Level.INFO, cli.visible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden");
-        }
+
+        logger.log(Level.INFO, cli.visible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden");
 
         if(cli.autorun) {
             emu = new Emulator(this);
@@ -418,7 +417,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private JPanel getStartupScreen() {
         // Create startup screen
         StartupPanel startup = new StartupPanel();
-        startup.setSize(720, 400);
+        startup.setSize(710, 401);
 
         ImageIcon pic = new ImageIcon(Constants.EMULATOR_SPLASHSCREEN_IMAGE);
         startup.add(new JLabel(pic));
