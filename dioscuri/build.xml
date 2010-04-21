@@ -153,7 +153,7 @@
     		<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
 			<tarfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
-			<fileset dir="${basedir}" includes="dioscuri.bat"/>
+            <fileset dir="${basedir}" includes="dioscuri.sh"/>
 			<tarfileset dir="${javadoc.dir}" prefix="api"/>
 		</tar>
 	</target>

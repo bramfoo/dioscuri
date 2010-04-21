@@ -139,9 +139,6 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * Class constructor
      */
     public DioscuriFrame() {
-        // Print startup information of modular emulator
-        logger.log(Level.INFO, this.toString());
-
         // Create graphical user interface
 
         // Add handlers and listeners
@@ -160,7 +157,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Create panel: screen (canvas)
         screenPane = new JScrollPane();
-        screenPane.setBackground(Color.gray);
+        screenPane.setBackground(Color.BLACK);
         this.setScreen(this.getStartupScreen());
 
         // Create panel: statusbar (including panels w/ borders for Num Lock,
@@ -178,7 +175,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Set dimensions
         int guiWidth = screenPane.getWidth() + 10;
                                                // value
-        int guiHeight = screenPane.getHeight() + 2 * 38;
+        int guiHeight = screenPane.getHeight() + (2 * 38) + 5;
                                                      // & statusbar height
 
         // Actions

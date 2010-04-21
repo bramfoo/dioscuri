@@ -38,6 +38,9 @@
 package dioscuri;
 
 import java.io.File;
+import java.net.URLDecoder;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class with system wide constants.
@@ -46,11 +49,23 @@ import java.io.File;
  */
 public final class Constants {
 
+    private static final Logger logger = Logger.getLogger(Constants.class.getName());
+
     private Constants() {}
-    
+
+    private static File findRoot() {
+        try {
+            return new File(URLDecoder.decode(GUI.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8"));
+        } catch(Exception e) {
+            logger.log(Level.WARNING, "could not find the exe-path of Dioscuri");
+            e.printStackTrace();
+            return new File(".");
+        }
+    }
+
     // Constants
     /** represents the parent directory of the executed GUI.class or the File ascociated with Dioscuri-X-X.jar */
-    public static final File JAR_OR_FOLDER = new File(GUI.class.getProtectionDomain().getCodeSource().getLocation().getPath());
+    public static final File JAR_OR_FOLDER = findRoot();
 
     /** the root folder of the application (<code>JAR_OR_FOLDER.isFile() ? JAR_OR_FOLDER.getParentFile() : JAR_OR_FOLDER</code>) */
     public static final File EXE_FOLDER = JAR_OR_FOLDER.isFile() ? JAR_OR_FOLDER.getParentFile() : JAR_OR_FOLDER;
