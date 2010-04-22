@@ -51,14 +51,27 @@ public final class Constants {
 
     private static final Logger logger = Logger.getLogger(Constants.class.getName());
 
+    /**
+     * Private c-tor: no need to instantiate this class.
+     */
     private Constants() {}
 
+    /**
+     * Returns the directory, or a the location of the JAR file from
+     * which Dioscuri is launched, as a java.io.File object.
+     *
+     * @return the directory, or a the location of the JAR file from
+     *         which Dioscuri is launched, as a java.io.File object.
+     */
     private static File findRoot() {
         try {
-            return new File(URLDecoder.decode(GUI.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8"));
+            // URLDecoder.decode(...) is used, otherwise special "html" character like spaces are
+            // displayed as '%20' 
+            return new File(URLDecoder.decode(
+                    GUI.class.getProtectionDomain().getCodeSource().getLocation().getPath(), "UTF-8"));
         } catch(Exception e) {
             logger.log(Level.WARNING, "could not find the exe-path of Dioscuri");
-            e.printStackTrace();
+            // could not find the path or file: return the user's 'pwd'
             return new File(".");
         }
     }
@@ -74,10 +87,10 @@ public final class Constants {
     public static final String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
 
     /** the version of Dioscuri */
-    public static final String EMULATOR_VERSION = "0.5";
+    public static final String EMULATOR_VERSION = "0.5.1";
 
     /** the release date (<code>MMMM, YYYY</code>) */
-    public static final String EMULATOR_DATE = "March, 2010";
+    public static final String EMULATOR_DATE = "April, 2010";
 
     /** institutions participating (or participated) in the development of Dioscuri */
     public static final String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
