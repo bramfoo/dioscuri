@@ -87,10 +87,10 @@ public final class Constants {
     public static final String EMULATOR_NAME = "Dioscuri - modular emulator for digital preservation";
 
     /** the version of Dioscuri */
-    public static final String EMULATOR_VERSION = "0.5.1";
+    public static final String EMULATOR_VERSION = "0.5.2";
 
     /** the release date (<code>MMMM, YYYY</code>) */
-    public static final String EMULATOR_DATE = "April, 2010";
+    public static final String EMULATOR_DATE = "May, 2010";
 
     /** institutions participating (or participated) in the development of Dioscuri */
     public static final String EMULATOR_CREATOR = "Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP";
