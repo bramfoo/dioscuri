@@ -63,7 +63,11 @@ public class KeyboardInternalBuffer {
     byte ledStatus; // Current Num-Lock, Caps-Lock, Scroll-Lock status
     byte scanningEnabled; // Keyboard enabled
 
-    // TODO explain
+    /**
+     * Returns a List of data elements (as bytes) of this internal buffer.
+     *
+     * @return a List of data elements (as bytes) of this internal buffer.
+     */
     public synchronized List<Byte> getBuffer() {
         return buffer;
     }
