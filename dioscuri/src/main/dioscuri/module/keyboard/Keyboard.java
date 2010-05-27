@@ -454,19 +454,19 @@ public class Keyboard extends ModuleKeyboard {
      * @see Module
      */
     public String getDump() {
-        try {
+        //try {
             String keyboardDump = "Keyboard status:\n";
 
             keyboardDump += "Internal buffer contents:";
-            keyboardDump += keyboard.internalBuffer.buffer.toString() + "\n";
+            keyboardDump += keyboard.internalBuffer.getBuffer().toString() + "\n";
             keyboardDump += "Controller queue contents:";
-            keyboardDump += keyboard.controllerQueue + "\n";
+            keyboardDump += keyboard.getControllerQueue() + "\n";
 
             return keyboardDump;
-        } catch (Exception e) {
-            // TODO fix concurrency exception
-            return "getDump() failed due to: "+e.getMessage();
-        }
+        //} catch (Exception e) {
+        //    // TODO fix concurrency exception
+        //    return "getDump() failed due to: "+e.getMessage();
+        //}
     }
 
     // ******************************************************************************
@@ -544,8 +544,8 @@ public class Keyboard extends ModuleKeyboard {
                 keyboard.controller.auxBuffer = 0;
                 keyboard.controller.irq12Requested = 0;
 
-                if (!keyboard.controllerQueue.isEmpty()) {
-                    keyboard.controller.auxOutputBuffer = (keyboard.controllerQueue
+                if (!keyboard.getControllerQueue().isEmpty()) {
+                    keyboard.controller.auxOutputBuffer = (keyboard.getControllerQueue()
                             .remove(0));
                     keyboard.controller.outputBuffer = 1;
                     keyboard.controller.auxBuffer = 1;
@@ -553,7 +553,7 @@ public class Keyboard extends ModuleKeyboard {
                         keyboard.controller.irq12Requested = 1;
                     }
                     logger.log(Level.CONFIG, "controller_Qsize: "
-                            + keyboard.controllerQueue.size() + 1);
+                            + keyboard.getControllerQueue().size() + 1);
                 }
 
                 clearInterrupt(irqNumberMouse);
@@ -576,8 +576,8 @@ public class Keyboard extends ModuleKeyboard {
                 keyboard.controller.irq1Requested = 0;
                 keyboard.controller.batInProgress = 0;
 
-                if (!keyboard.controllerQueue.isEmpty()) {
-                    keyboard.controller.auxOutputBuffer = (keyboard.controllerQueue
+                if (!keyboard.getControllerQueue().isEmpty()) {
+                    keyboard.controller.auxOutputBuffer = (keyboard.getControllerQueue()
                             .remove(0));
                     keyboard.controller.outputBuffer = 1;
                     keyboard.controller.auxBuffer = 1;
@@ -601,7 +601,7 @@ public class Keyboard extends ModuleKeyboard {
             {
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Internal buffer elements no.: "
-                        + keyboard.internalBuffer.buffer.size());
+                        + keyboard.internalBuffer.getBuffer().size());
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                         + " Port 0x60 read but output buffer empty!");
                 return keyboard.controller.kbdOutputBuffer;
@@ -883,7 +883,7 @@ public class Keyboard extends ModuleKeyboard {
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Controller self test");
                 if (kbdInitialised == 0) {
-                    keyboard.controllerQueue.clear();
+                    keyboard.getControllerQueue().clear();
                     keyboard.controller.outputBuffer = 0;
                     kbdInitialised++;
                 }
@@ -1297,7 +1297,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     private boolean resetKeyboardBuffer(int resetType) {
         // Clear internal keyboard buffer
-        keyboard.internalBuffer.buffer.clear();
+        keyboard.internalBuffer.getBuffer().clear();
 
         keyboard.internalBuffer.expectingTypematic = 0;
 
@@ -1400,7 +1400,7 @@ public class Keyboard extends ModuleKeyboard {
 
         // Check if output is available for writing
         if (keyboard.controller.outputBuffer != 0) {
-            if (keyboard.controllerQueue.size() >= TheKeyboard.CONTROLLER_QUEUE_SIZE) {
+            if (keyboard.getControllerQueue().size() >= TheKeyboard.CONTROLLER_QUEUE_SIZE) {
                 logger
                         .log(
                                 Level.WARNING,
@@ -1409,7 +1409,7 @@ public class Keyboard extends ModuleKeyboard {
                                         + "]"
                                         + " queueKBControllerBuffer(): Keyboard controller is full!");
             }
-            keyboard.controllerQueue.add(data);
+            keyboard.getControllerQueue().add(data);
             return;
         }
 
@@ -1453,7 +1453,7 @@ public class Keyboard extends ModuleKeyboard {
                         .toUpperCase());
 
         // Check if buffer is not full
-        if (keyboard.internalBuffer.buffer.size() >= KeyboardInternalBuffer.NUM_ELEMENTS) {
+        if (keyboard.internalBuffer.getBuffer().size() >= KeyboardInternalBuffer.NUM_ELEMENTS) {
             // Buffer full
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                     + "internal keyboard buffer full, ignoring scancode "
@@ -1467,7 +1467,7 @@ public class Keyboard extends ModuleKeyboard {
                     + " enqueueInternalBuffer: adding scancode "
                     + Integer.toHexString(0x100 | scancode & 0xFF).substring(1)
                             .toUpperCase() + "h to internal buffer");
-            keyboard.internalBuffer.buffer.add(scancode);
+            keyboard.internalBuffer.getBuffer().add(scancode);
 
             // Activate timer if outputbuffer = 0 and clockEnabled = false
             // This means that controller is ready to process next scancode from
@@ -1529,7 +1529,7 @@ public class Keyboard extends ModuleKeyboard {
         }
 
         // A 'timer' was raised, so check data in keyboard or mouse buffer
-        if (!keyboard.internalBuffer.buffer.isEmpty()
+        if (!keyboard.internalBuffer.getBuffer().isEmpty()
                 && (keyboard.controller.kbdClockEnabled != 0 || keyboard.controller.batInProgress != 0)) {
             // Keyboard buffer
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -1537,7 +1537,7 @@ public class Keyboard extends ModuleKeyboard {
                     + this.getDump());
 
             // Get data byte from keyboard buffer
-            keyboard.controller.kbdOutputBuffer = keyboard.internalBuffer.buffer
+            keyboard.controller.kbdOutputBuffer = keyboard.internalBuffer.getBuffer()
                     .remove(0);
 
             // Set status bytes

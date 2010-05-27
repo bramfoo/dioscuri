@@ -53,7 +53,7 @@ public class KeyboardInternalBuffer {
      */
     protected final static int NUM_ELEMENTS = 16;
 
-    List<Byte> buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data
+    private List<Byte> buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data
                                                           // elements
     byte expectingTypematic; // Keyboard repeat rate command issued
     byte expectingLEDWrite; // Keyboard LED change command issued
@@ -63,4 +63,8 @@ public class KeyboardInternalBuffer {
     byte ledStatus; // Current Num-Lock, Caps-Lock, Scroll-Lock status
     byte scanningEnabled; // Keyboard enabled
 
+    // TODO explain
+    public synchronized List<Byte> getBuffer() {
+        return buffer;
+    }
 }

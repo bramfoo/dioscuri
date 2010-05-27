@@ -63,5 +63,10 @@ public class TheKeyboard {
     // Keyboard controller queue, contains data intended for keyboard (command
     // bytes).
     // Contains keypresses passed from keyboard to controller
-    List<Byte> controllerQueue = new ArrayList<Byte>(CONTROLLER_QUEUE_SIZE);
+    private List<Byte> controllerQueue = new ArrayList<Byte>(CONTROLLER_QUEUE_SIZE);
+
+    // TODO explain
+    public synchronized List<Byte> getControllerQueue() {
+        return this.controllerQueue;
+    }
 }
