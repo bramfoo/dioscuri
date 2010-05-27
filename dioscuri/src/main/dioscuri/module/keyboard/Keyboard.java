@@ -41,6 +41,8 @@ package dioscuri.module.keyboard;
 
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -452,14 +454,19 @@ public class Keyboard extends ModuleKeyboard {
      * @see Module
      */
     public String getDump() {
-        String keyboardDump = "Keyboard status:\n";
+        try {
+            String keyboardDump = "Keyboard status:\n";
 
-        keyboardDump += "Internal buffer contents:";
-        keyboardDump += keyboard.internalBuffer.buffer.toString() + "\n";
-        keyboardDump += "Controller queue contents:";
-        keyboardDump += keyboard.controllerQueue + "\n";
+            keyboardDump += "Internal buffer contents:";
+            keyboardDump += keyboard.internalBuffer.buffer.toString() + "\n";
+            keyboardDump += "Controller queue contents:";
+            keyboardDump += keyboard.controllerQueue + "\n";
 
-        return keyboardDump;
+            return keyboardDump;
+        } catch (Exception e) {
+            // TODO fix concurrency exception
+            return "getDump() failed due to: "+e.getMessage();
+        }
     }
 
     // ******************************************************************************
@@ -1317,7 +1324,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Set the keyboard clock, which determines the on/off state of the keyboard<BR>
      * 
-     * @param value
+     * @param state
      *            the state of the clock should be set to:<BR>
      *            0: keyboard clock is disabled, turning the keyboard off<BR>
      *            other: keyboard clock is enabled, turning the keyboard on <BR>
@@ -1349,7 +1356,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Set the aux device clock, which determines the on/off state of the device<BR>
      * 
-     * @param value
+     * @param state
      *            the state of the clock should be set to:<BR>
      *            0: aux device clock is disabled, turning the device off<BR>
      *            other: aux device clock is enabled, turning the device on <BR>
@@ -1368,7 +1375,6 @@ public class Keyboard extends ModuleKeyboard {
             // If there is more data in the queue, activate the timer for it to
             // be processed
             if (oldAuxClock == 0 && keyboard.controller.outputBuffer == 0)
-                ;
             {
                 activateTimer();
             }
