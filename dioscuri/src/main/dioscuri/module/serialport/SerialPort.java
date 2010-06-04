@@ -138,22 +138,9 @@ public class SerialPort extends ModuleSerialPort {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "serialport";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "UART 16550A serial port";
-
-    /**
-     *
-     */
     public final static int TOTALCOMPORTS = 4; // Defines the total number of
     // COM ports
 
@@ -581,7 +568,7 @@ public class SerialPort extends ModuleSerialPort {
                     // DLAB = 0: RBR
                     if (comPorts[port].fcr_enable == 1) {
                         // FIFO buffer active
-                        value = comPorts[port].rcvrFIFO.getByte();
+                        value = comPorts[port].rcvrFIFO.poll();
 
                         if (comPorts[port].rcvrFIFO.isEmpty()) {
                             // FIFO buffer is empty, reset registers
@@ -807,7 +794,7 @@ public class SerialPort extends ModuleSerialPort {
                         if (comPorts[port].fcr_enable == 1) {
                             // FIFO active: set data
                             comPorts[port].xmitFIFO
-                                    .setByte((byte) (data & bitmask));
+                                    .offer((byte) (data & bitmask));
                         } else {
                             // FIFO not active: set THR
                             comPorts[port].thr = (byte) (data & bitmask);
@@ -821,7 +808,7 @@ public class SerialPort extends ModuleSerialPort {
                             if (comPorts[port].fcr_enable == 1) {
                                 // FIFO active: set TSR with data
                                 comPorts[port].tsr = comPorts[port].xmitFIFO
-                                        .getByte();
+                                        .poll();
                                 comPorts[port].lsr_thr_empty = comPorts[port].xmitFIFO
                                         .isEmpty() ? 1 : 0;
                             } else {
@@ -853,7 +840,7 @@ public class SerialPort extends ModuleSerialPort {
                             // Check if FIFO does not exceed BUFFERSIZE
                             if (comPorts[port].xmitFIFO.size() < BUFFERSIZE) {
                                 comPorts[port].xmitFIFO
-                                        .setByte((byte) (data & bitmask));
+                                        .offer((byte) (data & bitmask));
                             } else {
                                 // FIFO buffer overflow
                                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -1322,7 +1309,7 @@ public class SerialPort extends ModuleSerialPort {
                 this.setIRQ(port, INTERRUPT_RXLSTAT);
             } else {
                 // Add data byte to FIFO buffer
-                comPorts[port].rcvrFIFO.setByte(data);
+                comPorts[port].rcvrFIFO.offer(data);
 
                 switch (comPorts[port].fcr_rxtrigger) {
                     case 1:
