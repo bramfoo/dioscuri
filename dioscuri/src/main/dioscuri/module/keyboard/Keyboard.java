@@ -454,7 +454,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see Module
      */
     public String getDump() {
-        //try {
+        try {
             String keyboardDump = "Keyboard status:\n";
 
             keyboardDump += "Internal buffer contents:";
@@ -463,10 +463,10 @@ public class Keyboard extends ModuleKeyboard {
             keyboardDump += keyboard.getControllerQueue() + "\n";
 
             return keyboardDump;
-        //} catch (Exception e) {
-        //    // TODO fix concurrency exception
-        //    return "getDump() failed due to: "+e.getMessage();
-        //}
+        } catch (Exception e) {
+            // TODO fix concurrency exception
+            return "getDump() failed due to: "+e.getMessage();
+        }
     }
 
     // ******************************************************************************
