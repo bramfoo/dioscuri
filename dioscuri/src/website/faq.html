@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!--
+Dioscuri website - modular emulator for digital preservation
+URL           : http://dioscuri.sourceforge.net
+By            : The Dioscuri Project
+Organisations : The National Library of the Netherlands
+                The Nationaal Archief of the Netherlands
+-->
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"/>
+    <meta name="description" content="Dioscuri - modular emulator is a X86 emulator for digital preservation."/>
+    <meta name="keywords" content="dioscuri,emulator,emulation,x86,digital preservation"/>
+    <title>Dioscuri - the modular emulator for digital preservation</title>
+    <link href="style.css" rel="stylesheet" type="text/css"/>
+    <link rel="shortcut icon" href="images/dioscuri_icon.ico">
+    <link rel="icon" href="images/dioscuri_icon_ani.gif" type="image/gif">
+</head>
+
+<body>
+
+<div id="container">
+
+
+<!-- Header -->
+
+<div id="header">
+    <a class="img_link" target="_blank" href="http://www.kb.nl"><img class="img_blank" align="left"
+                                                                     src="images/logo_kb_small2.gif"></a>
+    <a class="img_link" target="_blank" href="http://www.nationaalarchief.nl"><img class="img_blank" align="left"
+                                                                                   src="images/logo_na_small2.gif"></a>
+    <a class="img_link" target="_blank" href="http://www.planets-project.eu"><img class="img_blank" align="left"
+                                                                                  src="images/logo_planets_small.gif"></a>
+    <a class="img_link" target="_blank" href="http://www.keep-project.eu"><img class="img_blank" align="left"
+                                                                               src="images/logo_keep_small.gif"></a>
+    <a class="img_link" href="index.html"><img class="img_blank" align="right" src="images/dioscuri_logo.gif"></a>
+</div>
+
+<!--<div id="sub_header">The durable emulator for digital preservation</div>-->
+
+
+<!-- Main content -->
+
+<div id="main_content">
+
+    <div class="content">
+
+        <div class="content_top"></div>
+
+
+        <!-- Latest news -->
+
+        <h2>Frequently Asked Questions (FAQ)</h2>
+        The FAQ is still under development, so it may not cover all topics. Our apologise for the inconvenience.<br>
+        <br>
+
+        <hr>
+
+        <h3>Overview</h3>
+        <ul>
+            <li><a href="#1">Who created Dioscuri?</a></li>
+            <li><a href="#2">Is Dioscuri open source?</a></li>
+            <li><a href="#3">Why is Dioscuri equipped with FreeDOS instead of MS-DOS?</a></li>
+            <li><a href="#4">How can I experience my old documents, games and applications?</a></li>
+            <li><a href="#5">How to create a disk image?</a></li>
+            <li><a href="#6">Can Dioscuri run more modern operating systems like Windows?</a></li>
+        </ul>
+
+        <hr>
+
+        <h3><a name="1">Who created Dioscuri?</a></h3>
+        Dioscuri has been developed by the Koninklijke Bibliotheek (national library of the Netherlands) and
+        Nationaal Archief of the Netherlands, with support from software company Tessella Support Services plc.
+        Initial ideas about Dioscuri started at the end of 2004 as part of developing a strategy for digital
+        preservation to ensure that interactive applications (like games and other digital objects) would remain
+        accessible for the long term.<br>
+        In 2005 the project team was founded and a special design for a durable and flexible emulator has been
+        created. In 2006 and 2007 Dioscuri has been build step by step following the official specifications for
+        various hardware components.<br>
+        <br>
+        In 2008-2009, development was continued under the umbrella of <a target="_blank"
+                                                                     href="http://www.keep-project.eu">Planets</a>,
+        a major European project on digital preservation. With the launch of Dioscuri in July 2007 to the open
+        source community, the team aims to gain better support and contributions from the community.<br>
+        <br>
+        Currently, development is done within the European
+        <a target="_blank" href="http://www.keep-project.eu">KEEP project</a>. <br>
+        <hr>
+
+        <h3><a name="2">Is Dioscuri open source?</a></h3>
+        Yes, Dioscuri is released under the <a target="_blank"
+                                               href="http://www.gnu.org/licenses/old-licenses/gpl-2.0.html">GNU GPL
+        version 2</a> license and is therefore open source.<br>
+
+        <hr>
+
+        <h3><a name="3">Why is Dioscuri equipped with FreeDOS instead of MS-DOS?</a></h3>
+        As most operating systems and applications are proprietary, Dioscuri is not allowed to be distributed with
+        such software. Instead, Dioscuri is distributed with the open source operating system FreeDOS, which is
+        quite similar to MS-DOS.<br>
+        <br>
+        However, during tests Dioscuri was able to successfully run MS-DOS versions 4.2.0 and 5.0.0. At the
+        following website, you can download floppy bootdisk images for MS-DOS which will run on Dioscuri:
+        <a target="_blank" href="http://www.bootdisk.com">Bootdisk.com</a><br>
+
+        <hr>
+
+        <h3><a name="4">How can I experience my old documents, games and applications?</a></h3>
+        To experience your obsolete digital documents, games and other applications it is necesarry to recreate the
+        original computer environment. As Dioscuri only facilitates the original hardware via emulation, the
+        original software should be offered by the user. Basically, Dioscuri requires a system BIOS, video BIOS and
+        operating system. This can be attached to the emulator by using disk images. See the topic "How to create a
+        disk image?" for more information.<br>
+        <br>
+        <i>BIOS</i><br>
+        By default, Dioscuri is equiped with an open source system BIOS and a video BIOS which support all common
+        facilities like boot sequence, date and time settings, etc. A proprietary BIOS (Award, AMI, etc.) may be
+        used as well, but is not included in the download package.<br>
+        <br>
+        <i>Operating system and applications</i><br>
+        The current version of Dioscuri only supports a 16-bit CPU like the Intel 8086 and Intel 80286. This means
+        that the operating system and applications should be able to operate on 16-bit as well. For example, MS DOS
+        is a 16-bit operating system and all applications that run on MS DOS are 16-bit as well. Dioscuri has been
+        tested successfully with MS DOS versions 4.2.0 and 5.0.0, but other operating systems may work as well.<br>
+        <br>
+
+        <hr>
+
+        <h3><a name="5">How to create a disk image?</a></h3>
+        Dioscuri only supports virtual media which means it does not give access to physical storage devices.
+        Instead, a disk image has to be created from the original physical carrier. Dioscuri currently supports a
+        virtual floppy drive and virtual hard disk.<br>
+        <br>
+        Creating a disk image can be done using a separate tool like <a target="_blank"
+                                                                        href="http://www.winimage.com/download.htm">WinImage
+        (shareware)</a>. This tool is capable of creating and manipulating (change contents of) disk images that can
+        be used by Dioscuri. Make sure that the disk images you create are flat files (no compression).<br>
+        <br>
+        <i>Floppy disk image</i><br>
+        A floppy disk image should be an uncompressed linear binary file (flat file) and should not be larger than
+        1.44 Megabytes. If it needs to be a bootable floppy disk, make sure the disk image has an MS DOS boot
+        signature (see Winimage menu options).<br>
+        <br>
+        <i>Hard disk image</i><br>
+        Hard disks can be of any size (although the file system will limit the amount of available space). Just like
+        floppy images, hard disk images have to be uncompressed linear binary files (flat files). If it needs to be
+        a bootable hard disk, make sure the disk image has a Master Boot Record (see Winimage menu options).<br>
+        <br>
+        Note: Dioscuri is currently only 16-bit which means that only 16-bit operating systems and applications can
+        run on it. The Dioscuri development team is working to extend the CPU with 32-bit instructions.<br>
+        <br>
+
+        <hr>
+
+        <h3><a name="6">Can Dioscuri run more modern operating systems like Windows?</a></h3>
+        Dioscuri is not yet capable of running modern operating systems (MS Windows 95/98/2000/ME/XP/Vista, Linux
+        Fedora/Ubuntu/etc.). This is because the current emulated processor in Dioscuri only supports 16-bit. As
+        most modern operating systems require a 32-bit processor, these OSes will not run.<br>
+        <br>
+        As listed in the roadmap, the Dioscuri development team is currently working on a 32-bit version of the
+        emulated processor. The first phase is to run MS Windows 3.11. After that, newer OSes will be tested.<br>
+        <br>
+
+        <hr>
+
+        <b>If your question is not listed down here, please check the forum for further support before contacting
+            us.</b><br>
+        <br>
+
+
+    </div>
+    <!-- close content-->
+
+
+    <!-- Menu -->
+
+    <div class="menu">
+
+        <div class="menu_top"></div>
+        <div class="menu_img"><img src="images/screenshot_dioscuri.jpg" alt="screenshort Dioscuri">
+        </div>
+
+        <div class="menu_title">Dioscuri</div>
+        <ul>
+            <li><a href="dioscuri.html" class="menu_link">Idea and key features</a></li>
+            <li><a href="preservation.html" class="menu_link">Digital Preservation</a></li>
+            <li><a href="https://sourceforge.net/project/screenshots.php?group_id=200001"
+                   class="menu_link">Screenshots</a>
+            </li>
+            <li><a href="news.html" class="menu_link">Latest news!</a></li>
+        </ul>
+        <div class="menu_title">Downloads</div>
+        <ul>
+            <li><a href="https://sourceforge.net/project/showfiles.php?group_id=200001" class="menu_link">Latest
+                version</a></li>
+            <li><a href="https://sourceforge.net/project/showfiles.php?group_id=200001" class="menu_link">All
+                versions / sourcecode</a></li>
+            <li><a href="https://sourceforge.net/project/showfiles.php?group_id=200001" class="menu_link">Disk
+                images</a></li>
+        </ul>
+        <div class="menu_title">Documentation</div>
+        <ul>
+            <li><a href="manual.html" class="menu_link">User manual</a></li>
+            <li><a href="refdocs.html" class="menu_link">Reference docs</a></li>
+            <li><a target="_blank" href="docs/javadoc/index.html" class="menu_link">Javadoc</a></li>
+            <li><a href="changelog.html" class="menu_link">Changelog</a></li>
+        </ul>
+        <div class="menu_title">Support</div>
+        <ul>
+            <li><a href="faq.html" class="menu_link">FAQ</a></li>
+            <li><a href="https://sourceforge.net/forum/?group_id=200001" class="menu_link">Forum</a></li>
+        </ul>
+        <div class="menu_title">Development</div>
+        <ul>
+            <li><a href="https://sourceforge.net/tracker/?group_id=200001&atid=971750" class="menu_link">Buglist
+                (tracker)</a></li>
+            <li><a href="https://sourceforge.net/tracker/?group_id=200001&atid=971753" class="menu_link">Feature
+                requests (tracker)</a></li>
+            <li><a href="roadmap.html" class="menu_link">Roadmap</a></li>
+        </ul>
+        <div class="menu_title">Contact</div>
+        <ul>
+            <li><a href="team.html" class="menu_link">About project team</a></li>
+            <li><a href="recruitment.html" class="menu_link">Join development!</a></li>
+            <li><a href="https://sourceforge.net/mail/?group_id=200001" class="menu_link">Mailinglist</a></li>
+        </ul>
+
+    </div>
+    <!-- close menu-->
+
+    <div id="clear"></div>
+
+
+</div>
+<!-- close main content-->
+
+
+<!--<div id="main_content_bottom"></div>-->
+
+
+<!-- Footer -->
+
+<div id="footer">
+    <a href="http://sourceforge.net"><img align="left" src="images/logo_sf.gif" width="88" eight="31" border="0" alt="SourceForge.net Logo"/></a>
+    <strong>Copyright &copy; 2007</strong> |
+    <a href="http://dioscuri.sourceforge.net">Dioscuri website</a> |
+    <a target="_blank" href="http://www.kb.nl">Koninklijke Bibliotheek</a> |
+    <a target="_blank" href="http://www.nationaalarchief.nl">Nationaal Archief</a> |
+    <a target="_blank" href="http://www.planets-project.eu">Planets</a> |
+    <a target="_blank" href="http://www.keep-project.eu">KEEP</a> |
+    <a target="_blank" href="https://sourceforge.net/project/stats/?group_id=200001&ugn=dioscuri">Statistics</a>
+</div>
+
+</div>
+<!-- close container-->
+
+</body>
+
+</html>
