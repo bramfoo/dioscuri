@@ -47,9 +47,6 @@ import dioscuri.exception.ModuleException;
  */
 
 public abstract class ModuleMotherboard extends Module {
-    /**
-     *
-     */
     public int ioSpaceSize;
 
     // Methods

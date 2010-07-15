@@ -95,12 +95,13 @@ public class Instruction_2ByteEscape implements Instruction {
         // if(cpu.getCpuInstructionDebug())
         cpu.codeByte2 = (instruction & 0xFF);
 
-        if (cpu.doubleWord && cpu.isDoubleByte32BitSupported() == false) {
-            logger.log(Level.SEVERE, "[" + cpu.getType()
+        if (cpu.doubleWord && !cpu.isDoubleByte32BitSupported()) { // TODO BK Win 3.0 problem
+            logger.log(Level.SEVERE, ">> [" + cpu.getType()
                     + "] Instruction problem (opcode "
                     + Integer.toHexString(cpu.codeByte) + " "
                     + Integer.toHexString(cpu.codeByte2)
                     + "h): 32-bit not supported!");
+            System.out.println(">> executing cpu.doubleByteInstructions["+(instruction & 0xFF)+"]");
         }
 
         // Cast signed byte to integer to avoid invalid array lookup

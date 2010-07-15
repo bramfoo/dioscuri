@@ -78,10 +78,6 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
         return block0.getX86Count() + block1.getX86Count()
                 + block2.getX86Count();
     }
-
-    /**
-     *
-     */
     public void invalidate() {
         this.selfModified = true;
     }

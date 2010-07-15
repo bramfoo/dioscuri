@@ -72,20 +72,9 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     private FpuState fpu;
 
     private int x86Count;
-
-    /**
-     *
-     */
     protected int[] microcodes;
-    /**
-     *
-     */
     protected int[] cumulativeX86Length;
     private int executeCount;
-
-    /**
-     *
-     */
     public ProtectedModeUBlock() {
     }
 

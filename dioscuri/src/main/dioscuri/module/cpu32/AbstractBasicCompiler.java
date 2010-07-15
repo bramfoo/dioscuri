@@ -31,22 +31,9 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public abstract class AbstractBasicCompiler implements CodeBlockCompiler {
-    /**
-     *
-     */
     protected int bufferOffset;
-    /**
-     *
-     */
     protected int[] bufferMicrocodes;
-    /**
-     *
-     */
     protected int[] bufferPositions;
-
-    /**
-     *
-     */
     public AbstractBasicCompiler() {
         bufferMicrocodes = new int[100];
         bufferPositions = new int[100];

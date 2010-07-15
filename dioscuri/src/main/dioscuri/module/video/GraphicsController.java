@@ -123,9 +123,6 @@ public class GraphicsController {
 
     // Helper table used to XOR and AND each latch in Read Mode 1 using
     // colourCompare and colourDontCare as indices, respectively
-    /**
-     *
-     */
     protected final static byte colourCompareTable[][] = {
             { 0x00, 0x00, 0x00, 0x00 }, { (byte) 0xFF, 0x00, 0x00, 0x00 },
             { 0x00, (byte) 0xFF, 0x00, 0x00 },

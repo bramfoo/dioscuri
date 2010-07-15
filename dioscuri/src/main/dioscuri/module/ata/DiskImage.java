@@ -53,10 +53,6 @@ import java.io.RandomAccessFile;
  */
 public class DiskImage {
     // Attributes
-
-    /**
-     *
-     */
     protected File imageFile;
 
     /**

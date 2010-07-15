@@ -46,49 +46,22 @@ package dioscuri.module.video;
  */
 public class TextModeAttributes {
     // Attributes and features of text mode
-    /**
-     *
-     */
     public short fullStartAddress; // Display memory address of upper left pixel
                                    // / character (CRTC Start high + low)
-    /**
-     *
-     */
     public byte cursorStartLine; // Scanline where the cursor begins
-    /**
-     *
-     */
     public byte cursorEndLine; // Scanline where the cursor ends; if cs_end <
                                // cs_start, no cursor is drawn
-    /**
-     * 
-     */
     public short lineOffset; // Number of bytes (char + attribute) per display
                              // line
-    /**
-     *
-     */
     public short lineCompare; // Scan line where a horiz. division can occur;
                               // 0x3FF indicates no division
-    /**
-     *
-     */
     public byte horizPanning; // 'Pixel shift count': specifies number of pixels
                               // the video data is shifted left
-    /**
-     *
-     */
     public byte vertPanning; // 'Preset Row Scan': specifies how many scan lines
                              // to scroll display upward (0 - Maximum Scan Line)
-    /**
-     *
-     */
     public byte lineGraphics; // 9 bit wide chars - 0: 9th column is replicated
                               // from 8th column; 1: 9th column is set to
                               // background
-    /**
-     *
-     */
     public byte splitHorizPanning; // 'Pixel panning mode': allows upper screen
                                    // half to pan independently of lower half.
 

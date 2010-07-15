@@ -90,13 +90,7 @@ public class Emulator implements Runnable {
     private ArrayList<HardwareComponent> hwComponents;
     private IO io;
     private GUI gui;
-    /**
-     *
-     */
     protected dioscuri.config.Emulator emuConfig;
-    /**
-     *
-     */
     protected dioscuri.config.Emulator.Architecture.Modules moduleConfig;
 
     // Toggles
@@ -111,126 +105,45 @@ public class Emulator implements Runnable {
 
     // Constants
     // General commands
-    /**
-     *
-     */
     protected final static int CMD_START = 0x00; // start the emulator
-    /**
-     *
-     */
     protected final static int CMD_STOP = 0x01; // stop the emulator
-    /**
-     *
-     */
     protected final static int CMD_RESET = 0x02; // stop the emulator
-    /**
-     *
-     */
     protected final static int CMD_DEBUG = 0x04; // turn on debug mode
-    /**
-     *
-     */
     protected final static int CMD_LOGGING = 0x05; // turn on logging
-    /**
-     *
-     */
     protected final static int CMD_OBSERVE = 0x06; // turn on observation
-    /**
-     *
-     */
     protected final static int CMD_LOAD_MODULES = 0x07; // load modules
-    /**
-     *
-     */
     protected final static int CMD_LOAD_DATA = 0x08; // load initial data
                                                      // (program code)
-    /**
-     *
-     */
     protected final static int CMD_LOGTOFILE = 0x09; // write logging
                                                      // information to file
 
     // Debug commands
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_HELP = 0x03; // show help information
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_STEP = 0x10; // execute one processor
                                                       // cycle
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_DUMP = 0x11; // show dump of observed
                                                       // modules
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_ENTER = 0x12; // enter given values at
                                                        // given memory address
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_STOP = 0x13; // stop the emulator
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_SHOWREG = 0x14; // Simple CPU register
                                                          // view
-    /**
-     *
-     */
     protected final static int CMD_DEBUG_MEM_DUMP = 0x15; // Show contents of
                                                           // memory location(s)
 
     // Special case commands
-    /**
-     *
-     */
     protected final static int CMD_MISMATCH = 0xFF; // command mismatch
 
     // Module status
-    /**
-     *
-     */
     public final static int MODULE_FDC_TRANSFER_START = 0;
-    /**
-     *
-     */
     public final static int MODULE_FDC_TRANSFER_STOP = 1;
-    /**
-     *
-     */
     public static final int MODULE_ATA_HD1_TRANSFER_START = 2;
-    /**
-     *
-     */
     public static final int MODULE_ATA_HD1_TRANSFER_STOP = 3;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_NUMLOCK_ON = 4;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_NUMLOCK_OFF = 5;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_CAPSLOCK_ON = 6;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_CAPSLOCK_OFF = 7;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_SCROLLLOCK_ON = 8;
-    /**
-     *
-     */
     public static final int MODULE_KEYBOARD_SCROLLLOCK_OFF = 9;
 
     // Constructors
@@ -396,10 +309,6 @@ public class Emulator implements Runnable {
             }
         }
     }
-
-    /**
-     *
-     */
     protected void stop() {
         // End life of this emulation process
         isAlive = false;
@@ -416,10 +325,6 @@ public class Emulator implements Runnable {
             gui.notifyGUI(GUI.EMU_PROCESS_STOP);
         }
     }
-
-    /**
-     *
-     */
     protected void reset() {
         // TODO: fix this approach by avoiding deadlock (by using synchronized)
         // Check if emulation process exists
@@ -624,8 +529,7 @@ public class Emulator implements Runnable {
      * @param keyEventType
      */
     protected void notifyKeyboard(KeyEvent keyEvent, int keyEventType) {
-        ModuleKeyboard keyboard = (ModuleKeyboard) modules
-                .getModule("keyboard");
+        ModuleKeyboard keyboard = (ModuleKeyboard) modules.getModule("keyboard");
         if (keyboard != null) {
             keyboard.generateScancode(keyEvent, keyEventType);
         }

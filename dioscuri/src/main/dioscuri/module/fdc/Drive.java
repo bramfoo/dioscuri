@@ -56,59 +56,23 @@ public class Drive {
     // Drive parameters
     private int driveType; // Type of drive this is
     private boolean motorRunning; // Denotes if motor of drive is on or off
-    /**
-     *
-     */
     protected int eot; // End of track, contains the number of the final sector
                        // of a cylinder
-    /**
-     *
-     */
     protected int hds; // Current head (Head Select)
-    /**
-     *
-     */
     protected int cylinder; // Current cylinder
-    /**
-     *
-     */
     protected int sector; // Current sector
 
     // Floppy parameters
     private Floppy floppy; // Floppy in drive (if any, else null)
-    /**
-     *
-     */
     protected int floppyType; // Type of floppy that is in drive
-    /**
-     *
-     */
     protected int tracks; // Total number of tracks on floppy
-    /**
-     *
-     */
     protected int heads; // Total number of heads on floppy
-    /**
-     *
-     */
     protected int cylinders; // Total number of cylinders on floppy (identical
                              // to tracks for floppies)
-    /**
-     *
-     */
     protected int sectorsPerTrack; // Total number of sectors per track
-    /**
-     *
-     */
     protected int sectors; // Total number of sectors on a disk
-    /**
-     *
-     */
     protected boolean writeProtected; // Indicates if the floppy is write
                                       // protected
-    /**
-     * 
-     */
     protected boolean multiTrack; // The floppy has two sides, a cylinder under
                                   // both HD0 and HD1 will be accessed
 
@@ -133,9 +97,6 @@ public class Drive {
     // bit 1 datarate select1
     // bit 0 datarate select0
     // bit 0 FIXED DISK drive 0 select (conflicting!)
-    /**
-     *
-     */
     protected byte dir;
     
     private static enum FloppyType {

@@ -102,10 +102,6 @@ public class MouseConfigDialog extends ConfigurationDialog {
         this.enabledCheckBox.setSelected(enabled);
         this.mouseTypeComboxBox.setSelectedItem(mouseType);
     }
-
-    /**
-     *
-     */
     @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");

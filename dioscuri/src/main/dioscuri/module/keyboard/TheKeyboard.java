@@ -49,9 +49,6 @@ import java.util.List;
  * @author Bart Kiers
  */
 public class TheKeyboard {
-    /**
-     *
-     */
     protected final static int CONTROLLER_QUEUE_SIZE = 5;
 
     // Motherboard side controller chip

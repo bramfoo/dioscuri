@@ -35,12 +35,6 @@ package dioscuri.module.cpu32;
  */
 public class BlankCodeBlock implements RealModeCodeBlock,
         ProtectedModeCodeBlock, Virtual8086ModeCodeBlock {
-    /**
-     *
-     */
-    /**
-     *
-     */
     protected int x86Count, x86Length;
 
     private static final RuntimeException executeException = new NullPointerException();

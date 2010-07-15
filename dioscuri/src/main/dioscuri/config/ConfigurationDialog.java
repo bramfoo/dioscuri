@@ -60,73 +60,20 @@ import java.io.File;
  */
 @SuppressWarnings("serial")
 public abstract class ConfigurationDialog extends JDialog {
-
-    /**
-     *
-     */
     protected JPanel mainEntryPanel;
-    /**
-     *
-     */
     protected JPanel statusPanel;
-
-    /**
-     *
-     */
     protected JButton doButton;
-    /**
-     *
-     */
     protected JButton okButton;
-    /**
-     *
-     */
     protected JButton cancelButton;
-
-    /**
-     *
-     */
     protected JLabel imageFilePathLabel;
-    /**
-     *
-     */
     protected File selectedfile;
-
-    /**
-     *
-     */
     protected int dialogWidth;
-    /**
-     *
-     */
     protected int dialogHeight;
-
-    /**
-     *
-     */
     protected int dialogXPosition;
-    /**
-     *
-     */
     protected int dialogYPosition;
-
-    /**
-     *
-     */
     protected GUI parent;
-    /**
-     *
-     */
     protected boolean isMainConfigScreen;
-
-    /**
-     *
-     */
     protected ModuleType moduleType;
-
-    /**
-     * 
-     */
     public ConfigurationDialog() {
     }
 
@@ -205,16 +152,8 @@ public abstract class ConfigurationDialog extends JDialog {
         this.setVisible(true);
         this.requestFocus();
     }
-
-    /**
-     *
-     */
     protected void initMainEntryPanel() {
     }
-
-    /**
-     *
-     */
     protected void initDoButton() {
         this.doButton = new JButton("Save");
         this.doButton.addActionListener(new ActionListener() {
@@ -239,10 +178,6 @@ public abstract class ConfigurationDialog extends JDialog {
             }
         });
     }
-
-    /**
-     *
-     */
     protected void saveParams() {
 
         dioscuri.config.Emulator params = null;
@@ -344,10 +279,6 @@ public abstract class ConfigurationDialog extends JDialog {
         statusPanel.add(innerStatusPanel);
 
     }
-
-    /**
-     *
-     */
     protected void initConfirmButton() {
         okButton = new JButton("Cancel");
 

@@ -56,9 +56,6 @@ public class ScreenPanel extends JPanel {
     private boolean paint = false;
 
     // Constructor
-    /**
-     *
-     */
     public ScreenPanel() {
     }
 

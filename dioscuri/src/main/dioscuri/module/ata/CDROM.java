@@ -60,10 +60,6 @@ public class CDROM {
     int remainingBlocks;
 
     int[] errorRecovery = new int[8];
-
-    /**
-     *
-     */
     public CDROM() {
 
         this.errorRecovery[0] = 0x01;

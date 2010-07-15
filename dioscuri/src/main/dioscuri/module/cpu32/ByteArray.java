@@ -31,9 +31,6 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public interface ByteArray {
-    /**
-     *
-     */
     public void clear();
 
     /**

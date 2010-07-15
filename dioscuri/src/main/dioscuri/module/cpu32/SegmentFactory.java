@@ -36,42 +36,13 @@ import java.io.*;
 public class SegmentFactory {
     private static final long DESCRIPTOR_TYPE = 0x100000000000l;
     private static final long SEGMENT_TYPE = 0xf0000000000l;
-
-    /**
-     *
-     */
     public static final Segment NULL_SEGMENT = new NullSegment();
-
-    /**
-     *
-     */
     public static final int DESCRIPTOR_TYPE_CODE_DATA = 0x10;
-
-    /**
-     *
-     */
     public static final int TYPE_ACCESSED = 0x1;
-    /**
-     *
-     */
     public static final int TYPE_CODE = 0x8;
-
-    /**
-     *
-     */
     public static final int TYPE_DATA_WRITABLE = 0x2;
-    /**
-     *
-     */
     public static final int TYPE_DATA_EXPAND_DOWN = 0x4;
-
-    /**
-     *
-     */
     public static final int TYPE_CODE_READABLE = 0x2;
-    /**
-     *
-     */
     public static final int TYPE_CODE_CONFORMING = 0x4;
 
     abstract static class DefaultSegment extends Segment {
@@ -583,10 +554,6 @@ public class SegmentFactory {
                     | TYPE_CODE_READABLE;
         }
     }
-
-    /**
-     *
-     */
     static public abstract class AbstractTSS extends
             ReadOnlyProtectedModeSegment {
         /**
@@ -755,10 +722,6 @@ public class SegmentFactory {
             return 0x02;
         }
     }
-
-    /**
-     *
-     */
     public static class GateSegment extends ReadOnlyProtectedModeSegment {
         private int targetSegment, targetOffset;
 
@@ -851,10 +814,6 @@ public class SegmentFactory {
             return 0x07;
         }
     }
-
-    /**
-     *
-     */
     public static final class CallGate32Bit extends GateSegment {
         private int parameterCount;
 
@@ -886,10 +845,6 @@ public class SegmentFactory {
             return parameterCount;
         }
     }
-
-    /**
-     *
-     */
     public static final class CallGate16Bit extends GateSegment {
         private int parameterCount;
 

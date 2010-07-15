@@ -89,13 +89,7 @@ public class Memory extends ModuleMemory {
     private boolean debugMode;
 
     // Random Access Memory (RAM)
-    /**
-     *
-     */
     public byte[] ram; // Using signed bytes as both signed/unsigned
-    /**
-     *
-     */
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
                                    // addresses
 
@@ -105,17 +99,8 @@ public class Memory extends ModuleMemory {
     // Constants
 
     // Module specifics
-    /**
-     * 
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "memory";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "RAM";
 
     private final static int BYTES_IN_MB = 1048576;

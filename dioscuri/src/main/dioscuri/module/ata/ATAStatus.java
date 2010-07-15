@@ -195,17 +195,9 @@ public class ATAStatus {
     public int getIndexPulseCount() {
         return indexPulseCount;
     }
-
-    /**
-     *
-     */
     public void decrementIndexPulseCount() {
         indexPulseCount--;
     }
-
-    /**
-     *
-     */
     public void incrementIndexPulseCount() {
         indexPulseCount++;
     }

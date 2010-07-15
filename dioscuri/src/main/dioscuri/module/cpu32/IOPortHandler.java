@@ -45,14 +45,11 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
 
     IOPortCapable[] ioPortDevice;
 
-    private static final IOPortCapable defaultDevice;
-    static {
-        defaultDevice = new UnconnectedIOPort();
-    }
+    private static final IOPortCapable defaultDevice = new UnconnectedIOPort();
+    //static {
+    //   defaultDevice = new UnconnectedIOPort();
+    //}
 
-    /**
-     *
-     */
     public IOPortHandler() {
         ioPortDevice = new IOPortCapable[MAX_IOPORTS];
         for (int i = 0; i < ioPortDevice.length; i++)
@@ -351,10 +348,6 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
     public boolean updated() {
         return true;
     }
-
-    /**
-     *
-     */
     public void timerCallback() {
     }
 }

@@ -100,10 +100,6 @@ public class CpuConfigDialog extends ConfigurationDialog {
         else
             this.cpu16Button.setSelected(true);
     }
-
-    /**
-     *
-     */
     @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");

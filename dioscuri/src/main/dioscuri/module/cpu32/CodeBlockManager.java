@@ -234,10 +234,6 @@ public class CodeBlockManager {
                 & AddressSpace.BLOCK_MASK, block);
         return block;
     }
-
-    /**
-     *
-     */
     public void dispose() {
         if (bgc != null)
             bgc.stop();

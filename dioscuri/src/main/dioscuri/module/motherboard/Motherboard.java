@@ -92,15 +92,9 @@ public class Motherboard extends ModuleMotherboard {
                                 // turned off
 
     // Configuration parameters
-    /**
-     *
-     */
     protected int ioSpaceSize;
 
     // I/O address space containing references to devices
-    /**
-     *
-     */
     public ModuleDevice[] ioAddressSpace; // Using signed bytes as both
                                           // signed/unsigned
 
@@ -111,35 +105,16 @@ public class Motherboard extends ModuleMotherboard {
     // Constants
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "motherboard";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "General x86 motherboard";
 
     // Memory size
-    /**
-     *
-     */
     public final static int IOSPACE_ISA_SIZE = 1024; // ISA: 1024 (2^10) spaces,
                                                      // 0x000 - 0x3FF
-    /**
-     *
-     */
     public final static int IOSPACE_EISA_SIZE = 65536; // EISA: 65536 (2^16)
                                                        // spaces, 0x0000 -
                                                        // 0xFFFF
-
-    /**
-     * 
-     */
     public final static int SYSTEM_CONTROL_PORT_A = 0x92; // A20 port, amongst
                                                           // others
 

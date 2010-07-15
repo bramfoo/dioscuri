@@ -93,10 +93,6 @@ public class SelectionConfigDialog extends ConfigurationDialog {
 
         });
     }
-
-    /**
-     *
-     */
     @Override
     protected void initConfirmButton() {
         okButton = new JButton("OK");

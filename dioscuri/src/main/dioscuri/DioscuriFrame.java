@@ -967,15 +967,16 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         public MouseHandler() {
             // Make cursor invisible
-            // this.setMouseCursorVisible(false);
+            //this.setMouseCursorVisible(false);
         }
 
         public void mouseClicked(MouseEvent mouseEvent) {
-            // Probably not needed
         }
 
         public void mousePressed(MouseEvent mouseEvent) {
-            // Probably not needed
+            if (emu != null) {
+                emu.notifyMouse(mouseEvent);
+            }
         }
 
         public void mouseReleased(MouseEvent mouseEvent) {
@@ -989,11 +990,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         }
 
         public void mouseExited(MouseEvent mouseEvent) {
-            // Probably not needed
         }
 
         public void mouseDragged(MouseEvent mouseEvent) {
-            // Probably not needed
         }
 
         public void mouseMoved(MouseEvent mouseEvent) {

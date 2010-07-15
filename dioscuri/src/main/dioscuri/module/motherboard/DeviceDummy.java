@@ -77,17 +77,8 @@ public class DeviceDummy extends ModuleDevice {
     // Constants
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 5000;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "dummy device";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Dummy Device";
 
     // Constructor

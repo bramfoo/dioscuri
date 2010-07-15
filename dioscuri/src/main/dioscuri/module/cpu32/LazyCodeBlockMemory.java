@@ -40,18 +40,8 @@ public class LazyCodeBlockMemory extends LazyMemory {
     private static CodeBlockManager codeBlockManager;
 
     private static final BlankCodeBlock PLACEHOLDER = new BlankCodeBlock(0, 0);
-
-    /**
-     *
-     */
     protected RealModeCodeBlock[] realCodeBuffer;
-    /**
-     *
-     */
     protected ProtectedModeCodeBlock[] protectedCodeBuffer;
-    /**
-     *
-     */
     protected Virtual8086ModeCodeBlock[] virtual8086CodeBuffer;
 
     @SuppressWarnings("unused")
@@ -104,19 +94,11 @@ public class LazyCodeBlockMemory extends LazyMemory {
         if (codeBlockManager == null)
             codeBlockManager = new CodeBlockManager(clk);
     }
-
-    /**
-     *
-     */
     protected void constructCodeBlocksArray() {
         realCodeBuffer = new RealModeCodeBlock[(int) getSize()];
         protectedCodeBuffer = new ProtectedModeCodeBlock[(int) getSize()];
         virtual8086CodeBuffer = new Virtual8086ModeCodeBlock[(int) getSize()];
     }
-
-    /**
-     *
-     */
     public void relinquishCache() {
     }
 
@@ -576,10 +558,6 @@ public class LazyCodeBlockMemory extends LazyMemory {
         super.setDoubleWord(offset, data);
         regionAltered(offset, offset + 3);
     }
-
-    /**
-     *
-     */
     @Override
     public void clear() {
         constructCodeBlocksArray();
@@ -590,10 +568,6 @@ public class LazyCodeBlockMemory extends LazyMemory {
     public String toString() {
         return "LazyCodeBlockMemory[" + getSize() + "]";
     }
-
-    /**
-     *
-     */
     public static void dispose() {
         if (codeBlockManager != null)
             codeBlockManager.dispose();

@@ -34,30 +34,11 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public abstract class AddressSpace extends AbstractMemory {
-    /**
-     *
-     */
     public static final int BLOCK_SIZE = 4 * 1024;
-    /**
-     *
-     */
     public static final int BLOCK_MASK = BLOCK_SIZE - 1;
-    /**
-     *
-     */
     public static final int INDEX_MASK = ~(BLOCK_MASK);
-    /**
-     *
-     */
     public static final int INDEX_SHIFT = 12;
-    /**
-     *
-     */
     public static final int INDEX_SIZE = 1 << (32 - INDEX_SHIFT);
-
-    /**
-     *
-     */
     public AddressSpace() {
     }
 
@@ -100,10 +81,6 @@ public abstract class AddressSpace extends AbstractMemory {
      * @return -
      */
     public abstract Memory getWriteMemoryBlockAt(int offset);
-
-    /**
-     *
-     */
     @Override
     public abstract void clear();
 

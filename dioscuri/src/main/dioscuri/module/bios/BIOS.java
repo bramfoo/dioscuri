@@ -94,17 +94,8 @@ public class BIOS extends ModuleBIOS {
     // Constants
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "bios";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "BIOS ROM";
 
     // Memory size

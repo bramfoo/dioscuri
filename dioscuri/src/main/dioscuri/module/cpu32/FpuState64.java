@@ -36,34 +36,12 @@ import java.io.*;
  * @author Bart Kiers
  */
 public class FpuState64 extends FpuState {
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_NONE = 0;
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_NAN = 1;
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_UNSUPPORTED = 2;
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_INFINITY = 3;
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_DENORMAL = 4;
-    /**
-     *
-     */
     public final static int FPU_SPECIAL_TAG_SNAN = 5;
-
-    /**
-     *
-     */
     public final static double UNDERFLOW_THRESHOLD = Math.pow(2.0, -1022.0);
 
     private final Processor cpu;
@@ -212,52 +190,24 @@ public class FpuState64 extends FpuState {
     public boolean getStackFault() {
         return ((statusWord & 0x40) != 0);
     }
-
-    /**
-     *
-     */
     public void setInvalidOperation() {
         statusWord |= 0x01;
     }
-
-    /**
-     *
-     */
     public void setDenormalizedOperand() {
         statusWord |= 0x02;
     }
-
-    /**
-     *
-     */
     public void setZeroDivide() {
         statusWord |= 0x04;
     }
-
-    /**
-     *
-     */
     public void setOverflow() {
         statusWord |= 0x08;
     }
-
-    /**
-     *
-     */
     public void setUnderflow() {
         statusWord |= 0x10;
     }
-
-    /**
-     *
-     */
     public void setPrecision() {
         statusWord |= 0x20;
     }
-
-    /**
-     *
-     */
     public void setStackFault() {
         statusWord |= 0x40;
     }
@@ -287,10 +237,6 @@ public class FpuState64 extends FpuState {
         if (getErrorSummaryStatus())
             cpu.reportFPUException();
     }
-
-    /**
-     *
-     */
     public void clearExceptions() {
         statusWord = 0;
     }
@@ -467,11 +413,6 @@ public class FpuState64 extends FpuState {
         }
         roundingControl = FPU_ROUNDING_CONTROL_EVEN;
     }
-
-
-    /**
-     *
-     */
     public void init() {
         // tag word (and non-x87 special tags)
         for (int i = 0; i < STACK_DEPTH; ++i)

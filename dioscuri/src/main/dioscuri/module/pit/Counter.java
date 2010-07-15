@@ -64,34 +64,16 @@ public class Counter {
     private boolean signalOut; // Output signal OUT
 
     // Mode settings
-    /**
-     *
-     */
     protected int counterMode; // States the counter mode: 0,1,2,3,4,5
-    /**
-     *
-     */
     protected int rwMode; // States the mode to R/W counter: 0 (latched), 1
                           // (LSB), 2 (MSB), 3 (LSB -> MSB)
-    /**
-     *
-     */
     protected boolean bcd; // false = Binary counter, true = Binary Code Decimal
                            // counter
 
     // Registers
-    /**
-     *
-     */
     protected byte[] ce; // Counting element, the actual counter
-    /**
-     *
-     */
     protected byte[] cr; // Count Register, holding the count value to be loaded
                          // in counter
-    /**
-     *
-     */
     protected byte[] ol; // Output Latch, holding a snapshot of the count of the
                          // counter
 
@@ -106,9 +88,6 @@ public class Counter {
     private boolean isTriggered; // Defines if this counter has been triggered
                                  // (used for modes 1 and 5)
     private boolean isGateRising; // Defines if GATE signal is on rising edge
-    /**
-     *
-     */
     protected boolean readBackCmd; // Defines if this counter is in read-back
                                    // mode
 
@@ -116,13 +95,7 @@ public class Counter {
     private static final Logger logger = Logger.getLogger(Counter.class.getName());
 
     // Constants
-    /**
-     *
-     */
     protected final static int LSB = 1;
-    /**
-     *
-     */
     protected final static int MSB = 0;
 
     private final static boolean ODD = false;

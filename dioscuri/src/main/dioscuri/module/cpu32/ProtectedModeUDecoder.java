@@ -219,10 +219,6 @@ public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
     private boolean blockComplete;
     private boolean addressModeDecoded;
     private boolean operandSizeIs32Bit;
-
-    /**
-     *
-     */
     public ProtectedModeUDecoder() {
         this.current = new Operation();
         this.waiting = new Operation();

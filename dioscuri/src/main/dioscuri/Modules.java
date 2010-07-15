@@ -53,9 +53,6 @@ public class Modules extends ArrayList<Module> {
     // Attributes
 
     // Constructors
-    /**
-     *
-     */
     public Modules() {
         super();
     }

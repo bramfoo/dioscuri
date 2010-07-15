@@ -49,21 +49,9 @@ package dioscuri.module.ata;
  * 
  */
 public enum SenseType {
-    /**
-     *
-     */
     NONE(0),
-    /**
-     *
-     */
     NOT_READY(2),
-    /**
-     *
-     */
     ILLEGAL_REQUEST(5),
-    /**
-     *
-     */
     UNIT_ATTENTION(6);
 
     private final int value;

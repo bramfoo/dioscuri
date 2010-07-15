@@ -40,10 +40,6 @@ public class UCodeStaticMethods {
             Processor.PROC_EXCEPTION_DE, true);
     private static final ProcessorException exceptionGP = new ProcessorException(
             Processor.PROC_EXCEPTION_GP, 0, true);
-
-    /**
-     *
-     */
     protected static final boolean[] parityMap;
     static {
         parityMap = new boolean[256];

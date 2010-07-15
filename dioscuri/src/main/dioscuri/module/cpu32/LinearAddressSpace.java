@@ -74,10 +74,6 @@ public final class LinearAddressSpace extends AddressSpace implements
     private Hashtable<Integer, Integer> nonGlobalPages;
     private Memory[] readUserIndex, readSupervisorIndex, writeUserIndex,
             writeSupervisorIndex, readIndex, writeIndex;
-
-    /**
-     *
-     */
     public LinearAddressSpace() {
         baseAddress = 0;
         lastAddress = 0;
@@ -373,10 +369,6 @@ public final class LinearAddressSpace extends AddressSpace implements
     public boolean pagingDisabled() {
         return pagingDisabled;
     }
-
-    /**
-     *
-     */
     public void flush() {
         for (int i = 0; i < INDEX_SIZE; i++) {
             pageFlags[i] = FOUR_K;
@@ -913,10 +905,6 @@ public final class LinearAddressSpace extends AddressSpace implements
             setDoubleWordInBytes(offset, data);
         }
     }
-
-    /**
-     *
-     */
     public void clear() {
         target.clear();
     }
@@ -973,10 +961,6 @@ public final class LinearAddressSpace extends AddressSpace implements
                 & AddressSpace.BLOCK_MASK);
         return block;
     }
-
-    /**
-     *
-     */
     public static final class PageFaultWrapper extends Memory {
         private ProcessorException pageFault;
 
@@ -1000,10 +984,6 @@ public final class LinearAddressSpace extends AddressSpace implements
         public ProcessorException getFault() {
             return pageFault;
         }
-
-        /**
-         *
-         */
         public void clear() {
         }
 
@@ -1245,10 +1225,6 @@ public final class LinearAddressSpace extends AddressSpace implements
         if (component instanceof PhysicalAddressSpace)
             target = (AddressSpace) component;
     }
-
-    /**
-     *
-     */
     public void timerCallback() {
     }
 

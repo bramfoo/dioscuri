@@ -104,10 +104,6 @@ public class SimpleConfigDialog extends ConfigurationDialog {
         this.updateIntField.setValue(updateInt);
 
     }
-
-    /**
-     *
-     */
     @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");

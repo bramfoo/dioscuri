@@ -72,10 +72,6 @@ public abstract class ModuleDMA extends ModuleDevice {
      * @param request
      */
     public abstract void setDMARequest(int chanNum, boolean request);
-
-    /**
-     *
-     */
     public abstract void acknowledgeBusHold();
 
     /**

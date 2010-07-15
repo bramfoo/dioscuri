@@ -96,10 +96,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
     private int ramBlockSize; // Size of second dimension
     private int blockIndex; // Index into ram; shifting by this index determines
                             // corresponding ramBlock for memory address
-
-    /**
-     *
-     */
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
                                    // addresses
 
@@ -109,17 +105,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
     // Constants
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "memory";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "RAM";
 
     private final static int BYTES_IN_MB = 1048576;

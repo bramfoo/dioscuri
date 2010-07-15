@@ -93,10 +93,6 @@ public class Video extends ModuleVideo {
     private VideoCard videocard;
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
-
-    /**
-     *
-     */
     public DiosJPCVideoConnect vidMemConnect = new DiosJPCVideoConnect();
 
     // Toggles
@@ -119,17 +115,8 @@ public class Video extends ModuleVideo {
     // Constants
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "video";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Video Graphics Array (VGA) adapter";
 
     private final static int MAX_TEXT_LINES = 100;
@@ -2572,10 +2559,6 @@ public class Video extends ModuleVideo {
      * used to connect the memory range A0000 - C0000 to the vgaMemory array in
      * VideoCard
      */
-
-    /**
-     *
-     */
     @SuppressWarnings("unused")
     public class DiosJPCVideoConnect extends Memory {
         // Added because needed - need to check if used elsewhere in JPC
@@ -2765,10 +2748,6 @@ public class Video extends ModuleVideo {
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
-
-        /**
-         *
-         */
         public void clear() {
             // Do we need this?
             // internalReset();

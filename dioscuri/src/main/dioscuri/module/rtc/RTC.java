@@ -99,10 +99,6 @@ public class RTC extends ModuleRTC {
 
     // IRQ number
     private int irqNumber;
-
-    /**
-     *
-     */
     protected int lookupRegister; // Register set by OUT instruction for
                                   // retrieval of data for next IN
 
@@ -111,17 +107,8 @@ public class RTC extends ModuleRTC {
     private final static int IN_PORT = 0x71; // Read/write port
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "rtc";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Real Time Clock (RTC)";
 
     // Constructor

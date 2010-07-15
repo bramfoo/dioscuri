@@ -76,9 +76,5 @@ public interface HardwareComponent extends Hibernatable {
      * @param component
      */
     public void updateComponent(HardwareComponent component);
-
-    /**
-     *
-     */
     public void timerCallback();
 }

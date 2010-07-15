@@ -51,109 +51,34 @@ import javax.swing.*;
 public interface GUI {
 
     // Dimension settings
-    /**
-     *
-     */
     static final int GUI_X_LOCATION = 200;
-    /**
-     *
-     */
     static final int GUI_Y_LOCATION = 200;
 
     // GUI update activities
-    /**
-     *
-     */
     static final int EMU_PROCESS_START = 0;
-    /**
-     *
-     */
     static final int EMU_PROCESS_STOP = 1;
-    /**
-     *
-     */
     static final int EMU_PROCESS_RESET = 2;
-    /**
-     *
-     */
     static final int EMU_FLOPPYA_INSERT = 3;
-    /**
-     *
-     */
     static final int EMU_FLOPPYA_EJECT = 4;
-    /**
-     *
-     */
     static final int EMU_HD1_INSERT = 5;
-    /**
-     *
-     */
     static final int EMU_HD1_EJECT = 6;
-    /**
-     *
-     */
     static final int EMU_HD1_TRANSFER_START = 7;
-    /**
-     *
-     */
     static final int EMU_HD1_TRANSFER_STOP = 8;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_NUMLOCK_ON = 9;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_NUMLOCK_OFF = 10;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_CAPSLOCK_ON = 11;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_CAPSLOCK_OFF = 12;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_SCROLLLOCK_ON = 13;
-    /**
-     *
-     */
     static final int EMU_KEYBOARD_SCROLLLOCK_OFF = 14;
-    /**
-     *
-     */
     static final int EMU_FLOPPYA_TRANSFER_START = 15;
-    /**
-     *
-     */
     static final int EMU_FLOPPYA_TRANSFER_STOP = 16;
-    /**
-     *
-     */
     static final int EMU_DEVICES_MOUSE_ENABLED = 17;
-    /**
-     *
-     */
     static final int EMU_DEVICES_MOUSE_DISABLED = 18;
-    /**
-     *
-     */
     static final int GUI_RESET = 99;
 
     // Key events
-    /**
-     *
-     */
     static final int KEY_PRESSED = 0;
-    /**
-     *
-     */
     static final int KEY_RELEASED = 1;
-    /**
-     *
-     */
     static final int KEY_TYPED = 2;
 
     /**

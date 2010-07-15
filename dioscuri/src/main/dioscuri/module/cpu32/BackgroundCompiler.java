@@ -60,10 +60,6 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         running = true;
         new CompilerThread();
     }
-
-    /**
-     *
-     */
     public void stop() {
         running = false;
     }

@@ -267,10 +267,6 @@ public class LazyMemory extends AbstractMemory {
             buffer[offset] = (byte) (data);
         }
     }
-
-    /**
-     *
-     */
     @Override
     public void clear() {
         buffer = null;

@@ -39,13 +39,7 @@ package dioscuri.module.cpu32;
  */
 @SuppressWarnings("unchecked")
 public class BytecodeFragments implements MicrocodeSet {
-    /**
-     *
-     */
     public static final Object IMMEDIATE = new Object();
-    /**
-     *
-     */
     public static final Object X86LENGTH = new Object();
 
     private static Object[][] pushCodeArray = new Object[FASTCompiler.ELEMENT_COUNT][];
@@ -315,10 +309,6 @@ public class BytecodeFragments implements MicrocodeSet {
         popCodeArray[FASTCompiler.PROCESSOR_ELEMENT_ADDR0] = new Object[] { new Integer(
                 JavaOpcode.POP) };
     }
-
-    /**
-     *
-     */
     protected BytecodeFragments() {
     }
 

@@ -107,26 +107,10 @@ public class PIC extends ModulePIC {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "pic";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Programmable Interrupt Controller (Intel 8259A compatible)";
-
-    /**
-     *
-     */
     public final static int MASTER = 0;
-    /**
-     * 
-     */
     public final static int SLAVE = 1;
 
     // I/O ports 0x20-0x21 (Master PIC)
@@ -231,6 +215,7 @@ public class PIC extends ModulePIC {
     public boolean setConnection(Module mod) {
         // Set connection for cpu
         if (mod.getType().equalsIgnoreCase("cpu")) {
+            System.out.println("PIC connected to :: " + mod.getClass() + "\n");
             this.cpu = (ModuleCPU) mod;
             return true;
         }
@@ -454,8 +439,7 @@ public class PIC extends ModulePIC {
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
 
-        if ((portAddress == 0x20 || portAddress == 0x21)
-                && thePIC[MASTER].isPolled) {
+        if ((portAddress == 0x20 || portAddress == 0x21) && thePIC[MASTER].isPolled) {
             // In polled mode. Treat this as an interrupt acknowledge
             clearHighestInterrupt(MASTER);
             thePIC[MASTER].isPolled = false;
@@ -464,8 +448,7 @@ public class PIC extends ModulePIC {
                                                     // requested
         }
 
-        if ((portAddress == 0xA0 || portAddress == 0xA1)
-                && thePIC[SLAVE].isPolled) {
+        if ((portAddress == 0xA0 || portAddress == 0xA1) && thePIC[SLAVE].isPolled) {
             // In polled mode. Treat this as an interrupt acknowledge
             clearHighestInterrupt(SLAVE);
             thePIC[SLAVE].isPolled = false;
@@ -1034,6 +1017,7 @@ public class PIC extends ModulePIC {
      *         allowed/possible
      */
     public int requestIRQNumber(Module module) {
+
         int irqNumber = -1;
 
         // Check which device is requesting an IRQ number
@@ -1085,7 +1069,7 @@ public class PIC extends ModulePIC {
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                     + " Should return free IRQ number, but is not implemented");
         }
-
+        System.out.println("PIC.requestIRQNumber(Module) :: "+module.getClass()+" :: IRQ = " + irqNumber);
         return irqNumber;
     }
 
@@ -1094,6 +1078,7 @@ public class PIC extends ModulePIC {
      * 
      */
     public void setIRQ(int irqNumber) {
+        System.out.println("irqNumber="+irqNumber);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
 

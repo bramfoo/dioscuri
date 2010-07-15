@@ -49,25 +49,10 @@ package dioscuri.module.ata;
  * 
  */
 public enum ATATranslationType {
-    /**
-     *
-     */
     NONE("None"),
-    /**
-     *
-     */
     LBA("LBA"),
-    /**
-     *
-     */
     LARGE("Large"),
-    /**
-     *
-     */
     RECHS("Rechs"),
-    /**
-     *
-     */
     AUTO("Auto");
 
     private final String name;

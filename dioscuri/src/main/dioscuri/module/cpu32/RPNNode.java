@@ -201,10 +201,6 @@ public abstract class RPNNode {
             ((RPNNode) argLinks.get(i)).print(indent + " ");
         System.out.println(indent + "}");
     }
-
-    /**
-     *
-     */
     public void print() {
         print("");
     }

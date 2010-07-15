@@ -34,32 +34,13 @@ package dioscuri.module.cpu32;
  */
 @SuppressWarnings("serial")
 public class ModeSwitchException extends RuntimeException {
-    /**
-     *
-     */
     public static final int REAL_MODE = 0;
-    /**
-     *
-     */
     public static final int PROTECTED_MODE = 1;
-    /**
-     *
-     */
     public static final int VIRTUAL8086_MODE = 2;
-
-    /**
-     *
-     */
     public static final ModeSwitchException PROTECTED_MODE_EXCEPTION = new ModeSwitchException(
             PROTECTED_MODE);
-    /**
-     *
-     */
     public static final ModeSwitchException REAL_MODE_EXCEPTION = new ModeSwitchException(
             REAL_MODE);
-    /**
-     *
-     */
     public static final ModeSwitchException VIRTUAL8086_MODE_EXCEPTION = new ModeSwitchException(
             VIRTUAL8086_MODE);
 

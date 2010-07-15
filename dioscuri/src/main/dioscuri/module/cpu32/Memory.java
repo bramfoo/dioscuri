@@ -34,9 +34,6 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public abstract class Memory implements ByteArray {
-    /**
-     *
-     */
     public abstract void clear();
 
     /**

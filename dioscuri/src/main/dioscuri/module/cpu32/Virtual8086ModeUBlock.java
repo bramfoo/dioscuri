@@ -74,20 +74,9 @@ public class Virtual8086ModeUBlock implements Virtual8086ModeCodeBlock,
     private FpuState fpu;
 
     private int x86Count;
-
-    /**
-     *
-     */
     protected int[] microcodes;
-    /**
-     *
-     */
     protected int[] cumulativeX86Length;
     private int executeCount;
-
-    /**
-     *
-     */
     public Virtual8086ModeUBlock() {
     }
 

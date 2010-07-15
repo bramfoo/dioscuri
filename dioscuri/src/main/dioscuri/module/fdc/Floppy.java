@@ -55,13 +55,7 @@ import java.io.IOException;
  */
 public class Floppy {
     // Attributes
-    /**
-     *
-     */
     protected byte type;
-    /**
-     *
-     */
     protected byte[] bytes;
     private File imageFile;
 

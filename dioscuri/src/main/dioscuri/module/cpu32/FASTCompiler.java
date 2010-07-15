@@ -41,223 +41,56 @@ import java.util.*;
  * @author Bart Kiers
  */
 public class FASTCompiler implements CodeBlockCompiler {
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EAX = 0;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ECX = 1;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EDX = 2;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EBX = 3;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ESP = 4;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EBP = 5;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ESI = 6;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EDI = 7;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EIP = 8;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_CFLAG = 9;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_PFLAG = 10;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_AFLAG = 11;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ZFLAG = 12;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_SFLAG = 13;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_TFLAG = 14;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IFLAG = 15;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_DFLAG = 16;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_OFLAG = 17;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IOPL = 18;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_NTFLAG = 19;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_RFLAG = 20;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_VMFLAG = 21;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ACFLAG = 22;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_VIFLAG = 23;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_VIPFLAG = 24;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IDFLAG = 25;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ES = 26;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_CS = 27;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_SS = 28;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_DS = 29;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_FS = 30;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_GS = 31;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IDTR = 32;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_GDTR = 33;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_LDTR = 34;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_TSS = 35;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_CPL = 36;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IOPORTS = 37;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_ADDR0 = 38;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_COUNT = 39;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_REG0 = 39;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_REG1 = 40;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_REG2 = 41;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_SEG0 = 42;
-
-    /**
-     *
-     */
     public static final int POPABLE_ELEMENT_COUNT = 43;
-
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_MEMORYWRITE = 43;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_IOPORTWRITE = 44;
-    /**
-     *
-     */
     public static final int PROCESSOR_ELEMENT_EXECUTECOUNT = 45;
-
-    /**
-     *
-     */
     public static final int ELEMENT_COUNT = 46;
-
-    /**
-     *
-     */
     public static final int VARIABLE_EXECUTE_COUNT_INDEX = 10;
-    /**
-     *
-     */
     public static final int VARIABLE_OFFSET = 11;
 
     private static int classIndex = 0;

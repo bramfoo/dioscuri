@@ -104,14 +104,8 @@ public class PIT extends ModulePIT {
     // BRAM: Removed CPU connection, as it was unnecessary
     private String[] moduleConnections = new String[] { "motherboard", "pic" };// ,
                                                                                // "cpu"};
-    /**
-     *
-     */
     protected ModuleMotherboard motherboard;
     // private ModuleCPU cpu;
-    /**
-     *
-     */
     protected ModulePIC pic;
     private Counter[] counters;
 
@@ -120,9 +114,6 @@ public class PIT extends ModulePIT {
     private boolean debugMode;
 
     // IRQ number
-    /**
-     *
-     */
     protected int irqNumber;
 
     // Timing
@@ -134,17 +125,8 @@ public class PIT extends ModulePIT {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "pit";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Intel 8254 Programmable Interval Timer (PIT)";
 
     // I/O ports PIT

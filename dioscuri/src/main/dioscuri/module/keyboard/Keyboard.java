@@ -125,17 +125,8 @@ public class Keyboard extends ModuleKeyboard {
     private final static int MOUSE = 1; // Source is mouse
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "keyboard";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "101-key PS/2 QWERTY keyboard";
 
     // Constructor
@@ -316,7 +307,7 @@ public class Keyboard extends ModuleKeyboard {
         if (mouse != null) {
             irqNumberMouse = pic.requestIRQNumber(mouse);
             if (irqNumberMouse > -1) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                         + " Mouse IRQ number set to: " + irqNumberMouse);
             } else {
                 logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -325,7 +316,7 @@ public class Keyboard extends ModuleKeyboard {
         } else {
             logger
                     .log(
-                            Level.CONFIG,
+                            Level.INFO,
                             "["
                                     + MODULE_TYPE
                                     + "]"
@@ -510,12 +501,12 @@ public class Keyboard extends ModuleKeyboard {
 
         if ((returnValue & 0x01) == 1) {
             setInterrupt(irqNumberKeyboard);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " timer raises IRQ1");
         }
         if ((returnValue & 0x02) == 2) {
             setInterrupt(irqNumberMouse);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " timer raises IRQ12");
         }
     }
@@ -750,6 +741,7 @@ public class Keyboard extends ModuleKeyboard {
                     return;
 
                 case (byte) 0xD4: // Write to mouse
+                    logger.log(Level.INFO, "[keyboard] writing value to mouse: "+value);
                     mouse.controlMouse(value);
                     return;
 
@@ -1342,8 +1334,7 @@ public class Keyboard extends ModuleKeyboard {
 
             // If there is more data in the queue, activate the timer for it to
             // be processed
-            if (oldKBDClock == 0 && keyboard.controller.outputBuffer == 0)
-                ;
+            if (oldKBDClock == 0 && keyboard.controller.outputBuffer == 0) // ; // <- TODO BK really remove ';'?
             {
                 activateTimer();
             }
@@ -1394,6 +1385,7 @@ public class Keyboard extends ModuleKeyboard {
      * 
      */
     public void enqueueControllerBuffer(byte data, int source) {
+
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Queueing 0x"
                 + Integer.toHexString(data).toUpperCase()
                 + " in keyboard controller buffer");
@@ -1401,13 +1393,7 @@ public class Keyboard extends ModuleKeyboard {
         // Check if output is available for writing
         if (keyboard.controller.outputBuffer != 0) {
             if (keyboard.getControllerQueue().size() >= TheKeyboard.CONTROLLER_QUEUE_SIZE) {
-                logger
-                        .log(
-                                Level.WARNING,
-                                "["
-                                        + MODULE_TYPE
-                                        + "]"
-                                        + " queueKBControllerBuffer(): Keyboard controller is full!");
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] queueKBControllerBuffer(): Keyboard controller is full!");
             }
             keyboard.getControllerQueue().add(data);
             return;
@@ -1417,9 +1403,9 @@ public class Keyboard extends ModuleKeyboard {
         // Check the source
         if (source == KEYBOARD) {
             // Device is keyboard
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " source == KEYBOARD");
             keyboard.controller.kbdOutputBuffer = data;
-            keyboard.controller.outputBuffer = 1; // Set status output bit to
-                                                  // full, ready for read
+            keyboard.controller.outputBuffer = 1; // Set status output bit to full, ready for read
             keyboard.controller.auxBuffer = 0; // Set as keyboard data
             keyboard.controller.inputBuffer = 0; // Clear input, enable write
             if (keyboard.controller.allowIRQ1 != 0) {
@@ -1427,6 +1413,7 @@ public class Keyboard extends ModuleKeyboard {
             }
         } else {
             // Device is mouse
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " source == MOUSE");
             keyboard.controller.auxOutputBuffer = data;
             keyboard.controller.outputBuffer = 1;
             keyboard.controller.auxBuffer = 1; // Set as mouse data
@@ -1512,8 +1499,8 @@ public class Keyboard extends ModuleKeyboard {
 
         // If no 'timers' are raised, no data is waiting so we can exit here
         if (keyboard.controller.timerPending == 0) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                    + " no timer raised, do nothing");
+            //logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            //        + " no timer raised, do nothing");
             return (returnValue);
         }
 
@@ -1552,10 +1539,10 @@ public class Keyboard extends ModuleKeyboard {
             // Mouse buffer
             // FIXME: mouse.storeBufferData(false);
 
-            if (keyboard.controller.auxClockEnabled == 1
-                    && !mouse.isBufferEmpty()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                        + " poll(): mouse event waiting");
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " poll()...");
+
+            if (keyboard.controller.auxClockEnabled == 1 && !mouse.isBufferEmpty()) {
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): mouse event waiting");
 
                 // Get data byte from mouse buffer
                 keyboard.controller.auxOutputBuffer = mouse.getDataFromBuffer();

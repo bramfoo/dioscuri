@@ -43,10 +43,6 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     private int size = 0;
 
     private transient int modCount = 0;
-
-    /**
-     *
-     */
     public PriorityDeque() {
         this(DEFAULT_INITIAL_CAPACITY);
     }

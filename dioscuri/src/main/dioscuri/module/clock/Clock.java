@@ -89,22 +89,9 @@ public class Clock extends ModuleClock {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "clock";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Crystal clock";
-
-    /**
-     *
-     */
     public final static int TIMER_ARRAY_SIZE = 10;
 
     // Constructor

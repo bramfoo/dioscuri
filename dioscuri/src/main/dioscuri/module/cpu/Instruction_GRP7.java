@@ -52,7 +52,6 @@ import dioscuri.exception.CPUInstructionException;
  * Flags modified: depending on instruction can be any of: OF, SF, ZF, AF, PF,
  * CF
  */
-@SuppressWarnings("unused")
 public class Instruction_GRP7 implements Instruction {
 
     // Attributes
@@ -123,6 +122,9 @@ public class Instruction_GRP7 implements Instruction {
      * @throws CPUInstructionException
      */
     public void execute() throws CPUInstructionException {
+
+        logger.log(Level.SEVERE, "Instruction_GRP7.execute()");
+
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -132,6 +134,7 @@ public class Instruction_GRP7 implements Instruction {
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3) {
         case 0: // SGDT
+            logger.log(Level.SEVERE, "  case 0"); // TODO BK <<---
             // Stores the limit (16 bits) and base (32/24 bits) values in
             // memory.
             // Limit = size of GDT, base = start of GDT
@@ -149,45 +152,41 @@ public class Instruction_GRP7 implements Instruction {
                     cpu.gdtr[4]);
 
             if (cpu.doubleWord) {
+                System.out.println("A");
                 // 32 bit: all 4 bytes of base are used
                 // Get base (32 bits) from memory
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[3]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[3]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[2]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[2]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[1]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[1]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[0]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[0]);
             } else {
+                System.out.println("B");
                 // 16 bit: only 3 bytes of base are used, highest byte is set to
                 // zero
                 // Get base (32 bits from which high-order byte is not used)
                 // from memory
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[3]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[3]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[2]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[2]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, cpu.gdtr[1]);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, cpu.gdtr[1]);
                 Util.addWords(memoryReferenceLocation, word0x0001, 0);
-                cpu.setByteInMemorySegment(addressByte,
-                        memoryReferenceLocation, (byte) 0x00);
+                cpu.setByteInMemorySegment(addressByte, memoryReferenceLocation, (byte) 0x00);
             }
             break;
 
         case 1: // SIDT
+            logger.log(Level.SEVERE, "  case 1");
             throw new CPUInstructionException(
                     "Group 7 (0x0F01) instruction SIDT not implemented.");
 
         case 2: // LGDT - Load Global Descriptor Table Register
+            logger.log(Level.SEVERE, "  case 2");
             // Retrieves the limit (16 bits) and base (32/24 bits) values from
             // memory.
             // Limit = size of GDT, base = start of GDT
@@ -241,10 +240,12 @@ public class Instruction_GRP7 implements Instruction {
             break;
 
         case 3: // LIDT
+            logger.log(Level.SEVERE, "  case 3");
             throw new CPUInstructionException(
                     "Group 7 (0x0F01) instruction LIDT not implemented.");
 
         case 4: // SMSW - Store Machine Status Word
+            logger.log(Level.SEVERE, "  case 4");
             // Store the lower 16 bits of CR0 into reg or mem
             // Flags affected: none
 
@@ -278,11 +279,13 @@ public class Instruction_GRP7 implements Instruction {
             break;
 
         case 5: // Does not exist
+            logger.log(Level.SEVERE, "  case 5");
             // Throw exception for illegal nnn bits
             throw new CPUInstructionException(
                     "Group 7 (0x0701/5) illegal reg bits");
 
         case 6: // LMSW - Load Machine Status Word
+            logger.log(Level.SEVERE, "  case 6");
             // Flags affected: none
             // Note: although it seems that a word (16 bits) is loaded,
             // only the four lowest bits should be taken into account (see Intel
@@ -326,10 +329,12 @@ public class Instruction_GRP7 implements Instruction {
             break;
 
         case 7: // INVLPG
+            logger.log(Level.SEVERE, "  case 7");
             throw new CPUInstructionException(
                     "Group 7 (0x0F01) instruction INVLPG not implemented.");
 
         default:
+            logger.log(Level.SEVERE, "  default");
             // TODO Throw exception for illegal nnn bits
             throw new CPUInstructionException(
                     "Group 7 (0x0F01) instruction no case match.");

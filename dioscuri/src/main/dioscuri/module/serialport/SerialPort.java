@@ -192,7 +192,7 @@ public class SerialPort extends ModuleSerialPort {
         for (int c = 0; c < TOTALCOMPORTS; c++) {
             comPorts[c] = new ComPort();
         }
-
+        
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
                 + " -> Module created successfully.");
     }
@@ -481,13 +481,12 @@ public class SerialPort extends ModuleSerialPort {
              * else if (timer_id == BX_SER_THIS s[3].rx_timer_index) { port = 3;
              * }
              */
-            baudrate = comPorts[port].baudrate
-                    / (comPorts[port].lcr_wordlen_sel + 5);
+            baudrate = comPorts[port].baudrate / (comPorts[port].lcr_wordlen_sel + 5);
             byte chbuf = 0;
 
             // Check if no data is still waiting and if FIFO is enabled
-            if ((comPorts[port].lsr_rxdata_ready == 0)
-                    || (comPorts[port].fcr_enable == 1)) {
+            if ((comPorts[port].lsr_rxdata_ready == 0) || (comPorts[port].fcr_enable == 1)) {
+
                 // Check if data is available to put into FIFO buffer
                 if (comPorts[port].uartDevice.isDataAvailable()) {
                     chbuf = comPorts[port].uartDevice.getSerialData();
@@ -514,8 +513,7 @@ public class SerialPort extends ModuleSerialPort {
             }
 
             // Activate timer as one shot
-            motherboard.resetTimer(this,
-                    (int) (1000000.0 / comPorts[port].baudrate));
+            motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
             motherboard.setTimerActiveState(this, true);
         }
     }
@@ -1221,23 +1219,23 @@ public class SerialPort extends ModuleSerialPort {
     // Custom methods
 
     private void setIRQ(int port, int type) {
+        // TODO BK always port=0, type=1 
         boolean raiseInterrupt = false;
-
+        
         switch (type) {
             case INTERRUPT_IER: // IER has changed
                 raiseInterrupt = true;
                 break;
 
             case INTERRUPT_RXDATA: // Received data available interrupt
-                if (comPorts[port].ier_rxdata_enable == 1) {
+
+                if (comPorts[port].ier_rxdata_enable == 1) {                                    // TODO BK 16 && 32 here
                     comPorts[port].rx_interrupt = 1;
                     raiseInterrupt = true;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE
-                            + "] RXDATA interrupt raised and enabled");
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] RXDATA interrupt raised and enabled");
                 } else {
                     comPorts[port].rx_ipending = 1;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE
-                            + "] RXDATA interrupt pending...");
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] RXDATA interrupt pending...");
                 }
                 break;
 
@@ -1276,9 +1274,8 @@ public class SerialPort extends ModuleSerialPort {
                 break;
         }
 
-        if (raiseInterrupt && (comPorts[port].mcr_out2 == 1)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
-                    + "] Raising IRQ (signalling to PIC)");
+        if (raiseInterrupt && (comPorts[port].mcr_out2 == 1)) {                                 // TODO BK 16 && 32 here
+            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Raising IRQ (signalling to PIC)");
             pic.setIRQ(comPorts[port].irq);
         }
     }
@@ -1297,6 +1294,7 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     private void enqueueReceivedData(int port, byte data) {
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] enqueueReceivedData(...)");
         boolean raiseInterrupt = false;
 
         // Check if FIFO is active
@@ -1364,7 +1362,7 @@ public class SerialPort extends ModuleSerialPort {
             comPorts[port].lsr_rxdata_ready = 1;
 
             // Throw IRQ
-            this.setIRQ(port, INTERRUPT_RXDATA);
+            this.setIRQ(port, INTERRUPT_RXDATA);   // TODO BK 16 and 32 bit the same
         }
     }
 

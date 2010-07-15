@@ -36,100 +36,30 @@ import java.io.*;
  */
 public abstract class FpuState implements Hibernatable {
     // stack depth (common to all x87 FPU's)
-    /**
-     *
-     */
     public final static int STACK_DEPTH = 8;
-
-    /**
-     *
-     */
     public static final int FPU_PRECISION_CONTROL_SINGLE = 0;
-    /**
-     *
-     */
     public static final int FPU_PRECISION_CONTROL_DOUBLE = 2;
-    /**
-     *
-     */
     public static final int FPU_PRECISION_CONTROL_EXTENDED = 3;
-
-    /**
-     *
-     */
     public static final int FPU_ROUNDING_CONTROL_EVEN = 0;
-    /**
-     *
-     */
     public static final int FPU_ROUNDING_CONTROL_DOWN = 1;
-    /**
-     *
-     */
     public static final int FPU_ROUNDING_CONTROL_UP = 2;
-    /**
-     *
-     */
     public static final int FPU_ROUNDING_CONTROL_TRUNCATE = 3;
-
-    /**
-     *
-     */
     public static final int FPU_TAG_VALID = 0;
-    /**
-     *
-     */
     public static final int FPU_TAG_ZERO = 1;
-    /**
-     *
-     */
     public static final int FPU_TAG_SPECIAL = 2;
-    /**
-     *
-     */
     public static final int FPU_TAG_EMPTY = 3;
 
     // status word
     // note exception bits are "sticky" - cleared only explicitly
     // accessors to flag an exception - these will set the bit,
     // check the mask, and throw a ProcessorException if unmasked
-    /**
-     *
-     */
     public abstract void setInvalidOperation();
-
-    /**
-     *
-     */
     public abstract void setDenormalizedOperand();
-
-    /**
-     *
-     */
     public abstract void setZeroDivide();
-
-    /**
-     *
-     */
     public abstract void setOverflow();
-
-    /**
-     *
-     */
     public abstract void setUnderflow();
-
-    /**
-     *
-     */
     public abstract void setPrecision();
-
-    /**
-     *
-     */
     public abstract void setStackFault();
-
-    /**
-     *
-     */
     public abstract void clearExceptions();
 
     /**
@@ -193,14 +123,7 @@ public abstract class FpuState implements Hibernatable {
      */
     public abstract boolean getBusy();// same as fpuErrorSummaryStatus()
                                       // (legacy)
-
-    /**
-     *
-     */
     public int conditionCode; // 4 bits
-    /**
-     *
-     */
     public int top; // top of stack pointer (3 bits)
 
     // control word
@@ -239,10 +162,6 @@ public abstract class FpuState implements Hibernatable {
      * @return -
      */
     public abstract boolean getPrecisionMask();
-
-    /**
-     *
-     */
     public boolean infinityControl; // legacy: not really used anymore
 
     /**
@@ -312,23 +231,11 @@ public abstract class FpuState implements Hibernatable {
     public abstract void setAllMasks(boolean value);
 
     // other registers
-    /**
-     *
-     */
     public long lastIP; // last instruction pointer
-    /**
-     *
-     */
     public long lastData; // last data (operand) pointer
-    /**
-     *
-     */
     public int lastOpcode; // 11 bits
 
     // x87 access
-    /**
-     *
-     */
     public abstract void init();
 
     /**

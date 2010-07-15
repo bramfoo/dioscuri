@@ -100,10 +100,6 @@ public abstract class AttributeInfo {
             out.writeInt(attributeLength);
         }
     }
-
-    /**
-     *
-     */
     static class ConstantValueAttribute extends Attribute {
         private int constantValueIndex;
 
@@ -124,10 +120,6 @@ public abstract class AttributeInfo {
             out.writeShort(constantValueIndex);
         }
     }
-
-    /**
-     *
-     */
     static class CodeAttribute extends Attribute {
         private int maxStack;
         private int maxLocals;
@@ -285,10 +277,6 @@ public abstract class AttributeInfo {
             for (int i = 0; i < attributesCount; i++)
                 attributes[i].write(out);
         }
-
-        /**
-         *
-         */
         public static class ExceptionEntry {
             private final int startPC;
             private final int endPC;
@@ -324,10 +312,6 @@ public abstract class AttributeInfo {
             }
         }
     }
-
-    /**
-     *
-     */
     static class StackMapTableAttribute extends Attribute {
         private int numberOfEntries;
         private StackMapFrame[] entries;
@@ -353,59 +337,18 @@ public abstract class AttributeInfo {
             for (int i = 0; i < numberOfEntries; i++)
                 entries[i].write(out);
         }
-
-        /**
-         *
-         */
         public abstract static class StackMapFrame {
-            /**
-             *
-             */
             protected int frameType;
-
-            /**
-             *
-             */
             public static final int SAME_L = 0;
-            /**
-             *
-             */
             public static final int SAME_H = 63;
-            /**
-             *
-             */
             public static final int SAME_LOCALS_1_STACK_ITEM_L = 64;
-            /**
-             *
-             */
             public static final int SAME_LOCALS_1_STACK_ITEM_H = 127;
-            /**
-             *
-             */
             public static final int SAME_LOCALS_1_STACK_ITEM_EXTENDED = 247;
-            /**
-             *
-             */
             public static final int CHOP_L = 248;
-            /**
-             *
-             */
             public static final int CHOP_H = 250;
-            /**
-             *
-             */
             public static final int SAME_FRAME_EXTENDED = 251;
-            /**
-             *
-             */
             public static final int APPEND_L = 252;
-            /**
-             *
-             */
             public static final int APPEND_H = 254;
-            /**
-             *
-             */
             public static final int FULL_FRAME = 255;
 
             abstract void write(DataOutputStream out) throws IOException;
@@ -439,10 +382,6 @@ public abstract class AttributeInfo {
             public int getFrameType() {
                 return frameType;
             }
-
-            /**
-             *
-             */
             public static class SameFrame extends StackMapFrame {
                 SameFrame(DataInputStream in, int tag) throws IOException {
                     frameType = tag;
@@ -452,10 +391,6 @@ public abstract class AttributeInfo {
                     out.writeByte(frameType);
                 }
             }
-
-            /**
-             *
-             */
             public static class SameLocals1StackItemFrame extends StackMapFrame {
                 private VerificationTypeInfo[] stack;
 
@@ -471,10 +406,6 @@ public abstract class AttributeInfo {
                     stack[0].write(out);
                 }
             }
-
-            /**
-             *
-             */
             public static class SameLocals1StackItemFrameExtended extends
                     StackMapFrame {
                 private int offsetDelta;
@@ -494,10 +425,6 @@ public abstract class AttributeInfo {
                     stack[0].write(out);
                 }
             }
-
-            /**
-             *
-             */
             public static class ChopFrame extends StackMapFrame {
                 private int offsetDelta;
 
@@ -511,20 +438,12 @@ public abstract class AttributeInfo {
                     out.writeShort(offsetDelta);
                 }
             }
-
-            /**
-             *
-             */
             public static class SameFrameExtended extends ChopFrame {
                 SameFrameExtended(DataInputStream in, int tag)
                         throws IOException {
                     super(in, tag);
                 }
             }
-
-            /**
-             *
-             */
             public static class AppendFrame extends StackMapFrame {
                 private int offsetDelta;
                 private VerificationTypeInfo[] locals;
@@ -544,10 +463,6 @@ public abstract class AttributeInfo {
                         locals[i].write(out);
                 }
             }
-
-            /**
-             *
-             */
             public static class FullFrame extends StackMapFrame {
                 private int offsetDelta;
                 private int numberOfLocals;
@@ -583,51 +498,16 @@ public abstract class AttributeInfo {
                         stack[i].write(out);
                 }
             }
-
-            /**
-             *
-             */
             public abstract static class VerificationTypeInfo {
-                /**
-                 *
-                 */
                 protected int tag;
-
-                /**
-                 *
-                 */
                 public static final int TOP = 0;
-                /**
-                 *
-                 */
                 public static final int INTEGER = 1;
-                /**
-                 *
-                 */
                 public static final int FLOAT = 2;
-                /**
-                 *
-                 */
                 public static final int LONG = 4;
-                /**
-                 *
-                 */
                 public static final int DOUBLE = 3;
-                /**
-                 *
-                 */
                 public static final int NULL = 5;
-                /**
-                 *
-                 */
                 public static final int UNINITIALIZEDTHIS = 6;
-                /**
-                 *
-                 */
                 public static final int OBJECT = 7;
-                /**
-                 *
-                 */
                 public static final int UNINITIALIZED = 8;
 
                 static VerificationTypeInfo construct(DataInputStream in)
@@ -672,75 +552,43 @@ public abstract class AttributeInfo {
                 public void write(DataOutputStream out) throws IOException {
                     out.writeByte(tag);
                 }
-
-                /**
-                 *
-                 */
                 public static class TopVariableInfo extends
                         VerificationTypeInfo {
                     TopVariableInfo(int tag) throws IOException {
                         this.tag = tag;
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class IntegerVariableInfo extends TopVariableInfo {
                     IntegerVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class FloatVariableInfo extends TopVariableInfo {
                     FloatVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class LongVariableInfo extends TopVariableInfo {
                     LongVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class DoubleVariableInfo extends TopVariableInfo {
                     DoubleVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class NullVariableInfo extends TopVariableInfo {
                     NullVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class UninitializedThisVariableInfo extends
                         TopVariableInfo {
                     UninitializedThisVariableInfo(int tag) throws IOException {
                         super(tag);
                     }
                 }
-
-                /**
-                 *
-                 */
                 public static class ObjectVariableInfo extends
                         VerificationTypeInfo {
                     private int cpoolIndex;
@@ -763,10 +611,6 @@ public abstract class AttributeInfo {
                     }
 
                 }
-
-                /**
-                 *
-                 */
                 public static class UninitializedVariableInfo extends
                         VerificationTypeInfo {
                     private int offset;
@@ -792,10 +636,6 @@ public abstract class AttributeInfo {
             }
         }
     }
-
-    /**
-     *
-     */
     static class ExceptionsAttribute extends Attribute {
         private int numberOfExceptions;
         private int[] exceptionIndexTable;
@@ -821,10 +661,6 @@ public abstract class AttributeInfo {
                 out.writeShort(exceptionIndexTable[i]);
         }
     }
-
-    /**
-     *
-     */
     static class InnerClassesAttribute extends Attribute {
         private int numberOfClasses;
         private ClassEntry[] classes;
@@ -849,55 +685,20 @@ public abstract class AttributeInfo {
             for (int i = 0; i < numberOfClasses; i++)
                 classes[i].write(out);
         }
-
-        /**
-         *
-         */
         public static class ClassEntry {
             private int innnerClassInfoIndex;
             private int outerClassInfoIndex;
             private int innnerNameIndex;
             private int innnerClassAccessFlags;
-
-            /**
-             *
-             */
             public static final int PUBLIC = 0x0001;
-            /**
-             *
-             */
             public static final int PRIVATE = 0x0002;
-            /**
-             *
-             */
             public static final int PROTECTED = 0x0004;
-            /**
-             *
-             */
             public static final int STATIC = 0x0008;
-            /**
-             *
-             */
             public static final int FINAL = 0x0010;
-            /**
-             *
-             */
             public static final int INTERFACE = 0x0200;
-            /**
-             *
-             */
             public static final int ABSTRACT = 0x0400;
-            /**
-             *
-             */
             public static final int SYNTHETIC = 0x1000;
-            /**
-             *
-             */
             public static final int ANNOTATION = 0x2000;
-            /**
-             *
-             */
             public static final int ENUM = 0x4000;
 
             ClassEntry(DataInputStream in) throws IOException {
@@ -916,10 +717,6 @@ public abstract class AttributeInfo {
         }
 
     }
-
-    /**
-     *
-     */
     static class EnclosingMethodAttribute extends Attribute {
         private int classIndex;
         private int methodIndex;
@@ -943,19 +740,11 @@ public abstract class AttributeInfo {
             out.writeShort(methodIndex);
         }
     }
-
-    /**
-     *
-     */
     static class SyntheticAttribute extends Attribute {
         SyntheticAttribute(DataInputStream in, int index) throws IOException {
             super(in, index);
         }
     }
-
-    /**
-     *
-     */
     static class SignatureAttribute extends Attribute {
         private int classIndex;
 
@@ -975,10 +764,6 @@ public abstract class AttributeInfo {
             out.writeShort(classIndex);
         }
     }
-
-    /**
-     *
-     */
     static class SourceFileAttribute extends Attribute {
         private int sourceFileIndex;
 
@@ -998,10 +783,6 @@ public abstract class AttributeInfo {
             out.writeShort(sourceFileIndex);
         }
     }
-
-    /**
-     *
-     */
     static class LineNumberTableAttribute extends Attribute {
         private int lineNumberTableLength;
         private LineNumberEntry[] lineNumberTable;
@@ -1027,10 +808,6 @@ public abstract class AttributeInfo {
             for (int i = 0; i < lineNumberTableLength; i++)
                 lineNumberTable[i].write(out);
         }
-
-        /**
-         *
-         */
         public static class LineNumberEntry {
             private int startPC;
             private int lineNumber;
@@ -1051,10 +828,6 @@ public abstract class AttributeInfo {
             }
         }
     }
-
-    /**
-     *
-     */
     static class LocalVariableTableAttribute extends Attribute {
         private int localVariableTableLength;
         private LocalVariableEntry[] localVariableTable;
@@ -1080,10 +853,6 @@ public abstract class AttributeInfo {
             for (int i = 0; i < localVariableTableLength; i++)
                 localVariableTable[i].write(out);
         }
-
-        /**
-         *
-         */
         public static class LocalVariableEntry {
             private int startPC;
             private int length;
@@ -1113,19 +882,11 @@ public abstract class AttributeInfo {
             }
         }
     }
-
-    /**
-     *
-     */
     static class DeprecatedAttribute extends Attribute {
         DeprecatedAttribute(DataInputStream in, int index) throws IOException {
             super(in, index);
         }
     }
-
-    /**
-     *
-     */
     static class UnknownAttribute extends Attribute {
         // what to do here??
         // blank the data

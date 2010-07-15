@@ -35,30 +35,14 @@ package dioscuri.module.cpu32;
  */
 public abstract class ProtectedModeTemplateBlock implements
         ProtectedModeCodeBlock {
-    /**
-     *
-     */
     protected static final ProcessorException exceptionDE = new ProcessorException(
             Processor.PROC_EXCEPTION_DE, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionGP = new ProcessorException(
             Processor.PROC_EXCEPTION_GP, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionSS = new ProcessorException(
             Processor.PROC_EXCEPTION_SS, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionUD = new ProcessorException(
             Processor.PROC_EXCEPTION_UD, true);
-
-    /**
-     *
-     */
     protected static final boolean[] parityMap;
 
     static {

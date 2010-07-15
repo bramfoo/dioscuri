@@ -33,49 +33,16 @@ import java.io.*;
  * @author Bart Kiers
  */
 public abstract class ConstantPoolInfo {
-    /**
-     *
-     */
     public static final int CLASS = 7;
-    /**
-     *
-     */
     public static final int FIELDREF = 9;
-    /**
-     *
-     */
     public static final int METHODREF = 10;
-    /**
-     *
-     */
     public static final int INTERFACEMETHODREF = 11;
-    /**
-     *
-     */
     public static final int STRING = 8;
-    /**
-     *
-     */
     public static final int INTEGER = 3;
-    /**
-     *
-     */
     public static final int FLOAT = 4;
-    /**
-     *
-     */
     public static final int LONG = 5;
-    /**
-     *
-     */
     public static final int DOUBLE = 6;
-    /**
-     *
-     */
     public static final int NAMEANDTYPE = 12;
-    /**
-     *
-     */
     public static final int UTF8 = 1;
 
     /**
@@ -129,10 +96,6 @@ public abstract class ConstantPoolInfo {
         }
         return null;
     }
-
-    /**
-     *
-     */
     public static class ClassInfo extends ConstantPoolInfo {
         private final int nameIndex;
         private final int hashCode;
@@ -247,10 +210,6 @@ public abstract class ConstantPoolInfo {
                             .getNameAndTypeIndex());
         }
     }
-
-    /**
-     *
-     */
     public static class FieldRefInfo extends RefInfo {
         FieldRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -274,10 +233,6 @@ public abstract class ConstantPoolInfo {
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
-
-    /**
-     *
-     */
     public static class MethodRefInfo extends RefInfo {
         MethodRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -301,10 +256,6 @@ public abstract class ConstantPoolInfo {
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
-
-    /**
-     *
-     */
     public static class InterfaceMethodRefInfo extends MethodRefInfo {
         InterfaceMethodRefInfo(DataInputStream in) throws IOException {
             super(in);
@@ -330,10 +281,6 @@ public abstract class ConstantPoolInfo {
                     + getNameAndTypeIndex();
         }
     }
-
-    /**
-     *
-     */
     public static class StringInfo extends ConstantPoolInfo {
         private final int stringIndex;
         private final int hashCode;
@@ -394,10 +341,6 @@ public abstract class ConstantPoolInfo {
             return "CONSTANT_String_info : string=" + getStringIndex();
         }
     }
-
-    /**
-     *
-     */
     public static class IntegerInfo extends ConstantPoolInfo {
         private final int bytes;
         private final int hashCode;
@@ -458,10 +401,6 @@ public abstract class ConstantPoolInfo {
             return "CONSTANT_Integer_info : value=" + getBytes();
         }
     }
-
-    /**
-     *
-     */
     public static class FloatInfo extends ConstantPoolInfo {
         private final float bytes;
         private final int hashCode;
@@ -524,10 +463,6 @@ public abstract class ConstantPoolInfo {
             return "CONSTANT_Float_info : value=" + getBytes();
         }
     }
-
-    /**
-     *
-     */
     public static class LongInfo extends ConstantPoolInfo {
         private final long bytes;
         private final int hashCode;
@@ -590,10 +525,6 @@ public abstract class ConstantPoolInfo {
             return "CONSTANT_Long_info : value=" + getBytes();
         }
     }
-
-    /**
-     *
-     */
     public static class DoubleInfo extends ConstantPoolInfo {
         private final double bytes;
         private final int hashCode;
@@ -660,10 +591,6 @@ public abstract class ConstantPoolInfo {
             return "CONSTANT_Double_info : value=" + getBytes();
         }
     }
-
-    /**
-     *
-     */
     public static class NameAndTypeInfo extends ConstantPoolInfo {
         private final int nameIndex;
         private final int descriptorIndex;
@@ -741,10 +668,6 @@ public abstract class ConstantPoolInfo {
                     + getDescriptorIndex() + " : name=" + getNameIndex();
         }
     }
-
-    /**
-     *
-     */
     public static class Utf8Info extends ConstantPoolInfo {
         private final String bytes;
         private final int hashCode;

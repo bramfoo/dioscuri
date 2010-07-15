@@ -17,37 +17,35 @@ import dioscuri.module.ModuleSerialPort;
  * An implementation of a mouse module.
  *
  * @see Module
- *
- * Metadata module
- * ********************************************
- * general.type                : mouse
- * general.name                : Serial mouse
- * general.architecture        : Von Neumann
- * general.description         : Models a serial mouse
- * general.creator             : Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
- * general.version             : 1.0
- * general.keywords            : Mouse, Keyboard, serial, PS/2
- * general.relations           : Serialport, Keyboard
- * general.yearOfIntroduction  : 1987
- * general.yearOfEnding        :
- * general.ancestor            : DE-9 RS-232 serial mouse
- * general.successor           : USB mouse
- *
- * Notes:
- * - mouse can use one of the following connection types:
- * 		+ serial port
- * 		+ PS/2 via keyboard controller
- * - all controller aspects are implemented in keyboard: (mouse is only pointing device but not controller)
- * 		+ I/O ports
- * 		+ IRQ handling
- *
+ *      <p/>
+ *      Metadata module
+ *      ********************************************
+ *      general.type                : mouse
+ *      general.name                : Serial mouse
+ *      general.architecture        : Von Neumann
+ *      general.description         : Models a serial mouse
+ *      general.creator             : Koninklijke Bibliotheek, Nationaal Archief of the Netherlands
+ *      general.version             : 1.0
+ *      general.keywords            : Mouse, Keyboard, serial, PS/2
+ *      general.relations           : Serialport, Keyboard
+ *      general.yearOfIntroduction  : 1987
+ *      general.yearOfEnding        :
+ *      general.ancestor            : DE-9 RS-232 serial mouse
+ *      general.successor           : USB mouse
+ *      <p/>
+ *      Notes:
+ *      - mouse can use one of the following connection types:
+ *      + serial port
+ *      + PS/2 via keyboard controller
+ *      - all controller aspects are implemented in keyboard: (mouse is only pointing device but not controller)
+ *      + I/O ports
+ *      + IRQ handling
  */
 
-public class Mouse extends ModuleMouse implements UART
-{
+public class Mouse extends ModuleMouse implements UART {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] {"keyboard", "serialport"};
+    private String[] moduleConnections = new String[]{"keyboard", "serialport"};
     private ModuleKeyboard keyboard;
     private ModuleSerialPort serialPort;
     private Queue<Byte> buffer;
@@ -57,24 +55,25 @@ public class Mouse extends ModuleMouse implements UART
     private boolean debugMode;
 
     // Variables
-    private boolean mouseEnabled;					// Defines if this mouse if enabled
-    private int mouseType;							// Defines the type of mouse (PS/2, serial)
-    private int mouseMode;							// Defines the mode of mouse (wrap, stream, remote, ...) (default=stream)
-    private int mousePreviousMode;					// Remembers the previous mode (only set when going into wrap mode)
-    private byte lastMouseCommand;					// Remembers the last mouse command
-    private boolean expectingMouseParameter;		// Denotes if mouse expects another mouse parameter
-    private int imRequest;							// Wheel mouse mode request
-    private boolean imMode;							// Wheel mouse mode
-    private byte sampleRate;						// Defines the sample rate of the mouse (default=100)
-    private int resolutionCpmm;						// Defines the resolution of the mouse (default=4)
-    private int scaling;							// Defines the scaling of the mouse (default=1 (1:1))
-    private int previousX;
-    private int previousY;
-    private int delayed_dx      = 0;
-    private int delayed_dy      = 0;
-    private int delayed_dz      = 0;
+    private boolean mouseEnabled;                     // Defines if this mouse if enabled
+    private int mouseType;                            // Defines the type of mouse (PS/2, serial)
+    private int mouseMode;                            // Defines the mode of mouse (wrap, stream, remote, ...) (default=stream)
+    private int mousePreviousMode;                    // Remembers the previous mode (only set when going into wrap mode)
+    private byte lastMouseCommand;                    // Remembers the last mouse command
+    private boolean expectingMouseParameter;          // Denotes if mouse expects another mouse parameter
+    private int imRequest;                            // Wheel mouse mode request
+    private boolean imMode;                           // Wheel mouse mode
+    private byte sampleRate = 100;                    // Defines the sample rate of the mouse (default=100)
+    private int resolutionCpmm = 4;                   // Defines the resolution of the mouse (default=4)
+    private int scaling = 1;                          // Defines the scaling of the mouse (default=1 (1:1))
+    //private int previousX = -1;
+    //private int previousY = -1;
+    private int delayed_dx = 0;
+    private int delayed_dy = 0;
+    private int delayed_dz = 0;
     private byte buttonStatus;
-
+    private MouseEvent mouseEvent;
+    
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.mouse");
 
@@ -82,40 +81,38 @@ public class Mouse extends ModuleMouse implements UART
     // Constants
 
     // Module specifics
-    public final static int MODULE_ID       			= 1;
-    public final static String MODULE_TYPE  			= "mouse";
-    public final static String MODULE_NAME  			= "Serial mouse";
+    public final static int MODULE_ID = 1;
+    public final static String MODULE_TYPE = "mouse";
+    public final static String MODULE_NAME = "Serial mouse";
 
     // Mouse type
-    private final static int MOUSE_TYPE_PS2 			= 1;			// PS/2 mouse
-    private final static int MOUSE_TYPE_IMPS2			= 2;			// PS/2 wheel mouse
-    private final static int MOUSE_TYPE_SERIAL 			= 3;			// Serial mouse
-    private final static int MOUSE_TYPE_SERIAL_WHEEL	= 4;			// Serial wheel mouse
+    private final static int MOUSE_TYPE_PS2 = 1;            // PS/2 mouse
+    private final static int MOUSE_TYPE_IMPS2 = 2;            // PS/2 wheel mouse
+    private final static int MOUSE_TYPE_SERIAL = 3;            // Serial mouse
+    private final static int MOUSE_TYPE_SERIAL_WHEEL = 4;            // Serial wheel mouse
 
     // Mouse mode (PS/2)
-    private final static int MOUSE_MODE_WRAP 			= 1;
-    private final static int MOUSE_MODE_STREAM			= 2;
-    private final static int MOUSE_MODE_REMOTE			= 3;
-    private final static int MOUSE_MODE_RESET			= 4;
+    private final static int MOUSE_MODE_WRAP = 1;
+    private final static int MOUSE_MODE_STREAM = 2;
+    private final static int MOUSE_MODE_REMOTE = 3;
+    private final static int MOUSE_MODE_RESET = 4;
 
     // Mouse commands (PS/2)
-    private final static byte MOUSE_CMD_ACK				= (byte) 0xFA;
-    private final static byte MOUSE_CMD_COMPLETION		= (byte) 0xAA;	// Completion code
-    private final static byte MOUSE_CMD_ID				= (byte) 0x00;	// ID code
-    private final static byte MOUSE_CMD_RESEND			= (byte) 0xFE;	// Also a NACK
+    private final static byte MOUSE_CMD_ACK = (byte) 0xFA;
+    private final static byte MOUSE_CMD_COMPLETION = (byte) 0xAA;    // Completion code
+    private final static byte MOUSE_CMD_ID = (byte) 0x00;    // ID code
+    private final static byte MOUSE_CMD_RESEND = (byte) 0xFE;    // Also a NACK
 
     // Mouse buffer capacity
-    private final static int MOUSE_BUFFER_SIZE		= 16;
+    private final static int MOUSE_BUFFER_SIZE = 16;
 
 
     // Constructor
 
     /**
      * Class constructor
-     *
      */
-    public Mouse(Emulator owner)
-    {
+    public Mouse(Emulator owner) {
         emu = owner;
 
         // Create mouse buffer
@@ -138,8 +135,7 @@ public class Mouse extends ModuleMouse implements UART
      * @return string containing the ID of module
      * @see Module
      */
-    public int getID()
-    {
+    public int getID() {
         return MODULE_ID;
     }
 
@@ -150,8 +146,7 @@ public class Mouse extends ModuleMouse implements UART
      * @return string containing the type of module
      * @see Module
      */
-    public String getType()
-    {
+    public String getType() {
         return MODULE_TYPE;
     }
 
@@ -162,8 +157,7 @@ public class Mouse extends ModuleMouse implements UART
      * @return string containing the name of module
      * @see Module
      */
-    public String getName()
-    {
+    public String getName() {
         return MODULE_NAME;
     }
 
@@ -173,8 +167,7 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @return String[] containing the names of modules, or null if no connections
      */
-    public String[] getConnection()
-    {
+    public String[] getConnection() {
         // Return all required connections;
         return moduleConnections;
     }
@@ -183,26 +176,21 @@ public class Mouse extends ModuleMouse implements UART
     /**
      * Sets up a connection with another module
      *
-     * @param mod   Module that is to be connected to this class
-     *
+     * @param mod Module that is to be connected to this class
      * @return true if connection has been established successfully, false otherwise
-     *
      * @see Module
      */
-    public boolean setConnection(Module mod)
-    {
+    public boolean setConnection(Module mod) {
         // Set connection for keyboard
-        if (mod.getType().equalsIgnoreCase("keyboard"))
-        {
-            this.keyboard = (ModuleKeyboard)mod;
-            this.keyboard.setConnection(this);	// Set connection to keyboard
+        if (mod.getType().equalsIgnoreCase("keyboard")) {
+            this.keyboard = (ModuleKeyboard) mod;
+            this.keyboard.setConnection(this);    // Set connection to keyboard
             return true;
         }
         // Set connection for serialport
-        else if (mod.getType().equalsIgnoreCase("serialport"))
-        {
-            this.serialPort = (ModuleSerialPort)mod;
-            this.serialPort.setConnection(this);	// Set connection to serialport
+        else if (mod.getType().equalsIgnoreCase("serialport")) {
+            this.serialPort = (ModuleSerialPort) mod;
+            this.serialPort.setConnection(this);    // Set connection to serialport
             return true;
         }
         return false;
@@ -214,11 +202,9 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @return true if this module is connected successfully, false otherwise
      */
-    public boolean isConnected()
-    {
+    public boolean isConnected() {
         // Check if module if connected
-        if (keyboard != null && serialPort != null)
-        {
+        if (keyboard != null && serialPort != null) {
             return true;
         }
         return false;
@@ -230,14 +216,13 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @return boolean true if module has been reset successfully, false otherwise
      */
-    public boolean reset()
-    {
-    	// Reset variables
-    	// TODO: add all vars
-    	lastMouseCommand = 0;
+    public boolean reset() {
+        // Reset variables
+        // TODO: add all vars
+        lastMouseCommand = 0;
 
-    	previousX = -1;
-    	previousY = -1;
+        //previousX = -1;
+        //previousY = -1;
 
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
 
@@ -247,20 +232,20 @@ public class Mouse extends ModuleMouse implements UART
 
     /**
      * Starts the module
+     *
      * @see Module
      */
-    public void start()
-    {
+    public void start() {
         // Nothing to start
     }
 
 
     /**
      * Stops the module
+     *
      * @see Module
      */
-    public void stop()
-    {
+    public void stop() {
         // Nothing to stop
     }
 
@@ -269,11 +254,9 @@ public class Mouse extends ModuleMouse implements UART
      * Returns the status of observed toggle
      *
      * @return state of observed toggle
-     *
      * @see Module
      */
-    public boolean isObserved()
-    {
+    public boolean isObserved() {
         return isObserved;
     }
 
@@ -282,11 +265,9 @@ public class Mouse extends ModuleMouse implements UART
      * Sets the observed toggle
      *
      * @param status
-     *
      * @see Module
      */
-    public void setObserved(boolean status)
-    {
+    public void setObserved(boolean status) {
         isObserved = status;
     }
 
@@ -295,11 +276,9 @@ public class Mouse extends ModuleMouse implements UART
      * Returns the status of the debug mode toggle
      *
      * @return state of debug mode toggle
-     *
      * @see Module
      */
-    public boolean getDebugMode()
-    {
+    public boolean getDebugMode() {
         return debugMode;
     }
 
@@ -308,11 +287,9 @@ public class Mouse extends ModuleMouse implements UART
      * Sets the debug mode toggle
      *
      * @param status
-     *
      * @see Module
      */
-    public void setDebugMode(boolean status)
-    {
+    public void setDebugMode(boolean status) {
         debugMode = status;
     }
 
@@ -322,11 +299,9 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @param requester, the requester of the data
      * @return byte[] with data
-     *
      * @see Module
      */
-    public byte[] getData(Module requester)
-    {
+    public byte[] getData(Module requester) {
         return null;
     }
 
@@ -336,13 +311,10 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @param data
      * @param sender, the sender of the data
-     *
      * @return true if data is set successfully, false otherwise
-     *
      * @see Module
      */
-    public boolean setData(byte[] data, Module sender)
-    {
+    public boolean setData(byte[] data, Module sender) {
         return false;
     }
 
@@ -352,13 +324,10 @@ public class Mouse extends ModuleMouse implements UART
      *
      * @param data
      * @param sender, the sender of the data
-     *
      * @return boolean true is successful, false otherwise
-     *
      * @see Module
      */
-    public boolean setData(String[] data, Module sender)
-    {
+    public boolean setData(String[] data, Module sender) {
         return false;
     }
 
@@ -367,12 +336,10 @@ public class Mouse extends ModuleMouse implements UART
      * Returns a dump of this module
      *
      * @return string
-     *
      * @see Module
      */
-    public String getDump()
-    {
-        String keyboardDump ="Mouse status:\n";
+    public String getDump() {
+        String keyboardDump = "Mouse status:\n";
 
         return keyboardDump;
     }
@@ -381,412 +348,317 @@ public class Mouse extends ModuleMouse implements UART
     //******************************************************************************
     // ModuleMouse Methods
 
-	public void setMouseEnabled(boolean status)
-	{
-		mouseEnabled = status;
-	}
-
-
-	public void setMouseType(String type)
-	{
-		// Check the type of mouse by matching string
-		if (type.equalsIgnoreCase("serial"))
-		{
-			// Serial mouse
-			mouseType = MOUSE_TYPE_SERIAL;
-    		logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
-			// Connect mouse to serialport on COM 1 (port 0)
-			if (serialPort.setUARTDevice(this, 0) == true)
-			{
-	    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse connected to COM port 1");
-			}
-			else
-			{
-	    		logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Could not connect mouse to COM port 1");
-			}
-		}
-		else if (type.equalsIgnoreCase("ps/2"))
-		{
-			// PS/2 mouse
-			mouseType = MOUSE_TYPE_PS2;
-    		logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to PS/2");
-		}
-		else
-		{
-			// Unknown mouse type
-    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse type not recognised: set to default (serial)");
-			mouseType = MOUSE_TYPE_SERIAL;
-		}
-	}
-
-	public boolean isBufferEmpty()
-	{
-		return buffer.isEmpty();
-	}
-
-    public synchronized void storeBufferData(boolean forceEnqueue)
-    {
-    	byte b1, b2, b3, b4;
-    	int delta_x, delta_y;
-
-    	delta_x = delayed_dx;
-    	delta_y = delayed_dy;
-
-    	if(forceEnqueue == false && delta_x == 0 && delta_y == 0)
-    	{
-    		// No mouse movement, so no changes
-    		return;
-    	}
-
-    	// Limit values
-    	if(delta_x > 254) delta_x = 254;
-    	if(delta_x < -254) delta_x = -254;
-    	if(delta_y > 254) delta_y = 254;
-    	if(delta_y < -254) delta_y = -254;
-
-    	// Set bytes
-    	// Byte b1
-    	b1 = (byte) ((buttonStatus & 0x0F) | 0x08); // bit3 always set
-
-    	// Byte b2
-    	if ((delta_x >= 0) && (delta_x <= 255))
-    	{
-    		b2 = (byte) delta_x;
-    		delayed_dx -= delta_x;
-    	}
-    	else if (delta_x > 255)
-    	{
-    		b2 = (byte) 0xFF;
-    		delayed_dx -= 255;
-    	}
-    	else if (delta_x >= -256)
-    	{
-	        b2 = (byte) delta_x;
-	        b1 |= 0x10;
-	        delayed_dx -= delta_x;
-    	}
-    	else
-    	{
-    		b2 = (byte) 0x00;
-    		b1 |= 0x10;
-    		delayed_dx += 256;
-    	}
-
-    	// Byte b3
-    	if ((delta_y >= 0) && (delta_y <= 255))
-    	{
-    		b3 = (byte) delta_y;
-    		delayed_dy -= delta_y;
-    	}
-    	else if (delta_y > 255)
-    	{
-	        b3 = (byte) 0xFF;
-	        delayed_dy -= 255;
-    	}
-    	else if ( delta_y >= -256 )
-    	{
-    		b3 = (byte) delta_y;
-    		b1 |= 0x20;
-    		delayed_dy -= delta_y;
-    	}
-    	else
-    	{
-    		b3 = (byte) 0x00;
-    		b1 |= 0x20;
-    		delayed_dy += 256;
-    	}
-
-    	// Byte b4
-    	b4 = (byte) -delayed_dz;
-
-    	if (this.enqueueData(b1, b2, b3, b4) == true)
-    	{
-    		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
-    	}
-    	else
-    	{
-    		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data could not be stored in mouse buffer");
-    	}
+    public void setMouseEnabled(boolean status) {
+        mouseEnabled = status;
     }
 
-	public byte getDataFromBuffer()
-	{
-		if (buffer.isEmpty() == false)
-		{
-			return buffer.poll();
-		}
-		return -1;
-	}
 
-    public void controlMouse(byte value)
-	{
-//FIXME:		// if we are not using a ps2 mouse, some of the following commands need to return different values
-		boolean isMousePS2;
-		isMousePS2 = false;
-		if ((mouseType == MOUSE_TYPE_PS2) || (mouseType == MOUSE_TYPE_IMPS2))
-		{
-			isMousePS2 = true;
-		}
+    public void setMouseType(String type) {
+        // Check the type of mouse by matching string
+        if (type.equalsIgnoreCase("serial")) {
+            // Serial mouse
+            mouseType = MOUSE_TYPE_SERIAL;
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
+            // Connect mouse to serialport on COM 1 (port 0)
+            if (serialPort.setUARTDevice(this, 0) == true) {
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse connected to COM port 1");
+            } else {
+                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Could not connect mouse to COM port 1");
+            }
+        } else if (type.equalsIgnoreCase("ps/2")) {
+            // PS/2 mouse
+            mouseType = MOUSE_TYPE_PS2;
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to PS/2");
+        } else {
+            // Unknown mouse type
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse type not recognised: set to default (serial)");
+            mouseType = MOUSE_TYPE_SERIAL;
+        }
+    }
 
-		logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse " + value);
+    public boolean isBufferEmpty() {
+        return buffer.isEmpty();
+    }
 
-		// An ACK (0xFA) is always the first response to any valid input
-		// received from the system other than Set-Wrap-Mode & Resend-Command
+    final int pointerWidth = 90;
+    final int pointerHeight = 25;
+    final double scaleX = 710.0 / pointerWidth;
+    final double scaleY = 400.0 / pointerHeight;
 
-		// Check if this is the second mouse command (expected)
-		if (expectingMouseParameter == true)
-		{
-			// Reset command parameter
-			expectingMouseParameter = false;
+    // TODO references
+    @Override
+    public void storeBufferData(boolean forceEnqueue) {
 
-			// Execute command
-			switch (lastMouseCommand)
-			{
-				case (byte)0xF3: // Set Mouse Sample Rate
-					sampleRate = value;
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Sampling rate set to " + value);
+        byte b1 = (byte)0x87; // init b1 to: 1000_0111
+        byte b2 = (byte)((this.mouseEvent.getX() / scaleX) - (pointerWidth/2.0));
+        byte b3 = (byte)(-((this.mouseEvent.getY() / scaleY) - (pointerHeight/2.0)));
 
-					if ((value == 200) && (imRequest == 0))
-					{
-						imRequest = 1;
-					}
-					else if ((value == 100) && (imRequest == 1))
-					{
-						imRequest = 2;
-					}
-					else if ((value == 80) && (imRequest == 2))
-					{
-						// Check if wheel mouse should be enabled
-						if (mouseType == MOUSE_TYPE_IMPS2)
-						{
-							logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode enabled");
-							imMode = true;
-						}
-						else
-						{
-							logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode request rejected");
-						}
+        //if(b2 < -127) b2 = -127;
+        //if(b2 > 127) b2 = 127;
 
-						imRequest = 0;
-					}
-					else
-					{
-						imRequest = 0;
-					}
+        //if(b3 < -pointerHeight) b3 = -((byte)pointerHeight);
+        //if(b3 > 0) b3 = 0;
 
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ack
-					break;
+        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] moved to ("+b2+","+b3+")"); // TODO change SEVERE to INFO
 
-				case (byte)0xE8: // Set Mouse Resolution
-					switch (value)
-					{
-						case 0:
-							resolutionCpmm = 1;
-							break;
-						case 1:
-							resolutionCpmm = 2;
-							break;
-						case 2:
-							resolutionCpmm = 4;
-							break;
-						case 3:
-							resolutionCpmm = 8;
-							break;
-						default:
-							logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown resolution");
-						break;
-					}
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Resolution set to " + resolutionCpmm + " counts per mm");
+        // Only act on mouse-presses: ignore mouse releases
+        if(this.mouseEvent != null && this.mouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
+            if(this.mouseEvent.getButton() == MouseEvent.BUTTON1) b1 &= 0xFB; // AND b1 with 1111_1011
+            if(this.mouseEvent.getButton() == MouseEvent.BUTTON2) b1 &= 0xFD; // AND b1 with 1111_1101
+            if(this.mouseEvent.getButton() == MouseEvent.BUTTON3) b1 &= 0xFE; // AND b1 with 1111_1110
+        }
 
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ack
-					break;
+        if (this.enqueueData(b1, b2, b3, (byte)0, (byte)0)) {
+            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
+        } else {
+            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data could not be stored in mouse buffer");
+        }
+    }
 
-				default:
-					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] unknown last command " + lastMouseCommand);
-			}
-		}
-		else
-		{
-			// This is the first mouse command
-			expectingMouseParameter = false;
-			lastMouseCommand = value;
+    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4, byte b5) {
+        return buffer.offer(b1) && buffer.offer(b2) && buffer.offer(b3) && buffer.offer(b4) && buffer.offer(b5);
+    }
 
-			// Check wrap mode
-			if (mouseMode == MOUSE_MODE_WRAP)
-			{
-				// if not a reset command or reset wrap mode
-				// then just echo the byte.
-				if ((value != 0xFF) && (value != 0xEC))
-				{
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wrap mode: ignoring command " + value);
-					keyboard.enqueueControllerBuffer(value,1);
-	        		return;
-				}
-			}
+    public byte getDataFromBuffer() {
+        return buffer.isEmpty() ? -1 : buffer.poll();
+    }
+    
+    public void controlMouse(byte value) {
+        // FIXME: if we are not using a ps2 mouse, some of the following commands need to return different values
+        boolean isMousePS2 = false;
+        if ((mouseType == MOUSE_TYPE_PS2) || (mouseType == MOUSE_TYPE_IMPS2)) {
+            isMousePS2 = true;
+        }
 
-			switch (value)
-			{
+        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse " + value);
 
-				case (byte)0xBB: // OS/2 Warp 3 uses this command
-					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Ignoring command 0xBB");
-					break;
+        // An ACK (0xFA) is always the first response to any valid input
+        // received from the system other than Set-Wrap-Mode & Resend-Command
 
-				case (byte)0xE6: // Set Mouse Scaling to 1:1
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					scaling = 2;
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Scaling set to 1:1");
-					break;
+        // Check if this is the second mouse command (expected)
+        if (expectingMouseParameter == true) {
+            // Reset command parameter
+            expectingMouseParameter = false;
 
-				case (byte)0xE7: // Set Mouse Scaling to 2:1
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					scaling = 2;
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Scaling set to 2:1");
-					break;
+            // Execute command
+            switch (lastMouseCommand) {
+                case (byte) 0xF3: // Set Mouse Sample Rate
+                    sampleRate = value;
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Sampling rate set to " + value);
 
-				case (byte)0xE8: // Set Mouse Resolution
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					expectingMouseParameter = true;
-					break;
+                    if ((value == 200) && (imRequest == 0)) {
+                        imRequest = 1;
+                    } else if ((value == 100) && (imRequest == 1)) {
+                        imRequest = 2;
+                    } else if ((value == 80) && (imRequest == 2)) {
+                        // Check if wheel mouse should be enabled
+                        if (mouseType == MOUSE_TYPE_IMPS2) {
+                            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode enabled");
+                            imMode = true;
+                        } else {
+                            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode request rejected");
+                        }
 
-				case (byte)0xE9: // Get mouse information
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					keyboard.enqueueControllerBuffer(this.getStatusByte(), 1); // status
-					keyboard.enqueueControllerBuffer(this.getResolutionByte(), 1); // resolution
-					keyboard.enqueueControllerBuffer(sampleRate, 1); // sample rate
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse information returned");
-					break;
+                        imRequest = 0;
+                    } else {
+                        imRequest = 0;
+                    }
 
-				case (byte)0xEA: // Set Stream Mode
-					mouseMode = MOUSE_MODE_STREAM;
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Stream mode on");
-					break;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ack
+                    break;
 
-				case (byte)0xEB: // Read Data (send a packet when in Remote Mode)
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					// FIXME: unsure if we should send a packet to mouse buffer. Bochs does so:
-					this.enqueueData((byte)((buttonStatus & 0x0F) | 0x08), (byte)0x00, (byte)0x00, (byte)0x00); // bit3 of first byte always set
-					// FIXME: assumed we really aren't in polling mode, a rather odd assumption.
-					logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Read Data command partially supported");
-					break;
+                case (byte) 0xE8: // Set Mouse Resolution
+                    switch (value) {
+                        case 0:
+                            resolutionCpmm = 1;
+                            break;
+                        case 1:
+                            resolutionCpmm = 2;
+                            break;
+                        case 2:
+                            resolutionCpmm = 4;
+                            break;
+                        case 3:
+                            resolutionCpmm = 8;
+                            break;
+                        default:
+                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown resolution");
+                            break;
+                    }
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Resolution set to " + resolutionCpmm + " counts per mm");
 
-				case (byte)0xEC: // Reset Wrap Mode
-					// Check if mouse is in wrap mode, else ignore command
-					if (mouseMode == MOUSE_MODE_WRAP)
-					{
-	            		// Restore previous mode except disable stream mode reporting.
-	            		// TODO disabling reporting in stream mode
-	            		mouseMode = mousePreviousMode;
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-						logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wrap mode off. Set to previous mode");
-					}
-					break;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ack
+                    break;
 
-				case (byte)0xEE: // Set Wrap Mode
-			        // TODO flush output queue.
-			        // TODO disable interrupts if in stream mode.
-					mousePreviousMode = mouseMode;
-					mouseMode = MOUSE_MODE_WRAP;
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wrap mode on");
-					break;
+                default:
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] unknown last command " + lastMouseCommand);
+            }
+        } else {
+            // This is the first mouse command
+            expectingMouseParameter = false;
+            lastMouseCommand = value;
 
-				case (byte)0xF0: // Set Remote Mode (polling mode, i.e. not stream mode.)
-					// TODO should we flush/discard/ignore any already queued packets?
-					mouseMode = MOUSE_MODE_REMOTE;
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Remote mode on");
-	          		break;
+            // Check wrap mode
+            if (mouseMode == MOUSE_MODE_WRAP) {
+                // if not a reset command or reset wrap mode
+                // then just echo the byte.
+                if ((value != 0xFF) && (value != 0xEC)) {
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode: ignoring command " + value);
+                    keyboard.enqueueControllerBuffer(value, 1);
+                    return;
+                }
+            }
 
-				case (byte)0xF2: // Read Device Type
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					if (imMode == true)
-					{
-						keyboard.enqueueControllerBuffer((byte)0x03, 1); // Device ID (wheel z-mouse)
-					}
-					else
-					{
-						keyboard.enqueueControllerBuffer((byte)0x00, 1); // Device ID (standard)
-					}
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Read mouse ID");
-					break;
+            switch (value) {
 
-				case (byte)0xF3: // Enable set Mouse Sample Rate (sample rate written to port 0x60)
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					expectingMouseParameter = true;
-					break;
+                case (byte) 0xBB: // OS/2 Warp 3 uses this command
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Ignoring command 0xBB");
+                    break;
 
-				case (byte)0xF4: // Enable (in stream mode)
-					// is a mouse present?
-					if (isMousePS2)
-					{
-						mouseEnabled = true;
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-						logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse enabled (stream mode)");
-					}
-					else
-					{
-						// No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // ACK
-						keyboard.setTimeOut((byte)1);
-					}
-					break;
+                case (byte) 0xE6: // Set Mouse Scaling to 1:1
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    scaling = 2;
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Scaling set to 1:1");
+                    break;
 
-				case (byte)0xF5: // Disable (in stream mode)
-					mouseEnabled = false;
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse disabled (stream mode)");
-					break;
+                case (byte) 0xE7: // Set Mouse Scaling to 2:1
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    scaling = 2;
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Scaling set to 2:1");
+                    break;
 
-				case (byte)0xF6: // Set mouse to defaults
-			        sampleRate = 100; // reports per second (default)
-			        resolutionCpmm = 4; // 4 counts per millimeter (default)
-			        scaling = 1; // 1:1 (default)
-			        mouseEnabled = false;
-			        mouseMode = MOUSE_MODE_STREAM;
-					keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-					logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse set to default settings");
-			        break;
+                case (byte) 0xE8: // Set Mouse Resolution
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    expectingMouseParameter = true;
+                    break;
 
-				case (byte)0xFF: // Reset
-					// Check if a mouse is present
-					if (isMousePS2)
-					{
-				        sampleRate = 100; // reports per second (default)
-				        resolutionCpmm = 4; // 4 counts per millimeter (default)
-				        scaling = 1; // 1:1 (default)
-				        mouseEnabled = false;
-				        mouseMode = MOUSE_MODE_RESET;
-						if (imMode == true)
-						{
-							logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wheel mouse mode disabled");
-						}
-						imMode = false;
+                case (byte) 0xE9: // Get mouse information
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    keyboard.enqueueControllerBuffer(this.getStatusByte(), 1); // status
+                    keyboard.enqueueControllerBuffer(this.getResolutionByte(), 1); // resolution
+                    keyboard.enqueueControllerBuffer(sampleRate, 1); // sample rate
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse information returned");
+                    break;
 
-						// TODO: NT expects an ack here
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_COMPLETION, 1); // COMPLETION
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_ID, 1); // ID
-						logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse has been reset");
-					}
-					else
-					{
-						// No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND
-						keyboard.setTimeOut((byte)1);
-					}
-					break;
+                case (byte) 0xEA: // Set Stream Mode
+                    mouseMode = MOUSE_MODE_STREAM;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Stream mode on");
+                    break;
 
-				default:
-					// If PS/2 mouse present, send NACK for unknown commands, otherwise ignore
-					if (isMousePS2)
-					{
-						logger.log(Level.WARNING, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse(): no command match");
-						keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND/NACK
-					}
-			}
-		}
-	}
+                case (byte) 0xEB: // Read Data (send a packet when in Remote Mode)
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    // FIXME: unsure if we should send a packet to mouse buffer. Bochs does so:
+                    this.enqueueData((byte) ((buttonStatus & 0x0F) | 0x08), (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00); // bit3 of first byte always set // TODO BK commented mouse test
+                    // FIXME: assumed we really aren't in polling mode, a rather odd assumption.
+                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Read Data command partially supported");
+                    break;
+
+                case (byte) 0xEC: // Reset Wrap Mode
+                    // Check if mouse is in wrap mode, else ignore command
+                    if (mouseMode == MOUSE_MODE_WRAP) {
+                        // Restore previous mode except disable stream mode reporting.
+                        // TODO disabling reporting in stream mode
+                        mouseMode = mousePreviousMode;
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode off. Set to previous mode");
+                    }
+                    break;
+
+                case (byte) 0xEE: // Set Wrap Mode
+                    // TODO flush output queue.
+                    // TODO disable interrupts if in stream mode.
+                    mousePreviousMode = mouseMode;
+                    mouseMode = MOUSE_MODE_WRAP;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode on");
+                    break;
+
+                case (byte) 0xF0: // Set Remote Mode (polling mode, i.e. not stream mode.)
+                    // TODO should we flush/discard/ignore any already queued packets?
+                    mouseMode = MOUSE_MODE_REMOTE;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Remote mode on");
+                    break;
+
+                case (byte) 0xF2: // Read Device Type
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    if (imMode == true) {
+                        keyboard.enqueueControllerBuffer((byte) 0x03, 1); // Device ID (wheel z-mouse)
+                    } else {
+                        keyboard.enqueueControllerBuffer((byte) 0x00, 1); // Device ID (standard)
+                    }
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Read mouse ID");
+                    break;
+
+                case (byte) 0xF3: // Enable set Mouse Sample Rate (sample rate written to port 0x60)
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    expectingMouseParameter = true;
+                    break;
+
+                case (byte) 0xF4: // Enable (in stream mode)
+                    // is a mouse present?
+                    if (isMousePS2) {
+                        mouseEnabled = true;
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse enabled (stream mode)");
+                    } else {
+                        // No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // ACK
+                        keyboard.setTimeOut((byte) 1);
+                    }
+                    break;
+
+                case (byte) 0xF5: // Disable (in stream mode)
+                    mouseEnabled = false;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse disabled (stream mode)");
+                    break;
+
+                case (byte) 0xF6: // Set mouse to defaults
+                    sampleRate = 100; // reports per second (default)
+                    resolutionCpmm = 4; // 4 counts per millimeter (default)
+                    scaling = 1; // 1:1 (default)
+                    mouseEnabled = false;
+                    mouseMode = MOUSE_MODE_STREAM;
+                    keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse set to default settings");
+                    break;
+
+                case (byte) 0xFF: // Reset
+                    // Check if a mouse is present
+                    if (isMousePS2) {
+                        sampleRate = 100; // reports per second (default)
+                        resolutionCpmm = 4; // 4 counts per millimeter (default)
+                        scaling = 1; // 1:1 (default)
+                        mouseEnabled = false;
+                        mouseMode = MOUSE_MODE_RESET;
+                        if (imMode == true) {
+                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wheel mouse mode disabled");
+                        }
+                        imMode = false;
+
+                        // TODO: NT expects an ack here
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_COMPLETION, 1); // COMPLETION
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_ID, 1); // ID
+                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse has been reset");
+                    } else {
+                        // No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND
+                        keyboard.setTimeOut((byte) 1);
+                    }
+                    break;
+
+                default:
+                    // If PS/2 mouse present, send NACK for unknown commands, otherwise ignore
+                    if (isMousePS2) {
+                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse(): no command match");
+                        keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND/NACK
+                    }
+            }
+        }
+    }
 
     // FOLLOWING METHOD FROM BOCHS IS ONLY NECESSARY WHEN MOUSE IS SET TO ENABLED/DISABLED
 /*	void bx_keyb_c::mouse_enabled_changed(bx_bool enabled)
@@ -813,166 +685,134 @@ public class Mouse extends ModuleMouse implements UART
 */
 
 
-    public void mouseMotion(MouseEvent event)
-    {
-    	// Check if this is the first mouse motion
-    	if (previousX == -1)
-    	{
-    		previousX = event.getX();
-    		previousY = event.getY();
+    public void mouseMotion(MouseEvent event) {
 
-    		return;
-    	}
+        this.mouseEvent = event;
+        // Check if this is the first mouse motion
+        /*
+        if (previousX == -1) {
+            previousX = event.getX();
+            previousY = event.getY();
+            return;
+        }
+        */
+        
+        // Measure position change
+        delayed_dx = event.getX();// - previousX;
+        delayed_dy = event.getY();// - previousY;
+        delayed_dz = event.getButton();
 
-    	// Measure position change
-    	delayed_dx = event.getX() - previousX;
-    	delayed_dy = event.getY() - previousY;
-    	delayed_dz = event.getButton();
+        //logger.log(Level.INFO, "[" + MODULE_TYPE + "] previous :: ("+previousX+","+previousY+"), delayed :: ("+delayed_dx+","+delayed_dy+")");
+        logger.log(Level.INFO, "[" + MODULE_TYPE + "] delayed :: ("+delayed_dx+","+delayed_dy+")");
 
-	  boolean force_enq = true;
+        //previousX += delayed_dx; // TODO BK try out
+        //previousY += delayed_dy; // TODO BK try out   
 
-	  // Check mouse type
-	  if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL)
-	  {
-		  // Serial mouse: store data in internal mouse buffer
-	  	  this.storeBufferData(force_enq);
-	  }
-	  else
-	  {
-		  // PS/2 mouse
-		  // Scale down the motion
-		  /*	  if ( (delta_x < -1) || (delta_x > 1) )
-		  	    delta_x /= 2;
-		  	  if ( (delta_y < -1) || (delta_y > 1) )
-		  	    delta_y /= 2;
+        boolean force_enq = true;
 
-		  	  if (imMode == false)
-		  	  {
-		  		  delta_z = 0;
-		  	  }
+        // Check mouse type
+        if (mouseType == MOUSE_TYPE_SERIAL || mouseType == MOUSE_TYPE_SERIAL_WHEEL) {
+            // Serial mouse: store data in internal mouse buffer
+            this.storeBufferData(force_enq);
+        }
+        /* else {
 
-		  	  if (delta_x != 0 || delta_y != 0 || delta_z != 0)
-		  	  {
-		  		  logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
-		  	  }
+            // PS/2 mouse
+            // Scale down the motion
+            if ((delta_x < -1) || (delta_x > 1))
+                delta_x /= 2;
+            if ((delta_y < -1) || (delta_y > 1))
+                delta_y /= 2;
 
-		  	  if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0)
-		  	  {
-		  		  force_enq = true;
-		  	  }
+            if (imMode == false) {
+                delta_z = 0;
+            }
 
-		  	  buttonStatus = (byte) (buttonState & 0x07);
+            if (delta_x != 0 || delta_y != 0 || delta_z != 0) {
+                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
+            }
 
-		  	  if(delta_x > 255) delta_x = 255;
-		  	  if(delta_y > 255) delta_y = 255;
-		  	  if(delta_x < -256) delta_x = -256;
-		  	  if(delta_y < -256) delta_y = -256;
+            if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0) {
+                force_enq = true;
+            }
 
-		  	  delayed_dx += delta_x;
-		  	  delayed_dy += delta_y;
-		  	  delayed_dz = delta_z;
+            buttonStatus = (byte) (buttonState & 0x07);
 
-		  	  // TODO: why is this check necessary?
-		  	  if((delayed_dx > 255) || (delayed_dx<-256) || (delayed_dy > 255) || (delayed_dy < -256))
-		  	  {
-		  		  force_enq = true;
-		  	  }
-		  	  this.storeBufferData(force_enq);
-*/
-	  	}
-	}
+            if (delta_x > 255) delta_x = 255;
+            if (delta_y > 255) delta_y = 255;
+            if (delta_x < -256) delta_x = -256;
+            if (delta_y < -256) delta_y = -256;
 
+            delayed_dx += delta_x;
+            delayed_dy += delta_y;
+            delayed_dz = delta_z;
 
-	//******************************************************************************
-    // Custom Methods
-
-    private byte getStatusByte()
-	{
-	  // top bit is 0 , bit 6 is 1 if remote mode.
-	  byte status = (byte) ((mouseMode == MOUSE_MODE_REMOTE) ? 0x40 : 0);
-	  status |= ((mouseEnabled? 1: 0) << 5);
-	  status |= (scaling == 1) ? 0 : (1 << 4);
-	  status |= ((buttonStatus & 0x1) << 2);
-	  status |= ((buttonStatus & 0x2) << 0);
-
-	  return status;
-	}
-
-
-    private byte getResolutionByte()
-	{
-	  byte resolution = 0;
-
-	  switch (resolutionCpmm)
-	  {
-	  	case 1:
-	  		resolution = 0;
-	  		break;
-
-	  	case 2:
-	  		resolution = 1;
-	  		break;
-
-	  	case 4:
-	  		resolution = 2;
-	  		break;
-
-	  	case 8:
-	  		resolution = 3;
-	  		break;
-
-	  	default:
-	  		logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Invalid resolution cpmm");
-	  }
-
-	  return resolution;
-	}
-
-
-    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4)
-    {
-    	if (imMode == true)
-    	{
-    		// Wheel mouse enabled, store 4 bytes
-        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3) && buffer.add(b4))
-        	{
-        		return true;
-        	}
-    	}
-    	else
-    	{
-    		// Wheel mouse disabled, store 3 bytes
-        	if (buffer.add(b1) && buffer.add(b2) && buffer.add(b3))
-        	{
-        		return true;
-        	}
-    	}
-
-    	return false;
+            // TODO: why is this check necessary?
+            if ((delayed_dx > 255) || (delayed_dx < -256) || (delayed_dy > 255) || (delayed_dy < -256)) {
+                force_enq = true;
+            }
+            this.storeBufferData(force_enq);
+        }
+        */
     }
 
 
     //******************************************************************************
-    // UART interface
+    // Custom Methods
 
-    public synchronized boolean isDataAvailable()
-    {
-    	return !(buffer.isEmpty());
+    private byte getStatusByte() {
+        // top bit is 0 , bit 6 is 1 if remote mode.
+        byte status = (byte) ((mouseMode == MOUSE_MODE_REMOTE) ? 0x40 : 0);
+        status |= ((mouseEnabled ? 1 : 0) << 5);
+        status |= (scaling == 1) ? 0 : (1 << 4);
+        status |= ((buttonStatus & 0x1) << 2);
+        status |= ((buttonStatus & 0x2) << 0);
+
+        return status;
     }
 
-	public synchronized byte getSerialData()
-	{
-		if (buffer.isEmpty() == false)
-		{
-			return buffer.poll();
-		}
-		return -1;
-	}
 
-	public synchronized void setSerialData(byte data)
-	{
-		buffer.offer(data);
-	}
+    private byte getResolutionByte() {
+        byte resolution = 0;
 
+        switch (resolutionCpmm) {
+            case 1:
+                resolution = 0;
+                break;
 
+            case 2:
+                resolution = 1;
+                break;
+
+            case 4:
+                resolution = 2;
+                break;
+
+            case 8:
+                resolution = 3;
+                break;
+
+            default:
+                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Invalid resolution cpmm");
+        }
+
+        return resolution;
+    }
+
+    //******************************************************************************
+    // UART interface
+    @Override
+    public synchronized boolean isDataAvailable() {
+        return !(buffer.isEmpty());
+    }
+
+    @Override
+    public synchronized byte getSerialData() {
+        return buffer.isEmpty() ? -1 : buffer.poll();
+    }
+
+    @Override
+    public synchronized void setSerialData(byte data) {
+        buffer.offer(data);
+    }
 }

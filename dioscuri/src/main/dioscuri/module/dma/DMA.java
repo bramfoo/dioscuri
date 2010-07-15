@@ -101,21 +101,12 @@ public class DMA extends ModuleDMA {
     // cascaded to DREQ4, which results in an HRQ from
     // the "slave" that is passed to the CPU. So the "slave" controller actually
     // raises the HRQ to the CPU!
-    /**
-     *
-     */
     public DMAController[] controller = new DMAController[] {
             new DMAController(), new DMAController() };
 
     // Create two 4-channel handlers: 8-bit (controller 0) and 16-bit
     // (controller 1)
-    /**
-     *
-     */
     public DMA8Handler[] dma8Handler = new DMA8Handler[4];
-    /**
-     *
-     */
     public DMA16Handler[] dma16Handler = new DMA16Handler[4];
 
     // Relations
@@ -135,17 +126,8 @@ public class DMA extends ModuleDMA {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "dma";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "8237 DMA Controller";
 
     // Master/Slave identifiers

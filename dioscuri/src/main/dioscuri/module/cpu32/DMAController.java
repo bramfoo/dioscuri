@@ -536,10 +536,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         r.nowAddress = (0xffff & r.baseAddress) << dShift;
         r.nowCount = 0;
     }
-
-    /**
-     *
-     */
     public void runTransfers() {
         int value = ~mask & (status >>> 4) & 0xf;
         if (value == 0)
@@ -715,10 +711,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
             ioportRegistered = true;
         }
     }
-
-    /**
-     *
-     */
     public void timerCallback() {
     }
 
@@ -773,10 +765,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
                 + ((((int) dataDoubleWord[1]) & 0xFF) << 8)
                 + (((int) dataDoubleWord[0]) & 0xFF));
     }
-
-    /**
-     *
-     */
     public void notImplemented() {
         System.out
                 .println("[DMAController]: ModuleDevice method not implemented");

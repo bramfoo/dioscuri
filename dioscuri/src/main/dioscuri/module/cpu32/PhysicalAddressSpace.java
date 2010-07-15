@@ -43,9 +43,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     // Edit Bram: Added constant here and changed reference to local
     // private static final int QUICK_INDEX_SIZE = PC.SYS_RAM_SIZE >>>
     // INDEX_SHIFT;
-    /**
-     *
-     */
     public static final int SYS_RAM_SIZE = 256 * 1024 * 1024;
     private static final int QUICK_INDEX_SIZE = SYS_RAM_SIZE >>> INDEX_SHIFT;
 
@@ -67,17 +64,9 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     private Memory[] quickNonA20MaskedIndex, quickA20MaskedIndex, quickIndex;
     private Memory[][] nonA20MaskedIndex, a20MaskedIndex, index;
-
-    /**
-     *
-     */
     public static final Memory UNCONNECTED = new UnconnectedMemoryBlock();
 
     private LinearAddressSpace linearAddr;
-
-    /**
-     *
-     */
     public PhysicalAddressSpace() {
         mappedRegionCount = 0;
 
@@ -318,10 +307,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
             }
         }
     }
-
-    /**
-     *
-     */
     public static class MapWrapper extends Memory {
         private Memory memory;
         private int baseAddress;
@@ -338,10 +323,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         public long getSize() {
             return BLOCK_SIZE;
         }
-
-        /**
-         *
-         */
         public void clear() {
             memory.clear(baseAddress, (int) getSize());
         }
@@ -532,10 +513,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
             return block;
         }
     }
-
-    /**
-     *
-     */
     public void clear() {
         for (int i = 0; i < quickNonA20MaskedIndex.length; i++)
             quickNonA20MaskedIndex[i].clear();
@@ -631,14 +608,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         setMemoryBlockAt((int) s, block);
         mappedRegionCount++;
     }
-
-    /**
-     *
-     */
     public static final class UnconnectedMemoryBlock extends Memory {
-        /**
-         *
-         */
         public void clear() {
         }
 
@@ -913,10 +883,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
             }
         }
     }
-
-    /**
-     *
-     */
     public void timerCallback() {
     }
 }

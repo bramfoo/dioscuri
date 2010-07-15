@@ -101,17 +101,8 @@ public class ParallelPort extends ModuleParallelPort {
     private final static int CONTROL_PORT2 = 0x27A; // Read/Write port
 
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "parallelport";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "25-pin IEEE 1284 parallel port";
 
     // Constructor

@@ -58,9 +58,6 @@ public class ATADrive {
     // Attributes
 
     // Drive parameters
-    /**
-     *
-     */
     protected ATADriveType driveType; // Type of drive
 
     // 512 byte buffer for ID drive command
@@ -68,80 +65,30 @@ public class ATADrive {
     // they are fetched and returned via a return(), so
     // there's no need to keep them in x86 endian format.
     // protected Bit16u id_drive[256]; //TODO
-    /**
-     *
-     */
     protected int[] idDrive = new int[256];
-
-    /**
-     * 
-     */
     protected char[] modelNo = new char[40]; // TODO: originally 41 - but last
                                              // char not used
 
     // TODO:in lba mode the values in the below are not local
-    /**
-     *
-     */
     protected int currentHead; // Current head, Head Select
-    /**
-     *
-     */
     protected int currentCylinder; // Current cylinder
-    /**
-     *
-     */
     protected int currentSector; // Current sector
-
-    /**
-     *
-     */
     protected int totalNumHeads; // Total number of heads on disk
-    /**
-     *
-     */
     protected int totalNumCylinders; // Total number of cylinders on disk
                                      // (identical to tracks for floppies)
-    /**
-     *
-     */
     protected int totalNumSectors; // Total number of sectors on a disk
-
-    /**
-     *
-     */
     protected int sectorCount; // TODO: should this be moved?
 
     // TODO: implement this and multi-drives
-    /**
-     *
-     */
     protected boolean isMaster; // Is the drive the master?
 
     // Disk parameters
     private DiskImage disk; // Disk in drive (if any, else null)
-    /**
-     *
-     */
     protected boolean containsDisk;
-
-    /**
-     *
-     */
     protected boolean isWriteProtected; // Indicates if the floppy is write
                                         // protected
-
-    /**
-     *
-     */
     protected int ioLightCounter;
-    /**
-     *
-     */
     protected int statusbarId;
-    /**
-     *
-     */
     protected int features;
 
     private ATADriveController control;
@@ -149,20 +96,8 @@ public class ATADrive {
     private SenseInfo senseInfo;
 
     private CDROM cdRom;
-
-    /**
-     *
-     */
     protected Atpi atpi;
-
-    /**
-     *
-     */
     protected ATATranslationType translationType;
-
-    /**
-     *
-     */
     protected int deviceNum; // for ATAPI identify & inquiry
 
     /**
@@ -325,10 +260,6 @@ public class ATADrive {
 
         return logicalSector;
     }
-
-    /**
-     *
-     */
     public void incrementAddress() {
 
         this.decrementSectorCount();
@@ -739,17 +670,9 @@ public class ATADrive {
     public void setTotalNumCylinders(int totalNumCylinders) {
         this.totalNumCylinders = totalNumCylinders;
     }
-
-    /**
-     *
-     */
     public void incrementSectorCount() {
         this.sectorCount++;
     }
-
-    /**
-     *
-     */
     public void decrementSectorCount() {
         this.sectorCount--;
     }

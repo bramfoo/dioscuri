@@ -56,9 +56,6 @@ public class StartupPanel extends JPanel {
     private boolean paint = false;
 
     // Constructor
-    /**
-     *
-     */
     public StartupPanel() {
     }
 

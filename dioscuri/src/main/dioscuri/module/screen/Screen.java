@@ -75,9 +75,6 @@ public class Screen extends ModuleScreen {
     private Emulator emu;
     private String[] moduleConnections = new String[] { "video" };
     private ScreenPanel screenPanel;
-    /**
-     *
-     */
     protected ModuleVideo video;
 
     // Toggles
@@ -86,57 +83,27 @@ public class Screen extends ModuleScreen {
 
     // TODO: these properties should be set by configuration data of ESD
     // Data and color properties
-    /**
-     *
-     */
     protected byte[] pixels = null; // Array of pixel data, used in databuffer
-    /**
-     *
-     */
     protected DataBuffer dataBuffer = null; // Databuffer holding pixel data,
                                             // used in raster
-    /**
-     *
-     */
     protected SampleModel sampleModel = null; // Samplemodel holding pixel
                                               // storage info, used in raster
-    /**
-     *
-     */
     protected WritableRaster raster = null; // Raster containing image data,
                                             // used in BufferedImage
-    /**
-     *
-     */
     protected byte[][] palette = new byte[3][256]; // Array holding red, green,
                                                    // blue values for ColorModel
-    /**
-     *
-     */
     protected ColorModel colourModel = null; // ColourModel used in
                                              // BufferedImage
-    /**
-     *
-     */
     protected BufferedImage image = null; // Image displayed on canvas
-    /**
-     *
-     */
     protected int imageType; // Defines the type of the created image
 
     // Text font
-    /**
-     *
-     */
     protected BufferedImage[] fontImages = new BufferedImage[256]; // Array
                                                                    // containing
                                                                    // font
                                                                    // images
 
     // Graphics tile
-    /**
-     *
-     */
     protected BufferedImage graphicTile; // Tile used for updating in graphics
                                          // mode
 
@@ -186,17 +153,8 @@ public class Screen extends ModuleScreen {
     private final static String MODULE_NAME = "Compatible CRT/LCD computer screen";
 
     // Raster, ColourModel and BufferedImage properties
-    /**
-     *
-     */
     protected static final int RED = 0;
-    /**
-     *
-     */
     protected static final int GREEN = 1;
-    /**
-     *
-     */
     protected static final int BLUE = 2;
 
     /**

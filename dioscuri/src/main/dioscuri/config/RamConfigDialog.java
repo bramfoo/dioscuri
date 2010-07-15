@@ -92,10 +92,6 @@ public class RamConfigDialog extends ConfigurationDialog {
         this.sizeField.setValue(sizeMb);
 
     }
-
-    /**
-     *
-     */
     @Override
     protected void initDoButton() {
         this.doButton = new JButton("Save");

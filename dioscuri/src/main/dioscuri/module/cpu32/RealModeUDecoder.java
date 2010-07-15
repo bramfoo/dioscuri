@@ -218,10 +218,6 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
 
     private boolean blockComplete;
     private boolean addressModeDecoded;
-
-    /**
-     *
-     */
     public RealModeUDecoder() {
         this.current = new Operation();
         this.waiting = new Operation();

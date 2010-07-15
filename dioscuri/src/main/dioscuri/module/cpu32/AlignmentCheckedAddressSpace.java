@@ -98,10 +98,6 @@ public class AlignmentCheckedAddressSpace extends AddressSpace {
     public boolean updated() {
         return true;
     }
-
-    /**
-     *
-     */
     public void clear() {
         addressSpace.clear();
     }

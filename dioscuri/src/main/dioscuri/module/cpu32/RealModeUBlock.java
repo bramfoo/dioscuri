@@ -76,20 +76,9 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
     private FpuState fpu;
 
     private int x86Count;
-
-    /**
-     *
-     */
     protected int[] microcodes;
-    /**
-     *
-     */
     protected int[] cumulativeX86Length;
     private int executeCount;
-
-    /**
-     *
-     */
     public RealModeUBlock() {
     }
 

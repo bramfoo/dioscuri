@@ -64,9 +64,6 @@ public class ConfigController {
     // File config and schema paths (set to default)
 
     private static JAXBContext jc;
-    /**
-     *
-     */
     public static String EMULATOR_XML = "dioscuri.config";
 
     static {

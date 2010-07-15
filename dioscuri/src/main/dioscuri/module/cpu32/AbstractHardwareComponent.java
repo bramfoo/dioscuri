@@ -86,10 +86,6 @@ public abstract class AbstractHardwareComponent implements HardwareComponent {
      */
     public void loadState(DataInput input) throws IOException {
     }
-
-    /**
-     *
-     */
     public void timerCallback() {
     }
 }

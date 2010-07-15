@@ -102,17 +102,8 @@ public class PCI extends ModuleDevice {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "pci";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Peripheral Component Interconnect";
 
     // I/O ports 0CF8-0CFF - PCI Configuration Mechanism 1

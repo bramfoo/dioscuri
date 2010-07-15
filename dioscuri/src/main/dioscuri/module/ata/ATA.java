@@ -84,13 +84,7 @@ public class ATA extends ModuleATA {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "ata";
 
     // Attributes
@@ -1044,12 +1038,14 @@ public class ATA extends ModuleATA {
 
     /**
      * Return a byte from I/O address space at given port.
-     * 
-     * @param int portAddress containing the address of the I/O port
-     * @param int ioLength the length of the Io
+     *
+     * @param originalPortAddress containing the address of the I/O port
+     * @param ioLength the length of the Io
      * @return byte containing the data at given I/O address port
+     * 
      * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * @throws ModuleUnknownPort
+     * @throws ModuleWriteOnlyPortException
      */
     private byte[] read(int originalPortAddress, int ioLength)
             throws ModuleException, ModuleUnknownPort,

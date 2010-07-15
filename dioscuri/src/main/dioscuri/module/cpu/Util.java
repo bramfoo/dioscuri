@@ -77,16 +77,10 @@ public class Util {
             false, true };
 
     // Temporary flag variables
-    /**
-     *
-     */
     protected static boolean cf = false;
 
     // Temporary registers
     // protected static byte[] result = new byte[2];
-    /**
-     *
-     */
     protected static int lowerByteCarry = 0;
 
     // Constants

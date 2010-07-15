@@ -161,9 +161,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     private boolean pendingIRQ; // IRQ is still in progress
     private int resetSenseInterrupt; // TODO: Maybe this variable has to be
                                      // extended for multiple drives
-    /**
-     *
-     */
     public DMA8Handler dma8Handler; // 8-bit DMA handler for transfer of bytes
     private boolean tc; // TC, Terminal Count status from DMA controller
     private boolean dmaAndInterruptEnabled; // DMA and IRQ are both enabled
@@ -191,9 +188,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                  // value
 
     // Buffer for DMA transfer
-    /**
-     *
-     */
     protected byte[] floppyBuffer; // Buffer for data transfer between DMA and
                                    // floppy
     private int floppyBufferIndex; // Index for floppy buffer
@@ -319,17 +313,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     // Constants
     // Module specifics
-    /**
-     *
-     */
     public final static int MODULE_ID = 1;
-    /**
-     *
-     */
     public final static String MODULE_TYPE = "fdc";
-    /**
-     *
-     */
     public final static String MODULE_NAME = "Floppy Disk Controller";
 
     // I/O ports 03F0-03F7 - Floppy Disk Controller

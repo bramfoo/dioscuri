@@ -50,10 +50,6 @@ public abstract class AbstractMemory extends Memory {
      * @param data
      */
     public abstract void setByte(int offset, byte data);
-
-    /**
-     *
-     */
     public void clear() {
         for (int i = 0; i < getSize(); i++)
             setByte(i, (byte) 0);

@@ -53,31 +53,11 @@ public class ClassFile {
     private MethodInfo[] methods;
     private int attributesCount;
     private AttributeInfo[] attributes;
-
-    /**
-     *
-     */
     public static final short PUBLIC = (short) 0x0001;
-    /**
-     *
-     */
     public static final short FINAL = (short) 0x0010;
-    /**
-     *
-     */
     public static final short SUPER = (short) 0x0020;
-    /**
-     *
-     */
     public static final short INTERFACE = (short) 0x0200;
-    /**
-     *
-     */
     public static final short ABSTRACT = (short) 0x0400;
-
-    /**
-     *
-     */
     public static final int MAX_CONSTANT_POOL_SIZE = 64 * 1024;
 
     /**
@@ -137,10 +117,6 @@ public class ClassFile {
         // System.out.println("attributes");
         return;
     }
-
-    /**
-     *
-     */
     public void update() {
         /*
          * this function will supposibly sync all class info. for now I am

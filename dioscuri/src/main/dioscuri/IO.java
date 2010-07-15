@@ -60,9 +60,6 @@ public class IO {
     private String[] cmd;
     private String[] prevCmd;
     private int cmdPointer;
-    /**
-     *
-     */
     public String imageFilename;
     private String[] arguments;
 

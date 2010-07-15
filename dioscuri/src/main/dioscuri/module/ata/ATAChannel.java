@@ -55,14 +55,7 @@ import java.util.logging.Logger;
 public class ATAChannel {
 
     private static final Logger logger = Logger.getLogger(ATAChannel.class.getName());
-
-    /**
-     *
-     */
     public static final int IDE_MASTER_INDEX = 0;
-    /**
-     *
-     */
     public static final int IDE_SLAVE_INDEX = 1;
 
     private ATADrive[] drives = new ATADrive[ATAConstants.MAX_NUMBER_DRIVES_PER_CHANNEL];

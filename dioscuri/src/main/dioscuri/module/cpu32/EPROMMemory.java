@@ -113,10 +113,6 @@ public class EPROMMemory extends LazyCodeBlockMemory {
     @Override
     public void copyContentsFrom(int address, byte[] buf, int off, int len) {
     }
-
-    /**
-     *
-     */
     @Override
     public void clear() {
         constructCodeBlocksArray();

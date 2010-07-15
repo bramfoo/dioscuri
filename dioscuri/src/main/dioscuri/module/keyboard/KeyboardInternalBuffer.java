@@ -48,9 +48,6 @@ import java.util.List;
  * 
  */
 public class KeyboardInternalBuffer {
-    /**
-     *
-     */
     protected final static int NUM_ELEMENTS = 16;
 
     private List<Byte> buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data

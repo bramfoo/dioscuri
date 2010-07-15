@@ -59,10 +59,6 @@ public class ATADriveController {
     private int bufferIndex;
     private int lbaMode;
     private int errorRegister;
-
-    /**
-     *
-     */
     protected int numSectorsPerBlock; // Total number of sectors per block
 
     private ATAStatus status;
@@ -78,15 +74,7 @@ public class ATADriveController {
     private int resetInProgress;
 
     private int packetDma;
-
-    /**
-     *
-     */
     public ATA parent;
-
-    /**
-     *
-     */
     public int multipleSectors = 0;
 
     /**

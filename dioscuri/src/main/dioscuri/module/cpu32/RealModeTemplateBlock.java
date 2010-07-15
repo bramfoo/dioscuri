@@ -34,30 +34,14 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public abstract class RealModeTemplateBlock implements RealModeCodeBlock {
-    /**
-     *
-     */
     protected static final ProcessorException exceptionDE = new ProcessorException(
             Processor.PROC_EXCEPTION_DE, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionGP = new ProcessorException(
             Processor.PROC_EXCEPTION_GP, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionSS = new ProcessorException(
             Processor.PROC_EXCEPTION_SS, true);
-    /**
-     *
-     */
     protected static final ProcessorException exceptionUD = new ProcessorException(
             Processor.PROC_EXCEPTION_UD, true);
-
-    /**
-     *
-     */
     protected static final boolean[] parityMap;
 
     static {
