@@ -39,48 +39,15 @@
 
 package dioscuri.module;
 
-import dioscuri.module.ata.ATATranslationType;
+public abstract class ModuleATA extends Module {
 
-/**
- * Interface representing a generic hardware module. TODO: this template of
- * moduleATA could also be made more generic for any fixed storage device
- */
+    public ModuleATA() {
+        super(Module.Type.ATA, 
+                Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
+    }
 
-public abstract class ModuleATA extends ModuleDevice {
-    // Methods
-
-    /**
-     * Initiate configuration of the disk drive.
-     * 
-     * @param theIdeChannel
-     * @param isMaster
-     * @param isHardDisk
-     * @param isWriteProtected
-     * @param numCylinders
-     * @param numHeads
-     * @param numSectorsPerTrack
-     * @param translationType
-     * @param imageFilePath
-     */
-    public abstract void initConfig(int theIdeChannel, boolean isMaster,
-            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
-            int numHeads, int numSectorsPerTrack,
-            ATATranslationType translationType, String imageFilePath);
-
-    /**
-     * Set CMOS values
-     * 
-     * @param bootDrives
-     * @param floppySigCheckDisabled
-     */
-    public abstract void setCmosSettings(int[] bootDrives,
-            boolean floppySigCheckDisabled);
-
-    /**
-     * Gets the current channel index.
-     * 
-     * @return int the current channel index
-     */
-    public abstract int getCurrentChannelIndex();
-
+    @Override
+    public String getDump() {
+        return "ModuleATA dump";
+    }
 }

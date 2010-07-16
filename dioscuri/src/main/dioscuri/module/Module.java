@@ -39,144 +39,116 @@
 
 package dioscuri.module;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Interface representing a generic hardware module.
- * 
+ * An abstract class representing a generic hardware module.
+ *
+ * @author Bram Lohman
+ * @author Bart Kiers
  */
-
 public abstract class Module {
-    // General module variables
-    // String moduleDataString;
-    // int moduleDataInt;
-
-    // Methods
 
     /**
-     * Returns the ID of module (integer value)
-     * 
-     * @return integer with the ID of this module
-     * 
+     * The type of a Module.
      */
-    public abstract int getID();
+    public static enum Type {
+        ATA, BIOS, CPU, DMA, MEMORY, MOTHERBOARD, PIC, RTC
+    }
+
+    private final Type type;
+    private final Map<Type, Module> connections;
+    private boolean debugMode;
 
     /**
-     * Returns the type of module (CPU, Memory, etc.)
-     * 
-     * @return string with the type of this module
-     * 
+     * Creates a new Module of a specific Type and the expected Types
+     * it should be connected to to work properly.
+     *
+     * @param type                the type of this Module.
+     * @param expectedConnections the expected Types it should be
+     *                            connected to to work properly.
      */
-    public abstract String getType();
+    public Module(Type type, Type... expectedConnections) {
+        this.type = type;
+        this.debugMode = false;
+        this.connections = new HashMap<Type, Module>();
+        for(Type t : expectedConnections) {
+            connections.put(t, null);
+        }
+    }
 
     /**
-     * Returns the name of module
-     * 
-     * @return string with the name of this module
-     * 
+     * Returns all modules its connected to.
+     *
+     * @return all modules its connected to.
      */
-    public abstract String getName();
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules
-     */
-    public abstract String[] getConnection();
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected
-     * 
-     * @return true if connection was set successfully, false otherwise
-     */
-    public abstract boolean setConnection(Module mod);
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public abstract boolean isConnected();
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return -
-     */
-    public abstract boolean reset();
-
-    /**
-     * Starts the module to become active
-     * 
-     */
-    public abstract void start();
-
-    /**
-     * Stops the module from being active
-     * 
-     */
-    public abstract void stop();
-
-    /**
-     * Returns the state of observed
-     * 
-     * @return true if this module is observed, false otherwise
-     */
-    public abstract boolean isObserved();
-
-    /**
-     * Set toggle to define if this module is observed or not
-     * 
-     * @param status
-     */
-    public abstract void setObserved(boolean status);
+    public Module[] getConnections() {
+        return this.connections.values().toArray(new Module[this.connections.size()]);
+    }
 
     /**
      * Returns the state of debug mode
-     * 
+     *
      * @return true if this module is in debug mode, false otherwise
      */
-    public abstract boolean getDebugMode();
-
-    /**
-     * Set toggle to define if this module is in debug mode or not
-     * 
-     * @param status
-     */
-    public abstract void setDebugMode(boolean status);
-
-    /**
-     * Returns data from this module
-     * 
-     * @param module
-     * @return byte[] with data
-     */
-    public abstract byte[] getData(Module module);
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param module
-     * @return true if data is set successfully, false otherwise
-     */
-    public abstract boolean setData(byte[] data, Module module);
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param module
-     * @return true if data is set successfully, false otherwise
-     */
-    public abstract boolean setData(String[] data, Module module);
+    public boolean getDebugMode() {
+        return this.debugMode;
+    }
 
     /**
      * Return a dump of module status
-     * 
+     *
      * @return string containing a dump of this module
      */
     public abstract String getDump();
 
+    /**
+     * Returns the type of module (CPU, Memory, etc.)
+     *
+     * @return string with the type of this module
+     *
+     */
+    public Type getType() {
+        return this.type;
+    }
+
+    /**
+     * Checks if this module is connected to operate normally.
+     *
+     * @return true if this module is connected successfully, false otherwise
+     */
+    public boolean isConnected() {
+        for(Map.Entry<Type, Module> entry : this.connections.entrySet()) {
+            if(entry.getValue() == null) {
+                // There is still a module not initialized (the expected Type
+                // points to null).
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Set toggle to define if this module is in debug mode or not.
+     *
+     * @param debugMode a toggle to define if this module is in debug mode or not.
+     */
+    public void setDebugMode(boolean debugMode) {
+        this.debugMode = debugMode;
+    }
+
+    /**
+     * Sets up a connection with another module.
+     *
+     * @param module the Module that is to be connected.
+     * @return true if connection was set successfully, false otherwise.
+     */
+    public boolean setConnection(Module module) {
+        if(!this.connections.containsKey(module.type)) {
+            return false; // or throw exception?
+        }
+        this.connections.put(module.type, module);
+        return true;
+    }
 }

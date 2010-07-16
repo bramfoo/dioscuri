@@ -39,44 +39,15 @@
 
 package dioscuri.module;
 
-import dioscuri.module.dma.DMA16Handler;
-import dioscuri.module.dma.DMA8Handler;
+public abstract class ModuleDMA extends Module {
 
-/**
- * Interface representing a generic hardware module.
- */
+    public ModuleDMA() {
+        super(Module.Type.DMA,
+                Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
+    }
 
-public abstract class ModuleDMA extends ModuleDevice {
-    // Methods
-    /**
-     *
-     * @param chanNum
-     * @param dma8handler
-     * @return -
-     */
-    public abstract boolean registerDMAChannel(int chanNum,
-            DMA8Handler dma8handler);
-
-    /**
-     *
-     * @param chanNum
-     * @param dma16handler
-     * @return -
-     */
-    public abstract boolean registerDMAChannel(int chanNum,
-            DMA16Handler dma16handler);
-
-    /**
-     *
-     * @param chanNum
-     * @param request
-     */
-    public abstract void setDMARequest(int chanNum, boolean request);
-    public abstract void acknowledgeBusHold();
-
-    /**
-     *
-     * @return -
-     */
-    public abstract boolean isTerminalCountReached();
+    @Override
+    public String getDump() {
+        return "ModuleDMA dump";
+    }
 }
