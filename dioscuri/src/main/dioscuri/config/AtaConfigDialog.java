@@ -78,7 +78,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent the parent GUI
      */
     public AtaConfigDialog(GUI parent) {
         super(parent, "ATA Configuration", false, ModuleType.ATA);
@@ -106,12 +106,12 @@ public class AtaConfigDialog extends ConfigurationDialog {
 
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(isEnabled);
-        this.channelIndexFTextField.setValue(new Integer(channelIndex));
+        this.channelIndexFTextField.setValue(channelIndex);
         this.masterCheckBox.setSelected(isMaster);
         this.autoDetectCheckBox.setSelected(autoDetect);
-        this.cylindersTextField.setValue(new Integer(cylinders));
-        this.headsTextField.setValue(new Integer(heads));
-        this.sectorsTextField.setValue(new Integer(sectors));
+        this.cylindersTextField.setValue(cylinders);
+        this.headsTextField.setValue(heads);
+        this.sectorsTextField.setValue(sectors);
 
         /*
         // Check if length of filepath is longer than 30 characters
@@ -206,23 +206,23 @@ public class AtaConfigDialog extends ConfigurationDialog {
         
         // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
-        updateIntField.setValue(new Integer(0));
+        updateIntField.setValue(0);
         updateIntField.setColumns(10);
 
         enabledCheckBox = new JCheckBox();
         enabledCheckBox.setSelected(true);
 
         channelIndexFTextField = new JFormattedTextField();
-        channelIndexFTextField.setValue(new Integer(0));
+        channelIndexFTextField.setValue(0);
         channelIndexFTextField.setColumns(10);
         cylindersTextField = new JFormattedTextField();
-        cylindersTextField.setValue(new Integer(0));
+        cylindersTextField.setValue(0);
         cylindersTextField.setColumns(10);
         headsTextField = new JFormattedTextField();
-        headsTextField.setValue(new Integer(0));
+        headsTextField.setValue(0);
         headsTextField.setColumns(10);
         sectorsTextField = new JFormattedTextField();
-        sectorsTextField.setValue(new Integer(0));
+        sectorsTextField.setValue(0);
         sectorsTextField.setColumns(10);
 
         masterCheckBox = new JCheckBox();

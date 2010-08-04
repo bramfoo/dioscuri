@@ -76,7 +76,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public BiosConfigDialog(GUI parent) {
         super(parent, "BIOS Configuration", false, ModuleType.BIOS);
@@ -184,11 +184,11 @@ public class BiosConfigDialog extends ConfigurationDialog {
         imageFilePathVgaLabel.setEditable(false);
 
         this.sysBiosStartsFTextField = new JFormattedTextField();
-        this.sysBiosStartsFTextField.setValue(new Integer(0));
+        this.sysBiosStartsFTextField.setValue(0);
         this.sysBiosStartsFTextField.setColumns(10);
 
         this.vgaBiosStartFTextField = new JFormattedTextField();
-        this.vgaBiosStartFTextField.setValue(new Integer(0));
+        this.vgaBiosStartFTextField.setValue(0);
         this.vgaBiosStartFTextField.setColumns(10);
 
         this.sysBiosBrowseButton = new JButton("Browse");

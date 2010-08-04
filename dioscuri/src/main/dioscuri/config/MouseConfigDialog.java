@@ -68,11 +68,10 @@ import dioscuri.config.Emulator.Architecture.Modules.Mouse;
  */
 @SuppressWarnings("serial")
 public class MouseConfigDialog extends ConfigurationDialog {
+    
     // Attributes
-    private JLabel enabledLabel;
-    private JLabel sizeLabel;
     private JCheckBox enabledCheckBox;
-    private JComboBox mouseTypeComboxBox;
+    private JComboBox mouseTypeComboBox;
 
     dioscuri.config.Emulator emuConfig;
 
@@ -80,7 +79,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public MouseConfigDialog(GUI parent) {
         super(parent, "Mouse Configuration", false, ModuleType.MOUSE);
@@ -100,7 +99,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
 
         // Set mouse parameters
         this.enabledCheckBox.setSelected(enabled);
-        this.mouseTypeComboxBox.setSelectedItem(mouseType);
+        this.mouseTypeComboBox.setSelectedItem(mouseType);
     }
     @Override
     protected void initSaveButton() {
@@ -118,8 +117,8 @@ public class MouseConfigDialog extends ConfigurationDialog {
     @Override
     protected void initMainEntryPanel() {
         // Create labels
-        enabledLabel = new JLabel("Enabled");
-        sizeLabel = new JLabel("  Type");
+        JLabel enabledLabel = new JLabel("Enabled");
+        JLabel sizeLabel = new JLabel("  Type");
 
         // Create enabled checkbox
         enabledCheckBox = new JCheckBox();
@@ -129,8 +128,8 @@ public class MouseConfigDialog extends ConfigurationDialog {
         DefaultComboBoxModel mouseTypeModel = new DefaultComboBoxModel();
         mouseTypeModel.addElement("ps/2");
         mouseTypeModel.addElement("serial");
-        mouseTypeComboxBox = new JComboBox(mouseTypeModel);
-        mouseTypeComboxBox.setSelectedIndex(0);
+        mouseTypeComboBox = new JComboBox(mouseTypeModel);
+        mouseTypeComboBox.setSelectedIndex(0);
 
         // Layout components
         mainEntryPanel = new JPanel(new GridLayout(10, 3));
@@ -147,7 +146,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
         }
 
         mainEntryPanel.add(sizeLabel);
-        mainEntryPanel.add(mouseTypeComboxBox);
+        mainEntryPanel.add(mouseTypeComboBox);
         mainEntryPanel.add(new JLabel(""));
 
         // Fill end blanks in grid
@@ -166,7 +165,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
         Mouse mouse = emuConfig.getArchitecture().getModules().getMouse();
 
         mouse.setEnabled(enabledCheckBox.isSelected());
-        mouse.setMousetype((String) mouseTypeComboxBox.getSelectedItem());
+        mouse.setMousetype((String) mouseTypeComboBox.getSelectedItem());
 
         return emuConfig;
     }

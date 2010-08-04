@@ -76,7 +76,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public FdcConfigDialog(GUI parent) {
         super(parent, "FDC Configuration", false, ModuleType.FDC);
@@ -226,7 +226,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
 
         // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
-        updateIntField.setValue(new Integer(0));
+        updateIntField.setValue(0);
         updateIntField.setColumns(10);
 
         enabledCheckBox = new JCheckBox();

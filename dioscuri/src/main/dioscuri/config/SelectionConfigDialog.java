@@ -72,7 +72,7 @@ public class SelectionConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public SelectionConfigDialog(DioscuriFrame parent) {
         super(parent, "Configuration Selector", true, null);
@@ -93,6 +93,12 @@ public class SelectionConfigDialog extends ConfigurationDialog {
 
         });
     }
+
+    @Override
+    protected Emulator getParamsFromGui() {
+        return null;
+    }
+
     @Override
     protected void initCancelButton() {
         cancelButton = new JButton("OK");

@@ -78,12 +78,12 @@ public class ConfigController {
     }
 
     // Constructor
-    /**
+    /*
      *
      * @param gui
      */
-    public ConfigController(GUI gui) {
-    }
+    //public ConfigController(GUI gui) {
+    //}
 
     // Methods
 

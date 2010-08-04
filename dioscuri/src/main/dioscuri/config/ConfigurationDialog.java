@@ -65,7 +65,6 @@ public abstract class ConfigurationDialog extends JDialog {
     protected JPanel statusPanel;
     protected JButton saveButton;
     protected JButton cancelButton;
-    //protected JLabel imageFilePathLabel;
     protected JTextField imageFilePathLabel;
     protected File selectedFile;
     protected int dialogWidth;
@@ -78,10 +77,10 @@ public abstract class ConfigurationDialog extends JDialog {
 
     /**
      *
-     * @param parent
-     * @param title
-     * @param isMainConfigScreen
-     * @param moduleType
+     * @param parent -
+     * @param title -
+     * @param isMainConfigScreen -
+     * @param moduleType -
      */
     public ConfigurationDialog(GUI parent, String title,
             boolean isMainConfigScreen, ModuleType moduleType) {
@@ -166,7 +165,7 @@ public abstract class ConfigurationDialog extends JDialog {
     
     protected void saveParams() {
 
-        dioscuri.config.Emulator params = null;
+        dioscuri.config.Emulator params;
 
         String moduleText = "";
         if (moduleType != null) {
@@ -211,11 +210,13 @@ public abstract class ConfigurationDialog extends JDialog {
      * 
      * @return object array of params.
      */
-    protected Emulator getParamsFromGui() {
-        dioscuri.config.Emulator params = null;
+    protected abstract Emulator getParamsFromGui();
+    // {
+        //dioscuri.config.Emulator params = null;
 
-        return params;
-    }
+        //return params;
+    //    return this.
+    //}
 
     /**
      * Read in params from XML - overriden in sub classes.

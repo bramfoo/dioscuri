@@ -66,16 +66,16 @@ import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 @SuppressWarnings("serial")
 public class BootConfigDialog extends ConfigurationDialog {
 
-    private JComboBox bootDrive1ComboxBox;
-    private JComboBox bootDrive2ComboxBox;
-    private JComboBox bootDrive3ComboxBox;
+    private JComboBox bootDrive1ComboBox;
+    private JComboBox bootDrive2ComboBox;
+    private JComboBox bootDrive3ComboBox;
     private JCheckBox floppyCheckDisabledCheckBox;
 
     dioscuri.config.Emulator emuConfig;
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public BootConfigDialog(GUI parent) {
         super(parent, "Boot Configuration", false, ModuleType.BOOT);
@@ -96,9 +96,9 @@ public class BootConfigDialog extends ConfigurationDialog {
         boolean floppyCheckDisabled = emuConfig.getArchitecture().getModules()
                 .getBios().get(0).isFloppycheckdisabled();
 
-        this.bootDrive1ComboxBox.setSelectedItem(boot1Index);
-        this.bootDrive2ComboxBox.setSelectedItem(boot2Index);
-        this.bootDrive3ComboxBox.setSelectedItem(boot3Index);
+        this.bootDrive1ComboBox.setSelectedItem(boot1Index);
+        this.bootDrive2ComboBox.setSelectedItem(boot2Index);
+        this.bootDrive3ComboBox.setSelectedItem(boot3Index);
         this.floppyCheckDisabledCheckBox.setSelected(floppyCheckDisabled);
 
     }
@@ -128,15 +128,15 @@ public class BootConfigDialog extends ConfigurationDialog {
         }
 
         mainEntryPanel.add(boot1Label);
-        mainEntryPanel.add(bootDrive1ComboxBox);
+        mainEntryPanel.add(bootDrive1ComboBox);
         mainEntryPanel.add(new JLabel(""));
 
         mainEntryPanel.add(boot2Label);
-        mainEntryPanel.add(bootDrive2ComboxBox);
+        mainEntryPanel.add(bootDrive2ComboBox);
         mainEntryPanel.add(new JLabel(""));
 
         mainEntryPanel.add(boot3Label);
-        mainEntryPanel.add(bootDrive3ComboxBox);
+        mainEntryPanel.add(bootDrive3ComboBox);
         mainEntryPanel.add(new JLabel(""));
 
         mainEntryPanel.add(floppyCheckDisabledLabel);
@@ -159,22 +159,22 @@ public class BootConfigDialog extends ConfigurationDialog {
         bootModel1.addElement("Floppy Drive");
         bootModel1.addElement("Hard Drive");
         bootModel1.addElement("None");
-        bootDrive1ComboxBox = new JComboBox(bootModel1);
-        bootDrive1ComboxBox.setSelectedIndex(0);
+        bootDrive1ComboBox = new JComboBox(bootModel1);
+        bootDrive1ComboBox.setSelectedIndex(0);
 
         DefaultComboBoxModel bootModel2 = new DefaultComboBoxModel();
         bootModel2.addElement("Floppy Drive");
         bootModel2.addElement("Hard Drive");
         bootModel2.addElement("None");
-        bootDrive2ComboxBox = new JComboBox(bootModel2);
-        bootDrive2ComboxBox.setSelectedIndex(2);
+        bootDrive2ComboBox = new JComboBox(bootModel2);
+        bootDrive2ComboBox.setSelectedIndex(2);
 
         DefaultComboBoxModel bootModel3 = new DefaultComboBoxModel();
         bootModel3.addElement("Floppy Drive");
         bootModel3.addElement("Hard Drive");
         bootModel3.addElement("None");
-        bootDrive3ComboxBox = new JComboBox(bootModel3);
-        bootDrive3ComboxBox.setSelectedIndex(2);
+        bootDrive3ComboBox = new JComboBox(bootModel3);
+        bootDrive3ComboBox.setSelectedIndex(2);
 
         floppyCheckDisabledCheckBox = new JCheckBox();
 
@@ -190,9 +190,9 @@ public class BootConfigDialog extends ConfigurationDialog {
         Bootdrives boot = emuConfig.getArchitecture().getModules().getBios()
                 .get(0).getBootdrives();
 
-        boot.setBootdrive0((String) bootDrive1ComboxBox.getSelectedItem());
-        boot.setBootdrive1((String) bootDrive2ComboxBox.getSelectedItem());
-        boot.setBootdrive2((String) bootDrive3ComboxBox.getSelectedItem());
+        boot.setBootdrive0((String) bootDrive1ComboBox.getSelectedItem());
+        boot.setBootdrive1((String) bootDrive2ComboBox.getSelectedItem());
+        boot.setBootdrive2((String) bootDrive3ComboBox.getSelectedItem());
         emuConfig.getArchitecture().getModules().getBios().get(0)
                 .setFloppycheckdisabled(
                         floppyCheckDisabledCheckBox.isSelected());

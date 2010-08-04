@@ -68,9 +68,9 @@ public enum ModuleType {
     VGA("video");
 
     // Define all module types as a array
-    public final static ModuleType[] moduleTypes = { ATA, BIOS, BOOT, CPU,
-            CLOCK, DMA, FDC, KEYBOARD, MOUSE, MEMORY, MOTHERBOARD, PIC, PIT,
-            RTC, SCREEN, VGA };
+    //public final static ModuleType[] moduleTypes = { ATA, BIOS, BOOT, CPU,
+    //        CLOCK, DMA, FDC, KEYBOARD, MOUSE, MEMORY, MOTHERBOARD, PIC, PIT,
+    //        RTC, SCREEN, VGA };
 
     private final String type;
     private final String name;

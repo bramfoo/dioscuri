@@ -74,7 +74,7 @@ public class RamConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public RamConfigDialog(GUI parent) {
         super(parent, "RAM Configuration", false, ModuleType.MEMORY);
@@ -112,7 +112,7 @@ public class RamConfigDialog extends ConfigurationDialog {
 
         // Formats to format and parse numbers
         sizeField = new JFormattedTextField();
-        sizeField.setValue(new Integer(0));
+        sizeField.setValue(0);
         sizeField.setColumns(10);
 
         mainEntryPanel = new JPanel(new GridLayout(10, 3));

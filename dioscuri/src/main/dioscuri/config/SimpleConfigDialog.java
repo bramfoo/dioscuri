@@ -73,8 +73,8 @@ public class SimpleConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
-     * @param moduleType
+     * @param parent -
+     * @param moduleType -
      */
     public SimpleConfigDialog(GUI parent, ModuleType moduleType) {
         super(parent, moduleType.toString().toUpperCase() + " Configuration",
@@ -127,7 +127,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
 
         // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
-        updateIntField.setValue(new Integer(0));
+        updateIntField.setValue(0);
         updateIntField.setColumns(10);
 
         mainEntryPanel = new JPanel(new GridLayout(10, 3));

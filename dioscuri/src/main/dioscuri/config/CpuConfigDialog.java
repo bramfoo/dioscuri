@@ -77,7 +77,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
 
     /**
      *
-     * @param parent
+     * @param parent -
      */
     public CpuConfigDialog(GUI parent) {
         super(parent, "CPU Configuration", false, ModuleType.CPU);
@@ -132,7 +132,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
         cpuBit.add(cpu16Button);
 
         speedField = new JFormattedTextField();
-        speedField.setValue(new Integer(0));
+        speedField.setValue(0);
         speedField.setColumns(10);
 
         mainEntryPanel = new JPanel(new GridLayout(10, 3));
