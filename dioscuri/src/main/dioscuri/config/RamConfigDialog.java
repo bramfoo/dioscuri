@@ -93,9 +93,9 @@ public class RamConfigDialog extends ConfigurationDialog {
 
     }
     @Override
-    protected void initDoButton() {
-        this.doButton = new JButton("Save");
-        this.doButton.addActionListener(new ActionListener() {
+    protected void initSaveButton() {
+        this.saveButton = new JButton("Save");
+        this.saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveParams();
             }

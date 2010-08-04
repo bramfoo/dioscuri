@@ -70,7 +70,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
     private JButton vgaBiosBrowseButton;
 
     private File selectedVgaFile = null;
-    private JLabel imageFilePathVgaLabel = null;
+    private JTextField imageFilePathVgaLabel = null;
 
     dioscuri.config.Emulator emuConfig;
 
@@ -101,28 +101,12 @@ public class BiosConfigDialog extends ConfigurationDialog {
         this.sysBiosStartsFTextField.setValue(ramSysBiosAddressStart);
         this.vgaBiosStartFTextField.setValue(ramVgaBiosAddressStart);
 
-        this.selectedfile = new File(sysPath);
+        this.selectedFile = new File(sysPath);
         this.selectedVgaFile = new File(vgaPath);
 
-        // Check if length of System BIOS file is longer than 30 characters
-        if (selectedfile.getName().length() > 30) {
-            // Trail off the beginning of the string
-            this.imageFilePathLabel.setText("..."
-                    + selectedfile.getName().substring(
-                            selectedfile.getName().length() - 30));
-        } else {
-            this.imageFilePathLabel.setText(selectedfile.getName());
-        }
+        this.imageFilePathLabel.setText(selectedFile.getAbsolutePath());
 
-        // Check if length of Video BIOS file is longer than 30 characters
-        if (selectedVgaFile.getName().length() > 30) {
-            // Trail off the beginning of the string
-            this.imageFilePathVgaLabel.setText("..."
-                    + selectedVgaFile.getName().substring(
-                            selectedVgaFile.getName().length() - 30));
-        } else {
-            this.imageFilePathVgaLabel.setText(selectedVgaFile.getName());
-        }
+        this.imageFilePathVgaLabel.setText(selectedVgaFile.getAbsolutePath());
     }
 
     /**
@@ -194,8 +178,10 @@ public class BiosConfigDialog extends ConfigurationDialog {
      * Initalise the GUI Controls.
      */
     private void populateControls() {
-        this.imageFilePathLabel = new JLabel("");
-        this.imageFilePathVgaLabel = new JLabel("");
+        this.imageFilePathLabel = new JTextField("");
+        imageFilePathLabel.setEditable(false);
+        this.imageFilePathVgaLabel = new JTextField("");
+        imageFilePathVgaLabel.setEditable(false);
 
         this.sysBiosStartsFTextField = new JFormattedTextField();
         this.sysBiosStartsFTextField.setValue(new Integer(0));
@@ -252,7 +238,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
     protected Emulator getParamsFromGui() {
         Bios bios = emuConfig.getArchitecture().getModules().getBios().get(0);
 
-        bios.setSysbiosfilepath(selectedfile.getAbsoluteFile().toString());
+        bios.setSysbiosfilepath(selectedFile.getAbsoluteFile().toString());
         bios.setVgabiosfilepath(selectedVgaFile.getAbsoluteFile().toString());
         bios.setRamaddresssysbiosstartdec(BigInteger
                 .valueOf((Integer) sysBiosStartsFTextField.getValue()));

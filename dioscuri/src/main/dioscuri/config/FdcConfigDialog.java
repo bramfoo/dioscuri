@@ -106,7 +106,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
         this.driveLetterComboxBox.setSelectedItem(driveLetterIndex);
         this.diskFormatComboBox.setSelectedItem(diskFormatIndex);
         this.writeProtectedCheckBox.setSelected(writeProtected);
-
+        /*
         // Check if length of filepath is longer than 30 characters
         if (imageFormatPath.length() > 30) {
             // Trail off the beginning of the string
@@ -115,8 +115,10 @@ public class FdcConfigDialog extends ConfigurationDialog {
         } else {
             this.imageFilePathLabel.setText(imageFormatPath);
         }
+        */
+        this.imageFilePathLabel.setText(imageFormatPath);
 
-        this.selectedfile = new File(imageFormatPath);
+        this.selectedFile = new File(imageFormatPath);
 
     }
 
@@ -219,7 +221,8 @@ public class FdcConfigDialog extends ConfigurationDialog {
      * Initalise the GUI Controls.
      */
     private void populateControls() {
-        imageFilePathLabel = new JLabel("");
+        imageFilePathLabel = new JTextField("");
+        imageFilePathLabel.setEditable(false);
 
         // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
@@ -282,7 +285,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
         drive.setDriveletter(driveLetterComboxBox.getSelectedItem().toString());
         drive.setDiskformat(diskFormatComboBox.getSelectedItem().toString());
         drive.setWriteprotected(writeProtectedCheckBox.isSelected());
-        drive.setImagefilepath(selectedfile.getAbsoluteFile().toString());
+        drive.setImagefilepath(selectedFile.getAbsoluteFile().toString());
 
         return emuConfig;
     }

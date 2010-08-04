@@ -82,10 +82,10 @@ public class SelectionConfigDialog extends ConfigurationDialog {
      * Initialize the edit button
      */
     @Override
-    protected void initDoButton() {
-        doButton = new JButton("Edit");
+    protected void initSaveButton() {
+        saveButton = new JButton("Edit");
 
-        doButton.addActionListener(new ActionListener() {
+        saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 launchSpecificConfigDialog();
 
@@ -94,10 +94,10 @@ public class SelectionConfigDialog extends ConfigurationDialog {
         });
     }
     @Override
-    protected void initConfirmButton() {
-        okButton = new JButton("OK");
+    protected void initCancelButton() {
+        cancelButton = new JButton("OK");
 
-        okButton.addActionListener(new ActionListener() {
+        cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }

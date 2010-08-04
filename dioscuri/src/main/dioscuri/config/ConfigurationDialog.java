@@ -60,13 +60,14 @@ import java.io.File;
  */
 @SuppressWarnings("serial")
 public abstract class ConfigurationDialog extends JDialog {
+
     protected JPanel mainEntryPanel;
     protected JPanel statusPanel;
-    protected JButton doButton;
-    protected JButton okButton;
+    protected JButton saveButton;
     protected JButton cancelButton;
-    protected JLabel imageFilePathLabel;
-    protected File selectedfile;
+    //protected JLabel imageFilePathLabel;
+    protected JTextField imageFilePathLabel;
+    protected File selectedFile;
     protected int dialogWidth;
     protected int dialogHeight;
     protected int dialogXPosition;
@@ -74,8 +75,6 @@ public abstract class ConfigurationDialog extends JDialog {
     protected GUI parent;
     protected boolean isMainConfigScreen;
     protected ModuleType moduleType;
-    public ConfigurationDialog() {
-    }
 
     /**
      *
@@ -152,32 +151,19 @@ public abstract class ConfigurationDialog extends JDialog {
         this.setVisible(true);
         this.requestFocus();
     }
+    
     protected void initMainEntryPanel() {
     }
-    protected void initDoButton() {
-        this.doButton = new JButton("Save");
-        this.doButton.addActionListener(new ActionListener() {
+
+    protected void initSaveButton() {
+        this.saveButton = new JButton("Save");
+        this.saveButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 saveParams();
             }
         });
     }
-
-    @SuppressWarnings("unused")
-    private void initCancelButton() {
-        Dimension buttonSize = new Dimension(70, 25);
-
-        cancelButton.setSize(buttonSize);
-        cancelButton.setPreferredSize(buttonSize);
-        cancelButton.setSize(buttonSize);
-        cancelButton.setPreferredSize(buttonSize);
-
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
-    }
+    
     protected void saveParams() {
 
         dioscuri.config.Emulator params = null;
@@ -189,7 +175,7 @@ public abstract class ConfigurationDialog extends JDialog {
 
         if (moduleType != null
                 && (moduleType == ModuleType.ATA || moduleType == ModuleType.FDC)) {
-            if (selectedfile == null) {
+            if (selectedFile == null) {
                 JOptionPane.showMessageDialog(this,
                         "Error saving data - please browse for an image file.",
                         "DIOSCURI", JOptionPane.WARNING_MESSAGE);
@@ -243,15 +229,15 @@ public abstract class ConfigurationDialog extends JDialog {
      * 
      */
     protected void initBottomButtonPanel() {
-        initDoButton();
+        initSaveButton();
 
-        initConfirmButton();
+        initCancelButton();
 
-        Dimension buttonSize = new Dimension(70, 25);
-        okButton.setSize(buttonSize);
-        okButton.setPreferredSize(buttonSize);
-        doButton.setSize(buttonSize);
-        doButton.setPreferredSize(buttonSize);
+        //Dimension buttonSize = new Dimension(70, 25);
+        //cancelButton.setSize(buttonSize);
+        //cancelButton.setPreferredSize(buttonSize);
+        //saveButton.setSize(buttonSize);
+        //saveButton.setPreferredSize(buttonSize);
 
         statusPanel = new JPanel(new GridLayout(2, 1));
 
@@ -270,19 +256,20 @@ public abstract class ConfigurationDialog extends JDialog {
 
         innerStatusPanel.add(Box.createRigidArea(new Dimension(5, 5)));
         innerStatusPanel.add(Box.createHorizontalGlue());
-        innerStatusPanel.add(doButton);
+        innerStatusPanel.add(saveButton);
         innerStatusPanel.add(Box.createRigidArea(new Dimension(5, 5)));
-        innerStatusPanel.add(okButton);
+        innerStatusPanel.add(cancelButton);
         innerStatusPanel.add(Box.createRigidArea(new Dimension(5, 5)));
 
         statusPanel.add(new JPanel());
         statusPanel.add(innerStatusPanel);
 
     }
-    protected void initConfirmButton() {
-        okButton = new JButton("Cancel");
 
-        okButton.addActionListener(new ActionListener() {
+    protected void initCancelButton() {
+        cancelButton = new JButton("Cancel");
+
+        cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
             }
@@ -295,26 +282,15 @@ public abstract class ConfigurationDialog extends JDialog {
      * 
      */
     protected void launchFileChooser() {
-        JFileChooser fileChooser = new JFileChooser(selectedfile);
+        JFileChooser fileChooser = new JFileChooser(selectedFile);
 
         int returnVal = fileChooser.showOpenDialog(this);
 
         if (returnVal == JFileChooser.APPROVE_OPTION) {
 
-            selectedfile = fileChooser.getSelectedFile();
+            selectedFile = fileChooser.getSelectedFile();
 
-            String filePath = selectedfile.getName();
-
-            // Check if length of filepath is longer than 30 characters
-            if (filePath.length() > 30) {
-                // Trail off the beginning of the string
-                filePath = filePath.substring(filePath.length() - 30);
-                imageFilePathLabel.setText("..." + filePath);
-            } else {
-                imageFilePathLabel.setText(filePath);
-            }
-        } else {
-
+            imageFilePathLabel.setText(selectedFile.getAbsolutePath());
         }
     }
 

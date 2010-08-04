@@ -66,10 +66,10 @@ public class AtaConfigDialog extends ConfigurationDialog {
     private JCheckBox enabledCheckBox;
     private JFormattedTextField channelIndexFTextField;
     private JCheckBox masterCheckBox;
-    private JCheckBox autodetectCheckBox;
-    private JFormattedTextField cylindersFTextField;
-    private JFormattedTextField headsFTextField;
-    private JFormattedTextField sectorsFTextField;
+    private JCheckBox autoDetectCheckBox;
+    private JFormattedTextField cylindersTextField;
+    private JFormattedTextField headsTextField;
+    private JFormattedTextField sectorsTextField;
 
     private JFormattedTextField updateIntField;
 
@@ -92,11 +92,9 @@ public class AtaConfigDialog extends ConfigurationDialog {
     protected void readInParams() {
 
         emuConfig = parent.getEmuConfig();
-        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules()
-                .getAta().getHarddiskdrive().get(0);
+        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
 
-        Integer updateInt = emuConfig.getArchitecture().getModules().getAta()
-                .getUpdateintervalmicrosecs().intValue();
+        Integer updateInt = emuConfig.getArchitecture().getModules().getAta().getUpdateintervalmicrosecs().intValue();
         boolean isEnabled = hddConfig.isEnabled();
         int channelIndex = hddConfig.getChannelindex().intValue();
         boolean isMaster = hddConfig.isMaster();
@@ -104,18 +102,18 @@ public class AtaConfigDialog extends ConfigurationDialog {
         int cylinders = hddConfig.getCylinders().intValue();
         int heads = hddConfig.getHeads().intValue();
         int sectors = hddConfig.getSectorspertrack().intValue();
-        //String imageFormatPath = hddConfig.getImagefilepath();
         String imageFormatPath = Utilities.resolvePathAsString(hddConfig.getImagefilepath());
 
         this.updateIntField.setValue(updateInt);
         this.enabledCheckBox.setSelected(isEnabled);
         this.channelIndexFTextField.setValue(new Integer(channelIndex));
         this.masterCheckBox.setSelected(isMaster);
-        this.autodetectCheckBox.setSelected(autoDetect);
-        this.cylindersFTextField.setValue(new Integer(cylinders));
-        this.headsFTextField.setValue(new Integer(heads));
-        this.sectorsFTextField.setValue(new Integer(sectors));
+        this.autoDetectCheckBox.setSelected(autoDetect);
+        this.cylindersTextField.setValue(new Integer(cylinders));
+        this.headsTextField.setValue(new Integer(heads));
+        this.sectorsTextField.setValue(new Integer(sectors));
 
+        /*
         // Check if length of filepath is longer than 30 characters
         if (imageFormatPath.length() > 30) {
             // Trail off the beginning of the string
@@ -124,8 +122,11 @@ public class AtaConfigDialog extends ConfigurationDialog {
         } else {
             this.imageFilePathLabel.setText(imageFormatPath);
         }
+        */
+        
+        this.imageFilePathLabel.setText(imageFormatPath);
 
-        this.selectedfile = new File(imageFormatPath);
+        this.selectedFile = new File(imageFormatPath);
     }
 
     /**
@@ -139,7 +140,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
         JLabel enabledLabel = new JLabel("Enabled");
         JLabel channelIndexLabel = new JLabel("Channel Index");
         JLabel masterLabel = new JLabel("Master");
-        JLabel autodetectLabel = new JLabel("Auto Detect");
+        JLabel autoDetectLabel = new JLabel("Auto Detect");
         JLabel cylindersLabel = new JLabel("Cylinders");
         JLabel headsLabel = new JLabel("Heads");
         JLabel sectorsLabel = new JLabel("Sectors");
@@ -148,106 +149,61 @@ public class AtaConfigDialog extends ConfigurationDialog {
         // Create controls
         this.populateControls();
 
-        // Lay out the labels in a panel.
-        GridBagLayout gridbag = new GridBagLayout();
-        GridBagConstraints c = new GridBagConstraints();
-        mainEntryPanel = new JPanel(gridbag);
+        mainEntryPanel.setLayout(new GridLayout(0, 3, 5, 5));
 
-        // Makeup layout with contraints
-        // General layout contraints
-        c.fill = GridBagConstraints.BOTH; // Make the component fill its display
-                                          // area entirely
-        c.insets = new Insets(0, 10, 0, 10); // Defines the spaces between
-                                             // layout and display area
-
-        // Row 1
-        c.weightx = 1.0;
-        c.gridwidth = 1;
-        gridbag.setConstraints(updateIntLabel, c);
+        // row 1
         mainEntryPanel.add(updateIntLabel);
-        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
-        gridbag.setConstraints(updateIntField, c);
         mainEntryPanel.add(updateIntField);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(updateIntUnitLabel, c);
         mainEntryPanel.add(updateIntUnitLabel);
 
-        // Row 2
-        c.weightx = 0.1;
-        c.gridwidth = 1;
-        gridbag.setConstraints(enabledLabel, c);
+        // row 2
         mainEntryPanel.add(enabledLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(enabledCheckBox, c);
         mainEntryPanel.add(enabledCheckBox);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 3
-        c.gridwidth = 1;
-        gridbag.setConstraints(channelIndexLabel, c);
+        // row 3
         mainEntryPanel.add(channelIndexLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(channelIndexFTextField, c);
         mainEntryPanel.add(channelIndexFTextField);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 4
-        c.gridwidth = 1;
-        gridbag.setConstraints(masterLabel, c);
+        // row 4
         mainEntryPanel.add(masterLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(masterCheckBox, c);
         mainEntryPanel.add(masterCheckBox);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 5
-        c.gridwidth = 1;
-        gridbag.setConstraints(autodetectLabel, c);
-        mainEntryPanel.add(autodetectLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(autodetectCheckBox, c);
-        mainEntryPanel.add(autodetectCheckBox);
+        // row 5
+        mainEntryPanel.add(autoDetectLabel);
+        mainEntryPanel.add(autoDetectCheckBox);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 6
-        c.gridwidth = 1;
-        gridbag.setConstraints(cylindersLabel, c);
+        // row 6
         mainEntryPanel.add(cylindersLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(cylindersFTextField, c);
-        mainEntryPanel.add(cylindersFTextField);
+        mainEntryPanel.add(cylindersTextField);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 7
-        c.gridwidth = 1;
-        gridbag.setConstraints(headsLabel, c);
+        // row 7
         mainEntryPanel.add(headsLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(headsFTextField, c);
-        mainEntryPanel.add(headsFTextField);
+        mainEntryPanel.add(headsTextField);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 8
-        c.gridwidth = 1;
-        gridbag.setConstraints(sectorsLabel, c);
+        // row 8
         mainEntryPanel.add(sectorsLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(sectorsFTextField, c);
-        mainEntryPanel.add(sectorsFTextField);
+        mainEntryPanel.add(sectorsTextField);
+        mainEntryPanel.add(new JLabel());
 
-        // Row 9
-        c.gridwidth = 1;
-        gridbag.setConstraints(imageFileLabel, c);
+        // row 9
         mainEntryPanel.add(imageFileLabel);
-        c.gridwidth = GridBagConstraints.RELATIVE; // next-to-last in row
-        gridbag.setConstraints(imageFilePathLabel, c);
         mainEntryPanel.add(imageFilePathLabel);
-        c.gridwidth = GridBagConstraints.REMAINDER; // end row
-        gridbag.setConstraints(imageBrowseButton, c);
         mainEntryPanel.add(imageBrowseButton);
-
     }
 
     /**
      * Initalise the GUI Controls.
      */
     private void populateControls() {
-        imageFilePathLabel = new JLabel("");
-
+        imageFilePathLabel = new JTextField("");
+        imageFilePathLabel.setEditable(false);
+        
         // Formats to format and parse numbers
         updateIntField = new JFormattedTextField();
         updateIntField.setValue(new Integer(0));
@@ -259,20 +215,20 @@ public class AtaConfigDialog extends ConfigurationDialog {
         channelIndexFTextField = new JFormattedTextField();
         channelIndexFTextField.setValue(new Integer(0));
         channelIndexFTextField.setColumns(10);
-        cylindersFTextField = new JFormattedTextField();
-        cylindersFTextField.setValue(new Integer(0));
-        cylindersFTextField.setColumns(10);
-        headsFTextField = new JFormattedTextField();
-        headsFTextField.setValue(new Integer(0));
-        headsFTextField.setColumns(10);
-        sectorsFTextField = new JFormattedTextField();
-        sectorsFTextField.setValue(new Integer(0));
-        sectorsFTextField.setColumns(10);
+        cylindersTextField = new JFormattedTextField();
+        cylindersTextField.setValue(new Integer(0));
+        cylindersTextField.setColumns(10);
+        headsTextField = new JFormattedTextField();
+        headsTextField.setValue(new Integer(0));
+        headsTextField.setColumns(10);
+        sectorsTextField = new JFormattedTextField();
+        sectorsTextField.setValue(new Integer(0));
+        sectorsTextField.setColumns(10);
 
         masterCheckBox = new JCheckBox();
         masterCheckBox.setSelected(true);
 
-        autodetectCheckBox = new JCheckBox();
+        autoDetectCheckBox = new JCheckBox();
 
         imageBrowseButton = new JButton("Browse");
 
@@ -305,14 +261,14 @@ public class AtaConfigDialog extends ConfigurationDialog {
         hddConfig.setChannelindex(BigInteger
                 .valueOf((Integer) channelIndexFTextField.getValue()));
         hddConfig.setMaster(masterCheckBox.isSelected());
-        hddConfig.setAutodetectcylinders(autodetectCheckBox.isSelected());
-        hddConfig.setCylinders(BigInteger.valueOf((Integer) cylindersFTextField
+        hddConfig.setAutodetectcylinders(autoDetectCheckBox.isSelected());
+        hddConfig.setCylinders(BigInteger.valueOf((Integer) cylindersTextField
                 .getValue()));
-        hddConfig.setHeads(BigInteger.valueOf((Integer) headsFTextField
+        hddConfig.setHeads(BigInteger.valueOf((Integer) headsTextField
                 .getValue()));
         hddConfig.setSectorspertrack(BigInteger
-                .valueOf((Integer) sectorsFTextField.getValue()));
-        hddConfig.setImagefilepath(selectedfile.getAbsoluteFile().toString());
+                .valueOf((Integer) sectorsTextField.getValue()));
+        hddConfig.setImagefilepath(selectedFile.getAbsoluteFile().toString());
 
         return emuConfig;
     }
