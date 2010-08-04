@@ -46,8 +46,14 @@ import dioscuri.exception.ModuleException;
  * 
  */
 
-public abstract class ModuleMotherboard extends Module {
-    public int ioSpaceSize;
+public abstract class ModuleMotherboard extends Module implements Addressable {
+
+    protected int ioSpaceSize;
+
+    public ModuleMotherboard() {
+        super(Type.MOTHERBOARD,
+                Type.CPU, Type.MEMORY);
+    }
 
     // Methods
 
@@ -67,7 +73,7 @@ public abstract class ModuleMotherboard extends Module {
      * @param updatePeriod
      * @return boolean true if registration is successfully, false otherwise
      */
-    public abstract boolean requestTimer(ModuleDevice device, int updatePeriod,
+    public abstract boolean requestTimer(Module device, int updatePeriod,
             boolean continuous);
 
     /**
@@ -77,7 +83,7 @@ public abstract class ModuleMotherboard extends Module {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device,
+    public abstract boolean setTimerActiveState(Module device,
             boolean runState);
 
     /**
@@ -87,7 +93,7 @@ public abstract class ModuleMotherboard extends Module {
      * @param updateInterval
      * @return boolean true if reset is successfully, false otherwise
      */
-    public abstract boolean resetTimer(ModuleDevice device, int updateInterval);
+    public abstract boolean resetTimer(Module device, int updateInterval);
 
     /**
      * Set I/O address port to given device
@@ -96,72 +102,7 @@ public abstract class ModuleMotherboard extends Module {
      * @param device
      * @return boolean true if data is set successfully, false otherwise
      */
-    public abstract boolean setIOPort(int portAddress, ModuleDevice device);
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract byte getIOPortByte(int portAddress) throws ModuleException;
-
-    /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @param portAddress
-     * @param dataByte
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract void setIOPortByte(int portAddress, byte dataByte)
-            throws ModuleException;
-
-    /**
-     * Return a word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract byte[] getIOPortWord(int portAddress)
-            throws ModuleException;
-
-    /**
-     * Set a word in I/O address space at given port
-     * 
-     * @param portAddress
-     * @param dataWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException;
-
-    /**
-     * Return a double word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the double word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException;
-
-    /**
-     * Set a double word in I/O address space at given port
-     * 
-     * @param portAddress 
-     * @param dataDoubleWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
-    public abstract void setIOPortDoubleWord(int portAddress,
-            byte[] dataDoubleWord) throws ModuleException;
+    public abstract boolean setIOPort(int portAddress, Module device);
 
     /**
      * Get value of A20 address line

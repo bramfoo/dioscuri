@@ -39,7 +39,8 @@
 
 package dioscuri.module.clock;
 
-import dioscuri.module.ModuleDevice;
+import dioscuri.module.Module;
+import dioscuri.module.Updatable;
 
 /**
  * A single counter of the PIT based on the Intel 82C54 chipset.
@@ -53,7 +54,7 @@ import dioscuri.module.ModuleDevice;
  */
 public class Timer {
     // Attributes
-    protected ModuleDevice user;
+    protected Module user;
     protected int intervalLength;
     protected int currentCount;
     protected boolean active; // Timer state: active - timer is running
@@ -78,7 +79,7 @@ public class Timer {
      * @param intervalLength
      * @param type
      */
-    public Timer(ModuleDevice user, int intervalLength, boolean type) {
+    public Timer(Module user, int intervalLength, boolean type) {
         this.user = user;
         this.intervalLength = intervalLength;
         this.currentCount = intervalLength;

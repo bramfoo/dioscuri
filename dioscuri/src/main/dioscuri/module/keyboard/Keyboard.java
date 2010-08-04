@@ -87,8 +87,7 @@ import dioscuri.module.ModuleRTC;
 public class Keyboard extends ModuleKeyboard {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "pic",
-            "rtc" };
+    private String[] moduleConnections = new String[] { "motherboard", "pic", "rtc" };
     private ModuleMotherboard motherboard;
     private ModulePIC pic;
     private ModuleRTC rtc;

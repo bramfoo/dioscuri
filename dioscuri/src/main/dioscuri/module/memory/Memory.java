@@ -78,8 +78,7 @@ public class Memory extends ModuleMemory {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "video", "cpu",
-            "motherboard" };
+    private String[] moduleConnections = new String[] { "video", "cpu", "motherboard" };
     private ModuleVideo video;
     private ModuleCPU cpu;
     private ModuleMotherboard motherboard;

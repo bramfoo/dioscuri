@@ -95,7 +95,7 @@ public class Motherboard extends ModuleMotherboard {
     protected int ioSpaceSize;
 
     // I/O address space containing references to devices
-    public ModuleDevice[] ioAddressSpace; // Using signed bytes as both
+    public Module[] ioAddressSpace; // Using signed bytes as both
                                           // signed/unsigned
 
     // Logging
@@ -141,7 +141,7 @@ public class Motherboard extends ModuleMotherboard {
         clock = null;
 
         // Create new empty I/O address space
-        ioAddressSpace = new ModuleDevice[ioSpaceSize];
+        ioAddressSpace = new Module[ioSpaceSize];
 
         // Set module connections
         if (!emu.isCpu32bit())

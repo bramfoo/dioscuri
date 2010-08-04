@@ -45,9 +45,11 @@ import java.awt.event.KeyEvent;
  * Interface representing a generic hardware module.
  * 
  */
+public abstract class ModuleKeyboard extends Module implements Addressable, Updatable {
 
-public abstract class ModuleKeyboard extends ModuleDevice {
-    // Methods
+    public ModuleKeyboard() {
+        super(Type.KEYBOARD, Type.MOTHERBOARD, Type.RTC);
+    }
 
     /**
      *

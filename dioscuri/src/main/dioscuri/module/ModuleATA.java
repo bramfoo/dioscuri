@@ -39,11 +39,11 @@
 
 package dioscuri.module;
 
-public abstract class ModuleATA extends Module {
+public abstract class ModuleATA extends Module implements Addressable, Updatable {
 
     public ModuleATA() {
-        super(Module.Type.ATA, 
-                Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
+        super(Type.ATA,
+                Type.MOTHERBOARD, Type.PIC, Type.RTC);
     }
 
     @Override

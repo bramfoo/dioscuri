@@ -44,7 +44,12 @@ package dioscuri.module;
  */
 
 public abstract class ModuleClock extends Module {
-    // Methods
+
+    public ModuleClock() {
+        super(Type.CLOCK,
+                Type.MOTHERBOARD, Type.CPU);
+    }
+
 
     /**
      * Register a device to clock and assign a timer to it
@@ -54,8 +59,7 @@ public abstract class ModuleClock extends Module {
      * @param continuousOneShot
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public abstract boolean registerDevice(ModuleDevice device,
-            int intervalLength, boolean continuousOneShot);
+    public abstract boolean registerDevice(Module device, int intervalLength, boolean continuousOneShot);
 
     /**
      * Reset the timer of given device (if any)
@@ -64,7 +68,7 @@ public abstract class ModuleClock extends Module {
      * @param intervalLength
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean resetTimer(ModuleDevice device, int intervalLength);
+    public abstract boolean resetTimer(Module device, int intervalLength);
 
     /**
      * Set a timer to start/stop running
@@ -73,13 +77,11 @@ public abstract class ModuleClock extends Module {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device,
-            boolean runState);
+    public abstract boolean setTimerActiveState(Module device, boolean runState);
 
     /**
      * Triggers device's update if timer goes off
      * 
      */
     public abstract void pulse();
-
 }

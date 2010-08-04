@@ -42,12 +42,7 @@ package dioscuri.module.clock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import dioscuri.Emulator;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleClock;
-import dioscuri.module.ModuleDevice;
-import dioscuri.module.ModuleMotherboard;
+import dioscuri.module.*;
 
 /**
  * Module Clock This module implements a pulsing clock mechanism. Based on a
@@ -65,14 +60,7 @@ import dioscuri.module.ModuleMotherboard;
  * 
  */
 public class Clock extends ModuleClock {
-    // Attributes
 
-    // Relations
-    @SuppressWarnings("unused")
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "cpu" };
-    private ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
     private Timer[] timers;
 
     // Toggles
@@ -97,11 +85,8 @@ public class Clock extends ModuleClock {
     // Constructor
     /**
      * Constructor Clock
-     * 
-     * @param owner
      */
-    public Clock(Emulator owner) {
-        emu = owner;
+    public Clock() {
 
         // Initialise array for all timers
         timers = new Timer[TIMER_ARRAY_SIZE];
@@ -116,209 +101,6 @@ public class Clock extends ModuleClock {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for cpu
-        else if (mod.getType().equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (this.motherboard != null && this.cpu != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
-    public boolean reset() {
-        // Register clock to motherboard
-        if (motherboard.registerClock(this) == false) {
-            return false;
-        }
-
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
-        return true;
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Stop Clock thread
-        this.setKeepRunning(false);
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true if successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
     /**
      * Returns a dump of this module
      * 
@@ -326,6 +108,7 @@ public class Clock extends ModuleClock {
      * 
      * @see Module
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -344,9 +127,6 @@ public class Clock extends ModuleClock {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleClock Methods
-
     /**
      * Register a device to clock and assign a timer to it
      * 
@@ -355,13 +135,13 @@ public class Clock extends ModuleClock {
      * @param intervalLength
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public boolean registerDevice(ModuleDevice device, int intervalLength,
+    public boolean registerDevice(Module device, int intervalLength,
             boolean continuous) {
+        ModuleCPU cpu = (ModuleCPU)this.getModule(Module.Type.CPU);
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE) {
             // Change the interval length from useconds to instructions
-            timers[arrayIndex] = new Timer(device, intervalLength
-                    * (cpu.getIPS() / 1000000), continuous);
+            timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuous);
 
             logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                     + device.getType() + "' registered a timer with interval "
@@ -380,11 +160,13 @@ public class Clock extends ModuleClock {
      * @param updateInterval
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public boolean resetTimer(ModuleDevice device, int updateInterval) {
+    public boolean resetTimer(Module device, int updateInterval) {
         // Check if timer exists for given device
         int t = 0;
+        ModuleCPU cpu = (ModuleCPU)this.getModule(Module.Type.CPU);
+
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer reset to "
@@ -403,11 +185,11 @@ public class Clock extends ModuleClock {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public boolean setTimerActiveState(ModuleDevice device, boolean runState) {
+    public boolean setTimerActiveState(Module device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = runState;
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
@@ -431,7 +213,9 @@ public class Clock extends ModuleClock {
                 timers[t].currentCount--;
                 if (timers[t].currentCount == 0) {
                     timers[t].reset();
-                    timers[t].user.update();
+                    if(timers[t].user instanceof Updatable) {
+                        ((Updatable)timers[t].user).update();
+                    }
                 }
             }
             t++;
@@ -457,7 +241,6 @@ public class Clock extends ModuleClock {
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 keepRunning = false;
             }
@@ -520,11 +303,11 @@ public class Clock extends ModuleClock {
      * @param device
      * @param state
      */
-    public void setActiveState(ModuleDevice device, boolean state) {
+    public void setActiveState(Module device, boolean state) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = state;
             }
             t++;

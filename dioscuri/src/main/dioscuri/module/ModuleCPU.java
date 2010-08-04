@@ -44,20 +44,25 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 
 /**
  * Interface representing a generic hardware module.
- * 
  */
 
-public abstract class ModuleCPU extends Module {
-    // Methods
+public abstract class ModuleCPU extends Module implements Addressable {
+
+    public ModuleCPU() {
+        super(Type.CPU,
+                Type.MEMORY, Type.MOTHERBOARD, Type.PIC, Type.CLOCK);
+    }
 
     /**
      * Set the Instructions Per Second (ips) for this CPU.
+     *
      * @param ips the Instructions Per Second (ips) for this CPU.
      */
     public abstract void setIPS(int ips);
 
     /**
      * Get the Instructions Per Second (ips) for this CPU.
+     *
      * @return the Instructions Per Second (ips) for this CPU.
      */
     public abstract int getIPS();
@@ -65,7 +70,7 @@ public abstract class ModuleCPU extends Module {
     /**
      * Set the Instructions Per Second (ips) for this CPU. Also, define what the
      * smallest period is for sending a clockpulse (in microseconds)
-     * 
+     *
      * @param ips
      * @param lowestUpdatePeriod the lowest update period in microseconds
      */
@@ -73,56 +78,55 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Retrieve string with information about next instruction to be executed
-     * 
+     *
      * @return string containing next instruction information
-     * 
      */
     public abstract String getNextInstructionInfo();
 
     /**
      * Retrieve current number of instruction (instructions executed so far)
-     * 
+     *
      * @return long containing number of instructions
-     * 
      */
     public abstract long getCurrentInstructionNumber();
 
     /**
      * Increment current number of instruction by one
-     * 
      */
     protected abstract void incrementInstructionCounter();
 
     /**
      * Returns a dump of the current registers with their value
-     * 
+     *
      * @return String containing a register dump
      */
     public abstract String dumpRegisters();
 
     /**
      * Initialise registers
-     * 
+     *
      * @return true if initialisation is successful, false otherwise
-     * 
      */
     protected abstract boolean initRegisters();
 
     /**
      * Initialise the single and double byte opcode lookup arrays with
      * instructions corresponding to the Intel hexadecimal machinecode values.
+     *
      * @return -
      */
     protected abstract boolean initInstructionTables();
 
     /**
      * Set the boolean that starts and stops the CPU loop
+     *
      * @param status sets the isRunning boolean
      */
     protected abstract void setRunning(boolean status);
 
     /**
      * Returns the value of a named register.
+     *
      * @param registerName
      * @return int[] with value of register, null otherwise
      */
@@ -130,87 +134,27 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Sets the value of a named register to given value.
+     *
      * @param registerName
-     * @param value containing the value
+     * @param value        containing the value
      * @return true if set was successful, false otherwise
      */
-    protected abstract boolean setRegisterValue(String registerName,
-            byte[] value);
-
-    /**
-     * Returns the value (byte) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * @return byte value
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte getIOPortByte(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (byte) in I/O address space at given port address.
-     * @param portAddress
-     * @param value
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortByte(int portAddress, byte value)
-            throws ModuleException;
-
-    /**
-     * Returns the value (word) in I/O address space at given port address.
-     * @param portAddress
-     * @return byte[] value (word)
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte[] getIOPortWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (word) in I/O address space at given port address.
-     * @param portAddress
-     * @param value (word)
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortWord(int portAddress, byte[] value)
-            throws ModuleException;
-
-    /**
-     * Returns the value (double word) in I/O address space at given port
-     * address.
-     * @param portAddress
-     * @return byte[] value (double word)
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (double word) in I/O address space at given port address.
-     * @param portAddress
-     * @param value (double word)
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortDoubleWord(int portAddress, byte[] value)
-            throws ModuleException;
+    protected abstract boolean setRegisterValue(String registerName, byte[] value);
 
     /**
      * Set the interrupt request (IRQ).
+     *
      * @param value
      */
     public abstract void interruptRequest(boolean value);
 
     /**
-     *
      * @param value
      * @param origin
      */
-    public abstract void setHoldRequest(boolean value, ModuleDevice origin);
+    public abstract void setHoldRequest(boolean value, Module origin);
 
     /**
-     *
      * @param register
      * @return -
      */
@@ -218,26 +162,28 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Get CPU instruction debug.
+     *
      * @return cpuInstructionDebug.
      */
     public abstract boolean getCpuInstructionDebug();
 
     /**
      * Set the CPU instruction debug.
+     *
      * @param isDebugMode status of instructionDebug (on/off)
      */
     public abstract void setCpuInstructionDebug(boolean isDebugMode);
 
     /**
      * Returns if CPU halted abnormally or not
-     * 
+     *
      * @return boolean abnormalTermination true if abnormal, false otherwise
      */
     public abstract boolean isAbnormalTermination();
 
     /**
      * Returns if CPU halted due to full system shutdown or not
-     * 
+     *
      * @return boolean shutDown true if emulator should shutdown, false
      *         otherwise
      */

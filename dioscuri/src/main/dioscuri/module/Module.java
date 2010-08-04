@@ -54,7 +54,18 @@ public abstract class Module {
      * The type of a Module.
      */
     public static enum Type {
-        ATA, BIOS, CPU, DMA, MEMORY, MOTHERBOARD, PIC, RTC
+        ATA,
+        BIOS,
+        CLOCK,
+        CPU,
+        DMA,
+        FDC,
+        KEYBOARD,
+        MEMORY,
+        MOTHERBOARD,
+        PIC,
+        RTC,
+        VIDEO
     }
 
     private final Type type;
@@ -102,6 +113,20 @@ public abstract class Module {
      * @return string containing a dump of this module
      */
     public abstract String getDump();
+
+    /**
+     * Get a Module given a certain Module.Type.
+     *
+     * @param type the Type of the Module to be fetched.
+     * @return     a Module given a certain Module.Type.
+     */
+    public Module getModule(Module.Type type) {
+        Module module = this.connections.get(type);
+        if(module == null) {
+            throw new RuntimeException("No such Module: '"+type+"' in '"+this.getClass().getName()+"'.");
+        }
+        return module;
+    }
 
     /**
      * Returns the type of module (CPU, Memory, etc.)

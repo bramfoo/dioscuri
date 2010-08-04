@@ -39,11 +39,11 @@
 
 package dioscuri.module;
 
-public abstract class ModuleDMA extends Module {
+public abstract class ModuleDMA extends Module implements Addressable {
 
     public ModuleDMA() {
-        super(Module.Type.DMA,
-                Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
+        super(Type.DMA,
+                Type.MOTHERBOARD, Type.CPU, Type.MEMORY);
     }
 
     @Override
