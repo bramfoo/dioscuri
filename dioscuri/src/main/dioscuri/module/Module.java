@@ -63,8 +63,14 @@ public abstract class Module {
         KEYBOARD,
         MEMORY,
         MOTHERBOARD,
+        MOUSE,
+        PARALLEL_PORT,
+        PCI,
         PIC,
+        PIT,
         RTC,
+        SCREEN,
+        SERIAL_PORT,
         VIDEO
     }
 

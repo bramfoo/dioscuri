@@ -39,13 +39,12 @@
 
 package dioscuri.module;
 
-/**
- * Interface representing a generic hardware module.
- * 
- */
+public abstract class ModulePIC extends Module implements Addressable {
 
-public abstract class ModulePIC extends ModuleDevice {
-    // Methods
+    public ModulePIC() {
+        super(Type.PIC,
+                Type.CPU, Type.MOTHERBOARD);
+    }
 
     /**
      * Returns an IRQ number.

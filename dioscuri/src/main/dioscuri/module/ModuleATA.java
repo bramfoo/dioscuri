@@ -45,9 +45,4 @@ public abstract class ModuleATA extends Module implements Addressable, Updatable
         super(Type.ATA,
                 Type.MOTHERBOARD, Type.PIC, Type.RTC);
     }
-
-    @Override
-    public String getDump() {
-        return "ModuleATA dump";
-    }
 }

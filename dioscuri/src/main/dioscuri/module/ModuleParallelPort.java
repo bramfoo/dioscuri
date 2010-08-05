@@ -39,12 +39,10 @@
 
 package dioscuri.module;
 
-/**
- * Interface representing a generic hardware module.
- * 
- */
+public abstract class ModuleParallelPort extends Module implements Addressable {
 
-public abstract class ModuleParallelPort extends ModuleDevice {
-    // Methods
-
+    public ModuleParallelPort() {
+        super(Type.PARALLEL_PORT,
+                Type.MOTHERBOARD);
+    }
 }

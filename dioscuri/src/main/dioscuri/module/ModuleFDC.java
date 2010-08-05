@@ -46,7 +46,7 @@ import java.io.File;
  * TODO: this template of moduleFDC could also be made more generic for any removable storage device
  */
 
-public abstract class ModuleFDC extends Module {
+public abstract class ModuleFDC extends Module implements Addressable, Updatable {
 
     public ModuleFDC() {
         super(Type.FDC,

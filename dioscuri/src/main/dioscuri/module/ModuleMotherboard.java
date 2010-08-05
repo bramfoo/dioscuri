@@ -50,6 +50,9 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
 
     protected int ioSpaceSize;
 
+    /**
+     *
+     */
     public ModuleMotherboard() {
         super(Type.MOTHERBOARD,
                 Type.CPU, Type.MEMORY);
@@ -60,17 +63,17 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     /**
      * Registers a clock to motherboard
      * 
-     * @param clock
-     * @return boolean true if registration is successfully, false otherwise
+     * @param clock -
+     * @return      true if registration is successfully, false otherwise
      */
     public abstract boolean registerClock(ModuleClock clock);
 
     /**
      * Requests a timer for given device at clock
      * 
-     * @param device 
-     * @param continuous
-     * @param updatePeriod
+     * @param device       -
+     * @param continuous   -
+     * @param updatePeriod -
      * @return boolean true if registration is successfully, false otherwise
      */
     public abstract boolean requestTimer(Module device, int updatePeriod,
@@ -79,8 +82,8 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     /**
      * Set a timer to start/stop running
      * 
-     * @param device
-     * @param runState
+     * @param device   -
+     * @param runState -
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean setTimerActiveState(Module device,
@@ -89,8 +92,8 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     /**
      * Resets the timer of device (if any)
      * 
-     * @param device
-     * @param updateInterval
+     * @param device         -
+     * @param updateInterval -
      * @return boolean true if reset is successfully, false otherwise
      */
     public abstract boolean resetTimer(Module device, int updateInterval);
@@ -98,8 +101,8 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     /**
      * Set I/O address port to given device
      * 
-     * @param portAddress 
-     * @param device
+     * @param portAddress -
+     * @param device      -
      * @return boolean true if data is set successfully, false otherwise
      */
     public abstract boolean setIOPort(int portAddress, Module device);
@@ -114,8 +117,7 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     /**
      * Set value of A20 address line
      * 
-     * @param a20
-     *            true to set, false to clear
+     * @param a20 true to set, false to clear
      */
     public abstract void setA20(boolean a20);
 

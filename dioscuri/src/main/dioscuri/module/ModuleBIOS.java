@@ -44,9 +44,4 @@ public abstract class ModuleBIOS extends Module {
     public ModuleBIOS() {
         super(Module.Type.BIOS);
     }
-
-    @Override
-    public String getDump() {
-        return "ModuleBIOS dump";
-    }
 }

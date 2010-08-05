@@ -44,8 +44,14 @@ package dioscuri.module;
  * 
  */
 
-public abstract class ModuleVideo extends ModuleDevice {
-    // Methods
+public abstract class ModuleVideo extends Module implements Addressable, Updatable {
+
+    public ModuleVideo() {
+        super(Type.VIDEO,
+                Type.MOTHERBOARD, Type.CPU);
+    }
+
+
     /**
      * Video read mode implementations
      * @param addr 

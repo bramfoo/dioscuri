@@ -44,8 +44,12 @@ package dioscuri.module;
  * 
  */
 
-public abstract class ModulePIT extends ModuleDevice {
-    // Methods
+public abstract class ModulePIT extends Module implements Addressable, Updatable {
+
+    public ModulePIT() {
+        super(Type.PIT,
+                Type.MOTHERBOARD, Type.PIC);
+    }
 
     /**
      * Retrieves the current clockrate of this clock in milliseconds
@@ -61,5 +65,4 @@ public abstract class ModulePIT extends ModuleDevice {
      * @param long milliseconds, the time between two consequtive clock pulses
      */
     // public abstract void setClockRate(long milliseconds);
-
 }

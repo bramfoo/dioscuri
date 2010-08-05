@@ -53,6 +53,7 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
+import dioscuri.module.ModulePCI;
 
 /**
  * An implementation of a PCI controller module.
@@ -84,7 +85,7 @@ import dioscuri.module.ModuleMotherboard;
 
 // TODO: This module is just a stub and needs further implementation
 @SuppressWarnings("unused")
-public class PCI extends ModuleDevice {
+public class PCI extends ModulePCI {
 
     // Attributes
 

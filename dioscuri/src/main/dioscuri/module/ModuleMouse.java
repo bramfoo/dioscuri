@@ -47,16 +47,22 @@ import java.awt.event.MouseEvent;
  */
 
 public abstract class ModuleMouse extends Module {
-    // Methods
+
+    public ModuleMouse() {
+        super(Type.MOUSE,
+                Type.KEYBOARD, Type.SERIAL_PORT);
+    }
+
+
     /**
      *
-     * @param status
+     * @param status -
      */
     public abstract void setMouseEnabled(boolean status);
 
     /**
      *
-     * @param type
+     * @param type -
      */
     public abstract void setMouseType(String type);
 
@@ -76,19 +82,19 @@ public abstract class ModuleMouse extends Module {
 
     /**
      *
-     * @param forceEnqueue
+     * @param forceEnqueue -
      */
     public abstract void storeBufferData(boolean forceEnqueue);
 
     /**
      *
-     * @param value
+     * @param value -
      */
     public abstract void controlMouse(byte value);
 
     /**
      *
-     * @param mouseEvent
+     * @param mouseEvent -
      */
     public abstract void mouseMotion(MouseEvent mouseEvent);
 }

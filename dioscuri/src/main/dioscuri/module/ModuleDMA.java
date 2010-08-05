@@ -45,9 +45,4 @@ public abstract class ModuleDMA extends Module implements Addressable {
         super(Type.DMA,
                 Type.MOTHERBOARD, Type.CPU, Type.MEMORY);
     }
-
-    @Override
-    public String getDump() {
-        return "ModuleDMA dump";
-    }
 }

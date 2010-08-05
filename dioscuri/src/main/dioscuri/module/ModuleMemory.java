@@ -48,7 +48,6 @@ import dioscuri.exception.ModuleException;
 
 public abstract class ModuleMemory extends Module {
 
-    // "video", "cpu", "motherboard"
     public ModuleMemory() {
         super(Type.MEMORY,
                 Type.VIDEO, Type.CPU, Type.MOTHERBOARD);
