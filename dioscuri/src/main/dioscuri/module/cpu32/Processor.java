@@ -37,7 +37,6 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
 import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModulePIC;
 
 /**
@@ -46,6 +45,7 @@ import dioscuri.module.ModulePIC;
  * @author Bart Kiers
  */
 public class Processor extends ModuleCPU implements HardwareComponent {
+
     public static final int STATE_VERSION = 1;
     public static final int STATE_MINOR_VERSION = 0;
     public static final int CLOCK_SPEED = 50; // CPU "Clock Speed" in MHz
@@ -2757,7 +2757,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         overflowMethod = method;
     }
 
-    @SuppressWarnings("unused")
+
     private int carryOne, carryTwo, carryThree;
     private long carryLong;
     private boolean carryCalculated;
@@ -2913,7 +2913,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     private int zeroOne;
     private boolean zeroCalculated;
-    @SuppressWarnings("unused")
+
     private int zeroMethod;
 
     /**
@@ -2949,7 +2949,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     private int signOne;
     private boolean signCalculated;
-    @SuppressWarnings("unused")
+
     private int signMethod;
 
     /**
@@ -3028,21 +3028,21 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    protected byte getIOPortByte(int portAddress) throws ModuleException,
+    public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    protected byte[] getIOPortDoubleWord(int portAddress)
+    public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected byte[] getIOPortWord(int portAddress) throws ModuleException,
+    public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return null;
@@ -3112,87 +3112,51 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     @Override
     public boolean isAbnormalTermination() {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public void setCpuInstructionDebug(boolean isDebugMode) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
-    public void setHoldRequest(boolean value, ModuleDevice origin) {
-        // TODO Auto-generated method stub
-
+    public void setHoldRequest(boolean value, Module origin) {
     }
 
     @Override
-    protected void setIOPortByte(int portAddress, byte value)
+    public void setIOPortByte(int portAddress, byte value)
             throws ModuleException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
-    protected void setIOPortDoubleWord(int portAddress, byte[] value)
+    public void setIOPortDoubleWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
-    protected void setIOPortWord(int portAddress, byte[] value)
+    public void setIOPortWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setIPS(int ips) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     protected boolean setRegisterValue(String registerName, byte[] value) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     protected void setRunning(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public String[] getConnection() {
-        return new String[] {};
-    }
-
-    @Override
-    public byte[] getData(Module module) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean getDebugMode() {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     @Override
     public String getDump() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -3200,66 +3164,21 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return 1;
     }
 
-    public String getName() {
-        return "8086 compatible CPU";
-    }
-
-    @Override
-    public String getType() {
-        return "cpu";
-    }
-
     @Override
     public boolean isConnected() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
-    public boolean isObserved() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setData(byte[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setData(String[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setObserved(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void start() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void stop() {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public boolean isShutdown() {
-        // TODO Auto-generated method stub
         return false;
+    }
+
+    @Override
+    public void start() {
     }
 }

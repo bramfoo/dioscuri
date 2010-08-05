@@ -31,19 +31,19 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.ModuleUnknownPortException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
-import dioscuri.module.ModuleDevice;
 
 /**
  *
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
-public class DMAController extends ModuleDevice implements IOPortCapable,
+
+public class DMAController extends Module implements IOPortCapable,
         HardwareComponent {
+
     private static final int pagePortList0 = 0x1;
     private static final int pagePortList1 = 0x2;
     private static final int pagePortList2 = 0x3;
@@ -135,6 +135,9 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
      * @param zeroth
      */
     public DMAController(boolean highPageEnable, boolean zeroth) {
+
+        super(Type.DMA_CONTROLLER);
+
         ioportRegistered = false;
         this.dShift = zeroth ? 0 : 1;
         this.iobase = zeroth ? 0x00 : 0xc0;
@@ -720,14 +723,14 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadByte(portAddress);
         return (byte) result;
     }
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadWord(portAddress);
         return new byte[] { ((byte) ((result >> 8) & 0xFF)),
@@ -735,7 +738,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadLong(portAddress);
         return new byte[] { ((byte) ((result >> 24) & 0xFF)),
@@ -744,13 +747,13 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
         // Redirect to native handler
         ioPortWriteByte(portAddress, data);
     }
 
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataWord[0]) & 0xFF) << 8)
                 + (((int) dataWord[1]) & 0xFF));
@@ -758,7 +761,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataDoubleWord[3]) & 0xFF) << 24)
                 + ((((int) dataDoubleWord[2]) & 0xFF) << 16)
@@ -771,129 +774,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     @Override
-    public int getUpdateInterval() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return 0;
-    }
-
-    @Override
-    public void setUpdateInterval(int interval) {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public void update() {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public String[] getConnection() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public byte[] getData(Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public boolean getDebugMode() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
     public String getDump() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public int getID() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return 0;
-    }
-
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public String getType() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public boolean isConnected() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public boolean isObserved() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public boolean setConnection(Module mod) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public boolean setData(byte[] data, Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public boolean setData(String[] data, Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public void setObserved(boolean status) {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public void start() {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public void stop() {
-        // TODO Auto-generated method stub
-        notImplemented();
+        return "DMAController dump";
     }
 }

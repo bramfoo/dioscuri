@@ -52,7 +52,7 @@ public abstract class AttributeInfo {
         int index = in.readUnsignedShort();
         int tag = pool[index].getTag();
 
-        @SuppressWarnings("unused")
+
         AttributeInfo temp;
         if (tag == ConstantPoolInfo.UTF8) {
             String s = ((ConstantPoolInfo.Utf8Info) pool[index]).getBytes();

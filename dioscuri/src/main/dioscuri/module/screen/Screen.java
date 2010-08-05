@@ -66,16 +66,14 @@ import java.util.logging.Logger;
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      screen.resolutionRange : unlimited screen.colorDepth : 256
  */
-@SuppressWarnings("unused")
+
 public class Screen extends ModuleScreen {
 
     // Attributes
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "video" };
     private ScreenPanel screenPanel;
-    protected ModuleVideo video;
 
     // Toggles
     private boolean isObserved;
@@ -145,13 +143,6 @@ public class Screen extends ModuleScreen {
     // Logging
     private static final Logger logger = Logger.getLogger(Screen.class.getName());
 
-    // Constants
-
-    // Module specifics
-    private final static int MODULE_ID = 1;
-    private final static String MODULE_TYPE = "screen";
-    private final static String MODULE_NAME = "Compatible CRT/LCD computer screen";
-
     // Raster, ColourModel and BufferedImage properties
     protected static final int RED = 0;
     protected static final int GREEN = 1;
@@ -195,83 +186,7 @@ public class Screen extends ModuleScreen {
         // Create creen canvas
         screenPanel = new ScreenPanel();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " . Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for video
-        if (mod.getType().equalsIgnoreCase("video")) {
-            this.video = (ModuleVideo) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check connections
-        if (video != null) {
-            return true;
-        }
-        return false;
+        logger.log(Level.INFO, "[" + super.getType() + "] Module created successfully.");
     }
 
     /**
@@ -284,98 +199,8 @@ public class Screen extends ModuleScreen {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Sets given String[] data for this module
-     * 
-     * @param sender
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
     }
 
     /**
@@ -449,7 +274,7 @@ public class Screen extends ModuleScreen {
         screenPanel.setSize(width, height);
         screenPanel.setBackground(Color.black);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Size of screen has been set.");
     }
 
@@ -467,7 +292,7 @@ public class Screen extends ModuleScreen {
      */
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
             int newFontHeight) {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " call to updateScreenSize() w/ fonts");
 
         // Check if the font size needs updating
@@ -530,7 +355,7 @@ public class Screen extends ModuleScreen {
         palette[BLUE][indx] = (byte) blue;
         this.updatePalette();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Palette[" + indx
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " Palette[" + indx
                 + "] changed to: {" + (byte) red + "," + (byte) green + ","
                 + (byte) blue + "}");
 
@@ -554,7 +379,7 @@ public class Screen extends ModuleScreen {
         codePageUpdateIndex[index >> 5] = true;
         codePageReqsUpdate = true;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " codePage[" + index
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " codePage[" + index
                 + "] = " + data);
     }
 
@@ -564,6 +389,9 @@ public class Screen extends ModuleScreen {
      * @param start
      */
     public void updateCodePage(int start) {
+
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
         System.arraycopy(codePage, 0, video.getVideoBuffer(), start, 0x2000);
@@ -573,12 +401,15 @@ public class Screen extends ModuleScreen {
         codePageReqsUpdate = true;
     }
 
-    // BK TODO fix the RasterFormatException properly
+    // TODO BK fix the RasterFormatException properly
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
         logger.log(Level.INFO, String.format(
                 "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 
                 oldText, newText, cursorXPos, cursorYPos, Arrays.toString(textModeAttribs), numberRows));
+
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+        
         try {
             int oldLine, newLine, textBase;
             int currentChar; // 'Current character to display' index into font table
@@ -989,7 +820,7 @@ public class Screen extends ModuleScreen {
             rastr.setPixels(0, 0, fntWidth, fntHeight, pxels);
 
             if (fontImages[i] == null) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " Can't create  font [" + i + "]");
             }
         }

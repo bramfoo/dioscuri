@@ -45,7 +45,7 @@ package dioscuri.module.cpu;
  * It is an alias for XCHG AX, AX<BR>
  * Flags modified: none
  */
-@SuppressWarnings("unused")
+
 public class Instruction_NOP implements Instruction {
 
     // Attributes

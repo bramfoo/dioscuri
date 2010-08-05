@@ -48,7 +48,7 @@ import dioscuri.exception.ModuleException;
 
 public abstract class ModuleMotherboard extends Module implements Addressable {
 
-    protected int ioSpaceSize;
+    protected int ioSpaceSize = -1;
 
     /**
      *
@@ -58,7 +58,9 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
                 Type.CPU, Type.MEMORY);
     }
 
-    // Methods
+    public int getIOSpaceSize() {
+        return this.ioSpaceSize;
+    }
 
     /**
      * Registers a clock to motherboard

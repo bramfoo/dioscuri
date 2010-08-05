@@ -46,7 +46,7 @@ import dioscuri.exception.CPUInstructionException;
  * Segment selector GS. Override the segment selector for the next opcode.<BR>
  * Flags modified: none
  */
-@SuppressWarnings("unused")
+
 public class Instruction_SEG_GS implements Instruction {
 
     // Attributes

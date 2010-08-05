@@ -51,9 +51,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
-import dioscuri.config.ModuleType;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.ModuleUnknownPortException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.exception.StorageDeviceException;
 import dioscuri.module.Module;
@@ -82,24 +81,7 @@ import dioscuri.module.ModuleRTC;
  */
 public class ATA extends ModuleATA {
 
-    // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "ata";
-
-    // Attributes
-
-    // Relations
     private Emulator emu;
-    // BRAM: Removed CPU connection, as it was unnecessary
-    private ModuleType[] moduleConnections = new ModuleType[] {
-            ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC };// ,
-                                                                     // ModuleType.CPU};
-
-    private ModuleMotherboard motherboard;
-    private ModuleRTC rtc;
-    private ModulePIC pic;
-    // private ModuleCPU cpu;
 
     // Toggles
     private boolean isObserved;
@@ -115,22 +97,20 @@ public class ATA extends ModuleATA {
     private ATAChannel[] channels = new ATAChannel[ATAConstants.MAX_NUMBER_IDE_CHANNELS];
     private int curChannelIndex;
 
-    // TODO: confirm use of these fields
     private int bulkIOHostAddr = 0;
     private int bulkIOQuantumsRequested = 0;
     private int bulkIOQuantumsTransferred = 0;
 
     private int cdromCount;
 
-    // Constructors
-
     /**
      * Class constructor
-     * @param owner
      */
-    public ATA(Emulator owner) {
-        emu = owner;
+    public ATA(Emulator emu) {
+        super();
 
+        this.emu = emu;
+        
         // Initialise module variables
         isObserved = false;
         debugMode = false;
@@ -148,116 +128,8 @@ public class ATA extends ModuleATA {
 
         curChannelIndex = 0;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module created successfully.");
 
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module.
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-
-        String[] connectingModString = new String[moduleConnections.length];
-        for (int i = 0; i < moduleConnections.length; i++) {
-            connectingModString[i] = moduleConnections[i].toString();
-        }
-
-        // Return all required connections;
-        return connectingModString;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase(ModuleType.MOTHERBOARD.toString())) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType().equalsIgnoreCase(ModuleType.RTC.toString())) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase(ModuleType.PIC.toString())) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for cpu
-        // BRAM: Removed CPU connection, as it was unnecessary
-        // else if (mod.getType().equalsIgnoreCase(ModuleType.CPU.toString()))
-        // {
-        // this.cpu = (ModuleCPU) mod;
-        // return true;
-        // }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        // BRAM: Removed CPU connection, as it was unnecessary
-        if (this.motherboard != null && this.pic != null && this.rtc != null)// &&
-                                                                             // this.cpu
-                                                                             // !=
-                                                                             // null)
-        {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
     }
 
     /**
@@ -268,13 +140,13 @@ public class ATA extends ModuleATA {
      */
     public boolean reset() {
 
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+
         // Request a timer
-        if (motherboard.requestTimer(this, updateInterval, false) == true) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
-                    + " Timer requested successfully.");
+        if (motherboard.requestTimer(this, updateInterval, false)) {
+            logger.log(Level.CONFIG, "[" + super.getType() + "] Timer requested successfully.");
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                    + " Failed to request a timer.");
+            logger.log(Level.WARNING, "[" + super.getType() + "] Failed to request a timer.");
         }
 
         /*
@@ -298,117 +170,15 @@ public class ATA extends ModuleATA {
 
         curChannelIndex = 0;
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
-                + "  Module has been reset.");
+        logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
         return true;
 
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                + "  get data TO BE IMPLEMENTED");
-        return null;
-    }
-
-    /**
-     * Set data for this module.
-     * 
-     * @param data
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                + " set data TO BE IMPLEMENTED");
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module.
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                + "  set data TO BE IMPLEMENTED");
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module.
-     * 
-     * @return string the dumop string
-     * @see Module
-     */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -448,15 +218,19 @@ public class ATA extends ModuleATA {
 
         return dump;
     }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int getUpdateInterval() {
+        return updateInterval;
+    }
 
     /**
-     * Defines the interval between subsequent updates.
-     * 
-     * @param interval
+     * {@inheritDoc}
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -464,13 +238,16 @@ public class ATA extends ModuleATA {
         } else {
             updateInterval = 100000;
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
     /**
-     * Update device
+     * {@inheritDoc}
      */
+    @Override
     public void update() {
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
         for (int channelIndex = 0; channelIndex < ATAConstants.MAX_NUMBER_IDE_CHANNELS; channelIndex++) {
 
             for (int deviceIndex = 0; deviceIndex < 2; deviceIndex++) {
@@ -502,18 +279,12 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a byte from I/O address space at given port.
-     * 
-     * @param originalPortAddress
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * {@inheritDoc}
      */
+    @Override
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (byte) to port "
                 + Integer.toHexString(originalPortAddress).toUpperCase()
                 + " received");
@@ -522,19 +293,12 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a byte in I/O address space at given port TODO: BOCHS code writes to
-     * both drives of a channel - this seems wrong but kept in this code to adi
-     * debugging and comparison with BOCHS
-     * 
-     * @param originalAddress 
-     * @param data
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
      */
+    @Override
     public void setIOPortByte(int originalAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            throws ModuleException, ModuleUnknownPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  OUT command (byte: "
                 + Integer.toHexString(data).toUpperCase() + ") to port "
                 + Integer.toHexString(originalAddress).toUpperCase()
@@ -545,18 +309,12 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * {@inheritDoc}
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
 
@@ -564,18 +322,13 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
-     * @param portAddress 
-     * @param dataWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
         logger
-                .log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (word) to port "
                         + Integer.toHexString(portAddress).toUpperCase()
                         + " received.");
@@ -584,18 +337,12 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a double word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the double word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * {@inheritDoc}
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            ModuleUnknownPortException, ModuleWriteOnlyPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
 
@@ -603,18 +350,13 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a double word in I/O address space at given port
-     * 
-     * @param portAddress 
-     * @param dataDoubleWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
         logger
-                .log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (double word) to port "
                         + Integer.toHexString(portAddress).toUpperCase()
                         + " received.");
@@ -627,18 +369,9 @@ public class ATA extends ModuleATA {
     // ModuleATA Methods
 
     /**
-     * Initiate configuration of the disk drive.
-     * 
-     * @param theIdeChannel
-     * @param isMaster
-     * @param isHardDisk
-     * @param isWriteProtected
-     * @param numCylinders
-     * @param numHeads
-     * @param numSectorsPerTrack
-     * @param translationType
-     * @param imageFilePath
+     * {@inheritDoc}
      */
+    @Override
     public void initConfig(int theIdeChannel, boolean isMaster,
             boolean isHardDisk, boolean isWriteProtected, int numCylinders,
             int numHeads, int numSectorsPerTrack,
@@ -670,7 +403,7 @@ public class ATA extends ModuleATA {
         // Do checks
 
         if ((numHeads == 0) || (numSectorsPerTrack == 0)) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " cannot have zero heads, or sectors/track");
 
         }
@@ -678,7 +411,7 @@ public class ATA extends ModuleATA {
         if (numCylinders > 0) {
             if (drive.getDiskImageSize() != drive.getDiskCapacity()) {
 
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " Image size doesn't match specified geometry.");
             }
         }
@@ -695,19 +428,20 @@ public class ATA extends ModuleATA {
 
             // BX_INFO(("ata%d-%d: autodetect geometry: CHS=%d/%d/%d", channel,
             // device, cyl, heads, spt));
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Autodetect geometry: Number Cylinders set to "
                     + numCylinders);
         }
     }
 
     /**
-     * Set CMOS values
-     * 
-     * @param bootDrives
-     * @param floppySigCheckDisabled
+     * {@inheritDoc}
      */
+    @Override
     public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
+
+        ModuleRTC rtc = (ModuleRTC)super.getModule(Type.RTC);
+
         // generate CMOS values for hard drive
 
         // CMOS 12h - IBM - HARD DISK DATA
@@ -859,7 +593,7 @@ public class ATA extends ModuleATA {
                             translationType = ATATranslationType.LBA;
                         }
 
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " Translation on IDE drive, channel = "
                                 + channelIndex + " , drive index " + driveIndex
                                 + " , set to " + translationType.toString());
@@ -944,23 +678,19 @@ public class ATA extends ModuleATA {
         // BX_INFO(("Floppy boot signature check is %sabled",
         // bx_options.OfloppySigCheck->get() ? "dis" : "en"));
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Floppy boot signature check is set to "
                 + floppySigCheckDisabled);
 
     }
 
     /**
-     * Gets the current channel index.
-     * 
-     * @return int the current channel index
+     * {@inheritDoc}
      */
+    @Override
     public int getCurrentChannelIndex() {
         return this.curChannelIndex;
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Get the selected channel
@@ -1003,13 +733,13 @@ public class ATA extends ModuleATA {
             File imageFile = new File(imageFilePath);
             drive.loadImage(imageFile);
 
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Disk \""
+            logger.log(Level.WARNING, "[" + super.getType() + "]" + "  Disk \""
                     + imageFile.getName() + "\" is successfully loaded.");
             return true;
 
         } catch (StorageDeviceException sde) {
 
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + "  Error: "
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  Error: "
                     + sde.getMessage());
             return false;
         }
@@ -1044,14 +774,14 @@ public class ATA extends ModuleATA {
      * @return byte containing the data at given I/O address port
      * 
      * @throws ModuleException
-     * @throws ModuleUnknownPort
+     * @throws dioscuri.exception.ModuleUnknownPortException
      * @throws ModuleWriteOnlyPortException
      */
     private byte[] read(int originalPortAddress, int ioLength)
-            throws ModuleException, ModuleUnknownPort,
+            throws ModuleException, ModuleUnknownPortException,
             ModuleWriteOnlyPortException {
 
-        // logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" +
+        // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Read ide at instruction " + cpu.getCurrentInstructionNumber());
 
         byte[] value = new byte[ioLength];
@@ -1085,7 +815,7 @@ public class ATA extends ModuleATA {
                     || (originalPortAddress > 0x03f7)) {
 
                 logger.log(Level.WARNING, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "  read: unable to find ATA channel, ioport=0x%04x "
                         + Integer.toHexString(originalPortAddress)
@@ -1128,7 +858,7 @@ public class ATA extends ModuleATA {
                 value[0] = (byte) channels[this.curChannelIndex]
                         .getSelectedDrive().getSectorCount();
 
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Read sector count returned value " + value[0]);
 
             } else {
@@ -1197,11 +927,11 @@ public class ATA extends ModuleATA {
                 intlbaMode = 1;
             }
 
-            value[0] = (byte) ((1 << 7) | (intlbaMode << 6)
-                    | (1 << 5)
-                    | // 01b = 512 sector size
-                    (channels[this.curChannelIndex].getSelectedDriveIndex() << 4) | (channels[this.curChannelIndex]
-                    .getSelectedDrive().getCurrentHead() << 0));
+            value[0] = (byte) ((1 << 7)                                           |
+                    (intlbaMode << 6)                                             |
+                    (1 << 5)                                                      | // 01b = 512 sector size
+                    (channels[this.curChannelIndex].getSelectedDriveIndex() << 4) |
+                    (channels[this.curChannelIndex].getSelectedDrive().getCurrentHead()));
 
             break;
 
@@ -1255,7 +985,7 @@ public class ATA extends ModuleATA {
             }
 
             if (channelPort == 0x07) {
-
+                ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -1274,13 +1004,13 @@ public class ATA extends ModuleATA {
             break;
         default:
             // Return dummy value 0xFF
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + "  Port [0x"
+            logger.log(Level.WARNING, "[" + super.getType() + "]" + "  Port [0x"
                     + Integer.toHexString(originalPortAddress).toUpperCase()
                     + "] returned default value 0xFF");
             return value;
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  Read from Port [0x"
                 + Integer.toHexString(originalPortAddress).toUpperCase()
                 + "] returned value " + value[0]);
@@ -1308,7 +1038,7 @@ public class ATA extends ModuleATA {
         if (channels[this.curChannelIndex].getSelectedController()
                 .getBufferIndex() >= channels[this.curChannelIndex]
                 .getSelectedController().getBufferSize()) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  IO read buffer_index >= 512, for address "
                     + originalAddress + ".");
             return value;
@@ -1325,11 +1055,9 @@ public class ATA extends ModuleATA {
                     / ioLength;
 
             if (quantumsMax == 0) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  IO read not enough space for read for address "
                         + originalAddress + ".");
-                ;
-
             }
 
             this.bulkIOQuantumsTransferred = this.bulkIOQuantumsRequested;
@@ -1381,7 +1109,7 @@ public class ATA extends ModuleATA {
                         + (((long) (value[3]) & 0xFF) << 24);
 
                 logger.log(Level.CONFIG, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "  IO read returns values for index "
                         + channels[this.curChannelIndex]
@@ -1463,12 +1191,12 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return true if successful / false if write failed
      * @throws ModuleException
-     * @throws ModuleUnknownPort
+     * @throws dioscuri.exception.ModuleUnknownPortException
      */
     private boolean write(int originalAddress, byte[] data, int ioLength)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, ModuleUnknownPortException {
 
-        // logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" +
+        // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Write ide at instruction " + cpu.getCurrentInstructionNumber());
 
         int channelIndex = ATAConstants.MAX_NUMBER_IDE_CHANNELS;
@@ -1504,7 +1232,7 @@ public class ATA extends ModuleATA {
         if (channelIndex == ATAConstants.MAX_NUMBER_IDE_CHANNELS) {
 
             if (originalAddress != 0x03f6) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  write: unable to find ATA channel, ioport "
                         + originalAddress + ".");
                 // BX_PANIC(("write: unable to find ATA channel, ioport=0x%04x",
@@ -1599,7 +1327,7 @@ public class ATA extends ModuleATA {
 
         default:
             // Return dummy value 0xFF
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  Returned default value 0xFF");
             return false;
         }
@@ -1619,7 +1347,7 @@ public class ATA extends ModuleATA {
             int ioLength) {
 
         if (getSelectedDriveController().getBufferIndex() >= 512) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  IO write to address " + originalAddress
                     + " buffer index >= 512.");
         }
@@ -1633,7 +1361,7 @@ public class ATA extends ModuleATA {
                     / ioLength;
 
             if (quantumsMax == 0) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  IO write to address " + originalAddress
                         + " not enough space for write.");
             }
@@ -1758,7 +1486,7 @@ public class ATA extends ModuleATA {
 
         if (getSelectedDriveController().getStatus().getDrq() == 0) {
 
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + "  IO read("
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  IO read("
                     + originalAddress + ") with drq == 0: last command was "
                     + command.toString() + ", address " + command.getAddress()
                     + " IO Length " + ioLength);
@@ -1767,7 +1495,7 @@ public class ATA extends ModuleATA {
         }
 
         if (command != null) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + "  IO read("
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  IO read("
                     + originalAddress + ") current command is "
                     + command.toString() + ",address " + command.getAddress()
                     + " IO Length " + ioLength);
@@ -1775,7 +1503,7 @@ public class ATA extends ModuleATA {
 
         // Check if the command is recognised and supported
         if (command == null) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + "  read cmd "
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  read cmd "
                     + currentCommand + " not recognised");
 
             // value = (byte)0xFF;
@@ -1829,7 +1557,7 @@ public class ATA extends ModuleATA {
                 value[1] = channels[this.curChannelIndex]
                         .getSelectedController().getBuffer()[index];
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  IO identify drive for index " + (index - 1)
                         + " returns values " + value[0] + " and " + value[1]);
                 index++;
@@ -1868,7 +1596,7 @@ public class ATA extends ModuleATA {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + "  Read IO Packet A0 - index is greater than the bufferr size.");
                 }
@@ -1878,7 +1606,7 @@ public class ATA extends ModuleATA {
                 case 0xa8: // read (12)
                 case 0xbe: // read cd
 
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + "  Read with no LOWLEVEL_CDROM.");
                     break;
 
@@ -1987,7 +1715,7 @@ public class ATA extends ModuleATA {
             }
 
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  IO read current command " + command.getAddress()
                     + " (" + command.getName() + ") not supported.");
         }
@@ -2004,7 +1732,7 @@ public class ATA extends ModuleATA {
      *            the current data value
      */
     private void abortCommand(int channel, int value) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + "  aborting: channel " + channel + "data " + value + ".");
 
         getSelectedDriveController().setCurrentCommand(0);
@@ -2028,23 +1756,23 @@ public class ATA extends ModuleATA {
      */
     private void raiseInterrupt(int channel) {
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  raise interrupt called, disable_irq = "
                 + getSelectedDriveController().isDisableIrq() + ".");
 
         if (!getSelectedDriveController().isDisableIrq()) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  raising interrupt.");
 
         } else {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  not raising interrupt.");
         }
 
         if (!getSelectedDriveController().isDisableIrq()) {
             int irq = getSelectedChannel().getIrqNumber();
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Raising interrupt " + irq + " on channel " + channel
                     + ".");
 
@@ -2052,7 +1780,7 @@ public class ATA extends ModuleATA {
             if (ATAConstants.SUPPORTS_PCI) {
                 // DEV_ide_bmdma_set_irq(channel); // TODO:
             }
-
+            ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
             pic.setIRQ(irq);
 
         } else {
@@ -2068,6 +1796,7 @@ public class ATA extends ModuleATA {
      * @param data
      */
     private void setPortIdeDriveHead(int originalAddress, int[] data) {
+
         // hard disk drive and head register 0x1f6 (original byte value 0x06)
         // b7 Extended data field for ECC
         // b6/b5: Used to be sector size. 00=256,01=512,10=1024,11=128
@@ -2079,7 +1808,7 @@ public class ATA extends ModuleATA {
 
         if ((data[0] & 0xa0) != 0xa0) // 1x1xxxxx
         {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  IO write to address " + originalAddress + ", data "
                     + data + " invalid as not 1x1xxxxxb.");
         }
@@ -2095,7 +1824,7 @@ public class ATA extends ModuleATA {
 
         if (getSelectedChannel().getSelectedController().getLbaMode() == 0
                 && ((data[0] >> 6) & 1) == 1) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Enabling LBA mode.");
         }
 
@@ -2106,7 +1835,7 @@ public class ATA extends ModuleATA {
                 .setLbaMode(newLdaValue);
 
         if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  ATA device for channel " + curChannelIndex
                     + " set to " + driveSelect + " which does not exist.");
         }
@@ -2122,6 +1851,9 @@ public class ATA extends ModuleATA {
      */
     private void setPortIdeAltStatusDevice(int originalAddress,
             boolean prevControlReset, int[] data) {
+
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         // hard disk adapter control 0x3f6 (original byte value 0x16)
         // (mch) Even if device 1 was selected, a write to this register
         // goes to device 0 (if device 1 is absent)
@@ -2144,12 +1876,12 @@ public class ATA extends ModuleATA {
         getSelectedChannel().getDrives()[1].getControl().setDisableIrq(
                 disableIrqValue);
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  Adapter control reg: reset controller set to "
                 + getSelectedDriveController().isReset() + " for channel "
                 + curChannelIndex + ".");
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  Adapter control reg: disable_irq(X) set to "
                 + getSelectedDriveController().isDisableIrq() + " for channel "
                 + curChannelIndex + ".");
@@ -2157,7 +1889,7 @@ public class ATA extends ModuleATA {
         if (!prevControlReset && getSelectedDriveController().isReset()) {
 
             // transition from 0 to 1 causes all drives to reset
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + "  Hard drive: RESET.");
 
             // (mch) Set BSY, drive not ready
@@ -2206,7 +1938,7 @@ public class ATA extends ModuleATA {
                 && !getSelectedDriveController().isReset()) {
             // Clear BSY and DRDY
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Reset complete for channel " + curChannelIndex);
 
             for (int driveId = 0; driveId < 2; driveId++) {
@@ -2242,7 +1974,7 @@ public class ATA extends ModuleATA {
 
         // Check if the command is recognised and supported
         if (command == null) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + "  write cmd "
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  write cmd "
                     + currentCommand + " not recognised");
 
             return;
@@ -2255,7 +1987,7 @@ public class ATA extends ModuleATA {
         } else if (command == ATACommand.PACKET_A0) {
             setPacketA0(originalAddress, curChannelIndex, data, ioLength);
         } else {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + "  write cmd "
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  write cmd "
                     + command.getAddress() + " (" + command.getName()
                     + ") not supported");
 
@@ -2272,6 +2004,9 @@ public class ATA extends ModuleATA {
      * @return true if read successful / false if failed
      */
     private boolean ideReadData(int channel, byte[] buffer, int bufferSize) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+
         int logicalSector = 0;
 
         int sectorCount = (bufferSize / 512);
@@ -2279,7 +2014,7 @@ public class ATA extends ModuleATA {
         do {
             if (!getSelectedDrive().calculateLogicalAddress(logicalSector)) {
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  read sector reached invalid sector "
                         + logicalSector + " aborting.");
                 abortCommand(channel, channels[this.curChannelIndex]
@@ -2311,9 +2046,9 @@ public class ATA extends ModuleATA {
                 emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_STOP);
 
             } catch (IOException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  logical sector was " + logicalSector + ".");
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  could not read() hard drive image file at byte "
                         + logicalSector * 512 + ".");
 
@@ -2337,6 +2072,9 @@ public class ATA extends ModuleATA {
      * @return true if read successful / false if failed
      */
     private boolean ideWriteData(int channel, byte[] buffer, int bufferSize) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        
         int logicalSector = 0;
 
         int sectorCount = (bufferSize / 512);
@@ -2345,7 +2083,7 @@ public class ATA extends ModuleATA {
 
             if (!getSelectedDrive().calculateLogicalAddress(logicalSector)) {
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  IO write reached invalid sector " + logicalSector
                         + ", aborting.");
                 abortCommand(channel, getSelectedDriveController()
@@ -2375,7 +2113,7 @@ public class ATA extends ModuleATA {
                         .log(
                                 Level.SEVERE,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + "  IO write could not write()hard drive image file at byte "
                                         + logicalSector * 512 + ", aborting.");
@@ -2408,7 +2146,7 @@ public class ATA extends ModuleATA {
             int ioLength) {
 
         if (getSelectedDriveController().getBufferIndex() >= ATAConstants.PACKET_SIZE) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  IO write to adress, " + originalAddress
                     + " buffer_index >= PACKET_SIZE.");
             return;
@@ -2547,7 +2285,7 @@ public class ATA extends ModuleATA {
                 if (!(loEj > 0) && !(start > 0)) { // stop the disc
                     // FIXME: Stop disc not implemented
 
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + "  Stop disc not implemented.");
 
                     atapiCmdNop(channel);
@@ -2562,7 +2300,7 @@ public class ATA extends ModuleATA {
                     }
 
                     // TODO: ATAPI start disc not reading TOC
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + "  ATAPI start disc not reading TOC.");
                     atapiCmdNop(channel);
                     raiseInterrupt(channel);
@@ -2604,7 +2342,7 @@ public class ATA extends ModuleATA {
                             .log(
                                     Level.SEVERE,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + "  Not implemented: Zero allocation length to MECHANISM STATUS.");
                     return;
@@ -2732,7 +2470,7 @@ public class ATA extends ModuleATA {
                     case 0x0d: // CD-ROM
                     case 0x0e: // CD-ROM audio control
                     case 0x3f: // all
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE (curr), page code "
                                 + pageCode + ", not implemented yet.");
                         atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
@@ -2742,7 +2480,7 @@ public class ATA extends ModuleATA {
 
                     default:
                         // not implemeted by this device
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE pc " + pc
                                 + ", page code, " + pageCode
                                 + ", not implemented by device.");
@@ -2761,7 +2499,7 @@ public class ATA extends ModuleATA {
                     case 0x2a: // CD-ROM capabilities & mech. status
                     case 0x3f: // all
 
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE (chg), page code "
                                 + pageCode + ", not implemented yet.");
                         atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
@@ -2772,7 +2510,7 @@ public class ATA extends ModuleATA {
                     default:
                         // not implemeted by this device
 
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE PC " + pc
                                 + ", page code " + pageCode
                                 + ", not implemented by device.");
@@ -2850,7 +2588,7 @@ public class ATA extends ModuleATA {
                     case 0x0e: // CD-ROM audio control
                     case 0x3f: // all
 
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE (dflt), page code "
                                 + pageCode + ", not implemented.");
 
@@ -2861,7 +2599,7 @@ public class ATA extends ModuleATA {
 
                     default:
                         // not implemeted by this device
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  cdrom: MODE SENSE PC " + pc
                                 + ", page code " + pageCode
                                 + ", not implemented by device.");
@@ -2884,7 +2622,7 @@ public class ATA extends ModuleATA {
                             .log(
                                     Level.SEVERE,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + "  IO Write setPacketA0 pc value not recognised.");
 
@@ -3034,7 +2772,7 @@ public class ATA extends ModuleATA {
                         break;
 
                     default:
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "  Read CD: unknown format.");
 
                         atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
@@ -3061,7 +2799,7 @@ public class ATA extends ModuleATA {
                         int toc_length;
                     }
 
-                    @SuppressWarnings("unused")
+
                     int allocLength = 0;
                     // int allocLength =
                     // read_16bit(getSelectedDriveController().getBuffer() + 7);
@@ -3086,7 +2824,7 @@ public class ATA extends ModuleATA {
                                             .log(
                                                     Level.SEVERE,
                                                     "["
-                                                            + MODULE_TYPE
+                                                            + super.getType()
                                                             + "]"
                                                             + "  READ_TOC_EX: msf not set for format "
                                                             + format + ".");
@@ -3112,7 +2850,7 @@ public class ATA extends ModuleATA {
                                 // }
                                 break;
                             default:
-                                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                                logger.log(Level.SEVERE, "[" + super.getType()
                                         + "]" + "  READ TOC format " + format
                                         + " not supported.");
                                 atapiCmdError(channel,
@@ -3121,7 +2859,7 @@ public class ATA extends ModuleATA {
                                 raiseInterrupt(channel);
                             }
                         } else {
-                            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                     + "  LOWLEVEL_CDROM not defined.");
                         }
 
@@ -3151,14 +2889,14 @@ public class ATA extends ModuleATA {
                                         .log(
                                                 Level.SEVERE,
                                                 "["
-                                                        + MODULE_TYPE
+                                                        + super.getType()
                                                         + "]"
                                                         + "  LOWLEVEL_CDROM not defined.");
                             }
                             break;
 
                         default:
-                            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                     + "  READ TOC format " + format
                                     + " not supported.");
                             atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
@@ -3222,7 +2960,7 @@ public class ATA extends ModuleATA {
                 if (transferLength <= 0) {
                     atapiCmdNop(channel);
                     raiseInterrupt(channel);
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
                             + "  Read with transfer length <= 0, ok ("
                             + transferLength + ")");
                     break;
@@ -3239,7 +2977,7 @@ public class ATA extends ModuleATA {
                  * { atapi_cmd_error(channel, SENSE_ILLEGAL_REQUEST,
                  * ASC_LOGICAL_BLOCK_OOR, 1); raise_interrupt(channel); break; }
                  */
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  cdrom: READ LBA " + lba + ", length "
                         + transferLength + ".");
 
@@ -3286,7 +3024,7 @@ public class ATA extends ModuleATA {
                 } else {
                     // BX_PANIC(("Seek with no LOWLEVEL_CDROM"));
 
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + "  Seek with no LOWLEVEL_CDROM.");
 
                 }
@@ -3315,12 +3053,12 @@ public class ATA extends ModuleATA {
 
             case (byte) 0x42: // read sub-channel
             {
-                @SuppressWarnings("unused")
+
                 int msf = getPacketField(channel, 1, 1, 1);
                 int subQ = getPacketField(channel, 2, 6, 1);
 
                 int dataFormat = getPacketByte(channel, 3);
-                @SuppressWarnings("unused")
+
                 int trackNumber = getPacketByte(channel, 6);
                 int allocLength = getPacketWord(channel, 7);
 
@@ -3395,7 +3133,7 @@ public class ATA extends ModuleATA {
             case (byte) 0x4e: // stop play/scan
             case (byte) 0x46: // ???
             case (byte) 0x4a: // ???
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  ATAPI command " + atapiCommand
                         + " not implemented yet.");
 
@@ -3405,7 +3143,7 @@ public class ATA extends ModuleATA {
                 break;
 
             default:
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + "  Unknown ATAPI command " + atapiCommand + ".");
                 atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
                         AscType.ILLEGAL_OPCODE, true);
@@ -3549,12 +3287,12 @@ public class ATA extends ModuleATA {
     private void atapiCmdError(int channel, SenseType senseType,
             AscType ascType, boolean show) {
         if (show) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  Atapi_cmd_error, for channel " + channel + ", key "
                     + senseType.toString() + ", asc " + ascType.toString()
                     + ".");
         } else {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + "  Atapi_cmd_error, for channel " + channel + ", key "
                     + senseType.toString() + ", asc " + ascType.toString()
                     + ".");
@@ -3601,7 +3339,7 @@ public class ATA extends ModuleATA {
         // && !(alloc_length <= BX_SELECTED_CONTROLLER(channel).byte_count))
         if (((getSelectedDriveController().getByteCount() & 1) > 0)
                 && !(allocLength <= getSelectedDriveController().getByteCount())) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + "  Odd byte count, for channel " + channel
                     + ", to ATAPI command " + command + ",  using "
                     + getSelectedDriveController().getByteCount() + ".");
@@ -3612,12 +3350,12 @@ public class ATA extends ModuleATA {
         }
 
         if (getSelectedDriveController().getByteCount() == 0) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  ATAPI command with zero byte count.");
         }
 
         if (allocLength < 0) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  Allocation length < 0.");
         }
         if (allocLength == 0) {
@@ -3692,6 +3430,8 @@ public class ATA extends ModuleATA {
     private void setHardDiskCommand(int originalAddress, int[] data,
             Integer logicalSector, int ret) {
 
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         if (getSelectedChannel().isSlaveSelected()
                 && !getSelectedChannel().isSlaveDrivePresent()) {
             return;
@@ -3701,7 +3441,7 @@ public class ATA extends ModuleATA {
         pic.clearIRQ(getSelectedChannel().getIrqNumber());
 
         if (getSelectedDriveController().getStatus().getBusy() > 0) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  hard disk: command sent, controller BUSY.");
         }
 
@@ -3714,7 +3454,7 @@ public class ATA extends ModuleATA {
         case 0x10: // CALIBRATE DRIVE
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  Calibrate drive for channel " + curChannelIndex
                         + ", issued to non-disk, with index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3736,7 +3476,7 @@ public class ATA extends ModuleATA {
 
                 raiseInterrupt(curChannelIndex);
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  Calibrate drive for channel " + curChannelIndex
                         + ", not present, with index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3769,7 +3509,7 @@ public class ATA extends ModuleATA {
              */
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Read multiple for channel " + curChannelIndex
                         + ", issued to non-disk, with index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3783,7 +3523,7 @@ public class ATA extends ModuleATA {
                     && !(getSelectedDrive().getCurrentHead() > 0)
                     && !(getSelectedDrive().getCurrentCylinder() > 0)
                     && !(getSelectedDrive().getCurrentSector() > 0)) {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  read from 0/0/0, for channel " + curChannelIndex
                         + ", with device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -3855,7 +3595,7 @@ public class ATA extends ModuleATA {
              */
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  Write sectors, for channel " + curChannelIndex
                         + ", issued to non-disk with device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -3911,7 +3651,7 @@ public class ATA extends ModuleATA {
         case 0x90: // EXECUTE DEVICE DIAGNOSTIC
 
             if (getSelectedDriveController().getStatus().getBusy() > 0) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Diagnostic command, for channel "
                         + curChannelIndex
                         + ", BSY bit set, for disk with device index "
@@ -3933,7 +3673,7 @@ public class ATA extends ModuleATA {
         case 0x91: // INITIALIZE DRIVE PARAMETERS
 
             if (getSelectedDriveController().getStatus().getBusy() > 0) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Init drive parameters command, for channel "
                         + curChannelIndex
                         + ", BSY bit set, for disk with device index "
@@ -3945,7 +3685,7 @@ public class ATA extends ModuleATA {
             }
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Initialize drive parameters, for channel "
                         + curChannelIndex
                         + ", issued to non-disk, with device index "
@@ -3957,7 +3697,7 @@ public class ATA extends ModuleATA {
             }
 
             // sets logical geometry of specified drive
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Initialize drive parameters, for channel "
                     + curChannelIndex + ", issued to disk, with device index "
                     + getSelectedChannel().getSelectedDrive()
@@ -3966,7 +3706,7 @@ public class ATA extends ModuleATA {
                     + ".");
 
             if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Initialize drive parameters, for channel "
                         + curChannelIndex
                         + ", disk not present, with device index "
@@ -3985,7 +3725,7 @@ public class ATA extends ModuleATA {
 
             if (getSelectedDrive().getSectorCount() != getSelectedDrive()
                     .getTotalNumSectors()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Initialize drive parameters, for channel "
                         + curChannelIndex + ", device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4000,7 +3740,7 @@ public class ATA extends ModuleATA {
             }
             if (getSelectedDrive().getCurrentHead() != (getSelectedDrive()
                     .getTotalNumHeads() - 1)) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Initialize drive parameters, for channel "
                         + curChannelIndex + ", device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4025,7 +3765,7 @@ public class ATA extends ModuleATA {
         case 0xec: // IDENTIFY DEVICE
 
             if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Identify device, for channel " + curChannelIndex
                         + ", disk not present, with device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4069,7 +3809,7 @@ public class ATA extends ModuleATA {
 
             case 0x03: // Set Transfer Mode
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Set transfer mode, for channel " + curChannelIndex
                         + ", device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4091,7 +3831,7 @@ public class ATA extends ModuleATA {
             case 0xCC: // Enable and
             case 0x66: // Disable reverting to power-on default
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  SET FEATURES, for channel " + curChannelIndex
                         + ", device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4107,7 +3847,7 @@ public class ATA extends ModuleATA {
 
             default:
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  SET FEATURES, for channel " + curChannelIndex
                         + ", device index "
                         + getSelectedChannel().getSelectedDrive()
@@ -4121,7 +3861,7 @@ public class ATA extends ModuleATA {
         case 0x40: // READ VERIFY SECTORS
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  read verify, for channel " + curChannelIndex
                         + ", issued to non-disk with device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -4131,7 +3871,7 @@ public class ATA extends ModuleATA {
                 break;
             }
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  verify command : 0x40, for channel " + curChannelIndex
                     + ", issued to device with device index "
                     + getSelectedChannel().getSelectedDrive() + ".");
@@ -4149,7 +3889,7 @@ public class ATA extends ModuleATA {
 
             if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  Set multiple mode, for channel " + curChannelIndex
                         + ", issued to non-hard disk, with device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -4163,7 +3903,7 @@ public class ATA extends ModuleATA {
                 abortCommand(curChannelIndex, data[0]);
             } else {
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  set multiple mode: sectors= "
                         + getSelectedDrive().getSectorCount());
 
@@ -4223,7 +3963,7 @@ public class ATA extends ModuleATA {
                 getSelectedDriveController().getStatus().setBusy(0);
 
             } else {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  ATAPI Device Reset, for channel "
                         + curChannelIndex
                         + ", issued to on non-cd device, with device index "
@@ -4242,7 +3982,7 @@ public class ATA extends ModuleATA {
                         getSelectedDrive().getFeatures() & 1);
 
                 if ((getSelectedDrive().getFeatures() & (1 << 1)) > 0) {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + "  PACKET-overlapped not supported, for channel "
                             + curChannelIndex + ", issued to device index "
                             + getSelectedChannel().getSelectedDrive() + ".");
@@ -4273,7 +4013,7 @@ public class ATA extends ModuleATA {
 
             if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
 
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  ATAPI SERVICE not implemented, for channel "
                         + curChannelIndex + ", issued to device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
@@ -4302,14 +4042,14 @@ public class ATA extends ModuleATA {
 
             if (getSelectedDrive().getDriveType() == ATADriveType.HARD_DISK) {
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  write cmd 0x70 (SEEK) executing, for channel "
                         + curChannelIndex + ", issued to device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
 
                 if (!getSelectedDrive().calculateLogicalAddress(logicalSector)) {
 
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + "  seek, for channel " + curChannelIndex
                             + ", issued to device index "
                             + getSelectedChannel().getSelectedDrive()
@@ -4333,7 +4073,7 @@ public class ATA extends ModuleATA {
                 getSelectedDriveController().setBufferIndex(0);
 
                 logger.log(Level.INFO, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "  SEEK disable ird set to "
                         + getSelectedChannel().getDrives()[0].getControl()
@@ -4341,14 +4081,14 @@ public class ATA extends ModuleATA {
                         + curChannelIndex + ", with device index " + 0 + ".");
 
                 logger.log(Level.INFO, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "  SEEK disable ird set to "
                         + getSelectedChannel().getDrives()[1].getControl()
                                 .isDisableIrq() + ", for channel "
                         + curChannelIndex + ", with device index " + 1 + ".");
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  SEEK completed. error_register "
                         + getSelectedDriveController().getErrorRegister()
                         + ", for channel " + curChannelIndex
@@ -4357,12 +4097,12 @@ public class ATA extends ModuleATA {
 
                 raiseInterrupt(curChannelIndex);
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "  SEEK interrupt completed, for channel "
                         + curChannelIndex + ", issued to device index "
                         + getSelectedChannel().getSelectedDrive());
             } else {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + "  write cmd 0x70 (SEEK), for channel "
                         + curChannelIndex
                         + ", not supported for non-disk with device index "
@@ -4383,7 +4123,7 @@ public class ATA extends ModuleATA {
              * 
              * } else {
              */
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  write cmd 0xC8 (READ DMA) not supported, for channel "
                     + curChannelIndex + ", device index "
                     + getSelectedChannel().getSelectedDrive() + ".");
@@ -4405,7 +4145,7 @@ public class ATA extends ModuleATA {
                     .log(
                             Level.WARNING,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + "  write cmd 0xCA (WRITE DMA) not supported, for channel "
                                     + curChannelIndex + ", device index "
@@ -4417,7 +4157,7 @@ public class ATA extends ModuleATA {
             break;
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "  IO write to " + originalAddress + ", unknown command "
                     + data + " for channel " + curChannelIndex
                     + ", device index "
@@ -5068,42 +4808,6 @@ public class ATA extends ModuleATA {
                 | (buf[2 + offset] << 8) | buf[3 + offset];
 
         return returnValue;
-    }
-
-    /**
-     * Gte the motherboard.
-     * 
-     * @return the motherboard
-     */
-    protected ModuleMotherboard getMotherboard() {
-        return motherboard;
-    }
-
-    /**
-     * Get the RTC module.
-     * 
-     * @return the RTC module
-     */
-    protected ModuleRTC getRtc() {
-        return rtc;
-    }
-
-    /**
-     * Get the PIC module.
-     * 
-     * @return the PIC module.
-     */
-    protected ModulePIC getPic() {
-        return pic;
-    }
-
-    /**
-     * Get the update interval.
-     * 
-     * @return the update interval
-     */
-    public int getUpdateInterval() {
-        return updateInterval;
     }
 
 }

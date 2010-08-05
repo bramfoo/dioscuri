@@ -50,13 +50,12 @@ public abstract class ModuleClock extends Module {
                 Type.MOTHERBOARD, Type.CPU);
     }
 
-
     /**
      * Register a device to clock and assign a timer to it
      * 
-     * @param device 
-     * @param intervalLength
-     * @param continuousOneShot
+     * @param device            -
+     * @param intervalLength    -
+     * @param continuousOneShot -
      * @return boolean true if timer assigned successfully, false otherwise
      */
     public abstract boolean registerDevice(Module device, int intervalLength, boolean continuousOneShot);
@@ -64,8 +63,8 @@ public abstract class ModuleClock extends Module {
     /**
      * Reset the timer of given device (if any)
      * 
-     * @param device
-     * @param intervalLength
+     * @param device         -
+     * @param intervalLength -
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean resetTimer(Module device, int intervalLength);
@@ -73,15 +72,14 @@ public abstract class ModuleClock extends Module {
     /**
      * Set a timer to start/stop running
      * 
-     * @param device
-     * @param runState
+     * @param device   -
+     * @param runState -
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public abstract boolean setTimerActiveState(Module device, boolean runState);
 
     /**
      * Triggers device's update if timer goes off
-     * 
      */
     public abstract void pulse();
 }

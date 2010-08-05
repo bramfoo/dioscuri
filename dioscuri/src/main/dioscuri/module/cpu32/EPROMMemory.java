@@ -33,7 +33,7 @@ import dioscuri.module.clock.Clock;
  * @author Bart Kiers
  */
 public class EPROMMemory extends LazyCodeBlockMemory {
-    @SuppressWarnings("unused")
+
     private Clock clock;
 
     /**

@@ -535,7 +535,7 @@ public class FASTCompiler implements CodeBlockCompiler {
         cf.setMethodCode("getX86Length", ints);
     }
 
-    @SuppressWarnings("unused")
+
     private static void dumpClass(ClassFile cls) {
         try {
             File dump = new File(cls.getClassName().replace('.', '/')

@@ -71,17 +71,13 @@ import dioscuri.module.ModuleVideo;
  *      Notes: none
  * 
  */
-@SuppressWarnings("unused")
+
 public class Memory extends ModuleMemory {
 
     // Attributes
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "video", "cpu", "motherboard" };
-    private ModuleVideo video;
-    private ModuleCPU cpu;
-    private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -94,13 +90,6 @@ public class Memory extends ModuleMemory {
 
     // Logging
     private static final Logger logger = Logger.getLogger(Memory.class.getName());
-
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "memory";
-    public final static String MODULE_NAME = "RAM";
 
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
@@ -132,88 +121,7 @@ public class Memory extends ModuleMemory {
         watchValue = false;
         watchAddress = -1;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-        // Set connection to video adapter
-        if (module.getType().equalsIgnoreCase("video")) {
-            this.video = (ModuleVideo) module;
-            return true;
-        } else if (module.getType().equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) module;
-            return true;
-        } else if (module.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) module;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        if (video != null && cpu != null && motherboard != null) {
-            return true;
-        }
-        return false;
+        logger.log(Level.INFO, "[" + super.getType() + "] Module created successfully.");
     }
 
     /**
@@ -232,101 +140,16 @@ public class Memory extends ModuleMemory {
         // Initialise A20 address bit to non-wrap (0xFFFF FFFF)
         setA20AddressLine(true);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
     }
 
     /**
      * Sets given String[] data for this module
      * 
-     * @param sender
-     * @see Module
+     * @param sender -
+     * @param data   -
+     * @return       -
      */
     public boolean setData(String[] data, Module sender) {
         // Check if string[] is not empty
@@ -344,7 +167,7 @@ public class Memory extends ModuleMemory {
             try {
                 this.setBytes(address, value);
             } catch (ModuleException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] setData: data not set. " + e.getMessage());
                 return false;
             }
@@ -394,6 +217,10 @@ public class Memory extends ModuleMemory {
      * @return byte Byte containing byte data
      */
     public byte getByte(int address) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getModule(Type.CPU);
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -403,7 +230,7 @@ public class Memory extends ModuleMemory {
             if (watchValue == true && address == watchAddress) {
                 logger
                         .log(Level.CONFIG, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] "
                                 + cpu.getRegisterHex(0)
                                 + ":"
@@ -422,7 +249,7 @@ public class Memory extends ModuleMemory {
                 return ram[address];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFF");
             // Out of range, return default value
             return (byte) 0xFF;
@@ -439,13 +266,17 @@ public class Memory extends ModuleMemory {
      *            Integer containing byte data
      */
     public void setByte(int address, byte value) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getModule(Type.CPU);
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+        
         // Mask 20th address bit
         address &= A20mask;
 
         try {
             // Watch certain memory address
             if (watchValue == true && address == watchAddress) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
                         + " is written: ["
@@ -468,7 +299,7 @@ public class Memory extends ModuleMemory {
                 ram[address] = value;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write byte");
         }
     }
@@ -486,6 +317,10 @@ public class Memory extends ModuleMemory {
      *         outside RAM_SIZE range
      */
     public byte[] getWord(int address) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getModule(Type.CPU);
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -496,7 +331,7 @@ public class Memory extends ModuleMemory {
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger
                         .log(Level.CONFIG, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] "
                                 + cpu.getRegisterHex(0)
                                 + ":"
@@ -521,7 +356,7 @@ public class Memory extends ModuleMemory {
                 return new byte[] { ram[address + 1], ram[address] };
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFFFF");
             // Out of range, return default value
             return new byte[] { (byte) 0xFF, (byte) 0xFF };
@@ -537,6 +372,10 @@ public class Memory extends ModuleMemory {
      * 
      */
     public void setWord(int address, byte[] value) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getModule(Type.CPU);
+        ModuleVideo video = (ModuleVideo)super.getModule(Type.VIDEO);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -544,7 +383,7 @@ public class Memory extends ModuleMemory {
             // Watch certain memory address
             if (watchValue == true
                     && (address == watchAddress || address + 1 == watchAddress)) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched WORD at address " + watchAddress
                         + " is written: ["
@@ -571,7 +410,7 @@ public class Memory extends ModuleMemory {
                 ram[address + 1] = value[0];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write word");
         }
     }
@@ -597,9 +436,9 @@ public class Memory extends ModuleMemory {
                 ram[address + b] = binaryStream[b];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write stream of bytes");
-            throw new ModuleException("[" + MODULE_TYPE
+            throw new ModuleException("[" + super.getType()
                     + "] setBytes: Out of memory at byte " + e.getMessage());
         }
     }
@@ -618,7 +457,7 @@ public class Memory extends ModuleMemory {
             // Disable 0x100000 address bit (memory wrapping is turned on)
             A20mask = 0xFFEFFFFF;
         }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " A20 address line status: " + status + " A20mask: [0x"
                 + Long.toHexString(A20mask) + "]");
     }
@@ -652,9 +491,7 @@ public class Memory extends ModuleMemory {
     /**
      * Converts a given string into a byte of one integer
      * 
-     * @param string
-     *            value
-     * 
+     * @param strValue
      * @return int as byte
      */
     private int convertStringToByte(String strValue) {
@@ -669,7 +506,7 @@ public class Memory extends ModuleMemory {
 
             return intRegVal;
         } catch (NumberFormatException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " Error while parsing input");
             return -1;
         }

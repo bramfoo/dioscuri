@@ -44,7 +44,7 @@ public class LazyCodeBlockMemory extends LazyMemory {
     protected ProtectedModeCodeBlock[] protectedCodeBuffer;
     protected Virtual8086ModeCodeBlock[] virtual8086CodeBuffer;
 
-    @SuppressWarnings("unused")
+
     private Clock clock;
 
     /**

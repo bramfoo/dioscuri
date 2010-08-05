@@ -163,7 +163,7 @@ public abstract class ConfigurationDialog extends JDialog {
         });
     }
 
-    @SuppressWarnings("unused")
+    
     private void initCancelButton() {
         Dimension buttonSize = new Dimension(70, 25);
 

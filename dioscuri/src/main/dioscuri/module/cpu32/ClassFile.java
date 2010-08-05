@@ -442,7 +442,7 @@ public class ClassFile {
      * @return stack delta caused by an invoke on this method descriptor -- delta
      *         = within () - outside ()
      */
-    @SuppressWarnings("unused")
+
     protected int getMethodStackDelta(String methodDescriptor) {
         // System.out.println("methodDescriptor = " + methodDescriptor);
         // int end = methodDescriptor.lastIndexOf(")");

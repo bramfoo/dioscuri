@@ -224,8 +224,7 @@ public class Emulator implements Runnable {
                         "[emu] Emulation process started (32-bit).");
                 try {
                     AddressSpace addressSpace = null;
-                    Processor cpu = (Processor) modules
-                            .getModule(ModuleType.CPU.toString());
+                    Processor cpu = (Processor) modules.getModule(Module.Type.CPU);
 
                     if (cpu.isProtectedMode())
                         addressSpace = (AddressSpace) hwComponents.get(0); // linearAddr
@@ -245,7 +244,7 @@ public class Emulator implements Runnable {
                         loop++;
                     }
 
-                    while (isAlive == true) {
+                    while (isAlive) {
                         instr = addressSpace.execute(cpu, cpu
                                 .getInstructionPointer());
                         total += instr;
@@ -259,23 +258,20 @@ public class Emulator implements Runnable {
                 logger.log(Level.INFO,
                         "[emu] Emulation process started (16-bit).");
 
-                if (((ModuleCPU) modules.getModule("cpu")).getDebugMode() == false) {
+                if (!((ModuleCPU) modules.getModule(Module.Type.CPU)).getDebugMode()) {
                     // Start CPU process
-                    ((ModuleCPU) modules.getModule("cpu")).start();
+                    ((ModuleCPU) modules.getModule(Module.Type.CPU)).start();
 
                     // Check if CPU terminated abnormally -> stop emulation process
-                    if (((ModuleCPU) modules.getModule("cpu"))
-                            .isAbnormalTermination() == true) {
-                        logger
-                                .log(Level.SEVERE,
-                                        "[emu] Emulation process halted due to error in CPU module.");
+                    if (((ModuleCPU) modules.getModule(Module.Type.CPU)).isAbnormalTermination()) {
+                        logger.log(Level.SEVERE, "[emu] Emulation process halted due to error in CPU module.");
                         this.stop();
                         return;
                     }
 
                     // Check if CPU calls a full shutdown of PC -> stop
                     // emulation process
-                    if (((ModuleCPU) modules.getModule("cpu")).isShutdown() == true) {
+                    if (((ModuleCPU) modules.getModule(Module.Type.CPU)).isShutdown()) {
                         logger
                                 .log(Level.SEVERE,
                                         "[emu] Emulation process halted due to request for shutdown by CPU module.");
@@ -288,7 +284,7 @@ public class Emulator implements Runnable {
                     // Then continue with rebooting the system.
                 } else {
                     // Show first upcoming instruction
-                    ModuleCPU cpu = (ModuleCPU) modules.getModule("cpu");
+                    ModuleCPU cpu = (ModuleCPU) modules.getModule(Module.Type.CPU);
                     logger.log(Level.INFO, cpu.getNextInstructionInfo());
                     while (isAlive == true) {
                         this.debug(io.getCommand());
@@ -298,11 +294,10 @@ public class Emulator implements Runnable {
                 // Wait until reset of modules is done (wait about 1 second...)
                 // This can occur when another thread causes a reset of this
                 // emulation process
-                while (resetBusy == true) {
+                while (resetBusy) {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -317,7 +312,7 @@ public class Emulator implements Runnable {
         if (modules != null) {
             // Stop emulation process, stop all threads
             for (int i = 0; i < modules.size(); i++) {
-                modules.getModule(i).stop();
+                // modules.getModule(i).stop(); // TODO BK can do without stop()?
             }
             logger.log(Level.INFO, "[emu] Emulation process stopped.");
 
@@ -332,7 +327,7 @@ public class Emulator implements Runnable {
 
         if (modules != null) {
             // Reset emulation process
-            ((ModuleCPU) modules.getModule("cpu")).stop();
+            // ((ModuleCPU) modules.getModule("cpu")).stop(); // TODO BK can do without stop()?
 
             coldStart = false;
             logger.log(Level.INFO, "[emu] Reset in progress...");
@@ -354,7 +349,7 @@ public class Emulator implements Runnable {
 
         case CMD_DEBUG_STEP:
             // Debug command STEP -> execute 1 or n instructions
-            ModuleCPU cpu = (ModuleCPU) modules.getModule("cpu");
+            ModuleCPU cpu = (ModuleCPU) modules.getModule(Module.Type.CPU);
 
             // Execute n number of instructions (or else 1 if no argument
             // supplied)
@@ -760,7 +755,7 @@ public class Emulator implements Runnable {
         this.getGui().setCpyTypeLabel(cpu32bit ? "32 bit" : "16 bit");
 
         // Add clock first, as it is needed for 32-bit RAM
-        Clock clk = new Clock(this);
+        Clock clk = new Clock();
         modules.addModule(clk);
 
         // Create a CPU

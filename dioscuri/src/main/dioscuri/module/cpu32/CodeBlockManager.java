@@ -50,7 +50,7 @@ public class CodeBlockManager {
 
     private BackgroundCompiler bgc;
 
-    @SuppressWarnings("unused")
+
     private Clock clock;
 
     /**

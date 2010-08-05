@@ -59,6 +59,8 @@ public abstract class Module {
         CLOCK,
         CPU,
         DMA,
+        DMA_CONTROLLER,
+        DUMMY,
         FDC,
         KEYBOARD,
         MEMORY,

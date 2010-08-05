@@ -4653,7 +4653,7 @@ public class RealModeUBlock implements RealModeCodeBlock, MicrocodeSet {
     private final void repe_scasw_a16(int data) {
         int count = cpu.ecx & 0xffff;
         int addr = cpu.edi & 0xffff;
-        @SuppressWarnings("unused")
+
         boolean used = count != 0;
         int input = 0;
 

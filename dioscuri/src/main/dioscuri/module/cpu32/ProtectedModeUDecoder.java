@@ -31,7 +31,7 @@ package dioscuri.module.cpu32;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public final class ProtectedModeUDecoder implements MicrocodeSet, Decoder,
         InstructionSource {
     private static final boolean[] modrmArray = new boolean[] { // true for

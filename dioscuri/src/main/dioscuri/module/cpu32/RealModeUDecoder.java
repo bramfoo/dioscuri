@@ -7506,7 +7506,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         }
     }
 
-    @SuppressWarnings("unused")
+
     private void store1_Sw(int modrm) {
         switch (modrm & 0x38) {
         case 0x00:
@@ -7598,19 +7598,19 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
         working.write(STORE0_MEM_DWORD);
     }
 
-    @SuppressWarnings("unused")
+
     private void load1_Ob(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_BYTE);
     }
 
-    @SuppressWarnings("unused")
+
     private void load1_Ow(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_WORD);
     }
 
-    @SuppressWarnings("unused")
+
     private void load1_Od(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_DWORD);

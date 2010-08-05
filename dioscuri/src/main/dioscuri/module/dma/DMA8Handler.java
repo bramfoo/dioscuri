@@ -39,6 +39,8 @@
 
 package dioscuri.module.dma;
 
+import dioscuri.module.Module;
+
 /**
  * Handler for the master DMA controller, providing implementations for 8-bit
  * read and write functionality<BR>
@@ -49,7 +51,7 @@ package dioscuri.module.dma;
  */
 public abstract class DMA8Handler {
     // Name of the device that provides the methods
-    protected String owner;
+    protected Module.Type owner;
 
     /**
      * Device-specific implementation of the 8-bit DMA read functionality.<BR>

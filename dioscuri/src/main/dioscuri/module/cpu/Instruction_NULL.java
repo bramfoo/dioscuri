@@ -48,7 +48,7 @@ import dioscuri.exception.CPUInstructionException;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public class Instruction_NULL implements Instruction {
 
     // Attributes

@@ -80,10 +80,10 @@ public class Modules extends ArrayList<Module> {
      * @param type
      * @return -
      */
-    public Module getModule(String type) {
+    public Module getModule(Module.Type type) {
         for (int i = 0; i < super.size(); i++) {
-            if ((this.getModule(i)).getType().equalsIgnoreCase(type)) {
-                return (Module) super.get(i);
+            if ((this.getModule(i)).getType() == type) {
+                return super.get(i);
             }
         }
         return null;
@@ -95,6 +95,6 @@ public class Modules extends ArrayList<Module> {
      * @return -
      */
     public Module getModule(int index) {
-        return (Module) super.get(index);
+        return super.get(index);
     }
 }

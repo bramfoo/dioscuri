@@ -41,21 +41,14 @@ package dioscuri.module.keyboard;
 
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.ModuleUnknownPortException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleKeyboard;
-import dioscuri.module.ModuleMotherboard;
-import dioscuri.module.ModuleMouse;
-import dioscuri.module.ModulePIC;
-import dioscuri.module.ModuleRTC;
+import dioscuri.module.*;
 
 /**
  * An implementation of a keyboard module.
@@ -87,11 +80,7 @@ import dioscuri.module.ModuleRTC;
 public class Keyboard extends ModuleKeyboard {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "pic", "rtc" };
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
-    private ModuleRTC rtc;
-    private ModuleMouse mouse;
+    //private ModuleMouse mouse;
     private TheKeyboard keyboard;
     private ScanCodeSets scanCodeSet;
 
@@ -122,11 +111,6 @@ public class Keyboard extends ModuleKeyboard {
     // Device source
     private final static int KEYBOARD = 0; // Source is keyboard
     private final static int MOUSE = 1; // Source is mouse
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "keyboard";
-    public final static String MODULE_NAME = "101-key PS/2 QWERTY keyboard";
 
     // Constructor
 
@@ -183,102 +167,9 @@ public class Keyboard extends ModuleKeyboard {
 
         keyboard.controller.timerPending = 0;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Module created successfully.");
         // Scancodes.scancodesInit();
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Optional: set connection for mouse
-        else if (mod.getType().equalsIgnoreCase("mouse")) {
-            this.mouse = (ModuleMouse) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        // Note: mouse is not required
-        if (motherboard != null && pic != null && rtc != null) {
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -288,6 +179,11 @@ public class Keyboard extends ModuleKeyboard {
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getModule(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         // Register I/O ports 0x60, 0x64 in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);
@@ -295,21 +191,22 @@ public class Keyboard extends ModuleKeyboard {
         // Request IRQ number keyboard
         irqNumberKeyboard = pic.requestIRQNumber(this);
         if (irqNumberKeyboard > -1) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Keyboard IRQ number set to: " + irqNumberKeyboard);
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Request of IRQ number failed.");
         }
 
         // Request IRQ number mouse
+        /*
         if (mouse != null) {
             irqNumberMouse = pic.requestIRQNumber(mouse);
             if (irqNumberMouse > -1) {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Mouse IRQ number set to: " + irqNumberMouse);
             } else {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Request of IRQ number failed.");
             }
         } else {
@@ -317,11 +214,12 @@ public class Keyboard extends ModuleKeyboard {
                     .log(
                             Level.INFO,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " No mouse available (or not connected to keyboard controller)");
         }
-
+        */
+        
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, true) == false) {
             return false;
@@ -336,104 +234,6 @@ public class Keyboard extends ModuleKeyboard {
 
         // Initiate cold reset
         return resetKeyboardBuffer(1);
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
     }
 
     /**
@@ -476,6 +276,9 @@ public class Keyboard extends ModuleKeyboard {
      * 
      */
     public void setUpdateInterval(int interval) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -500,12 +303,12 @@ public class Keyboard extends ModuleKeyboard {
 
         if ((returnValue & 0x01) == 1) {
             setInterrupt(irqNumberKeyboard);
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " timer raises IRQ1");
         }
         if ((returnValue & 0x02) == 2) {
             setInterrupt(irqNumberMouse);
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " timer raises IRQ12");
         }
     }
@@ -520,7 +323,7 @@ public class Keyboard extends ModuleKeyboard {
      * 
      * @return byte of data from output buffer
      */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
+    public byte getIOPortByte(int portAddress) throws ModuleUnknownPortException,
             ModuleWriteOnlyPortException {
         byte value;
 
@@ -549,7 +352,7 @@ public class Keyboard extends ModuleKeyboard {
                 clearInterrupt(irqNumberMouse);
                 activateTimer();
                 logger.log(Level.CONFIG, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "] (mouse)"
                         + " Port 0x"
                         + Integer.toHexString(portAddress).toUpperCase()
@@ -579,7 +382,7 @@ public class Keyboard extends ModuleKeyboard {
                 clearInterrupt(irqNumberKeyboard);
                 activateTimer();
                 logger.log(Level.CONFIG, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "] (keyboard)"
                         + " Port 0x"
                         + Integer.toHexString(portAddress).toUpperCase()
@@ -589,10 +392,10 @@ public class Keyboard extends ModuleKeyboard {
                 return value;
             } else // Nothing to read available
             {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Internal buffer elements no.: "
                         + keyboard.internalBuffer.getBuffer().size());
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Port 0x60 read but output buffer empty!");
                 return keyboard.controller.kbdOutputBuffer;
             }
@@ -609,7 +412,7 @@ public class Keyboard extends ModuleKeyboard {
             return value;
 
         default:
-            throw new ModuleUnknownPort(MODULE_TYPE
+            throw new ModuleUnknownPortException(super.getType()
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
@@ -626,9 +429,12 @@ public class Keyboard extends ModuleKeyboard {
      *            portAddress 64h executes status port commands
      */
     public void setIOPortByte(int portAddress, byte value)
-            throws ModuleUnknownPort {
+            throws ModuleUnknownPortException {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " Port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -650,7 +456,7 @@ public class Keyboard extends ModuleKeyboard {
                                                           // status port bit 1
                                                           // == 0
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Port 0x60 write but input buffer is not ready");
                 }
 
@@ -681,7 +487,7 @@ public class Keyboard extends ModuleKeyboard {
                     if ((keyboard.controller.allowIRQ12 != 0)
                             && (keyboard.controller.auxBuffer != 0)) {
                         keyboard.controller.irq12Requested = 1;
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " IRQ12 (mouse) allowance set to "
                                 + keyboard.controller.allowIRQ12);
                     }
@@ -689,14 +495,14 @@ public class Keyboard extends ModuleKeyboard {
                     else if ((keyboard.controller.allowIRQ1 != 0)
                             && (keyboard.controller.outputBuffer != 0)) {
                         keyboard.controller.irq1Requested = 1;
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " IRQ1 (keyboard) allowance set to "
                                 + keyboard.controller.allowIRQ1);
                     }
 
                     // Notify state of scancode translation
                     if (keyboard.controller.translateScancode == 0) {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
                                 + " Scancode translation turned off");
                     }
                     // TODO: maybe special settings for Windows NT required...
@@ -707,14 +513,14 @@ public class Keyboard extends ModuleKeyboard {
                     // A20 line settings: the only data processed here is the
                     // A20 line (bit 1) and a CPU reset (bit 0)
                     logger.log(Level.INFO, "["
-                            + MODULE_TYPE
+                            + super.getType()
                             + "]"
                             + " Writing value 0x"
                             + Integer.toHexString(0x100 | value & 0xFF)
                                     .substring(1).toUpperCase()
                             + " to output port P2");
                     motherboard.setA20((value & 0x02) != 0 ? true : false);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + (((value & 0x02) == 2) ? "En" : "Dis")
                             + "abled A20 gate");
 
@@ -724,7 +530,7 @@ public class Keyboard extends ModuleKeyboard {
                                 .log(
                                         Level.WARNING,
                                         "["
-                                                + MODULE_TYPE
+                                                + super.getType()
                                                 + "]"
                                                 + " System reset requested (is not implemented yet)");
                         // TODO: Reset complete system
@@ -741,12 +547,12 @@ public class Keyboard extends ModuleKeyboard {
 
                 case (byte) 0xD4: // Write to mouse
                     logger.log(Level.INFO, "[keyboard] writing value to mouse: "+value);
-                    mouse.controlMouse(value);
+                    //mouse.controlMouse(value);
                     return;
 
                 default:
                     logger.log(Level.WARNING, "["
-                            + MODULE_TYPE
+                            + super.getType()
                             + "]"
                             + " does not recognise command ["
                             + Integer.toHexString(
@@ -755,7 +561,7 @@ public class Keyboard extends ModuleKeyboard {
                             + Integer.toHexString(value).toUpperCase()
                             + " to port "
                             + Integer.toHexString(portAddress).toUpperCase());
-                    throw new ModuleUnknownPort(MODULE_TYPE
+                    throw new ModuleUnknownPortException(super.getType()
                             + " -> does not recognise command "
                             + keyboard.controller.lastCommand
                             + " writing value "
@@ -789,13 +595,13 @@ public class Keyboard extends ModuleKeyboard {
 
             switch (value) {
             case 0x20: // Read keyboard controller command byte
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "Read keyboard controller command byte");
                 if (keyboard.controller.outputBuffer != 0) // controller output
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -814,7 +620,7 @@ public class Keyboard extends ModuleKeyboard {
 
             case 0x60: // Write keyboard controller command byte
                 // Next byte to port 0x60 will be a command byte
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Write keyboard controller command byte");
                 keyboard.controller.expectingPort60h = 1; // Expecting command
                                                           // byte on port 0x60
@@ -824,7 +630,7 @@ public class Keyboard extends ModuleKeyboard {
                 // An ASCII copyright string (possibly just NULL) is made
                 // available for reading via port 0x60
                 logger.log(Level.INFO, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "Unsupported command on port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -834,19 +640,19 @@ public class Keyboard extends ModuleKeyboard {
             case (byte) 0xA1: // Read controller firmware version
                 // A single ASCII byte is made available for reading via port
                 // 0x60. On other systems: no effect, the command is ignored.
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Controller firmware version request: ignored");
                 return;
 
             case (byte) 0xA7: // Disable aux devcie (mouse) - set clock line low
                 this.setAuxClock(false);
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Aux device (mouse) disabled");
                 return;
 
             case (byte) 0xA8: // Enable aux device (mouse) - set clock line high
                 this.setAuxClock(true);
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Aux device (mouse) enabled");
                 return;
 
@@ -856,7 +662,7 @@ public class Keyboard extends ModuleKeyboard {
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -871,7 +677,7 @@ public class Keyboard extends ModuleKeyboard {
                 return;
 
             case (byte) 0xAA: // Controller self test
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Controller self test");
                 if (kbdInitialised == 0) {
                     keyboard.getControllerQueue().clear();
@@ -882,7 +688,7 @@ public class Keyboard extends ModuleKeyboard {
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -902,7 +708,7 @@ public class Keyboard extends ModuleKeyboard {
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -917,21 +723,21 @@ public class Keyboard extends ModuleKeyboard {
             case (byte) 0xAD: // Disable keyboard; set keyboard clock line low
                               // and set bit 4 of the command byte
                 // Note: any keyboard command enables the keyboard again
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Keyboard disabled");
                 this.setKeyboardClock(false);
                 return;
 
             case (byte) 0xAE: // Enable keyboard; set keyboard clock line high
                               // and clear bit 4 of the command byte.
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Keyboard enabled");
                 this.setKeyboardClock(true);
                 return;
 
             case (byte) 0xAF: // Read controller version
                 logger.log(Level.WARNING, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "Unsupported command on port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -945,7 +751,7 @@ public class Keyboard extends ModuleKeyboard {
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -963,7 +769,7 @@ public class Keyboard extends ModuleKeyboard {
                               // bits 7-4 of the input port to be read from bits
                               // 7-4 of port 0x64, until command is received
                 logger.log(Level.WARNING, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "Unsupported command on port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -973,7 +779,7 @@ public class Keyboard extends ModuleKeyboard {
             case (byte) 0xD0: // Read output port; read output port (P2),
                               // placing result in output buffer
                 logger.log(Level.INFO, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "Partially supported command on port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -982,7 +788,7 @@ public class Keyboard extends ModuleKeyboard {
                                                            // buffer must be
                                                            // empty
                 {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " command 0x"
                             + Integer.toHexString(value).toUpperCase()
                             + " encountered but output buffer not empty!");
@@ -996,7 +802,7 @@ public class Keyboard extends ModuleKeyboard {
 
             case (byte) 0xD1: // Write output port; write value to output port
                               // P2
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0x64: write output port P2");
                 keyboard.controller.expectingPort60h = 1; // Expecting data on
                                                           // port 0x60 next
@@ -1004,7 +810,7 @@ public class Keyboard extends ModuleKeyboard {
 
             case (byte) 0xD2: // Write keyboard output buffer; write next byte
                               // to P2 and act as if this was keyboard data
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0x64: write keyboard output buffer");
                 keyboard.controller.expectingPort60h = 1; // Expecting data on
                                                           // port 0x60 next
@@ -1013,7 +819,7 @@ public class Keyboard extends ModuleKeyboard {
             case (byte) 0xD3: // Write mouse output buffer; write next byte to
                               // P2 and act as if this was mouse data
                 // Not supported but will be ignored at next byte
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0x64: write mouse output buffer");
                 keyboard.controller.expectingPort60h = 1; // Expecting data on
                                                           // port 0x60 next
@@ -1022,20 +828,20 @@ public class Keyboard extends ModuleKeyboard {
             case (byte) 0xD4: // Write to mouse; next byte to port 0x60 is
                               // transmitted to the mouse
                 // Not supported but will be ignored at next byte
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0x64: write to mouse");
                 keyboard.controller.expectingPort60h = 1; // Expecting data on
                                                           // port 0x60 next
                 return;
 
             case (byte) 0xDD: // Disable A20 Address Line
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0xDD: A20 address line disabled");
                 motherboard.setA20(false);
                 return;
 
             case (byte) 0xDF: // Enable A20 Address Line
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0xDF: A20 address line enabled");
                 motherboard.setA20(true);
                 return;
@@ -1044,7 +850,7 @@ public class Keyboard extends ModuleKeyboard {
                               // and T1 available for read via port 0x60 in bits
                               // 0 and 1
                 logger.log(Level.WARNING, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + " Unsupported command to port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -1052,7 +858,7 @@ public class Keyboard extends ModuleKeyboard {
                 return;
 
             case (byte) 0xFE: // System reset; resets the CPU
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Port 0x64: system reset (not implemented yet)");
                 // TODO: implement complete system reset
                 return;
@@ -1062,12 +868,12 @@ public class Keyboard extends ModuleKeyboard {
                                                                        // output
                                                                        // bits
                 {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " Port 0x64: pulse output bits");
                     return;
                 }
                 logger.log(Level.WARNING, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + " Unsupported command to port 0x64: 0x"
                         + Integer.toHexString(0x100 | value & 0xFF)
@@ -1076,7 +882,7 @@ public class Keyboard extends ModuleKeyboard {
             }
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE + "]"
+            throw new ModuleUnknownPortException("[" + super.getType() + "]"
                     + " does not recognise OUT port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
@@ -1084,10 +890,10 @@ public class Keyboard extends ModuleKeyboard {
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
@@ -1096,7 +902,7 @@ public class Keyboard extends ModuleKeyboard {
 
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -1107,10 +913,10 @@ public class Keyboard extends ModuleKeyboard {
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
@@ -1120,7 +926,7 @@ public class Keyboard extends ModuleKeyboard {
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -1134,6 +940,9 @@ public class Keyboard extends ModuleKeyboard {
      * @param irqNumber
      */
     protected void setInterrupt(int irqNumber) {
+
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         // Raise an interrupt at PIC (IRQ 1 or 12)
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
@@ -1144,6 +953,9 @@ public class Keyboard extends ModuleKeyboard {
      * @param irqNumber
      */
     protected void clearInterrupt(int irqNumber) {
+
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         // Clear interrupt at PIC (IRQ 1 or 12)
         pic.clearIRQ(irqNumber);
         if (pendingIRQ == true) {
@@ -1169,7 +981,7 @@ public class Keyboard extends ModuleKeyboard {
                            // set
         int i, parsedInt;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " generateScancode(): " + keyEvent.getKeyCode()
                 + ((eventType == 1) ? " pressed" : " released"));
 
@@ -1182,7 +994,7 @@ public class Keyboard extends ModuleKeyboard {
         // Ignore if the key is not present in 'scanCodeSet.scancodes'
         if (!scanCodeSet.keyIsPresent(keyboard.controller.currentScancodeSet,
                 keyEvent.getKeyCode(), eventType)) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " ignoring illegal keystroke.");
             return;
         }
@@ -1245,7 +1057,7 @@ public class Keyboard extends ModuleKeyboard {
                                 .log(
                                         Level.INFO,
                                         "["
-                                                + MODULE_TYPE
+                                                + super.getType()
                                                 + "]"
                                                 + " generateScancode(): Translated scancode to "
                                                 + (scanCodeSet.translate8042[parsedInt] | valueOR));
@@ -1257,7 +1069,7 @@ public class Keyboard extends ModuleKeyboard {
                 // Send raw data
                 for (i = 0; i < scancode.length; i++) {
                     logger
-                            .log(Level.INFO, "[" + MODULE_TYPE + "]"
+                            .log(Level.INFO, "[" + super.getType() + "]"
                                     + " generateScancode(): Writing raw "
                                     + scancode[i]);
                     enqueueInternalBuffer((byte) Integer.parseInt(scancode[i],
@@ -1266,7 +1078,7 @@ public class Keyboard extends ModuleKeyboard {
             }
         } else {
             // Scancode not recognised, so will be discarded
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Key not recognised (scancode not found).");
 
         }
@@ -1306,7 +1118,7 @@ public class Keyboard extends ModuleKeyboard {
                                                           // chars/sec
         }
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Module has been reset.");
 
         return true;
@@ -1339,7 +1151,7 @@ public class Keyboard extends ModuleKeyboard {
             }
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Keyboard clock "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Keyboard clock "
                 + (state == true ? "enabled" : "disabled"));
     }
 
@@ -1370,7 +1182,7 @@ public class Keyboard extends ModuleKeyboard {
             }
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Aux clock "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Aux clock "
                 + (state == true ? "enabled" : "disabled"));
     }
 
@@ -1385,14 +1197,14 @@ public class Keyboard extends ModuleKeyboard {
      */
     public void enqueueControllerBuffer(byte data, int source) {
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Queueing 0x"
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " Queueing 0x"
                 + Integer.toHexString(data).toUpperCase()
                 + " in keyboard controller buffer");
 
         // Check if output is available for writing
         if (keyboard.controller.outputBuffer != 0) {
             if (keyboard.getControllerQueue().size() >= TheKeyboard.CONTROLLER_QUEUE_SIZE) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] queueKBControllerBuffer(): Keyboard controller is full!");
+                logger.log(Level.WARNING, "[" + super.getType() + "] queueKBControllerBuffer(): Keyboard controller is full!");
             }
             keyboard.getControllerQueue().add(data);
             return;
@@ -1402,7 +1214,7 @@ public class Keyboard extends ModuleKeyboard {
         // Check the source
         if (source == KEYBOARD) {
             // Device is keyboard
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " source == KEYBOARD");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " source == KEYBOARD");
             keyboard.controller.kbdOutputBuffer = data;
             keyboard.controller.outputBuffer = 1; // Set status output bit to full, ready for read
             keyboard.controller.auxBuffer = 0; // Set as keyboard data
@@ -1412,7 +1224,7 @@ public class Keyboard extends ModuleKeyboard {
             }
         } else {
             // Device is mouse
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " source == MOUSE");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " source == MOUSE");
             keyboard.controller.auxOutputBuffer = data;
             keyboard.controller.outputBuffer = 1;
             keyboard.controller.auxBuffer = 1; // Set as mouse data
@@ -1432,7 +1244,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     private void enqueueInternalBuffer(byte scancode) {
         logger.log(Level.INFO, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " enqueueInternalBuffer: 0x"
                 + Integer.toHexString(0x100 | scancode & 0xFF).substring(1)
@@ -1441,14 +1253,14 @@ public class Keyboard extends ModuleKeyboard {
         // Check if buffer is not full
         if (keyboard.internalBuffer.getBuffer().size() >= KeyboardInternalBuffer.NUM_ELEMENTS) {
             // Buffer full
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + "internal keyboard buffer full, ignoring scancode "
                     + scancode);
         } else {
             // Buffer not full
             // Add scancode to end of keyboard buffer queue
             logger.log(Level.INFO, "["
-                    + MODULE_TYPE
+                    + super.getType()
                     + "]"
                     + " enqueueInternalBuffer: adding scancode "
                     + Integer.toHexString(0x100 | scancode & 0xFF).substring(1)
@@ -1461,7 +1273,7 @@ public class Keyboard extends ModuleKeyboard {
             if (!(keyboard.controller.outputBuffer != 0)
                     && (keyboard.controller.kbdClockEnabled != 0)) {
                 activateTimer();
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Timer activated");
                 return;
             }
@@ -1498,7 +1310,7 @@ public class Keyboard extends ModuleKeyboard {
 
         // If no 'timers' are raised, no data is waiting so we can exit here
         if (keyboard.controller.timerPending == 0) {
-            //logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            //logger.log(Level.INFO, "[" + super.getType() + "]"
             //        + " no timer raised, do nothing");
             return (returnValue);
         }
@@ -1509,7 +1321,7 @@ public class Keyboard extends ModuleKeyboard {
         // There is data on the output port, so it is sufficient to raise the
         // IRQs found and exit
         if (keyboard.controller.outputBuffer != 0) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " poll(): output buffer is not empty");
             return (returnValue);
         }
@@ -1518,7 +1330,7 @@ public class Keyboard extends ModuleKeyboard {
         if (!keyboard.internalBuffer.getBuffer().isEmpty()
                 && (keyboard.controller.kbdClockEnabled != 0 || keyboard.controller.batInProgress != 0)) {
             // Keyboard buffer
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " poll(): key in internal buffer waiting"
                     + this.getDump());
 
@@ -1534,14 +1346,16 @@ public class Keyboard extends ModuleKeyboard {
             if (keyboard.controller.allowIRQ1 != 0) {
                 keyboard.controller.irq1Requested = 1;
             }
-        } else if (mouse != null) {
+        }
+        /*
+        else if (mouse != null) {
             // Mouse buffer
             // FIXME: mouse.storeBufferData(false);
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " poll()...");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " poll()...");
 
             if (keyboard.controller.auxClockEnabled == 1 && !mouse.isBufferEmpty()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " poll(): mouse event waiting");
+                logger.log(Level.WARNING, "[" + super.getType() + "]" + " poll(): mouse event waiting");
 
                 // Get data byte from mouse buffer
                 keyboard.controller.auxOutputBuffer = mouse.getDataFromBuffer();
@@ -1555,8 +1369,10 @@ public class Keyboard extends ModuleKeyboard {
                     keyboard.controller.irq12Requested = 1;
                 }
             }
-        } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        }
+        */
+        else {
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " poll(): no keys or mouse events waiting");
         }
         return (returnValue);
@@ -1572,7 +1388,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     private void dataPortToInternalKB(byte value) {
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " Controller passing byte "
                 + Integer.toHexString(0x100 | value & 0xFF).substring(1)
@@ -1600,19 +1416,19 @@ public class Keyboard extends ModuleKeyboard {
                                                                                   // delay
             switch (keyboard.internalBuffer.keyPressDelay) {
             case 0:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " typematic delay (unused) set to 250 ms");
                 break;
             case 1:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " typematic delay (unused) set to 500 ms");
                 break;
             case 2:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " typematic delay (unused) set to 750 ms");
                 break;
             case 3:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " typematic delay (unused) set to 1000 ms");
                 break;
             }
@@ -1631,7 +1447,7 @@ public class Keyboard extends ModuleKeyboard {
             // taken from
             // http://heim.ifi.uio.no/~stanisls/helppc/keyboard_commands.html
             DecimalFormat format = new DecimalFormat("##.#");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Repeat rate (unused) set to " + format.format(cps)
                     + "char. per second");
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge data
@@ -1642,7 +1458,7 @@ public class Keyboard extends ModuleKeyboard {
         if (keyboard.internalBuffer.expectingLEDWrite != 0) {
             keyboard.internalBuffer.expectingLEDWrite = 0; // Reset variable
             keyboard.internalBuffer.ledStatus = value;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Status of LEDs set to "
                     + Integer.toHexString(keyboard.internalBuffer.ledStatus));
 
@@ -1723,14 +1539,14 @@ public class Keyboard extends ModuleKeyboard {
                             .log(
                                     Level.INFO,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " Switching to scancode set "
                                             + Integer
                                                     .toHexString(keyboard.controller.currentScancodeSet + 1));
                     enqueueInternalBuffer((byte) 0xFA); // ACKnowledge data
                 } else {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Scancode set number out of range: "
                             + Integer.toHexString(value).toUpperCase());
                     enqueueInternalBuffer((byte) 0xFF); // Send ERRor response
@@ -1777,13 +1593,13 @@ public class Keyboard extends ModuleKeyboard {
                                                               // be data
                                                               // indicating
                                                               // settings
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Expecting scancode set information");
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
             break;
 
         case (byte) 0xF2: // Read Keyboard ID
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Read Keyboard ID command received");
 
             // XT sends nothing, AT sends ACK
@@ -1802,7 +1618,7 @@ public class Keyboard extends ModuleKeyboard {
             keyboard.internalBuffer.expectingTypematic = 1; // Next byte will be
                                                             // data indicating
                                                             // settings
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Expecting Typematic Rate/Delay information");
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
             break;
@@ -1816,7 +1632,7 @@ public class Keyboard extends ModuleKeyboard {
             resetKeyboardBuffer(1); // Reset keyboard to default settings
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
             keyboard.internalBuffer.scanningEnabled = 0; // Disable scanning
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Reset w/ Disable command received");
             break;
 
@@ -1824,17 +1640,17 @@ public class Keyboard extends ModuleKeyboard {
             resetKeyboardBuffer(1); // Reset keyboard to default settings
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
             keyboard.internalBuffer.scanningEnabled = 1; // Enable scanning
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Reset w Enable command received");
             break;
 
         case (byte) 0xFE: // Resend (transmission error detected)
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Requesting resend: transmission error!!");
             break;
 
         case (byte) 0xFF: // Reset with BAT
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Reset w/ BAT command received");
             resetKeyboardBuffer(1); // Reset keyboard to default settings
             enqueueInternalBuffer((byte) 0xFA); // ACKnowledge command
@@ -1852,7 +1668,7 @@ public class Keyboard extends ModuleKeyboard {
         case (byte) 0xFD: // PS/2 Set Key Type to Make
 
         default:
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " dataPortToInternalKB(): got value of " + value);
             enqueueInternalBuffer((byte) 0xFE); // RESEND - is this the correct
                                                 // response???

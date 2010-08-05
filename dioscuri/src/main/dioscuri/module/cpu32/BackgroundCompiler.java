@@ -36,7 +36,7 @@ import java.util.*;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public class BackgroundCompiler implements CodeBlockCompiler {
     private static final int COMPILER_QUEUE_SIZE = 20;
     private static final int COMPILE_REQUEST_THRESHOLD = 64;

@@ -44,14 +44,9 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.ModuleUnknownPortException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleClock;
-import dioscuri.module.ModuleDevice;
-import dioscuri.module.ModuleMemory;
-import dioscuri.module.ModuleMotherboard;
+import dioscuri.module.*;
 
 /**
  * An implementation of a motherboard module. This module is responsible for
@@ -79,9 +74,6 @@ public class Motherboard extends ModuleMotherboard {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections;
-    private ModuleCPU cpu;
-    private ModuleMemory memory;
     private Devices devices; // Array of all peripheral devices
     private ModuleClock clock; // Relation to internal clock (optional)
 
@@ -99,15 +91,7 @@ public class Motherboard extends ModuleMotherboard {
                                           // signed/unsigned
 
     // Logging
-    private static final Logger logger = Logger.getLogger(Motherboard.class
-            .getPackage().getName());
-
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "motherboard";
-    public final static String MODULE_NAME = "General x86 motherboard";
+    private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
 
     // Memory size
     public final static int IOSPACE_ISA_SIZE = 1024; // ISA: 1024 (2^10) spaces,
@@ -144,112 +128,14 @@ public class Motherboard extends ModuleMotherboard {
         ioAddressSpace = new Module[ioSpaceSize];
 
         // Set module connections
+        /*
         if (!emu.isCpu32bit())
             moduleConnections = new String[] { "cpu", "memory" };
         else
             moduleConnections = new String[] {};
-
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-
-        if (!emu.isCpu32bit()) {
-            // Set connection for memory
-            if (module.getType().equalsIgnoreCase("memory")) {
-                this.memory = (ModuleMemory) module;
-                return true;
-            }
-            // Set connection for CPU
-            else if (module.getType().equalsIgnoreCase("cpu")) {
-                this.cpu = (ModuleCPU) module;
-                return true;
-            }
-        }
-        // Else, module may be a device
-        try {
-            devices.addDevice((ModuleDevice) module);
-            return true;
-        } catch (ClassCastException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                    + " Failed to establish connection.");
-            return false;
-        }
-    }
-
-    /**
-     * Checks if this module is connected to operate normally NOTE: not all
-     * devices are required, so they are not checked
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        if (!emu.isCpu32bit()) {
-            // Check all connections
-            if (this.memory != null && this.cpu != null) {
-                return true;
-            }
-            // Else, one or more connections may be missing
-            return false;
-        } else
-            // 32-bit CPU requires no connections
-            return true;
+        */
+        
+        logger.log(Level.INFO, "[" + super.getType() + "] Module created successfully.");
     }
 
     /**
@@ -270,110 +156,10 @@ public class Motherboard extends ModuleMotherboard {
         // Disable memory wrapping for BIOS mem check
         A20Enabled = true;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + "  Module has been reset.");
 
         return true;
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     *            requester, the requester of the data
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true if successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
     }
 
     /**
@@ -395,12 +181,10 @@ public class Motherboard extends ModuleMotherboard {
         for (int port = 0; port < IOSPACE_ISA_SIZE; port++) {
             // Only print I/O space info when port is used
             if (ioAddressSpace[port] != null
-                    && !(ioAddressSpace[port].getType()
-                            .equalsIgnoreCase("dummy"))) {
+                    && !(ioAddressSpace[port].getType() == Type.DUMMY)) {
                 dump += "0x"
                         + Integer.toHexString(0x10000 | port & 0x0FFFF)
-                                .substring(1).toUpperCase() + tab + ": "
-                        + ioAddressSpace[port].getName() + " ("
+                                .substring(1).toUpperCase() + tab + ": ("
                         + ioAddressSpace[port].getType() + ")" + ret;
             }
         }
@@ -426,7 +210,7 @@ public class Motherboard extends ModuleMotherboard {
      * @param updateInterval
      * @return boolean true if registration is successfully, false otherwise
      */
-    public boolean requestTimer(ModuleDevice device, int updateInterval,
+    public boolean requestTimer(Module device, int updateInterval,
             boolean continuous) {
         // Check if clock exists
         if (clock != null) {
@@ -442,7 +226,7 @@ public class Motherboard extends ModuleMotherboard {
      * @param activeState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public boolean setTimerActiveState(ModuleDevice device, boolean activeState) {
+    public boolean setTimerActiveState(Module device, boolean activeState) {
         // Check if clock exists
         if (clock != null) {
             // Set device's timer to requested state
@@ -456,7 +240,7 @@ public class Motherboard extends ModuleMotherboard {
      * 
      * @return boolean true if reset is successfully, false otherwise
      */
-    public boolean resetTimer(ModuleDevice device, int updateInterval) {
+    public boolean resetTimer(Module device, int updateInterval) {
         // Check if clock exists
         if (clock != null) {
             return clock.resetTimer(device, updateInterval);
@@ -469,7 +253,7 @@ public class Motherboard extends ModuleMotherboard {
      * 
      * @return boolean true if data is set successfully, false otherwise
      */
-    public boolean setIOPort(int portAddress, ModuleDevice device) {
+    public boolean setIOPort(int portAddress, Module device) {
         // check if port is already in use
         if (ioAddressSpace[portAddress] == null) {
             ioAddressSpace[portAddress] = device;
@@ -477,7 +261,7 @@ public class Motherboard extends ModuleMotherboard {
         }
 
         // Print warning
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + "  I/O address space: Registration for " + device.getType()
                 + " failed. I/O port address already registered by "
                 + ioAddressSpace[portAddress].getType());
@@ -492,28 +276,28 @@ public class Motherboard extends ModuleMotherboard {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException {
         // check if port is available
-        if (ioAddressSpace[portAddress] != null) {
+        if (ioAddressSpace[portAddress] != null && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Return data at appropriate portnumber (could throw an
                 // exception in protected mode)
-                return ioAddressSpace[portAddress].getIOPortByte(portAddress);
-            } catch (ModuleUnknownPort e1) {
+                return ((Addressable)ioAddressSpace[portAddress]).getIOPortByte(portAddress);
+            } catch (ModuleUnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.INFO, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getByte) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -533,14 +317,14 @@ public class Motherboard extends ModuleMotherboard {
             throws ModuleException {
         // Check for Bochs BIOS ports first:
         if (portAddress == 0x400 || portAddress == 0x401) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " Problem occurred in ROM BIOS at line: " + dataByte);
             return;
         } else if (portAddress == 0x402 || portAddress == 0x403) {
             try {
                 logger.log(Level.WARNING,
                         "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " I/O port (0x"
                                 + Integer.toHexString(portAddress)
@@ -549,32 +333,31 @@ public class Motherboard extends ModuleMotherboard {
                                 + new String(new byte[] { (byte) dataByte },
                                         "US-ASCII"));
             } catch (Exception e) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " I/O port (0x"
                         + Integer.toHexString(portAddress).toUpperCase()
                         + "): " + new String(new byte[] { (byte) dataByte }));
             }
             return;
         } else if (portAddress == 0x8900) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " I/O port (0x"
+            logger.log(Level.WARNING, "[" + super.getType() + "]" + " I/O port (0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + "): attempting to shutdown.");
             return;
         }
 
         // Check if port is available/registered
-        if (ioAddressSpace[portAddress] != null) {
+        if (ioAddressSpace[portAddress] != null && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Set data at appropriate portnumber (could throw an exception
                 // in protected mode)
-                ioAddressSpace[portAddress]
-                        .setIOPortByte(portAddress, dataByte);
+                ((Addressable)ioAddressSpace[portAddress]).setIOPortByte(portAddress, dataByte);
 
-            } catch (ModuleUnknownPort e) {
+            } catch (ModuleUnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.INFO, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -583,7 +366,7 @@ public class Motherboard extends ModuleMotherboard {
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } else {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Requested I/O port (0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ", setByte) is not available/registered.");
@@ -603,28 +386,29 @@ public class Motherboard extends ModuleMotherboard {
     public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
-                && ioAddressSpace[portAddress + 1] != null) {
+                && ioAddressSpace[portAddress + 1] != null
+                && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Return data at appropriate portnumber (could throw an
                 // exception in protected mode)
-                return ioAddressSpace[portAddress].getIOPortWord(portAddress);
-            } catch (ModuleUnknownPort e1) {
+                return ((Addressable)ioAddressSpace[portAddress]).getIOPortWord(portAddress);
+            } catch (ModuleUnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.WARNING, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -644,17 +428,17 @@ public class Motherboard extends ModuleMotherboard {
             throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
-                && ioAddressSpace[portAddress + 1] != null) {
+                && ioAddressSpace[portAddress + 1] != null
+                && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Set data at appropriate portnumber (could throw an exception
                 // in protected mode)
-                ioAddressSpace[portAddress]
-                        .setIOPortWord(portAddress, dataWord);
-            } catch (ModuleUnknownPort e) {
+                ((Addressable)ioAddressSpace[portAddress]).setIOPortWord(portAddress, dataWord);
+            } catch (ModuleUnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -681,17 +465,17 @@ public class Motherboard extends ModuleMotherboard {
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
                 && ioAddressSpace[portAddress + 2] != null
-                && ioAddressSpace[portAddress + 3] != null) {
+                && ioAddressSpace[portAddress + 3] != null
+                && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Return data at appropriate portnumber (could throw an
                 // exception in protected mode)
-                return ioAddressSpace[portAddress]
-                        .getIOPortDoubleWord(portAddress);
-            } catch (ModuleUnknownPort e1) {
+                return ((Addressable)ioAddressSpace[portAddress]).getIOPortDoubleWord(portAddress);
+            } catch (ModuleUnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -699,12 +483,12 @@ public class Motherboard extends ModuleMotherboard {
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.WARNING, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getDoubleWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -726,18 +510,18 @@ public class Motherboard extends ModuleMotherboard {
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
                 && ioAddressSpace[portAddress + 2] != null
-                && ioAddressSpace[portAddress + 3] != null) {
+                && ioAddressSpace[portAddress + 3] != null
+                && ioAddressSpace[portAddress] instanceof Addressable) {
             try {
                 // Set data at appropriate portnumber (could throw an exception
                 // in protected mode)
-                ioAddressSpace[portAddress].setIOPortDoubleWord(portAddress,
-                        dataDoubleWord);
+                ((Addressable)ioAddressSpace[portAddress]).setIOPortDoubleWord(portAddress, dataDoubleWord);
 
-            } catch (ModuleUnknownPort e) {
+            } catch (ModuleUnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -769,6 +553,9 @@ public class Motherboard extends ModuleMotherboard {
      * 
      */
     public void setA20(boolean a20) {
+
+        ModuleMemory memory = (ModuleMemory)super.getModule(Type.MEMORY);
+
         // Set status of A20 address line
         // False = memory wrapping turned off
         A20Enabled = a20;
@@ -777,7 +564,7 @@ public class Motherboard extends ModuleMotherboard {
                     .log(
                             Level.WARNING,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
         } else {
@@ -793,12 +580,14 @@ public class Motherboard extends ModuleMotherboard {
      */
     public long getCurrentInstructionNumber() {
 
+        ModuleCPU cpu = (ModuleCPU)super.getModule(Type.CPU);
+
         if (emu.isCpu32bit()) {
             logger
                     .log(
                             Level.WARNING,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
             return 0x1;

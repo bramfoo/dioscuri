@@ -44,7 +44,7 @@ package dioscuri.module.cpu;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public class Util {
 
     // Attributes

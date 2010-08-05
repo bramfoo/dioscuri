@@ -45,10 +45,9 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.ModuleUnknownPortException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.module.Module;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleRTC;
@@ -56,8 +55,7 @@ import dioscuri.module.ModuleRTC;
 /**
  * An implementation of a Real Time module. This component takes care of
  * updating the date and time settings of the computer.
- * 
- * @see ModuleDevice
+ *
  * @see Module
  * 
  *      Metadata module ********************************************
@@ -72,7 +70,7 @@ import dioscuri.module.ModuleRTC;
  *      general.ancestor : general.successor : rtc.ramsize : 256 bytes
  * 
  */
-@SuppressWarnings("unused")
+
 public class RTC extends ModuleRTC {
 
     // Instance
@@ -80,9 +78,6 @@ public class RTC extends ModuleRTC {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "pic" };
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
 
     // Toggles
     private boolean isObserved;
@@ -105,11 +100,6 @@ public class RTC extends ModuleRTC {
     // Constants
     private final static int OUT_PORT = 0x70; // Write-only port
     private final static int IN_PORT = 0x71; // Read/write port
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "rtc";
-    public final static String MODULE_NAME = "Real Time Clock (RTC)";
 
     // Constructor
 
@@ -135,95 +125,8 @@ public class RTC extends ModuleRTC {
         // via configuration file
         systemTime = false;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] "
+        logger.log(Level.INFO, "[" + super.getType() + "] "
                 + " Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module is fully connected
-        if (this.motherboard != null && this.pic != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
     }
 
     /**
@@ -233,6 +136,10 @@ public class RTC extends ModuleRTC {
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+
         // Set current system time in CMOS, stored in BCD format
         // Need to cast calender value to same hex digits (e.g. 48d -> 48h)
         // This is done by taking the calender value as hex and casting it to
@@ -242,11 +149,11 @@ public class RTC extends ModuleRTC {
         // custom time
         cmos.reset(systemTime);
         if (systemTime) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] CMOS clock set to host machine's values: "
                     + cmos.getClockValue());
         } else {
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] CMOS clock set to user-defined values: "
                     + cmos.getClockValue());
         }
@@ -259,89 +166,15 @@ public class RTC extends ModuleRTC {
         // Register IRQ number
         irqNumber = pic.requestIRQNumber(this);
         if (irqNumber > -1) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] IRQ number set to: " + irqNumber);
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Request of IRQ number failed.");
         }
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
-    }
-
-    /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
     }
 
     /**
@@ -354,25 +187,12 @@ public class RTC extends ModuleRTC {
      */
     public boolean setData(byte[] data, Module sender) {
         // Check if data comes from PIT
-        if (sender.getType().equalsIgnoreCase("pit")) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE
-                    + "] Received out signal from PIT.");
+        if (sender.getType() == Type.PIT) {
+            logger.log(Level.INFO, "[" + super.getType() + "] Received out signal from PIT.");
 
             // Update Timer settings of CMOS
             // this.updateClock();
         }
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
         return false;
     }
 
@@ -446,19 +266,21 @@ public class RTC extends ModuleRTC {
      * 
      * @return byte of data from previously indicated CMOS register
      */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
+    public byte getIOPortByte(int portAddress) throws ModuleUnknownPortException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
+        
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
 
         switch (portAddress) {
         case (OUT_PORT):
             // Undefined
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " IN command (byte) from port 0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + "; Returned 0xFF");
-            // throw new ModuleWriteOnlyPortException(MODULE_TYPE + " -> port "
+            // throw new ModuleWriteOnlyPortException(super.getType() + " -> port "
             // + Integer.toHexString(portAddress).toUpperCase() +
             // " is write-only and cannot be read");
             return (byte) 0xFF;
@@ -466,7 +288,7 @@ public class RTC extends ModuleRTC {
         case (IN_PORT):
             // Return data from previously indicated CMOS register
             logger.log(Level.INFO, "["
-                    + MODULE_TYPE
+                    + super.getType()
                     + "]"
                     + " IN command (byte) from register 0x"
                     + Integer.toHexString(lookupRegister).toUpperCase()
@@ -482,7 +304,7 @@ public class RTC extends ModuleRTC {
             return cmos.ram[lookupRegister];
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new ModuleUnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
@@ -500,8 +322,8 @@ public class RTC extends ModuleRTC {
      *            register<BR>
      */
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to "
+            throws ModuleUnknownPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
         // Check bit 7 of data for enabling/disabling of NMI:
@@ -512,7 +334,7 @@ public class RTC extends ModuleRTC {
             // 'data' sets the register for the next port instruction;
             // Limited range to 127 to fit within CMOS array size
             lookupRegister = data & 0x7F;
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " OUT command (byte) to port 0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ": lookup byte set to 0x"
@@ -526,7 +348,7 @@ public class RTC extends ModuleRTC {
             } else {
                 cmos.ram[lookupRegister] = data;
             }
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " OUT command (byte) to port 0x"
                     + Integer.toHexString(portAddress).toUpperCase() + " [0x"
                     + Integer.toHexString(lookupRegister).toUpperCase()
@@ -534,17 +356,17 @@ public class RTC extends ModuleRTC {
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new ModuleUnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
@@ -553,7 +375,7 @@ public class RTC extends ModuleRTC {
 
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -564,10 +386,10 @@ public class RTC extends ModuleRTC {
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
@@ -577,7 +399,7 @@ public class RTC extends ModuleRTC {
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -595,7 +417,7 @@ public class RTC extends ModuleRTC {
      * @return byte containing value of register
      */
     public byte getCMOSRegister(int register) {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE
+        logger.log(Level.CONFIG, "[" + super.getType()
                 + "] Returned CMOS register " + register + ": 0x"
                 + Integer.toHexString(cmos.ram[register]).toUpperCase());
 
@@ -608,7 +430,7 @@ public class RTC extends ModuleRTC {
      * 
      */
     public void setCMOSRegister(int register, byte value) {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Set CMOS register "
+        logger.log(Level.CONFIG, "[" + super.getType() + "] Set CMOS register "
                 + register + ": 0x" + Integer.toHexString(value).toUpperCase());
 
         // Store the value in given register
@@ -621,7 +443,7 @@ public class RTC extends ModuleRTC {
     public void updateClock() {
         // Update with one second
         cmos.setClockValue(1);
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] CMOS clock updated: "
+        logger.log(Level.INFO, "[" + super.getType() + "] CMOS clock updated: "
                 + cmos.getClockValue());
     }
 

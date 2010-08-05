@@ -44,7 +44,7 @@ package dioscuri.module.cpu;
  * Load Access Rights byte.<BR>
  * Flags modified: ZF
  */
-@SuppressWarnings("unused")
+
 public class Instruction_LAR implements Instruction {
 
     // Attributes

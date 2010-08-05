@@ -52,7 +52,7 @@ import java.util.logging.Logger;
  * 
  * 
  */
-@SuppressWarnings("unused")
+
 public class Counter {
     // Attributes
     private PIT pit; // The owner of the counter

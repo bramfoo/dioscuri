@@ -46,7 +46,7 @@ import java.util.logging.Logger;
  * Push immediate word onto stack SS:SP.<BR>
  * Flags modified: none
  */
-@SuppressWarnings("unused")
+
 public class Instruction_PUSH_Iv implements Instruction {
 
     // Attributes

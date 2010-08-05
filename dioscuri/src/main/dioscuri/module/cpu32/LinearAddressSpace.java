@@ -36,7 +36,7 @@ import java.io.*;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public final class LinearAddressSpace extends AddressSpace implements
         HardwareComponent {
     private static final PageFaultWrapper PF_NOT_PRESENT_RU = new PageFaultWrapper(

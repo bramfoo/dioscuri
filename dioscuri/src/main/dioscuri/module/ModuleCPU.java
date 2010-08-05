@@ -188,4 +188,6 @@ public abstract class ModuleCPU extends Module implements Addressable {
      *         otherwise
      */
     public abstract boolean isShutdown();
+
+    public abstract void start();
 }

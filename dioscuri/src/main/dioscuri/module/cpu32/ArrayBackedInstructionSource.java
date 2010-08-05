@@ -30,7 +30,7 @@ package dioscuri.module.cpu32;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
+
 public class ArrayBackedInstructionSource implements InstructionSource {
     private int[] microcodes;
     private int[] positions;

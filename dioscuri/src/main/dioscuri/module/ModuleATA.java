@@ -39,10 +39,46 @@
 
 package dioscuri.module;
 
+import dioscuri.module.ata.ATATranslationType;
+
 public abstract class ModuleATA extends Module implements Addressable, Updatable {
 
     public ModuleATA() {
         super(Type.ATA,
                 Type.MOTHERBOARD, Type.PIC, Type.RTC);
     }
+
+    /**
+     * Initiate configuration of the disk drive.
+     *
+     * @param theIdeChannel
+     * @param isMaster
+     * @param isHardDisk
+     * @param isWriteProtected
+     * @param numCylinders
+     * @param numHeads
+     * @param numSectorsPerTrack
+     * @param translationType
+     * @param imageFilePath
+     */
+    public abstract void initConfig(int theIdeChannel, boolean isMaster,
+            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
+            int numHeads, int numSectorsPerTrack,
+            ATATranslationType translationType, String imageFilePath);
+
+    /**
+     * Set CMOS values
+     *
+     * @param bootDrives
+     * @param floppySigCheckDisabled
+     */
+    public abstract void setCmosSettings(int[] bootDrives,
+            boolean floppySigCheckDisabled);
+
+    /**
+     * Gets the current channel index.
+     *
+     * @return int the current channel index
+     */
+    public abstract int getCurrentChannelIndex();
 }

@@ -59,7 +59,7 @@ import dioscuri.module.*;
  * max
  * 
  */
-public class Clock extends ModuleClock {
+public class Clock extends ModuleClock implements Runnable {
 
     private Timer[] timers;
 
@@ -75,11 +75,6 @@ public class Clock extends ModuleClock {
     // Logging
     private static final Logger logger = Logger.getLogger(Clock.class.getName());
 
-    // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "clock";
-    public final static String MODULE_NAME = "Crystal clock";
     public final static int TIMER_ARRAY_SIZE = 10;
 
     // Constructor
@@ -97,16 +92,11 @@ public class Clock extends ModuleClock {
         // Set sleepTime on default value
         sleepTime = 1000;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
-                + " -> Module created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module created successfully.");
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
     @Override
     public String getDump() {
@@ -128,13 +118,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Register a device to clock and assign a timer to it
-     * 
-     * @param device 
-     * @param continuous
-     * @param intervalLength
-     * @return boolean true if timer assigned successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean registerDevice(Module device, int intervalLength,
             boolean continuous) {
         ModuleCPU cpu = (ModuleCPU)this.getModule(Module.Type.CPU);
@@ -143,7 +129,7 @@ public class Clock extends ModuleClock {
             // Change the interval length from useconds to instructions
             timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuous);
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                     + device.getType() + "' registered a timer with interval "
                     + timers[arrayIndex].intervalLength + " instructions");
 
@@ -154,12 +140,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Reset the countdown of a timer to the interval length
-     * 
-     * @param device 
-     * @param updateInterval
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean resetTimer(Module device, int updateInterval) {
         // Check if timer exists for given device
         int t = 0;
@@ -168,7 +151,7 @@ public class Clock extends ModuleClock {
         while (timers[t] != null) {
             if (timers[t].user.getType() == device.getType()) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer reset to "
                         + timers[t].intervalLength + " instructions");
                 return true;
@@ -179,19 +162,16 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Set a timer to start/stop running
-     * 
-     * @param device 
-     * @param runState
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean setTimerActiveState(Module device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
             if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = runState;
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
                         + runState);
                 return true;
@@ -202,9 +182,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Triggers device's update if timer goes off
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void pulse() {
         // Check all active timers
         int t = 0;
@@ -222,13 +202,10 @@ public class Clock extends ModuleClock {
         }
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
      * Implements the run method of Thread
-     * 
      */
+    @Override
     public void run() {
         // Generate a clock pulse each n millisecons while running
         while (keepRunning) {
@@ -253,18 +230,15 @@ public class Clock extends ModuleClock {
      * send. FIXME: This method is not completely implemented yet!!!
      * 
      */
-    @SuppressWarnings("unused")
+    /*
     private void calibrate() {
         // Get system time
         boolean isCalibrated;
-
         isCalibrated = false;
-
         while (isCalibrated == false) {
-
         }
-
     }
+    */
 
     /**
      * Sets the keepRunning toggle keepRunning states if the clockthread should
@@ -272,9 +246,11 @@ public class Clock extends ModuleClock {
      * 
      * @param status
      */
+    /*
     protected void setKeepRunning(boolean status) {
         keepRunning = status;
     }
+    */
 
     /**
      * Retrieves the current clockrate of this clock in milliseconds
@@ -282,27 +258,32 @@ public class Clock extends ModuleClock {
      * @return long milliseconds defining how long the clock sleeps before
      *         sending a pulse
      */
+    /*
     public long getClockRate() {
         // Return the current number of milliseconds the clock is sleeping
         return this.sleepTime;
     }
+    */
 
     /**
      * Sets the rate for this clock
      * 
      * @param milliseconds
      */
+    /*
     public void setClockRate(long milliseconds) {
         // Set the number of milliseconds before a pulse is generated
         this.sleepTime = milliseconds;
     }
+    */
 
     /**
      * Sets the active state for this clock
      * 
-     * @param device
-     * @param state
+     * @param device -
+     * @param state  -
      */
+    /*
     public void setActiveState(Module device, boolean state) {
         // Check if timer exists for given device
         int t = 0;
@@ -313,4 +294,5 @@ public class Clock extends ModuleClock {
             t++;
         }
     }
+    */
 }
