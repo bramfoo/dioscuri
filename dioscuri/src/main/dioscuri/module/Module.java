@@ -39,17 +39,76 @@
 
 package dioscuri.module;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
- * Interface representing a generic hardware module.
+ * Abstract class representing a generic hardware module.
  * 
  */
-
 public abstract class Module {
-    // General module variables
-    // String moduleDataString;
-    // int moduleDataInt;
 
-    // Methods
+    public static enum Type {
+        BIOS,
+        CLOCK,
+        CPU,
+        DUMMY, // TODO remove
+        MEMORY,
+        MOTHERBOARD,
+        MOUSE,
+        SCREEN
+    }
+
+    protected final Type type;
+    private final Map<Type, Module> connections;
+    private boolean debugMode;
+
+    /**
+     * Creates a new instance of a module.
+     * 
+     * @param type                  the type of this module.
+     * @param expectedConnections   an array with the types this module
+     *                              is supposed to be connected to when
+     *                              the emulation process starts. It
+     *                              can be null if this module is not
+     *                              connected to any other module (note
+     *                              that other modules can be connected
+     *                              to it!).
+     * @throws NullPointerException iff <code>type</code> is null
+     */
+    public Module(Type type, Type[] expectedConnections) {
+
+        if(type == null) {
+            throw new NullPointerException("The type of class "+
+                    this.getClass().getName()+" cannot be null");
+        }
+
+        this.type = type;
+        this.connections = new HashMap<Type, Module>();
+        this.debugMode = false;
+
+        if(expectedConnections != null) {
+            for(Type t : expectedConnections) {
+                this.connections.put(t, null);
+            }
+        }
+    }
+
+    /**
+     * Checks if this module is connected to operate normally
+     *
+     * @return true if this module is connected successfully, false otherwise
+     */
+    public abstract boolean isConnected();/* {
+        for(Module connectedTo : this.connections.values()) {
+            if(connectedTo == null) {
+                return false;
+            }
+        }
+        return true;
+    }             */
+
+    /** OLD METHODS BELOW :: TODO **/
 
     /**
      * Returns the ID of module (integer value)
@@ -61,9 +120,9 @@ public abstract class Module {
 
     /**
      * Returns the type of module (CPU, Memory, etc.)
-     * 
+     *
      * @return string with the type of this module
-     * 
+     *
      */
     public abstract String getType();
 
@@ -92,12 +151,7 @@ public abstract class Module {
      */
     public abstract boolean setConnection(Module mod);
 
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public abstract boolean isConnected();
+
 
     /**
      * Reset all parameters of module

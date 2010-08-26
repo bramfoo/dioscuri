@@ -47,9 +47,12 @@ import dioscuri.exception.ModuleException;
  */
 
 public abstract class ModuleMotherboard extends Module {
+
     public int ioSpaceSize;
 
-    // Methods
+    public ModuleMotherboard() {
+        super(Type.MOTHERBOARD, null); // TODO
+    }
 
     /**
      * Registers a clock to motherboard

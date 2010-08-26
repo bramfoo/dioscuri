@@ -47,7 +47,11 @@ import dioscuri.exception.ModuleException;
  */
 
 public abstract class ModuleMemory extends Module {
-    // Methods
+
+    public ModuleMemory() {
+        super(Type.MEMORY, null); // TODO
+    }
+
 
     /**
      * Return a byte from memory

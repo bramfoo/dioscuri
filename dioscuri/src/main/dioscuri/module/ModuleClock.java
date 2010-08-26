@@ -44,7 +44,10 @@ package dioscuri.module;
  */
 
 public abstract class ModuleClock extends Module {
-    // Methods
+
+    public ModuleClock() {
+        super(Type.CLOCK, null); // TODO
+    }
 
     /**
      * Register a device to clock and assign a timer to it

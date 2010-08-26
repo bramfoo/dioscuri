@@ -47,7 +47,11 @@ import java.awt.event.MouseEvent;
  */
 
 public abstract class ModuleMouse extends Module {
-    // Methods
+
+    public ModuleMouse() {
+        super(Type.MOUSE, null); // TODO
+    }
+
     /**
      *
      * @param status

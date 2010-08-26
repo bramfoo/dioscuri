@@ -48,7 +48,10 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
  */
 
 public abstract class ModuleCPU extends Module {
-    // Methods
+
+    public ModuleCPU() {
+        super(Type.CPU, null); // TODO
+    }
 
     /**
      * Set the Instructions Per Second (ips) for this CPU.

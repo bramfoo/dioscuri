@@ -49,7 +49,11 @@ import dioscuri.exception.ModuleException;
  */
 
 public abstract class ModuleBIOS extends Module {
-    // Methods
+
+    public ModuleBIOS() {
+        super(Type.BIOS, null); // TODO
+    }
+
     /**
      * Returns the system BIOS code from ROM
      * 

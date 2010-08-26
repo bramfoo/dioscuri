@@ -48,7 +48,11 @@ import javax.swing.JPanel;
  */
 
 public abstract class ModuleScreen extends Module {
-    // Methods
+
+    public ModuleScreen() {
+        super(Type.SCREEN, null); // TODO
+    }
+
     /**
      * Return a reference to the actual screen
      * @return -

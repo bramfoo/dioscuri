@@ -51,7 +51,10 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
  */
 
 public abstract class ModuleDevice extends Module {
-    // Methods
+
+    public ModuleDevice() {
+        super(Type.DUMMY, null); // TODO
+    }
 
     /**
      * Retrieve the interval between subsequent updates
