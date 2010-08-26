@@ -1,8 +1,0 @@
-1267097489820	dioscuri.gui	SEVERE	: 
-+-------------------------------------------------------------------------------------+
-| Dioscuri - modular emulator for digital preservation                                |
-| Copyright (C) January, 2010                                                         |
-| Koninklijke Bibliotheek (KB), Nationaal Archief of the Netherlands, Planets, KEEP   |
-+-------------------------------------------------------------------------------------+
-
-1267097490039	dioscuri.gui	WARNING	: Wrong command line option(s): java.lang.NullPointerException

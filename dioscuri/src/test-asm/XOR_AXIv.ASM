@@ -1,7 +1,0 @@
-; XOR_AXIv (opcode 35), logical XOR of immediate word and AX
-; 35 ff ef 35 55 aa 35 aa 45 f4
-start:
-	XOR ax, 0xEFFF	 ; 0000 0000 0000 0000 ^ 1111 1111 1111 1111
-	XOR ax, 0xAA55	 ; 1010 1010 0101 0101 ^ 1010 1010 0101 0101
-	XOR ax, 0x45AA	 ; 1111 1111 1111 1111 ^ 0101 0101 1010 1010
-	HLT
