@@ -262,19 +262,6 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check connections
-        if (video != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

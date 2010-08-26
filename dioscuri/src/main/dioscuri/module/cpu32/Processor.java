@@ -3210,12 +3210,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public boolean isConnected() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
     public boolean isObserved() {
         // TODO Auto-generated method stub
         return false;

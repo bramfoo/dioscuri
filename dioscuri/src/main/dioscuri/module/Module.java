@@ -99,14 +99,14 @@ public abstract class Module {
      *
      * @return true if this module is connected successfully, false otherwise
      */
-    public abstract boolean isConnected();/* {
+    public final boolean isConnected() {
         for(Module connectedTo : this.connections.values()) {
             if(connectedTo == null) {
                 return false;
             }
         }
         return true;
-    }             */
+    }
 
     /** OLD METHODS BELOW :: TODO **/
 

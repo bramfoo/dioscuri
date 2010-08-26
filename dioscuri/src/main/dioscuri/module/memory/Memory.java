@@ -206,18 +206,6 @@ public class Memory extends ModuleMemory {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        if (video != null && cpu != null && motherboard != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

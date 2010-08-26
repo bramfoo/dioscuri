@@ -187,16 +187,6 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // All connections are in place
-        return true;
-    }
-
-    /**
      * Reset all parameters of module. BIOS ROM is not reset. ROM will keep all
      * BIOS ROM data.
      * 

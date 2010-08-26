@@ -553,30 +553,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module is fully connected
-
-        if (!emu.isCpu32bit()) {
-            if (this.motherboard != null && this.rtc != null
-                    && this.pic != null && this.dma != null && this.ata != null) {
-                return true;
-            }
-        } else {
-            if (this.motherboard != null && this.rtc != null
-                    && this.pic != null && this.ata != null) {
-                return true;
-            }
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
      * Default inherited reset. Calls specific reset(int)
      * 
      * @return boolean true if module has been reset successfully, false

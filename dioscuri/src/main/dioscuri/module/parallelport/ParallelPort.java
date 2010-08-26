@@ -188,19 +188,6 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (motherboard != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

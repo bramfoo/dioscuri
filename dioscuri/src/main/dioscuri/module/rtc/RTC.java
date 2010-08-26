@@ -210,22 +210,7 @@ public class RTC extends ModuleRTC {
         // No connection has been established
         return false;
     }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module is fully connected
-        if (this.motherboard != null && this.pic != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
+    
     /**
      * Reset all parameters of module
      * 

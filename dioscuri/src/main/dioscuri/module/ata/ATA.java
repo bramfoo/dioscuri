@@ -241,26 +241,6 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        // BRAM: Removed CPU connection, as it was unnecessary
-        if (this.motherboard != null && this.pic != null && this.rtc != null)// &&
-                                                                             // this.cpu
-                                                                             // !=
-                                                                             // null)
-        {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

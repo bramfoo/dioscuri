@@ -400,22 +400,6 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check all required connections
-        if (this.memory != null && this.motherboard != null && this.pic != null
-                && this.clock != null) {
-            return true;
-        }
-
-        // Else, one or more connections may be missing
-        return false;
-    }
-
-    /**
      * Resets all parameters of this module
      * 
      * @return boolean true if module has been reset successfully, false

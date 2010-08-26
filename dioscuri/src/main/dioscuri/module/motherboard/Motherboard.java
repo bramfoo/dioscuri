@@ -234,25 +234,6 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Checks if this module is connected to operate normally NOTE: not all
-     * devices are required, so they are not checked
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        if (!emu.isCpu32bit()) {
-            // Check all connections
-            if (this.memory != null && this.cpu != null) {
-                return true;
-            }
-            // Else, one or more connections may be missing
-            return false;
-        } else
-            // 32-bit CPU requires no connections
-            return true;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

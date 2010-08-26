@@ -269,20 +269,6 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        // Note: mouse is not required
-        if (motherboard != null && pic != null && rtc != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Default inherited reset. Calls specific reset(int)
      * 
      * @return boolean true if module has been reset successfully, false

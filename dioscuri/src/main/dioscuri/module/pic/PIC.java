@@ -230,21 +230,6 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (this.cpu != null && this.motherboard != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

@@ -196,21 +196,6 @@ public class Mouse extends ModuleMouse implements UART {
         return false;
     }
 
-
-    /**
-     * Checks if this module is connected to operate normally
-     *
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (keyboard != null && serialPort != null) {
-            return true;
-        }
-        return false;
-    }
-
-
     /**
      * Default inherited reset. Calls specific reset(int)
      *
