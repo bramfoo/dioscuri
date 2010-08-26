@@ -328,17 +328,7 @@ public class CPU extends ModuleCPU {
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the ID of this module
-     * 
-     * @return int containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
+    
     /**
      * Returns the type of this module
      * 

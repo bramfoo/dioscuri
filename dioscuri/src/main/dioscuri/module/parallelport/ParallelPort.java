@@ -127,16 +127,6 @@ public class ParallelPort extends ModuleParallelPort {
     // Module Methods
 
     /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
-    }
-
-    /**
      * Returns the type of the module
      * 
      * @return string containing the type of module

@@ -111,14 +111,6 @@ public abstract class Module {
     /** OLD METHODS BELOW :: TODO **/
 
     /**
-     * Returns the ID of module (integer value)
-     * 
-     * @return integer with the ID of this module
-     * 
-     */
-    public abstract int getID();
-
-    /**
      * Returns the type of module (CPU, Memory, etc.)
      *
      * @return string with the type of this module

@@ -3196,10 +3196,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return null;
     }
 
-    public int getID() {
-        return 1;
-    }
-
     public String getName() {
         return "8086 compatible CPU";
     }
