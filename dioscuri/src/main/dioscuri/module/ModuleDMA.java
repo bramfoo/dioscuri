@@ -46,7 +46,7 @@ import dioscuri.module.dma.DMA8Handler;
  * Interface representing a generic hardware module.
  */
 
-public abstract class ModuleDMA extends ModuleDevice {
+public abstract class ModuleDMA extends ModuleDevice implements Addressable {
     // Methods
     /**
      *

@@ -44,7 +44,7 @@ package dioscuri.module;
  * 
  */
 
-public abstract class ModulePIC extends ModuleDevice {
+public abstract class ModulePIC extends ModuleDevice implements Addressable {
     // Methods
 
     /**

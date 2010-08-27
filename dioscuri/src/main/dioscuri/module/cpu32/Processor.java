@@ -3028,21 +3028,21 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    protected byte getIOPortByte(int portAddress) throws ModuleException,
+    public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return 0;
     }
 
     @Override
-    protected byte[] getIOPortDoubleWord(int portAddress)
+    public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
-    protected byte[] getIOPortWord(int portAddress) throws ModuleException,
+    public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         // TODO Auto-generated method stub
         return null;
@@ -3129,21 +3129,21 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    protected void setIOPortByte(int portAddress, byte value)
+    public void setIOPortByte(int portAddress, byte value)
             throws ModuleException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void setIOPortDoubleWord(int portAddress, byte[] value)
+    public void setIOPortDoubleWord(int portAddress, byte[] value)
             throws ModuleException {
         // TODO Auto-generated method stub
 
     }
 
     @Override
-    protected void setIOPortWord(int portAddress, byte[] value)
+    public void setIOPortWord(int portAddress, byte[] value)
             throws ModuleException {
         // TODO Auto-generated method stub
 

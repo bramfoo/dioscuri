@@ -46,7 +46,7 @@ import java.awt.event.KeyEvent;
  * 
  */
 
-public abstract class ModuleKeyboard extends ModuleDevice {
+public abstract class ModuleKeyboard extends ModuleDevice implements Addressable, Updateable {
     // Methods
 
     /**

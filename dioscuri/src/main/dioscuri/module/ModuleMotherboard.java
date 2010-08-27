@@ -46,7 +46,7 @@ import dioscuri.exception.ModuleException;
  * 
  */
 
-public abstract class ModuleMotherboard extends Module {
+public abstract class ModuleMotherboard extends Module implements Addressable {
 
     public int ioSpaceSize;
 

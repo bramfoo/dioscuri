@@ -44,7 +44,7 @@ package dioscuri.module;
  * 
  */
 
-public abstract class ModulePIT extends ModuleDevice {
+public abstract class ModulePIT extends ModuleDevice implements Addressable, Updateable  {
     // Methods
 
     /**

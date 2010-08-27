@@ -3804,7 +3804,7 @@ public class CPU extends ModuleCPU {
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    protected byte getIOPortByte(int portAddress) throws ModuleException {
+    public byte getIOPortByte(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         return motherboard.getIOPortByte(portAddress);
     }
@@ -3818,7 +3818,7 @@ public class CPU extends ModuleCPU {
      * 
      * @throws ModuleException
      */
-    protected void setIOPortByte(int portAddress, byte data)
+    public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         // Set data in I/O address space at port address
         motherboard.setIOPortByte(portAddress, data);
@@ -3833,7 +3833,7 @@ public class CPU extends ModuleCPU {
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    protected byte[] getIOPortWord(int portAddress) throws ModuleException {
+    public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         return motherboard.getIOPortWord(portAddress);
     }
@@ -3847,7 +3847,7 @@ public class CPU extends ModuleCPU {
      * 
      * @throws ModuleException
      */
-    protected void setIOPortWord(int portAddress, byte[] data)
+    public void setIOPortWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
         motherboard.setIOPortWord(portAddress, data);
@@ -3863,7 +3863,7 @@ public class CPU extends ModuleCPU {
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    protected byte[] getIOPortDoubleWord(int portAddress)
+    public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException {
         // Retrieve data from I/O address space at port address
         return motherboard.getIOPortDoubleWord(portAddress);
@@ -3878,7 +3878,7 @@ public class CPU extends ModuleCPU {
      * 
      * @throws ModuleException
      */
-    protected void setIOPortDoubleWord(int portAddress, byte[] data)
+    public void setIOPortDoubleWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
         motherboard.setIOPortDoubleWord(portAddress, data);

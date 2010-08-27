@@ -44,7 +44,7 @@ package dioscuri.module;
  * 
  */
 
-public abstract class ModuleParallelPort extends ModuleDevice {
+public abstract class ModuleParallelPort extends ModuleDevice implements Addressable {
     // Methods
 
 }

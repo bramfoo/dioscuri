@@ -47,7 +47,7 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
  * 
  */
 
-public abstract class ModuleCPU extends Module {
+public abstract class ModuleCPU extends Module implements Addressable {
 
     public ModuleCPU() {
         super(Type.CPU, null); // TODO
@@ -148,8 +148,8 @@ public abstract class ModuleCPU extends Module {
      * @throws ModuleException
      * @throws ModuleWriteOnlyPortException
      */
-    protected abstract byte getIOPortByte(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
+    //protected abstract byte getIOPortByte(int portAddress)
+    //        throws ModuleException, ModuleWriteOnlyPortException;
 
     /**
      * Sets the value (byte) in I/O address space at given port address.
@@ -157,8 +157,8 @@ public abstract class ModuleCPU extends Module {
      * @param value
      * @throws ModuleException
      */
-    protected abstract void setIOPortByte(int portAddress, byte value)
-            throws ModuleException;
+    //protected abstract void setIOPortByte(int portAddress, byte value)
+    //        throws ModuleException;
 
     /**
      * Returns the value (word) in I/O address space at given port address.
@@ -167,8 +167,8 @@ public abstract class ModuleCPU extends Module {
      * @throws ModuleException
      * @throws ModuleWriteOnlyPortException
      */
-    protected abstract byte[] getIOPortWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
+    //protected abstract byte[] getIOPortWord(int portAddress)
+    //        throws ModuleException, ModuleWriteOnlyPortException;
 
     /**
      * Sets the value (word) in I/O address space at given port address.
@@ -176,8 +176,8 @@ public abstract class ModuleCPU extends Module {
      * @param value (word)
      * @throws ModuleException
      */
-    protected abstract void setIOPortWord(int portAddress, byte[] value)
-            throws ModuleException;
+    //protected abstract void setIOPortWord(int portAddress, byte[] value)
+    //       throws ModuleException;
 
     /**
      * Returns the value (double word) in I/O address space at given port
@@ -187,8 +187,8 @@ public abstract class ModuleCPU extends Module {
      * @throws ModuleException
      * @throws ModuleWriteOnlyPortException
      */
-    protected abstract byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
+    //protected abstract byte[] getIOPortDoubleWord(int portAddress)
+    //        throws ModuleException, ModuleWriteOnlyPortException;
 
     /**
      * Sets the value (double word) in I/O address space at given port address.
@@ -196,8 +196,8 @@ public abstract class ModuleCPU extends Module {
      * @param value (double word)
      * @throws ModuleException
      */
-    protected abstract void setIOPortDoubleWord(int portAddress, byte[] value)
-            throws ModuleException;
+    //protected abstract void setIOPortDoubleWord(int portAddress, byte[] value)
+    //       throws ModuleException;
 
     /**
      * Set the interrupt request (IRQ).
