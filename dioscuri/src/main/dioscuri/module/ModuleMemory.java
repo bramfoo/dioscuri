@@ -49,7 +49,7 @@ import dioscuri.exception.ModuleException;
 public abstract class ModuleMemory extends Module {
 
     public ModuleMemory() {
-        super(Type.MEMORY, null); // TODO
+        super(Type.MEMORY); // TODO
     }
 
 

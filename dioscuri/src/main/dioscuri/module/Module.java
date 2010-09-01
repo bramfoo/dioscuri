@@ -67,19 +67,19 @@ public abstract class Module {
      * Creates a new instance of a module.
      * 
      * @param type                  the type of this module.
-     * @param expectedConnections   an array with the types this module
+     * @param expectedConnections   optional number of types this module
      *                              is supposed to be connected to when
-     *                              the emulation process starts. It
-     *                              can be null if this module is not
-     *                              connected to any other module (note
-     *                              that other modules can be connected
-     *                              to it!).
-     * @throws NullPointerException iff <code>type</code> is null
+     *                              the emulation process starts.
      */
-    public Module(Type type, Type[] expectedConnections) {
+    public Module(Type type, Type... expectedConnections) {
 
         if(type == null) {
             throw new NullPointerException("The type of class "+
+                    this.getClass().getName()+" cannot be null");
+        }
+
+        if(expectedConnections == null) {
+            throw new NullPointerException("The expectedConnections of class "+
                     this.getClass().getName()+" cannot be null");
         }
 
@@ -87,10 +87,8 @@ public abstract class Module {
         this.connections = new HashMap<Type, Module>();
         this.debugMode = false;
 
-        if(expectedConnections != null) {
-            for(Type t : expectedConnections) {
-                this.connections.put(t, null);
-            }
+        for(Type t : expectedConnections) {
+            this.connections.put(t, null);
         }
     }
 

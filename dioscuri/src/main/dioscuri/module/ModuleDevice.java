@@ -53,7 +53,7 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 public abstract class ModuleDevice extends Module {
 
     public ModuleDevice() {
-        super(Type.DUMMY, null); // TODO
+        super(Type.DUMMY); // TODO
     }
 
     /**

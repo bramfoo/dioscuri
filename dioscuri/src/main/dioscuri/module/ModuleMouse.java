@@ -49,7 +49,7 @@ import java.awt.event.MouseEvent;
 public abstract class ModuleMouse extends Module {
 
     public ModuleMouse() {
-        super(Type.MOUSE, null); // TODO
+        super(Type.MOUSE); // TODO
     }
 
     /**

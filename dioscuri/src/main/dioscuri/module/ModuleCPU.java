@@ -50,7 +50,7 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 public abstract class ModuleCPU extends Module implements Addressable {
 
     public ModuleCPU() {
-        super(Type.CPU, null); // TODO
+        super(Type.CPU); // TODO
     }
 
     /**
