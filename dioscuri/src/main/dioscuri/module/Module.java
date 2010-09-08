@@ -52,7 +52,7 @@ public abstract class Module {
         BIOS,
         CLOCK,
         CPU,
-        DUMMY, // TODO remove
+        DUMMY,
         MEMORY,
         MOTHERBOARD,
         MOUSE,
@@ -106,7 +106,7 @@ public abstract class Module {
         return true;
     }
 
-    /** OLD METHODS BELOW :: TODO **/
+    // TODO :: OLD METHODS BELOW :: TODO
 
     /**
      * Returns the type of module (CPU, Memory, etc.)
