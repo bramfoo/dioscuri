@@ -49,14 +49,27 @@ import java.util.Map;
 public abstract class Module {
 
     public static enum Type {
+        ATA,
         BIOS,
         CLOCK,
         CPU,
+        DEVICE,
+        DMA,
+        DMACONTROLLER,
         DUMMY,
+        FDC,
+        KEYBOARD,
         MEMORY,
         MOTHERBOARD,
         MOUSE,
-        SCREEN
+        PARALLELPORT,
+        PCI,
+        PIC,
+        PIT,
+        RTC,
+        SCREEN,
+        SERIALPORT,
+        VIDEO
     }
 
     protected final Type type;
@@ -92,6 +105,10 @@ public abstract class Module {
         }
     }
 
+    public final Type getType() {
+        return this.type;
+    }
+
     /**
      * Checks if this module is connected to operate normally
      *
@@ -106,6 +123,16 @@ public abstract class Module {
         return true;
     }
 
+    /*
+    public boolean setConnection(Module module) {
+        return setConnection(module, false);
+    }
+
+    public boolean setConnection(Module module, boolean optional) {
+        return false;
+    }
+    */    
+
     // TODO :: OLD METHODS BELOW :: TODO
 
     /**
@@ -114,7 +141,7 @@ public abstract class Module {
      * @return string with the type of this module
      *
      */
-    public abstract String getType();
+    //public abstract String getType();
 
     /**
      * Returns the name of module

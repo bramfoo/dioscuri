@@ -152,16 +152,6 @@ public class Video extends ModuleVideo {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     *
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      *
      * @return string containing the name of module
@@ -192,19 +182,19 @@ public class Video extends ModuleVideo {
      */
     public boolean setConnection(Module mod) {
         // Set connection for video
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) {//.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
-        if (mod.getType().equalsIgnoreCase("cpu")) {
+        if (mod.getType() == Type.CPU) {//.equalsIgnoreCase("cpu")) {
             this.cpu = (ModuleCPU) mod;
             return true;
-        } else if (mod.getType().equals("screen")) {
+        } else if (mod.getType() == Type.SCREEN) {//.equals("screen")) {
             this.screen = (ModuleScreen) mod;
             return true;
         }
         // Set connection for rtc
-        else if (mod.getType().equalsIgnoreCase("rtc")) {
+        else if (mod.getType() == Type.RTC) {//.equalsIgnoreCase("rtc")) {
             this.rtc = (ModuleRTC) mod;
             return true;
         }

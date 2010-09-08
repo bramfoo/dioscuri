@@ -143,16 +143,6 @@ public class RTC extends ModuleRTC {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -186,13 +176,13 @@ public class RTC extends ModuleRTC {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
 
         // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
+        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
             this.pic = (ModulePIC) mod;
             return true;
         }
@@ -329,7 +319,7 @@ public class RTC extends ModuleRTC {
      */
     public boolean setData(byte[] data, Module sender) {
         // Check if data comes from PIT
-        if (sender.getType().equalsIgnoreCase("pit")) {
+        if (sender.getType() == Type.PIT) { //.equalsIgnoreCase("pit")) {
             logger.log(Level.INFO, "[" + MODULE_TYPE
                     + "] Received out signal from PIT.");
 

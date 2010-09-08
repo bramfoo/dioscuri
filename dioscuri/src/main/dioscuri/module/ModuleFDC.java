@@ -47,7 +47,10 @@ import java.io.File;
  */
 
 public abstract class ModuleFDC extends ModuleDevice implements Addressable, Updateable {
-    // Methods
+
+    public ModuleFDC() {
+        super(Type.FDC);    
+    }
 
     /**
      * Defines the total number of available drives Note: total number may not

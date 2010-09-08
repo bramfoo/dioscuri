@@ -2448,7 +2448,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see Module
      */
     public boolean setConnection(Module mod) {
-        if (mod.getType().equals("pic")) {
+        if (mod.getType() == Type.PIC) { //.equals("pic")) {
             this.interruptController = (ModulePIC) mod;
             return true;
         }
@@ -3198,11 +3198,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     public String getName() {
         return "8086 compatible CPU";
-    }
-
-    @Override
-    public String getType() {
-        return "cpu";
     }
 
     @Override

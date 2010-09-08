@@ -119,15 +119,6 @@ public class Clock extends ModuleClock {
     // ******************************************************************************
     // Module Methods
 
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of the module
@@ -163,12 +154,12 @@ public class Clock extends ModuleClock {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
         // Set connection for cpu
-        else if (mod.getType().equalsIgnoreCase("cpu")) {
+        else if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
             this.cpu = (ModuleCPU) mod;
             return true;
         }
@@ -359,7 +350,7 @@ public class Clock extends ModuleClock {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer reset to "
@@ -382,7 +373,7 @@ public class Clock extends ModuleClock {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = runState;
                 logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
@@ -499,7 +490,7 @@ public class Clock extends ModuleClock {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = state;
             }
             t++;

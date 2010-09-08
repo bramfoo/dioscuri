@@ -89,7 +89,7 @@ public class Devices extends ArrayList<ModuleDevice> {
      */
     public ModuleDevice getDevice(String type) {
         for (int i = 0; i < super.size(); i++) {
-            if ((this.getDevice(i)).getType().equalsIgnoreCase(type)) {
+            if ((this.getDevice(i)).getType().toString().equalsIgnoreCase(type)) { // TODO FIX for Type enums
                 return (ModuleDevice) super.get(i);
             }
         }

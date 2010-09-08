@@ -257,16 +257,6 @@ public class DMA extends ModuleDMA {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -300,19 +290,19 @@ public class DMA extends ModuleDMA {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
 
         // Set connection for memory
-        if (mod.getType().equalsIgnoreCase("memory")) {
+        if (mod.getType() == Type.MEMORY) { //.equalsIgnoreCase("memory")) {
             this.memory = (ModuleMemory) mod;
             return true;
         }
 
         // Set connection for cpu
-        if (mod.getType().equalsIgnoreCase("cpu")) {
+        if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
             this.cpu = (ModuleCPU) mod;
             return true;
         }

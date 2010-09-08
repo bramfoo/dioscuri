@@ -45,7 +45,10 @@ package dioscuri.module;
  */
 
 public abstract class ModulePIC extends ModuleDevice implements Addressable {
-    // Methods
+
+    public ModulePIC() {
+        super(Type.PIC);
+    }
 
     /**
      * Returns an IRQ number.

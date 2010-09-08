@@ -41,7 +41,6 @@ import dioscuri.module.ModuleDevice;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("unused")
 public class DMAController extends ModuleDevice implements IOPortCapable,
         HardwareComponent {
     private static final int pagePortList0 = 0x1;
@@ -135,6 +134,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
      * @param zeroth
      */
     public DMAController(boolean highPageEnable, boolean zeroth) {
+        super(Type.DMACONTROLLER); 
         ioportRegistered = false;
         this.dShift = zeroth ? 0 : 1;
         this.iobase = zeroth ? 0x00 : 0xc0;
@@ -819,13 +819,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
 
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
-    public String getType() {
         // TODO Auto-generated method stub
         notImplemented();
         return null;

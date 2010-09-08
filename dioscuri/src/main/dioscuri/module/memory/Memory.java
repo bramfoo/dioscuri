@@ -140,15 +140,6 @@ public class Memory extends ModuleMemory {
     // ******************************************************************************
     // Module Methods
 
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of the module
@@ -182,13 +173,13 @@ public class Memory extends ModuleMemory {
      */
     public boolean setConnection(Module module) {
         // Set connection to video adapter
-        if (module.getType().equalsIgnoreCase("video")) {
+        if (module.getType() == Type.VIDEO) { //.equalsIgnoreCase("video")) {
             this.video = (ModuleVideo) module;
             return true;
-        } else if (module.getType().equalsIgnoreCase("cpu")) {
+        } else if (module.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
             this.cpu = (ModuleCPU) module;
             return true;
-        } else if (module.getType().equalsIgnoreCase("motherboard")) {
+        } else if (module.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) module;
             return true;
         }
@@ -631,7 +622,7 @@ public class Memory extends ModuleMemory {
     /**
      * Converts a given string into a byte of one integer
      * 
-     * @param string
+     * @param strValue
      *            value
      * 
      * @return int as byte

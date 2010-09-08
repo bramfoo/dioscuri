@@ -52,8 +52,8 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 
 public abstract class ModuleDevice extends Module {
 
-    public ModuleDevice() {
-        super(Type.DUMMY); // TODO
+    public ModuleDevice(Type type) {
+        super(type);
     }
 
     /**

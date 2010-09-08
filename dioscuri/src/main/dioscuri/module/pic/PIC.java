@@ -161,16 +161,6 @@ public class PIC extends ModulePIC {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -204,13 +194,12 @@ public class PIC extends ModulePIC {
      */
     public boolean setConnection(Module mod) {
         // Set connection for cpu
-        if (mod.getType().equalsIgnoreCase("cpu")) {
-            System.out.println("PIC connected to :: " + mod.getClass() + "\n");
+        if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
             this.cpu = (ModuleCPU) mod;
             return true;
         }
         // Set connection for motherboard
-        else if (mod.getType().equalsIgnoreCase("motherboard")) {
+        else if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
@@ -997,44 +986,44 @@ public class PIC extends ModulePIC {
 
         // Check which device is requesting an IRQ number
         // If module is part of reserved IRQ-list, return fixed IRQ number
-        if (module.getType().equalsIgnoreCase("pit")) {
+        if (module.getType() == Type.PIT) { //.equalsIgnoreCase("pit")) {
             // Module PIT
             irqNumber = PIC_IRQ_NUMBER_PIT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("keyboard")) {
+        } else if (module.getType() == Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
             // Module Keyboard
             irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("serialport")) {
+        } else if (module.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
             // Module Serialport
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("fdc")) {
+        } else if (module.getType() == Type.FDC) { //.equalsIgnoreCase("fdc")) {
             // Module FDC
             irqNumber = PIC_IRQ_NUMBER_FDC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("rtc")) {
+        } else if (module.getType() == Type.RTC) { //.equalsIgnoreCase("rtc")) {
             // Module RTC
             irqNumber = PIC_IRQ_NUMBER_RTC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("mouse")) {
+        } else if (module.getType() == Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
             // Module Mouse
             irqNumber = PIC_IRQ_NUMBER_MOUSE;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("ata")) {
+        } else if (module.getType() == Type.ATA) { //.equalsIgnoreCase("ata")) {
             // Module ATA
             ModuleATA ata = (ModuleATA) module;
             int currentChannelIndex = ata.getCurrentChannelIndex();
             irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("serialport")) {
+        } else if (module.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {      // TODO duplicate else-if!
             // Module SerialPort
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;

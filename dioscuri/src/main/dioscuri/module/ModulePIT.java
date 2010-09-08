@@ -45,7 +45,10 @@ package dioscuri.module;
  */
 
 public abstract class ModulePIT extends ModuleDevice implements Addressable, Updateable  {
-    // Methods
+
+    public ModulePIT() {
+        super(Type.PIT);
+    }
 
     /**
      * Retrieves the current clockrate of this clock in milliseconds

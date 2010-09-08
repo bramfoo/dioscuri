@@ -82,9 +82,13 @@ public class Modules extends ArrayList<Module> {
      */
     public Module getModule(String type) {
         for (int i = 0; i < super.size(); i++) {
-            if ((this.getModule(i)).getType().equalsIgnoreCase(type)) {
+            if ((this.getModule(i)).getType().toString().equalsIgnoreCase(type)) {
                 return (Module) super.get(i);
             }
+        }
+        System.out.println(">>> Couldn't find a :: "+type+"\n    in: ");
+        for(Module m : this) {
+            System.out.println("        "+m.getType());
         }
         return null;
     }

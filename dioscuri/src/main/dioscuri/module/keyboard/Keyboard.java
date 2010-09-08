@@ -193,16 +193,6 @@ public class Keyboard extends ModuleKeyboard {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -236,22 +226,22 @@ public class Keyboard extends ModuleKeyboard {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
         // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
+        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
             this.pic = (ModulePIC) mod;
             return true;
         }
         // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("rtc")) {
+        else if (mod.getType() == Type.RTC) { //.equalsIgnoreCase("rtc")) {
             this.rtc = (ModuleRTC) mod;
             return true;
         }
         // Optional: set connection for mouse
-        else if (mod.getType().equalsIgnoreCase("mouse")) {
+        else if (mod.getType() == Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
             this.mouse = (ModuleMouse) mod;
             return true;
         }

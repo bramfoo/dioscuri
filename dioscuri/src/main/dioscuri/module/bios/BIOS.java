@@ -132,16 +132,6 @@ public class BIOS extends ModuleBIOS {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module

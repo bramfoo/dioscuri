@@ -157,16 +157,6 @@ public class Motherboard extends ModuleMotherboard {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -202,12 +192,12 @@ public class Motherboard extends ModuleMotherboard {
 
         if (!emu.isCpu32bit()) {
             // Set connection for memory
-            if (module.getType().equalsIgnoreCase("memory")) {
+            if (module.getType() == Type.MEMORY) { //.equalsIgnoreCase("memory")) {
                 this.memory = (ModuleMemory) module;
                 return true;
             }
             // Set connection for CPU
-            else if (module.getType().equalsIgnoreCase("cpu")) {
+            else if (module.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
                 this.cpu = (ModuleCPU) module;
                 return true;
             }
@@ -366,8 +356,7 @@ public class Motherboard extends ModuleMotherboard {
         for (int port = 0; port < IOSPACE_ISA_SIZE; port++) {
             // Only print I/O space info when port is used
             if (ioAddressSpace[port] != null
-                    && !(ioAddressSpace[port].getType()
-                            .equalsIgnoreCase("dummy"))) {
+                    && ioAddressSpace[port].getType() != Type.DUMMY) { //.equalsIgnoreCase("dummy"))) {
                 dump += "0x"
                         + Integer.toHexString(0x10000 | port & 0x0FFFF)
                                 .substring(1).toUpperCase() + tab + ": "

@@ -129,16 +129,6 @@ public class Mouse extends ModuleMouse implements UART {
     //******************************************************************************
     // Module Methods
 
-    /**
-     * Returns the type of the module
-     *
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
 
     /**
      * Returns the name of the module
@@ -171,13 +161,13 @@ public class Mouse extends ModuleMouse implements UART {
      */
     public boolean setConnection(Module mod) {
         // Set connection for keyboard
-        if (mod.getType().equalsIgnoreCase("keyboard")) {
+        if (mod.getType() == Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
             this.keyboard = (ModuleKeyboard) mod;
             this.keyboard.setConnection(this);    // Set connection to keyboard
             return true;
         }
         // Set connection for serialport
-        else if (mod.getType().equalsIgnoreCase("serialport")) {
+        else if (mod.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
             this.serialPort = (ModuleSerialPort) mod;
             this.serialPort.setConnection(this);    // Set connection to serialport
             return true;
@@ -334,7 +324,7 @@ public class Mouse extends ModuleMouse implements UART {
             mouseType = MOUSE_TYPE_SERIAL;
             logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
             // Connect mouse to serialport on COM 1 (port 0)
-            if (serialPort.setUARTDevice(this, 0) == true) {
+            if (serialPort.setUARTDevice(this, 0)) {
                 logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse connected to COM port 1");
             } else {
                 logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Could not connect mouse to COM port 1");

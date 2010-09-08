@@ -45,7 +45,11 @@ package dioscuri.module;
  */
 
 public abstract class ModuleRTC extends ModuleDevice implements Addressable {
-    // Methods
+
+    public ModuleRTC() {
+        super(Type.RTC);
+    }
+
     /**
      * Return requested CMOS register
      * 

@@ -47,7 +47,11 @@ import dioscuri.module.dma.DMA8Handler;
  */
 
 public abstract class ModuleDMA extends ModuleDevice implements Addressable {
-    // Methods
+
+    public ModuleDMA() {
+        super(Type.DMA);
+    }
+
     /**
      *
      * @param chanNum

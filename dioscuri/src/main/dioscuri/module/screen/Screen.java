@@ -202,15 +202,6 @@ public class Screen extends ModuleScreen {
     // ******************************************************************************
     // Module Methods
 
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of the module
@@ -244,7 +235,7 @@ public class Screen extends ModuleScreen {
      */
     public boolean setConnection(Module mod) {
         // Set connection for video
-        if (mod.getType().equalsIgnoreCase("video")) {
+        if (mod.getType() == Type.VIDEO) { //.equalsIgnoreCase("video")) {
             this.video = (ModuleVideo) mod;
             return true;
         }

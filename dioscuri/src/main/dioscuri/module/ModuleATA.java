@@ -47,7 +47,10 @@ import dioscuri.module.ata.ATATranslationType;
  */
 
 public abstract class ModuleATA extends ModuleDevice implements Addressable, Updateable {
-    // Methods
+
+    public ModuleATA() {
+        super(Type.ATA);
+    }
 
     /**
      * Initiate configuration of the disk drive.

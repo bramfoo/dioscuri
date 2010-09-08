@@ -63,7 +63,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Module.Type.MOTHERBOARD) {
             this.mb = (ModuleMotherboard) mod;
             return true;
         } else

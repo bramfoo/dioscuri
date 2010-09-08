@@ -328,16 +328,6 @@ public class CPU extends ModuleCPU {
 
     // ******************************************************************************
     // Module Methods
-    
-    /**
-     * Returns the type of this module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of this module
@@ -370,17 +360,17 @@ public class CPU extends ModuleCPU {
      */
     public boolean setConnection(Module mod) {
         // Check which module should be connected to
-        if (mod.getType().equals("memory")) {
+        if (mod.getType() == Type.MEMORY) { //"memory")) {
             // Module memory connection
             this.memory = (ModuleMemory) mod;
             return true;
-        } else if (mod.getType().equals("motherboard")) {
+        } else if (mod.getType() == Type.MOTHERBOARD) { //.equals("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
-        } else if (mod.getType().equals("pic")) {
+        } else if (mod.getType() == Type.PIC) { //.equals("pic")) {
             this.pic = (ModulePIC) mod;
             return true;
-        } else if (mod.getType().equals("clock")) {
+        } else if (mod.getType() == Type.CLOCK) { //.equals("clock")) {
             this.clock = (ModuleClock) mod;
             return true;
         }
@@ -1404,7 +1394,7 @@ public class CPU extends ModuleCPU {
             logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                     + " handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
-            if (hRQorigin.getType().equalsIgnoreCase("dma")) {
+            if (hRQorigin.getType() == Type.DMA) {
                 ((ModuleDMA) hRQorigin).acknowledgeBusHold();
             }
         }

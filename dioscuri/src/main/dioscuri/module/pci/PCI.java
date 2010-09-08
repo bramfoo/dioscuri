@@ -118,6 +118,7 @@ public class PCI extends ModuleDevice {
      * @param owner
      */
     public PCI(Emulator owner) {
+        super(Type.PCI);
         emu = owner;
 
         // Initialise variables
@@ -130,16 +131,6 @@ public class PCI extends ModuleDevice {
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of the module
@@ -175,7 +166,7 @@ public class PCI extends ModuleDevice {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }

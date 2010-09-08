@@ -156,17 +156,6 @@ public class ATA extends ModuleATA {
     // ******************************************************************************
     // Module Methods
 
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
     /**
      * Returns the name of the module
      * 
@@ -205,17 +194,17 @@ public class ATA extends ModuleATA {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase(ModuleType.MOTHERBOARD.toString())) {
+        if (mod.getType() == Module.Type.MOTHERBOARD) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
         // Set connection for rtc
-        else if (mod.getType().equalsIgnoreCase(ModuleType.RTC.toString())) {
+        else if (mod.getType() == Module.Type.RTC) {
             this.rtc = (ModuleRTC) mod;
             return true;
         }
         // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase(ModuleType.PIC.toString())) {
+        else if (mod.getType() == Module.Type.PIC) {
             this.pic = (ModulePIC) mod;
             return true;
         }

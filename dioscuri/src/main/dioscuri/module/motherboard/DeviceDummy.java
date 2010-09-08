@@ -89,21 +89,12 @@ public class DeviceDummy extends ModuleDevice {
      * @param owner
      */
     public DeviceDummy(Emulator owner) {
+        super(Type.DUMMY);
         emu = owner;
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
 
     /**
      * Returns the name of the module
@@ -139,7 +130,7 @@ public class DeviceDummy extends ModuleDevice {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }

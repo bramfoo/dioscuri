@@ -179,16 +179,6 @@ public class PIT extends ModulePIT {
     // Module Methods
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
-     */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
      * Returns the name of the module
      * 
      * @return string containing the name of module
@@ -222,7 +212,7 @@ public class PIT extends ModulePIT {
      */
     public boolean setConnection(Module mod) {
         // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
+        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
             this.motherboard = (ModuleMotherboard) mod;
             return true;
         }
@@ -236,7 +226,7 @@ public class PIT extends ModulePIT {
         // }
 
         // Set connection for PIC
-        if (mod.getType().equalsIgnoreCase("pic")) {
+        if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
             this.pic = (ModulePIC) mod;
             return true;
         }

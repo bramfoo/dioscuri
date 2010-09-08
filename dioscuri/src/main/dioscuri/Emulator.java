@@ -171,9 +171,7 @@ public class Emulator implements Runnable {
     }
 
     public void run() {
-        // TODO: Perform semantic analysis of command (syntaxis is checked by IO
-        // class)
-        // Especially important when running with multiple threads!!!
+        // TODO: Perform semantic analysis of command (syntaxis is checked by IO class) especially important when running with multiple threads!!!
         int instr = 0;
         int total = 0;
         int loop = 0;
@@ -238,7 +236,6 @@ public class Emulator implements Runnable {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                         total += instr;
@@ -302,7 +299,6 @@ public class Emulator implements Runnable {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
