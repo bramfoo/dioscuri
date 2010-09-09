@@ -106,6 +106,11 @@ public abstract class Module {
         }
     }
 
+
+    public final Module[] getConnections() { // TODO refactor into getConnections()
+        return connections.values().toArray(new Module[connections.size()]);  
+    }
+
     public final Type getType() {
         return this.type;
     }
@@ -157,7 +162,7 @@ public abstract class Module {
      * 
      * @return String[] containing the names of modules
      */
-    public abstract String[] getConnection();
+    //public abstract String[] getConnections();
 
     /**
      * Sets up a connection with another module

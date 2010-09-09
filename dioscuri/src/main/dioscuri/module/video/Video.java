@@ -162,17 +162,6 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
      * Sets up a connection with another module
      *
      * @param mod Module that is to be connected to this class

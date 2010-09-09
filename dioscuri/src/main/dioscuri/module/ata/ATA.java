@@ -167,23 +167,6 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-
-        String[] connectingModString = new String[moduleConnections.length];
-        for (int i = 0; i < moduleConnections.length; i++) {
-            connectingModString[i] = moduleConnections[i].toString();
-        }
-
-        // Return all required connections;
-        return connectingModString;
-    }
-
-    /**
      * Sets up a connection with another module
      * 
      * @param mod

@@ -142,17 +142,6 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // No connections to return;
-        return moduleConnections;
-    }
-
-    /**
      * Sets up a connection with another module
      * 
      * @param module

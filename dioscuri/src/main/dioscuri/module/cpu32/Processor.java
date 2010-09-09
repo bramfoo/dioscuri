@@ -3174,11 +3174,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public String[] getConnection() {
-        return new String[] {};
-    }
-
-    @Override
     public byte[] getData(Module module) {
         // TODO Auto-generated method stub
         return null;

@@ -880,14 +880,8 @@ public class Emulator implements Runnable {
 
         boolean result = true;
 
-        //Module mod1, mod2;
-        //for (int i = 0; i < modules.size(); i++) {
-            //mod1 = modules.get(i);
         for(Module mod1 : modules.values()) {
-            String[] connections = mod1.getConnection();
 
-            //for (int c = 0; c < connections.length; c++) {
-                //mod2 = modules.get(connections[c]);
             for(Module mod2 : modules.values()) {
                 if (mod2 != null) {
                     if (mod1.setConnection(mod2)) {
