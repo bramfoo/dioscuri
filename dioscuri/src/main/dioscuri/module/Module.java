@@ -39,6 +39,7 @@
 
 package dioscuri.module;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -74,7 +75,8 @@ public abstract class Module {
     }
 
     public final Type type;
-    private final Map<Type, Module> connections;
+    private final Map<Type, Module> mandatoryConnections;
+    private final Map<Type, Module> optionalConnections;
     private boolean debugMode;
 
     /**
@@ -98,19 +100,40 @@ public abstract class Module {
         }
 
         this.type = type;
-        this.connections = new HashMap<Type, Module>();
+        this.mandatoryConnections = new HashMap<Type, Module>();
+        this.optionalConnections = new HashMap<Type, Module>();
         this.debugMode = false;
 
         for(Type t : expectedConnections) {
-            this.connections.put(t, null);
+            this.mandatoryConnections.put(t, null);
         }
     }
 
-
-    public final Module[] getConnections() { // TODO refactor into getConnections()
-        return connections.values().toArray(new Module[connections.size()]);  
+    /**
+     * Returns all Modules this class can be connected to.
+     *
+     * @return all Modules this class must be connected to.
+     */
+    public final Module[] getConnections() {
+        Collection<Module> connections = mandatoryConnections.values();
+        connections.addAll(optionalConnections.values());
+        return connections.toArray(new Module[connections.size()]);
     }
 
+    /**
+     * Returns all Modules this class must be connected to.
+     *
+     * @return all Modules this class must be connected to.
+     */
+    public final Module[] getMandatoryConnections() {
+        return mandatoryConnections.values().toArray(new Module[mandatoryConnections.size()]);
+    }
+
+    /**
+     * Returns the Type of this Module.
+     *
+     * @return the Type of this Module.
+     */
     public final Type getType() {
         return this.type;
     }
@@ -121,24 +144,22 @@ public abstract class Module {
      * @return true if this module is connected successfully, false otherwise
      */
     public final boolean isConnected() {
-        for(Module connectedTo : this.connections.values()) {
+        for(Module connectedTo : this.mandatoryConnections.values()) {
             if(connectedTo == null) {
                 return false;
             }
         }
         return true;
     }
-
     /*
-    public boolean setConnection(Module module) {
-        return setConnection(module, false);
+    public final boolean setConnection(Module module) {
+        return setConnection(module, true);
     }
 
-    public boolean setConnection(Module module, boolean optional) {
+    public final boolean setConnection(Module module, boolean mandatory) {
         return false;
     }
-    */    
-
+    */
     // TODO :: OLD METHODS BELOW :: TODO
 
     /**
