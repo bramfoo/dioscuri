@@ -69,10 +69,11 @@ public abstract class Module {
         RTC,
         SCREEN,
         SERIALPORT,
+        //VGA,
         VIDEO
     }
 
-    protected final Type type;
+    public final Type type;
     private final Map<Type, Module> connections;
     private boolean debugMode;
 
