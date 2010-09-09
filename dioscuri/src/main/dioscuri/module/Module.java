@@ -39,9 +39,7 @@
 
 package dioscuri.module;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Abstract class representing a generic hardware module.
@@ -75,17 +73,16 @@ public abstract class Module {
     }
 
     public final Type type;
-    private final Map<Type, Module> mandatoryConnections;
-    private final Map<Type, Module> optionalConnections;
+    private final Map<Type, Module> connections;
     private boolean debugMode;
 
     /**
      * Creates a new instance of a module.
      * 
-     * @param type                  the type of this module.
-     * @param expectedConnections   optional number of types this module
-     *                              is supposed to be connected to when
-     *                              the emulation process starts.
+     * @param type                 the type of this module.
+     * @param expectedConnections  optional number of types this module
+     *                             is supposed to be connected to when
+     *                             the emulation process starts.
      */
     public Module(Type type, Type... expectedConnections) {
 
@@ -100,33 +97,27 @@ public abstract class Module {
         }
 
         this.type = type;
-        this.mandatoryConnections = new HashMap<Type, Module>();
-        this.optionalConnections = new HashMap<Type, Module>();
+        this.connections = new HashMap<Type, Module>();
         this.debugMode = false;
 
         for(Type t : expectedConnections) {
-            this.mandatoryConnections.put(t, null);
+            this.connections.put(t, null);
         }
     }
 
     /**
-     * Returns all Modules this class can be connected to.
+     * Returns all Modules this class is connected to.
      *
-     * @return all Modules this class must be connected to.
+     * @return all Modules this class is connected to.
      */
     public final Module[] getConnections() {
-        Collection<Module> connections = mandatoryConnections.values();
-        connections.addAll(optionalConnections.values());
-        return connections.toArray(new Module[connections.size()]);
-    }
-
-    /**
-     * Returns all Modules this class must be connected to.
-     *
-     * @return all Modules this class must be connected to.
-     */
-    public final Module[] getMandatoryConnections() {
-        return mandatoryConnections.values().toArray(new Module[mandatoryConnections.size()]);
+        List<Module> list = new ArrayList<Module>();
+        for(Module m : this.connections.values()) {
+            if(m != null) {
+                list.add(m);
+            }
+        }
+        return list.toArray(new Module[list.size()]);
     }
 
     /**
@@ -139,27 +130,42 @@ public abstract class Module {
     }
 
     /**
-     * Checks if this module is connected to operate normally
+     * Returns the Module with Type t.
      *
-     * @return true if this module is connected successfully, false otherwise
+     * @param t the Type of the Module to be fetched.
+     * @return  the Module with Type t or null if no connection has been made.
+     */
+    public final Module getModule(Type t) {
+        return connections.get(t);
+    }
+
+    /**
+     * Checks if this module is connected to operate normally. Checks all
+     * mandatory connections and ignores the optional ones.
+     *
+     * @return true if this module is connected successfully to all
+     *         mandatory MOdules, false otherwise
      */
     public final boolean isConnected() {
-        for(Module connectedTo : this.mandatoryConnections.values()) {
+        for(Module connectedTo : this.connections.values()) {
             if(connectedTo == null) {
                 return false;
             }
         }
         return true;
     }
-    /*
-    public final boolean setConnection(Module module) {
-        return setConnection(module, true);
+
+    public /*final*/ boolean setConnection(Module m) { // TODO make final
+        if(connections.get(m.type) != null) {
+            // Already connected to the Module m
+            return false;
+        }
+        connections.put(m.type, m);
+        return true;
     }
 
-    public final boolean setConnection(Module module, boolean mandatory) {
-        return false;
-    }
-    */
+
+
     // TODO :: OLD METHODS BELOW :: TODO
 
     /**
@@ -193,7 +199,7 @@ public abstract class Module {
      * 
      * @return true if connection was set successfully, false otherwise
      */
-    public abstract boolean setConnection(Module mod);
+    //public abstract boolean setConnection(Module mod);
 
 
 

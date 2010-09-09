@@ -49,7 +49,8 @@ import java.awt.event.KeyEvent;
 public abstract class ModuleKeyboard extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleKeyboard() {
-        super(Type.KEYBOARD);
+        super(Type.KEYBOARD,                           // this Module's type
+                Type.MOTHERBOARD, Type.PIC, Type.RTC); // expected connections
     }
 
     /**

@@ -87,12 +87,13 @@ import dioscuri.module.ModuleRTC;
 public class Keyboard extends ModuleKeyboard {
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "pic",
-            "rtc" };
+    /*
+    private String[] moduleConnections = new String[] { "motherboard", "pic", "rtc" };
     private ModuleMotherboard motherboard;
     private ModulePIC pic;
     private ModuleRTC rtc;
     private ModuleMouse mouse;
+    */
     private TheKeyboard keyboard;
     private ScanCodeSets scanCodeSet;
 
@@ -203,48 +204,20 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType() == Type.RTC) { //.equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Optional: set connection for mouse
-        else if (mod.getType() == Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
-            this.mouse = (ModuleMouse) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Default inherited reset. Calls specific reset(int)
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+        ModuleRTC rtc = (ModuleRTC)super.getModule(Type.RTC);
+        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+
         // Register I/O ports 0x60, 0x64 in I/O address space
+               
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);
 
@@ -442,6 +415,7 @@ public class Keyboard extends ModuleKeyboard {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -581,8 +555,11 @@ public class Keyboard extends ModuleKeyboard {
      *            OUT to portAddress 60h executes data port commands OUT to
      *            portAddress 64h executes status port commands
      */
-    public void setIOPortByte(int portAddress, byte value)
-            throws ModuleUnknownPort {
+    public void setIOPortByte(int portAddress, byte value) throws ModuleUnknownPort {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+
         logger.log(Level.CONFIG, "["
                 + MODULE_TYPE
                 + "]"
@@ -1091,6 +1068,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void setInterrupt(int irqNumber) {
         // Raise an interrupt at PIC (IRQ 1 or 12)
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
     }
@@ -1101,6 +1079,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void clearInterrupt(int irqNumber) {
         // Clear interrupt at PIC (IRQ 1 or 12)
+        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
         pic.clearIRQ(irqNumber);
         if (pendingIRQ == true) {
             pendingIRQ = false;
@@ -1445,6 +1424,9 @@ public class Keyboard extends ModuleKeyboard {
      * 
      */
     private int poll() {
+
+        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+
         int returnValue; // IRQs to raise
 
         // Determine & reset IRQs
