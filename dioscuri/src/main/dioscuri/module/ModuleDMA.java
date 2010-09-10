@@ -49,7 +49,8 @@ import dioscuri.module.dma.DMA8Handler;
 public abstract class ModuleDMA extends ModuleDevice implements Addressable {
 
     public ModuleDMA() {
-        super(Type.DMA);
+        super(Type.DMA,
+                Type.MOTHERBOARD, Type.CPU, Type.MEMORY);
     }
 
     /**

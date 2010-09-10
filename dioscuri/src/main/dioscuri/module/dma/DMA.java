@@ -80,8 +80,8 @@ import dioscuri.module.ModuleMotherboard;
  * 
  * 
  */
-@SuppressWarnings("unused")
 public class DMA extends ModuleDMA {
+
     boolean busHoldAcknowledged; // Hold Acknowlege; CPU has relinquished
                                  // control of the system busses
     boolean terminalCountReached; // Terminal Count; generated when transfer is
@@ -111,11 +111,10 @@ public class DMA extends ModuleDMA {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "cpu",
-            "memory" };
-    private ModuleMotherboard motherboard;
-    private ModuleMemory memory;
-    private ModuleCPU cpu;
+    private String[] moduleConnections = new String[] { "motherboard", "cpu", "memory" };
+    //private ModuleMotherboard motherboard;
+    //private ModuleMemory memory;
+    //private ModuleCPU cpu;
 
     // Toggles
     private boolean isObserved;
@@ -278,45 +277,15 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for memory
-        if (mod.getType() == Type.MEMORY) { //.equalsIgnoreCase("memory")) {
-            this.memory = (ModuleMemory) mod;
-            return true;
-        }
-
-        // Set connection for cpu
-        if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // Register I/O ports 0x00 - 0x0F in I/O address space
         motherboard.setIOPort(PORT_DMA1_CH0_ADDRESS, this);
         motherboard.setIOPort(PORT_DMA1_CH0_COUNT, this);
@@ -1367,6 +1336,9 @@ public class DMA extends ModuleDMA {
      *            originated
      */
     private void controlHoldRequest(int ctrlNum) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+
         int chanNum;
 
         // Do nothing if controller is disabled
@@ -1520,6 +1492,8 @@ public class DMA extends ModuleDMA {
                                           // handlerWrite()/handlerRead(), so
                                           // can clear TC
             busHoldAcknowledged = false;
+
+            ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
             cpu.setHoldRequest(false, this); // clear HRQ to CPU
             if (ctrlNum == 0) // Master controller, so cascade HRQ via DREQ4
             {
@@ -1545,6 +1519,9 @@ public class DMA extends ModuleDMA {
      */
     private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
             throws ModuleException {
+        
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+
         byte dataByte; // 8-bit data read/written to/from memory
         byte[] dataWord = new byte[2]; // 16-bit data read/written to/from
                                        // memory
