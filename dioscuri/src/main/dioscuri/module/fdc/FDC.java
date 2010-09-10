@@ -141,13 +141,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // Relations
     private Emulator emu;
     private String[] moduleConnections;
+    /*
     private ModuleMotherboard motherboard;
     private ModuleRTC rtc;
     private ModulePIC pic;
     private ModuleDMA dma;
+    private ModuleATA ata;
+    */
     private DMAController dma32;
-    private ModuleATA ata; // TODO: implement alternative for using ata (prefer
-                           // no ref to ata directly)
 
     // Toggles
     private boolean isObserved;
@@ -491,54 +492,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType() == Type.RTC) { //.equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for dma
-        else if (mod.getType() == Type.DMA) { //.equalsIgnoreCase("dma")) {
-            this.dma = (ModuleDMA) mod;
-            return true;
-        }
-        // Set connection for ata
-        else if (mod.getType() == Type.ATA) { //.equalsIgnoreCase("ata")) {
-            this.ata = (ModuleATA) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Default inherited reset. Calls specific reset(int)
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+
         // Register I/O ports 03F0-03F7 - Floppy Disk Controller in I/O address
         // space
         motherboard.setIOPort(PORT_FLOPPY_STATUS_A, this);
@@ -604,6 +570,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      *         otherwise
      */
     public boolean reset(int resetType) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+
         pendingIRQ = false;
         resetSenseInterrupt = 0; // No reset result present
 
@@ -817,6 +790,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -825,6 +799,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * 
      */
     public void update() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+
         // Perform an update on FDC
         // Cannot guarantee the following instruction since 32-bit update:
         // logger.log(Level.INFO, motherboard.getCurrentInstructionNumber() +
@@ -935,6 +916,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -1067,6 +1055,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleException, ModuleUnknownPort {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " OUT (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(((int) value) & 0xFF).toUpperCase());
@@ -1418,6 +1413,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     protected void setInterrupt() {
         // Raise an interrupt at IRQ 6 at PIC
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
         resetSenseInterrupt = 0;
@@ -1431,6 +1427,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         // Clear an interrupt at IRQ 6 at PIC
         if (pendingIRQ == true) {
             // Lower an interrupt at IRQ 6 at PIC
+            ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
             pic.clearIRQ(irqNumber);
             pendingIRQ = false;
         }
@@ -1447,6 +1444,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public boolean setNumberOfDrives(int totalDrives) {
         // Set number of drives (must be > 0 and <= 4)
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+
         if (totalDrives > 0 && totalDrives <= 4) {
             numberOfDrives = totalDrives;
             drives = new Drive[numberOfDrives];
@@ -1523,6 +1522,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public boolean insertCarrier(int driveIndex, byte carrierType,
             File imageFile, boolean writeProtected) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         // Select drive
         if (driveIndex == 0) {
             // Drive A
@@ -1793,6 +1799,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * 
      */
     private void executeCommand() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         // Drive parameters
         int drv, hds, cylinder, sector, eot;
         int sectorSize, sectorTime, logicalSector, dataLength;
@@ -2426,6 +2439,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return byte current byte from floppy buffer
      */
     protected byte getDMAByte() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         int drv, logicalSector, sectorTime;
 
         // if (floppyBufferIndex > 500)
@@ -2512,6 +2532,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @param data
      */
     protected void setDMAByte(byte data) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         int drv, logicalSector, sectorTime;
 
         // Get Terminal Count from DMA
@@ -2696,6 +2723,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return boolean true if succesfully, false otherwise
      */
     private boolean unregisterDevices() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Type.ATA);
+        
         boolean reslt = false;
 
         // Unregister IRQ number

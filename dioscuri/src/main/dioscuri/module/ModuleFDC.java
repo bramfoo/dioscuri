@@ -49,7 +49,8 @@ import java.io.File;
 public abstract class ModuleFDC extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleFDC() {
-        super(Type.FDC);    
+        super(Type.FDC,
+                Type.MOTHERBOARD, Type.RTC, Type.PIC, Type.ATA, Type.DMA);  
     }
 
     /**
