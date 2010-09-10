@@ -1,0 +1,9 @@
+; OR_AXIv (opcode 0D), logical OR of immediate word and AX
+; 0d 01 10 0d aa aa 0d 55 55 40 0d fe ef f4
+start:
+	OR ax, 0x1001	; 0000 0000 0000 0000 | 0001 0000 0000 0001
+	OR ax, 0xAAAA	; 0001 0000 0000 0001 | 1010 1010 1010 1010
+	OR ax, 0x5555	; 1011 1010 1010 1011 | 0101 0101 0101 0101
+	INC ax		; Reset ax to 0
+	OR ax, 0xEFFE	; 0000 0000 0000 0000 | 1110 1111 1111 1110
+	HLT

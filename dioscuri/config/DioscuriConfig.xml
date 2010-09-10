@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<emulator debug="false">
+    <architecture name="Von Neumann">
+        <modules>
+            <bios>
+                <sysbiosfilepath>C:\BK\IntelliJ\dioscuri_mouse\images\bios\BIOS-bochs-latest</sysbiosfilepath>
+                <vgabiosfilepath>C:\BK\IntelliJ\dioscuri_mouse\images\bios\VGABIOS-lgpl-latest</vgabiosfilepath>
+                <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
+                <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
+                <bootdrives>
+                    <bootdrive0>Hard Drive</bootdrive0>
+                    <bootdrive1>None</bootdrive1>
+                    <bootdrive2>None</bootdrive2>
+                </bootdrives>
+                <floppycheckdisabled>false</floppycheckdisabled>
+            </bios>
+            <cpu debug="false">
+                <cpu32bit>false</cpu32bit>
+                <speedmhz>5</speedmhz>
+            </cpu>
+            <memory debugaddressdecimal="9295" debug="false">
+                <sizemb>16</sizemb>
+            </memory>
+            <fdc debug="false">
+                <updateintervalmicrosecs>250</updateintervalmicrosecs>
+                <floppy>
+                    <enabled>true</enabled>
+                    <inserted>true</inserted>
+                    <driveletter>A</driveletter>
+                    <diskformat>1.44M</diskformat>
+                    <writeprotected>false</writeprotected>
+                    <imagefilepath>C:\BK\IntelliJ\dioscuri_mouse\images\floppy\FreeDOS\fd_odin07_1440.ima</imagefilepath>
+                </floppy>
+            </fdc>
+            <pit debug="false">
+                <clockrate>5</clockrate>
+            </pit>
+            <keyboard debug="false">
+                <updateintervalmicrosecs>200</updateintervalmicrosecs>
+            </keyboard>
+            <mouse debug="false">
+                <enabled>true</enabled>
+                <mousetype>serial</mousetype>
+            </mouse>
+            <ata debug="false">
+                <updateintervalmicrosecs>100000</updateintervalmicrosecs>
+                <harddiskdrive>
+                    <enabled>true</enabled>
+                    <channelindex>0</channelindex>
+                    <master>true</master>
+                    <autodetectcylinders>true</autodetectcylinders>
+                    <cylinders>0</cylinders>
+                    <heads>4</heads>
+                    <sectorspertrack>17</sectorspertrack>
+                    <imagefilepath>C:\BK\IntelliJ\module_redesign2\images\dosgames.img</imagefilepath>
+                </harddiskdrive>
+            </ata>
+            <video debug="false">
+                <updateintervalmicrosecs>40000</updateintervalmicrosecs>
+            </video>
+        </modules>
+    </architecture>
+</emulator>

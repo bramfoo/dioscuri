@@ -1,0 +1,200 @@
+Changelog Dioscuri - Modular emulator for Digital Preservation
+==============================================================
+Date            : 21 April 2010
+Organisations   : Koninklijke Bibliotheek,
+                  Nationaal Archief of the Netherlands,
+                  Tessella Support Services plc.
+Projects        : Dioscuri project, Planets, KEEP
+
+0.5.1 : 21-04-2010
+-------------------------------------------------------
+Some bug fixes:
+- can now write to HD in 32 bit mode
+- Windows XP look and feel no longer looses a part of characters
+  at the bottom of the screen
+- white spaces in paths no longer causes trouble
+
+0.5.0 : 19-03-2010
+-------------------------------------------------------
+- improved command line interface options
+- added a label on the GUI that shows in which mode the emulator
+  is running: 16- or 32 bit
+- Dioscuri can now be executed from any location and still finds
+  it's configuration- and image files stored in the application 
+  folder
+- separated some logic from the GUI class and moved it to the
+  util.dioscuri.Utilities class
+- extracted an interface from the main JFrame so that it will
+  be easier to create an applet of Dioscuri
+- started working on unit tests for CPU instructions
+- improved Javadoc API
+- various bug fixes
+
+0.4.2 : 24-04-2009
+-------------------------------------------------------
+- Implemented autoshutdown feature
+
+
+0.4.1 : 01-04-2009
+-------------------------------------------------------
+- Added command line parameters for startup configuration
+- Added user-adjustable configuration file location (other then default)
+
+
+0.4.0 : 11-12-2008
+-------------------------------------------------------
+- Made some changes in order to make Dioscuri JDK/JRE 1.5 compliant:
+- added dioscuri.util.Deque to replace Java 1.6's java.util.Deque interface
+- dioscuri.module.cpu32.PriorityDeque now implements dioscuri.util.Deque
+  instead of the java.util.Deque interface
+- changed a couple of JDK 1.6 Arrays.copyOf(...) calls in dioscuri.module.cpu32.PriorityDeque
+  to the more verbose System.arraycopy(..,) etc.
+- dioscuri.module.cpu32.ProtectedModeUBlock,
+  dioscuri.module.cpu32.Virtual8086ModeUBlock and
+  dioscuri.module.cpu32.RealModeUBlock made some calls to java.lang.Math
+  method available in Java 1.6. These methods are now also available in:
+  dioscuri.module.cpu.Util and changed dioscuri.module.cpu32.ProtectedModeUBlock
+  and dioscuri.module.cpu32.RealModeUBlock accordingly.
+- dioscuri.module.cpu32.RPNNode made a call to 
+  binarySearch(int[] a, int fromIndex, int toIndex, int key) which has been rewritten as:
+  binarySearch(int[] a, int key) which will take slightly longer, of course, but still performs a
+  O(log(n)) in Big-O terms, so it should be a noticeable difference.
+- Support for command-line interface
+
+  
+  
+0.3.0 : 14-02-2008 (MS Windows 3.0 capable)
+-------------------------------------------------------
+- Added 32-bit CPU from JPC project (http://www.physics.ox.ac.uk/jpc)
+- Added serial mouse support (experimental)
+- Added serial port (UART 16550A with COM-ports 1 to 4)
+- Fixed minor bugs in modules CPU, DMA, PIC
+- Updated GUI
+
+
+
+0.2.0 : 03-09-2007 (FreeDOS and ELKS capable)
+-------------------------------------------------------
+- Fixed minor bugs in CPU instructions and added some new instructions
+- Fixed keyboard status LEDs on GUI
+- Improved system timer and PIT
+- Improved GUI for image file selection
+- Improved keyboard controller for mouse/keyboard control
+- Added functionality to copy text to clipboard (text mode only)
+
+
+
+0.1.0 : 13-08-2007 (MS-DOS 16-bit stable)
+-------------------------------------------------------
+- Fixed CPU/PIC problem (context switch interrupting repeat prefix handling)
+- Fixed cursor problem
+- Fixed minor bugs in CPU instructions
+- Fixed VGA screen update (sometimes buffer got scrambled)
+- Improved PIT timer functionality
+- Improved keyboard support for extra characters
+- Improved GUI with crossplatform Java Swing interface
+- Added support for system clock based on PIT interrupts
+
+
+
+0.0.9 : 01-07-2007 (Sourceforge launch)
+-------------------------------------------------------
+- Full IDE/ATA support for hard disk
+- Full graphics pixel mode
+- Added XML-based configuration functionality
+- Improved GUI
+- Added new CPU instructions
+- Fixed some CPU instructions
+- Improved floppy disk controller with write functionality (via DMA)
+- Improved RTC timer to set and get clock time and date
+- Improved logging structure (for debugging only)
+- Improved debug mode functionality
+
+
+
+0.0.8 : 15-05-2007
+-------------------------------------------------------
+- Improved IDE/ATA with HDD support (experimental)
+- Added new CPU instructions
+- Fixed some CPU instructions
+- Improved virtual screen output
+- Improved overall GUI
+- Added emulation process control
+- Added virtual floppy swapping
+
+
+
+0.0.7 : 26-04-2007 (MS-DOS 16-bit capable)
+-------------------------------------------------------
+- Added many new instructions in CPU
+- Fixed many bugs in several CPU instructions
+- Fixed bugs in floppy disk controller (read-only)
+- Added A20 address line support for memory wrapping
+- Introduced IDE/ATA support (partly)
+- Extended PIC support
+
+
+
+0.0.6 : 29-01-2007 (Launch at Planets meeting Pisa, Italy)
+-------------------------------------------------------
+- Created modules clock, FDC, IDE, keyboard, PIC
+- Introduced timing mechanism for devices video, keyboard, fdc
+- Introduced interrupt handling
+- Introduced DMA support
+- Introduced floppy disk support (floppy disk images only)
+- Introduced keyboard input
+- Added a lot of new instructions to 16 bit CPU instruction set
+- Instruction prefix support for segment selection
+- Added hack in memory for A20-address line
+
+
+
+0.0.5 : 20-10-2006 (Launch at Emulation Expert Meeting, The Hague, The Netherlands)
+-------------------------------------------------------
+- Created modules motherboard, screen, video, BIOS, CMOS, PIT, RTC and stubs for DMA, serialport, parallelport
+- Introduced subset of module -> module device
+- Introduced I/O address space for devices
+- Introduced reset function for modules
+- Introduced screen output to virtual screen (character display only)
+- Introduced memory mapped I/O
+- Added BIOS ROM and CMOS settings
+- Added VGA BIOS ROM
+- Load and execution of BIOS
+- Added instructions IN, OUT, MOV, REPZ, CALL, STOSW
+- Instruction prefix support for 32-bit computing
+- Fixed a lot of bugs in CPU instructions
+- Excluded observer/observable design pattern
+
+
+
+0.0.4 : 18-05-2006
+-------------------------------------------------------
+- Introduced debug mode for modules
+- Introduced observer/observable pattern 
+- Added arithmetic instructions ADD, SUB and logic instructions OR, CMP, etc.
+- Added class IO for communication emulator/environment
+- Added command-driven control in emulator
+- Moved UI out of CPU module into a separate IO class
+- Substituted Java.Util.logging instead of standard.out
+
+
+
+0.0.3 : 14-04-2006
+-------------------------------------------------------
+- Added some new single byte instructions to subset
+- extended UI to comply with debug.exe in MS DOS
+
+
+
+0.0.2
+-------------------------------------------------------
+- Added simple UI for CPU communication
+
+
+
+0.0.1 (Initial version of emulator)
+-------------------------------------------------------
+- Created modules CPU and memory
+- Introduced modular architecture
+- Introduced flat memory model
+- Added subset of CPU 8086 16 bit instructionset
