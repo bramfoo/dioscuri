@@ -1,23 +1,23 @@
-/* $Revision: 159 $ $Date: 2009-08-17 12:52:56 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
- * 
- * Copyright (C) 2007-2009  National Library of the Netherlands, 
- *                          Nationaal Archief of the Netherlands, 
+/* $Revision: 159 $ $Date: 2009-08-17 12:52:56 +0000 (ma, 17 aug 2009) $ $Author: blohman $
+ *
+ * Copyright (C) 2007-2009  National Library of the Netherlands,
+ *                          Nationaal Archief of the Netherlands,
  *                          Planets
  *                          KEEP
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  *
  * For more information about this project, visit
@@ -26,14 +26,14 @@
  *   jrvanderhoeven at users.sourceforge.net
  *   blohman at users.sourceforge.net
  *   bkiers at users.sourceforge.net
- * 
+ *
  * Developed by:
  *   Nationaal Archief               <www.nationaalarchief.nl>
  *   Koninklijke Bibliotheek         <www.kb.nl>
  *   Tessella Support Services plc   <www.tessella.com>
  *   Planets                         <www.planets-project.eu>
  *   KEEP                            <www.keep-project.eu>
- * 
+ *
  * Project Title: DIOSCURI
  */
 
@@ -64,9 +64,9 @@ import dioscuri.module.ModuleRTC;
 
 /**
  * An implementation of a ATA controller module.
- * 
+ *
  * @see Module
- * 
+ *
  *      Metadata module ********************************************
  *      general.type : ata general.name : ATA Controller / ATA-1 to ATAT-3
  *      general.architecture : Von Neumann general.description : Implements a
@@ -76,9 +76,9 @@ import dioscuri.module.ModuleRTC;
  *      general.keywords : IDE, ATA, storage, disk, controller general.relations
  *      : motherboard general.yearOfIntroduction : 1994 general.yearOfEnding :
  *      1999 general.ancestor : - general.successor : ATA-2 (EIDE)
- * 
+ *
  *      Notes: none
- * 
+ *
  */
 public class ATA extends ModuleATA {
 
@@ -96,9 +96,9 @@ public class ATA extends ModuleATA {
             ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC };// ,
                                                                      // ModuleType.CPU};
 
-    private ModuleMotherboard motherboard;
-    private ModuleRTC rtc;
-    private ModulePIC pic;
+    //private ModuleMotherboard motherboard;
+    //private ModuleRTC rtc;
+    //private ModulePIC pic;
     // private ModuleCPU cpu;
 
     // Toggles
@@ -158,7 +158,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Returns the name of the module
-     * 
+     *
      * @return string containing the name of module
      * @see Module
      */
@@ -167,49 +167,33 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
+     * Returns a String[] with all names of modules it needs to be connected to
+     *
+     * @return String[] containing the names of modules, or null if no
+     *         connections
      */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Module.Type.MOTHERBOARD) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType() == Module.Type.RTC) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType() == Module.Type.PIC) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for cpu
-        // BRAM: Removed CPU connection, as it was unnecessary
-        // else if (mod.getType().equalsIgnoreCase(ModuleType.CPU.toString()))
-        // {
-        // this.cpu = (ModuleCPU) mod;
-        // return true;
-        // }
+    public String[] getConnection() {
 
-        // No connection has been established
-        return false;
+        String[] connectingModString = new String[moduleConnections.length];
+        for (int i = 0; i < moduleConnections.length; i++) {
+            connectingModString[i] = moduleConnections[i].toString();
+        }
+
+        // Return all required connections;
+        return connectingModString;
     }
 
     /**
      * Reset all parameters of module
-     * 
+     *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
 
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true) {
@@ -249,7 +233,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Starts the module
-     * 
+     *
      * @see Module
      */
     public void start() {
@@ -258,7 +242,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Stops the module
-     * 
+     *
      * @see Module
      */
     public void stop() {
@@ -267,7 +251,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Returns the status of observed toggle
-     * 
+     *
      * @return state of observed toggle
      * @see Module
      */
@@ -277,7 +261,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Sets the observed toggle
-     * 
+     *
      * @param status
      * @see Module
      */
@@ -287,7 +271,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Returns the status of the debug mode toggle
-     * 
+     *
      * @return state of debug mode toggle
      * @see Module
      */
@@ -297,7 +281,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Sets the debug mode toggle
-     * 
+     *
      * @param status
      * @see Module
      */
@@ -307,7 +291,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Returns data from this module
-     * 
+     *
      * @param requester
      * @return byte[] with data
      * @see Module
@@ -320,7 +304,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Set data for this module.
-     * 
+     *
      * @param data
      * @param sender
      * @return true if data is set successfully, false otherwise
@@ -334,7 +318,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Set String[] data for this module.
-     * 
+     *
      * @param data
      * @param sender
      * @return boolean true is successful, false otherwise
@@ -348,7 +332,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Returns a dump of this module.
-     * 
+     *
      * @return string the dumop string
      * @see Module
      */
@@ -397,7 +381,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Defines the interval between subsequent updates.
-     * 
+     *
      * @param interval
      */
     public void setUpdateInterval(int interval) {
@@ -407,6 +391,7 @@ public class ATA extends ModuleATA {
         } else {
             updateInterval = 100000;
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -414,6 +399,9 @@ public class ATA extends ModuleATA {
      * Update device
      */
     public void update() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         for (int channelIndex = 0; channelIndex < ATAConstants.MAX_NUMBER_IDE_CHANNELS; channelIndex++) {
 
             for (int deviceIndex = 0; deviceIndex < 2; deviceIndex++) {
@@ -446,7 +434,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Return a byte from I/O address space at given port.
-     * 
+     *
      * @param originalPortAddress
      * @return byte containing the data at given I/O address port
      * @throws ModuleException
@@ -468,8 +456,8 @@ public class ATA extends ModuleATA {
      * Set a byte in I/O address space at given port TODO: BOCHS code writes to
      * both drives of a channel - this seems wrong but kept in this code to adi
      * debugging and comparison with BOCHS
-     * 
-     * @param originalAddress 
+     *
+     * @param originalAddress
      * @param data
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -489,7 +477,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Return a word from I/O address space at given port
-     * 
+     *
      * @param portAddress
      * @return byte[] containing the word at given I/O address port
      * @throws ModuleException
@@ -508,8 +496,8 @@ public class ATA extends ModuleATA {
 
     /**
      * Set a word in I/O address space at given port
-     * 
-     * @param portAddress 
+     *
+     * @param portAddress
      * @param dataWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -528,7 +516,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Return a double word from I/O address space at given port
-     * 
+     *
      * @param portAddress
      * @return byte[] containing the double word at given I/O address port
      * @throws ModuleException
@@ -547,8 +535,8 @@ public class ATA extends ModuleATA {
 
     /**
      * Set a double word in I/O address space at given port
-     * 
-     * @param portAddress 
+     *
+     * @param portAddress
      * @param dataDoubleWord
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
@@ -571,7 +559,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Initiate configuration of the disk drive.
-     * 
+     *
      * @param theIdeChannel
      * @param isMaster
      * @param isHardDisk
@@ -646,11 +634,14 @@ public class ATA extends ModuleATA {
 
     /**
      * Set CMOS values
-     * 
+     *
      * @param bootDrives
      * @param floppySigCheckDisabled
      */
     public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
+
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+
         // generate CMOS values for hard drive
 
         // CMOS 12h - IBM - HARD DISK DATA
@@ -895,7 +886,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Gets the current channel index.
-     * 
+     *
      * @return int the current channel index
      */
     public int getCurrentChannelIndex() {
@@ -907,7 +898,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get the selected channel
-     * 
+     *
      * @return the selected channel
      */
     private ATAChannel getSelectedChannel() {
@@ -916,7 +907,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get the selected IDE drive
-     * 
+     *
      * @return the selected IDE drive
      */
     private ATADrive getSelectedDrive() {
@@ -926,7 +917,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get the selected drive controller
-     * 
+     *
      * @return the selected drive controller
      */
     private ATADriveController getSelectedDriveController() {
@@ -935,7 +926,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Load disk Image.
-     * 
+     *
      * @param imageFilePath
      *            the file path of the disk image
      * @return true if load successful
@@ -960,7 +951,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get number of drives.
-     * 
+     *
      * @return the number of drives
      */
     private int getNumDrives() {
@@ -985,7 +976,7 @@ public class ATA extends ModuleATA {
      * @param originalPortAddress containing the address of the I/O port
      * @param ioLength the length of the Io
      * @return byte containing the data at given I/O address port
-     * 
+     *
      * @throws ModuleException
      * @throws ModuleUnknownPort
      * @throws ModuleWriteOnlyPortException
@@ -1198,7 +1189,7 @@ public class ATA extends ModuleATA {
             }
 
             if (channelPort == 0x07) {
-
+                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -1235,7 +1226,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Read sectors.
-     * 
+     *
      * @param originalAddress
      * @param ioLength
      * @return the data read.
@@ -1350,7 +1341,7 @@ public class ATA extends ModuleATA {
             // update sector count, sector number, cylinder,
             // drive, head, status
             // if there are more sectors, read next one in...
-            //        
+            //
             if ((byte) channels[this.curChannelIndex].getSelectedController()
                     .getCurrentCommand() == (byte) 0xC4) {
 
@@ -1400,7 +1391,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Write data of length ioLength.
-     * 
+     *
      * @param originalAddress
      * @param data
      * @param ioLength
@@ -1552,7 +1543,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Write sectors of hard drive.
-     * 
+     *
      * @param originalAddress
      * @param data
      * @param channel
@@ -1682,7 +1673,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Execute get command.
-     * 
+     *
      * @param originalAddress
      * @param ioLength
      * @return the value got.
@@ -1940,7 +1931,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Abort the current command.
-     * 
+     *
      * @param channel
      *            the current channel
      * @param value
@@ -1965,7 +1956,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Raise an Interrupt.
-     * 
+     *
      * @param channel
      *            the current channel
      */
@@ -1996,6 +1987,7 @@ public class ATA extends ModuleATA {
                 // DEV_ide_bmdma_set_irq(channel); // TODO:
             }
 
+            ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
             pic.setIRQ(irq);
 
         } else {
@@ -2006,7 +1998,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Set Port Ide Drive Head.
-     * 
+     *
      * @param originalAddress
      * @param data
      */
@@ -2058,7 +2050,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Port IDE alt Status Device (0x3f6)
-     * 
+     *
      * @param originalAddress
      * @param prevControlReset
      * @param data
@@ -2140,8 +2132,8 @@ public class ATA extends ModuleATA {
                 getSelectedChannel().getDrives()[driveId].getControl()
                         .setDisableIrq(false);
 
-                // TODO as per BOCHS this code is inside a loop, but seems
-                // unnecessary
+                // TODO as per BOCHS this code is inside a loop, but seems unnecessary
+                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -2171,7 +2163,7 @@ public class ATA extends ModuleATA {
      * Execute command of IDC Note: assumed is that all bytes of the command are
      * fetched. After execution of the command, the IDC will automatically enter
      * the result or idle phase.
-     * 
+     *
      * @param originalAddress
      * @param data
      * @param ioLength
@@ -2208,13 +2200,16 @@ public class ATA extends ModuleATA {
 
     /**
      * Read Data from disk image into buffer.
-     * 
+     *
      * @param channel
      * @param buffer
      * @param bufferSize
      * @return true if read successful / false if failed
      */
     private boolean ideReadData(int channel, byte[] buffer, int bufferSize) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         int logicalSector = 0;
 
         int sectorCount = (bufferSize / 512);
@@ -2273,13 +2268,16 @@ public class ATA extends ModuleATA {
 
     /**
      * Write data from buffer to disk image.
-     * 
+     *
      * @param channel
      * @param buffer
      * @param bufferSize
      * @return true if read successful / false if failed
      */
     private boolean ideWriteData(int channel, byte[] buffer, int bufferSize) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         int logicalSector = 0;
 
         int sectorCount = (bufferSize / 512);
@@ -2341,7 +2339,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Set Packet A0 command.
-     * 
+     *
      * @param originalAddress
      * @param channel
      * @param data
@@ -3042,7 +3040,7 @@ public class ATA extends ModuleATA {
                                 // (!(BX_SELECTED_DRIVE(channel).cdrom.cd->read_toc(BX_SELECTED_CONTROLLER(channel).buffer,
                                 // &toc_length, msf, starting_track, format)))
                                 // {
-                                //                            
+                                //
                                 // atapiCmdError(channel,
                                 // SenseType.ILLEGAL_REQUEST,
                                 // AscType.INV_FIELD_IN_CMD_PACKET, true);
@@ -3363,7 +3361,7 @@ public class ATA extends ModuleATA {
     /**
      * Init Mode Sense Single. TODO: deal with src what is the type of src?
      * private void initModeSenseSingle(int channel, const void* src, int size)
-     * 
+     *
      * @param channel
      * @param src
      * @param size
@@ -3378,7 +3376,7 @@ public class ATA extends ModuleATA {
         // {
         // getSelectedDriveController().setBuffer(2, (byte)0x12); // media
         // present 120mm CD-ROM (CD-R) data/audio door closed
-        //     
+        //
         // } else
         // {
         getSelectedDriveController().setBuffer(2, (byte) 0x70); // no media
@@ -3398,7 +3396,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Execute atapi Cmd Nop.
-     * 
+     *
      * @param channel
      *            the currently selected channel.
      */
@@ -3416,7 +3414,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get packet field.
-     * 
+     *
      * @param channelIndex
      * @param bufferIndex
      * @param start
@@ -3449,7 +3447,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get packet byte.
-     * 
+     *
      * @param channelIndex
      * @param bufferIndex
      * @return the packet byte.
@@ -3464,7 +3462,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get packet word.
-     * 
+     *
      * @param channelIndex
      * @param bufferIndex
      * @return the packet word.
@@ -3483,7 +3481,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Get atapi cmd error.
-     * 
+     *
      * @param channel
      * @param senseType
      * @param ascType
@@ -3522,7 +3520,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Init Send Atapi Command.
-     * 
+     *
      * @param channel
      * @param command
      * @param reqLength
@@ -3615,7 +3613,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Ready To Send Atapi.
-     * 
+     *
      * @param channel
      *            the current channel
      */
@@ -3626,7 +3624,7 @@ public class ATA extends ModuleATA {
     /**
      * Set hard disk command 0x1f7 (mch) Writes to the command register with
      * drive_select != 0 are ignored if no secondary device is present
-     * 
+     *
      * @param originalAddress
      * @param data
      * @param logicalSector
@@ -3634,6 +3632,8 @@ public class ATA extends ModuleATA {
      */
     private void setHardDiskCommand(int originalAddress, int[] data,
             Integer logicalSector, int ret) {
+
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
 
         if (getSelectedChannel().isSlaveSelected()
                 && !getSelectedChannel().isSlaveDrivePresent()) {
@@ -4323,7 +4323,7 @@ public class ATA extends ModuleATA {
              * getSelectedDriveController().getStatus().setSeekComplete(1);
              * getSelectedDriveController().getStatus().setDrq(1);
              * getSelectedDriveController().setCurrentCommand(data[0]);
-             * 
+             *
              * } else {
              */
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
@@ -4372,7 +4372,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Identify the Atapi Drive.
-     * 
+     *
      * @param channel
      *            the channel
      */
@@ -4515,7 +4515,7 @@ public class ATA extends ModuleATA {
     /**
      * Identify the drive by setting the ID Drive params and writing the data to
      * the buffer.
-     * 
+     *
      * @param channel
      *            the channel
      */
@@ -4964,7 +4964,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Set the signiture.
-     * 
+     *
      * @param channel
      *            the ide channel
      */
@@ -4987,7 +4987,7 @@ public class ATA extends ModuleATA {
 
     /**
      * Read 16 bit from the buffer. TODO: confirm this works as expected
-     * 
+     *
      * @param buf
      * @param offset
      * @return the read value
@@ -5000,7 +5000,7 @@ public class ATA extends ModuleATA {
 
     /**
      * read 32 bit from the buffer TODO: confirm this works as expected
-     * 
+     *
      * @param buf
      * @param offset
      * @return the read value
@@ -5015,34 +5015,37 @@ public class ATA extends ModuleATA {
 
     /**
      * Gte the motherboard.
-     * 
+     *
      * @return the motherboard
      */
     protected ModuleMotherboard getMotherboard() {
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         return motherboard;
     }
 
     /**
      * Get the RTC module.
-     * 
+     *
      * @return the RTC module
      */
     protected ModuleRTC getRtc() {
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
         return rtc;
     }
 
     /**
      * Get the PIC module.
-     * 
+     *
      * @return the PIC module.
      */
     protected ModulePIC getPic() {
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         return pic;
     }
 
     /**
      * Get the update interval.
-     * 
+     *
      * @return the update interval
      */
     public int getUpdateInterval() {
