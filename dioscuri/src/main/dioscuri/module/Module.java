@@ -1,23 +1,23 @@
-/* $Revision: 160 $ $Date: 2009-08-17 12:56:40 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
- * 
- * Copyright (C) 2007-2009  National Library of the Netherlands, 
- *                          Nationaal Archief of the Netherlands, 
+/* $Revision: 160 $ $Date: 2009-08-17 12:56:40 +0000 (ma, 17 aug 2009) $ $Author: blohman $
+ *
+ * Copyright (C) 2007-2009  National Library of the Netherlands,
+ *                          Nationaal Archief of the Netherlands,
  *                          Planets
  *                          KEEP
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  *
  * For more information about this project, visit
@@ -26,24 +26,25 @@
  *   jrvanderhoeven at users.sourceforge.net
  *   blohman at users.sourceforge.net
  *   bkiers at users.sourceforge.net
- * 
+ *
  * Developed by:
  *   Nationaal Archief               <www.nationaalarchief.nl>
  *   Koninklijke Bibliotheek         <www.kb.nl>
  *   Tessella Support Services plc   <www.tessella.com>
  *   Planets                         <www.planets-project.eu>
  *   KEEP                            <www.keep-project.eu>
- * 
+ *
  * Project Title: DIOSCURI
  */
 
 package dioscuri.module;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Abstract class representing a generic hardware module.
- * 
+ *
  */
 public abstract class Module {
 
@@ -68,21 +69,20 @@ public abstract class Module {
         RTC,
         SCREEN,
         SERIALPORT,
-        //VGA,
         VIDEO
     }
 
-    public final Type type;
+    protected final Type type;
     private final Map<Type, Module> connections;
     private boolean debugMode;
 
     /**
      * Creates a new instance of a module.
-     * 
-     * @param type                 the type of this module.
-     * @param expectedConnections  optional number of types this module
-     *                             is supposed to be connected to when
-     *                             the emulation process starts.
+     *
+     * @param type                  the type of this module.
+     * @param expectedConnections   optional number of types this module
+     *                              is supposed to be connected to when
+     *                              the emulation process starts.
      */
     public Module(Type type, Type... expectedConnections) {
 
@@ -105,66 +105,40 @@ public abstract class Module {
         }
     }
 
-    /**
-     * Returns all Modules this class is connected to.
-     *
-     * @return all Modules this class is connected to.
-     */
-    public final Module[] getConnections() {
-        List<Module> list = new ArrayList<Module>();
-        for(Module m : this.connections.values()) {
-            if(m != null) {
-                list.add(m);
-            }
-        }
-        return list.toArray(new Module[list.size()]);
+    public Module getConnection(Type t) {
+        return connections.get(t);
     }
 
-    /**
-     * Returns the Type of this Module.
-     *
-     * @return the Type of this Module.
-     */
+    //public final Type[] getConnection() {
+    //
+    //}
+
     public final Type getType() {
         return this.type;
     }
 
     /**
-     * Returns the Module with Type t.
+     * Checks if this module is connected to operate normally
      *
-     * @param t the Type of the Module to be fetched.
-     * @return  the Module with Type t or null if no connection has been made.
-     */
-    public final Module getModule(Type t) {
-        return connections.get(t);
-    }
-
-    /**
-     * Checks if this module is connected to operate normally. Checks all
-     * mandatory connections and ignores the optional ones.
-     *
-     * @return true if this module is connected successfully to all
-     *         mandatory MOdules, false otherwise
+     * @return true if this module is connected successfully, false otherwise
      */
     public final boolean isConnected() {
-        for(Module connectedTo : this.connections.values()) {
-            if(connectedTo == null) {
+        for(Map.Entry<Type, Module> entry : this.connections.entrySet()) {
+            if(entry.getValue() == null) {
+                System.out.println(">>> "+type+" not connected to "+entry.getKey());
                 return false;
             }
         }
         return true;
     }
 
-    public /*final*/ boolean setConnection(Module m) { // TODO make final
-        if(connections.get(m.type) != null) {
-            // Already connected to the Module m
+    public boolean setConnection(Module m) { // TODO make final
+        if(m == null || connections.get(m.type) != null) {
             return false;
         }
         connections.put(m.type, m);
         return true;
     }
-
-
 
     // TODO :: OLD METHODS BELOW :: TODO
 
@@ -178,25 +152,25 @@ public abstract class Module {
 
     /**
      * Returns the name of module
-     * 
+     *
      * @return string with the name of this module
-     * 
+     *
      */
     public abstract String getName();
 
     /**
      * Returns a String[] with all names of modules it needs to be connected to
-     * 
+     *
      * @return String[] containing the names of modules
      */
-    //public abstract String[] getConnections();
+    public abstract String[] getConnection();
 
     /**
      * Sets up a connection with another module
-     * 
+     *
      * @param mod
      *            Module that is to be connected
-     * 
+     *
      * @return true if connection was set successfully, false otherwise
      */
     //public abstract boolean setConnection(Module mod);
@@ -205,54 +179,54 @@ public abstract class Module {
 
     /**
      * Reset all parameters of module
-     * 
+     *
      * @return -
      */
     public abstract boolean reset();
 
     /**
      * Starts the module to become active
-     * 
+     *
      */
     public abstract void start();
 
     /**
      * Stops the module from being active
-     * 
+     *
      */
     public abstract void stop();
 
     /**
      * Returns the state of observed
-     * 
+     *
      * @return true if this module is observed, false otherwise
      */
     public abstract boolean isObserved();
 
     /**
      * Set toggle to define if this module is observed or not
-     * 
+     *
      * @param status
      */
     public abstract void setObserved(boolean status);
 
     /**
      * Returns the state of debug mode
-     * 
+     *
      * @return true if this module is in debug mode, false otherwise
      */
     public abstract boolean getDebugMode();
 
     /**
      * Set toggle to define if this module is in debug mode or not
-     * 
+     *
      * @param status
      */
     public abstract void setDebugMode(boolean status);
 
     /**
      * Returns data from this module
-     * 
+     *
      * @param module
      * @return byte[] with data
      */
@@ -260,7 +234,7 @@ public abstract class Module {
 
     /**
      * Set data for this module
-     * 
+     *
      * @param data
      * @param module
      * @return true if data is set successfully, false otherwise
@@ -269,7 +243,7 @@ public abstract class Module {
 
     /**
      * Set data for this module
-     * 
+     *
      * @param data
      * @param module
      * @return true if data is set successfully, false otherwise
@@ -278,7 +252,7 @@ public abstract class Module {
 
     /**
      * Return a dump of module status
-     * 
+     *
      * @return string containing a dump of this module
      */
     public abstract String getDump();
