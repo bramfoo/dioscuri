@@ -25,11 +25,6 @@
  */
 package dioscuri.module.cpu32;
 
-//import org.jpc.emulator.*;
-//import org.jpc.emulator.motherboard.*;
-//import org.jpc.emulator.memory.*;
-//import org.jpc.emulator.processor.fpu64.*;
-//import org.jpc.support.*;
 import java.io.*;
 import java.util.*;
 
@@ -46,6 +41,7 @@ import dioscuri.module.ModulePIC;
  * @author Bart Kiers
  */
 public class Processor extends ModuleCPU implements HardwareComponent {
+    
     public static final int STATE_VERSION = 1;
     public static final int STATE_MINOR_VERSION = 0;
     public static final int CLOCK_SPEED = 50; // CPU "Clock Speed" in MHz
@@ -137,7 +133,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public IOPortHandler ioports;
 
     private int interruptFlags;
-    private ModulePIC interruptController;
+    //private ModulePIC interruptController;
     // private InterruptController interruptController;
     // Seems unneeded
     // private Clock virtualClock;
@@ -466,6 +462,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         if ((cr0 & CR0_NUMERIC_ERROR) == 0) {
             System.err.println("Reporting FPU Error Via IRQ#13");
             // interruptController.setIRQ(13, 1);
+            ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
             interruptController.setIRQ(13);
         } else {
             System.err.println("Reporting FPU Error Via Exception 0x10");
@@ -1019,6 +1016,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public final int getInstructionPointer() {
         return cs.translateAddressRead(eip);
     }
+
     public final void processRealModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -1030,12 +1028,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // int vector = interruptController.cpuGetInterrupt();
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
                 int vector = interruptController.interruptAcknowledge();
                 handleRealModeInterrupt(vector);
             }
         }
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
+
     public final void processProtectedModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -1047,6 +1047,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // handleHardProtectedModeInterrupt(interruptController.cpuGetInterrupt());
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
                 handleHardProtectedModeInterrupt(interruptController
                         .interruptAcknowledge());
             }
@@ -1063,11 +1064,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
-                if ((getCR4() & CR4_VIRTUAL8086_MODE_EXTENSIONS) != 0)
+                if ((getCR4() & CR4_VIRTUAL8086_MODE_EXTENSIONS) != 0) {
                     throw new IllegalStateException();
-                else
+                }
+                else {
                     // handleHardVirtual8086ModeInterrupt(interruptController.cpuGetInterrupt());
+                    ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
                     handleHardVirtual8086ModeInterrupt(interruptController.interruptAcknowledge());
+                }
 
             }
         }
@@ -2409,6 +2413,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean initialised() {
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
         boolean result = ((physicalMemory != null) && (linearMemory != null)
                 && (ioports != null) && (interruptController != null)); // &&
                                                                         // (virtualClock
@@ -2437,23 +2442,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             ioports = (IOPortHandler) component;
         // if (component instanceof Clock)
         // virtualClock = (Clock)component;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        if (mod.getType() == Type.PIC) { //.equals("pic")) {
-            this.interruptController = (ModulePIC) mod;
-            return true;
-        }
-        // No connection has been established
-        return false;
     }
 
     private int auxiliaryCarryOne, auxiliaryCarryTwo, auxiliaryCarryThree;
@@ -2988,6 +2976,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean updated() {
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
         boolean result = (physicalMemory.updated() && linearMemory.updated()
                 && ioports.updated() && interruptController.isConnected());// &&
                                                                            // virtualClock.updated()

@@ -99,12 +99,11 @@ public class CPU extends ModuleCPU {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "memory",
-            "motherboard", "pic", "clock" };
-    private ModuleMemory memory;
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
-    private ModuleClock clock;
+    private String[] moduleConnections = new String[] { "memory", "motherboard", "pic", "clock" };
+    //private ModuleMemory memory;
+    //private ModuleMotherboard motherboard;
+    //private ModulePIC pic;
+    //private ModuleClock clock;
 
     // Toggles
     private boolean isRunning;
@@ -351,35 +350,6 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Check which module should be connected to
-        if (mod.getType() == Type.MEMORY) { //"memory")) {
-            // Module memory connection
-            this.memory = (ModuleMemory) mod;
-            return true;
-        } else if (mod.getType() == Type.MOTHERBOARD) { //.equals("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        } else if (mod.getType() == Type.PIC) { //.equals("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        } else if (mod.getType() == Type.CLOCK) { //.equals("clock")) {
-            this.clock = (ModuleClock) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Resets all parameters of this module
      * 
      * @return boolean true if module has been reset successfully, false
@@ -420,6 +390,12 @@ public class CPU extends ModuleCPU {
      * 
      */
     public void start() {
+
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         // Keep track of runtime
         long startTime = System.currentTimeMillis();
 
@@ -773,6 +749,12 @@ public class CPU extends ModuleCPU {
      * 
      */
     public String getDump() {
+
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -1054,6 +1036,12 @@ public class CPU extends ModuleCPU {
      * 
      */
     public String dumpRegisters() {
+
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -1364,6 +1352,12 @@ public class CPU extends ModuleCPU {
      * 
      */
     private boolean handleAsyncEvent() {
+
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         // Check if normal execution has been stopped
         if (!debugMode && !isRunning) {
             return true;
@@ -3703,6 +3697,12 @@ public class CPU extends ModuleCPU {
      * 
      */
     public String getNextInstructionInfo() {
+
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -3796,6 +3796,7 @@ public class CPU extends ModuleCPU {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         return motherboard.getIOPortByte(portAddress);
     }
 
@@ -3811,6 +3812,7 @@ public class CPU extends ModuleCPU {
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         // Set data in I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.setIOPortByte(portAddress, data);
     }
 
@@ -3825,6 +3827,7 @@ public class CPU extends ModuleCPU {
      */
     public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         return motherboard.getIOPortWord(portAddress);
     }
 
@@ -3840,6 +3843,7 @@ public class CPU extends ModuleCPU {
     public void setIOPortWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.setIOPortWord(portAddress, data);
     }
 
@@ -3856,6 +3860,7 @@ public class CPU extends ModuleCPU {
     public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException {
         // Retrieve data from I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         return motherboard.getIOPortDoubleWord(portAddress);
     }
 
@@ -3871,6 +3876,7 @@ public class CPU extends ModuleCPU {
     public void setIOPortDoubleWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.setIOPortDoubleWord(portAddress, data);
     }
 
@@ -4119,6 +4125,7 @@ public class CPU extends ModuleCPU {
         ip = Util.addWords(ip, new byte[] { 0x00, 0x01 }, 0);
 
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(segmentedCodeAddress);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4138,6 +4145,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte getByteFromCode(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedCodeAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4157,6 +4165,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte getByteFromData(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedDataAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4176,6 +4185,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte getByteFromStack(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedStackAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4194,6 +4204,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte getByteFromExtra(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedExtraAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4217,6 +4228,7 @@ public class CPU extends ModuleCPU {
         ip = Util.addWords(ip, new byte[] { 0x00, 0x02 }, 0);
 
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(segmentedCodeAddress);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4234,6 +4246,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte[] getWordFromCode(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedCodeAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4253,6 +4266,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte[] getWordFromData(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedDataAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4271,6 +4285,7 @@ public class CPU extends ModuleCPU {
     protected byte[] getWordFromStack() {
         // Need to retrieve data before incrementing SP
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             byte[] word = memory.getWord(this.getSegmentedStackAddress());
 
             sp = Util.addWords(sp, new byte[] { 0x00, 0x02 }, 0);
@@ -4294,6 +4309,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte[] getWordFromStack(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedStackAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4313,6 +4329,7 @@ public class CPU extends ModuleCPU {
      */
     protected byte[] getWordFromExtra(byte[] displacement) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedExtraAddress(displacement));
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4449,6 +4466,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setByteToCode(byte[] displacement, byte value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedCodeAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4468,6 +4486,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setWordToCode(byte[] displacement, byte[] value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedCodeAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4487,6 +4506,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setByteToData(byte[] displacement, byte value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedDataAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4505,6 +4525,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setWordToData(byte[] displacement, byte[] value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedDataAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4519,6 +4540,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setByteToExtra(byte[] displacement, byte value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedExtraAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4534,6 +4556,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setWordToExtra(byte[] displacement, byte[] word) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedExtraAddress(displacement), word);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4549,6 +4572,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setByteToStack(byte value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4565,6 +4589,7 @@ public class CPU extends ModuleCPU {
      */
     protected void setByteToStack(byte[] displacement, byte value) {
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4587,6 +4612,7 @@ public class CPU extends ModuleCPU {
 
         // Write data to stack
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedStackAddress(), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
@@ -4605,6 +4631,7 @@ public class CPU extends ModuleCPU {
     protected void setWordToStack(byte[] displacement, byte[] value) {
         // Write data to SS
         try {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedStackAddress(displacement), value);
         } catch (ModuleException e) {
             logger.log(Level.WARNING, "[" + MODULE_TYPE
