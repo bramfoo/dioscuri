@@ -1,23 +1,23 @@
-/* $Revision: 159 $ $Date: 2009-08-17 12:52:56 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
- * 
- * Copyright (C) 2007-2009  National Library of the Netherlands, 
- *                          Nationaal Archief of the Netherlands, 
+/* $Revision: 159 $ $Date: 2009-08-17 12:52:56 +0000 (ma, 17 aug 2009) $ $Author: blohman $
+ *
+ * Copyright (C) 2007-2009  National Library of the Netherlands,
+ *                          Nationaal Archief of the Netherlands,
  *                          Planets
  *                          KEEP
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  *
  * For more information about this project, visit
@@ -26,14 +26,14 @@
  *   jrvanderhoeven at users.sourceforge.net
  *   blohman at users.sourceforge.net
  *   bkiers at users.sourceforge.net
- * 
+ *
  * Developed by:
  *   Nationaal Archief               <www.nationaalarchief.nl>
  *   Koninklijke Bibliotheek         <www.kb.nl>
  *   Tessella Support Services plc   <www.tessella.com>
  *   Planets                         <www.planets-project.eu>
  *   KEEP                            <www.keep-project.eu>
- * 
+ *
  * Project Title: DIOSCURI
  */
 
@@ -59,9 +59,9 @@ import dioscuri.module.ModuleRTC;
 
 /**
  * An implementation of a keyboard module.
- * 
+ *
  * @see Module
- * 
+ *
  *      Metadata module ********************************************
  *      general.type : keyboard general.name : XT/AT/PS2 compatible Keyboard
  *      general.architecture : Von Neumann general.description : Models a
@@ -70,8 +70,8 @@ import dioscuri.module.ModuleRTC;
  *      general.version : 1.0 general.keywords : Keyboard, XT, AT, PS/2, Intel
  *      8042 general.relations : Motherboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
- * 
- * 
+ *
+ *
  *      Notes: - Keyboard can handle XT, AT and PS/2 compatible keyboards - This
  *      class uses a lot (if not all) of Bochs source code from keyboard.{h,cc};
  *      - Conversions from C++ to Java have been made, and will need revising
@@ -87,13 +87,11 @@ import dioscuri.module.ModuleRTC;
 public class Keyboard extends ModuleKeyboard {
     // Relations
     private Emulator emu;
-    /*
     private String[] moduleConnections = new String[] { "motherboard", "pic", "rtc" };
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
-    private ModuleRTC rtc;
-    private ModuleMouse mouse;
-    */
+    //private ModuleMotherboard motherboard;
+    //private ModulePIC pic;
+    //private ModuleRTC rtc;
+    //private ModuleMouse mouse;
     private TheKeyboard keyboard;
     private ScanCodeSets scanCodeSet;
 
@@ -134,7 +132,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
     public Keyboard(Emulator owner) {
@@ -195,7 +193,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Returns the name of the module
-     * 
+     *
      * @return string containing the name of module
      * @see Module
      */
@@ -204,20 +202,30 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
+     * Returns a String[] with all names of modules it needs to be connected to
+     *
+     * @return String[] containing the names of modules, or null if no
+     *         connections
+     */
+    public String[] getConnection() {
+        // Return all required connections;
+        return moduleConnections;
+    }
+
+    /**
      * Default inherited reset. Calls specific reset(int)
-     * 
+     *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
-        ModuleRTC rtc = (ModuleRTC)super.getModule(Type.RTC);
-        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
 
         // Register I/O ports 0x60, 0x64 in I/O address space
-               
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);
 
@@ -269,7 +277,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Starts the module
-     * 
+     *
      * @see Module
      */
     public void start() {
@@ -278,7 +286,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Stops the module
-     * 
+     *
      * @see Module
      */
     public void stop() {
@@ -287,9 +295,9 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Returns the status of observed toggle
-     * 
+     *
      * @return state of observed toggle
-     * 
+     *
      * @see Module
      */
     public boolean isObserved() {
@@ -298,9 +306,9 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Sets the observed toggle
-     * 
+     *
      * @param status
-     * 
+     *
      * @see Module
      */
     public void setObserved(boolean status) {
@@ -309,9 +317,9 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Returns the status of the debug mode toggle
-     * 
+     *
      * @return state of debug mode toggle
-     * 
+     *
      * @see Module
      */
     public boolean getDebugMode() {
@@ -320,9 +328,9 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Sets the debug mode toggle
-     * 
+     *
      * @param status
-     * 
+     *
      * @see Module
      */
     public void setDebugMode(boolean status) {
@@ -331,10 +339,10 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Returns data from this module
-     * 
+     *
      * @param requester
      * @return byte[] with data
-     * 
+     *
      * @see Module
      */
     public byte[] getData(Module requester) {
@@ -343,10 +351,10 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Set data for this module
-     * 
+     *
      * @param sender
      * @return true if data is set successfully, false otherwise
-     * 
+     *
      * @see Module
      */
     public boolean setData(byte[] data, Module sender) {
@@ -355,10 +363,10 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Set String[] data for this module
-     * 
+     *
      * @param sender
      * @return boolean true is successful, false otherwise
-     * 
+     *
      * @see Module
      */
     public boolean setData(String[] data, Module sender) {
@@ -367,9 +375,9 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Returns a dump of this module
-     * 
+     *
      * @return string
-     * 
+     *
      * @see Module
      */
     public String getDump() {
@@ -393,7 +401,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Retrieve the interval between subsequent updates
-     * 
+     *
      * @return int interval in microseconds
      */
     public int getUpdateInterval() {
@@ -402,7 +410,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Defines the interval between subsequent updates
-     * 
+     *
      */
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
@@ -415,7 +423,7 @@ public class Keyboard extends ModuleKeyboard {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -442,12 +450,12 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * IN instruction to keyboard<BR>
-     * 
+     *
      * @param portAddress
      *            the target port; should be either 0x60 or 0x64 <BR>
      *            IN to portAddress 60h IN to portAddress 64h returns the
      *            keyboard status
-     * 
+     *
      * @return byte of data from output buffer
      */
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
@@ -547,7 +555,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * OUT instruction to keyboard<BR>
-     * 
+     *
      * @param portAddress
      *            the target port; should be either 0x60 or 0x64
      * @param value
@@ -555,10 +563,11 @@ public class Keyboard extends ModuleKeyboard {
      *            OUT to portAddress 60h executes data port commands OUT to
      *            portAddress 64h executes status port commands
      */
-    public void setIOPortByte(int portAddress, byte value) throws ModuleUnknownPort {
+    public void setIOPortByte(int portAddress, byte value)
+            throws ModuleUnknownPort {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getModule(Type.MOTHERBOARD);
-        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
 
         logger.log(Level.CONFIG, "["
                 + MODULE_TYPE
@@ -1068,7 +1077,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void setInterrupt(int irqNumber) {
         // Raise an interrupt at PIC (IRQ 1 or 12)
-        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
     }
@@ -1079,7 +1088,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void clearInterrupt(int irqNumber) {
         // Clear interrupt at PIC (IRQ 1 or 12)
-        ModulePIC pic = (ModulePIC)super.getModule(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         pic.clearIRQ(irqNumber);
         if (pendingIRQ == true) {
             pendingIRQ = false;
@@ -1093,7 +1102,7 @@ public class Keyboard extends ModuleKeyboard {
      * Method generateScancode Generates a scancode from a KeyEvent.<BR>
      * The scancode depends on what scancode set is currently active, and
      * whether the key is pressed or released
-     * 
+     *
      * @param keyEvent
      *            KeyEvent containing keypress information
      * @param eventType
@@ -1212,12 +1221,12 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Keyboard specific reset, with value to indicate reset type
-     * 
+     *
      * @param resetType
      *            Type of reset passed to keyboard<BR>
      *            0: Warm reset (SW reset)<BR>
      *            1: Cold reset (HW reset)
-     * 
+     *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
@@ -1249,7 +1258,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Set the keyboard clock, which determines the on/off state of the keyboard<BR>
-     * 
+     *
      * @param state
      *            the state of the clock should be set to:<BR>
      *            0: keyboard clock is disabled, turning the keyboard off<BR>
@@ -1280,7 +1289,7 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Set the aux device clock, which determines the on/off state of the device<BR>
-     * 
+     *
      * @param state
      *            the state of the clock should be set to:<BR>
      *            0: aux device clock is disabled, turning the device off<BR>
@@ -1315,8 +1324,8 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Queue data in the keyboard controller buffer<BR>
-     * 
-     * 
+     *
+     *
      */
     public void enqueueControllerBuffer(byte data, int source) {
 
@@ -1360,10 +1369,10 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Queue data in the internal keyboard buffer<BR>
-     * 
+     *
      * @param scancode
      *            the data to be added to the end of the queue
-     * 
+     *
      */
     private void enqueueInternalBuffer(byte scancode) {
         logger.log(Level.INFO, "["
@@ -1407,9 +1416,9 @@ public class Keyboard extends ModuleKeyboard {
      * Activate a 'timer' to indicate to the periodic polling function<BR>
      * the internal keyboard queue should be checked for data.<BR>
      * <BR>
-     * 
+     *
      * A timer can only be set, not disabled.
-     * 
+     *
      */
     private void activateTimer() {
         if (keyboard.controller.timerPending == 0) {
@@ -1421,11 +1430,11 @@ public class Keyboard extends ModuleKeyboard {
      * Keyboard controller polling function<BR>
      * This determines the IRQs to be raised and retrieves character data from
      * the internal keyboard buffer, if available
-     * 
+     *
      */
     private int poll() {
 
-        ModuleMouse mouse = (ModuleMouse)super.getModule(Type.MOUSE);
+        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
 
         int returnValue; // IRQs to raise
 
@@ -1504,7 +1513,7 @@ public class Keyboard extends ModuleKeyboard {
      * Data passing directly from keyboard controller to keyboard<BR>
      * The keyboard usually immediately responds by enqueueing data in its
      * buffer for the keyboard controller<BR>
-     * 
+     *
      * @param value
      *            the data passed from controller to keyboard <BR>
      */
