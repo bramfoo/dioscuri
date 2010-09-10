@@ -46,8 +46,8 @@ public class Mouse extends ModuleMouse implements UART {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[]{"keyboard", "serialport"};
-    private ModuleKeyboard keyboard;
-    private ModuleSerialPort serialPort;
+    //private ModuleKeyboard keyboard;
+    //private ModuleSerialPort serialPort;
     private Queue<Byte> buffer;
 
     // Toggles
@@ -149,30 +149,6 @@ public class Mouse extends ModuleMouse implements UART {
     public String[] getConnection() {
         // Return all required connections;
         return moduleConnections;
-    }
-
-
-    /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for keyboard
-        if (mod.getType() == Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
-            this.keyboard = (ModuleKeyboard) mod;
-            this.keyboard.setConnection(this);    // Set connection to keyboard
-            return true;
-        }
-        // Set connection for serialport
-        else if (mod.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
-            this.serialPort = (ModuleSerialPort) mod;
-            this.serialPort.setConnection(this);    // Set connection to serialport
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -318,6 +294,9 @@ public class Mouse extends ModuleMouse implements UART {
 
 
     public void setMouseType(String type) {
+
+        ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Type.SERIALPORT);
+
         // Check the type of mouse by matching string
         if (type.equalsIgnoreCase("serial")) {
             // Serial mouse
@@ -388,6 +367,9 @@ public class Mouse extends ModuleMouse implements UART {
     }
     
     public void controlMouse(byte value) {
+
+        ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Type.KEYBOARD);
+
         // FIXME: if we are not using a ps2 mouse, some of the following commands need to return different values
         boolean isMousePS2 = false;
         if ((mouseType == MOUSE_TYPE_PS2) || (mouseType == MOUSE_TYPE_IMPS2)) {

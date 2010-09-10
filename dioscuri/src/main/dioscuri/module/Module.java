@@ -41,12 +41,16 @@ package dioscuri.module;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Abstract class representing a generic hardware module.
  *
  */
 public abstract class Module {
+
+    private Logger logger = Logger.getLogger(getClass().getName());
 
     public static enum Type {
         ATA,
@@ -125,7 +129,6 @@ public abstract class Module {
     public final boolean isConnected() {
         for(Map.Entry<Type, Module> entry : this.connections.entrySet()) {
             if(entry.getValue() == null) {
-                System.out.println(">>> "+type+" not connected to "+entry.getKey());
                 return false;
             }
         }
@@ -133,10 +136,17 @@ public abstract class Module {
     }
 
     public boolean setConnection(Module m) { // TODO make final
-        if(m == null || connections.get(m.type) != null) {
+        if(m == null) {
+            logger.log(Level.INFO, "m == null");
             return false;
         }
+        if(connections.get(m.type) != null) {
+            logger.log(Level.INFO, type+" already connected to "+m.type);
+            return false;
+        }
+        logger.log(Level.INFO, type+" is connected to "+m.type);
         connections.put(m.type, m);
+        m.connections.put(type, this);
         return true;
     }
 

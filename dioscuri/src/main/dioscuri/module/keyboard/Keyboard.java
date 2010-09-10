@@ -566,7 +566,6 @@ public class Keyboard extends ModuleKeyboard {
             throws ModuleUnknownPort {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
 
         logger.log(Level.CONFIG, "["
                 + MODULE_TYPE
@@ -682,6 +681,7 @@ public class Keyboard extends ModuleKeyboard {
 
                 case (byte) 0xD4: // Write to mouse
                     logger.log(Level.INFO, "[keyboard] writing value to mouse: "+value);
+                    ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE); // TODO fix mouse=NULL
                     mouse.controlMouse(value);
                     return;
 

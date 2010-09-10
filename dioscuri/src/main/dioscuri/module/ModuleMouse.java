@@ -49,7 +49,8 @@ import java.awt.event.MouseEvent;
 public abstract class ModuleMouse extends Module {
 
     public ModuleMouse() {
-        super(Type.MOUSE); // TODO
+        super(Type.MOUSE,
+                Type.KEYBOARD, Type.SERIALPORT);
     }
 
     /**
