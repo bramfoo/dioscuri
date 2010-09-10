@@ -51,7 +51,8 @@ public abstract class ModuleMotherboard extends Module implements Addressable {
     public int ioSpaceSize;
 
     public ModuleMotherboard() {
-        super(Type.MOTHERBOARD); // TODO
+        super(Type.MOTHERBOARD,
+                Type.CPU, Type.MEMORY);
     }
 
     /**

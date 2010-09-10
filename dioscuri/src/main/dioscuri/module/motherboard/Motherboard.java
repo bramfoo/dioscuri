@@ -80,10 +80,12 @@ public class Motherboard extends ModuleMotherboard {
     // Relations
     private Emulator emu;
     private String[] moduleConnections;
+    /*
     private ModuleCPU cpu;
     private ModuleMemory memory;
-    private Devices devices; // Array of all peripheral devices
     private ModuleClock clock; // Relation to internal clock (optional)
+    */
+    //private Devices devices; // Array of all peripheral devices
 
     // Toggles
     private boolean isObserved;
@@ -134,12 +136,6 @@ public class Motherboard extends ModuleMotherboard {
         // TODO: parameters should be defined based on configuration in the ESD
         ioSpaceSize = IOSPACE_EISA_SIZE;
 
-        // Create new empty list of devices
-        devices = new Devices(20);
-
-        // Initialize clock
-        clock = null;
-
         // Create new empty I/O address space
         ioAddressSpace = new ModuleDevice[ioSpaceSize];
 
@@ -175,42 +171,6 @@ public class Motherboard extends ModuleMotherboard {
     public String[] getConnection() {
         // Return all required connections;
         return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-
-        if (!emu.isCpu32bit()) {
-            // Set connection for memory
-            if (module.getType() == Type.MEMORY) { //.equalsIgnoreCase("memory")) {
-                this.memory = (ModuleMemory) module;
-                return true;
-            }
-            // Set connection for CPU
-            else if (module.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
-                this.cpu = (ModuleCPU) module;
-                return true;
-            }
-        }
-        // Else, module may be a device
-        try {
-            devices.addDevice((ModuleDevice) module);
-            return true;
-        } catch (ClassCastException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
-                    + " Failed to establish connection.");
-            return false;
-        }
     }
 
     /**
@@ -376,7 +336,7 @@ public class Motherboard extends ModuleMotherboard {
      * @return boolean true if registration is successfully, false otherwise
      */
     public boolean registerClock(ModuleClock clock) {
-        this.clock = clock;
+        super.setConnection(clock);
         return true;
     }
 
@@ -388,6 +348,9 @@ public class Motherboard extends ModuleMotherboard {
      */
     public boolean requestTimer(ModuleDevice device, int updateInterval,
             boolean continuous) {
+
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         // Check if clock exists
         if (clock != null) {
             // Register device to clock (and assign timer to it)
@@ -404,6 +367,8 @@ public class Motherboard extends ModuleMotherboard {
      */
     public boolean setTimerActiveState(ModuleDevice device, boolean activeState) {
         // Check if clock exists
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         if (clock != null) {
             // Set device's timer to requested state
             return clock.setTimerActiveState(device, activeState);
@@ -418,6 +383,8 @@ public class Motherboard extends ModuleMotherboard {
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
         // Check if clock exists
+        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+
         if (clock != null) {
             return clock.resetTimer(device, updateInterval);
         }
@@ -740,7 +707,9 @@ public class Motherboard extends ModuleMotherboard {
                                     + MODULE_TYPE
                                     + "]"
                                     + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
-        } else {
+        }
+        else {
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setA20AddressLine(a20);
         }
     }
@@ -762,8 +731,11 @@ public class Motherboard extends ModuleMotherboard {
                                     + "]"
                                     + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
             return 0x1;
-        } else
+        }
+        else {
+            ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
             return cpu.getCurrentInstructionNumber();
+        }
     }
 
     // ******************************************************************************
