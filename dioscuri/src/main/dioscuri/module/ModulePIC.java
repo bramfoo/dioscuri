@@ -47,7 +47,8 @@ package dioscuri.module;
 public abstract class ModulePIC extends ModuleDevice implements Addressable {
 
     public ModulePIC() {
-        super(Type.PIC);
+        super(Type.PIC,
+                Type.CPU, Type.MOTHERBOARD);
     }
 
     /**

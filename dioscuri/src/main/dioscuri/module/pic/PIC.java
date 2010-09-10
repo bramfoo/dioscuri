@@ -90,8 +90,8 @@ public class PIC extends ModulePIC {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] { "cpu", "motherboard" };
-    private ModuleCPU cpu;
-    private ModuleMotherboard motherboard;
+    //private ModuleCPU cpu;
+    //private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -182,39 +182,16 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for cpu
-        if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-        // Set connection for motherboard
-        else if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // Reset master and slave PICs
         thePIC[MASTER].reset();
         thePIC[SLAVE].reset();
@@ -480,6 +457,10 @@ public class PIC extends ModulePIC {
      * 
      */
     public void setIOPortByte(int portAddress, byte data) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
@@ -1042,7 +1023,6 @@ public class PIC extends ModulePIC {
      * 
      */
     public void setIRQ(int irqNumber) {
-        System.out.println("irqNumber="+irqNumber);
         logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
 
@@ -1096,6 +1076,10 @@ public class PIC extends ModulePIC {
      *         CPU
      */
     public int interruptAcknowledge() {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         int vector;
         int irq;
 
@@ -1225,6 +1209,10 @@ public class PIC extends ModulePIC {
      * Handle interrupts on the master PIC
      */
     private void serviceMasterPIC() {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        //ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        
         int unmaskedRequests;
         int irq;
         int isr, maxIRQ;
