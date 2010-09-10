@@ -71,8 +71,8 @@ public class Clock extends ModuleClock {
     @SuppressWarnings("unused")
     private Emulator emu;
     private String[] moduleConnections = new String[] { "motherboard", "cpu" };
-    private ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
+    //private ModuleMotherboard motherboard;
+    //private ModuleCPU cpu;
     private Timer[] timers;
 
     // Toggles
@@ -142,39 +142,16 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for cpu
-        else if (mod.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+
         // Register clock to motherboard
         if (motherboard.registerClock(this) == false) {
             return false;
@@ -323,6 +300,10 @@ public class Clock extends ModuleClock {
      */
     public boolean registerDevice(ModuleDevice device, int intervalLength,
             boolean continuous) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE) {
             // Change the interval length from useconds to instructions
@@ -347,6 +328,10 @@ public class Clock extends ModuleClock {
      * @return boolean true if timer is reset successfully, false otherwise
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {

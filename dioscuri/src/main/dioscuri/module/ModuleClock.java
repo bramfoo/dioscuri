@@ -46,7 +46,8 @@ package dioscuri.module;
 public abstract class ModuleClock extends Module {
 
     public ModuleClock() {
-        super(Type.CLOCK); // TODO
+        super(Type.CLOCK,
+                Type.MOTHERBOARD, Type.CPU);
     }
 
     /**
