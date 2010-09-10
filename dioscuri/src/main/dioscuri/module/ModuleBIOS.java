@@ -51,7 +51,7 @@ import dioscuri.exception.ModuleException;
 public abstract class ModuleBIOS extends Module {
 
     public ModuleBIOS() {
-        super(Type.BIOS); // TODO
+        super(Type.BIOS /* no expected connections */);
     }
 
     /**

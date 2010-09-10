@@ -153,20 +153,6 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-        // No connections required
-        return false;
-    }
-
-    /**
      * Reset all parameters of module. BIOS ROM is not reset. ROM will keep all
      * BIOS ROM data.
      * 
