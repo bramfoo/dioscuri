@@ -83,7 +83,6 @@ import dioscuri.module.ModuleRTC;
  *      http://mudlist.eorbit.net/~adam/pickey/ports.html +
  *      http://homepages.cwi.nl/~aeb/linux/kbd/scancodes.html
  */
-
 public class Keyboard extends ModuleKeyboard {
     // Relations
     private Emulator emu;
