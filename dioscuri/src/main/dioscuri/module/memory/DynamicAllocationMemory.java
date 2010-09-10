@@ -1,23 +1,23 @@
-/* $Revision: 158 $ $Date: 2009-08-17 12:05:19 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
- * 
- * Copyright (C) 2007-2009  National Library of the Netherlands, 
- *                          Nationaal Archief of the Netherlands, 
+/* $Revision: 158 $ $Date: 2009-08-17 12:05:19 +0000 (ma, 17 aug 2009) $ $Author: blohman $
+ *
+ * Copyright (C) 2007-2009  National Library of the Netherlands,
+ *                          Nationaal Archief of the Netherlands,
  *                          Planets
  *                          KEEP
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  *
  * For more information about this project, visit
@@ -26,14 +26,14 @@
  *   jrvanderhoeven at users.sourceforge.net
  *   blohman at users.sourceforge.net
  *   bkiers at users.sourceforge.net
- * 
+ *
  * Developed by:
  *   Nationaal Archief               <www.nationaalarchief.nl>
  *   Koninklijke Bibliotheek         <www.kb.nl>
  *   Tessella Support Services plc   <www.tessella.com>
  *   Planets                         <www.planets-project.eu>
  *   KEEP                            <www.keep-project.eu>
- * 
+ *
  * Project Title: DIOSCURI
  */
 
@@ -53,11 +53,11 @@ import dioscuri.module.ModuleVideo;
 
 /**
  * An implementation of a hardware memory module.
- * 
+ *
  * Contains an array of 2^20 integers, offering 1MB of RAM.
- * 
+ *
  * @see Module
- * 
+ *
  *      Metadata module ********************************************
  *      general.type : memory general.name : 1 Megabyte Random Access Memory
  *      general.architecture : Von Neumann general.description : General
@@ -67,11 +67,11 @@ import dioscuri.module.ModuleVideo;
  *      line general.relations : cpu, mainboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      memory.size : 1 MB
- * 
+ *
  *      Notes: This memory implementation using dynamic allocation was designed
  *      and coded by Tiago Leite, Tiago Taveira and Bruno Martins, students at
  *      the Insituto Superior Tecnico, May 2009.
- * 
+ *
  */
 @SuppressWarnings("unused")
 public class DynamicAllocationMemory extends ModuleMemory {
@@ -81,9 +81,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] { "video", "cpu", "motherboard" };
-    private ModuleVideo video;
-    private ModuleCPU cpu;
-    private ModuleMotherboard motherboard;
+    //private ModuleVideo video;
+    //private ModuleCPU cpu;
+    //private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -121,7 +121,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
     @SuppressWarnings("empty-statement")
@@ -161,7 +161,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns the name of the module
-     * 
+     *
      * @return string containing the name of module
      * @see Module
      */
@@ -171,7 +171,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns a String[] with all names of modules it needs to be connected to
-     * 
+     *
      * @return String[] containing the names of modules, or null if no
      *         connections
      */
@@ -181,32 +181,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-        // Set connection to video adapter
-        if (module.getType() == Type.VIDEO) { //.equalsIgnoreCase("video")) {
-            this.video = (ModuleVideo) module;
-            return true;
-        } else if (module.getType() == Type.CPU) { //.equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) module;
-            return true;
-        } else if (module.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) module;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
-     * 
+     *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
@@ -227,7 +203,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Starts the module
-     * 
+     *
      * @see Module
      */
     public void start() {
@@ -236,7 +212,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Stops the module
-     * 
+     *
      * @see Module
      */
     public void stop() {
@@ -245,9 +221,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns the status of observed toggle
-     * 
+     *
      * @return state of observed toggle
-     * 
+     *
      * @see Module
      */
     public boolean isObserved() {
@@ -256,9 +232,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Sets the observed toggle
-     * 
+     *
      * @param status
-     * 
+     *
      * @see Module
      */
     public void setObserved(boolean status) {
@@ -267,9 +243,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns the status of the debug mode toggle
-     * 
+     *
      * @return state of debug mode toggle
-     * 
+     *
      * @see Module
      */
     public boolean getDebugMode() {
@@ -278,9 +254,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Sets the debug mode toggle
-     * 
+     *
      * @param status
-     * 
+     *
      * @see Module
      */
     public void setDebugMode(boolean status) {
@@ -289,10 +265,10 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns data from this module
-     * 
+     *
      * @param requester
      * @return byte[] with data
-     * 
+     *
      * @see Module
      */
     public byte[] getData(Module requester) {
@@ -301,10 +277,10 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Set data for this module
-     * 
+     *
      * @param sender
      * @return true if data is set successfully, false otherwise
-     * 
+     *
      * @see Module
      */
     public boolean setData(byte[] data, Module sender) {
@@ -313,7 +289,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Sets given String[] data for this module
-     * 
+     *
      * @param sender
      * @see Module
      */
@@ -344,9 +320,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns a dump of this module
-     * 
+     *
      * @return string
-     * 
+     *
      * @see Module
      */
     public String getDump() {
@@ -394,13 +370,18 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Returns the value of a byte at a specific address
-     * 
+     *
      * @param address
      *            Flat-address where data can be found
-     * 
+     *
      * @return byte Byte containing byte data
      */
     public byte getByte(int address) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -451,13 +432,18 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Stores the value of a byte at a specific address
-     * 
+     *
      * @param address
      *            Flat-address where data is stored
      * @param value
      *            Integer containing byte data
      */
     public void setByte(int address, byte value) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " setByte(" +
         // address + ", " + value + ")");
 
@@ -511,14 +497,19 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * are stored in Little Endian order (LSB, MSB), but this method returns a
      * word in Big Endian order (MSB, LSB) because this is the common way words
      * are used by instructions.
-     * 
+     *
      * @param address
      *            Flat-address where data can be found
-     * 
+     *
      * @return byte[] array [MSB, LSB] containing data, 0xFFFF if address
      *         outside RAM_SIZE range
      */
     public byte[] getWord(int address) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -579,9 +570,14 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * that a word is given in Big Endian order (MSB, LSB) because this is the
      * common way words are used by instructions. However, storage takes place
      * in Little Endian order.
-     * 
+     *
      */
     public void setWord(int address, byte[] value) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+
         // Mask 20th address bit
         address &= A20mask;
 
@@ -645,7 +641,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Stores an array of bytes in memory starting at a specific address
-     * 
+     *
      * @param address
      *            Flat-address where data is stored
      * @throws ModuleException
@@ -687,8 +683,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Set the status of A20 address line
-     * 
-     * 
+     *
+     *
      */
     public void setA20AddressLine(boolean status) {
         // Change the status of A20 address line check
@@ -706,7 +702,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Set Debug watch params.
-     * 
+     *
      * @param isWatchOn
      * @param watchAddress
      */
@@ -717,7 +713,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Set RAM Size in megabytes
-     * 
+     *
      * @param ramSizeMB
      */
     @SuppressWarnings("empty-statement")
@@ -744,10 +740,10 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * Converts a given string into a byte of one integer
-     * 
-     * @param string
+     *
+     * @param strValue
      *            value
-     * 
+     *
      * @return int as byte
      */
     private int convertStringToByte(String strValue) {
