@@ -104,9 +104,9 @@ public class PIT extends ModulePIT {
     // BRAM: Removed CPU connection, as it was unnecessary
     private String[] moduleConnections = new String[] { "motherboard", "pic" };// ,
                                                                                // "cpu"};
-    protected ModuleMotherboard motherboard;
+    //protected ModuleMotherboard motherboard;
     // private ModuleCPU cpu;
-    protected ModulePIC pic;
+    //protected ModulePIC pic;
     private Counter[] counters;
 
     // Toggles
@@ -200,48 +200,16 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for CPU
-        // BRAM: Removed CPU connection, as it was unnecessary
-        // if (mod.getType().equalsIgnoreCase("cpu"))
-        // {
-        // this.cpu = (ModuleCPU)mod;
-        // return true;
-        // }
-
-        // Set connection for PIC
-        if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+
         // Register I/O ports 0x000 - 0x00F in I/O address space
         motherboard.setIOPort(PORT_PIT_COUNTER0, this);
         motherboard.setIOPort(PORT_PIT_COUNTER1, this);
@@ -445,6 +413,7 @@ public class PIT extends ModulePIT {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -718,6 +687,7 @@ public class PIT extends ModulePIT {
     // Custom Methods
 
     protected void raiseIRQ(Counter counter) {
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         pic.setIRQ(irqNumber);
     }
 
@@ -726,6 +696,7 @@ public class PIT extends ModulePIT {
      * @param counter
      */
     protected void lowerIRQ(Counter counter) {
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
         pic.clearIRQ(irqNumber);
     }
 

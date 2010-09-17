@@ -47,7 +47,8 @@ package dioscuri.module;
 public abstract class ModulePIT extends ModuleDevice implements Addressable, Updateable  {
 
     public ModulePIT() {
-        super(Type.PIT);
+        super(Type.PIT,
+                Type.MOTHERBOARD, Type.PIC);
     }
 
     /**
