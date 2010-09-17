@@ -127,15 +127,10 @@ public class ATA extends ModuleATA {
 
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -151,20 +146,6 @@ public class ATA extends ModuleATA {
                     + " Failed to request a timer.");
         }
 
-        /*
-         * // Register I/O ports 01F0-01F7 - Primary IDE Controller in I/O
-         * address space // motherboard.setIOPort(IDEConstants.PORT_IDE_DATA,
-         * this); motherboard.setIOPort(IDEConstants.PORT_IDE_ERROR_WPC, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_SECTOR_COUNT, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_SECTOR_NUMBER, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_CYLINDER_LOW, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_CYLINDER_HIGH, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_DRIVE_HEAD, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_STATUS_CMD, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_ALT_STATUS_DEVICE, this);
-         * motherboard.setIOPort(IDEConstants.PORT_IDE_DRIVE_ADDRESS, this);
-         */
-
         // Reset drives
         for (curChannelIndex = 0; curChannelIndex < channels.length; curChannelIndex++) {
             getSelectedChannel().reset();
@@ -179,11 +160,9 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Returns a dump of this module.
-     *
-     * @return string the dumop string
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";

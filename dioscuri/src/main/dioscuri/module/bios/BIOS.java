@@ -102,16 +102,10 @@ public class BIOS extends ModuleBIOS {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module. BIOS ROM is not reset. ROM will keep all
-     * BIOS ROM data.
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Reset particular CMOS settings?
         logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
@@ -119,12 +113,9 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";

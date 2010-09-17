@@ -66,34 +66,25 @@ import dioscuri.module.ModuleMotherboard;
  */
 public class Clock extends ModuleClock {
 
-    private Emulator emu;
-    private Timer[] timers;
+    // Logging
+    private static final Logger logger = Logger.getLogger(Clock.class.getName());
 
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
+    private Timer[] timers;
     private boolean keepRunning;
 
     // Timing
     private long sleepTime;
     private int arrayIndex;
 
-    // Logging
-    private static final Logger logger = Logger.getLogger(Clock.class.getName());
-
     // Constants
-    // Module specifics
     public final static int TIMER_ARRAY_SIZE = 10;
 
-    // Constructor
     /**
      * Constructor Clock
      * 
      * @param owner
      */
     public Clock(Emulator owner) {
-        emu = owner;
-
         // Initialise array for all timers
         timers = new Timer[TIMER_ARRAY_SIZE];
         arrayIndex = 0;
@@ -107,15 +98,10 @@ public class Clock extends ModuleClock {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -140,12 +126,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
