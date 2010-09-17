@@ -93,21 +93,13 @@ import java.util.logging.Logger;
  * 
  * 
  */
-@SuppressWarnings("unused")
 public class CPU extends ModuleCPU {
-    // Attributes
 
-    // Relations
-    private Emulator emu;
-
-    //private ModuleMemory memory;
-    //private ModuleMotherboard motherboard;
-    //private ModulePIC pic;
-    //private ModuleClock clock;
-
+    // Logging
+    private static final Logger logger = Logger.getLogger(CPU.class.getName());
+    
     // Toggles
     private boolean isRunning;
-    private boolean isObserved;
     private boolean debugMode; // Denotes if CPU module is in debug mode
     private boolean irqPending; // Denotes if an IRQ is pending
     private boolean irqWaited; // Denotes if CPU has waited an extra instruction
@@ -125,10 +117,6 @@ public class CPU extends ModuleCPU {
                                         // during execution
     private boolean shutDown; // Denotes if CPU halted for full emulator
                               // shutdown
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(CPU.class.getPackage()
-            .getName());
 
     // Instruction and timing
     private long instructionCounter; // total number of executed instructions
@@ -297,10 +285,7 @@ public class CPU extends ModuleCPU {
      * @param owner
      */
     public CPU(Emulator owner) {
-        emu = owner;
 
-        // Initialize toggles
-        isObserved = false;
         debugMode = false;
         irqPending = false;
         irqWaited = false;
@@ -320,15 +305,10 @@ public class CPU extends ModuleCPU {
                 + " Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Resets all parameters of this module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Initialise toggles
         isRunning = true;
@@ -605,10 +585,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Displays all registers and their values, text acronyms for flags, CS:IP
-     * value, next three bytes of memory and the associated instruction
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
 
         ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
@@ -620,136 +599,7 @@ public class CPU extends ModuleCPU {
         String ret = "\r\n";
         String tab = "\t";
 
-        // Debug style dump:
-        // // Print starting line
-        // dump +=
-        // "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" +
-        // ret;
-        //		
-        // // Print registers and their values
-        // dump += "AX=" + Integer.toHexString( 0x100 |
-        // ax[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | ax[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "BX=" + Integer.toHexString( 0x100 |
-        // bx[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | bx[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "CX=" + Integer.toHexString( 0x100 |
-        // cx[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | cx[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "DX=" + Integer.toHexString( 0x100 |
-        // dx[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | dx[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "SP=" + Integer.toHexString( 0x100 |
-        // sp[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | sp[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "BP=" + Integer.toHexString( 0x100 |
-        // bp[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | bp[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "SI=" + Integer.toHexString( 0x100 |
-        // si[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | si[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "DI=" + Integer.toHexString( 0x100 |
-        // di[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | di[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += ret;
-        // dump += "DS=" + Integer.toHexString( 0x100 |
-        // ds[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | ds[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "ES=" + Integer.toHexString( 0x100 |
-        // es[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | es[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "SS=" + Integer.toHexString( 0x100 |
-        // ss[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | ss[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "CS=" + Integer.toHexString( 0x100 |
-        // cs[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | cs[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        // dump += "IP=" + Integer.toHexString( 0x100 |
-        // ip[REGISTER_GENERAL_HIGH] & 0xFF).substring(1).toUpperCase() +
-        // Integer.toHexString( 0x100 | ip[REGISTER_GENERAL_LOW] &
-        // 0xFF).substring(1).toUpperCase() + tab;
-        //		
-        // // Print flags
-        // flagval = flags[REGISTER_FLAGS_OF] ? "OV" : "NV";
-        // dump += flagval;
-        // flagval = flags[REGISTER_FLAGS_DF] ? "DN" : "UP";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_IF] ? "EI" : "DI";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_SF] ? "NG" : "PL";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_ZF] ? "ZR" : "NZ";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_AF] ? "AC" : "NA";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_PF] ? "PE" : "PO";
-        // dump += " " + flagval;
-        // flagval = flags[REGISTER_FLAGS_CF] ? "CY" : "NC";
-        // dump += " " + flagval + ret;
-        //		
-        // // Print CS:IP and the first three bytes of memory
-        // dump += Integer.toHexString( 0x100 | cs[REGISTER_GENERAL_HIGH] &
-        // 0xFF).substring(1).toUpperCase() + Integer.toHexString( 0x100 |
-        // cs[REGISTER_GENERAL_LOW] & 0xFF).substring(1).toUpperCase() + ":" +
-        // Integer.toHexString( 0x100 | ip[REGISTER_GENERAL_HIGH] &
-        // 0xFF).substring(1).toUpperCase() + Integer.toHexString( 0x100 |
-        // ip[REGISTER_GENERAL_LOW] & 0xFF).substring(1).toUpperCase() + "   ";
-        // try
-        // {
-        // dump += Integer.toHexString( 0x100 |
-        // (memory.getByte(((((cs[REGISTER_SEGMENT_HIGH])<<12)&0xFFFFF) +
-        // (((cs[REGISTER_SEGMENT_LOW])<<4)&0xFFF) +
-        // (((ip[REGISTER_SEGMENT_HIGH])<<8)&0xFFFF) +
-        // ((ip[REGISTER_SEGMENT_LOW])&0xFF)))&0xFF)).substring(1).toUpperCase()
-        // + " ";
-        // dump += Integer.toHexString( 0x100 |
-        // (memory.getByte(((((cs[REGISTER_SEGMENT_HIGH])<<12)&0xFFFFF) +
-        // (((cs[REGISTER_SEGMENT_LOW])<<4)&0xFFF) +
-        // (((ip[REGISTER_SEGMENT_HIGH])<<8)&0xFFFF) +
-        // ((ip[REGISTER_SEGMENT_LOW])&0xFF) +
-        // 1))&0xFF)).substring(1).toUpperCase() + " ";
-        // dump += Integer.toHexString( 0x100 |
-        // (memory.getByte(((((cs[REGISTER_SEGMENT_HIGH])<<12)&0xFFFFF) +
-        // (((cs[REGISTER_SEGMENT_LOW])<<4)&0xFFF) +
-        // (((ip[REGISTER_SEGMENT_HIGH])<<8)&0xFFFF) +
-        // ((ip[REGISTER_SEGMENT_LOW])&0xFF) +
-        // 2))&0xFF)).substring(1).toUpperCase() + tab;
-        //			
-        // // Determine instruction from instruction table, print name
-        // // Cast byte to unsigned int first before instruction table lookup
-        // String instruct =
-        // singleByteInstructions[((int)(memory.getByte((((cs[REGISTER_SEGMENT_HIGH]&0xFF)<<12)
-        // + ((cs[REGISTER_SEGMENT_LOW]&0xFF)<<4) +
-        // ((ip[REGISTER_SEGMENT_HIGH]&0xFF)<<8) +
-        // (ip[REGISTER_SEGMENT_LOW]&0xFF))) & 0xFF))].toString();
-        // instruct = instruct.substring(instruct.indexOf("_") + 1,
-        // instruct.indexOf("@"));
-        // dump += instruct + ret;
-        // }
-        // catch (ModuleException e)
-        // {
-        // logger.log(Level.SEVERE, e.getMessage());
-        // dump += "Failed to retrieve memory information";
-        // }
-        //		
-        // // Print ending line
-        // dump +=
-        // "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
-
-        // Bochs style 'info cpu' dump:
-        // // Print starting line
+        // starting line
         dump += "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
                 + ret;
 
@@ -894,7 +744,6 @@ public class CPU extends ModuleCPU {
 
     /**
      * Simple CPU register display
-     * 
      */
     public String dumpRegisters() {
 
