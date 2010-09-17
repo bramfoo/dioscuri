@@ -70,23 +70,12 @@ import dioscuri.module.ModuleBIOS;
  */
 public class BIOS extends ModuleBIOS {
 
-    // Attributes
-
-    // Relations
-    @SuppressWarnings("unused")
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
+    // Logging
+    private static final Logger logger = Logger.getLogger(BIOS.class.getName());
+    
     // BIOS ROM
     private byte[] systemROM; // Contains the System BIOS, using signed bytes as both signed/unsigned
     private byte[] videoROM; // Contains the Video BIOS
-    private byte[] optionalROM; // TODO: can contain optional BIOSes
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(BIOS.class.getName());
 
     // Memory size
     private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes
@@ -100,12 +89,7 @@ public class BIOS extends ModuleBIOS {
      * @param owner
      */
     public BIOS(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
+        
         // Create new empty bios roms
         systemROM = new byte[SYSTEMBIOS_ROM_SIZE];
         videoROM = new byte[VIDEOBIOS_ROM_SIZE];
@@ -129,11 +113,8 @@ public class BIOS extends ModuleBIOS {
      *         otherwise
      */
     public boolean reset() {
-        // TODO: Reset particular CMOS settings
-
-        logger
-                .log(Level.CONFIG, "[" + super.getType()
-                        + "] Module has been reset.");
+        // Reset particular CMOS settings?
+        logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
@@ -284,8 +265,4 @@ public class BIOS extends ModuleBIOS {
                     + SYSTEMBIOS_ROM_SIZE + " bytes");
         }
     }
-
-    // ******************************************************************************
-    // Additional Methods
-
 }
