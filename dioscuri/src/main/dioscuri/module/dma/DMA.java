@@ -339,24 +339,6 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
      * Returns information of this module
      * 
      * @return string String of current information about this module

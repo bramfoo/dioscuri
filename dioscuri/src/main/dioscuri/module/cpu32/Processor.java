@@ -3169,18 +3169,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public void start() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void stop() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public boolean isShutdown() {
         // TODO Auto-generated method stub
         return false;

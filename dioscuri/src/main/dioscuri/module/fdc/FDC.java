@@ -591,19 +591,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
+    @Override
     public void stop() {
         // Make sure all data on virtual floppies in drives are stored to image
         // files

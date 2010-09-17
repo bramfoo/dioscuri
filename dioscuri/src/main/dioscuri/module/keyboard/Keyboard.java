@@ -245,24 +245,6 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * Starts the module
-     *
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
      * Returns a dump of this module
      *
      * @return string

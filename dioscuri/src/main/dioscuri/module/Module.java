@@ -111,8 +111,13 @@ public abstract class Module {
         }
     }
 
-    public final Module getConnection(Type t) {
-        return connections.get(t);
+    /**
+     *
+     * @param type
+     * @return
+     */
+    public final Module getConnection(Type type) {
+        return connections.get(type);
     }
 
     /**
@@ -124,6 +129,17 @@ public abstract class Module {
         return this.debugMode;
     }
 
+    /**
+     * Return a dump of module status
+     *
+     * @return string containing a dump of this module
+     */
+    public abstract String getDump();
+
+    /**
+     * 
+     * @return
+     */
     public final String[] getExpectedConnections() { // TODO return type: Module.Type[]
         List<String> temp = new ArrayList<String>();
         for(Type t : this.connections.keySet()) {
@@ -150,18 +166,32 @@ public abstract class Module {
         return true;
     }
 
-    public final boolean setConnection(Module m) { // TODO make final
-        if(m == null) {
+    /**
+     * Reset all parameters of module.
+     *
+     * @return true iff the Module was reset properly.
+     */
+    public abstract boolean reset();
+
+    /**
+     * Connect both Modules 'this' and 'module' to each other.
+     *
+     * @param module the other Module.
+     * @return       true iff both Modules 'this' and 'module' are
+     *               properly connected to each other. 
+     */
+    public final boolean setConnection(Module module) { // TODO make final
+        if(module == null) {
             logger.log(Level.SEVERE, "m == null");
             return false;
         }
-        if(connections.get(m.type) != null) {
-            logger.log(Level.INFO, type+" already connected to "+m.type);
+        if(connections.get(module.type) != null) {
+            logger.log(Level.INFO, type+" already connected to "+module.type);
             return false;
         }
-        logger.log(Level.INFO, type+" is connected to "+m.type);
-        connections.put(m.type, m);
-        m.connections.put(type, this);
+        logger.log(Level.INFO, type+" is connected to "+module.type);
+        connections.put(module.type, module);
+        module.connections.put(type, this);
         return true;
     }
 
@@ -174,72 +204,17 @@ public abstract class Module {
         this.debugMode = status;
     }
 
-    // TODO :: OLD METHODS BELOW
-    // TODO :: ======================================================================================================
-    
     /**
-     * Returns the type of module (CPU, Memory, etc.)
-     *
-     * @return string with the type of this module
-     *
+     * Starts the module to become active.
      */
-    //public abstract String getType();
+    public void start(){
+        // empty, can be @Override-en in sub-classes
+    }
 
     /**
-     * Returns the name of module
-     *
-     * @return string with the name of this module
-     *
+     * Stops the module from being active.
      */
-    //public abstract String getName();
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules
-     */
-    //public abstract String[] getExpectedConnections();
-
-    /**
-     * Sets up a connection with another module
-     *
-     * @param mod
-     *            Module that is to be connected
-     *
-     * @return true if connection was set successfully, false otherwise
-     */
-    //public abstract boolean setConnection(Module mod);
-
-
-
-    /**
-     * Reset all parameters of module
-     *
-     * @return -
-     */
-    public abstract boolean reset();
-
-    /**
-     * Starts the module to become active
-     *
-     */
-    public abstract void start();
-
-    /**
-     * Stops the module from being active
-     *
-     */
-    public abstract void stop();
-
-
-
-
-
-    /**
-     * Return a dump of module status
-     *
-     * @return string containing a dump of this module
-     */
-    public abstract String getDump();
-
+    public void stop(){
+        // empty, can be @Override-en in sub-classes
+    }
 }

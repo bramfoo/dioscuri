@@ -218,25 +218,6 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Stop Clock thread
-        // clock.setKeepRunning(false);
-    }
-
-    /**
      * Returns a dump of this module
      * 
      * @return string

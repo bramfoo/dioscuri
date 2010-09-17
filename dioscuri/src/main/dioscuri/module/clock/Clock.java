@@ -131,19 +131,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
+    @Override
     public void stop() {
         // Stop Clock thread
         this.setKeepRunning(false);

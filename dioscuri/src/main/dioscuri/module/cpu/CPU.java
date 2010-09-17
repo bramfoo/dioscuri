@@ -359,10 +359,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Starts a loop to read and execute instructions from memory. This loop
-     * will continue to run during the life-time of the emulator.
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void start() {
 
         ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
@@ -597,9 +596,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Stops the execution of CPU
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void stop() {
         // Stop execution of instructions
         this.setRunning(false);

@@ -149,25 +149,7 @@ public class Memory extends ModuleMemory {
         logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
-
-    /**
-     * Starts the module
-     *
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
+    
     /**
      * Returns a dump of this module
      *

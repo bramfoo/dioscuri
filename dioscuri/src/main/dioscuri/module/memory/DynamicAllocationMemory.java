@@ -172,24 +172,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Starts the module
-     *
-     * @see Module
-     */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
      * Returns a dump of this module
      *
      * @return string
