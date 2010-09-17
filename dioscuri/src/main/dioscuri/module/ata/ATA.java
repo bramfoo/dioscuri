@@ -82,25 +82,10 @@ import dioscuri.module.ModuleRTC;
  */
 public class ATA extends ModuleATA {
 
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-
-    //private ModuleType[] moduleConnections = new ModuleType[] {
-    //        ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC };// , ModuleType.CPU};
-
-    //private ModuleMotherboard motherboard;
-    //private ModuleRTC rtc;
-    //private ModulePIC pic;
-    // private ModuleCPU cpu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // Logging
     private static final Logger logger = Logger.getLogger(ATA.class.getName());
+
+    // Attributes
+    private Emulator emu;
 
     // Timing
     private int updateInterval;
@@ -109,7 +94,6 @@ public class ATA extends ModuleATA {
     private ATAChannel[] channels = new ATAChannel[ATAConstants.MAX_NUMBER_IDE_CHANNELS];
     private int curChannelIndex;
 
-    // TODO: confirm use of these fields
     private int bulkIOHostAddr = 0;
     private int bulkIOQuantumsRequested = 0;
     private int bulkIOQuantumsTransferred = 0;
@@ -124,11 +108,7 @@ public class ATA extends ModuleATA {
      */
     public ATA(Emulator owner) {
         emu = owner;
-
-        // Initialise module variables
-        isObserved = false;
-        debugMode = false;
-
+        
         // Initialise timing
         updateInterval = -1;
 
