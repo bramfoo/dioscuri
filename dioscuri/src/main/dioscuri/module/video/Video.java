@@ -212,26 +212,6 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Returns the status of observed toggle
-     *
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
      * Returns the status of the debug mode toggle
      *
      * @return state of debug mode toggle

@@ -3181,12 +3181,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public boolean isObserved() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public boolean setData(byte[] data, Module module) {
         // TODO Auto-generated method stub
         return false;
@@ -3200,12 +3194,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     @Override
     public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setObserved(boolean status) {
         // TODO Auto-generated method stub
 
     }

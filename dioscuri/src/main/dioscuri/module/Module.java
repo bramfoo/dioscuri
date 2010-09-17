@@ -214,20 +214,6 @@ public abstract class Module {
     public abstract void stop();
 
     /**
-     * Returns the state of observed
-     *
-     * @return true if this module is observed, false otherwise
-     */
-    public abstract boolean isObserved();
-
-    /**
-     * Set toggle to define if this module is observed or not
-     *
-     * @param status
-     */
-    public abstract void setObserved(boolean status);
-
-    /**
      * Returns the state of debug mode
      *
      * @return true if this module is in debug mode, false otherwise
