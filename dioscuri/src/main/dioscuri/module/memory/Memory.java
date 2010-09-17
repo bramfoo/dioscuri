@@ -71,28 +71,17 @@ import dioscuri.module.ModuleVideo;
  *      Notes: none
  *
  */
-@SuppressWarnings("unused")
 public class Memory extends ModuleMemory {
 
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
+    // Logging
+    private static final Logger logger = Logger.getLogger(Memory.class.getName());
 
     // Random Access Memory (RAM)
     public byte[] ram; // Using signed bytes as both signed/unsigned
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
                                    // addresses
 
-    // Logging
-    private static final Logger logger = Logger.getLogger(Memory.class.getName());
-
     // Constants
-
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
     private int ramSize = 1 * BYTES_IN_MB; // initial value defined in bytes (1
@@ -110,11 +99,6 @@ public class Memory extends ModuleMemory {
      * @param owner
      */
     public Memory(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Create new empty memory
         ram = new byte[this.ramSize];
@@ -131,11 +115,9 @@ public class Memory extends ModuleMemory {
     // Module Methods
 
     /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Reset RAM: set all memory to zero
         Arrays.fill(ram, (byte) 0);
@@ -151,12 +133,9 @@ public class Memory extends ModuleMemory {
     }
     
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     *
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";

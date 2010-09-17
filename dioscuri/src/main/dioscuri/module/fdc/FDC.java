@@ -440,11 +440,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // Module Methods
 
     /**
-     * Default inherited reset. Calls specific reset(int)
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -517,7 +515,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
-    public boolean reset(int resetType) {
+    private boolean reset(int resetType) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
@@ -598,12 +596,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";

@@ -73,17 +73,10 @@ import dioscuri.module.ModuleVideo;
  *      the Insituto Superior Tecnico, May 2009.
  *
  */
-@SuppressWarnings("unused")
 public class DynamicAllocationMemory extends ModuleMemory {
 
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
+    // Logging
+    private static final Logger logger = Logger.getLogger(DynamicAllocationMemory.class.getName());
 
     // Two dimensional array of dynamically allocated RAM
     private byte[][] ram;
@@ -93,11 +86,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
                             // corresponding ramBlock for memory address
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
                                    // addresses
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(DynamicAllocationMemory.class.getName());
-
-    // Constants
 
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
@@ -115,13 +103,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
      *
      * @param owner
      */
-    @SuppressWarnings("empty-statement")
     public DynamicAllocationMemory(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Split ram into sections, more or less arbitrarily chosen size
         // (multiple of two)
@@ -136,8 +118,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // blockIndex is the logarithm of the ramBlockSize, base 2
         // To determine logarithm, two methods can be used:
         // blockIndex = Math.log(ramBlockSize)/Math.log(2.0);
-        for (int i = ramBlockSize; i > 1; blockIndex++, i = i >> 1)
-            ;
+        // or some bit-voodoo:
+        for (int i = ramBlockSize; i > 1; blockIndex++, i = i >> 1);
 
         // Debugging functionality
         watchValue = false;
@@ -151,11 +133,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     // Module Methods
 
     /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         Arrays.fill(ram, null);
 
@@ -172,12 +152,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     *
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";

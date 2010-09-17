@@ -84,15 +84,14 @@ import dioscuri.module.ModuleRTC;
  *      http://homepages.cwi.nl/~aeb/linux/kbd/scancodes.html
  */
 public class Keyboard extends ModuleKeyboard {
+
+    // Logging
+    private static final Logger logger = Logger.getLogger(Keyboard.class.getName());
     
     // Relations
     private Emulator emu;
     private TheKeyboard keyboard;
     private ScanCodeSets scanCodeSet;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // IRQ
     private int irqNumberKeyboard; // Interrupt number assigned by PIC
@@ -101,9 +100,6 @@ public class Keyboard extends ModuleKeyboard {
 
     // Timing
     private int updateInterval;
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(Keyboard.class.getName());
 
     // Constants
     // I/O ports
@@ -122,8 +118,6 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * Class constructor
-     *
-     * @param owner
      */
     public Keyboard(Emulator owner) {
         emu = owner;
@@ -131,10 +125,6 @@ public class Keyboard extends ModuleKeyboard {
         // Internal instances
         keyboard = new TheKeyboard();
         scanCodeSet = new ScanCodeSets();
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise timing
         updateInterval = -1;
@@ -178,15 +168,10 @@ public class Keyboard extends ModuleKeyboard {
         // Scancodes.scancodesInit();
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Default inherited reset. Calls specific reset(int)
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -245,12 +230,9 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     *
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         try {
             String keyboardDump = "Keyboard status:\n";
