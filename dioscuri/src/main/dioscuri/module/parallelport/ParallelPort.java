@@ -81,7 +81,7 @@ public class ParallelPort extends ModuleParallelPort {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] { "motherboard" };
-    private ModuleMotherboard motherboard;
+    //private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -149,32 +149,15 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        
         // Register I/O ports 0x37[8-A], 0x27[8-A] in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);

@@ -883,7 +883,7 @@ public class Emulator implements Runnable {
                                         + mod1.getType() + " and "
                                         + mod2.getType());
                     } else {
-                        logger.log(Level.SEVERE,
+                        logger.log(Level.INFO,
                                 "[emu] Failed to establish connection between "
                                         + mod1.getType() + " and "
                                         + mod2.getType());

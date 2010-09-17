@@ -109,7 +109,7 @@ public abstract class Module {
         }
     }
 
-    public Module getConnection(Type t) {
+    public Module getConnection(Type t) { // TODO make final
         return connections.get(t);
     }
 
@@ -137,7 +137,7 @@ public abstract class Module {
 
     public boolean setConnection(Module m) { // TODO make final
         if(m == null) {
-            logger.log(Level.INFO, "m == null");
+            logger.log(Level.SEVERE, "m == null");
             return false;
         }
         if(connections.get(m.type) != null) {
@@ -150,8 +150,9 @@ public abstract class Module {
         return true;
     }
 
-    // TODO :: OLD METHODS BELOW :: TODO
-
+    // TODO :: OLD METHODS BELOW
+    // TODO :: ======================================================================================================
+    
     /**
      * Returns the type of module (CPU, Memory, etc.)
      *

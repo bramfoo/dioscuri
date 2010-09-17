@@ -1014,7 +1014,7 @@ public class PIC extends ModulePIC {
             logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
                     + " Should return free IRQ number, but is not implemented");
         }
-        System.out.println("PIC.requestIRQNumber(Module) :: "+module.getClass()+" :: IRQ = " + irqNumber);
+        //System.out.println("PIC.requestIRQNumber(Module) :: "+module.getClass()+" :: IRQ = " + irqNumber);
         return irqNumber;
     }
 
