@@ -15,7 +15,7 @@
                 <floppycheckdisabled>false</floppycheckdisabled>
             </bios>
             <cpu debug="false">
-                <cpu32bit>false</cpu32bit>
+                <cpu32bit>true</cpu32bit>
                 <speedmhz>5</speedmhz>
             </cpu>
             <memory debugaddressdecimal="9295" debug="false">
@@ -52,7 +52,7 @@
                     <cylinders>0</cylinders>
                     <heads>4</heads>
                     <sectorspertrack>17</sectorspertrack>
-                    <imagefilepath>C:\BK\IntelliJ\module_redesign2\images\dosgames.img</imagefilepath>
+                    <imagefilepath>C:\BK\IntelliJ\dioscuri-redesign\images\dosgames.img</imagefilepath>
                 </harddiskdrive>
             </ata>
             <video debug="false">

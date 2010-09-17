@@ -118,8 +118,8 @@ public class SerialPort extends ModuleSerialPort {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[]{"motherboard", "pic"};
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
+    //private ModuleMotherboard motherboard;
+    //private ModulePIC pic;
 
     // Toggles
     private boolean isObserved;
@@ -222,34 +222,16 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+
         // Reset COM-ports
         for (int c = 0; c < comPorts.length; c++) {
             // Register I/O ports
@@ -425,6 +407,7 @@ public class SerialPort extends ModuleSerialPort {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -480,6 +463,7 @@ public class SerialPort extends ModuleSerialPort {
             }
 
             // Activate timer as one shot
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
             motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
             motherboard.setTimerActiveState(this, true);
         }
@@ -691,6 +675,10 @@ public class SerialPort extends ModuleSerialPort {
      */
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
                 + " Write (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
@@ -1188,7 +1176,10 @@ public class SerialPort extends ModuleSerialPort {
     private void setIRQ(int port, int type) {
         // TODO BK always port=0, type=1 
         boolean raiseInterrupt = false;
-        
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+
         switch (type) {
             case INTERRUPT_IER: // IER has changed
                 raiseInterrupt = true;
@@ -1256,12 +1247,17 @@ public class SerialPort extends ModuleSerialPort {
                 && (comPorts[port].fifo_interrupt == 0)) {
             logger.log(Level.CONFIG, "[" + MODULE_TYPE
                     + "] Lowering IRQ (signalling to PIC)");
+            ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
             pic.clearIRQ(comPorts[port].irq);
         }
     }
 
     private void enqueueReceivedData(int port, byte data) {
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] enqueueReceivedData(...)");
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        
         boolean raiseInterrupt = false;
 
         // Check if FIFO is active

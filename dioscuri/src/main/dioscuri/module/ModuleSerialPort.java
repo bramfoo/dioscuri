@@ -49,7 +49,8 @@ import dioscuri.interfaces.UART;
 public abstract class ModuleSerialPort extends ModuleDevice  implements Addressable, Updateable {
 
     public ModuleSerialPort() {
-        super(Type.SERIALPORT);
+        super(Type.SERIALPORT,
+                Type.MOTHERBOARD, Type.PIC);
     }
 
     /**
