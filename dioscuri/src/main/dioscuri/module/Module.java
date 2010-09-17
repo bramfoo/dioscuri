@@ -39,7 +39,9 @@
 
 package dioscuri.module;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -113,9 +115,13 @@ public abstract class Module {
         return connections.get(t);
     }
 
-    //public final Type[] getExpectedConnections() {
-    //
-    //}
+    public String[] getExpectedConnections() { // TODO return type: Module.Type[]
+        List<String> temp = new ArrayList<String>();
+        for(Type t : this.connections.keySet()) {
+            temp.add(t.toString());
+        }
+        return temp.toArray(new String[temp.size()]);
+    }
 
     public final Type getType() {
         return this.type;
@@ -174,7 +180,7 @@ public abstract class Module {
      *
      * @return String[] containing the names of modules
      */
-    public abstract String[] getExpectedConnections();
+    //public abstract String[] getExpectedConnections();
 
     /**
      * Sets up a connection with another module
