@@ -237,47 +237,6 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Returns data from this module
-     *
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        logger.log(Level.WARNING, "[" + super.getType() + "]"
-                + "  get data TO BE IMPLEMENTED");
-        return null;
-    }
-
-    /**
-     * Set data for this module.
-     *
-     * @param data
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        logger.log(Level.WARNING, "[" + super.getType() + "]"
-                + " set data TO BE IMPLEMENTED");
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module.
-     *
-     * @param data
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        logger.log(Level.WARNING, "[" + super.getType() + "]"
-                + "  set data TO BE IMPLEMENTED");
-        return false;
-    }
-
-    /**
      * Returns a dump of this module.
      *
      * @return string the dumop string

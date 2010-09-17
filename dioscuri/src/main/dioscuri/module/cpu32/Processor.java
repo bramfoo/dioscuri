@@ -3163,12 +3163,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public byte[] getData(Module module) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public boolean getDebugMode() {
         // TODO Auto-generated method stub
         return false;
@@ -3178,18 +3172,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public String getDump() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public boolean setData(byte[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setData(String[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
     }
 
     @Override

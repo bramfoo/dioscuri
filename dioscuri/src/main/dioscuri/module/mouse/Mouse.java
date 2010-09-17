@@ -177,45 +177,6 @@ public class Mouse extends ModuleMouse implements UART {
         debugMode = status;
     }
 
-
-    /**
-     * Returns data from this module
-     *
-     * @param requester, the requester of the data
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-
-    /**
-     * Set data for this module
-     *
-     * @param data
-     * @param sender, the sender of the data
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-
-    /**
-     * Set String[] data for this module
-     *
-     * @param data
-     * @param sender, the sender of the data
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-
     /**
      * Returns a dump of this module
      *

@@ -228,32 +228,6 @@ public abstract class Module {
     public abstract void setDebugMode(boolean status);
 
     /**
-     * Returns data from this module
-     *
-     * @param module
-     * @return byte[] with data
-     */
-    public abstract byte[] getData(Module module);
-
-    /**
-     * Set data for this module
-     *
-     * @param data
-     * @param module
-     * @return true if data is set successfully, false otherwise
-     */
-    public abstract boolean setData(byte[] data, Module module);
-
-    /**
-     * Set data for this module
-     *
-     * @param data
-     * @param module
-     * @return true if data is set successfully, false otherwise
-     */
-    public abstract boolean setData(String[] data, Module module);
-
-    /**
      * Return a dump of module status
      *
      * @return string containing a dump of this module

@@ -790,13 +790,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     @Override
-    public byte[] getData(Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
     public boolean getDebugMode() {
         // TODO Auto-generated method stub
         notImplemented();
@@ -808,20 +801,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
         // TODO Auto-generated method stub
         notImplemented();
         return null;
-    }
-
-    @Override
-    public boolean setData(byte[] data, Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
-    public boolean setData(String[] data, Module module) {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
     }
 
     @Override

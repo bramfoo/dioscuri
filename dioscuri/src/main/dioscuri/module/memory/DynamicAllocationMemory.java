@@ -212,61 +212,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Returns data from this module
-     *
-     * @param requester
-     * @return byte[] with data
-     *
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     *
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     *
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Sets given String[] data for this module
-     *
-     * @param sender
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        // Check if string[] is not empty
-        if (data.length > 1) {
-            // Extract address
-            int address = Integer.parseInt(data[0]);
-
-            // Extract values
-            byte[] value = new byte[data.length - 1];
-            for (int v = 0; v < value.length; v++) {
-                value[v] = (byte) this.convertStringToByte(data[v + 1]);
-            }
-
-            // Set value in memory
-            try {
-                this.setBytes(address, value);
-            } catch (ModuleException e) {
-                logger.log(Level.SEVERE, "[" + super.getType()
-                        + "] setData: data not set. " + e.getMessage());
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
      * Returns a dump of this module
      *
      * @return string

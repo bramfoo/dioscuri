@@ -248,38 +248,6 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Sets given String[] data for this module
-     * 
-     * @param sender
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
      * Returns a dump of this module
      * 
      * @return string
