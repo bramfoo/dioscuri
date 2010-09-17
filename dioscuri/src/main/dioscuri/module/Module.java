@@ -193,7 +193,7 @@ public abstract class Module {
      * @return       true iff both Modules 'this' and 'module' are
      *               properly connected to each other.
      */
-    public final boolean setConnection(Module module) { // TODO make final
+    public final boolean setConnection(Module module) {
         if(module == null) {
             logger.log(Level.SEVERE, "m == null");
             return false;
@@ -211,7 +211,7 @@ public abstract class Module {
     /**
      * Set toggle to define if this module is in debug mode or not
      *
-     * @param status
+     * @param status the new debug mode for this Module. 
      */
     public final void setDebugMode(boolean status) {
         this.debugMode = status;
