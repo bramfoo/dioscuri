@@ -873,7 +873,7 @@ public class Emulator implements Runnable {
         Module mod1, mod2;
         for (int i = 0; i < modules.size(); i++) {
             mod1 = modules.getModule(i);
-            String[] connections = mod1.getConnection();
+            String[] connections = mod1.getExpectedConnections();
             for (int c = 0; c < connections.length; c++) {
                 mod2 = modules.getModule(connections[c]);
                 if (mod2 != null) {

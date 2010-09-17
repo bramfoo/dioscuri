@@ -3163,7 +3163,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public String[] getConnection() {
+    public String[] getExpectedConnections() {
         return new String[] {};
     }
 

@@ -172,7 +172,7 @@ public class ATA extends ModuleATA {
      * @return String[] containing the names of modules, or null if no
      *         connections
      */
-    public String[] getConnection() {
+    public String[] getExpectedConnections() {
 
         String[] connectingModString = new String[moduleConnections.length];
         for (int i = 0; i < moduleConnections.length; i++) {

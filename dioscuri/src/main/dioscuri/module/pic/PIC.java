@@ -176,7 +176,7 @@ public class PIC extends ModulePIC {
      * @return String[] containing the names of modules, or null if no
      *         connections
      */
-    public String[] getConnection() {
+    public String[] getExpectedConnections() {
         // Return all required connections;
         return moduleConnections;
     }
@@ -1211,7 +1211,7 @@ public class PIC extends ModulePIC {
     private void serviceMasterPIC() {
 
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        //ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        //ModuleMotherboard motherboard = (ModuleMotherboard)super.getExpectedConnections(Type.MOTHERBOARD);
         
         int unmaskedRequests;
         int irq;

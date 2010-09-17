@@ -113,7 +113,7 @@ public abstract class Module {
         return connections.get(t);
     }
 
-    //public final Type[] getConnection() {
+    //public final Type[] getExpectedConnections() {
     //
     //}
 
@@ -174,7 +174,7 @@ public abstract class Module {
      *
      * @return String[] containing the names of modules
      */
-    public abstract String[] getConnection();
+    public abstract String[] getExpectedConnections();
 
     /**
      * Sets up a connection with another module

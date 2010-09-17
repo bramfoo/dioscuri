@@ -136,7 +136,7 @@ public class Clock extends ModuleClock {
      * @return String[] containing the names of modules, or null if no
      *         connections
      */
-    public String[] getConnection() {
+    public String[] getExpectedConnections() {
         // Return all required connections;
         return moduleConnections;
     }
