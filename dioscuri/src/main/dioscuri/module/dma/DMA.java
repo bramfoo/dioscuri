@@ -82,6 +82,9 @@ import dioscuri.module.ModuleMotherboard;
  */
 public class DMA extends ModuleDMA {
 
+    // Logging
+    private static final Logger logger = Logger.getLogger(DMA.class.getName());
+    
     boolean busHoldAcknowledged; // Hold Acknowlege; CPU has relinquished
                                  // control of the system busses
     boolean terminalCountReached; // Terminal Count; generated when transfer is
@@ -108,18 +111,6 @@ public class DMA extends ModuleDMA {
     // (controller 1)
     public DMA8Handler[] dma8Handler = new DMA8Handler[4];
     public DMA16Handler[] dma16Handler = new DMA16Handler[4];
-
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(DMA.class.getName());
-
-    // Constants
 
     // Master/Slave identifiers
     private final static int MASTER_CTRL = 0;
@@ -190,13 +181,8 @@ public class DMA extends ModuleDMA {
      * @param owner
      */
     public DMA(Emulator owner) {
-        emu = owner;
 
         int chanNum, ctrlNum, i; // Counters
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Set DMA REQs and ACKs to 0
         for (ctrlNum = 0; ctrlNum < 2; ctrlNum++) {
@@ -248,11 +234,9 @@ public class DMA extends ModuleDMA {
     // Module Methods
 
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -339,12 +323,9 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Returns information of this module
-     * 
-     * @return string String of current information about this module
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";
