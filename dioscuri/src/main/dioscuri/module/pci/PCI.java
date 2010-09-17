@@ -154,28 +154,6 @@ public class PCI extends ModuleDevice {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false

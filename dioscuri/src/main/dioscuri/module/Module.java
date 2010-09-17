@@ -109,7 +109,7 @@ public abstract class Module {
         }
     }
 
-    public Module getConnection(Type t) { // TODO make final
+    public final Module getConnection(Type t) {
         return connections.get(t);
     }
 
@@ -135,7 +135,7 @@ public abstract class Module {
         return true;
     }
 
-    public boolean setConnection(Module m) { // TODO make final
+    public final boolean setConnection(Module m) { // TODO make final
         if(m == null) {
             logger.log(Level.SEVERE, "m == null");
             return false;
