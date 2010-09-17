@@ -98,12 +98,6 @@ public class PCI extends ModuleDevice {
     // Logging
     private static final Logger logger = Logger.getLogger(PCI.class.getName());
 
-    // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "pci";
-    public final static String MODULE_NAME = "Peripheral Component Interconnect";
-
     // I/O ports 0CF8-0CFF - PCI Configuration Mechanism 1
     private final static int PORT_PCI1_ADDRESS = 0xCF8;
     private final static int PORT_PCI1_DATA = 0xCFC;
@@ -123,22 +117,12 @@ public class PCI extends ModuleDevice {
         isObserved = false;
         debugMode = false;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -159,7 +143,7 @@ public class PCI extends ModuleDevice {
         motherboard.setIOPort(PORT_PCI1_DATA + 2, this);
         motherboard.setIOPort(PORT_PCI1_DATA + 3, this);
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Module has been reset.");
         return true;
     }
@@ -308,10 +292,10 @@ public class PCI extends ModuleDevice {
      *             , ModuleWriteOnlyPortException
      */
     public byte getIOPortByte(int portAddress) throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFF");
 
         // Return dummy value 0xFF
@@ -326,7 +310,7 @@ public class PCI extends ModuleDevice {
      */
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -337,10 +321,10 @@ public class PCI extends ModuleDevice {
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFF");
 
         // Return dummy value 0xFFFF
@@ -349,7 +333,7 @@ public class PCI extends ModuleDevice {
 
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -360,10 +344,10 @@ public class PCI extends ModuleDevice {
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFFFFFF");
 
         // Return dummy value 0xFFFFFFFF
@@ -372,7 +356,7 @@ public class PCI extends ModuleDevice {
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");

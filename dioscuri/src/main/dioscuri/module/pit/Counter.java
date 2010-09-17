@@ -770,7 +770,7 @@ public class Counter {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + PIT.MODULE_TYPE
+                                        + pit.getType()
                                         + "] Counter is already in use. Resetting may cause timing issues.");
             }
             isEnabled = true;
@@ -784,7 +784,7 @@ public class Counter {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + PIT.MODULE_TYPE
+                                        + pit.getType()
                                         + "] Counter is already in use. Resetting may cause timing issues.");
             }
             isEnabled = true;
@@ -807,7 +807,7 @@ public class Counter {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + PIT.MODULE_TYPE
+                                        + pit.getType()
                                         + "] Counter is already in use. Resetting may cause timing issues.");
             }
             isEnabled = true;

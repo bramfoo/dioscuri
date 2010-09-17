@@ -3180,10 +3180,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return null;
     }
 
-    public String getName() {
-        return "8086 compatible CPU";
-    }
-
     @Override
     public boolean isObserved() {
         // TODO Auto-generated method stub

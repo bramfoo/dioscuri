@@ -88,13 +88,6 @@ public class BIOS extends ModuleBIOS {
     // Logging
     private static final Logger logger = Logger.getLogger(BIOS.class.getName());
 
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "bios";
-    public final static String MODULE_NAME = "BIOS ROM";
-
     // Memory size
     private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes
                                                           // (64 KB, 2^16)
@@ -121,22 +114,12 @@ public class BIOS extends ModuleBIOS {
         Arrays.fill(systemROM, (byte) 0);
         Arrays.fill(videoROM, (byte) 0);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module. BIOS ROM is not reset. ROM will keep all
@@ -149,7 +132,7 @@ public class BIOS extends ModuleBIOS {
         // TODO: Reset particular CMOS settings
 
         logger
-                .log(Level.CONFIG, "[" + MODULE_TYPE
+                .log(Level.CONFIG, "[" + super.getType()
                         + "] Module has been reset.");
         return true;
     }
@@ -338,15 +321,15 @@ public class BIOS extends ModuleBIOS {
                 }
                 return true;
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " System BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
-                throw new ModuleException("[" + MODULE_TYPE + "]"
+                throw new ModuleException("[" + super.getType() + "]"
                         + " System BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
             }
         } else {
-            throw new ModuleException("[" + MODULE_TYPE + "]"
+            throw new ModuleException("[" + super.getType() + "]"
                     + " System BIOS is not " + SYSTEMBIOS_ROM_SIZE + " bytes");
         }
     }
@@ -387,15 +370,15 @@ public class BIOS extends ModuleBIOS {
                 }
                 return true;
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + " Video BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
-                throw new ModuleException("[" + MODULE_TYPE
+                throw new ModuleException("[" + super.getType()
                         + " Video BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
             }
         } else {
-            throw new ModuleException("[" + MODULE_TYPE + " Video BIOS is not "
+            throw new ModuleException("[" + super.getType() + " Video BIOS is not "
                     + SYSTEMBIOS_ROM_SIZE + " bytes");
         }
     }

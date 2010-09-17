@@ -83,9 +83,6 @@ public class Clock extends ModuleClock {
 
     // Constants
     // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "clock";
-    public final static String MODULE_NAME = "Crystal clock";
     public final static int TIMER_ARRAY_SIZE = 10;
 
     // Constructor
@@ -106,23 +103,12 @@ public class Clock extends ModuleClock {
         // Set sleepTime on default value
         sleepTime = 1000;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName()
                 + " -> Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -140,7 +126,7 @@ public class Clock extends ModuleClock {
             return false;
         }
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
@@ -293,7 +279,7 @@ public class Clock extends ModuleClock {
             timers[arrayIndex] = new Timer(device, intervalLength
                     * (cpu.getIPS() / 1000000), continuous);
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                     + device.getType() + "' registered a timer with interval "
                     + timers[arrayIndex].intervalLength + " instructions");
 
@@ -320,7 +306,7 @@ public class Clock extends ModuleClock {
         while (timers[t] != null) {
             if (timers[t].user.getType() == device.getType()) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer reset to "
                         + timers[t].intervalLength + " instructions");
                 return true;
@@ -343,7 +329,7 @@ public class Clock extends ModuleClock {
         while (timers[t] != null) {
             if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = runState;
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
                         + runState);
                 return true;

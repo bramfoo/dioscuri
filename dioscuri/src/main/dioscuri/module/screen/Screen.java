@@ -145,11 +145,6 @@ public class Screen extends ModuleScreen {
 
     // Constants
 
-    // Module specifics
-    private final static int MODULE_ID = 1;
-    private final static String MODULE_TYPE = "screen";
-    private final static String MODULE_NAME = "Compatible CRT/LCD computer screen";
-
     // Raster, ColourModel and BufferedImage properties
     protected static final int RED = 0;
     protected static final int GREEN = 1;
@@ -193,23 +188,12 @@ public class Screen extends ModuleScreen {
         // Create creen canvas
         screenPanel = new ScreenPanel();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " . Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -221,7 +205,7 @@ public class Screen extends ModuleScreen {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
@@ -386,7 +370,7 @@ public class Screen extends ModuleScreen {
         screenPanel.setSize(width, height);
         screenPanel.setBackground(Color.black);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Size of screen has been set.");
     }
 
@@ -404,7 +388,7 @@ public class Screen extends ModuleScreen {
      */
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
             int newFontHeight) {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " call to updateScreenSize() w/ fonts");
 
         // Check if the font size needs updating
@@ -467,7 +451,7 @@ public class Screen extends ModuleScreen {
         palette[BLUE][indx] = (byte) blue;
         this.updatePalette();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Palette[" + indx
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " Palette[" + indx
                 + "] changed to: {" + (byte) red + "," + (byte) green + ","
                 + (byte) blue + "}");
 
@@ -491,7 +475,7 @@ public class Screen extends ModuleScreen {
         codePageUpdateIndex[index >> 5] = true;
         codePageReqsUpdate = true;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " codePage[" + index
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " codePage[" + index
                 + "] = " + data);
     }
 
@@ -930,7 +914,7 @@ public class Screen extends ModuleScreen {
             rastr.setPixels(0, 0, fntWidth, fntHeight, pxels);
 
             if (fontImages[i] == null) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " Can't create  font [" + i + "]");
             }
         }

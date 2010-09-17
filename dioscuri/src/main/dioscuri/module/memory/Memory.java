@@ -93,11 +93,6 @@ public class Memory extends ModuleMemory {
 
     // Constants
 
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "memory";
-    public final static String MODULE_NAME = "RAM";
-
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
     private int ramSize = 1 * BYTES_IN_MB; // initial value defined in bytes (1
@@ -128,23 +123,12 @@ public class Memory extends ModuleMemory {
         watchValue = false;
         watchAddress = -1;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-
-    /**
-     * Returns the name of the module
-     *
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -162,7 +146,7 @@ public class Memory extends ModuleMemory {
         // Initialise A20 address bit to non-wrap (0xFFFF FFFF)
         setA20AddressLine(true);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
@@ -274,7 +258,7 @@ public class Memory extends ModuleMemory {
             try {
                 this.setBytes(address, value);
             } catch (ModuleException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] setData: data not set. " + e.getMessage());
                 return false;
             }
@@ -338,7 +322,7 @@ public class Memory extends ModuleMemory {
             if (watchValue == true && address == watchAddress) {
                 logger
                         .log(Level.CONFIG, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] "
                                 + cpu.getRegisterHex(0)
                                 + ":"
@@ -357,7 +341,7 @@ public class Memory extends ModuleMemory {
                 return ram[address];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFF");
             // Out of range, return default value
             return (byte) 0xFF;
@@ -385,7 +369,7 @@ public class Memory extends ModuleMemory {
         try {
             // Watch certain memory address
             if (watchValue == true && address == watchAddress) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
                         + " is written: ["
@@ -408,7 +392,7 @@ public class Memory extends ModuleMemory {
                 ram[address] = value;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write byte");
         }
     }
@@ -441,7 +425,7 @@ public class Memory extends ModuleMemory {
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger
                         .log(Level.CONFIG, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] "
                                 + cpu.getRegisterHex(0)
                                 + ":"
@@ -466,7 +450,7 @@ public class Memory extends ModuleMemory {
                 return new byte[] { ram[address + 1], ram[address] };
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFFFF");
             // Out of range, return default value
             return new byte[] { (byte) 0xFF, (byte) 0xFF };
@@ -494,7 +478,7 @@ public class Memory extends ModuleMemory {
             // Watch certain memory address
             if (watchValue == true
                     && (address == watchAddress || address + 1 == watchAddress)) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched WORD at address " + watchAddress
                         + " is written: ["
@@ -521,7 +505,7 @@ public class Memory extends ModuleMemory {
                 ram[address + 1] = value[0];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write word");
         }
     }
@@ -547,9 +531,9 @@ public class Memory extends ModuleMemory {
                 ram[address + b] = binaryStream[b];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Out of memory during write stream of bytes");
-            throw new ModuleException("[" + MODULE_TYPE
+            throw new ModuleException("[" + super.getType()
                     + "] setBytes: Out of memory at byte " + e.getMessage());
         }
     }
@@ -568,7 +552,7 @@ public class Memory extends ModuleMemory {
             // Disable 0x100000 address bit (memory wrapping is turned on)
             A20mask = 0xFFEFFFFF;
         }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " A20 address line status: " + status + " A20mask: [0x"
                 + Long.toHexString(A20mask) + "]");
     }
@@ -619,7 +603,7 @@ public class Memory extends ModuleMemory {
 
             return intRegVal;
         } catch (NumberFormatException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " Error while parsing input");
             return -1;
         }

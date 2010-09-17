@@ -48,8 +48,8 @@ public abstract class AbstractInstructionTest {
         emu.emuConfig = ConfigController.loadFromXML(new File(Constants.DEFAULT_CONFIG_XML));
         emu.moduleConfig = emu.emuConfig.getArchitecture().getModules();
         emu.setupEmu();
-        mem = (Memory)emu.getModules().getModule("memory");
-        cpu = (CPU)emu.getModules().getModule("cpu");
+        mem = (Memory)emu.getModule("memory");
+        cpu = (CPU)emu.getModule("cpu");
         cpu.setDebugMode(true);
 
         // load the assembly test in an InputStream

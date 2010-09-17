@@ -99,11 +99,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     // Constants
 
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "memory";
-    public final static String MODULE_NAME = "RAM";
-
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
     private int ramSize = 1 * BYTES_IN_MB; // initial value defined in bytes (1
@@ -148,22 +143,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
         watchValue = false;
         watchAddress = -1;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of the module
-     *
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -181,7 +166,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
             setByte(i, (byte) 0xFF);
 
         logger
-                .log(Level.SEVERE, "[" + MODULE_TYPE
+                .log(Level.SEVERE, "[" + super.getType()
                         + "] Module has been reset.");
         return true;
     }
@@ -294,7 +279,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
             try {
                 this.setBytes(address, value);
             } catch (ModuleException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] setData: data not set. " + e.getMessage());
                 return false;
             }
@@ -346,7 +331,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
             }
             dump += ret;
         }
-        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] GetDump()");
+        logger.log(Level.SEVERE, "[" + super.getType() + "] GetDump()");
         return dump;
     }
 
@@ -370,7 +355,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // Mask 20th address bit
         address &= A20mask;
 
-        // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " getByte(" +
+        // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " getByte(" +
         // address + ")");
 
         // Determine which block contains the address
@@ -388,12 +373,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
         try {
             // Watch certain memory address
             if (watchValue == true && address == watchAddress) {
-                // logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] " +
+                // logger.log(Level.CONFIG, "[" + super.getType() + "] " +
                 // cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) +
                 // " Watched BYTE at address " + watchAddress + " is read: [" +
                 // Integer.toHexString(ram[address]).toUpperCase() + "]");
 
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
                         + " is read: ["
@@ -407,7 +392,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 return addrValue;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFF");
             // Out of range, return default value
             return (byte) 0xFF;
@@ -429,7 +414,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
 
-        // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " setByte(" +
+        // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setByte(" +
         // address + ", " + value + ")");
 
         // Mask 20th address bit
@@ -441,7 +426,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         try {
             // Watch certain memory address
             if (watchValue == true && address == watchAddress) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
                         + " is written: ["
@@ -472,7 +457,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 ram[addressBlock][address & (ramBlockSize - 1)] = value;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] setByte: setByte: Out of memory during write byte");
         }
     }
@@ -498,7 +483,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // Mask 20th address bit
         address &= A20mask;
 
-        // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " getWord(" +
+        // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " getWord(" +
         // address + ")");
 
         // Determine which block contains the address
@@ -524,7 +509,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
             // Watch certain memory address
             if (watchValue == true
                     && (address == watchAddress || address + 1 == watchAddress)) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched WORD at address " + watchAddress
                         + " is read: ["
@@ -542,7 +527,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 return new byte[] { addrValue2, addrValue1 };
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFFFF");
             // Out of range, return default value
             return new byte[] { (byte) 0xFF, (byte) 0xFF };
@@ -570,14 +555,14 @@ public class DynamicAllocationMemory extends ModuleMemory {
         int addressBlock1 = address >> blockIndex;
         int addressBlock2 = (address + 1) >> blockIndex;
 
-        // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " setWord(" +
+        // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setWord(" +
         // address + ")");
 
         try {
             // Watch certain memory address
             if (watchValue == true
                     && (address == watchAddress || address + 1 == watchAddress)) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched WORD at address " + watchAddress
                         + " is written: ["
@@ -619,7 +604,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 ram[addressBlock2][(address + 1) & (ramBlockSize - 1)] = value[0];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] setWord: Out of memory during write word");
         }
     }
@@ -633,7 +618,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public void setBytes(int address, byte[] binaryStream)
             throws ModuleException {
-        // logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + " setBytes(" +
+        // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setBytes(" +
         // address + ")");
 
         // Compute total length of stream
@@ -659,9 +644,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 ram[addressBlock][(address + b) & (ramBlockSize - 1)] = binaryStream[b];
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] setBytes: Out of memory during write stream of bytes");
-            throw new ModuleException("[" + MODULE_TYPE
+            throw new ModuleException("[" + super.getType()
                     + "] setBytes: Out of memory at byte " + e.getMessage());
         }
     }
@@ -680,7 +665,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
             // Disable 0x100000 address bit (memory wrapping is turned on)
             A20mask = 0xFFEFFFFF;
         }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " A20 address line status: " + status + " A20mask: [0x"
                 + Long.toHexString(A20mask) + "]");
     }
@@ -714,7 +699,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
         A20mask = 0xFFEFFFFF; // Clear 20th address bit (wrap memory address)
 
-        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                 + " setting ram size to: " + ramSizeMB + "Mb, ramSize = "
                 + ramSize + ", blocks = " + ramBlock + ", block size = "
                 + ramBlockSize);
@@ -743,7 +728,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
             return intRegVal;
         } catch (NumberFormatException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " Error while parsing input");
             return -1;
         }

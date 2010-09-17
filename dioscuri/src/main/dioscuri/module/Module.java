@@ -173,7 +173,7 @@ public abstract class Module {
      * @return string with the name of this module
      *
      */
-    public abstract String getName();
+    //public abstract String getName();
 
     /**
      * Returns a String[] with all names of modules it needs to be connected to

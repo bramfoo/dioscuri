@@ -94,15 +94,7 @@ public class Motherboard extends ModuleMotherboard {
                                           // signed/unsigned
 
     // Logging
-    private static final Logger logger = Logger.getLogger(Motherboard.class
-            .getPackage().getName());
-
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "motherboard";
-    public final static String MODULE_NAME = "General x86 motherboard";
+    private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
 
     // Memory size
     public final static int IOSPACE_ISA_SIZE = 1024; // ISA: 1024 (2^10) spaces,
@@ -132,22 +124,12 @@ public class Motherboard extends ModuleMotherboard {
         // Create new empty I/O address space
         ioAddressSpace = new ModuleDevice[ioSpaceSize];
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName()
                 + " -> Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -167,7 +149,7 @@ public class Motherboard extends ModuleMotherboard {
         // Disable memory wrapping for BIOS mem check
         A20Enabled = true;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + "  Module has been reset.");
 
         return true;
@@ -296,7 +278,7 @@ public class Motherboard extends ModuleMotherboard {
                 dump += "0x"
                         + Integer.toHexString(0x10000 | port & 0x0FFFF)
                                 .substring(1).toUpperCase() + tab + ": "
-                        + ioAddressSpace[port].getName() + " ("
+                        + ioAddressSpace[port].getType().toString() + " ("
                         + ioAddressSpace[port].getType() + ")" + ret;
             }
         }
@@ -380,7 +362,7 @@ public class Motherboard extends ModuleMotherboard {
         }
 
         // Print warning
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + "  I/O address space: Registration for " + device.getType()
                 + " failed. I/O port address already registered by "
                 + ioAddressSpace[portAddress].getType());
@@ -404,19 +386,19 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.INFO, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getByte) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -436,14 +418,14 @@ public class Motherboard extends ModuleMotherboard {
             throws ModuleException {
         // Check for Bochs BIOS ports first:
         if (portAddress == 0x400 || portAddress == 0x401) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " Problem occurred in ROM BIOS at line: " + dataByte);
             return;
         } else if (portAddress == 0x402 || portAddress == 0x403) {
             try {
                 logger.log(Level.WARNING,
                         "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " I/O port (0x"
                                 + Integer.toHexString(portAddress)
@@ -452,14 +434,14 @@ public class Motherboard extends ModuleMotherboard {
                                 + new String(new byte[] { (byte) dataByte },
                                         "US-ASCII"));
             } catch (Exception e) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " I/O port (0x"
                         + Integer.toHexString(portAddress).toUpperCase()
                         + "): " + new String(new byte[] { (byte) dataByte }));
             }
             return;
         } else if (portAddress == 0x8900) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " I/O port (0x"
+            logger.log(Level.WARNING, "[" + super.getType() + "]" + " I/O port (0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + "): attempting to shutdown.");
             return;
@@ -477,7 +459,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.INFO, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -486,7 +468,7 @@ public class Motherboard extends ModuleMotherboard {
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
         } else {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + "  Requested I/O port (0x"
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ", setByte) is not available/registered.");
@@ -515,19 +497,19 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.WARNING, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -557,7 +539,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -594,7 +576,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -602,12 +584,12 @@ public class Motherboard extends ModuleMotherboard {
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (ModuleWriteOnlyPortException e2) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
             }
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Requested I/O port 0x"
+        logger.log(Level.WARNING, "[" + super.getType() + "] Requested I/O port 0x"
                 + Integer.toHexString(portAddress)
                 + " (getDoubleWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
@@ -640,7 +622,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
@@ -680,7 +662,7 @@ public class Motherboard extends ModuleMotherboard {
                     .log(
                             Level.WARNING,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
         }
@@ -703,7 +685,7 @@ public class Motherboard extends ModuleMotherboard {
                     .log(
                             Level.WARNING,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
             return 0x1;

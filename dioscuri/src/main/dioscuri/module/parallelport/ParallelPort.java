@@ -98,11 +98,6 @@ public class ParallelPort extends ModuleParallelPort {
     private final static int STATUS_PORT2 = 0x279; // Read/Write port
     private final static int CONTROL_PORT2 = 0x27A; // Read/Write port
 
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "parallelport";
-    public final static String MODULE_NAME = "25-pin IEEE 1284 parallel port";
-
     // Constructor
 
     /**
@@ -117,23 +112,12 @@ public class ParallelPort extends ModuleParallelPort {
         isObserved = false;
         debugMode = false;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -154,7 +138,7 @@ public class ParallelPort extends ModuleParallelPort {
         motherboard.setIOPort(STATUS_PORT2, this);
         motherboard.setIOPort(CONTROL_PORT2, this);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
 
         return true;
 
@@ -314,40 +298,40 @@ public class ParallelPort extends ModuleParallelPort {
      */
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
             ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
         switch (portAddress) {
         // Return identical values to Bochs during BIOS boot:
         case (DATA_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'available'");
             return (byte) 0xAA;
 
         case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
         case (STATUS_PORT):
         case (STATUS_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 0x58");
             return 0x58;
 
             // Return identical values to Bochs during BIOS boot:
         case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'available'");
             return (byte) 0x0C;
 
         case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new ModuleUnknownPort("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
@@ -365,18 +349,18 @@ public class ParallelPort extends ModuleParallelPort {
      */
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
         switch (portAddress) {
         case (DATA_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(DATA_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
@@ -384,25 +368,25 @@ public class ParallelPort extends ModuleParallelPort {
         case (STATUS_PORT):
         case (STATUS_PORT2):
             // Do nothing
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT2).toUpperCase()
                     + " received, not handled");
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new ModuleUnknownPort("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }

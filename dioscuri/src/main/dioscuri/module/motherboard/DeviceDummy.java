@@ -72,15 +72,6 @@ public class DeviceDummy extends ModuleDevice {
     // Logging
     private static final Logger logger = Logger.getLogger(DeviceDummy.class.getName());
 
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 5000;
-    public final static String MODULE_TYPE = "dummy device";
-    public final static String MODULE_NAME = "Dummy Device";
-
-    // Constructor
-
     /**
      * Class constructor
      * 
@@ -94,16 +85,6 @@ public class DeviceDummy extends ModuleDevice {
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Reset all parameters of module
@@ -269,20 +250,20 @@ public class DeviceDummy extends ModuleDevice {
     public byte getIOPortByte(int portAddress) throws ModuleException {
         if (portAddress == 0x92) {
             ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Returned A20 value: "
                     + Boolean.toString(motherboard.getA20()));
             return (byte) (motherboard.getA20() ? (1 << 1) : 0);
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Returned default value 0xFF to AL");
 
         // Return dummy value 0xFF
@@ -299,16 +280,16 @@ public class DeviceDummy extends ModuleDevice {
             throws ModuleException {
         if (portAddress == 0x92) {
             ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Set A20 value: "
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " Set A20 value: "
                     + data);
             motherboard.setA20((data & 0x02) == 2 ? true : false);
             return;
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -321,19 +302,19 @@ public class DeviceDummy extends ModuleDevice {
             ModuleWriteOnlyPortException {
         if (portAddress == 0x92) {
             ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Returned A20 value");
             return (motherboard.getA20() ? new byte[] { 0x00, (byte) (1 << 1) }
                     : new byte[] { 0x00, 0x00 });
         }
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
@@ -344,16 +325,16 @@ public class DeviceDummy extends ModuleDevice {
             throws ModuleException {
         if (portAddress == 0x92) {
             ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Set A20 value");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " Set A20 value");
             motherboard.setA20((dataWord[1] & 0x02) == 2 ? true : false);
             return;
         }
 
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
@@ -364,10 +345,10 @@ public class DeviceDummy extends ModuleDevice {
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
@@ -377,7 +358,7 @@ public class DeviceDummy extends ModuleDevice {
 
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");

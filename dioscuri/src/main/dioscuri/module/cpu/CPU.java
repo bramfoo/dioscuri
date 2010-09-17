@@ -221,11 +221,6 @@ public class CPU extends ModuleCPU {
 
     // Constants
 
-    // Module specifics
-    private final static int MODULE_ID = 1;
-    private final static String MODULE_TYPE = "cpu";
-    private final static String MODULE_NAME = "8086 compatible CPU";
-
     // Operation modes
     private final static int REALADDRESS_MODE = 1;
     private final static int PROTECTED_MODE = 2;
@@ -321,22 +316,12 @@ public class CPU extends ModuleCPU {
         breakpointSet = false;
         waitMessageShown = false;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " Module created successfully.");
     }
 
     // ******************************************************************************
     // Module Methods
-
-    /**
-     * Returns the name of this module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
 
     /**
      * Resets all parameters of this module
@@ -369,7 +354,7 @@ public class CPU extends ModuleCPU {
         // Initialise extra variables
         stackSize = 0;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
@@ -398,7 +383,7 @@ public class CPU extends ModuleCPU {
                         // this.cpuInstructionDebug = true;
                         if (waitMessageShown == false) {
                             logger.log(Level.SEVERE, "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " Breakpoint set at "
                                     + Integer.toHexString(convertWordToInt(cs))
@@ -440,7 +425,7 @@ public class CPU extends ModuleCPU {
                     // and if instruction supports 32-bits
                     if (doubleWord == true) {
                         if (this.isSingleByte32BitSupported() == false) {
-                            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                            logger.log(Level.SEVERE, "[" + super.getType()
                                     + "] Instruction problem (opcode "
                                     + Integer.toHexString(codeByte)
                                     + "h): 32-bit not supported!");
@@ -467,7 +452,7 @@ public class CPU extends ModuleCPU {
                         }
                     }
                 } catch (CPU_DE_Exception e) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                    logger.log(Level.SEVERE, "[" + super.getType()
                             + "] Instruction problem (opcode "
                             + Integer.toHexString(codeByte) + "h): "
                             + e.getMessage());
@@ -488,7 +473,7 @@ public class CPU extends ModuleCPU {
                         // escapes
                         logger.log(Level.CONFIG, instrCount
                                 + "i["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "  ] $DEBUG$ 1"
                                 + dumpDebug(Integer.toHexString(codeByte2)
                                         .toUpperCase()
@@ -496,7 +481,7 @@ public class CPU extends ModuleCPU {
                     } else {
                         logger.log(Level.CONFIG, instrCount
                                 + "i["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "  ] $DEBUG$ "
                                 + dumpDebug(Integer.toHexString(codeByte)
                                         .toUpperCase()
@@ -553,7 +538,7 @@ public class CPU extends ModuleCPU {
                             }
                         }
                     } catch (CPU_DE_Exception e) {
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                        logger.log(Level.SEVERE, "[" + super.getType()
                                 + "] Instruction problem (opcode "
                                 + Integer.toHexString(codeByte) + "h): "
                                 + e.getMessage());
@@ -566,17 +551,17 @@ public class CPU extends ModuleCPU {
 
                 }
 
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Execution stopped");
 
                 // Measure total execution time and print to standard output
                 float diffTime = System.currentTimeMillis() - startTime;
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Total execution time: " + diffTime / 1000 + " s");
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Number of instructions executed: "
                         + instructionCounter);
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Performance: "
+                logger.log(Level.SEVERE, "[" + super.getType() + "] Performance: "
                         + instructionCounter / (diffTime / 1000)
                         + " instr/sec ( "
                         + (float) (instructionCounter / (diffTime / 1000))
@@ -585,7 +570,7 @@ public class CPU extends ModuleCPU {
         } catch (ArrayIndexOutOfBoundsException e1) {
             isRunning = false;
             abnormalTermination = true;
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE
+            logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Instruction failure at instruction "
                     + instructionCounter + " (opcode "
                     + Integer.toHexString(codeByte)
@@ -595,14 +580,14 @@ public class CPU extends ModuleCPU {
             abnormalTermination = true;
             if (codeByte == 0x0F) {
                 // Show the 2nd byte of the opcode here for 2-byte escapes
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Instruction failure at instruction "
                         + instructionCounter + " (opcode "
                         + Integer.toHexString(codeByte) + " "
                         + Integer.toHexString(codeByte2) + "h): "
                         + e2.getMessage());
             } else {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Instruction failure at instruction "
                         + instructionCounter + " (opcode "
                         + Integer.toHexString(codeByte) + "h): "
@@ -714,7 +699,7 @@ public class CPU extends ModuleCPU {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "] Data not set. Unable to change register value.");
                     return false;
                 }
@@ -723,7 +708,7 @@ public class CPU extends ModuleCPU {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] Data not set. Wrong number of arguments supplied.");
                 return false;
             }
@@ -930,7 +915,7 @@ public class CPU extends ModuleCPU {
                     .indexOf("@"));
             dump += instruct + ret;
         } catch (ModuleException e) {
-            logger.log(Level.SEVERE, MODULE_TYPE + " -> Module exception: "
+            logger.log(Level.SEVERE, super.getType() + " -> Module exception: "
                     + e.getMessage());
             dump += "Failed to retrieve memory information";
         }
@@ -1137,7 +1122,7 @@ public class CPU extends ModuleCPU {
         }
 
         catch (ModuleException e) {
-            logger.log(Level.SEVERE, MODULE_TYPE + " -> Module exception: "
+            logger.log(Level.SEVERE, super.getType() + " -> Module exception: "
                     + e.getMessage());
             dump += "Failed to retrieve memory information";
         }
@@ -1357,7 +1342,7 @@ public class CPU extends ModuleCPU {
         // executed on NEXT instruction boundary.
         // Also check if interrupt flag is enabled
         if (irqPending && irqWaited && flags[REGISTER_FLAGS_IF]) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " handleAsyncEvent: priority 5 - async int");
             // Handle IRQ; irqWaited has ensured this interrupt is executed one
             // instruction after it was generated
@@ -1374,7 +1359,7 @@ public class CPU extends ModuleCPU {
 
         // DMA
         if (holdReQuest) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
             if (hRQorigin.getType() == Type.DMA) {
@@ -1412,7 +1397,7 @@ public class CPU extends ModuleCPU {
     public void setIPS(int ips) {
         this.ips = ips;
         ipus = this.ips / 1000000;
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] IPS set to " + this.ips
+        logger.log(Level.INFO, "[" + super.getType() + "] IPS set to " + this.ips
                 + " (" + (((double) this.ips) / 1000000) + " Mhz)");
     }
 
@@ -1427,7 +1412,7 @@ public class CPU extends ModuleCPU {
         this.ips = ips;
         this.lowestUpdatePeriod = lowestUpdatePeriod;
         ipus = this.ips / 1000000;
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] IPS set to " + this.ips
+        logger.log(Level.INFO, "[" + super.getType() + "] IPS set to " + this.ips
                 + " (" + (((double) this.ips) / 1000000) + " Mhz)");
     }
 
@@ -3748,7 +3733,7 @@ public class CPU extends ModuleCPU {
                     .indexOf("@"));
             dump += instruct;
         } catch (ModuleException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Module exception: "
+            logger.log(Level.SEVERE, "[" + super.getType() + "] Module exception: "
                     + e.getMessage());
             dump += "Failed to retrieve memory information";
         }
@@ -3970,7 +3955,7 @@ public class CPU extends ModuleCPU {
         case 0xD1: // ShiftGRP2_Ev1 (SHL, SHR, SAR only)
         case 0xD3: // UnaryGRP2_EvCL (SHL, SHR only)
         case 0xC1: // ShiftGRP2_EvIb (SHL, SHR only)
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Instruction problem (opcode "
                     + Integer.toHexString(codeByte) + "h, at "
                     + Integer.toHexString(convertWordToInt(cs)).toUpperCase()
@@ -4007,7 +3992,7 @@ public class CPU extends ModuleCPU {
 
             // Partly 32-bit support
             case 0x01: // 01 GRP7 (LGDT, SGDT only)
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] Instruction problem (opcode "
                         + Integer.toHexString(codeByte) + " "
                         + Integer.toHexString(codeByte2)
@@ -4117,7 +4102,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(segmentedCodeAddress);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return -1;
@@ -4137,7 +4122,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedCodeAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return -1;
@@ -4157,7 +4142,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedDataAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return -1;
@@ -4177,7 +4162,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedStackAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return -1;
@@ -4196,7 +4181,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getByte(this.getSegmentedExtraAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return -1;
@@ -4220,7 +4205,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(segmentedCodeAddress);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4238,7 +4223,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedCodeAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4258,7 +4243,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedDataAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4281,7 +4266,7 @@ public class CPU extends ModuleCPU {
 
             return word;
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4301,7 +4286,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedStackAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4321,7 +4306,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             return memory.getWord(this.getSegmentedExtraAddress(displacement));
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
         return null;
@@ -4365,7 +4350,7 @@ public class CPU extends ModuleCPU {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] Read byte: segment overriden with unknown segment");
             }
             return getByteFromCode(offset);
@@ -4422,7 +4407,7 @@ public class CPU extends ModuleCPU {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] Read word: segment overriden with unknown segment");
             }
             return getWordFromCode(offset);
@@ -4458,7 +4443,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedCodeAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4478,7 +4463,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedCodeAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4498,7 +4483,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedDataAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4517,7 +4502,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedDataAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4532,7 +4517,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedExtraAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4548,7 +4533,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedExtraAddress(displacement), word);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4564,7 +4549,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4581,7 +4566,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4604,7 +4589,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedStackAddress(), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4623,7 +4608,7 @@ public class CPU extends ModuleCPU {
             ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
             memory.setWord(this.getSegmentedStackAddress(displacement), value);
         } catch (ModuleException e) {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Module exception: " + e.getMessage());
         }
     }
@@ -4655,7 +4640,7 @@ public class CPU extends ModuleCPU {
             // Segment is overriden, check which one
             switch (segmentOverridePointer) {
             case 0: // SEG=CS
-            // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
+            // logger.log(Level.INFO, "[" + super.getType() + "]" +
             // " Writing to segment CS (may be dangerous!) [" +
             // instructionCounter + "]");
                 setByteToCode(disp, value);
@@ -4674,7 +4659,7 @@ public class CPU extends ModuleCPU {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] Write byte: segment overriden with unknown segment");
             }
         }
@@ -4720,7 +4705,7 @@ public class CPU extends ModuleCPU {
             // Segment is overriden, check which one
             switch (segmentOverridePointer) {
             case 0: // SEG=CS
-            // logger.log(Level.INFO, "[" + MODULE_TYPE +
+            // logger.log(Level.INFO, "[" + super.getType() +
             // "] Writing to segment CS (may be dangerous!) [" +
             // instructionCounter + "]");
                 setWordToCode(disp, value);
@@ -4739,7 +4724,7 @@ public class CPU extends ModuleCPU {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] Write word: segment overriden with unknown segment");
             }
         }
@@ -4795,7 +4780,7 @@ public class CPU extends ModuleCPU {
             return new byte[2];
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Addressbyte MM-bits do not match");
             return new byte[2];
         }
@@ -4843,7 +4828,7 @@ public class CPU extends ModuleCPU {
             return Util.addRegRegDisp(bx, new byte[2], displacement);
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Addressbyte SSS-bits do not match");
             return new byte[] { 0, 0 };
         }
@@ -4883,7 +4868,7 @@ public class CPU extends ModuleCPU {
                 return di;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Addressbyte RRR/SSS-bits do not match");
                 return new byte[2];
             }
@@ -4910,7 +4895,7 @@ public class CPU extends ModuleCPU {
                 return bx;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Addressbyte RRR/SSS-bits do not match");
                 return new byte[2];
             }
@@ -4947,7 +4932,7 @@ public class CPU extends ModuleCPU {
             return edi;
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Addressbyte RRR/SSS-bits do not match");
             return new byte[2];
         }
@@ -4984,7 +4969,7 @@ public class CPU extends ModuleCPU {
             return new byte[2];
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Addressbyte RRR/SSS-bits do not match");
             return new byte[2];
         }
@@ -5159,7 +5144,7 @@ public class CPU extends ModuleCPU {
 
         offset = vector * 4; // define offset from code segment (index * 4
                              // bytes); remember to take in account intOffset
-        // logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + "IRQ raised: 0x" +
+        // logger.log(Level.INFO, "[" + super.getType() + "] " + "IRQ raised: 0x" +
         // Integer.toHexString(vector).toUpperCase());
 
         ip[CPU.REGISTER_LOW] = tempIP[CPU.REGISTER_SEGMENT_LOW] = (byte) (offset & 0xFF);
@@ -5178,7 +5163,7 @@ public class CPU extends ModuleCPU {
         // Clear interrupt flag
         flags[REGISTER_FLAGS_IF] = false;
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE
+        logger.log(Level.CONFIG, "[" + super.getType()
                 + "] Handling IRQ: IDT at IP=0x"
                 + Util.convertWordToString(tempIP) + ", CS=0x"
                 + Util.convertWordToString(tempCS) + " and ISR at IP=0x"
