@@ -48,12 +48,15 @@ import java.util.logging.Logger;
 
 /**
  * Abstract class representing a generic hardware module.
- *
  */
 public abstract class Module {
 
-    private Logger logger = Logger.getLogger(getClass().getName());
+    // a logger object
+    private static Logger logger = Logger.getLogger(Module.class.getName());
 
+    /**
+     * The Type of a Module.
+     */
     public static enum Type {
         ATA,
         BIOS,
@@ -78,8 +81,15 @@ public abstract class Module {
         VIDEO
     }
 
+    /**
+     * the Type of this Module
+     */
     protected final Type type;
+
+    // maps the Type's and Module's this MOdule is supposed to be connected to
     private final Map<Type, Module> connections;
+
+    // flag to keep track of we're in debug mode or not
     private boolean debugMode;
 
     /**
@@ -112,9 +122,11 @@ public abstract class Module {
     }
 
     /**
+     * Get the Module with a given 'type' this Module is connected to.
      *
-     * @param type
-     * @return
+     * @param type the Module.Type.
+     * @return     the Module with a given 'type' this Module is connected to
+     *             or 'null' if no connected has been made (yet).
      */
     public final Module getConnection(Type type) {
         return connections.get(type);
@@ -137,8 +149,9 @@ public abstract class Module {
     public abstract String getDump();
 
     /**
-     * 
-     * @return
+     * Get all Module.Type's this Module is supposed to be connected to.
+     *
+     * @return an array of Module.Type's this Module is supposed to be connected to.
      */
     public final String[] getExpectedConnections() { // TODO return type: Module.Type[]
         List<String> temp = new ArrayList<String>();
@@ -178,7 +191,7 @@ public abstract class Module {
      *
      * @param module the other Module.
      * @return       true iff both Modules 'this' and 'module' are
-     *               properly connected to each other. 
+     *               properly connected to each other.
      */
     public final boolean setConnection(Module module) { // TODO make final
         if(module == null) {
