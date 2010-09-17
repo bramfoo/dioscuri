@@ -133,21 +133,14 @@ import dioscuri.module.cpu32.HardwareComponent;
  *      300 Kb/S mode (MFM) = 10 250 Kb/S mode (MFM) = 11 1 Mb/S mode (MFM) (on
  *      82072/82077AA) conflict bit 0 FIXED DISK drive 0 select
  */
-@SuppressWarnings("unused")
 public class FDC extends ModuleFDC implements DMATransferCapable {
 
-    // Attributes
+    // Logging
+    private static final Logger logger = Logger.getLogger(FDC.class.getName());
 
     // Relations
     private Emulator emu;
     private DMAController dma32;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(FDC.class.getName());
 
     // IRQ and DMA variables
     private int irqNumber; // Interrupt number assigned by PIC
@@ -378,10 +371,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public FDC(Emulator owner) {
         emu = owner;
-
-        // Initialise module variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise timing
         updateInterval = -1;
