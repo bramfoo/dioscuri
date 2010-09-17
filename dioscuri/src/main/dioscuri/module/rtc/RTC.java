@@ -81,8 +81,8 @@ public class RTC extends ModuleRTC {
     // Relations
     private Emulator emu;
     private String[] moduleConnections = new String[] { "motherboard", "pic" };
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
+    //private ModuleMotherboard motherboard;
+    //private ModulePIC pic;
 
     // Toggles
     private boolean isObserved;
@@ -164,40 +164,16 @@ public class RTC extends ModuleRTC {
     }
 
     /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType() == Type.MOTHERBOARD) { //.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for pic
-        else if (mod.getType() == Type.PIC) { //.equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-    
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+
         // Set current system time in CMOS, stored in BCD format
         // Need to cast calender value to same hex digits (e.g. 48d -> 48h)
         // This is done by taking the calender value as hex and casting it to
@@ -442,6 +418,7 @@ public class RTC extends ModuleRTC {
             if (lookupRegister == CMOS.STATUS_REGISTER_C) {
                 // Clear register C if read occurs
                 cmos.ram[CMOS.STATUS_REGISTER_C] = 0x00;
+                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
                 pic.clearIRQ(irqNumber);
             }
             return cmos.ram[lookupRegister];

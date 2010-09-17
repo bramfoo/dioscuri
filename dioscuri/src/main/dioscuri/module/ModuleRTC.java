@@ -47,7 +47,8 @@ package dioscuri.module;
 public abstract class ModuleRTC extends ModuleDevice implements Addressable {
 
     public ModuleRTC() {
-        super(Type.RTC);
+        super(Type.RTC,
+                Type.MOTHERBOARD, Type.PIC);
     }
 
     /**
