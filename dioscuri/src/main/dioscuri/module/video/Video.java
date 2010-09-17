@@ -86,10 +86,12 @@ public class Video extends ModuleVideo {
     private Emulator emu;
     private String[] moduleConnections = new String[]{"motherboard", "cpu",
             "screen", "rtc"};
+    /*
     private ModuleMotherboard motherboard;
     private ModuleCPU cpu;
     private ModuleScreen screen;
     private ModuleRTC rtc;
+    */
     private VideoCard videocard;
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
@@ -173,41 +175,16 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for video
-        if (mod.getType() == Type.MOTHERBOARD) {//.equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        if (mod.getType() == Type.CPU) {//.equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        } else if (mod.getType() == Type.SCREEN) {//.equals("screen")) {
-            this.screen = (ModuleScreen) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType() == Type.RTC) {//.equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      * Reset all parameters of module
      *
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+
         // Register I/O ports in I/O address space
         int ioAddress;
 
@@ -383,6 +360,7 @@ public class Video extends ModuleVideo {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -390,6 +368,9 @@ public class Video extends ModuleVideo {
      * Update device Refreshes the framebuffer and send redraw to screen
      */
     public void update() {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+
         int screenHeight;
         int screenWidth;
 
@@ -891,6 +872,9 @@ public class Video extends ModuleVideo {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+
         byte returnValue = 0; // Data returned from requested port
 
         // Ensure the correct ports are used for colour/monochrome mode
@@ -1224,6 +1208,9 @@ public class Video extends ModuleVideo {
      */
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+
         boolean needUpdate = false; // Determine if a screen refresh is needed
 
         // Check if correct ports are addressed while in monochrome / colour
@@ -1930,6 +1917,9 @@ public class Video extends ModuleVideo {
      *         characters exist
      */
     public String getVideoBufferCharacters() {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+
         int maxRows, maxCols, index;
         StringBuffer text;
 
@@ -2127,6 +2117,9 @@ public class Video extends ModuleVideo {
      * @param value
      */
     public void writeMode(int address, byte value) {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+
         int offset;
         byte newValue[] = new byte[4];
         int startAddress;
