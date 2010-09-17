@@ -79,13 +79,6 @@ public class Motherboard extends ModuleMotherboard {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections;
-    /*
-    private ModuleCPU cpu;
-    private ModuleMemory memory;
-    private ModuleClock clock; // Relation to internal clock (optional)
-    */
-    //private Devices devices; // Array of all peripheral devices
 
     // Toggles
     private boolean isObserved;
@@ -139,12 +132,6 @@ public class Motherboard extends ModuleMotherboard {
         // Create new empty I/O address space
         ioAddressSpace = new ModuleDevice[ioSpaceSize];
 
-        // Set module connections
-        if (!emu.isCpu32bit())
-            moduleConnections = new String[] { "cpu", "memory" };
-        else
-            moduleConnections = new String[] {};
-
         logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
                 + " -> Module created successfully.");
     }
@@ -160,17 +147,6 @@ public class Motherboard extends ModuleMotherboard {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**

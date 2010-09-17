@@ -82,16 +82,7 @@ public class Video extends ModuleVideo {
     // Attributes
 
     // Relations
-    @SuppressWarnings("unused")
     private Emulator emu;
-    private String[] moduleConnections = new String[]{"motherboard", "cpu",
-            "screen", "rtc"};
-    /*
-    private ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
-    private ModuleScreen screen;
-    private ModuleRTC rtc;
-    */
     private VideoCard videocard;
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
@@ -161,17 +152,6 @@ public class Video extends ModuleVideo {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**

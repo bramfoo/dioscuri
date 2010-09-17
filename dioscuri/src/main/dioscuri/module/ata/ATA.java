@@ -91,10 +91,9 @@ public class ATA extends ModuleATA {
 
     // Relations
     private Emulator emu;
-    // BRAM: Removed CPU connection, as it was unnecessary
-    private ModuleType[] moduleConnections = new ModuleType[] {
-            ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC };// ,
-                                                                     // ModuleType.CPU};
+
+    //private ModuleType[] moduleConnections = new ModuleType[] {
+    //        ModuleType.MOTHERBOARD, ModuleType.RTC, ModuleType.PIC };// , ModuleType.CPU};
 
     //private ModuleMotherboard motherboard;
     //private ModuleRTC rtc;
@@ -164,23 +163,6 @@ public class ATA extends ModuleATA {
      */
     public String getName() {
         return MODULE_TYPE;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-
-        String[] connectingModString = new String[moduleConnections.length];
-        for (int i = 0; i < moduleConnections.length; i++) {
-            connectingModString[i] = moduleConnections[i].toString();
-        }
-
-        // Return all required connections;
-        return connectingModString;
     }
 
     /**

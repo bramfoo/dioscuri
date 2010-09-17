@@ -86,10 +86,6 @@ public class Modules extends ArrayList<Module> {
                 return (Module) super.get(i);
             }
         }
-        System.out.println(">>> Couldn't find a :: "+type+"\n    in: ");
-        for(Module m : this) {
-            System.out.println("        "+m.getType());
-        }
         return null;
     }
 

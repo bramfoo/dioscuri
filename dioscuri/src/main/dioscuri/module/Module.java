@@ -115,7 +115,7 @@ public abstract class Module {
         return connections.get(t);
     }
 
-    public String[] getExpectedConnections() { // TODO return type: Module.Type[]
+    public final String[] getExpectedConnections() { // TODO return type: Module.Type[]
         List<String> temp = new ArrayList<String>();
         for(Type t : this.connections.keySet()) {
             temp.add(t.toString());

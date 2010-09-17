@@ -80,10 +80,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "video", "cpu", "motherboard" };
-    //private ModuleVideo video;
-    //private ModuleCPU cpu;
-    //private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -167,17 +163,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**

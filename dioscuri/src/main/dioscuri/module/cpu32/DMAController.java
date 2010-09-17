@@ -790,13 +790,6 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     @Override
-    public String[] getExpectedConnections() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
-    }
-
-    @Override
     public byte[] getData(Module module) {
         // TODO Auto-generated method stub
         notImplemented();

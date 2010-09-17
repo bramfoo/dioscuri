@@ -140,14 +140,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections;
-    /*
-    private ModuleMotherboard motherboard;
-    private ModuleRTC rtc;
-    private ModulePIC pic;
-    private ModuleDMA dma;
-    private ModuleATA ata;
-    */
     private DMAController dma32;
 
     // Toggles
@@ -455,14 +447,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         statusRegister2 = 0;
         statusRegister3 = 0;
 
-        // Set module connections
-        if (!emu.isCpu32bit())
-            moduleConnections = new String[] { "motherboard", "rtc", "pic",
-                    "dma", "ata" };
-        else
-            moduleConnections = new String[] { "motherboard", "rtc", "pic",
-                    "ata" };
-
         logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
                 + " -> Module created successfully.");
     }
@@ -478,17 +462,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**

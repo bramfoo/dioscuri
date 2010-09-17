@@ -3163,11 +3163,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public String[] getExpectedConnections() {
-        return new String[] {};
-    }
-
-    @Override
     public byte[] getData(Module module) {
         // TODO Auto-generated method stub
         return null;

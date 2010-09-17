@@ -90,8 +90,6 @@ public class PCI extends ModuleDevice {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard" };
-    private ModuleMotherboard motherboard;
 
     // Toggles
     private boolean isObserved;
@@ -143,17 +141,6 @@ public class PCI extends ModuleDevice {
     }
 
     /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
      * Reset all parameters of module
      * 
      * @return boolean true if module has been reset successfully, false
@@ -162,6 +149,7 @@ public class PCI extends ModuleDevice {
     public boolean reset() {
         // Register I/O ports PORT 0CF8-0CFF - PCI Configuration Mechanism 1 and
         // 2 in I/O address space
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
         motherboard.setIOPort(PORT_PCI1_ADDRESS, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 1, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 2, this);

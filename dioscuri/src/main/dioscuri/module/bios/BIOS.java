@@ -75,17 +75,14 @@ public class BIOS extends ModuleBIOS {
     // Relations
     @SuppressWarnings("unused")
     private Emulator emu;
-    private String[] moduleConnections = new String[] {};
 
     // Toggles
     private boolean isObserved;
     private boolean debugMode;
 
     // BIOS ROM
-    private byte[] systemROM; // Contains the System BIOS, using signed bytes as
-                              // both signed/unsigned
+    private byte[] systemROM; // Contains the System BIOS, using signed bytes as both signed/unsigned
     private byte[] videoROM; // Contains the Video BIOS
-    @SuppressWarnings("unused")
     private byte[] optionalROM; // TODO: can contain optional BIOSes
 
     // Logging
@@ -139,17 +136,6 @@ public class BIOS extends ModuleBIOS {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // No connections to return;
-        return moduleConnections;
     }
 
     /**

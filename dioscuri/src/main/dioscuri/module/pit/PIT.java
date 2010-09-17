@@ -101,12 +101,6 @@ public class PIT extends ModulePIT {
 
     // Relations
     private Emulator emu;
-    // BRAM: Removed CPU connection, as it was unnecessary
-    private String[] moduleConnections = new String[] { "motherboard", "pic" };// ,
-                                                                               // "cpu"};
-    //protected ModuleMotherboard motherboard;
-    // private ModuleCPU cpu;
-    //protected ModulePIC pic;
     private Counter[] counters;
 
     // Toggles
@@ -186,17 +180,6 @@ public class PIT extends ModulePIT {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**

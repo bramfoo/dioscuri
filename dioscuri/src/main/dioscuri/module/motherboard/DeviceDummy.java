@@ -68,8 +68,6 @@ public class DeviceDummy extends ModuleDevice {
 
     // Relations
     private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard" };
-    //private ModuleMotherboard motherboard;
 
     // Logging
     private static final Logger logger = Logger.getLogger(DeviceDummy.class.getName());
@@ -89,7 +87,8 @@ public class DeviceDummy extends ModuleDevice {
      * @param owner
      */
     public DeviceDummy(Emulator owner) {
-        super(Type.DUMMY);
+        super(Type.DUMMY,
+                Type.MOTHERBOARD);
         emu = owner;
     }
 
@@ -104,17 +103,6 @@ public class DeviceDummy extends ModuleDevice {
      */
     public String getName() {
         return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getExpectedConnections() {
-        // Return all required connections;
-        return moduleConnections;
     }
 
     /**
