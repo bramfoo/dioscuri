@@ -3,8 +3,8 @@
     <architecture name="Von Neumann">
         <modules>
             <bios>
-                <sysbiosfilepath>C:\BK\IntelliJ\dioscuri_mouse\images\bios\BIOS-bochs-latest</sysbiosfilepath>
-                <vgabiosfilepath>C:\BK\IntelliJ\dioscuri_mouse\images\bios\VGABIOS-lgpl-latest</vgabiosfilepath>
+                <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>
+                <vgabiosfilepath>images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
                 <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
                 <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
                 <bootdrives>
@@ -29,7 +29,7 @@
                     <driveletter>A</driveletter>
                     <diskformat>1.44M</diskformat>
                     <writeprotected>false</writeprotected>
-                    <imagefilepath>C:\BK\IntelliJ\dioscuri_mouse\images\floppy\FreeDOS\fd_odin07_1440.ima</imagefilepath>
+                    <imagefilepath>images/floppy/FreeDOS/fd_odin07_1440.ima</imagefilepath>
                 </floppy>
             </fdc>
             <pit debug="false">
@@ -45,14 +45,14 @@
             <ata debug="false">
                 <updateintervalmicrosecs>100000</updateintervalmicrosecs>
                 <harddiskdrive>
-                    <enabled>true</enabled>
+                    <enabled>false</enabled>
                     <channelindex>0</channelindex>
                     <master>true</master>
                     <autodetectcylinders>true</autodetectcylinders>
                     <cylinders>0</cylinders>
                     <heads>4</heads>
                     <sectorspertrack>17</sectorspertrack>
-                    <imagefilepath>C:\BK\IntelliJ\dioscuri-redesign\images\dosgames.img</imagefilepath>
+                    <imagefilepath></imagefilepath>
                 </harddiskdrive>
             </ata>
             <video debug="false">
