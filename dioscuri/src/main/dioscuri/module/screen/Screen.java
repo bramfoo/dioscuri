@@ -75,7 +75,7 @@ public class Screen extends ModuleScreen {
     private Emulator emu;
     private String[] moduleConnections = new String[] { "video" };
     private ScreenPanel screenPanel;
-    protected ModuleVideo video;
+    //protected ModuleVideo video;
 
     // Toggles
     private boolean isObserved;
@@ -222,24 +222,6 @@ public class Screen extends ModuleScreen {
     public String[] getConnection() {
         // Return all required connections;
         return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for video
-        if (mod.getType() == Type.VIDEO) { //.equalsIgnoreCase("video")) {
-            this.video = (ModuleVideo) mod;
-            return true;
-        }
-        return false;
     }
 
     /**
@@ -534,6 +516,7 @@ public class Screen extends ModuleScreen {
     public void updateCodePage(int start) {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
         System.arraycopy(codePage, 0, video.getVideoBuffer(), start, 0x2000);
 
         // Set codePage and and all codePage indices to require update
@@ -544,6 +527,9 @@ public class Screen extends ModuleScreen {
     // BK TODO fix the RasterFormatException properly
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+
         logger.log(Level.INFO, String.format(
                 "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 
                 oldText, newText, cursorXPos, cursorYPos, Arrays.toString(textModeAttribs), numberRows));

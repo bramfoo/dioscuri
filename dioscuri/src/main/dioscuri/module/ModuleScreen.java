@@ -50,7 +50,8 @@ import javax.swing.JPanel;
 public abstract class ModuleScreen extends Module {
 
     public ModuleScreen() {
-        super(Type.SCREEN); // TODO
+        super(Type.SCREEN,
+                Type.VIDEO); 
     }
 
     /**
