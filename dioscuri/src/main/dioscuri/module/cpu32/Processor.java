@@ -3163,21 +3163,9 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public boolean getDebugMode() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
     public String getDump() {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    @Override
-    public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override

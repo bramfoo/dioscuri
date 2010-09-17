@@ -790,23 +790,10 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
     }
 
     @Override
-    public boolean getDebugMode() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return false;
-    }
-
-    @Override
     public String getDump() {
         // TODO Auto-generated method stub
         notImplemented();
         return null;
-    }
-
-    @Override
-    public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-        notImplemented();
     }
 
     @Override

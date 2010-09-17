@@ -606,28 +606,6 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
      * Displays all registers and their values, text acronyms for flags, CS:IP
      * value, next three bytes of memory and the associated instruction
      * 

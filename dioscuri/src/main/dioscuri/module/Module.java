@@ -115,6 +115,15 @@ public abstract class Module {
         return connections.get(t);
     }
 
+    /**
+     * Returns the state of debug mode
+     *
+     * @return true if this module is in debug mode, false otherwise
+     */
+    public final boolean getDebugMode() {
+        return this.debugMode;
+    }
+
     public final String[] getExpectedConnections() { // TODO return type: Module.Type[]
         List<String> temp = new ArrayList<String>();
         for(Type t : this.connections.keySet()) {
@@ -154,6 +163,15 @@ public abstract class Module {
         connections.put(m.type, m);
         m.connections.put(type, this);
         return true;
+    }
+
+    /**
+     * Set toggle to define if this module is in debug mode or not
+     *
+     * @param status
+     */
+    public final void setDebugMode(boolean status) {
+        this.debugMode = status;
     }
 
     // TODO :: OLD METHODS BELOW
@@ -213,19 +231,9 @@ public abstract class Module {
      */
     public abstract void stop();
 
-    /**
-     * Returns the state of debug mode
-     *
-     * @return true if this module is in debug mode, false otherwise
-     */
-    public abstract boolean getDebugMode();
 
-    /**
-     * Set toggle to define if this module is in debug mode or not
-     *
-     * @param status
-     */
-    public abstract void setDebugMode(boolean status);
+
+
 
     /**
      * Return a dump of module status
