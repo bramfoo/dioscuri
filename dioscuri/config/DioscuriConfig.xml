@@ -8,7 +8,7 @@
                 <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
                 <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
                 <bootdrives>
-                    <bootdrive0>Hard Drive</bootdrive0>
+                    <bootdrive0>Floppy Drive</bootdrive0>
                     <bootdrive1>None</bootdrive1>
                     <bootdrive2>None</bootdrive2>
                 </bootdrives>
