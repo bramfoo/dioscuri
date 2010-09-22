@@ -39,6 +39,8 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+
 /**
  * Interface representing a generic hardware module.
  * 

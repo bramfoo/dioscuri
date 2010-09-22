@@ -39,12 +39,15 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Updateable;
+
 /**
  * Interface representing a generic hardware module.
  * 
  */
 
-public abstract class ModuleVideo extends ModuleDevice implements Addressable, Updateable  {
+public abstract class ModuleVideo extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleVideo() {
         super(Type.VIDEO,

@@ -1,4 +1,4 @@
-package dioscuri.module;
+package dioscuri.interfaces;
 
 public interface Updateable {
 

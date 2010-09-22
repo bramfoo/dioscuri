@@ -41,6 +41,7 @@ package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.interfaces.Addressable;
 
 /**
  * Interface representing a generic hardware module.

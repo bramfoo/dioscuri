@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
+import dioscuri.interfaces.Addressable;
 
 /**
  * Interface representing a generic hardware module.

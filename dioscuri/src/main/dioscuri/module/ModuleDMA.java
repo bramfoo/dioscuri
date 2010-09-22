@@ -39,6 +39,7 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
 import dioscuri.module.dma.DMA16Handler;
 import dioscuri.module.dma.DMA8Handler;
 

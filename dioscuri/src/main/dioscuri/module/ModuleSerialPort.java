@@ -39,7 +39,9 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.UART;
+import dioscuri.interfaces.Updateable;
 
 /**
  * Interface representing a generic hardware module.

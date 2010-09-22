@@ -39,6 +39,8 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.ata.ATATranslationType;
 
 /**

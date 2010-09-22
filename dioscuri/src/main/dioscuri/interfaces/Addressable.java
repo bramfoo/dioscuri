@@ -1,4 +1,4 @@
-package dioscuri.module;
+package dioscuri.interfaces;
 
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
