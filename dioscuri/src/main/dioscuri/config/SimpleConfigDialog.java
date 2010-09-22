@@ -91,15 +91,14 @@ public class SimpleConfigDialog extends ConfigurationDialog {
         emuConfig = parent.getEmuConfig();
         Integer updateInt = 0;
 
-        if (moduleType.equals(ModuleType.PIT)) {
-            updateInt = emuConfig.getArchitecture().getModules().getPit()
-                    .getClockrate().intValue();
-        } else if (moduleType.equals(ModuleType.KEYBOARD)) {
-            updateInt = emuConfig.getArchitecture().getModules().getKeyboard()
-                    .getUpdateintervalmicrosecs().intValue();
-        } else if (moduleType.equals(ModuleType.VGA)) {
-            updateInt = emuConfig.getArchitecture().getModules().getVideo()
-                    .getUpdateintervalmicrosecs().intValue();
+        if (moduleType == Module.Type.PIT) {
+            updateInt = emuConfig.getArchitecture().getModules().getPit().getClockrate().intValue();
+        }
+        else if (moduleType == Module.Type.KEYBOARD) {
+            updateInt = emuConfig.getArchitecture().getModules().getKeyboard().getUpdateintervalmicrosecs().intValue();
+        }
+        else if (moduleType == Module.Type.VIDEO) {
+            updateInt = emuConfig.getArchitecture().getModules().getVideo().getUpdateintervalmicrosecs().intValue();
         }
 
         this.updateIntField.setValue(updateInt);
@@ -159,20 +158,17 @@ public class SimpleConfigDialog extends ConfigurationDialog {
     @Override
     protected Emulator getParamsFromGui() {
 
-        if (moduleType.equals(ModuleType.PIT)) {
+        if (moduleType == Module.Type.PIT) {
             emuConfig.getArchitecture().getModules().getPit().setClockrate(
-                    BigInteger.valueOf(((Number) updateIntField.getValue())
-                            .intValue()));
-        } else if (moduleType.equals(ModuleType.KEYBOARD)) {
+                    BigInteger.valueOf(((Number) updateIntField.getValue()).intValue()));
+        }
+        else if (moduleType == Module.Type.KEYBOARD) {
             emuConfig.getArchitecture().getModules().getKeyboard()
-                    .setUpdateintervalmicrosecs(
-                            BigInteger.valueOf(((Number) updateIntField
-                                    .getValue()).intValue()));
-        } else if (moduleType.equals(ModuleType.VGA)) {
+                    .setUpdateintervalmicrosecs(BigInteger.valueOf(((Number)updateIntField.getValue()).intValue()));
+        }
+        else if (moduleType == Module.Type.VIDEO) {
             emuConfig.getArchitecture().getModules().getVideo()
-                    .setUpdateintervalmicrosecs(
-                            BigInteger.valueOf(((Number) updateIntField
-                                    .getValue()).intValue()));
+                    .setUpdateintervalmicrosecs(BigInteger.valueOf(((Number)updateIntField.getValue()).intValue()));
         }
 
         return emuConfig;
