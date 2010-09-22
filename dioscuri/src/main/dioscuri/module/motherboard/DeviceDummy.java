@@ -60,14 +60,7 @@ import dioscuri.module.ModuleMotherboard;
  * @see Module
  * 
  */
-@SuppressWarnings("unused")
 public class DeviceDummy extends ModuleDevice {
-    // Attributes
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // Relations
-    private Emulator emu;
 
     // Logging
     private static final Logger logger = Logger.getLogger(DeviceDummy.class.getName());
@@ -80,18 +73,12 @@ public class DeviceDummy extends ModuleDevice {
     public DeviceDummy(Emulator owner) {
         super(Type.DUMMY,
                 Type.MOTHERBOARD);
-        emu = owner;
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Register I/O ports in I/O address space
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -105,19 +92,12 @@ public class DeviceDummy extends ModuleDevice {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
-        // TODO Auto-generated method stub
-        return null;
+        return "Dummy dump";
     }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
 
     /**
      * Retrieve the interval between subsequent updates
@@ -136,10 +116,11 @@ public class DeviceDummy extends ModuleDevice {
     }
 
     /**
-     * Update device
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void update() {
+        // ignore
     }
 
     /**
@@ -195,9 +176,6 @@ public class DeviceDummy extends ModuleDevice {
                 + " OUT command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
@@ -240,9 +218,6 @@ public class DeviceDummy extends ModuleDevice {
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
@@ -264,9 +239,6 @@ public class DeviceDummy extends ModuleDevice {
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
 }

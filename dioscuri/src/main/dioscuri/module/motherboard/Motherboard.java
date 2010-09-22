@@ -75,14 +75,10 @@ import dioscuri.module.ModuleMotherboard;
  */
 public class Motherboard extends ModuleMotherboard {
 
-    // Attributes
-
     // Relations
     private Emulator emu;
 
     // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
     private boolean A20Enabled; // A20 address line: True = memory wrapping
                                 // turned off
 
@@ -113,10 +109,6 @@ public class Motherboard extends ModuleMotherboard {
     public Motherboard(Emulator owner) {
         emu = owner;
 
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
         // Initialise configuration parameters
         // TODO: parameters should be defined based on configuration in the ESD
         ioSpaceSize = IOSPACE_EISA_SIZE;
@@ -124,19 +116,13 @@ public class Motherboard extends ModuleMotherboard {
         // Create new empty I/O address space
         ioAddressSpace = new ModuleDevice[ioSpaceSize];
 
-        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName()
-                + " -> Module created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName() + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // FIXME: Reset I/O address space: set all ports to null
         // Doing this in 32-bit mode resets all ports _after_ they have been
@@ -156,12 +142,9 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";
