@@ -48,7 +48,6 @@ import dioscuri.module.Module;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
 public class Modules extends ArrayList<Module> {
     // Attributes
 
@@ -75,15 +74,20 @@ public class Modules extends ArrayList<Module> {
         return super.add(module);
     }
 
-    /**
-     *
-     * @param type
-     * @return -
-     */
+    @Deprecated
     public Module getModule(String type) {
         for (int i = 0; i < super.size(); i++) {
             if ((this.getModule(i)).getType().toString().equalsIgnoreCase(type)) {
                 return (Module) super.get(i);
+            }
+        }
+        return null;
+    }
+
+    public Module getModule(Module.Type type) {
+        for (int i = 0; i < super.size(); i++) {
+            if (this.getModule(i).getType() == type) {
+                return super.get(i);
             }
         }
         return null;
