@@ -46,6 +46,7 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Bios;
+import dioscuri.module.Module;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;
@@ -79,7 +80,7 @@ public class BiosConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public BiosConfigDialog(GUI parent) {
-        super(parent, "BIOS Configuration", false, ModuleType.BIOS);
+        super(parent, "BIOS Configuration", false, Module.Type.BIOS);
     }
 
     /**

@@ -49,7 +49,6 @@ import dioscuri.module.Module;
  * @author Bart Kiers
  */
 public class Modules extends ArrayList<Module> {
-    // Attributes
 
     // Constructors
     public Modules() {

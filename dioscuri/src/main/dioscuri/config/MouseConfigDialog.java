@@ -60,6 +60,7 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Mouse;
+import dioscuri.module.Module;
 
 /**
  *
@@ -82,7 +83,7 @@ public class MouseConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public MouseConfigDialog(GUI parent) {
-        super(parent, "Mouse Configuration", false, ModuleType.MOUSE);
+        super(parent, "Mouse Configuration", false, Module.Type.MOUSE);
     }
 
     // Methods

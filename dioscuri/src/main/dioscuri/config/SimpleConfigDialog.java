@@ -58,6 +58,7 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 
 import dioscuri.GUI;
+import dioscuri.module.Module;
 
 /**
  *
@@ -76,7 +77,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
      * @param parent -
      * @param moduleType -
      */
-    public SimpleConfigDialog(GUI parent, ModuleType moduleType) {
+    public SimpleConfigDialog(GUI parent, Module.Type moduleType) {
         super(parent, moduleType.toString().toUpperCase() + " Configuration",
                 false, moduleType);
 
@@ -120,7 +121,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
     @Override
     protected void initMainEntryPanel() {
         String labelText = "  Update Int (microSecs)";
-        if (this.moduleType == ModuleType.PIT) {
+        if (this.moduleType == Module.Type.PIT) {
             labelText = "  Clock Rate";
         }
         JLabel updateIntLabel = new JLabel(labelText);

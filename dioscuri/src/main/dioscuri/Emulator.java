@@ -379,6 +379,7 @@ public class Emulator implements Runnable {
 
             // Check if moduletype is given
             String[] moduleTypeArray = io.getArguments();
+            
             if (moduleTypeArray != null) {
                 String moduleType = moduleTypeArray[0];
 
@@ -515,6 +516,17 @@ public class Emulator implements Runnable {
     @Deprecated
     protected Module getModule(String moduleType) {
         return modules.getModule(moduleType);
+    }
+
+    /**
+     * Return reference to module from given type
+     *
+     * @param moduleType stating the type of the requested module
+     *
+     * @return Module requested module, or null if module does not exist
+     */
+    protected Module getModule(Module.Type type) {
+        return modules.getModule(type);
     }
 
     /**

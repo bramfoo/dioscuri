@@ -46,6 +46,7 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
+import dioscuri.module.Module;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;
@@ -81,7 +82,7 @@ public class AtaConfigDialog extends ConfigurationDialog {
      * @param parent the parent GUI
      */
     public AtaConfigDialog(GUI parent) {
-        super(parent, "ATA Configuration", false, ModuleType.ATA);
+        super(parent, "ATA Configuration", false, Module.Type.ATA);
 
     }
 

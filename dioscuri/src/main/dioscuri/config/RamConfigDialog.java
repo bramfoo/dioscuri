@@ -59,6 +59,7 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Memory;
+import dioscuri.module.Module;
 
 /**
  *
@@ -77,7 +78,7 @@ public class RamConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public RamConfigDialog(GUI parent) {
-        super(parent, "RAM Configuration", false, ModuleType.MEMORY);
+        super(parent, "RAM Configuration", false, Module.Type.MEMORY);
     }
 
     /**

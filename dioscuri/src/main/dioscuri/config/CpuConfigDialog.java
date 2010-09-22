@@ -61,14 +61,15 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Cpu;
+import dioscuri.module.Module;
 
 /**
  *
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
 public class CpuConfigDialog extends ConfigurationDialog {
+
     private JFormattedTextField speedField;
     private JRadioButton cpu32Button;
     private JRadioButton cpu16Button;
@@ -80,7 +81,7 @@ public class CpuConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public CpuConfigDialog(GUI parent) {
-        super(parent, "CPU Configuration", false, ModuleType.CPU);
+        super(parent, "CPU Configuration", false, Module.Type.CPU);
 
     }
 

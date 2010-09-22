@@ -57,6 +57,7 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
+import dioscuri.module.Module;
 
 /**
  *
@@ -78,7 +79,7 @@ public class BootConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public BootConfigDialog(GUI parent) {
-        super(parent, "Boot Configuration", false, ModuleType.BOOT);
+        super(parent, "Boot Configuration", false, Module.Type.BOOT);
     }
 
     /**

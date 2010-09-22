@@ -45,6 +45,7 @@
 package dioscuri.config;
 
 import dioscuri.GUI;
+import dioscuri.module.Module;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;
@@ -73,9 +74,10 @@ public abstract class ConfigurationDialog extends JDialog {
     protected int dialogYPosition;
     protected GUI parent;
     protected boolean isMainConfigScreen;
-    protected ModuleType moduleType;
+    protected Module.Type moduleType;
 
     /**
+     *
      *
      * @param parent -
      * @param title -
@@ -83,7 +85,7 @@ public abstract class ConfigurationDialog extends JDialog {
      * @param moduleType -
      */
     public ConfigurationDialog(GUI parent, String title,
-            boolean isMainConfigScreen, ModuleType moduleType) {
+            boolean isMainConfigScreen, Module.Type moduleType) {
         super(parent.asJFrame(), title, true);
         this.moduleType = moduleType;
 
@@ -173,7 +175,7 @@ public abstract class ConfigurationDialog extends JDialog {
         }
 
         if (moduleType != null
-                && (moduleType == ModuleType.ATA || moduleType == ModuleType.FDC)) {
+                && (moduleType == Module.Type.ATA || moduleType == Module.Type.FDC)) {
             if (selectedFile == null) {
                 JOptionPane.showMessageDialog(this,
                         "Error saving data - please browse for an image file.",

@@ -1,6 +1,7 @@
 package dioscuri;
 
 import dioscuri.config.ConfigController;
+import dioscuri.module.Module;
 import dioscuri.module.cpu.CPU;
 import dioscuri.module.memory.Memory;
 
@@ -48,8 +49,8 @@ public abstract class AbstractInstructionTest {
         emu.emuConfig = ConfigController.loadFromXML(new File(Constants.DEFAULT_CONFIG_XML));
         emu.moduleConfig = emu.emuConfig.getArchitecture().getModules();
         emu.setupEmu();
-        mem = (Memory)emu.getModule("memory");
-        cpu = (CPU)emu.getModule("cpu");
+        mem = (Memory)emu.getModule(Module.Type.MEMORY);
+        cpu = (CPU)emu.getModule(Module.Type.CPU);
         cpu.setDebugMode(true);
 
         // load the assembly test in an InputStream

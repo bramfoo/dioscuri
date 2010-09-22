@@ -59,6 +59,7 @@ public abstract class Module {
      */
     public static enum Type {
         ATA,
+        BOOT, // TODO: Really belongs here? Needed in config GUI...
         BIOS,
         CLOCK,
         CPU,

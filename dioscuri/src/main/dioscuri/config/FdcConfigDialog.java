@@ -46,6 +46,7 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
+import dioscuri.module.Module;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;
@@ -79,7 +80,7 @@ public class FdcConfigDialog extends ConfigurationDialog {
      * @param parent -
      */
     public FdcConfigDialog(GUI parent) {
-        super(parent, "FDC Configuration", false, ModuleType.FDC);
+        super(parent, "FDC Configuration", false, Module.Type.FDC);
     }
 
     /**
