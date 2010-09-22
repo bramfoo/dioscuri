@@ -133,7 +133,7 @@ public class Emulator implements Runnable {
     // Special case commands
     protected final static int CMD_MISMATCH = 0xFF; // command mismatch
 
-    // AbstractModule status
+    // Module status
     public final static int MODULE_FDC_TRANSFER_START = 0;
     public final static int MODULE_FDC_TRANSFER_STOP = 1;
     public static final int MODULE_ATA_HD1_TRANSFER_START = 2;
@@ -201,7 +201,7 @@ public class Emulator implements Runnable {
             }
             logger.log(Level.INFO, "[emu] Retrieved settings for modules");
 
-            // AbstractModule creation
+            // Module creation
             boolean success = setupEmu();
 
             // Initialise modules
@@ -385,12 +385,12 @@ public class Emulator implements Runnable {
                 String moduleType = moduleTypeArray[0];
 
                 // Show dump of one single module requested
-                AbstractModule mod = modules.getModule(moduleType);
+                Module mod = modules.getModule(Module.Type.resolveType(moduleType));
                 if (mod != null) {
                     // Show dump of module
                     logger.log(Level.INFO, mod.getDump());
                 } else {
-                    logger.log(Level.SEVERE, "[emu] AbstractModule not recognised.");
+                    logger.log(Level.SEVERE, "[emu] Module not recognised.");
                 }
             }
             break;
@@ -509,24 +509,12 @@ public class Emulator implements Runnable {
 
     /**
      * Return reference to module from given type
-     * 
-     * @param moduleType stating the type of the requested module
-     * 
-     * @return Module requested module, or null if module does not exist
-     */
-    @Deprecated
-    protected AbstractModule getModule(String moduleType) {
-        return modules.getModule(moduleType);
-    }
-
-    /**
-     * Return reference to module from given type
      *
-     * @param moduleType stating the type of the requested module
+     * @param type stating the type of the requested module
      *
      * @return Module requested module, or null if module does not exist
      */
-    protected AbstractModule getModule(AbstractModule.Type type) {
+    protected Module getModule(Module.Type type) {
         return modules.getModule(type);
     }
 
@@ -882,10 +870,10 @@ public class Emulator implements Runnable {
 
         boolean result = true;
 
-        AbstractModule mod1, mod2;
+        Module mod1, mod2;
         for (int i = 0; i < modules.size(); i++) {
             mod1 = modules.getModule(i);
-            String[] connections = mod1.getExpectedConnections();
+            Module.Type[] connections = mod1.getExpectedConnections();
             for (int c = 0; c < connections.length; c++) {
                 mod2 = modules.getModule(connections[c]);
                 if (mod2 != null) {
@@ -980,7 +968,7 @@ public class Emulator implements Runnable {
      * @param module
      * @return -
      */
-    public boolean setTimingParams(AbstractModule module) {
+    public boolean setTimingParams(Module module) {
         boolean result = true;
 
         // There are 3 types of timing: speed (cpu), clock rate (pit), update
@@ -1196,7 +1184,7 @@ public class Emulator implements Runnable {
                 result &= false;
             }
 
-            // AbstractModule BIOS: load Video BIOS in BIOS ROM
+            // Module BIOS: load Video BIOS in BIOS ROM
             try {
                 // Fetch System BIOS binaries from file system and store it in
                 // BIOS ROM
@@ -1234,7 +1222,7 @@ public class Emulator implements Runnable {
      * @return -
      */
     public boolean setFloppyParams() {
-        // AbstractModule FDC: set number of drives (max 4), insert floppy and set
+        // Module FDC: set number of drives (max 4), insert floppy and set
         // update interval
         ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
 

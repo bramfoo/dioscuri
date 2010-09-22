@@ -59,7 +59,6 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.interfaces.Module;
-import dioscuri.module.AbstractModule;
 
 /**
  *
@@ -78,7 +77,7 @@ public class SimpleConfigDialog extends ConfigurationDialog {
      * @param parent -
      * @param moduleType -
      */
-    public SimpleConfigDialog(GUI parent, AbstractModule.Type moduleType) {
+    public SimpleConfigDialog(GUI parent, Module.Type moduleType) {
         super(parent, moduleType.toString().toUpperCase() + " Configuration",
                 false, moduleType);
 

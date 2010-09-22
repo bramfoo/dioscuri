@@ -60,7 +60,6 @@ import javax.swing.border.Border;
 
 import dioscuri.DioscuriFrame;
 import dioscuri.interfaces.Module;
-import dioscuri.module.AbstractModule;
 
 /**
  *
@@ -117,7 +116,7 @@ public class SelectionConfigDialog extends ConfigurationDialog {
      */
     private void launchSpecificConfigDialog() {
 
-        AbstractModule.Type selectedModule = (AbstractModule.Type) modulesList.getSelectedValue();
+        Module.Type selectedModule = (Module.Type) modulesList.getSelectedValue();
 
         if (selectedModule == Module.Type.ATA) {
             new AtaConfigDialog(parent);

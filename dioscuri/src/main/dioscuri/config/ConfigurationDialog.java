@@ -46,7 +46,6 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.interfaces.Module;
-import dioscuri.module.AbstractModule;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;
@@ -60,7 +59,6 @@ import java.io.File;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
 public abstract class ConfigurationDialog extends JDialog {
 
     protected JPanel mainEntryPanel;
@@ -75,7 +73,7 @@ public abstract class ConfigurationDialog extends JDialog {
     protected int dialogYPosition;
     protected GUI parent;
     protected boolean isMainConfigScreen;
-    protected AbstractModule.Type moduleType;
+    protected Module.Type moduleType;
 
     /**
      *
@@ -85,8 +83,8 @@ public abstract class ConfigurationDialog extends JDialog {
      * @param isMainConfigScreen -
      * @param moduleType -
      */
-    public ConfigurationDialog(GUI parent, String title,
-            boolean isMainConfigScreen, AbstractModule.Type moduleType) {
+    public ConfigurationDialog(GUI parent, String title, boolean isMainConfigScreen, Module.Type moduleType) {
+        
         super(parent.asJFrame(), title, true);
         this.moduleType = moduleType;
 

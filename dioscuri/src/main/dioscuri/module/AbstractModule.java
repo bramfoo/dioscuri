@@ -130,12 +130,8 @@ public abstract class AbstractModule implements Module {
      * {@inheritDoc}
      */
     @Override
-    public final String[] getExpectedConnections() { // TODO return type: AbstractModule.Type[]
-        List<String> temp = new ArrayList<String>();
-        for(Type t : this.connections.keySet()) {
-            temp.add(t.toString());
-        }
-        return temp.toArray(new String[temp.size()]);
+    public final Type[] getExpectedConnections() {
+        return this.connections.keySet().toArray(new Type[this.connections.size()]);
     }
 
     /**

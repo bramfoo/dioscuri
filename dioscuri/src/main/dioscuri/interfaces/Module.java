@@ -5,11 +5,11 @@ import java.util.Map;
 public interface Module {
 
     /**
-     * The Type of a AbstractModule.
+     * The Type of a Module.
      */
     enum Type {
         ATA,
-        BOOT, // TODO: Really belongs here? Needed in config GUI...
+        BOOT,
         BIOS,
         CLOCK,
         CPU,
@@ -29,19 +29,36 @@ public interface Module {
         RTC,
         SCREEN,
         SERIALPORT,
-        VIDEO
+        VIDEO;
+
+        /**
+         * Returns the Type based on a given String.
+         *
+         * @param strType the String representation of the Type to be fetched.
+         * @return        the Type based on a given String, 'strType', or null if
+         *                'strType' is not present in the set of enums.
+         */
+        public static Type resolveType(String strType) {
+            try {
+                return Type.valueOf(strType.toUpperCase());
+            } catch(Exception e) {
+                return null;
+            }
+        }
     }
 
     /**
+     * Returns the Module of a certain Type connected to this Module.
      *
-     * @param type
-     * @return
+     * @param type the Type of the Module to be fetched.
+     * @return     the Module of a certain Type connected to this Module. 
      */
     Module getConnection(Type type);
 
     /**
+     * Returns all connected, or supposedly connected, Modules of this Module.
      *
-     * @return
+     * @return all connected, or supposedly connected, Modules of this Module.
      */
     Map<Type, Module> getConnections();
 
@@ -60,15 +77,16 @@ public interface Module {
     String getDump();
 
     /**
-     * Get all AbstractModule.Type's this AbstractModule is supposed to be connected to.
+     * Get all Module.Type's this AbstractModule is supposed to be connected to.
      *
-     * @return an array of AbstractModule.Type's this AbstractModule is supposed to be connected to.
+     * @return an array of Module.Type's this AbstractModule is supposed to be connected to.
      */
-    String[] getExpectedConnections(); // TODO return type: AbstractModule.Type[]
+    Type[] getExpectedConnections();
 
     /**
+     * Returns the Type of this Module.
      *
-     * @return
+     * @return the Type of this Module.
      */
     Module.Type getType();
 
