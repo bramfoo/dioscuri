@@ -71,19 +71,8 @@ import dioscuri.module.ModuleParallelPort;
  * 
  * 
  */
-
 // TODO: Class is (mostly) a stub to return requested values to the BIOS
-@SuppressWarnings("unused")
 public class ParallelPort extends ModuleParallelPort {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(ParallelPort.class.getName());
@@ -106,25 +95,14 @@ public class ParallelPort extends ModuleParallelPort {
      * @param owner
      */
     public ParallelPort(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -145,12 +123,9 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "Parallel port status:\n";
 

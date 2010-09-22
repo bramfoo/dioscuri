@@ -66,18 +66,10 @@ import java.util.logging.Logger;
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      screen.resolutionRange : unlimited screen.colorDepth : 256
  */
-@SuppressWarnings("unused")
 public class Screen extends ModuleScreen {
 
     // Attributes
-
-    // Relations
-    private Emulator emu;
     private ScreenPanel screenPanel;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // TODO: these properties should be set by configuration data of ESD
     // Data and color properties
@@ -155,11 +147,6 @@ public class Screen extends ModuleScreen {
      * @param owner
      */
     public Screen(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Create an initial (temporary) colourmodel, filled with black
         Arrays.fill(palette[RED], (byte) 0);
@@ -192,15 +179,10 @@ public class Screen extends ModuleScreen {
                 + " . Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
@@ -210,11 +192,9 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";

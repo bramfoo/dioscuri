@@ -43,13 +43,9 @@ import dioscuri.module.ModuleSerialPort;
  */
 
 public class Mouse extends ModuleMouse implements UART {
-    // Relations
-    private Emulator emu;
-    private Queue<Byte> buffer;
 
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
+    // Relations
+    private Queue<Byte> buffer;
 
     // Variables
     private boolean mouseEnabled;                     // Defines if this mouse if enabled
@@ -95,34 +91,20 @@ public class Mouse extends ModuleMouse implements UART {
     // Mouse buffer capacity
     private final static int MOUSE_BUFFER_SIZE = 16;
 
-
-    // Constructor
-
     /**
      * Class constructor
      */
     public Mouse(Emulator owner) {
-        emu = owner;
-
         // Create mouse buffer
         buffer = new LinkedList<Byte>();
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> Module created successfully.");
     }
 
 
-    //******************************************************************************
-    // Module Methods
-
     /**
-     * Default inherited reset. Calls specific reset(int)
-     *
-     * @return boolean true if module has been reset successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Reset variables
         // TODO: add all vars
@@ -137,11 +119,9 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String keyboardDump = "Mouse status:\n";
 

@@ -110,17 +110,7 @@ import dioscuri.module.ModuleSerialPort;
  *      serial I/O; available to any application using 16450, 16550) (not
  *      present on original 8250)
  */
-@SuppressWarnings("unused")
 public class SerialPort extends ModuleSerialPort {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(SerialPort.class.getName());
@@ -174,11 +164,6 @@ public class SerialPort extends ModuleSerialPort {
      * @param owner
      */
     public SerialPort(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Create COM-ports
         comPorts = new ComPort[TOTALCOMPORTS];
@@ -190,15 +175,10 @@ public class SerialPort extends ModuleSerialPort {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -249,11 +229,9 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "Serial port status:\n";
 

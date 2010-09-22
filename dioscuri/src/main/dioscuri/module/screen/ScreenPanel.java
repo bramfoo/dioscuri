@@ -49,8 +49,8 @@ import javax.swing.JPanel;
  * Class ImageCanvas draws a buffered image on a canvas.
  * 
  */
-@SuppressWarnings("serial")
 public class ScreenPanel extends JPanel {
+    
     // Attributes
     private Image image = null;
     private boolean paint = false;

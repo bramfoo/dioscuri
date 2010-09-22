@@ -78,21 +78,12 @@ import dioscuri.module.ModulePIC;
  *      by PIC
  * 
  */
-@SuppressWarnings("unused")
 public class PIC extends ModulePIC {
+
     // Instance (array of master and slave PIC)
     TheProgrammableInterruptController[] thePIC = new TheProgrammableInterruptController[] {
             new TheProgrammableInterruptController(),
             new TheProgrammableInterruptController() };
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(PIC.class.getName());
@@ -136,11 +127,6 @@ public class PIC extends ModulePIC {
      * @param owner
      */
     public PIC(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise IRQ list
         irqList = null;
@@ -150,18 +136,12 @@ public class PIC extends ModulePIC {
                 + " Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
 
         // Reset master and slave PICs
@@ -191,12 +171,9 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";

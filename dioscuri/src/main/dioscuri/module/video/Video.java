@@ -79,18 +79,12 @@ import dioscuri.module.cpu32.Processor;
 public class Video extends ModuleVideo {
 
     static long counter = 0;
-    // Attributes
 
     // Relations
-    private Emulator emu;
     private VideoCard videocard;
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
     public DiosJPCVideoConnect vidMemConnect = new DiosJPCVideoConnect();
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Timing
     private int updateInterval;
@@ -116,7 +110,6 @@ public class Video extends ModuleVideo {
      * @param owner
      */
     public Video(Emulator owner) {
-        emu = owner;
 
         // Create new videocard
         videocard = new VideoCard();
@@ -135,15 +128,10 @@ public class Video extends ModuleVideo {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -194,11 +182,9 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String dump = "Video status:\n";
 

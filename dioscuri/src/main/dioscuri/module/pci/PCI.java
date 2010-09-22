@@ -81,19 +81,8 @@ import dioscuri.module.ModuleMotherboard;
  *      address shifted right two bits.
  * 
  */
-
 // TODO: This module is just a stub and needs further implementation
-@SuppressWarnings("unused")
 public class PCI extends ModuleDevice {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(PCI.class.getName());
@@ -111,25 +100,14 @@ public class PCI extends ModuleDevice {
      */
     public PCI(Emulator owner) {
         super(Type.PCI);
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
         // Register I/O ports PORT 0CF8-0CFF - PCI Configuration Mechanism 1 and
         // 2 in I/O address space
@@ -143,21 +121,16 @@ public class PCI extends ModuleDevice {
         motherboard.setIOPort(PORT_PCI1_DATA + 2, this);
         motherboard.setIOPort(PORT_PCI1_DATA + 3, this);
 
-        logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                + " Module has been reset.");
+        logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
         return true;
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
-        // TODO Auto-generated method stub
-        return null;
+        return "PCI dump";
     }
 
     // ******************************************************************************

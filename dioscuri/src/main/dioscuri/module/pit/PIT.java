@@ -93,19 +93,10 @@ import dioscuri.module.ModulePIT;
  *      a different frequency).
  * 
  */
-
-@SuppressWarnings("unused")
 public class PIT extends ModulePIT {
 
-    // Attributes
-
     // Relations
-    private Emulator emu;
     private Counter[] counters;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // IRQ number
     protected int irqNumber;
@@ -146,11 +137,6 @@ public class PIT extends ModulePIT {
      * @param owner
      */
     public PIT(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise timing
         updateInterval = -1;
@@ -165,15 +151,10 @@ public class PIT extends ModulePIT {
                 + " -> Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -218,12 +199,9 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";

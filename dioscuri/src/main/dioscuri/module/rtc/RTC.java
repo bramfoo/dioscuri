@@ -78,12 +78,6 @@ public class RTC extends ModuleRTC {
     // Instance
     CMOS cmos;
 
-    // Relations
-    private Emulator emu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
     private boolean systemTime; // TRUE = real calender values from host
                                 // machine, FALSE = user-defined
 
@@ -111,12 +105,8 @@ public class RTC extends ModuleRTC {
      * @param owner
      */
     public RTC(Emulator owner) {
-        emu = owner;
 
         cmos = new CMOS();
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise IRQ number
         irqNumber = -1;
@@ -131,15 +121,10 @@ public class RTC extends ModuleRTC {
                 + " Module created successfully.");
     }
 
-    // ******************************************************************************
-    // Module Methods
-
     /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
@@ -183,12 +168,9 @@ public class RTC extends ModuleRTC {
     }
 
     /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
+     * {@inheritDoc}
      */
+    @Override
     public String getDump() {
         String cmos_Dump = "Dump of RTC/CMOS registers 0x00 - 0x2F and checksum regs:\n";
         cmos_Dump += "Reg\tVal(hex)\tVal(BCD)\n";
