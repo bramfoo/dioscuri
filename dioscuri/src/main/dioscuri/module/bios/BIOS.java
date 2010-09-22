@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
 import dioscuri.module.ModuleBIOS;
 
 /**
@@ -53,7 +52,7 @@ import dioscuri.module.ModuleBIOS;
  * 
  * Contains: - 64 KB of ROM - CMOS settings
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : bios general.name : BIOS ROM general.architecture : Von
@@ -99,7 +98,7 @@ public class BIOS extends ModuleBIOS {
         Arrays.fill(videoROM, (byte) 0);
 
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> Module created successfully.");
+                + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -108,7 +107,7 @@ public class BIOS extends ModuleBIOS {
     @Override
     public boolean reset() {
         // Reset particular CMOS settings?
-        logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.CONFIG, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 

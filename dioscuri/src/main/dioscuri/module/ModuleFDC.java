@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 import java.io.File;
@@ -52,8 +53,8 @@ import java.io.File;
 public abstract class ModuleFDC extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleFDC() {
-        super(Type.FDC,
-                Type.MOTHERBOARD, Type.RTC, Type.PIC, Type.ATA, Type.DMA);  
+        super(Module.Type.FDC,
+                Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC, Module.Type.ATA, Module.Type.DMA);
     }
 
     /**

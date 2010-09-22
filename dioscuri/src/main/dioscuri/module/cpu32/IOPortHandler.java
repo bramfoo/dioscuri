@@ -31,7 +31,8 @@ package dioscuri.module.cpu32;
 import java.io.*;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
+import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
@@ -61,7 +62,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
      * @param mod
      * @return -
      */
-    public boolean setConnection(Module mod) {
+    public boolean setConnection(AbstractModule mod) {
         // Set connection for motherboard
         if (mod.getType() == Module.Type.MOTHERBOARD) {
             this.mb = (ModuleMotherboard) mod;

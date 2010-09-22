@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 import java.awt.event.KeyEvent;
@@ -51,8 +52,8 @@ import java.awt.event.KeyEvent;
 public abstract class ModuleKeyboard extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleKeyboard() {
-        super(Type.KEYBOARD,
-                Type.MOTHERBOARD, Type.PIC, Type.RTC);
+        super(Module.Type.KEYBOARD,
+                Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
     }
 
     /**

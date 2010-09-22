@@ -55,14 +55,12 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleATA;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleMotherboard;
-import dioscuri.module.ModulePIC;
+import dioscuri.interfaces.Module;
+import dioscuri.module.*;
+import dioscuri.module.AbstractModule;
 
 /**
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : pic general.name : Programmable Interrupt Controller
@@ -89,7 +87,7 @@ public class PIC extends ModulePIC {
     private static final Logger logger = Logger.getLogger(PIC.class.getName());
 
     // IRQ list
-    private Module[] irqList; // Contains references to modules that registered
+    private AbstractModule[] irqList; // Contains references to modules that registered
                               // an IRQ
     private boolean[] irqEnabled; // Contains a list of set or cleared IRQs
 
@@ -133,7 +131,7 @@ public class PIC extends ModulePIC {
         irqEnabled = null;
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
     }
 
     /**
@@ -142,7 +140,7 @@ public class PIC extends ModulePIC {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // Reset master and slave PICs
         thePIC[MASTER].reset();
@@ -162,11 +160,11 @@ public class PIC extends ModulePIC {
         motherboard.setIOPort(SLAVE_PIC_MASK_REG, this);
 
         // Reset IRQ list and clear all pending IRQs
-        irqList = new Module[PIC_IRQ_SPACE];
+        irqList = new AbstractModule[PIC_IRQ_SPACE];
         irqEnabled = new boolean[PIC_IRQ_SPACE];
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module has been reset.");
+                + " AbstractModule has been reset.");
         return true;
     }
 
@@ -309,8 +307,8 @@ public class PIC extends ModulePIC {
      */
     public void setIOPortByte(int portAddress, byte data) {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
@@ -812,51 +810,51 @@ public class PIC extends ModulePIC {
      * @return int IRQ number from IRQ address space, or -1 if not
      *         allowed/possible
      */
-    public int requestIRQNumber(Module module) {
+    public int requestIRQNumber(AbstractModule module) {
 
         int irqNumber = -1;
 
         // Check which device is requesting an IRQ number
         // If module is part of reserved IRQ-list, return fixed IRQ number
-        if (module.getType() == Type.PIT) { //.equalsIgnoreCase("pit")) {
-            // Module PIT
+        if (module.getType() == Module.Type.PIT) { //.equalsIgnoreCase("pit")) {
+            // AbstractModule PIT
             irqNumber = PIC_IRQ_NUMBER_PIT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
-            // Module Keyboard
+        } else if (module.getType() == Module.Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
+            // AbstractModule Keyboard
             irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
-            // Module Serialport
+        } else if (module.getType() == Module.Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
+            // AbstractModule Serialport
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.FDC) { //.equalsIgnoreCase("fdc")) {
-            // Module FDC
+        } else if (module.getType() == Module.Type.FDC) { //.equalsIgnoreCase("fdc")) {
+            // AbstractModule FDC
             irqNumber = PIC_IRQ_NUMBER_FDC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.RTC) { //.equalsIgnoreCase("rtc")) {
-            // Module RTC
+        } else if (module.getType() == Module.Type.RTC) { //.equalsIgnoreCase("rtc")) {
+            // AbstractModule RTC
             irqNumber = PIC_IRQ_NUMBER_RTC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
-            // Module Mouse
+        } else if (module.getType() == Module.Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
+            // AbstractModule Mouse
             irqNumber = PIC_IRQ_NUMBER_MOUSE;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.ATA) { //.equalsIgnoreCase("ata")) {
-            // Module ATA
+        } else if (module.getType() == Module.Type.ATA) { //.equalsIgnoreCase("ata")) {
+            // AbstractModule ATA
             ModuleATA ata = (ModuleATA) module;
             int currentChannelIndex = ata.getCurrentChannelIndex();
             irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType() == Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {      // TODO duplicate else-if!
-            // Module SerialPort
+        } else if (module.getType() == Module.Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {      // TODO duplicate else-if!
+            // AbstractModule SerialPort
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
@@ -865,7 +863,7 @@ public class PIC extends ModulePIC {
             logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Should return free IRQ number, but is not implemented");
         }
-        //System.out.println("PIC.requestIRQNumber(Module) :: "+module.getClass()+" :: IRQ = " + irqNumber);
+        //System.out.println("PIC.requestIRQNumber(AbstractModule) :: "+module.getClass()+" :: IRQ = " + irqNumber);
         return irqNumber;
     }
 
@@ -928,8 +926,8 @@ public class PIC extends ModulePIC {
      */
     public int interruptAcknowledge() {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         int vector;
         int irq;
@@ -1061,7 +1059,7 @@ public class PIC extends ModulePIC {
      */
     private void serviceMasterPIC() {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
         //ModuleMotherboard motherboard = (ModuleMotherboard)super.getExpectedConnections(Type.MOTHERBOARD);
         
         int unmaskedRequests;

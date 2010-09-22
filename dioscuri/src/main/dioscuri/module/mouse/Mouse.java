@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
-import dioscuri.module.Module;
 import dioscuri.module.ModuleKeyboard;
 import dioscuri.module.ModuleMouse;
 import dioscuri.module.ModuleSerialPort;
@@ -16,7 +16,7 @@ import dioscuri.module.ModuleSerialPort;
 /**
  * An implementation of a mouse module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *      <p/>
  *      Metadata module
  *      ********************************************
@@ -97,7 +97,7 @@ public class Mouse extends ModuleMouse implements UART {
     public Mouse(Emulator owner) {
         // Create mouse buffer
         buffer = new LinkedList<Byte>();
-        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> Module created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
 
@@ -113,7 +113,7 @@ public class Mouse extends ModuleMouse implements UART {
         //previousX = -1;
         //previousY = -1;
 
-        logger.log(Level.INFO, "[" + super.getType() + "]" + " Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " AbstractModule has been reset.");
 
         return true;
     }
@@ -139,7 +139,7 @@ public class Mouse extends ModuleMouse implements UART {
 
     public void setMouseType(String type) {
 
-        ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Type.SERIALPORT);
+        ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Module.Type.SERIALPORT);
 
         // Check the type of mouse by matching string
         if (type.equalsIgnoreCase("serial")) {
@@ -212,7 +212,7 @@ public class Mouse extends ModuleMouse implements UART {
     
     public void controlMouse(byte value) {
 
-        ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Type.KEYBOARD);
+        ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Module.Type.KEYBOARD);
 
         // FIXME: if we are not using a ps2 mouse, some of the following commands need to return different values
         boolean isMousePS2 = false;

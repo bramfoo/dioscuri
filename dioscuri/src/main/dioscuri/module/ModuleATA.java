@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 import dioscuri.module.ata.ATATranslationType;
 
@@ -51,8 +52,8 @@ import dioscuri.module.ata.ATATranslationType;
 public abstract class ModuleATA extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleATA() {
-        super(Type.ATA,
-                Type.MOTHERBOARD, Type.RTC, Type.PIC);
+        super(Module.Type.ATA,
+                Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC);
     }
 
     /**

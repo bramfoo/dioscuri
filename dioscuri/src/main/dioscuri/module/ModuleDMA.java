@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.module.dma.DMA16Handler;
 import dioscuri.module.dma.DMA8Handler;
 
@@ -50,8 +51,8 @@ import dioscuri.module.dma.DMA8Handler;
 public abstract class ModuleDMA extends ModuleDevice implements Addressable {
 
     public ModuleDMA() {
-        super(Type.DMA,
-                Type.MOTHERBOARD, Type.CPU, Type.MEMORY);
+        super(Module.Type.DMA,
+                Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
     }
 
     /**

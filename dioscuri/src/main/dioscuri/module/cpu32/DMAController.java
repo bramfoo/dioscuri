@@ -33,7 +33,7 @@ import java.io.IOException;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 
 /**
@@ -134,7 +134,7 @@ public class DMAController extends ModuleDevice implements IOPortCapable,
      * @param zeroth
      */
     public DMAController(boolean highPageEnable, boolean zeroth) {
-        super(Type.DMACONTROLLER); 
+        super(Module.Type.DMACONTROLLER);
         ioportRegistered = false;
         this.dShift = zeroth ? 0 : 1;
         this.iobase = zeroth ? 0x00 : 0xc0;

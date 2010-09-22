@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
@@ -57,7 +57,7 @@ import dioscuri.module.ModuleMotherboard;
  * Note: init this module only after all other devices, because this class
  * claims all available I/O address space that is left
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  */
 public class DeviceDummy extends ModuleDevice {
@@ -71,8 +71,8 @@ public class DeviceDummy extends ModuleDevice {
      * @param owner
      */
     public DeviceDummy(Emulator owner) {
-        super(Type.DUMMY,
-                Type.MOTHERBOARD);
+        super(Module.Type.DUMMY,
+                Module.Type.MOTHERBOARD);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DeviceDummy extends ModuleDevice {
     @Override
     public boolean reset() {
         // Register I/O ports in I/O address space
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         
         // Claim all other I/O space
         for (int port = 0x0000; port < motherboard.ioSpaceSize; port++) {
@@ -132,7 +132,7 @@ public class DeviceDummy extends ModuleDevice {
      */
     public byte getIOPortByte(int portAddress) throws ModuleException {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -162,7 +162,7 @@ public class DeviceDummy extends ModuleDevice {
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -181,7 +181,7 @@ public class DeviceDummy extends ModuleDevice {
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -204,7 +204,7 @@ public class DeviceDummy extends ModuleDevice {
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()

@@ -40,17 +40,18 @@
 package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
+import dioscuri.interfaces.Module;
 
 /**
  * Interface representing a generic hardware module.
  *
  */
 
-public abstract class ModuleMemory extends Module {
+public abstract class ModuleMemory extends AbstractModule {
 
     public ModuleMemory() {
-        super(Type.MEMORY,
-                Type.VIDEO, Type.CPU, Type.MOTHERBOARD);
+        super(Module.Type.MEMORY,
+                Module.Type.VIDEO, Module.Type.CPU, Module.Type.MOTHERBOARD);
     }
 
 

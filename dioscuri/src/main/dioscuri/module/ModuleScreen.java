@@ -39,6 +39,8 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Module;
+
 import javax.swing.JPanel;
 
 /**
@@ -47,11 +49,11 @@ import javax.swing.JPanel;
  * 
  */
 
-public abstract class ModuleScreen extends Module {
+public abstract class ModuleScreen extends AbstractModule {
 
     public ModuleScreen() {
-        super(Type.SCREEN,
-                Type.VIDEO); 
+        super(Module.Type.SCREEN,
+                Module.Type.VIDEO);
     }
 
     /**

@@ -46,7 +46,7 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.util.Utilities;
 
 import javax.swing.*;

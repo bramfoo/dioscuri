@@ -39,6 +39,8 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Module;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -49,46 +51,18 @@ import java.util.logging.Logger;
 /**
  * Abstract class representing a generic hardware module.
  */
-public abstract class Module {
+public abstract class AbstractModule implements Module {
 
     // a logger object
-    private static Logger logger = Logger.getLogger(Module.class.getName());
+    private static Logger logger = Logger.getLogger(AbstractModule.class.getName());
 
     /**
-     * The Type of a Module.
-     */
-    public static enum Type {
-        ATA,
-        BOOT, // TODO: Really belongs here? Needed in config GUI...
-        BIOS,
-        CLOCK,
-        CPU,
-        DEVICE,
-        DMA,
-        DMACONTROLLER,
-        DUMMY,
-        FDC,
-        KEYBOARD,
-        MEMORY,
-        MOTHERBOARD,
-        MOUSE,
-        PARALLELPORT,
-        PCI,
-        PIC,
-        PIT,
-        RTC,
-        SCREEN,
-        SERIALPORT,
-        VIDEO
-    }
-
-    /**
-     * the Type of this Module
+     * the Type of this AbstractModule
      */
     protected final Type type;
 
-    // maps the Type's and Module's this MOdule is supposed to be connected to
-    private final Map<Type, Module> connections;
+    // maps the Type's and AbstractModule's this MOdule is supposed to be connected to
+    private final Map<Module.Type, Module> connections;
 
     // flag to keep track of we're in debug mode or not
     private boolean debugMode;
@@ -101,7 +75,7 @@ public abstract class Module {
      *                              is supposed to be connected to when
      *                              the emulation process starts.
      */
-    public Module(Type type, Type... expectedConnections) {
+    public AbstractModule(Type type, Type... expectedConnections) {
 
         if(type == null) {
             throw new NullPointerException("The type of class "+
@@ -123,38 +97,40 @@ public abstract class Module {
     }
 
     /**
-     * Get the Module with a given 'type' this Module is connected to.
-     *
-     * @param type the Module.Type.
-     * @return     the Module with a given 'type' this Module is connected to
-     *             or 'null' if no connected has been made (yet).
+     * {@inheritDoc}
      */
+    @Override
     public final Module getConnection(Type type) {
         return connections.get(type);
     }
 
     /**
-     * Returns the state of debug mode
-     *
-     * @return true if this module is in debug mode, false otherwise
+     * {@inheritDoc}
      */
+    @Override
+    public final Map<Type, Module> getConnections() {
+        return connections;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final boolean getDebugMode() {
         return this.debugMode;
     }
 
     /**
-     * Return a dump of module status
-     *
-     * @return string containing a dump of this module
+     * {@inheritDoc}
      */
+    @Override
     public abstract String getDump();
 
     /**
-     * Get all Module.Type's this Module is supposed to be connected to.
-     *
-     * @return an array of Module.Type's this Module is supposed to be connected to.
+     * {@inheritDoc}
      */
-    public final String[] getExpectedConnections() { // TODO return type: Module.Type[]
+    @Override
+    public final String[] getExpectedConnections() { // TODO return type: AbstractModule.Type[]
         List<String> temp = new ArrayList<String>();
         for(Type t : this.connections.keySet()) {
             temp.add(t.toString());
@@ -162,15 +138,18 @@ public abstract class Module {
         return temp.toArray(new String[temp.size()]);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public final Type getType() {
         return this.type;
     }
 
     /**
-     * Checks if this module is connected to operate normally
-     *
-     * @return true if this module is connected successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public final boolean isConnected() {
         for(Map.Entry<Type, Module> entry : this.connections.entrySet()) {
             if(entry.getValue() == null) {
@@ -181,53 +160,50 @@ public abstract class Module {
     }
 
     /**
-     * Reset all parameters of module.
-     *
-     * @return true iff the Module was reset properly.
+     * {@inheritDoc}
      */
+    @Override
     public abstract boolean reset();
 
     /**
-     * Connect both Modules 'this' and 'module' to each other.
-     *
-     * @param module the other Module.
-     * @return       true iff both Modules 'this' and 'module' are
-     *               properly connected to each other.
+     * {@inheritDoc}
      */
+    @Override
     public final boolean setConnection(Module module) {
         if(module == null) {
             logger.log(Level.SEVERE, "m == null");
             return false;
         }
-        if(connections.get(module.type) != null) {
-            logger.log(Level.INFO, type+" already connected to "+module.type);
+        if(connections.get(module.getType()) != null) {
+            logger.log(Level.INFO, type+" already connected to "+module.getType());
             return false;
         }
-        logger.log(Level.INFO, type+" is connected to "+module.type);
-        connections.put(module.type, module);
-        module.connections.put(type, this);
+        logger.log(Level.INFO, type+" is connected to "+module.getType());
+        connections.put(module.getType(), module);
+        module.getConnections().put(this.type, this);
         return true;
     }
 
     /**
-     * Set toggle to define if this module is in debug mode or not
-     *
-     * @param status the new debug mode for this Module. 
+     * {@inheritDoc}
      */
+    @Override
     public final void setDebugMode(boolean status) {
         this.debugMode = status;
     }
 
     /**
-     * Starts the module to become active.
+     * {@inheritDoc}
      */
+    @Override
     public void start(){
         // empty, can be @Override-en in sub-classes
     }
 
     /**
-     * Stops the module from being active.
+     * {@inheritDoc}
      */
+    @Override
     public void stop(){
         // empty, can be @Override-en in sub-classes
     }

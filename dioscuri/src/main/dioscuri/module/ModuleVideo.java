@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 /**
@@ -50,8 +51,8 @@ import dioscuri.interfaces.Updateable;
 public abstract class ModuleVideo extends ModuleDevice implements Addressable, Updateable {
 
     public ModuleVideo() {
-        super(Type.VIDEO,
-                Type.MOTHERBOARD, Type.CPU, Type.SCREEN, Type.RTC);
+        super(Module.Type.VIDEO,
+                Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.SCREEN, Module.Type.RTC);
     }
 
     /**

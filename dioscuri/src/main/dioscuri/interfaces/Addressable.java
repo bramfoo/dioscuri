@@ -4,8 +4,8 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 
-public interface Addressable {
-                                                                                                               // TODO remove 'Module' from exceptions
+public interface Addressable extends Module {
+                                                                                                               // TODO remove 'AbstractModule' from exceptions
     byte getIOPortByte(int address) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException;   // TODO rename ModuleUnknownPort -> UnknownPortException
 
     byte[] getIOPortWord(int address) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException;

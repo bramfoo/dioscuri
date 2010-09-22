@@ -1,6 +1,6 @@
 package dioscuri.interfaces;
 
-public interface Updateable {
+public interface Updateable extends Module {
 
     int getUpdateInterval();
 

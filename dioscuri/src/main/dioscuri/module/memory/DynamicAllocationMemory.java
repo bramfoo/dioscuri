@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
@@ -56,7 +56,7 @@ import dioscuri.module.ModuleVideo;
  *
  * Contains an array of 2^20 integers, offering 1MB of RAM.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *
  *      Metadata module ********************************************
  *      general.type : memory general.name : 1 Megabyte Random Access Memory
@@ -126,11 +126,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
         watchAddress = -1;
 
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
     }
 
     // ******************************************************************************
-    // Module Methods
+    // AbstractModule Methods
 
     /**
      * {@inheritDoc}
@@ -147,7 +147,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
         logger
                 .log(Level.SEVERE, "[" + super.getType()
-                        + "] Module has been reset.");
+                        + "] AbstractModule has been reset.");
         return true;
     }
 
@@ -208,9 +208,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public byte getByte(int address) {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -270,9 +270,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public void setByte(int address, byte value) {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setByte(" +
         // address + ", " + value + ")");
@@ -336,9 +336,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public byte[] getWord(int address) {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -404,9 +404,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     public void setWord(int address, byte[] value) {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;

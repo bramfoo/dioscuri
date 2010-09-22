@@ -41,19 +41,20 @@ package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
 /**
  * Interface representing a generic hardware module.
  * 
  */
 
-public abstract class ModuleMotherboard extends Module implements Addressable {
+public abstract class ModuleMotherboard extends AbstractModule implements Addressable {
 
     public int ioSpaceSize;
 
     public ModuleMotherboard() {
-        super(Type.MOTHERBOARD,
-                Type.CPU, Type.MEMORY);
+        super(Module.Type.MOTHERBOARD,
+                Module.Type.CPU, Module.Type.MEMORY);
     }
 
     /**

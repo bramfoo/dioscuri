@@ -61,7 +61,7 @@ import javax.swing.border.Border;
 
 import dioscuri.GUI;
 import dioscuri.config.Emulator.Architecture.Modules.Cpu;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 
 /**
  *

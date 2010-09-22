@@ -1,7 +1,7 @@
 package dioscuri;
 
 import dioscuri.config.ConfigController;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.cpu.CPU;
 import dioscuri.module.memory.Memory;
 

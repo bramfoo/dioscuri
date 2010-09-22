@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
 /**
  * Interface representing a generic hardware module.
@@ -49,8 +50,8 @@ import dioscuri.interfaces.Addressable;
 public abstract class ModuleRTC extends ModuleDevice implements Addressable {
 
     public ModuleRTC() {
-        super(Type.RTC,
-                Type.MOTHERBOARD, Type.PIC);
+        super(Module.Type.RTC,
+                Module.Type.MOTHERBOARD, Module.Type.PIC);
     }
 
     /**

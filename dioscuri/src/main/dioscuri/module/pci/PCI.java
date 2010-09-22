@@ -50,14 +50,14 @@ import java.util.logging.Logger;
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
 /**
  * An implementation of a PCI controller module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : pci general.name : Peripheral Component Interconnect
@@ -99,9 +99,9 @@ public class PCI extends ModuleDevice {
      * @param owner
      */
     public PCI(Emulator owner) {
-        super(Type.PCI);
+        super(Module.Type.PCI);
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
     }
 
     /**
@@ -111,7 +111,7 @@ public class PCI extends ModuleDevice {
     public boolean reset() {
         // Register I/O ports PORT 0CF8-0CFF - PCI Configuration Mechanism 1 and
         // 2 in I/O address space
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.setIOPort(PORT_PCI1_ADDRESS, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 1, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 2, this);
@@ -121,7 +121,7 @@ public class PCI extends ModuleDevice {
         motherboard.setIOPort(PORT_PCI1_DATA + 2, this);
         motherboard.setIOPort(PORT_PCI1_DATA + 3, this);
 
-        logger.log(Level.CONFIG, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.CONFIG, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 

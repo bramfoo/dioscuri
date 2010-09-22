@@ -39,6 +39,8 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Module;
+
 import java.awt.event.MouseEvent;
 
 /**
@@ -46,11 +48,11 @@ import java.awt.event.MouseEvent;
  * 
  */
 
-public abstract class ModuleMouse extends Module {
+public abstract class ModuleMouse extends AbstractModule {
 
     public ModuleMouse() {
-        super(Type.MOUSE,
-                Type.KEYBOARD, Type.SERIALPORT);
+        super(Module.Type.MOUSE,
+                Module.Type.KEYBOARD, Module.Type.SERIALPORT);
     }
 
     /**

@@ -58,7 +58,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleDMA;
 import dioscuri.module.ModuleMemory;
@@ -67,7 +67,7 @@ import dioscuri.module.ModuleMotherboard;
 /**
  * An implementation of a DMA controller module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : dma general.name : DMA Controller general.architecture :
@@ -227,11 +227,11 @@ public class DMA extends ModuleDMA {
         this.setCascadeChannel();
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
     }
 
     // ******************************************************************************
-    // Module Methods
+    // AbstractModule Methods
 
     /**
      * {@inheritDoc}
@@ -239,7 +239,7 @@ public class DMA extends ModuleDMA {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         // Register I/O ports 0x00 - 0x0F in I/O address space
         motherboard.setIOPort(PORT_DMA1_CH0_ADDRESS, this);
@@ -300,7 +300,7 @@ public class DMA extends ModuleDMA {
         resetController(SLAVE_CTRL);
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module has been reset");
+                + " AbstractModule has been reset");
         return true;
     }
 
@@ -1191,7 +1191,7 @@ public class DMA extends ModuleDMA {
      */
     private void controlHoldRequest(int ctrlNum) {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         int chanNum;
 
@@ -1347,7 +1347,7 @@ public class DMA extends ModuleDMA {
                                           // can clear TC
             busHoldAcknowledged = false;
 
-            ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+            ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
             cpu.setHoldRequest(false, this); // clear HRQ to CPU
             if (ctrlNum == 0) // Master controller, so cascade HRQ via DREQ4
             {
@@ -1374,7 +1374,7 @@ public class DMA extends ModuleDMA {
     private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
             throws ModuleException {
         
-        ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
 
         byte dataByte; // 8-bit data read/written to/from memory
         byte[] dataWord = new byte[2]; // 16-bit data read/written to/from

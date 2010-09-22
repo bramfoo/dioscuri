@@ -45,7 +45,7 @@
 package dioscuri.module.ata;
 
 /**
- * An enumeration representing the types of drives available for the ATA Module.
+ * An enumeration representing the types of drives available for the ATA AbstractModule.
  * 
  */
 public enum ATADriveType {

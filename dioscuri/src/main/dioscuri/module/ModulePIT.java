@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 /**
@@ -50,8 +51,8 @@ import dioscuri.interfaces.Updateable;
 public abstract class ModulePIT extends ModuleDevice implements Addressable, Updateable {
 
     public ModulePIT() {
-        super(Type.PIT,
-                Type.MOTHERBOARD, Type.PIC);
+        super(Module.Type.PIT,
+                Module.Type.MOTHERBOARD, Module.Type.PIC);
     }
 
     /**

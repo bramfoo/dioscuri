@@ -47,7 +47,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
@@ -58,7 +58,7 @@ import dioscuri.module.ModuleRTC;
  * updating the date and time settings of the computer.
  * 
  * @see ModuleDevice
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : rtc general.name : Real Time Clock (RTC)
@@ -118,7 +118,7 @@ public class RTC extends ModuleRTC {
         systemTime = false;
 
         logger.log(Level.INFO, "[" + super.getType() + "] "
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
     }
 
     /**
@@ -127,8 +127,8 @@ public class RTC extends ModuleRTC {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
 
         // Set current system time in CMOS, stored in BCD format
         // Need to cast calender value to same hex digits (e.g. 48d -> 48h)
@@ -163,7 +163,7 @@ public class RTC extends ModuleRTC {
                     + "] Request of IRQ number failed.");
         }
 
-        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
@@ -265,7 +265,7 @@ public class RTC extends ModuleRTC {
             if (lookupRegister == CMOS.STATUS_REGISTER_C) {
                 // Clear register C if read occurs
                 cmos.ram[CMOS.STATUS_REGISTER_C] = 0x00;
-                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
                 pic.clearIRQ(irqNumber);
             }
             return cmos.ram[lookupRegister];

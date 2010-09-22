@@ -43,14 +43,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
 /**
- * Module Clock This module implements a pulsing clock mechanism. Based on a
+ * AbstractModule Clock This module implements a pulsing clock mechanism. Based on a
  * user-defined sleepTime the clock sends a pulse to the PIT-counters after
  * sleeping.
  * 
@@ -95,7 +95,7 @@ public class Clock extends ModuleClock {
         sleepTime = 1000;
 
         logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName()
-                + " -> Module created successfully.");
+                + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -104,15 +104,15 @@ public class Clock extends ModuleClock {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         // Register clock to motherboard
         if (motherboard.registerClock(this) == false) {
             return false;
         }
 
-        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
@@ -161,8 +161,8 @@ public class Clock extends ModuleClock {
     public boolean registerDevice(ModuleDevice device, int intervalLength,
             boolean continuous) {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE) {
@@ -189,8 +189,8 @@ public class Clock extends ModuleClock {
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
         
         // Check if timer exists for given device
         int t = 0;

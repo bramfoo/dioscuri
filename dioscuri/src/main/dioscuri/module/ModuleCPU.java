@@ -42,17 +42,18 @@ package dioscuri.module;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
 /**
  * Interface representing a generic hardware module.
  * 
  */
 
-public abstract class ModuleCPU extends Module implements Addressable {
+public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
     public ModuleCPU() {
-        super(Type.CPU,
-                Type.MEMORY, Type.MOTHERBOARD, Type.PIC, Type.CLOCK);
+        super(Module.Type.CPU,
+                Module.Type.MEMORY, Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.CLOCK);
     }
 
     /**

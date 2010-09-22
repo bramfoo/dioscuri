@@ -47,7 +47,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleRTC;
@@ -62,7 +62,7 @@ import dioscuri.module.cpu32.Processor;
 /**
  * An implementation of a video (VGA) module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *      <p/>
  *      Metadata module ********************************************
  *      general.type : video general.name : General VGA display adapter
@@ -125,7 +125,7 @@ public class Video extends ModuleVideo {
         textTranslation = new TextTranslation();
 
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> Module created successfully.");
+                + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -134,8 +134,8 @@ public class Video extends ModuleVideo {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
 
         // Register I/O ports in I/O address space
         int ioAddress;
@@ -176,7 +176,7 @@ public class Video extends ModuleVideo {
                 (byte) ((rtc.getCMOSRegister(0x14) & 0xCF) | 0x00));
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module has been reset");
+                + " AbstractModule has been reset");
 
         return true;
     }
@@ -219,7 +219,7 @@ public class Video extends ModuleVideo {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -228,7 +228,7 @@ public class Video extends ModuleVideo {
      */
     public void update() {
 
-        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
 
         int screenHeight;
         int screenWidth;
@@ -732,7 +732,7 @@ public class Video extends ModuleVideo {
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         byte returnValue = 0; // Data returned from requested port
 
@@ -1068,7 +1068,7 @@ public class Video extends ModuleVideo {
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
 
-        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
 
         boolean needUpdate = false; // Determine if a screen refresh is needed
 
@@ -1777,7 +1777,7 @@ public class Video extends ModuleVideo {
      */
     public String getVideoBufferCharacters() {
 
-        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
 
         int maxRows, maxCols, index;
         StringBuffer text;
@@ -1977,7 +1977,7 @@ public class Video extends ModuleVideo {
      */
     public void writeMode(int address, byte value) {
 
-        ModuleScreen screen = (ModuleScreen)super.getConnection(Type.SCREEN);
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
 
         int offset;
         byte newValue[] = new byte[4];

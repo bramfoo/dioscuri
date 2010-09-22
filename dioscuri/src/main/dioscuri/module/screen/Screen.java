@@ -40,7 +40,7 @@
 package dioscuri.module.screen;
 
 import dioscuri.Emulator;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleScreen;
 import dioscuri.module.ModuleVideo;
 
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
 /**
  * An implementation of a hardware visual screen module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : screen general.name : Compatible CRT/LCD computer screen
@@ -176,7 +176,7 @@ public class Screen extends ModuleScreen {
         screenPanel = new ScreenPanel();
 
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " . Module created successfully.");
+                + " . AbstractModule created successfully.");
     }
 
     /**
@@ -187,7 +187,7 @@ public class Screen extends ModuleScreen {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
-        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
@@ -377,7 +377,7 @@ public class Screen extends ModuleScreen {
     public void updateCodePage(int start) {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
         System.arraycopy(codePage, 0, video.getVideoBuffer(), start, 0x2000);
 
         // Set codePage and and all codePage indices to require update
@@ -389,7 +389,7 @@ public class Screen extends ModuleScreen {
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Type.VIDEO);
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
 
         logger.log(Level.INFO, String.format(
                 "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 

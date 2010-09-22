@@ -39,15 +39,17 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Module;
+
 /**
  * Interface representing a generic hardware module.
  */
 
-public abstract class ModuleClock extends Module {
+public abstract class ModuleClock extends AbstractModule {
 
     public ModuleClock() {
-        super(Type.CLOCK,
-                Type.MOTHERBOARD, Type.CPU);
+        super(Module.Type.CLOCK,
+                Module.Type.MOTHERBOARD, Module.Type.CPU);
     }
 
     /**

@@ -51,14 +51,14 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleParallelPort;
 
 /**
  * An implementation of a parallel port module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : parallelport general.name : General Parallel Port
@@ -96,7 +96,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     public ParallelPort(Emulator owner) {
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> Module created successfully.");
+                + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -105,7 +105,7 @@ public class ParallelPort extends ModuleParallelPort {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         
         // Register I/O ports 0x37[8-A], 0x27[8-A] in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
@@ -116,7 +116,7 @@ public class ParallelPort extends ModuleParallelPort {
         motherboard.setIOPort(STATUS_PORT2, this);
         motherboard.setIOPort(CONTROL_PORT2, this);
 
-        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
 
         return true;
 

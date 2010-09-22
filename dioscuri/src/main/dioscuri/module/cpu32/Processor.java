@@ -30,7 +30,7 @@ import java.util.*;
 
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModulePIC;
@@ -462,7 +462,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         if ((cr0 & CR0_NUMERIC_ERROR) == 0) {
             System.err.println("Reporting FPU Error Via IRQ#13");
             // interruptController.setIRQ(13, 1);
-            ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+            ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
             interruptController.setIRQ(13);
         } else {
             System.err.println("Reporting FPU Error Via Exception 0x10");
@@ -1028,7 +1028,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // int vector = interruptController.cpuGetInterrupt();
-                ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                 int vector = interruptController.interruptAcknowledge();
                 handleRealModeInterrupt(vector);
             }
@@ -1047,7 +1047,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // handleHardProtectedModeInterrupt(interruptController.cpuGetInterrupt());
-                ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                 handleHardProtectedModeInterrupt(interruptController
                         .interruptAcknowledge());
             }
@@ -1069,7 +1069,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
                 }
                 else {
                     // handleHardVirtual8086ModeInterrupt(interruptController.cpuGetInterrupt());
-                    ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+                    ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                     handleHardVirtual8086ModeInterrupt(interruptController.interruptAcknowledge());
                 }
 
@@ -2413,7 +2413,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean initialised() {
-        ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
         boolean result = ((physicalMemory != null) && (linearMemory != null)
                 && (ioports != null) && (interruptController != null)); // &&
                                                                         // (virtualClock
@@ -2976,7 +2976,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean updated() {
-        ModulePIC interruptController = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
         boolean result = (physicalMemory.updated() && linearMemory.updated()
                 && ioports.updated() && interruptController.isConnected());// &&
                                                                            // virtualClock.updated()

@@ -51,8 +51,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleCPU;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
@@ -63,7 +62,7 @@ import dioscuri.module.ModulePIT;
  * Intel 82C54 PIT chip.
  * 
  * @see ModuleDevice
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : pit general.name : Programmable Interval Timer (PIT)
@@ -148,7 +147,7 @@ public class PIT extends ModulePIT {
         }
 
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> Module created successfully.");
+                + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -157,8 +156,8 @@ public class PIT extends ModulePIT {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
 
         // Register I/O ports 0x000 - 0x00F in I/O address space
         motherboard.setIOPort(PORT_PIT_COUNTER0, this);
@@ -194,7 +193,7 @@ public class PIT extends ModulePIT {
         // Activate timer
         motherboard.setTimerActiveState(this, true);
 
-        logger.log(Level.INFO, "[" + super.getType() + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
@@ -261,7 +260,7 @@ public class PIT extends ModulePIT {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -535,7 +534,7 @@ public class PIT extends ModulePIT {
     // Custom Methods
 
     protected void raiseIRQ(Counter counter) {
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
     }
 
@@ -544,7 +543,7 @@ public class PIT extends ModulePIT {
      * @param counter
      */
     protected void lowerIRQ(Counter counter) {
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
     }
 

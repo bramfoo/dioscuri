@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.exception.ModuleException;
+import dioscuri.interfaces.Module;
 
 /**
  * Abstract class representing a generic hardware module. This class defines a
@@ -48,10 +49,10 @@ import dioscuri.exception.ModuleException;
  * 
  */
 
-public abstract class ModuleBIOS extends Module {
+public abstract class ModuleBIOS extends AbstractModule {
 
     public ModuleBIOS() {
-        super(Type.BIOS /* no expected connections */);
+        super(Module.Type.BIOS /* no expected connections */);
     }
 
     /**

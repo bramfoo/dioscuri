@@ -46,7 +46,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
 import dioscuri.module.ModuleDevice;
@@ -57,7 +57,7 @@ import dioscuri.module.ModuleMotherboard;
  * An implementation of a motherboard module. This module is responsible for
  * allowing devices to communicate with the CPU and vice versa.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : motherboard general.name : General x86 motherboard
@@ -116,7 +116,7 @@ public class Motherboard extends ModuleMotherboard {
         // Create new empty I/O address space
         ioAddressSpace = new ModuleDevice[ioSpaceSize];
 
-        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName() + " -> Module created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
     /**
@@ -136,7 +136,7 @@ public class Motherboard extends ModuleMotherboard {
         A20Enabled = true;
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + "  Module has been reset.");
+                + "  AbstractModule has been reset.");
 
         return true;
     }
@@ -157,7 +157,7 @@ public class Motherboard extends ModuleMotherboard {
         for (int port = 0; port < IOSPACE_ISA_SIZE; port++) {
             // Only print I/O space info when port is used
             if (ioAddressSpace[port] != null
-                    && ioAddressSpace[port].getType() != Type.DUMMY) { //.equalsIgnoreCase("dummy"))) {
+                    && ioAddressSpace[port].getType() != Module.Type.DUMMY) { //.equalsIgnoreCase("dummy"))) {
                 dump += "0x"
                         + Integer.toHexString(0x10000 | port & 0x0FFFF)
                                 .substring(1).toUpperCase() + tab + ": "
@@ -190,7 +190,7 @@ public class Motherboard extends ModuleMotherboard {
     public boolean requestTimer(ModuleDevice device, int updateInterval,
             boolean continuous) {
 
-        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
 
         // Check if clock exists
         if (clock != null) {
@@ -208,7 +208,7 @@ public class Motherboard extends ModuleMotherboard {
      */
     public boolean setTimerActiveState(ModuleDevice device, boolean activeState) {
         // Check if clock exists
-        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
 
         if (clock != null) {
             // Set device's timer to requested state
@@ -224,7 +224,7 @@ public class Motherboard extends ModuleMotherboard {
      */
     public boolean resetTimer(ModuleDevice device, int updateInterval) {
         // Check if clock exists
-        ModuleClock clock = (ModuleClock)super.getConnection(Type.CLOCK);
+        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
 
         if (clock != null) {
             return clock.resetTimer(device, updateInterval);
@@ -550,7 +550,7 @@ public class Motherboard extends ModuleMotherboard {
                                     + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
         }
         else {
-            ModuleMemory memory = (ModuleMemory)super.getConnection(Type.MEMORY);
+            ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
             memory.setA20AddressLine(a20);
         }
     }
@@ -574,7 +574,7 @@ public class Motherboard extends ModuleMotherboard {
             return 0x1;
         }
         else {
-            ModuleCPU cpu = (ModuleCPU)super.getConnection(Type.CPU);
+            ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
             return cpu.getCurrentInstructionNumber();
         }
     }

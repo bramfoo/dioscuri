@@ -55,7 +55,7 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.exception.StorageDeviceException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleATA;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
@@ -64,7 +64,7 @@ import dioscuri.module.ModuleRTC;
 /**
  * An implementation of a ATA controller module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *
  *      Metadata module ********************************************
  *      general.type : ata general.name : ATA Controller / ATA-1 to ATAT-3
@@ -122,7 +122,7 @@ public class ATA extends ModuleATA {
         curChannelIndex = 0;
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
 
     }
 
@@ -132,9 +132,9 @@ public class ATA extends ModuleATA {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
 
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true) {
@@ -153,7 +153,7 @@ public class ATA extends ModuleATA {
         curChannelIndex = 0;
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                + "  Module has been reset.");
+                + "  AbstractModule has been reset.");
         return true;
 
     }
@@ -217,7 +217,7 @@ public class ATA extends ModuleATA {
         } else {
             updateInterval = 100000;
         }
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -226,7 +226,7 @@ public class ATA extends ModuleATA {
      */
     public void update() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         for (int channelIndex = 0; channelIndex < ATAConstants.MAX_NUMBER_IDE_CHANNELS; channelIndex++) {
 
@@ -466,7 +466,7 @@ public class ATA extends ModuleATA {
      */
     public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
 
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
 
         // generate CMOS values for hard drive
 
@@ -1015,7 +1015,7 @@ public class ATA extends ModuleATA {
             }
 
             if (channelPort == 0x07) {
-                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -1813,7 +1813,7 @@ public class ATA extends ModuleATA {
                 // DEV_ide_bmdma_set_irq(channel); // TODO:
             }
 
-            ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+            ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
             pic.setIRQ(irq);
 
         } else {
@@ -1959,7 +1959,7 @@ public class ATA extends ModuleATA {
                         .setDisableIrq(false);
 
                 // TODO as per BOCHS this code is inside a loop, but seems unnecessary
-                ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -2034,7 +2034,7 @@ public class ATA extends ModuleATA {
      */
     private boolean ideReadData(int channel, byte[] buffer, int bufferSize) {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         int logicalSector = 0;
 
@@ -2102,7 +2102,7 @@ public class ATA extends ModuleATA {
      */
     private boolean ideWriteData(int channel, byte[] buffer, int bufferSize) {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         int logicalSector = 0;
 
@@ -3459,7 +3459,7 @@ public class ATA extends ModuleATA {
     private void setHardDiskCommand(int originalAddress, int[] data,
             Integer logicalSector, int ret) {
 
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
 
         if (getSelectedChannel().isSlaveSelected()
                 && !getSelectedChannel().isSlaveDrivePresent()) {
@@ -4845,7 +4845,7 @@ public class ATA extends ModuleATA {
      * @return the motherboard
      */
     protected ModuleMotherboard getMotherboard() {
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         return motherboard;
     }
 
@@ -4855,7 +4855,7 @@ public class ATA extends ModuleATA {
      * @return the RTC module
      */
     protected ModuleRTC getRtc() {
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
         return rtc;
     }
 
@@ -4865,7 +4865,7 @@ public class ATA extends ModuleATA {
      * @return the PIC module.
      */
     protected ModulePIC getPic() {
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         return pic;
     }
 

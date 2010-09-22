@@ -41,14 +41,14 @@ package dioscuri;
 
 import java.util.ArrayList;
 
-import dioscuri.module.Module;
+import dioscuri.module.AbstractModule;
 
 /**
  *
  * @author Bram Lohman
  * @author Bart Kiers
  */
-public class Modules extends ArrayList<Module> {
+public class Modules extends ArrayList<AbstractModule> {
 
     // Constructors
     public Modules() {
@@ -69,21 +69,21 @@ public class Modules extends ArrayList<Module> {
      * @param module
      * @return -
      */
-    public boolean addModule(Module module) {
+    public boolean addModule(AbstractModule module) {
         return super.add(module);
     }
 
     @Deprecated
-    public Module getModule(String type) {
+    public AbstractModule getModule(String type) {
         for (int i = 0; i < super.size(); i++) {
             if ((this.getModule(i)).getType().toString().equalsIgnoreCase(type)) {
-                return (Module) super.get(i);
+                return (AbstractModule) super.get(i);
             }
         }
         return null;
     }
 
-    public Module getModule(Module.Type type) {
+    public AbstractModule getModule(AbstractModule.Type type) {
         for (int i = 0; i < super.size(); i++) {
             if (this.getModule(i).getType() == type) {
                 return super.get(i);
@@ -97,7 +97,7 @@ public class Modules extends ArrayList<Module> {
      * @param index
      * @return -
      */
-    public Module getModule(int index) {
-        return (Module) super.get(index);
+    public AbstractModule getModule(int index) {
+        return (AbstractModule) super.get(index);
     }
 }

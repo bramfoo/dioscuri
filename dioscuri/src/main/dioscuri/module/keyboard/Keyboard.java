@@ -41,8 +41,6 @@ package dioscuri.module.keyboard;
 
 import java.awt.event.KeyEvent;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -50,7 +48,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleKeyboard;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleMouse;
@@ -60,7 +58,7 @@ import dioscuri.module.ModuleRTC;
 /**
  * An implementation of a keyboard module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *
  *      Metadata module ********************************************
  *      general.type : keyboard general.name : XT/AT/PS2 compatible Keyboard
@@ -164,7 +162,7 @@ public class Keyboard extends ModuleKeyboard {
         keyboard.controller.timerPending = 0;
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module created successfully.");
+                + " AbstractModule created successfully.");
         // Scancodes.scancodesInit();
     }
 
@@ -174,10 +172,10 @@ public class Keyboard extends ModuleKeyboard {
     @Override
     public boolean reset() {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Type.RTC);
-        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModuleMouse mouse = (ModuleMouse)super.getConnection(Module.Type.MOUSE);
 
         // Register I/O ports 0x60, 0x64 in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
@@ -276,7 +274,7 @@ public class Keyboard extends ModuleKeyboard {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -419,7 +417,7 @@ public class Keyboard extends ModuleKeyboard {
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleUnknownPort {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
 
         logger.log(Level.CONFIG, "["
                 + super.getType()
@@ -535,7 +533,7 @@ public class Keyboard extends ModuleKeyboard {
 
                 case (byte) 0xD4: // Write to mouse
                     logger.log(Level.INFO, "[keyboard] writing value to mouse: "+value);
-                    ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE); // TODO fix mouse=NULL
+                    ModuleMouse mouse = (ModuleMouse)super.getConnection(Module.Type.MOUSE); // TODO fix mouse=NULL
                     mouse.controlMouse(value);
                     return;
 
@@ -930,7 +928,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void setInterrupt(int irqNumber) {
         // Raise an interrupt at PIC (IRQ 1 or 12)
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
     }
@@ -941,7 +939,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     protected void clearInterrupt(int irqNumber) {
         // Clear interrupt at PIC (IRQ 1 or 12)
-        ModulePIC pic = (ModulePIC)super.getConnection(Type.PIC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
         if (pendingIRQ == true) {
             pendingIRQ = false;
@@ -1104,7 +1102,7 @@ public class Keyboard extends ModuleKeyboard {
         }
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
-                + " Module has been reset.");
+                + " AbstractModule has been reset.");
 
         return true;
     }
@@ -1287,7 +1285,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     private int poll() {
 
-        ModuleMouse mouse = (ModuleMouse)super.getConnection(Type.MOUSE);
+        ModuleMouse mouse = (ModuleMouse)super.getConnection(Module.Type.MOUSE);
 
         int returnValue; // IRQs to raise
 
