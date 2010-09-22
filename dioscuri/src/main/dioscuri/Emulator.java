@@ -44,7 +44,6 @@ import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 import dioscuri.config.Emulator.Architecture.Modules.Bios;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
-import dioscuri.config.ModuleType;
 import dioscuri.exception.ModuleException;
 import dioscuri.module.*;
 import dioscuri.module.ata.ATA;
@@ -1035,8 +1034,7 @@ public class Emulator implements Runnable {
 
         // Set screen output
         // Connect screen (check if screen is available)
-        ModuleScreen screen = (ModuleScreen) modules
-                .getModule(ModuleType.SCREEN.toString());
+        ModuleScreen screen = (ModuleScreen) modules.getModule(Module.Type.SCREEN);
         if (screen != null) {
             getGui().setScreen(screen.getScreen());
             return true;
@@ -1164,8 +1162,7 @@ public class Emulator implements Runnable {
                             "[emu] System BIOS successfully stored in ROM.");
 
                     // Retrieve System BIOS and store it in RAM
-                    ModuleMemory mem = (ModuleMemory) modules
-                            .getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
 
                     mem.setBytes(ramAddressSysBiosStart, bios.getSystemBIOS());
 
@@ -1196,8 +1193,7 @@ public class Emulator implements Runnable {
                             "[emu] Video BIOS successfully stored in ROM.");
 
                     // Retrieve VGA BIOS and store it in RAM at address 0xC0000
-                    ModuleMemory mem = (ModuleMemory) modules
-                            .getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
                     mem.setBytes(ramAddressVgaBiosStart, bios.getVideoBIOS());
                     logger.log(Level.CONFIG,
                             "[emu] Video BIOS successfully loaded in RAM.");
@@ -1227,8 +1223,7 @@ public class Emulator implements Runnable {
     public boolean setFloppyParams() {
         // Module FDC: set number of drives (max 4), insert floppy and set
         // update interval
-        ModuleFDC fdc = (ModuleFDC) modules
-                .getModule(ModuleType.FDC.toString());
+        ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
 
         // FIXME: This needs to be set depending on number of floppies defined
         // in XML/HashMap (also see note on HashMaps)
