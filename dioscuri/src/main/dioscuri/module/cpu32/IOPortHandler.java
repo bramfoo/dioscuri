@@ -31,6 +31,7 @@ package dioscuri.module.cpu32;
 import java.io.*;
 
 import dioscuri.exception.ModuleException;
+import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleDevice;
@@ -197,7 +198,7 @@ public class IOPortHandler implements IOPortCapable, HardwareComponent {
             if (ioPortDevice[port] == defaultDevice
                     || ioPortDevice[port] == device) {
                 // ioPortDevice[port] = device;
-                mb.setIOPort(port, (ModuleDevice) device);
+                mb.setIOPort(port, (Addressable) device);
             }
         }
     }

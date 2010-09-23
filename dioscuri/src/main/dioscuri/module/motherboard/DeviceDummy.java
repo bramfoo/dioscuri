@@ -45,6 +45,7 @@ import java.util.logging.Logger;
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
@@ -60,7 +61,7 @@ import dioscuri.module.ModuleMotherboard;
  * @see dioscuri.module.AbstractModule
  * 
  */
-public class DeviceDummy extends ModuleDevice {
+public class DeviceDummy extends ModuleDevice implements Addressable {
 
     // Logging
     private static final Logger logger = Logger.getLogger(DeviceDummy.class.getName());

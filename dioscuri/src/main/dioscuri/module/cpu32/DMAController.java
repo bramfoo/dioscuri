@@ -33,6 +33,7 @@ import java.io.IOException;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleDevice;
 
@@ -41,8 +42,8 @@ import dioscuri.module.ModuleDevice;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-public class DMAController extends ModuleDevice implements IOPortCapable,
-        HardwareComponent {
+public class DMAController extends ModuleDevice implements IOPortCapable, Addressable, HardwareComponent {
+    
     private static final int pagePortList0 = 0x1;
     private static final int pagePortList1 = 0x2;
     private static final int pagePortList2 = 0x3;

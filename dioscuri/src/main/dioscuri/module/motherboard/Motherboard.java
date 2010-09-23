@@ -46,6 +46,7 @@ import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 import dioscuri.module.ModuleCPU;
@@ -80,15 +81,13 @@ public class Motherboard extends ModuleMotherboard {
     private Emulator emu;
 
     // Toggles
-    private boolean A20Enabled; // A20 address line: True = memory wrapping
-                                // turned off
+    private boolean A20Enabled; // A20 address line: True = memory wrapping turned off
 
     // Configuration parameters
     protected int ioSpaceSize;
 
     // I/O address space containing references to devices
-    public ModuleDevice[] ioAddressSpace; // Using signed bytes as both
-                                          // signed/unsigned
+    public Addressable[] ioAddressSpace; // Using signed bytes as both signed/unsigned
 
     // Logging
     private static final Logger logger = Logger.getLogger(Motherboard.class.getName());
@@ -115,7 +114,7 @@ public class Motherboard extends ModuleMotherboard {
         ioSpaceSize = IOSPACE_EISA_SIZE;
 
         // Create new empty I/O address space
-        ioAddressSpace = new ModuleDevice[ioSpaceSize];
+        ioAddressSpace = new Addressable[ioSpaceSize];
 
         logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName() + " -> AbstractModule created successfully.");
     }
@@ -237,7 +236,7 @@ public class Motherboard extends ModuleMotherboard {
      * 
      * @return boolean true if data is set successfully, false otherwise
      */
-    public boolean setIOPort(int portAddress, ModuleDevice device) {
+    public boolean setIOPort(int portAddress, Addressable device) {
         // check if port is already in use
         if (ioAddressSpace[portAddress] == null) {
             ioAddressSpace[portAddress] = device;

@@ -101,7 +101,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @param device
      * @return boolean true if data is set successfully, false otherwise
      */
-    public abstract boolean setIOPort(int portAddress, ModuleDevice device);
+    public abstract boolean setIOPort(int portAddress, Addressable device);
 
     /**
      * Return a byte from I/O address space at given port
