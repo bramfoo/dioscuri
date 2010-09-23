@@ -213,7 +213,7 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
      * @param value
      * @param origin
      */
-    public abstract void setHoldRequest(boolean value, ModuleDevice origin);
+    public abstract void setHoldRequest(boolean value, Module origin);
 
     /**
      *

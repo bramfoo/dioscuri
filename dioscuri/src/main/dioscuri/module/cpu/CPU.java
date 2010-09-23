@@ -108,7 +108,7 @@ public class CPU extends ModuleCPU {
     private boolean holdReQuest; // Bus hold request for CPU
     protected boolean asyncEvent; // Denotes an asynchronous event (could be an
                                   // IRQ or DMA)
-    private ModuleDevice hRQorigin; // Device generating a Hold Request
+    private Module hRQorigin; // Device generating a Hold Request
     private boolean breakpointSet; // Denotes if a breakpoint is set at a
                                    // particular address (CS:IP)
     private boolean waitMessageShown;
@@ -1045,7 +1045,7 @@ public class CPU extends ModuleCPU {
      *            state of the Hold Request
      * @param originator
      */
-    public void setHoldRequest(boolean value, ModuleDevice originator) {
+    public void setHoldRequest(boolean value, Module originator) {
         holdReQuest = value;
         hRQorigin = originator;
         if (value == true) {
@@ -1064,10 +1064,7 @@ public class CPU extends ModuleCPU {
      */
     private boolean handleAsyncEvent() {
 
-        ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
-        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
 
         // Check if normal execution has been stopped
         if (!debugMode && !isRunning) {
@@ -1096,15 +1093,14 @@ public class CPU extends ModuleCPU {
 
         // DMA
         if (holdReQuest) {
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " handleAsyncEvent: priority 5 - DMA");
+            logger.log(Level.INFO, "[" + super.getType() + "] handleAsyncEvent: priority 5 - DMA");
             // Assert Hold Acknowledge (HLDA) and go into a bus hold state
             if (hRQorigin.getType() == Module.Type.DMA) {
                 ((ModuleDMA) hRQorigin).acknowledgeBusHold();
             }
         }
 
-        if (irqPending == true && irqWaited == false) {
+        if (irqPending && !irqWaited) {
             // According to the Intel specs interrupts should only execute after
             // NEXT instruction, so check this now:
             irqWaited = true;

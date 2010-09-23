@@ -3112,7 +3112,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     }
 
     @Override
-    public void setHoldRequest(boolean value, ModuleDevice origin) {
+    public void setHoldRequest(boolean value, Module origin) {
         // TODO Auto-generated method stub
 
     }
