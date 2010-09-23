@@ -231,17 +231,21 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * Retrieve the interval between subsequent updates
+     * {@inheritDoc}
      *
-     * @return int interval in microseconds
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -258,8 +262,11 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * Update device
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
         int port = 0;
         int timer_id, baudrate;
@@ -1010,9 +1017,6 @@ public class SerialPort extends ModuleSerialPort {
                 + " received. No action taken.");
     }
 
-    // ******************************************************************************
-    // ModuleSerialPort methods
-
     public boolean setUARTDevice(UART device, int comPort) {
         // Check if valid com port
         if (comPort >= 0 && comPort < comPorts.length) {
@@ -1027,9 +1031,6 @@ public class SerialPort extends ModuleSerialPort {
         }
         return false;
     }
-
-    // ******************************************************************************
-    // Custom methods
 
     private void setIRQ(int port, int type) {
         // TODO BK always port=0, type=1 

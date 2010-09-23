@@ -849,7 +849,6 @@ public class DMA extends ModuleDMA {
             throws ModuleUnknownPort {
         setIOPortByte(portAddress, dataWord[1]);
         setIOPortByte(portAddress, dataWord[0]);
-        return;
     }
 
     /**
@@ -882,9 +881,6 @@ public class DMA extends ModuleDMA {
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
@@ -1123,9 +1119,6 @@ public class DMA extends ModuleDMA {
         // Set the Hold Request (HRQ) accordingly
         controlHoldRequest(ctrlNum);
     }
-
-    // ******************************************************************************
-    // Custom methods
 
     /**
      * Handles the Hold Request (HRQ)<BR>

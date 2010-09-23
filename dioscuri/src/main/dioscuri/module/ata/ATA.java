@@ -204,6 +204,8 @@ public class ATA extends ModuleATA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
     @Override
     public void setUpdateInterval(int interval) {
@@ -219,6 +221,8 @@ public class ATA extends ModuleATA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
     @Override
     public void update() {
@@ -1453,9 +1457,6 @@ public class ATA extends ModuleATA {
 
             }
         }
-
-        return;
-
     }
 
     /**
@@ -1943,7 +1944,6 @@ public class ATA extends ModuleATA {
                 setSignature(curChannelIndex);
             }
         }
-        return;
     }
 
     /**
@@ -1980,8 +1980,6 @@ public class ATA extends ModuleATA {
             logger.log(Level.SEVERE, "[" + super.getType() + "]" + "  write cmd "
                     + command.getAddress() + " (" + command.getName()
                     + ") not supported");
-
-            return;
         }
     }
 
@@ -4831,10 +4829,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Get the update interval.
+     * {@inheritDoc}
      *
-     * @return the update interval
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }

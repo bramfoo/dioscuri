@@ -617,6 +617,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
     @Override
     public int getUpdateInterval() {
@@ -625,6 +627,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
     @Override
     public void setUpdateInterval(int interval) {
@@ -640,6 +644,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
     @Override
     public void update() {
@@ -1195,8 +1201,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     + Integer.toHexString(portAddress).toUpperCase());
             break;
         }
-
-        return;
     }
 
     /**
@@ -1229,9 +1233,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**

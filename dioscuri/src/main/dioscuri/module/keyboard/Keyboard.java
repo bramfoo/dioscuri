@@ -249,22 +249,22 @@ public class Keyboard extends ModuleKeyboard {
         }
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
+     * {@inheritDoc}
      *
-     * @return int interval in microseconds
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
-
+  
     /**
-     * Defines the interval between subsequent updates
+     * {@inheritDoc}
      *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -958,9 +958,6 @@ public class Keyboard extends ModuleKeyboard {
         }
     }
 
-    // ******************************************************************************
-    // ModuleKeyboard methods
-
     /**
      * Method generateScancode Generates a scancode from a KeyEvent.<BR>
      * The scancode depends on what scancode set is currently active, and
@@ -1078,9 +1075,6 @@ public class Keyboard extends ModuleKeyboard {
 
         }
     }
-
-    // ******************************************************************************
-    // Custom methods
 
     /**
      * Keyboard specific reset, with value to indicate reset type
@@ -1270,7 +1264,6 @@ public class Keyboard extends ModuleKeyboard {
                 activateTimer();
                 logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Timer activated");
-                return;
             }
         }
     }

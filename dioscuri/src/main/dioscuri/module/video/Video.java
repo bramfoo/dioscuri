@@ -184,17 +184,21 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Retrieve the interval between subsequent updates
+     * {@inheritDoc}
      *
-     * @return int interval in microseconds
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -207,8 +211,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Update device Refreshes the framebuffer and send redraw to screen
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
 
         ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
@@ -511,7 +518,6 @@ public class Video extends ModuleVideo {
             }
 
             videocard.vgaMemReqUpdate = false;
-            return;
         }
 
         // alphaNumDisable == 0; Text mode
@@ -1741,9 +1747,6 @@ public class Video extends ModuleVideo {
             throws ModuleException, ModuleUnknownPort {
     }
 
-    // ******************************************************************************
-    // ModuleVideo methods
-
     /**
      * Returns a pointer to the whole video buffer
      *
@@ -1828,9 +1831,6 @@ public class Video extends ModuleVideo {
     public byte getAttributePaletteRegister(int index) {
         return videocard.attributeController.paletteRegister[index];
     }
-
-    // ******************************************************************************
-    // Custom methods
 
     /**
      * Determine the screen size in pixels

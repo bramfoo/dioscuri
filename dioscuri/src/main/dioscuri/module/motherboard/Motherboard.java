@@ -171,9 +171,6 @@ public class Motherboard extends ModuleMotherboard {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleMotherboard Methods
-
     /**
      * Registers a clock to motherboard
      * 
@@ -580,8 +577,4 @@ public class Motherboard extends ModuleMotherboard {
             return cpu.getCurrentInstructionNumber();
         }
     }
-
-    // ******************************************************************************
-    // Custom Methods
-
 }

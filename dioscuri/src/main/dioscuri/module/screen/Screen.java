@@ -214,9 +214,6 @@ public class Screen extends ModuleScreen {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleScreen Methods
-
     public JPanel getScreen() {
         return screenPanel;
     }
@@ -725,9 +722,6 @@ public class Screen extends ModuleScreen {
         this.image.setData(ras.createTranslatedChild(x0, y0));
         screenPanel.repaint();
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Set an image with data on screen

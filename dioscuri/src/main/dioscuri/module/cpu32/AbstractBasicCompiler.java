@@ -73,6 +73,5 @@ public abstract class AbstractBasicCompiler implements CodeBlockCompiler {
                 bufferOffset++;
             }
         }
-        return;
     }
 }

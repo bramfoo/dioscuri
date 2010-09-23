@@ -239,22 +239,22 @@ public class PIT extends ModulePIT {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -267,9 +267,11 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Update device
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
         // Send pulse to all counters
         for (int c = 0; c < counters.length; c++) {
@@ -424,40 +426,10 @@ public class PIT extends ModulePIT {
 
             }
             break;
-
-        //
-        // // Enable counter
-        // if (counters[cNum].isEnabled() == true)
-        // {
-        // logger.log(Level.WARNING, "[" + super.getType() + "] Counter " + cNum +
-        // " is already in use. Resetting may cause timing issues.");
-        // }
-        // counters[cNum].setEnabled(true);
-        //                	
-        // counters[cNum].rwMode = rwMode;
-        //                    
-        // {
-        //
-        // }
-        // else
-        // {
-        // // Mode of operation (M2/M1/M0)
-        // counters[cNum].setCounterMode((data >> 1) & 0x00000007);
-        //                        
-        // // Binary or Binary Code Decimal (BCD)
-        // counters[cNum].bcd = (data & 0x00000001) == 0x00000001 ? true :
-        // false;
-        // }
-        // logger.log(Level.CONFIG, "[" + super.getType() + "] Counter " + cNum +
-        // " has been set.");
-        // }
-        // break;
-
         default:
             throw new ModuleUnknownPort("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
-        return;
     }
 
     /**
@@ -490,9 +462,6 @@ public class PIT extends ModulePIT {
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return
-        return;
     }
 
     /**
@@ -526,35 +495,12 @@ public class PIT extends ModulePIT {
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return
-        return;
     }
 
     /**
-     * Retrieves the current clockrate of this clock in milliseconds
-     * 
-     * @return long milliseconds defining how long the clock sleeps before
-     *         sending a pulse
-     */
-    /*
-     * public long getClockRate() { // Return the current number of milliseconds
-     * the clock is sleeping return clock.getClockRate(); }
-     */
-
-    /**
-     * Sets the clock rate for this PIT
-     * 
+     *
      * @param counter
      */
-    /*
-     * public void setClockRate(long milliseconds) { // Set the clockrate of
-     * clock clock.setClockRate(milliseconds); }
-     */
-
-    // ******************************************************************************
-    // Custom Methods
-
     protected void raiseIRQ(Counter counter) {
         ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);

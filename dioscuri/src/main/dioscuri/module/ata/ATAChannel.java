@@ -190,8 +190,6 @@ public class ATAChannel {
     public void setDisk(ATADrive drive) {
         int driveIndex = this.getDriveIndex(drive);
         this.drives[driveIndex] = drive;
-
-        return;
     }
 
     private int getDriveIndex(ATADrive drive) {

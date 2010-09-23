@@ -198,9 +198,6 @@ public class RTC extends ModuleRTC {
         return cmos_Dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
      * Retrieve the interval between subsequent updates
      * 
@@ -381,9 +378,6 @@ public class RTC extends ModuleRTC {
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
@@ -421,7 +415,4 @@ public class RTC extends ModuleRTC {
         logger.log(Level.INFO, "[" + super.getType() + "] CMOS clock updated: "
                 + cmos.getClockValue());
     }
-
-    // ******************************************************************************
-    // Custom methods
 }

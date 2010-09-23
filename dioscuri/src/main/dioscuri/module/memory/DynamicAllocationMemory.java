@@ -196,9 +196,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleMemory Methods
-
     /**
      * Returns the value of a byte at a specific address
      *
@@ -565,9 +562,6 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 + ramSize + ", blocks = " + ramBlock + ", block size = "
                 + ramBlockSize);
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Converts a given string into a byte of one integer

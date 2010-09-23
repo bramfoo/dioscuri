@@ -159,9 +159,6 @@ public class Memory extends ModuleMemory {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleMemory Methods
-
     /**
      * Returns the value of a byte at a specific address
      *
@@ -442,9 +439,6 @@ public class Memory extends ModuleMemory {
         ram = new byte[this.ramSize];
         A20mask = 0xFFEFFFFF; // Clear 20th address bit (wrap memory address)
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Converts a given string into a byte of one integer

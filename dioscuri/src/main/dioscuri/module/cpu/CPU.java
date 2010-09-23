@@ -3546,9 +3546,6 @@ public class CPU extends ModuleCPU {
         asyncEvent = true;
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
      * Check prefix Find out if current codeByte is a prefix or not
      * 

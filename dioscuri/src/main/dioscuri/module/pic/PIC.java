@@ -197,9 +197,6 @@ public class PIC extends ModulePIC {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
      * Retrieve the interval between subsequent updates
      * 
@@ -740,8 +737,7 @@ public class PIC extends ModulePIC {
                     + " setting slave pic IMR to %02x", data);
             thePIC[SLAVE].interruptMaskRegister = data;
             serviceSlavePIC();
-            return;
-        } // switch
+        }
     }
 
     /**
@@ -978,9 +974,6 @@ public class PIC extends ModulePIC {
 
         return (vector);
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Handle interrupts on the slave PIC

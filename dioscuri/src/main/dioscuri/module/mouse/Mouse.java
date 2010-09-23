@@ -132,10 +132,6 @@ public class Mouse extends ModuleMouse implements UART {
         return keyboardDump;
     }
 
-
-    //******************************************************************************
-    // ModuleMouse Methods
-
     public void setMouseEnabled(boolean status) {
         mouseEnabled = status;
     }
@@ -550,10 +546,6 @@ public class Mouse extends ModuleMouse implements UART {
         */
     }
 
-
-    //******************************************************************************
-    // Custom Methods
-
     private byte getStatusByte() {
         // top bit is 0 , bit 6 is 1 if remote mode.
         byte status = (byte) ((mouseMode == MOUSE_MODE_REMOTE) ? 0x40 : 0);
@@ -593,8 +585,6 @@ public class Mouse extends ModuleMouse implements UART {
         return resolution;
     }
 
-    //******************************************************************************
-    // UART interface
     @Override
     public synchronized boolean isDataAvailable() {
         return !(buffer.isEmpty());
