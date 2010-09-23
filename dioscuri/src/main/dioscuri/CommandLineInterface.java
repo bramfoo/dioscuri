@@ -228,7 +228,7 @@ public class CommandLineInterface {
         config.setArgName("'floppy'|'harddisk'");
         commandLineOptions.addOption(config);
 
-/* m */ config = new Option("m", "mouse", true, "enables or disables th mouse");
+/* m */ config = new Option("m", "mouse", true, "enables or disables the mouse");
         config.setArgName("'enabled'|'disabled'");
         commandLineOptions.addOption(config);
     }
