@@ -46,6 +46,7 @@ import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
 import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.*;
 import dioscuri.module.ata.ATA;
 import dioscuri.module.ata.ATAConstants;
@@ -969,38 +970,45 @@ public class Emulator implements Runnable {
      * @return -
      */
     public boolean setTimingParams(Module module) {
-        boolean result = true;
-
         // There are 3 types of timing: speed (cpu), clock rate (pit), update
         // intervals (floppy/keyboard/ata/video/)
 
         if (module instanceof ModuleCPU) {
             int mhz = moduleConfig.getCpu().getSpeedmhz().intValue();
             ((ModuleCPU) module).setIPS(mhz * 1000000);
-            result &= true;
-        } else if (module instanceof ModuleDevice) {
-            // Cast the module to ModuleDevice for the setUpdate
-            if (module instanceof ModulePIT)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getPit()
-                        .getClockrate().intValue());
-            else if (module instanceof ModuleVideo)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig
-                        .getVideo().getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleKeyboard)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig
-                        .getKeyboard().getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleFDC)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getFdc()
-                        .getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleATA)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getAta()
-                        .getUpdateintervalmicrosecs().intValue());
-            result &= true;
-        } else {
-            // Unhandled module timing
-            result &= false;
+            return true;
         }
-        return result;
+        else if (module instanceof Updateable) {
+
+            int updateInterval;
+
+            if (module instanceof ModulePIT) {
+                updateInterval = moduleConfig.getPit().getClockrate().intValue();
+            }
+            else if (module instanceof ModuleVideo) {
+                updateInterval = moduleConfig.getVideo().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleKeyboard) {
+                updateInterval = moduleConfig.getKeyboard().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleFDC) {
+                updateInterval = moduleConfig.getFdc().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleATA) {
+                updateInterval = moduleConfig.getAta().getUpdateintervalmicrosecs().intValue();
+            }
+            else {
+                logger.log(Level.WARNING, "Could not set updateInterval for type: "+module.getType());
+                return false;
+            }
+
+            ((Updateable)module).setUpdateInterval(updateInterval);
+            
+            return true;
+        }
+        
+        // Unhandled module timing
+        return false;
     }
 
     /**
