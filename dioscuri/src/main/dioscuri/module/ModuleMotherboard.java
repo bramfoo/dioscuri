@@ -83,7 +83,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device, boolean runState);
+    public abstract boolean setTimerActiveState(Updateable device, boolean runState);
 
     /**
      * Resets the timer of device (if any)
@@ -92,7 +92,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @param updateInterval
      * @return boolean true if reset is successfully, false otherwise
      */
-    public abstract boolean resetTimer(ModuleDevice device, int updateInterval);
+    public abstract boolean resetTimer(Updateable device, int updateInterval);
 
     /**
      * Set I/O address port to given device

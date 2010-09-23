@@ -70,7 +70,7 @@ public abstract class ModuleClock extends AbstractModule {
      * @param intervalLength
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean resetTimer(ModuleDevice device, int intervalLength);
+    public abstract boolean resetTimer(Updateable device, int intervalLength);
 
     /**
      * Set a timer to start/stop running
@@ -79,7 +79,7 @@ public abstract class ModuleClock extends AbstractModule {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device, boolean runState);
+    public abstract boolean setTimerActiveState(Updateable device, boolean runState);
 
     /**
      * Triggers device's update if timer goes off

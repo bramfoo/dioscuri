@@ -186,7 +186,7 @@ public class Clock extends ModuleClock {
      * @param updateInterval
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public boolean resetTimer(ModuleDevice device, int updateInterval) {
+    public boolean resetTimer(Updateable device, int updateInterval) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
@@ -213,7 +213,7 @@ public class Clock extends ModuleClock {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public boolean setTimerActiveState(ModuleDevice device, boolean runState) {
+    public boolean setTimerActiveState(Updateable device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
