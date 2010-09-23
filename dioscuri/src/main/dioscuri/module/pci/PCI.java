@@ -52,6 +52,7 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
+import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
@@ -83,7 +84,7 @@ import dioscuri.module.ModuleMotherboard;
  * 
  */
 // TODO: This module is just a stub and needs further implementation
-public class PCI extends ModuleDevice implements Addressable {
+public class PCI extends AbstractModule implements Addressable {
 
     // Logging
     private static final Logger logger = Logger.getLogger(PCI.class.getName());
@@ -136,29 +137,6 @@ public class PCI extends ModuleDevice implements Addressable {
 
     // ******************************************************************************
     // ModuleDevice Methods
-
-    /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
 
     /**
      * Return a byte from I/O address space at given port

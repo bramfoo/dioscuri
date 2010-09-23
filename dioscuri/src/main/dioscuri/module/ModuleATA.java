@@ -49,7 +49,7 @@ import dioscuri.module.ata.ATATranslationType;
  * moduleATA could also be made more generic for any fixed storage device
  */
 
-public abstract class ModuleATA extends ModuleDevice implements Addressable, Updateable {
+public abstract class ModuleATA extends AbstractModule implements Addressable, Updateable {
 
     public ModuleATA() {
         super(Module.Type.ATA,

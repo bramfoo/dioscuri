@@ -48,7 +48,7 @@ import dioscuri.interfaces.Updateable;
  * 
  */
 
-public abstract class ModuleVideo extends ModuleDevice implements Addressable, Updateable {
+public abstract class ModuleVideo extends AbstractModule implements Addressable, Updateable {
 
     public ModuleVideo() {
         super(Module.Type.VIDEO,

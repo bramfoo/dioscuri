@@ -47,7 +47,7 @@ import dioscuri.interfaces.Module;
  * 
  */
 
-public abstract class ModuleParallelPort extends ModuleDevice implements Addressable {
+public abstract class ModuleParallelPort extends AbstractModule implements Addressable {
 
     public ModuleParallelPort() {
         super(Module.Type.PARALLELPORT,

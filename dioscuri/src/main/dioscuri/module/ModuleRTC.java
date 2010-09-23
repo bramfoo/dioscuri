@@ -47,7 +47,7 @@ import dioscuri.interfaces.Module;
  * 
  */
 
-public abstract class ModuleRTC extends ModuleDevice implements Addressable {
+public abstract class ModuleRTC extends AbstractModule implements Addressable {
 
     public ModuleRTC() {
         super(Module.Type.RTC,

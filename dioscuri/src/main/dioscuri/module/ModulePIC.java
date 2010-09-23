@@ -47,7 +47,7 @@ import dioscuri.interfaces.Module;
  * 
  */
 
-public abstract class ModulePIC extends ModuleDevice implements Addressable {
+public abstract class ModulePIC extends AbstractModule implements Addressable {
 
     public ModulePIC() {
         super(Module.Type.PIC,

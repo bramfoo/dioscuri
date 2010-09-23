@@ -49,7 +49,7 @@ import dioscuri.interfaces.Updateable;
  * 
  */
 
-public abstract class ModuleSerialPort extends ModuleDevice  implements Addressable, Updateable {
+public abstract class ModuleSerialPort extends AbstractModule  implements Addressable, Updateable {
 
     public ModuleSerialPort() {
         super(Module.Type.SERIALPORT,
