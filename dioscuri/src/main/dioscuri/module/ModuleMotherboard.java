@@ -83,8 +83,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device,
-            boolean runState);
+    public abstract boolean setTimerActiveState(ModuleDevice device, boolean runState);
 
     /**
      * Resets the timer of device (if any)
@@ -133,8 +132,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    public abstract byte[] getIOPortWord(int portAddress)
-            throws ModuleException;
+    public abstract byte[] getIOPortWord(int portAddress) throws ModuleException;
 
     /**
      * Set a word in I/O address space at given port
@@ -144,8 +142,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    public abstract void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException;
+    public abstract void setIOPortWord(int portAddress, byte[] dataWord) throws ModuleException;
 
     /**
      * Return a double word from I/O address space at given port
@@ -155,8 +152,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    public abstract byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException;
+    public abstract byte[] getIOPortDoubleWord(int portAddress) throws ModuleException;
 
     /**
      * Set a double word in I/O address space at given port
@@ -166,8 +162,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @throws ModuleException
      *             , ModuleWriteOnlyPortException
      */
-    public abstract void setIOPortDoubleWord(int portAddress,
-            byte[] dataDoubleWord) throws ModuleException;
+    public abstract void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) throws ModuleException;
 
     /**
      * Get value of A20 address line

@@ -49,8 +49,6 @@ import dioscuri.module.ModuleDevice;
  * counter, the control word must be written before the initial count is
  * written. 2. The initial count must follow the count format specified in the
  * Control Word (LSB, MSB, etc.)
- * 
- * 
  */
 public class Timer {
 
@@ -60,17 +58,6 @@ public class Timer {
     protected int currentCount;
     protected boolean active; // Timer state: active - timer is running inactive - timer is stopped
     protected boolean typeContinuous; // Timer type : continuous automatically resets and runs again
-
-    // one-shot runs once then stops
-
-    // Constructors
-    public Timer() {
-        this.user = null;
-        this.intervalLength = -1;
-        this.currentCount = -1;
-        this.active = false;
-        this.typeContinuous = false;
-    }
 
     /**
      *
