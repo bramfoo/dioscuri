@@ -132,11 +132,22 @@ public class Mouse extends ModuleMouse implements UART {
         return keyboardDump;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void setMouseEnabled(boolean status) {
         mouseEnabled = status;
     }
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void setMouseType(String type) {
 
         ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Module.Type.SERIALPORT);
@@ -163,6 +174,12 @@ public class Mouse extends ModuleMouse implements UART {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public boolean isBufferEmpty() {
         return buffer.isEmpty();
     }
@@ -172,7 +189,11 @@ public class Mouse extends ModuleMouse implements UART {
     final double scaleX = 710.0 / pointerWidth;
     final double scaleY = 400.0 / pointerHeight;
 
-    // TODO references
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
     @Override
     public void storeBufferData(boolean forceEnqueue) {
 
@@ -186,7 +207,7 @@ public class Mouse extends ModuleMouse implements UART {
         //if(b3 < -pointerHeight) b3 = -((byte)pointerHeight);
         //if(b3 > 0) b3 = 0;
 
-        logger.log(Level.SEVERE, "[" + super.getType() + "] moved to ("+b2+","+b3+")"); // TODO change SEVERE to INFO
+        logger.log(Level.INFO, "[" + super.getType() + "] moved to ("+b2+","+b3+")"); 
 
         // Only act on mouse-presses: ignore mouse releases
         if(this.mouseEvent != null && this.mouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
@@ -206,10 +227,22 @@ public class Mouse extends ModuleMouse implements UART {
         return buffer.offer(b1) && buffer.offer(b2) && buffer.offer(b3) && buffer.offer(b4) && buffer.offer(b5);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public byte getDataFromBuffer() {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void controlMouse(byte value) {
 
         ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Module.Type.KEYBOARD);
@@ -474,7 +507,12 @@ public class Mouse extends ModuleMouse implements UART {
 	}
 */
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void mouseMotion(MouseEvent event) {
 
         this.mouseEvent = event;

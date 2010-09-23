@@ -39,8 +39,6 @@
 
 package dioscuri.module;
 
-import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 

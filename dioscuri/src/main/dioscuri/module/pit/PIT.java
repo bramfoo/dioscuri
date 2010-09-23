@@ -49,8 +49,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
@@ -99,34 +99,23 @@ public class PIT extends ModulePIT {
     protected int irqNumber;
 
     // Timing
-    private int updateInterval; // Denotes the update interval for the clock
-                                // timer
+    private int updateInterval; // Denotes the update interval for the clock timer
 
     // Logging
     private static final Logger logger = Logger.getLogger(PIT.class.getName());
-
-    // Constants
 
     // I/O ports PIT
     private final static int PORT_PIT_COUNTER0 = 0x040; // RW
     private final static int PORT_PIT_COUNTER1 = 0x041; // RW
     private final static int PORT_PIT_COUNTER2 = 0x042; // RW
-    private final static int PORT_PIT_CONTROLWORD1 = 0x043; // RW - control word
-                                                            // for counters 0-2
-    private final static int PORT_PIT_COUNTER3 = 0x044; // RW - counter 3 (PS/2,
-                                                        // EISA), fail-safe
-                                                        // timer
-    private final static int PORT_PIT_CONTROLWORD2 = 0x047; // W - control word
-                                                            // for counter 3
+    private final static int PORT_PIT_CONTROLWORD1 = 0x043; // RW - control word for counters 0-2
+    private final static int PORT_PIT_COUNTER3 = 0x044; // RW - counter 3 (PS/2, EISA), fail-safe timer
+    private final static int PORT_PIT_CONTROLWORD2 = 0x047; // W - control word for counter 3
     private final static int PORT_PIT_EISA = 0x048; // ?? -
     private final static int PORT_PIT_TIMER2 = 0x049; // ?? - timer 2 (not used)
     private final static int PORT_PIT_EISA_PIT2A = 0x04A; // ?? - EISA PIT 2
     private final static int PORT_PIT_EISA_PIT2B = 0x04B; // ?? - EISA PIT 2
-    private final static int PORT_KB_CTRL_B = 0x61; // Keyboard Controller Port
-                                                    // B, in Bochs assigned to
-                                                    // PIT (PC speaker??)
-
-    // Constructor
+    private final static int PORT_KB_CTRL_B = 0x61; // Keyboard Controller Port B, in Bochs assigned to PIT (PC speaker??)
 
     /**
      * Class constructor
@@ -286,7 +275,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort {
+            UnknownPortException {
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " I/O read from address 0x"
                 + Integer.toHexString(portAddress));
@@ -322,7 +311,7 @@ public class PIT extends ModulePIT {
             break;
 
         default:
-            throw new ModuleUnknownPort("[" + super.getType()
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
 
@@ -337,7 +326,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         logger.log(Level.INFO, "[" + super.getType() + "]" + " I/O write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
@@ -427,7 +416,7 @@ public class PIT extends ModulePIT {
             }
             break;
         default:
-            throw new ModuleUnknownPort("[" + super.getType()
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
@@ -439,7 +428,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -471,7 +460,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -514,5 +503,4 @@ public class PIT extends ModulePIT {
         ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
     }
-
 }

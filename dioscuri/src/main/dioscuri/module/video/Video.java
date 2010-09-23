@@ -45,8 +45,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleMotherboard;
@@ -718,7 +718,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
 
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
@@ -1054,7 +1054,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
 
         ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
 
@@ -1709,7 +1709,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -1720,7 +1720,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         // Support IO words by redirecting to byte handler
         setIOPortByte(portAddress, (byte) (dataWord[1] & 0xff));
         setIOPortByte(portAddress + 1, (byte) (dataWord[0] & 0xff));
@@ -1733,7 +1733,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -1744,40 +1744,45 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
     }
 
     /**
-     * Returns a pointer to the whole video buffer
+     * {@inheritDoc}
      *
-     * @return byte[] containing the video buffer
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte[] getVideoBuffer() {
         return this.videocard.vgaMemory;
     }
 
     /**
-     * Returns a byte from video buffer at position index
+     * {@inheritDoc}
      *
-     * @return byte from video buffer
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getVideoBufferByte(int index) {
         return this.videocard.vgaMemory[index];
     }
 
     /**
-     * Stores a byte in video buffer at position index
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void setVideoBufferByte(int index, byte data) {
         this.videocard.vgaMemory[index] = data;
     }
 
     /**
-     * Returns all characters (as Unicode) that are currently in buffer
+     * {@inheritDoc}
      *
-     * @return String containing all characters in the buffer or null when no
-     *         characters exist
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public String getVideoBufferCharacters() {
 
         ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
@@ -1809,34 +1814,41 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Returns a byte from text snapshot at position index
+     * {@inheritDoc}
      *
-     * @return byte from textsnapshot
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getTextSnapshot(int index) {
         return this.videocard.textSnapshot[index];
     }
 
     /**
-     * Stores a byte in text snapshot at position index
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void setTextSnapshot(int index, byte data) {
         this.videocard.textSnapshot[index] = data;
     }
 
     /**
-     * Translate the text attribute/graphic colour input value into the CRT
-     * display colour
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getAttributePaletteRegister(int index) {
         return videocard.attributeController.paletteRegister[index];
     }
 
     /**
-     * Determine the screen size in pixels
+     * {@inheritDoc}
      *
-     * @return integer array containing [height, width] of screen in pixels
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public int[] determineScreenSize() {
         int heightInPixels, widthInPixels;
         int horizontal, vertical;
@@ -1887,10 +1899,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * VGA memory Read Modes 0 and 1 functionality
+     * {@inheritDoc}
      *
-     * @param address
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte readMode(int address) {
         int i; // Counter
         int offset; // Offset in the memory bank
@@ -1971,10 +1984,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * VGA memory Write Modes 0, 1, 2 and 3 functionality
+     * {@inheritDoc}
      *
-     * @param value
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void writeMode(int address, byte value) {
 
         ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
@@ -2378,7 +2392,6 @@ public class Video extends ModuleVideo {
      * used to connect the memory range A0000 - C0000 to the vgaMemory array in
      * VideoCard
      */
-    @SuppressWarnings("unused")
     public class DiosJPCVideoConnect extends Memory {
         // Added because needed - need to check if used elsewhere in JPC
         private int bankOffset = 0;

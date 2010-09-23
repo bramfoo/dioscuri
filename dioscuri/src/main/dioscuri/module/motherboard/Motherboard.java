@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
@@ -172,21 +172,22 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Registers a clock to motherboard
-     * 
-     * @return boolean true if registration is successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean registerClock(ModuleClock clock) {
         super.setConnection(clock);
         return true;
     }
 
     /**
-     * Requests a timer for given device at clock
-     * 
-     * @param updateInterval
-     * @return boolean true if registration is successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean requestTimer(Updateable device, int updateInterval, boolean continuous) {
 
         ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
@@ -200,11 +201,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Set a timer to start/stop running
-     * 
-     * @param activeState
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean setTimerActiveState(Updateable device, boolean activeState) {
         // Check if clock exists
         ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
@@ -217,10 +218,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Resets the timer of device (if any)
-     * 
-     * @return boolean true if reset is successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean resetTimer(Updateable device, int updateInterval) {
         // Check if clock exists
         ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
@@ -232,10 +234,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Set I/O address port to given device
-     * 
-     * @return boolean true if data is set successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean setIOPort(int portAddress, Addressable device) {
         // check if port is already in use
         if (ioAddressSpace[portAddress] == null) {
@@ -264,7 +267,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Return data at appropriate portnumber (could throw an
                 // exception in protected mode)
                 return ioAddressSpace[portAddress].getIOPortByte(portAddress);
-            } catch (ModuleUnknownPort e1) {
+            } catch (UnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
@@ -274,7 +277,7 @@ public class Motherboard extends ModuleMotherboard {
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
-            } catch (ModuleWriteOnlyPortException e2) {
+            } catch (WriteOnlyPortException e2) {
                 logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
@@ -337,7 +340,7 @@ public class Motherboard extends ModuleMotherboard {
                 ioAddressSpace[portAddress]
                         .setIOPortByte(portAddress, dataByte);
 
-            } catch (ModuleUnknownPort e) {
+            } catch (UnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.INFO, "["
@@ -375,7 +378,7 @@ public class Motherboard extends ModuleMotherboard {
                 // Return data at appropriate portnumber (could throw an
                 // exception in protected mode)
                 return ioAddressSpace[portAddress].getIOPortWord(portAddress);
-            } catch (ModuleUnknownPort e1) {
+            } catch (UnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
@@ -385,7 +388,7 @@ public class Motherboard extends ModuleMotherboard {
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
-            } catch (ModuleWriteOnlyPortException e2) {
+            } catch (WriteOnlyPortException e2) {
                 logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
@@ -417,7 +420,7 @@ public class Motherboard extends ModuleMotherboard {
                 // in protected mode)
                 ioAddressSpace[portAddress]
                         .setIOPortWord(portAddress, dataWord);
-            } catch (ModuleUnknownPort e) {
+            } catch (UnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
@@ -454,7 +457,7 @@ public class Motherboard extends ModuleMotherboard {
                 // exception in protected mode)
                 return ioAddressSpace[portAddress]
                         .getIOPortDoubleWord(portAddress);
-            } catch (ModuleUnknownPort e1) {
+            } catch (UnknownPortException e1) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
@@ -465,7 +468,7 @@ public class Motherboard extends ModuleMotherboard {
                                         .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
-            } catch (ModuleWriteOnlyPortException e2) {
+            } catch (WriteOnlyPortException e2) {
                 logger.log(Level.WARNING, "[" + super.getType()
                         + "] Writing to I/O port not allowed.");
                 throw new ModuleException("I/O port is read-only.");
@@ -500,7 +503,7 @@ public class Motherboard extends ModuleMotherboard {
                 ioAddressSpace[portAddress].setIOPortDoubleWord(portAddress,
                         dataDoubleWord);
 
-            } catch (ModuleUnknownPort e) {
+            } catch (UnknownPortException e) {
                 // Print warning
                 logger
                         .log(Level.WARNING, "["
@@ -522,19 +525,22 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Return A20 address line status
-     * 
-     * @return boolean true if A20 is enabled, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public boolean getA20() {
         // Return status of A20 address line
         return A20Enabled;
     }
 
     /**
-     * Set A20 address line status
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public void setA20(boolean a20) {
         // Set status of A20 address line
         // False = memory wrapping turned off
@@ -555,11 +561,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Retrieve current number of instruction (instructions executed so far)
-     * 
-     * @return long containing number of instructions
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMotherboard
      */
+    @Override
     public long getCurrentInstructionNumber() {
 
         if (emu.isCpu32bit()) {

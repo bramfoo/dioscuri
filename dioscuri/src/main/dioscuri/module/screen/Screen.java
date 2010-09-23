@@ -214,43 +214,62 @@ public class Screen extends ModuleScreen {
         return dump;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
+     */
+    @Override
     public JPanel getScreen() {
         return screenPanel;
     }
 
     /**
-     * Return the number of rows on screen (text based)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenRows() {
         return textRows;
     }
 
     /**
-     * Return the number of columns on screen (text based)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenColumns() {
         return textColumns;
     }
 
     /**
-     * Return width of screen in number of pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenWidth() {
         return screenWidth;
     }
 
     /**
-     * Return height of screen in number of pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenHeight() {
         return screenHeight;
     }
 
     /**
-     * Set the screen size in number of pixels
-     * @param width
-     * @param height
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void setScreenSize(int width, int height) {
         // Update image size
         this.setImage(width, height);
@@ -266,17 +285,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Update the screen size (if necesarry)
-     * 
-     * @param newWidth
-     *            New screen width in pixels
-     * @param newHeight
-     *            New screen height in pixels
-     * @param newFontHeight
-     *            New font height in pixels
-     * @param newFontWidth
-     *            New font width in pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
             int newFontHeight) {
         logger.log(Level.INFO, "[" + super.getType() + "]"
@@ -297,9 +310,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Set the screen image to black
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void clearScreen() {
         // "I see a red door and I want it painted black; No colours anymore I want them to turn black"
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
@@ -315,19 +330,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Set a colour in the private colourmap to a particular RGB value
-     * 
-     * @param index
-     *            Index into the palette
-     * @param red
-     *            New value of red
-     * @param green
-     *            New value of green
-     * @param blue
-     *            New value of blue
-     * 
-     * @return true if succesfull update, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public boolean setPaletteColour(byte index, int red, int green, int blue) {
         // Assure byte is within array bounds
         int indx = index & 0xFF;
@@ -351,13 +358,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Update a byte in the codePage
-     * 
-     * @param index
-     *            location of byte in codePage array
-     * @param data
-     *            value of new byte
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void setByteInCodePage(int index, byte data) {
         // Set data
         codePage[index] = data;
@@ -371,10 +376,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Update the complete character set
-     * 
-     * @param start
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateCodePage(int start) {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
@@ -386,7 +392,12 @@ public class Screen extends ModuleScreen {
         codePageReqsUpdate = true;
     }
 
-    // BK TODO fix the RasterFormatException properly
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
+     */
+    @Override
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
 
@@ -688,17 +699,17 @@ public class Screen extends ModuleScreen {
             // Refresh screen
             screenPanel.repaint();
         } catch(RasterFormatException e) {
-            logger.log(Level.SEVERE, "RasterFormatException details: "+e.getMessage());
+            // TODO fix the RasterFormatException properly
+            logger.log(Level.INFO, "RasterFormatException details: "+e.getMessage());
         }
     }
 
     /**
-     * Update a tile on screen with given bytes A tile is a part of the
-     * screenbuffer
-     * 
-     * @param x0
-     * @param y0
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateGraphicsTile(byte[] tile, int x0, int y0) {
 
         int x, y, y_size;

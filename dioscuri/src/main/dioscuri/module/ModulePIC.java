@@ -43,12 +43,13 @@ import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic PIC module.
  */
-
 public abstract class ModulePIC extends AbstractModule implements Addressable {
 
+    /**
+     * 
+     */
     public ModulePIC() {
         super(Module.Type.PIC,
                 Module.Type.CPU, Module.Type.MOTHERBOARD);

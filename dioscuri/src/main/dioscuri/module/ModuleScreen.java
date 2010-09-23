@@ -44,13 +44,13 @@ import dioscuri.interfaces.Module;
 import javax.swing.JPanel;
 
 /**
- * Abstract class representing a generic hardware module. This class defines a
- * template for a screen module.
- * 
+ * Abstract class representing a generic screen module.
  */
-
 public abstract class ModuleScreen extends AbstractModule {
 
+    /**
+     *
+     */
     public ModuleScreen() {
         super(Module.Type.SCREEN,
                 Module.Type.VIDEO);
@@ -134,8 +134,7 @@ public abstract class ModuleScreen extends AbstractModule {
      * @param blue
      * @return -
      */
-    public abstract boolean setPaletteColour(byte index, int red, int green,
-            int blue);
+    public abstract boolean setPaletteColour(byte index, int red, int green, int blue);
 
     /**
      * Update a tile on screen with given bytes Graphics mode. A tile is a part

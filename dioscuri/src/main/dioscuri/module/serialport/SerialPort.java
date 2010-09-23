@@ -44,8 +44,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
 import dioscuri.module.ModuleMotherboard;
@@ -328,8 +328,8 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
-            ModuleWriteOnlyPortException {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException,
+            WriteOnlyPortException {
         int offset, port;
         byte value = 0x00;
 
@@ -522,7 +522,7 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
@@ -960,7 +960,7 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -992,7 +992,7 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -1017,6 +1017,12 @@ public class SerialPort extends ModuleSerialPort {
                 + " received. No action taken.");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleSerialPort
+     */
+    @Override
     public boolean setUARTDevice(UART device, int comPort) {
         // Check if valid com port
         if (comPort >= 0 && comPort < comPorts.length) {

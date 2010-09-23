@@ -45,7 +45,6 @@ import dioscuri.interfaces.Module;
 /**
  * Abstract class class defining a template for a BIOS module, which
  * may contain a system BIOS, VIDEO BIOS and optional BIOSes.
- * 
  */
 public abstract class ModuleBIOS extends AbstractModule {
 

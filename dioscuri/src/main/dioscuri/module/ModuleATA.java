@@ -81,8 +81,7 @@ public abstract class ModuleATA extends AbstractModule implements Addressable, U
      * @param bootDrives
      * @param floppySigCheckDisabled
      */
-    public abstract void setCmosSettings(int[] bootDrives,
-            boolean floppySigCheckDisabled);
+    public abstract void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled);
 
     /**
      * Gets the current channel index.

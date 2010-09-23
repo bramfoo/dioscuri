@@ -377,8 +377,7 @@ public class CMOS {
     /**
      * Updates the clock values
      * 
-     * @param seconds
-     *            Number of seconds to update the clock
+     * @param seconds Number of seconds to update the clock
      */
     protected void setClockValue(int seconds) {
         calendar.add(Calendar.SECOND, seconds);

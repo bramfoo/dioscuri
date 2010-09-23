@@ -43,23 +43,23 @@ import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Module;
 
 /**
- * Interface representing a generic hardware module.
- *
+ * Abstract class representing a memory hardware module.
  */
-
 public abstract class ModuleMemory extends AbstractModule {
 
+    /**
+     *
+     */
     public ModuleMemory() {
         super(Module.Type.MEMORY,
                 Module.Type.VIDEO, Module.Type.CPU, Module.Type.MOTHERBOARD);
     }
 
-
     /**
-     * Return a byte from memory
+     * Return a byte from memory at a specific address
      *
-     * @param address
-     * @return int containing the byte at given address
+     * @param address Flat-address where data can be found
+     * @return the byte at the given address
      * @throws ModuleException
      */
     public abstract byte getByte(int address) throws ModuleException;
@@ -71,27 +71,36 @@ public abstract class ModuleMemory extends AbstractModule {
      * @param value
      * @throws ModuleException
      */
-    public abstract void setByte(int address, byte value)
-            throws ModuleException;
+    public abstract void setByte(int address, byte value) throws ModuleException;
 
     /**
-     * Return a word from memory
+     * Returns the value of a word at a specific address Note: words in memory
+     * are stored in Little Endian order (LSB, MSB), but this method returns a
+     * word in Big Endian order (MSB, LSB) because this is the common way words
+     * are used by instructions.
      *
      * @param address
-     * @return int[] containing the word at given address
+     *            Flat-address where data can be found
+     *
+     * @return byte[] array [MSB, LSB] containing data, 0xFFFF if address
+     *         outside RAM_SIZE range
+     *
      * @throws ModuleException
      */
     public abstract byte[] getWord(int address) throws ModuleException;
 
     /**
-     * Set a word in memory at given address
+     * Stores the value of a word at a specific address Note: words in memory
+     * are stored in Little Endian order (LSB, MSB), but this method assumes
+     * that a word is given in Big Endian order (MSB, LSB) because this is the
+     * common way words are used by instructions. However, storage takes place
+     * in Little Endian order.
      *
      * @param address
      * @param value
      * @throws ModuleException
      */
-    public abstract void setWord(int address, byte[] value)
-            throws ModuleException;
+    public abstract void setWord(int address, byte[] value) throws ModuleException;
 
     /**
      * Stores an array of bytes in memory starting at a specific address
@@ -101,8 +110,7 @@ public abstract class ModuleMemory extends AbstractModule {
      * @param binaryStream
      * @throws ModuleException
      */
-    public abstract void setBytes(int address, byte[] binaryStream)
-            throws ModuleException;
+    public abstract void setBytes(int address, byte[] binaryStream) throws ModuleException;
 
     /**
      * Set A20 address line toggle
@@ -117,8 +125,7 @@ public abstract class ModuleMemory extends AbstractModule {
      * @param isWatchOn
      * @param watchAddress
      */
-    public abstract void setWatchValueAndAddress(boolean isWatchOn,
-            int watchAddress);
+    public abstract void setWatchValueAndAddress(boolean isWatchOn, int watchAddress);
 
     /**
      * Set RAM Size in megabytes

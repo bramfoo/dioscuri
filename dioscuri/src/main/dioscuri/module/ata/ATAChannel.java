@@ -45,6 +45,10 @@
 
 package dioscuri.module.ata;
 
+import dioscuri.interfaces.Module;
+import dioscuri.module.ModuleMotherboard;
+import dioscuri.module.ModulePIC;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -121,17 +125,20 @@ public class ATAChannel {
      */
     public boolean reset() {
 
+        ModulePIC pic = (ModulePIC)parent.getConnection(Module.Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard)parent.getConnection(Module.Type.MOTHERBOARD);
+
         this.ioAddress1 = this.defaultIoAddress1;
         this.ioAddress2 = this.defaultIoAddress2;
 
         // Request IRQ number
-        this.irqNumber = this.parent.getPic().requestIRQNumber(this.parent);
+        this.irqNumber = pic.requestIRQNumber(this.parent);
 
         if (this.irqNumber > -1) {
             logger.log(Level.CONFIG, this.parent.getType()
                     + " -> IRQ number set to: " + irqNumber);
             // Make sure no interrupt is pending
-            this.parent.getPic().clearIRQ(irqNumber);
+            pic.clearIRQ(irqNumber);
         } else {
             logger.log(Level.WARNING, this.parent.getType()
                     + " -> Request of IRQ number failed.");
@@ -139,12 +146,13 @@ public class ATAChannel {
 
         if (this.ioAddress1 != 0) {
 
-            parent.getMotherboard().setIOPort(this.ioAddress1, this.parent);
+            //parent.getMotherboard().setIOPort(this.ioAddress1, this.parent);
+
+            motherboard.setIOPort(this.ioAddress1, this.parent);
 
             for (int address = 0x1; address <= 0x7; address++) {
 
-                parent.getMotherboard().setIOPort(this.ioAddress1 + address,
-                        this.parent);
+                motherboard.setIOPort(this.ioAddress1 + address, this.parent);
             }
         }
 
@@ -154,8 +162,7 @@ public class ATAChannel {
         if ((this.ioAddress2 != 0) && (this.ioAddress2 != 0x3f0)) {
             for (int address = 0x6; address <= 0x7; address++) {
 
-                parent.getMotherboard().setIOPort(this.ioAddress2 + address,
-                        this.parent);
+                motherboard.setIOPort(this.ioAddress2 + address, this.parent);
             }
         }
 

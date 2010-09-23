@@ -61,7 +61,7 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
      *
      * @param chanNum
      * @param dma8handler
-     * @return -
+     * @return
      */
     public abstract boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler);
 
@@ -69,7 +69,7 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
      *
      * @param chanNum
      * @param dma16handler
-     * @return -
+     * @return
      */
     public abstract boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler);
 
@@ -77,10 +77,8 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
      * Sets the DMA Requests in the corresponding controller's status register,
      * and initiates the handling of Hold Requests
      *
-     * @param chanNum
-     *            Channel requesting a DMA transfer
-     * @param request
-     *            Set request (true); clear request (false)
+     * @param chanNum Channel requesting a DMA transfer
+     * @param request Set request (true); clear request (false)
      */
     public abstract void setDMARequest(int chanNum, boolean request);
 

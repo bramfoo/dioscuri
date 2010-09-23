@@ -751,6 +751,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public String dumpRegisters() {
@@ -1013,6 +1015,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public boolean isAbnormalTermination() {
@@ -1021,6 +1025,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public boolean isShutdown() {
@@ -1038,12 +1044,14 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setHoldRequest(boolean value, Module originator) {
         holdReQuest = value;
         hRQorigin = originator;
-        if (value == true) {
+        if (value) {
             // Asynchronous event has occurred and should be handled
             asyncEvent = true;
         }
@@ -1110,6 +1118,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public int getIPS() {
@@ -1118,6 +1128,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setIPS(int ips) {
@@ -1129,6 +1141,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
@@ -1141,6 +1155,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected boolean initRegisters() {
@@ -1257,6 +1273,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected boolean initInstructionTables() {
@@ -3291,6 +3309,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected void setRunning(boolean status) {
@@ -3300,6 +3320,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public byte[] getRegisterValue(String registerName) {
@@ -3312,6 +3334,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public boolean setRegisterValue(String registerName, byte[] value) {
@@ -3372,6 +3396,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public String getNextInstructionInfo() {
@@ -3447,6 +3473,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public long getCurrentInstructionNumber() {
@@ -3455,6 +3483,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected void incrementInstructionCounter() {
@@ -3539,6 +3569,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void interruptRequest(boolean value) {
@@ -4869,10 +4901,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
+     * {@inheritDoc}
      *
-     * @param register
-     * @return -
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public String getRegisterHex(int register) {
         switch (register) {
         case 0: // CS
@@ -4892,19 +4925,21 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Get CPU instruction debug.
-     * 
-     * @return cpuInstructionDebug.
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public boolean getCpuInstructionDebug() {
         return this.cpuInstructionDebug;
     }
 
     /**
-     * Set the CPU instruction debug.
-     * 
-     * @param cpuInstructionDebug status of instructionDebug (on/off)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public void setCpuInstructionDebug(boolean cpuInstructionDebug) {
         this.cpuInstructionDebug = cpuInstructionDebug;
     }
@@ -4927,37 +4962,37 @@ public class CPU extends ModuleCPU {
      */
     public String registerDump() {
         StringBuilder b = new StringBuilder();
-        b.append("ax="+toHexString(ax)).append('\n');
-        b.append("eax="+toHexString(eax)).append('\n');
-        b.append("bx="+toHexString(bx)).append('\n');
-        b.append("ebx="+toHexString(ebx)).append('\n');
-        b.append("cx="+toHexString(cx)).append('\n');
-        b.append("ecx="+toHexString(ecx)).append('\n');
-        b.append("dx="+toHexString(dx)).append('\n');
-        b.append("edx="+toHexString(edx)).append('\n');
-        b.append("sp="+toHexString(sp)).append('\n');
-        b.append("esp="+toHexString(esp)).append('\n');
-        b.append("bp="+toHexString(bp)).append('\n');
-        b.append("ebp="+toHexString(ebp)).append('\n');
-        b.append("si="+toHexString(si)).append('\n');
-        b.append("esi="+toHexString(esi)).append('\n');
-        b.append("di="+toHexString(di)).append('\n');
-        b.append("edi="+toHexString(edi)).append('\n');
-        b.append("cs="+toHexString(cs)).append('\n');
-        b.append("ds="+toHexString(ds)).append('\n');
-        b.append("ss="+toHexString(ss)).append('\n');
-        b.append("es="+toHexString(es)).append('\n');
-        b.append("ip="+toHexString(ip)).append('\n');
-        b.append("oldIP="+toHexString(oldIP)).append('\n');
-        b.append("flags="+toHexString(flags)).append('\n');
-        b.append("cr0="+toHexString(cr0)).append('\n');
-        b.append("cr1="+toHexString(cr1)).append('\n');
-        b.append("cr2="+toHexString(cr2)).append('\n');
-        b.append("cr3="+toHexString(cr3)).append('\n');
-        b.append("cr4="+toHexString(cr4)).append('\n');
-        b.append("gdtr="+toHexString(gdtr)).append('\n');
-        b.append("idtr="+toHexString(idtr)).append('\n');
-        b.append("ldtr="+toHexString(ldtr)).append('\n');
+        b.append("ax=").append(toHexString(ax)).append('\n');
+        b.append("eax=").append(toHexString(eax)).append('\n');
+        b.append("bx=").append(toHexString(bx)).append('\n');
+        b.append("ebx=").append(toHexString(ebx)).append('\n');
+        b.append("cx=").append(toHexString(cx)).append('\n');
+        b.append("ecx=").append(toHexString(ecx)).append('\n');
+        b.append("dx=").append(toHexString(dx)).append('\n');
+        b.append("edx=").append(toHexString(edx)).append('\n');
+        b.append("sp=").append(toHexString(sp)).append('\n');
+        b.append("esp=").append(toHexString(esp)).append('\n');
+        b.append("bp=").append(toHexString(bp)).append('\n');
+        b.append("ebp=").append(toHexString(ebp)).append('\n');
+        b.append("si=").append(toHexString(si)).append('\n');
+        b.append("esi=").append(toHexString(esi)).append('\n');
+        b.append("di=").append(toHexString(di)).append('\n');
+        b.append("edi=").append(toHexString(edi)).append('\n');
+        b.append("cs=").append(toHexString(cs)).append('\n');
+        b.append("ds=").append(toHexString(ds)).append('\n');
+        b.append("ss=").append(toHexString(ss)).append('\n');
+        b.append("es=").append(toHexString(es)).append('\n');
+        b.append("ip=").append(toHexString(ip)).append('\n');
+        b.append("oldIP=").append(toHexString(oldIP)).append('\n');
+        b.append("flags=").append(toHexString(flags)).append('\n');
+        b.append("cr0=").append(toHexString(cr0)).append('\n');
+        b.append("cr1=").append(toHexString(cr1)).append('\n');
+        b.append("cr2=").append(toHexString(cr2)).append('\n');
+        b.append("cr3=").append(toHexString(cr3)).append('\n');
+        b.append("cr4=").append(toHexString(cr4)).append('\n');
+        b.append("gdtr=").append(toHexString(gdtr)).append('\n');
+        b.append("idtr=").append(toHexString(idtr)).append('\n');
+        b.append("ldtr=").append(toHexString(ldtr)).append('\n');
         return b.toString();
     }
 

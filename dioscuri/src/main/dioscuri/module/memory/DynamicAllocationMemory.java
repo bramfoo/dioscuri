@@ -89,8 +89,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
-    private int ramSize = 1 * BYTES_IN_MB; // initial value defined in bytes (1
-                                           // Megabyte, 2^20)
+    private int ramSize = BYTES_IN_MB; // initial value defined in bytes (1 Megabyte, 2^20)
 
     // debugging functionality
     private boolean watchValue;
@@ -197,13 +196,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Returns the value of a byte at a specific address
+     * {@inheritDoc}
      *
-     * @param address
-     *            Flat-address where data can be found
-     *
-     * @return byte Byte containing byte data
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public byte getByte(int address) {
 
         ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
@@ -259,13 +256,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Stores the value of a byte at a specific address
+     * {@inheritDoc}
      *
-     * @param address
-     *            Flat-address where data is stored
-     * @param value
-     *            Integer containing byte data
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public void setByte(int address, byte value) {
 
         ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
@@ -320,18 +315,13 @@ public class DynamicAllocationMemory extends ModuleMemory {
         }
     }
 
+
     /**
-     * Returns the value of a word at a specific address Note: words in memory
-     * are stored in Little Endian order (LSB, MSB), but this method returns a
-     * word in Big Endian order (MSB, LSB) because this is the common way words
-     * are used by instructions.
+     * {@inheritDoc}
      *
-     * @param address
-     *            Flat-address where data can be found
-     *
-     * @return byte[] array [MSB, LSB] containing data, 0xFFFF if address
-     *         outside RAM_SIZE range
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public byte[] getWord(int address) {
 
         ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
@@ -393,13 +383,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Stores the value of a word at a specific address Note: words in memory
-     * are stored in Little Endian order (LSB, MSB), but this method assumes
-     * that a word is given in Big Endian order (MSB, LSB) because this is the
-     * common way words are used by instructions. However, storage takes place
-     * in Little Endian order.
+     * {@inheritDoc}
      *
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public void setWord(int address, byte[] value) {
 
         ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
@@ -468,12 +456,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Stores an array of bytes in memory starting at a specific address
+     * {@inheritDoc}
      *
-     * @param address
-     *            Flat-address where data is stored
-     * @throws ModuleException
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public void setBytes(int address, byte[] binaryStream)
             throws ModuleException {
         // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setBytes(" +
@@ -510,13 +497,14 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Set the status of A20 address line
+     * {@inheritDoc}
      *
-     *
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public void setA20AddressLine(boolean status) {
         // Change the status of A20 address line check
-        if (status == true) {
+        if (status) {
             // Enable 0x100000 address bit (memory wrapping is turned off)
             A20mask = 0xFFFFFFFF;
         } else {
@@ -529,22 +517,22 @@ public class DynamicAllocationMemory extends ModuleMemory {
     }
 
     /**
-     * Set Debug watch params.
+     * {@inheritDoc}
      *
-     * @param isWatchOn
-     * @param watchAddress
+     * @see dioscuri.module.ModuleMemory
      */
+    @Override
     public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress) {
         this.watchValue = isWatchOn;
         this.watchAddress = watchAddress;
     }
 
     /**
-     * Set RAM Size in megabytes
+     * {@inheritDoc}
      *
-     * @param ramSizeMB
+     * @see dioscuri.module.ModuleMemory
      */
-    @SuppressWarnings("empty-statement")
+    @Override
     public void setRamSizeInMB(int ramSizeMB) {
         this.ramSize = ramSizeMB * BYTES_IN_MB;
 
@@ -588,5 +576,4 @@ public class DynamicAllocationMemory extends ModuleMemory {
             return -1;
         }
     }
-
 }

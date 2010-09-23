@@ -44,15 +44,13 @@ package dioscuri.exception;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
-public class ModuleWriteOnlyPortException extends Exception {
+public class WriteOnlyPortException extends Exception {
 
     /**
      *
      * @param message
      */
-    public ModuleWriteOnlyPortException(String message) {
+    public WriteOnlyPortException(String message) {
         super(message);
     }
-
 }

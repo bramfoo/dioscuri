@@ -39,23 +39,68 @@
 package dioscuri.interfaces;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 
 /**
  * 
  */
 public interface Addressable extends Module {
-                                                                                                               // TODO remove 'AbstractModule' from exceptions
-    byte getIOPortByte(int address) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException;   // TODO rename ModuleUnknownPort -> UnknownPortException
 
-    byte[] getIOPortWord(int address) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException;
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     * @throws UnknownPortException
+     * @throws WriteOnlyPortException
+     */
+    byte getIOPortByte(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
-    byte[] getIOPortDoubleWord(int address) throws ModuleException, ModuleUnknownPort, ModuleWriteOnlyPortException;
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     * @throws UnknownPortException
+     * @throws WriteOnlyPortException
+     */
+    byte[] getIOPortWord(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
-    void setIOPortByte(int address, byte value) throws ModuleException, ModuleUnknownPort;
+    /**
+     *
+     * @param address
+     * @return
+     * @throws ModuleException
+     * @throws UnknownPortException
+     * @throws WriteOnlyPortException
+     */
+    byte[] getIOPortDoubleWord(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
-    void setIOPortWord(int address, byte[] value) throws ModuleException, ModuleUnknownPort;
+    /**
+     *
+     * @param address
+     * @param value
+     * @throws ModuleException
+     * @throws UnknownPortException
+     */
+    void setIOPortByte(int address, byte value) throws ModuleException, UnknownPortException;
 
-    void setIOPortDoubleWord(int address, byte[] value) throws ModuleException, ModuleUnknownPort;
+    /**
+     *
+     * @param address
+     * @param value
+     * @throws ModuleException
+     * @throws UnknownPortException
+     */
+    void setIOPortWord(int address, byte[] value) throws ModuleException, UnknownPortException;
+
+    /**
+     * 
+     * @param address
+     * @param value
+     * @throws ModuleException
+     * @throws UnknownPortException
+     */
+    void setIOPortDoubleWord(int address, byte[] value) throws ModuleException, UnknownPortException;
 }

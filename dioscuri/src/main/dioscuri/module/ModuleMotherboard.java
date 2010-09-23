@@ -45,10 +45,8 @@ import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic motherboard module.
  */
-
 public abstract class ModuleMotherboard extends AbstractModule implements Addressable {
 
     public int ioSpaceSize;

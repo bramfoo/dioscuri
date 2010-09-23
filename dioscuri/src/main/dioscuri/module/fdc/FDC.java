@@ -51,8 +51,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.exception.StorageDeviceException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleATA;
@@ -761,7 +761,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
@@ -899,7 +899,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     @Override
     public void setIOPortByte(int portAddress, byte value)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
@@ -1210,7 +1210,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -1242,7 +1242,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -1294,6 +1294,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
     @Override
     public boolean setNumberOfDrives(int totalDrives) {
@@ -1332,6 +1334,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
     @Override
     public boolean insertCarrier(String driveLetter, byte carrierType,
@@ -1350,6 +1354,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
     @Override
     public boolean ejectCarrier(String driveLetter) {
@@ -1367,6 +1373,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
     @Override
     public boolean insertCarrier(int driveIndex, byte carrierType,
@@ -1601,6 +1609,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
     @Override
     public boolean ejectCarrier(int driveIndex) {
@@ -1645,10 +1655,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     private void executeCommand() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
-        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
         
         // Drive parameters
         int drv, hds, cylinder, sector, eot;

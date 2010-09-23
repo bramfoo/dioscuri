@@ -29,7 +29,7 @@ import java.io.*;
 import java.util.*;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModulePIC;
@@ -3005,6 +3005,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public String dumpRegisters() {
@@ -3013,6 +3015,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public boolean getCpuInstructionDebug() {
@@ -3021,6 +3025,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public long getCurrentInstructionNumber() {
@@ -3034,7 +3040,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         return 0;
     }
 
@@ -3045,7 +3051,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException {
+            throws ModuleException, WriteOnlyPortException {
         return null;
     }
 
@@ -3056,16 +3062,16 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
+            WriteOnlyPortException {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see dioscuri.module.ModuleCPU#getIPS() Added constant to keep Dioscuri
-     * clock happy
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public int getIPS() {
 
         // 5 MHz clock
@@ -3074,6 +3080,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public String getNextInstructionInfo() {
@@ -3082,6 +3090,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public String getRegisterHex(int register) {
@@ -3090,6 +3100,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected byte[] getRegisterValue(String registerName) {
@@ -3098,14 +3110,17 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected void incrementInstructionCounter() {
-
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected boolean initInstructionTables() {
@@ -3114,26 +3129,35 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected boolean initRegisters() {
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see dioscuri.module.ModuleCPU#interruptRequest(boolean) Added method
-     * body to propagate JPC generated commands.
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public void interruptRequest(boolean value) {
-        if (value)
+        if (value) {
             raiseInterrupt();
-        else
+        }
+        else {
             clearInterrupt();
+        }
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public boolean isAbnormalTermination() {
         return false;
@@ -3141,6 +3165,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setCpuInstructionDebug(boolean isDebugMode) {
@@ -3149,10 +3175,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setHoldRequest(boolean value, Module origin) {
-
     }
 
     /**
@@ -3190,6 +3217,8 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setIPS(int ips) {
@@ -3198,14 +3227,17 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
-
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected boolean setRegisterValue(String registerName, byte[] value) {
@@ -3214,14 +3246,17 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     protected void setRunning(boolean status) {
-
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
     @Override
     public boolean isShutdown() {

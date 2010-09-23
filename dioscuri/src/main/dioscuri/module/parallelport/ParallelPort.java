@@ -49,8 +49,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleParallelPort;
@@ -71,7 +71,6 @@ import dioscuri.module.ModuleParallelPort;
  * 
  * 
  */
-// TODO: Class is (mostly) a stub to return requested values to the BIOS
 public class ParallelPort extends ModuleParallelPort {
 
     // Logging
@@ -125,36 +124,13 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
-            ModuleWriteOnlyPortException {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException,
+            WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
@@ -188,7 +164,7 @@ public class ParallelPort extends ModuleParallelPort {
             return (byte) 0xFF;
 
         default:
-            throw new ModuleUnknownPort("[" + super.getType()
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
@@ -200,7 +176,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
@@ -238,7 +214,7 @@ public class ParallelPort extends ModuleParallelPort {
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + super.getType()
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
@@ -250,7 +226,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -261,7 +237,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
     }
 
     /**
@@ -271,7 +247,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -282,6 +258,6 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
     }
 }

@@ -153,6 +153,8 @@ public class Clock extends ModuleClock implements Runnable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
     @Override
     public boolean registerDevice(Updateable device, int intervalLength, boolean continuous) {
@@ -177,6 +179,8 @@ public class Clock extends ModuleClock implements Runnable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
     @Override
     public boolean resetTimer(Updateable device, int updateInterval) {
@@ -201,6 +205,8 @@ public class Clock extends ModuleClock implements Runnable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
     @Override
     public boolean setTimerActiveState(Updateable device, boolean runState) {
@@ -221,6 +227,8 @@ public class Clock extends ModuleClock implements Runnable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
     @Override
     public void pulse() {
@@ -239,11 +247,11 @@ public class Clock extends ModuleClock implements Runnable {
     }
 
     /**
-     * Implements the run method of Thread
+     * Implements the run method of Runnable
      */
     @Override
     public void run() {
-        // Generate a clock pulse each n millisecons while running
+        // Generate a clock pulse each n milliseconds while running
         while (keepRunning) {
             // Try to sleep for a while
             try {
@@ -256,7 +264,7 @@ public class Clock extends ModuleClock implements Runnable {
     }
 
     /**
-     * Sets the keepRunning toggle keepRunning states if the clockthread should
+     * Sets the keepRunning toggle keepRunning states if the clock-thread should
      * keep running or not
      * 
      * @param status

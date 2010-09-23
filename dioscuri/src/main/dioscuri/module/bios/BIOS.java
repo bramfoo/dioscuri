@@ -158,6 +158,8 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
     @Override
     public byte[] getSystemBIOS() {
@@ -174,6 +176,8 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
     @Override
     public boolean setSystemBIOS(byte[] biosCode) throws ModuleException {
@@ -202,6 +206,8 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
     @Override
     public byte[] getVideoBIOS() {
@@ -218,6 +224,8 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
     @Override
     public boolean setVideoBIOS(byte[] biosCode) throws ModuleException {

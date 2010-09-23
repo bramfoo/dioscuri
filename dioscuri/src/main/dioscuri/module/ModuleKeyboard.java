@@ -60,13 +60,17 @@ public abstract class ModuleKeyboard extends AbstractModule implements Addressab
     }
 
     /**
+     * Method generateScancode Generates a scancode from a KeyEvent.<BR>
+     * The scancode depends on what scancode set is currently active, and
+     * whether the key is pressed or released
      *
-     * @param keyEvent
-     * @param i
+     * @param keyEvent  the KeyEvent containing key-press information
+     * @param eventType Type of KeyEvent, either pressed (0x00) or released (0x01)
      */
-    public abstract void generateScancode(KeyEvent keyEvent, int i);
+    public abstract void generateScancode(KeyEvent keyEvent, int eventType);
 
     /**
+     * Queue data in the keyboard controller buffer<BR>
      *
      * @param data
      * @param source

@@ -52,8 +52,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.exception.StorageDeviceException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleATA;
@@ -266,7 +266,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (byte) to port "
                 + Integer.toHexString(originalPortAddress).toUpperCase()
@@ -282,7 +282,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortByte(int originalAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  OUT command (byte: "
                 + Integer.toHexString(data).toUpperCase() + ") to port "
@@ -300,7 +300,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -315,7 +315,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (word) to port "
@@ -332,7 +332,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -347,7 +347,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (double word) to port "
@@ -375,7 +375,8 @@ public class ATA extends ModuleATA {
         // Set the drive type
         if (isHardDisk) {
             drive = new ATADrive(ATADriveType.HARD_DISK, this, true);
-        } else {
+        }
+        else {
             drive = new ATADrive(ATADriveType.CDROM, this, true, cdromCount);
         }
 
@@ -769,12 +770,12 @@ public class ATA extends ModuleATA {
      * @return byte containing the data at given I/O address port
      *
      * @throws ModuleException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * @throws dioscuri.exception.UnknownPortException
+     * @throws dioscuri.exception.WriteOnlyPortException
      */
     private byte[] read(int originalPortAddress, int ioLength)
-            throws ModuleException, ModuleUnknownPort,
-            ModuleWriteOnlyPortException {
+            throws ModuleException, UnknownPortException,
+            WriteOnlyPortException {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Read ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -1022,7 +1023,6 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the data read.
      */
-    @SuppressWarnings("empty-statement")
     private byte[] readSectors(int originalAddress, int ioLength) {
         // Clear buffer
         byte[] value = new byte[ioLength];
@@ -1039,8 +1039,7 @@ public class ATA extends ModuleATA {
             return value;
         }
 
-        if (this.bulkIOQuantumsRequested > 0
-                && ATAConstants.SUPPORT_REPEAT_SPEEDUPS) {
+        if (this.bulkIOQuantumsRequested > 0 && ATAConstants.SUPPORT_REPEAT_SPEEDUPS) {
 
             int transferLen = 0;
 
@@ -1188,10 +1187,10 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return true if successful / false if write failed
      * @throws ModuleException
-     * @throws ModuleUnknownPort
+     * @throws dioscuri.exception.UnknownPortException
      */
     private boolean write(int originalAddress, byte[] data, int ioLength)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Write ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -2303,8 +2302,7 @@ public class ATA extends ModuleATA {
                         }
 
                         getSelectedDrive().getCdRom().setReady(false);
-                        // TODO: If you want to update GUI for CD-ROM, then put
-                        // it in here!
+                        // TODO: If you want to update GUI for CD-ROM, then put it in here!
                     }
                     raiseInterrupt(channel);
                 } else { // Load the disc
@@ -2322,17 +2320,11 @@ public class ATA extends ModuleATA {
                 // allocLength =
                 // read_16bit(BgetSelectedDriveController().getBuffer() + 8);
                 // TODO:check 8 is the offset
-                allocLength = read16bit(getSelectedDriveController()
-                        .getBuffer(), 8);
+                allocLength = read16bit(getSelectedDriveController().getBuffer(), 8);
 
                 if (allocLength == 0) {
-                    logger
-                            .log(
-                                    Level.SEVERE,
-                                    "["
-                                            + super.getType()
-                                            + "]"
-                                            + "  Not implemented: Zero allocation length to MECHANISM STATUS.");
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]" +
+                            "  Not implemented: Zero allocation length to MECHANISM STATUS.");
                     return;
                 }
 
@@ -4796,36 +4788,6 @@ public class ATA extends ModuleATA {
                 | (buf[2 + offset] << 8) | buf[3 + offset];
 
         return returnValue;
-    }
-
-    /**
-     * Gte the motherboard.
-     *
-     * @return the motherboard
-     */
-    protected ModuleMotherboard getMotherboard() {
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        return motherboard;
-    }
-
-    /**
-     * Get the RTC module.
-     *
-     * @return the RTC module
-     */
-    protected ModuleRTC getRtc() {
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
-        return rtc;
-    }
-
-    /**
-     * Get the PIC module.
-     *
-     * @return the PIC module.
-     */
-    protected ModulePIC getPic() {
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
-        return pic;
     }
 
     /**

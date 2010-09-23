@@ -31,8 +31,8 @@ import java.io.DataOutput;
 import java.io.IOException;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
@@ -733,7 +733,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadByte(portAddress);
         return (byte) result;
@@ -746,7 +746,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadWord(portAddress);
         return new byte[] { ((byte) ((result >> 8) & 0xFF)),
@@ -760,7 +760,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
         // Redirect to native handler
         int result = ioPortReadLong(portAddress);
         return new byte[] { ((byte) ((result >> 24) & 0xFF)),
@@ -775,7 +775,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         // Redirect to native handler
         ioPortWriteByte(portAddress, data);
     }
@@ -787,7 +787,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataWord[0]) & 0xFF) << 8)
                 + (((int) dataWord[1]) & 0xFF));
@@ -801,7 +801,7 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataDoubleWord[3]) & 0xFF) << 24)
                 + ((((int) dataDoubleWord[2]) & 0xFF) << 16)

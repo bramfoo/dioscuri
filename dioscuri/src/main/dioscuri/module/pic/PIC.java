@@ -54,7 +54,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
-import dioscuri.exception.ModuleUnknownPort;
+import dioscuri.exception.UnknownPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.*;
 import dioscuri.module.AbstractModule;
@@ -114,10 +114,7 @@ public class PIC extends ModulePIC {
     private final static int PIC_IRQ_NUMBER_RTC = 8; // RTC / CMOS
     private final static int PIC_IRQ_NUMBER_MOUSE = 12; // Mouse
 
-    private final static int[] PIC_IRQ_NUMBER_ATA = { 14, 15, 11, 9 }; // ATA
-                                                                       // controller
-
-    // Constructor
+    private final static int[] PIC_IRQ_NUMBER_ATA = { 14, 15, 11, 9 }; // ATA controller
 
     /**
      * Class constructor
@@ -198,35 +195,12 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
      * {@inheritDoc}
      *
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
 
@@ -294,7 +268,7 @@ public class PIC extends ModulePIC {
         default:
             logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Unknown I/O address " + portAddress);
-            throw new ModuleUnknownPort("[" + super.getType() + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
 
@@ -801,14 +775,11 @@ public class PIC extends ModulePIC {
     }
     
     /**
-     * Returns an IRQ number. Checks if requesting module has a fixed IRQ
-     * number.
-     * 
-     * @param module
-     *            that would like to have an IRQ number
-     * @return int IRQ number from IRQ address space, or -1 if not
-     *         allowed/possible
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public int requestIRQNumber(AbstractModule module) {
 
         int irqNumber = -1;
@@ -867,9 +838,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Raises an interrupt request (IRQ) of given IRQ number
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public void setIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
@@ -894,9 +867,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Lowers an interrupt request (IRQ) of given IRQ number
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public void clearIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " low");
@@ -917,12 +892,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Acknowledges an interrupt request from PIC by CPU Note: only the CPU can
-     * acknowledge an interrupt
-     * 
-     * @return int address defining the jump address for handling the IRQ by the
-     *         CPU
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public int interruptAcknowledge() {
 
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
@@ -1129,8 +1103,7 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupt with highest priority
      * 
-     * @param masterSlave
-     *            Indicates the source of the interrupt
+     * @param masterSlave the source of the interrupt
      */
     private void clearHighestInterrupt(int masterSlave) {
         int irq;

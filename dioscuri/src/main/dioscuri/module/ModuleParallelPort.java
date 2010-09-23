@@ -43,12 +43,13 @@ import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic parallel port module.
  */
-
 public abstract class ModuleParallelPort extends AbstractModule implements Addressable {
 
+    /**
+     *
+     */
     public ModuleParallelPort() {
         super(Module.Type.PARALLELPORT,
                 Module.Type.MOTHERBOARD);

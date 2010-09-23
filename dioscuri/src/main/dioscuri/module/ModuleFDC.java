@@ -63,7 +63,7 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
      * exceed 4
      * 
      * @param totalDrives
-     * @return boolean true if drives set successfully, false otherwise
+     * @return            true if drives set successfully, false otherwise
      */
     public abstract boolean setNumberOfDrives(int totalDrives);
 

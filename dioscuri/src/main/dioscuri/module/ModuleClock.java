@@ -63,7 +63,8 @@ public abstract class ModuleClock extends AbstractModule {
      * @param continuousOneShot
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public abstract boolean registerDevice(Updateable device, int intervalLength, boolean continuousOneShot);
+    public abstract boolean registerDevice(Updateable device, int intervalLength,
+                                           boolean continuousOneShot);
 
     /**
      * Reset the timer of given device (if any)

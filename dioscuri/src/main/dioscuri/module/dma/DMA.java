@@ -56,8 +56,8 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleDMA;
@@ -358,7 +358,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
         byte returnValue;
         int chanNum;
 
@@ -487,7 +487,7 @@ public class DMA extends ModuleDMA {
             return (byte) (0xF0 | returnValue);
 
         default:
-            throw new ModuleUnknownPort("[" + super.getType() + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
@@ -500,7 +500,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         int chanNum; // Controller channel number
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -634,8 +634,7 @@ public class DMA extends ModuleDMA {
                                         + " command register functionality setting not supported");
             }
             controller[ctrlNum].commandRegister = data;
-            controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1 ? true
-                    : false;
+            controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1;
             controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
                                          // accordingly
             return;
@@ -694,10 +693,8 @@ public class DMA extends ModuleDMA {
         case 0xD6: // Controller 1
             chanNum = data & 0x03; // Determine channel number from bits 0-1
             controller[ctrlNum].channel[chanNum].mode.modeType = (byte) ((data >> 6) & 0x03);
-            controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1 ? true
-                    : false;
-            controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1 ? true
-                    : false;
+            controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1;
+            controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1;
             controller[ctrlNum].channel[chanNum].mode.transferType = (byte) ((data >> 2) & 0x03);
             logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ", channel " + chanNum
@@ -819,7 +816,7 @@ public class DMA extends ModuleDMA {
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + super.getType() + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
@@ -831,7 +828,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws ModuleUnknownPort {
+    public byte[] getIOPortWord(int portAddress) throws UnknownPortException {
         byte[] data = new byte[2];
         data[0] = getIOPortByte(portAddress);
         data[1] = getIOPortByte(portAddress);
@@ -846,7 +843,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         setIOPortByte(portAddress, dataWord[1]);
         setIOPortByte(portAddress, dataWord[0]);
     }
@@ -858,7 +855,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleWriteOnlyPortException {
+            throws WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -876,7 +873,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -885,6 +882,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
     @Override
     public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler) {
@@ -909,6 +908,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
     @Override
     public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
@@ -933,6 +934,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
     @Override
     public boolean isTerminalCountReached() {
@@ -941,6 +944,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
     @Override
     public void setDMARequest(int chanNum, boolean dmaRequest) {
@@ -1177,6 +1182,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
     @Override
     public void acknowledgeBusHold() {

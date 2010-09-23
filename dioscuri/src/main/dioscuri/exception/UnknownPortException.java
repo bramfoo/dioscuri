@@ -44,15 +44,13 @@ package dioscuri.exception;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
-public class ModuleUnknownPort extends Exception {
+public class UnknownPortException extends Exception {
 
     /**
      *
      * @param message
      */
-    public ModuleUnknownPort(String message) {
+    public UnknownPortException(String message) {
         super(message);
     }
-
 }
