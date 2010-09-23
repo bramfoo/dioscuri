@@ -1,12 +1,20 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date            : 21 April 2010
+Date            : 23 September 2010
 Organisations   : Koninklijke Bibliotheek,
                   Nationaal Archief of the Netherlands,
                   Tessella Support Services plc.
 Projects        : Dioscuri project, Planets, KEEP
 
-0.5.1 : 21-04-2010
+0.6.0 : 23-09-2010
+-------------------------------------------------------
+- redesign
+- GUI config path issues
+- code clean-up
+- mouse
+- Windows 3.0 support 32 bit
+
+0.5.2 : 21-04-2010
 -------------------------------------------------------
 Some bug fixes:
 - can now write to HD in 32 bit mode

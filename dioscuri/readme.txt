@@ -1,8 +1,9 @@
 Dioscuri user instructions - Modular emulator for Digital Preservation
 ============================================================
-Date             : 19 March 2010
+Date             : 23 September 2010
 Organisations    : Koninklijke Bibliotheek,
                    Nationaal Archief of the Netherlands
+                   Tessella Support Services plc.
 Projects         : Dioscuri project, Planets, KEEP
 
 Command line arguments

@@ -52,7 +52,7 @@
         Build file for Dioscuri, the modular emulator
     </description>
 
-	<property name="version"            value="0.5.2"/>
+	<property name="version"            value="0.6.0"/>
 	<property name="main-class"         value="dioscuri.DioscuriFrame"/>
 
 	<!-- Directories in this tree -->
