@@ -47,6 +47,7 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
 import dioscuri.module.ModuleDevice;
@@ -187,8 +188,7 @@ public class Motherboard extends ModuleMotherboard {
      * @param updateInterval
      * @return boolean true if registration is successfully, false otherwise
      */
-    public boolean requestTimer(ModuleDevice device, int updateInterval,
-            boolean continuous) {
+    public boolean requestTimer(Updateable device, int updateInterval, boolean continuous) {
 
         ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
 

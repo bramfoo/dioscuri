@@ -44,6 +44,7 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
 import dioscuri.module.ModuleDevice;
@@ -108,7 +109,7 @@ public class Clock extends ModuleClock {
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         // Register clock to motherboard
-        if (motherboard.registerClock(this) == false) {
+        if (!motherboard.registerClock(this)) {
             return false;
         }
 
@@ -158,8 +159,7 @@ public class Clock extends ModuleClock {
      * @param intervalLength
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public boolean registerDevice(ModuleDevice device, int intervalLength,
-            boolean continuous) {
+    public boolean registerDevice(Updateable device, int intervalLength, boolean continuous) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
@@ -167,8 +167,7 @@ public class Clock extends ModuleClock {
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE) {
             // Change the interval length from useconds to instructions
-            timers[arrayIndex] = new Timer(device, intervalLength
-                    * (cpu.getIPS() / 1000000), continuous);
+            timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuous);
 
             logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                     + device.getType() + "' registered a timer with interval "

@@ -42,6 +42,7 @@ package dioscuri.module;
 import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 
 /**
  * Interface representing a generic hardware module.
@@ -73,8 +74,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
      * @param updatePeriod
      * @return boolean true if registration is successfully, false otherwise
      */
-    public abstract boolean requestTimer(ModuleDevice device, int updatePeriod,
-            boolean continuous);
+    public abstract boolean requestTimer(Updateable device, int updatePeriod, boolean continuous);
 
     /**
      * Set a timer to start/stop running

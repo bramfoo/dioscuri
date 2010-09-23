@@ -40,6 +40,7 @@
 package dioscuri.module;
 
 import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 
 /**
  * Interface representing a generic hardware module.
@@ -60,8 +61,7 @@ public abstract class ModuleClock extends AbstractModule {
      * @param continuousOneShot
      * @return boolean true if timer assigned successfully, false otherwise
      */
-    public abstract boolean registerDevice(ModuleDevice device,
-            int intervalLength, boolean continuousOneShot);
+    public abstract boolean registerDevice(Updateable device, int intervalLength, boolean continuousOneShot);
 
     /**
      * Reset the timer of given device (if any)
@@ -79,8 +79,7 @@ public abstract class ModuleClock extends AbstractModule {
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
      */
-    public abstract boolean setTimerActiveState(ModuleDevice device,
-            boolean runState);
+    public abstract boolean setTimerActiveState(ModuleDevice device, boolean runState);
 
     /**
      * Triggers device's update if timer goes off
