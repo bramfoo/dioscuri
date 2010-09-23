@@ -53,7 +53,6 @@ import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
 /**

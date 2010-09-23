@@ -32,7 +32,6 @@ import dioscuri.exception.ModuleException;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModulePIC;
 
 /**

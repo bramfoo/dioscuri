@@ -40,7 +40,6 @@
 package dioscuri.module.clock;
 
 import dioscuri.interfaces.Updateable;
-import dioscuri.module.ModuleDevice;
 
 /**
  * A single counter of the PIT based on the Intel 82C54 chipset.

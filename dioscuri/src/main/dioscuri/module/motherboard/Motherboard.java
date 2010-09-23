@@ -51,7 +51,6 @@ import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
 
