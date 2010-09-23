@@ -72,7 +72,6 @@ public abstract class ModuleDevice extends AbstractModule {
 
     /**
      * Update device
-     *
      */
     public abstract void update();
 

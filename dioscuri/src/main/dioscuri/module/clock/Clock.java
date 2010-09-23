@@ -231,7 +231,6 @@ public class Clock extends ModuleClock {
 
     /**
      * Triggers device's update if timer goes off
-     * 
      */
     public void pulse() {
         // Check all active timers
@@ -258,39 +257,14 @@ public class Clock extends ModuleClock {
     public void run() {
         // Generate a clock pulse each n millisecons while running
         while (keepRunning) {
-            // Send pulse to all counters
-            /*
-             * for (int c = 0; c < counters.length; c++) {
-             * counters[c].clockPulse(); }
-             */
             // Try to sleep for a while
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 keepRunning = false;
             }
         }
-    }
-
-    /**
-     * Calibrates the system clock in comparison with host machine It sets a
-     * penalty time to which the clock should pause until the next pulse may be
-     * send. FIXME: This method is not completely implemented yet!!!
-     * 
-     */
-    @SuppressWarnings("unused")
-    private void calibrate() {
-        // Get system time
-        boolean isCalibrated;
-
-        isCalibrated = false;
-
-        while (isCalibrated == false) {
-
-        }
-
     }
 
     /**
@@ -322,22 +296,5 @@ public class Clock extends ModuleClock {
     public void setClockRate(long milliseconds) {
         // Set the number of milliseconds before a pulse is generated
         this.sleepTime = milliseconds;
-    }
-
-    /**
-     * Sets the active state for this clock
-     * 
-     * @param device
-     * @param state
-     */
-    public void setActiveState(ModuleDevice device, boolean state) {
-        // Check if timer exists for given device
-        int t = 0;
-        while (timers[t] != null) {
-            if (timers[t].user.getType() == device.getType()) {
-                timers[t].active = state;
-            }
-            t++;
-        }
     }
 }
