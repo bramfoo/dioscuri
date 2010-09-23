@@ -61,7 +61,6 @@ import dioscuri.module.ModulePIT;
  * An implementation of a Programmable Interval Timer (PIT) module based on the
  * Intel 82C54 PIT chip.
  * 
- * @see ModuleDevice
  * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************

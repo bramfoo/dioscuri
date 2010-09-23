@@ -35,6 +35,7 @@ import dioscuri.exception.ModuleUnknownPort;
 import dioscuri.exception.ModuleWriteOnlyPortException;
 import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
+import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleDevice;
 
 /**
@@ -42,7 +43,7 @@ import dioscuri.module.ModuleDevice;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-public class DMAController extends ModuleDevice implements IOPortCapable, Addressable, HardwareComponent {
+public class DMAController extends AbstractModule implements IOPortCapable, Addressable, HardwareComponent {
     
     private static final int pagePortList0 = 0x1;
     private static final int pagePortList1 = 0x2;
@@ -767,33 +768,11 @@ public class DMAController extends ModuleDevice implements IOPortCapable, Addres
                 + (((int) dataDoubleWord[0]) & 0xFF));
     }
     public void notImplemented() {
-        System.out
-                .println("[DMAController]: ModuleDevice method not implemented");
-    }
-
-    @Override
-    public int getUpdateInterval() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return 0;
-    }
-
-    @Override
-    public void setUpdateInterval(int interval) {
-        // TODO Auto-generated method stub
-        notImplemented();
-    }
-
-    @Override
-    public void update() {
-        // TODO Auto-generated method stub
-        notImplemented();
+        System.out.println("[DMAController]: ModuleDevice method not implemented");
     }
 
     @Override
     public String getDump() {
-        // TODO Auto-generated method stub
-        notImplemented();
-        return null;
+        return "DMAController dump";
     }
 }

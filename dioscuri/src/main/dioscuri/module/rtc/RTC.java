@@ -57,7 +57,6 @@ import dioscuri.module.ModuleRTC;
  * An implementation of a Real Time module. This component takes care of
  * updating the date and time settings of the computer.
  * 
- * @see ModuleDevice
  * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
