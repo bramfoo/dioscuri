@@ -107,6 +107,8 @@ public class PCI extends AbstractModule implements Addressable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -128,22 +130,10 @@ public class PCI extends AbstractModule implements Addressable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public String getDump() {
-        return "PCI dump";
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
     public byte getIOPortByte(int portAddress) throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (byte) to port "
@@ -156,22 +146,25 @@ public class PCI extends AbstractModule implements Addressable {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -184,17 +177,26 @@ public class PCI extends AbstractModule implements Addressable {
         return new byte[] { (byte) 0xFF, (byte) 0xFF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -207,18 +209,17 @@ public class PCI extends AbstractModule implements Addressable {
         return new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
-
-    // ******************************************************************************
-    // Custom Methods
-
 }

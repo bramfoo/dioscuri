@@ -150,6 +150,8 @@ public class PIT extends ModulePIT {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -197,6 +199,8 @@ public class PIT extends ModulePIT {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -274,12 +278,11 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort {
         logger.log(Level.INFO, "[" + super.getType() + "]"
@@ -326,11 +329,11 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
         logger.log(Level.INFO, "[" + super.getType() + "]" + " I/O write to 0x"
@@ -457,6 +460,12 @@ public class PIT extends ModulePIT {
         return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -469,6 +478,12 @@ public class PIT extends ModulePIT {
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -480,6 +495,12 @@ public class PIT extends ModulePIT {
         return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -493,6 +514,12 @@ public class PIT extends ModulePIT {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -503,9 +530,6 @@ public class PIT extends ModulePIT {
         // Do nothing and just return
         return;
     }
-
-    // ******************************************************************************
-    // ModulePIT Methods
 
     /**
      * Retrieves the current clockrate of this clock in milliseconds

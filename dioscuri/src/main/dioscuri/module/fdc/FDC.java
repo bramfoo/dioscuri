@@ -145,8 +145,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // IRQ and DMA variables
     private int irqNumber; // Interrupt number assigned by PIC
     private boolean pendingIRQ; // IRQ is still in progress
-    private int resetSenseInterrupt; // TODO: Maybe this variable has to be
-                                     // extended for multiple drives
+    private int resetSenseInterrupt; // TODO: Maybe this variable has to be extended for multiple drives
     public DMA8Handler dma8Handler; // 8-bit DMA handler for transfer of bytes
     private boolean tc; // TC, Terminal Count status from DMA controller
     private boolean dmaAndInterruptEnabled; // DMA and IRQ are both enabled
@@ -174,19 +173,16 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                  // value
 
     // Buffer for DMA transfer
-    protected byte[] floppyBuffer; // Buffer for data transfer between DMA and
-                                   // floppy
+    protected byte[] floppyBuffer; // Buffer for data transfer between DMA and floppy
     private int floppyBufferIndex; // Index for floppy buffer
-    private byte floppyBufferCurrentByte; // Contains the current byte of the
-                                          // floppy buffer
+    private byte floppyBufferCurrentByte; // Contains the current byte of the floppy buffer
 
     // Command variables
     private byte[] command; // Array containing bytes that form a command
     private int commandIndex; // Pointer to current byte in command array
     private int commandSize; // Total size of command (in number of bytes)
     private int commandPending; // Denotes if command is pending or not
-    private boolean commandComplete; // Denotes if all bytes of command have
-                                     // been received
+    private boolean commandComplete; // Denotes if all bytes of command have been received
 
     // Result variables
     private byte[] result; // Array containing bytes that form result
@@ -196,8 +192,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // Status and control bits
     byte nonDMA; // non-DMA mode
     byte lock; // FDC lock status
-    byte srt; // step rate time, defines the stepping rate in milliseconds (1 -
-              // 16) for all drives
+    byte srt; // step rate time, defines the stepping rate in milliseconds (1 - 16) for all drives
     byte hut; // head unload time
     byte hlt; // head load time
 
@@ -362,8 +357,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // DMA channel
     private final static int FDC_DMA_CHANNEL = 2;
 
-    // Constructor
-
     /**
      * Class constructor
      * 
@@ -432,15 +425,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         statusRegister2 = 0;
         statusRegister3 = 0;
 
-        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> AbstractModule created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
-
-    // ******************************************************************************
-    // AbstractModule Methods
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -579,6 +570,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public void stop() {
@@ -597,6 +590,8 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -620,22 +615,18 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -648,16 +639,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Update device
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void update() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
-        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
 
         // Perform an update on FDC
         // Cannot guarantee the following instruction since 32-bit update:
@@ -761,12 +749,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
 
@@ -900,12 +887,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @param value
-     * @throws ModuleException
-     *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleException, ModuleUnknownPort {
 
@@ -1213,6 +1199,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -1225,6 +1217,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -1236,6 +1234,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -1249,20 +1253,22 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
      * Raise interrupt signal
-     * 
      */
     protected void setInterrupt() {
         // Raise an interrupt at IRQ 6 at PIC
@@ -1274,7 +1280,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * Clear interrupt signal
-     * 
      */
     protected void clearInterrupt() {
         // Clear an interrupt at IRQ 6 at PIC
@@ -1286,15 +1291,10 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         }
     }
 
-    // ******************************************************************************
-    // FDC Methods
-
     /**
-     * Defines the total number of available drives Note: total number may not
-     * exceed 4, but must be more than 0
-     * 
-     * @return boolean true if drives set successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean setNumberOfDrives(int totalDrives) {
         // Set number of drives (must be > 0 and <= 4)
         ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
@@ -1330,11 +1330,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Inserts a new carrier into a selected drive
-     * 
-     * @param driveLetter
-     * @return boolean true if carrier is inserted successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean insertCarrier(String driveLetter, byte carrierType,
             File imageFile, boolean writeProtected) {
         // Convert driveletter into index
@@ -1350,11 +1348,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Ejects a carrier (if any) from a selected drive
-     * 
-     * @param driveLetter
-     * @return boolean true if carrier is ejected successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean ejectCarrier(String driveLetter) {
         // Convert driveletter into index
         int driveIndex = -1;
@@ -1369,10 +1365,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Inserts a new carrier into a selected drive
-     * 
-     * @return boolean true if carrier is inserted successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean insertCarrier(int driveIndex, byte carrierType,
             File imageFile, boolean writeProtected) {
 
@@ -1604,10 +1599,9 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Ejects a carrier (if any) from a selected drive
-     * 
-     * @return boolean true if carrier is ejected successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean ejectCarrier(int driveIndex) {
         // Try to eject the floppy by removing reference (will be carbage
         // collected)
@@ -1642,14 +1636,10 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return false;
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
      * Execute command of FDC Note: assumed is that all bytes of the command are
      * fetched. After execution of the command, the FDC will automatically enter
      * the result or idle phase.
-     * 
      */
     private void executeCommand() {
 
@@ -2170,7 +2160,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * Store result after execution phase
-     * 
      */
     private void enterResultPhase() {
         // Init variables

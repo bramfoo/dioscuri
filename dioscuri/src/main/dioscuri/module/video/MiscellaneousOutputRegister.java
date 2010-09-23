@@ -80,7 +80,7 @@ public class MiscellaneousOutputRegister {
     /**
      * Return variables to default values
      */
-    protected void reset() {
+    public void reset() {
         verticalSyncPol = 1;
         horizontalSyncPol = 1;
         lowHighPage = 0;

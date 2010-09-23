@@ -308,6 +308,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -341,6 +343,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public void start() {
@@ -587,6 +591,8 @@ public class CPU extends ModuleCPU {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -744,8 +750,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Simple CPU register display
+     * {@inheritDoc}
      */
+    @Override
     public String dumpRegisters() {
 
         ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
@@ -1004,24 +1011,18 @@ public class CPU extends ModuleCPU {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleCPU Methods
-
     /**
-     * Returns if CPU halted abnormally or not
-     * 
-     * @return boolean abnormalTermination true if abnormal, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean isAbnormalTermination() {
         return abnormalTermination;
     }
 
     /**
-     * Returns if CPU halted due to full system shutdown or not
-     * 
-     * @return boolean shutDown true if emulator should shutdown, false
-     *         otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean isShutdown() {
         return shutDown;
     }
@@ -1036,15 +1037,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the CPU hold mode by asserting a Hold Request.<BR>
-     * This informs the CPU to avoid using the (non-existent) bus as another
-     * device (usually via DMA) is using it; it should be scheduled as a
-     * asynchronous event in CPU.
-     * 
-     * @param value
-     *            state of the Hold Request
-     * @param originator
+     * {@inheritDoc}
      */
+    @Override
     public void setHoldRequest(boolean value, Module originator) {
         holdReQuest = value;
         hRQorigin = originator;
@@ -1114,19 +1109,17 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Return the Instructions Per Second (ips) for this CPU.
-     * 
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public int getIPS() {
         return ips;
     }
 
     /**
-     * Set the Instructions Per Second (ips) for this CPU.
-     * 
-     * @param ips
+     * {@inheritDoc}
      */
+    @Override
     public void setIPS(int ips) {
         this.ips = ips;
         ipus = this.ips / 1000000;
@@ -1135,12 +1128,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Set the Instructions Per Second (ips) for this CPU. Also, define what the
-     * smallest period is for sending a clockpulse (in microseconds)
-     * 
-     * @param ips
-     * @param lowestUpdatePeriod in microseconds
+     * {@inheritDoc}
      */
+    @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
         this.ips = ips;
         this.lowestUpdatePeriod = lowestUpdatePeriod;
@@ -1150,14 +1140,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Initialise 8086 registers
-     * <p>
-     * Assigns default values to general, index and special registers. These
-     * values correspond to startup values found in MS-DOS debug.exe
-     * 
-     * @return true if initialisation is successful, false otherwise
-     * 
+     * {@inheritDoc}
      */
+    @Override
     protected boolean initRegisters() {
         // Initialise general purpose registers
         ax = new byte[REGISTER_SIZE_GENERAL / BYTE];
@@ -1271,12 +1256,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Initialise the single and double byte opcode lookup arrays with
-     * instructions corresponding to the Intel hexadecimal machinecode values.
-     * 
-     * @return true if initialisation is successful, false otherwise
-     * 
+     * {@inheritDoc}
      */
+    @Override
     protected boolean initInstructionTables() {
         // Initialise single-byte opcode lookup array with instruction functions
         singleByteInstructions = new Instruction[256];
@@ -3308,23 +3290,18 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Set the boolean that starts and stops the CPU loop
-     * 
-     * @param status
-     *            sets the isRunning boolean
+     * {@inheritDoc}
      */
+    @Override
     protected void setRunning(boolean status) {
         // Set the isRunning flag
         isRunning = status;
     }
 
     /**
-     * Returns the value of a named register.
-     * 
-     * @param registerName
-     * 
-     * @return value of register, null otherwise
+     * {@inheritDoc}
      */
+    @Override
     public byte[] getRegisterValue(String registerName) {
         byte[] register = this.convertStringToRegister(registerName);
         if (register != null) {
@@ -3334,15 +3311,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the value of a named register to given value.
-     * 
-     * @param
-     *            registerName
-     * 
-     * @param  value containing the value
-     * 
-     * @return true if set was successful, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean setRegisterValue(String registerName, byte[] value) {
         byte[] register = this.convertStringToRegister(registerName);
         if (register != null) {
@@ -3400,9 +3371,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Shows next instruction to be processed
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public String getNextInstructionInfo() {
 
         ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
@@ -3475,32 +3446,27 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Retrieve current number of instruction (instructions executed so far)
-     * 
-     * @return long containing number of instructions
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public long getCurrentInstructionNumber() {
         return instructionCounter;
     }
 
     /**
-     * Increment current number of instruction by one
-     * 
+     * {@inheritDoc}
      */
+    @Override
     protected void incrementInstructionCounter() {
         // instructionCounter++;
     }
 
     /**
-     * Returns the value (byte) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * 
-     * @return byte value
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -3508,14 +3474,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the value (byte) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * 
-     * @param data
-     * 
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         // Set data in I/O address space at port address
@@ -3524,14 +3487,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Returns the value (word) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * 
-     * @return byte[] word value
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -3539,14 +3499,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the value (word) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * 
-     * @param data word value
-     * 
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
@@ -3555,15 +3512,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Returns the value (double word) in I/O address space at given port
-     * address.
-     * 
-     * @param portAddress
-     * 
-     * @return byte[] double word value
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException {
         // Retrieve data from I/O address space at port address
@@ -3572,14 +3525,11 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the value (double word) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * 
-     * @param data double word value
-     * 
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] data)
             throws ModuleException {
         // Set data in I/O address space at port address
@@ -3588,10 +3538,9 @@ public class CPU extends ModuleCPU {
     }
 
     /**
-     * Sets the value of the interrupt request (IRQ).
-     * 
-     * @param value
+     * {@inheritDoc}
      */
+    @Override
     public void interruptRequest(boolean value) {
         irqPending = value;
         asyncEvent = true;

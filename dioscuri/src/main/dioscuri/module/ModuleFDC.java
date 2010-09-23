@@ -46,12 +46,13 @@ import dioscuri.interfaces.Updateable;
 import java.io.File;
 
 /**
- * Interface representing a generic hardware module. TODO: this template of
- * moduleFDC could also be made more generic for any removable storage device
+ * Abstract class representing a generic FDC module.
  */
-
 public abstract class ModuleFDC extends AbstractModule implements Addressable, Updateable {
 
+    /**
+     *
+     */
     public ModuleFDC() {
         super(Module.Type.FDC,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC, Module.Type.ATA, Module.Type.DMA);

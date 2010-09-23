@@ -203,6 +203,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return (this.dShift == 0);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
+     */
+    @Override
     public boolean reset() {
         for (int i = 0; i < dmaRegs.length; i++)
             dmaRegs[i].reset();
@@ -720,6 +726,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return "DMA Controller [element " + dShift + "]";
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         // Redirect to native handler
@@ -727,6 +739,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return (byte) result;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         // Redirect to native handler
@@ -735,6 +753,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
                 ((byte) (result & 0xFF)) };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         // Redirect to native handler
@@ -744,12 +768,24 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
                 ((byte) ((result >> 8) & 0xFF)), ((byte) (result & 0xFF)) };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
         // Redirect to native handler
         ioPortWriteByte(portAddress, data);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort {
         // Redirect to native handler
@@ -758,6 +794,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException, ModuleUnknownPort {
         // Redirect to native handler
@@ -765,13 +807,5 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
                 + ((((int) dataDoubleWord[2]) & 0xFF) << 16)
                 + ((((int) dataDoubleWord[1]) & 0xFF) << 8)
                 + (((int) dataDoubleWord[0]) & 0xFF));
-    }
-    public void notImplemented() {
-        System.out.println("[DMAController]: ModuleDevice method not implemented");
-    }
-
-    @Override
-    public String getDump() {
-        return "DMAController dump";
     }
 }

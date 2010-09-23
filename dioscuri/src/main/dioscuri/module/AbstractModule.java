@@ -98,6 +98,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final Module getConnection(Type type) {
@@ -106,6 +108,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final Map<Type, Module> getConnections() {
@@ -114,6 +118,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final boolean getDebugMode() {
@@ -122,12 +128,22 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * Provides a dummy implementation since many of the subclasses
+     * of this abstract module class do not need or use a getDump()
+     * implementation. The ones that do, can override this method.
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
-    public abstract String getDump();
+    public String getDump() {
+        return "No getDump() method provided for " + getType();
+    }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final Type[] getExpectedConnections() {
@@ -136,6 +152,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final Type getType() {
@@ -144,6 +162,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final boolean isConnected() {
@@ -157,12 +177,16 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public abstract boolean reset();
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final boolean setConnection(Module module) {
@@ -182,6 +206,8 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public final void setDebugMode(boolean status) {
@@ -190,17 +216,29 @@ public abstract class AbstractModule implements Module {
 
     /**
      * {@inheritDoc}
+     *
+     * Provides an empty implementations since many of the subclasses
+     * of this abstract module class do not need a start() implementation. 
+     * The ones that do, can override this method.
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public void start(){
-        // empty, can be @Override-en in sub-classes
+        // ...
     }
 
     /**
      * {@inheritDoc}
+     *
+     * Provides an empty implementations since many of the subclasses
+     * of this abstract module class do not need a stop() implementation.
+     * The ones that do, can override this method.
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public void stop(){
-        // empty, can be @Override-en in sub-classes
+        // ...
     }
 }

@@ -96,72 +96,60 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     /**
      * Set I/O address port to given device
-     * 
-     * @param portAddress 
+     *
+     * @param portAddress
      * @param device
      * @return boolean true if data is set successfully, false otherwise
      */
     public abstract boolean setIOPort(int portAddress, Addressable device);
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract byte getIOPortByte(int portAddress) throws ModuleException;
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @param portAddress
-     * @param dataByte
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract void setIOPortByte(int portAddress, byte dataByte)
             throws ModuleException;
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract byte[] getIOPortWord(int portAddress) throws ModuleException;
 
     /**
-     * Set a word in I/O address space at given port
-     * 
-     * @param portAddress
-     * @param dataWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract void setIOPortWord(int portAddress, byte[] dataWord) throws ModuleException;
 
     /**
-     * Return a double word from I/O address space at given port
-     * 
-     * @param portAddress
-     * @return byte[] containing the double word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract byte[] getIOPortDoubleWord(int portAddress) throws ModuleException;
 
     /**
-     * Set a double word in I/O address space at given port
-     * 
-     * @param portAddress 
-     * @param dataDoubleWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public abstract void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) throws ModuleException;
 
     /**

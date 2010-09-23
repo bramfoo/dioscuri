@@ -43,11 +43,13 @@ import dioscuri.interfaces.Module;
 import dioscuri.interfaces.Updateable;
 
 /**
- * Interface representing a generic hardware module.
+ * Abstract class representing a clock module.
  */
-
 public abstract class ModuleClock extends AbstractModule {
 
+    /**
+     * 
+     */
     public ModuleClock() {
         super(Module.Type.CLOCK,
                 Module.Type.MOTHERBOARD, Module.Type.CPU);
@@ -83,7 +85,6 @@ public abstract class ModuleClock extends AbstractModule {
 
     /**
      * Triggers device's update if timer goes off
-     * 
      */
     public abstract void pulse();
 

@@ -86,10 +86,11 @@ public class CRTControllerRegister {
     // 0x16 - End Vertical Blanking
     // 0x17 - CRTC Mode Control Register
     // 0x18 - Line Compare Register
+
     /**
      * Return variables to default values
      */
-    protected void reset() {
+    public void reset() {
         index = 0;
         protectEnable = false;
         Arrays.fill(regArray, (byte) 0);

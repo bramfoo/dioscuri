@@ -129,11 +129,10 @@ public class DynamicAllocationMemory extends ModuleMemory {
                 + " AbstractModule created successfully.");
     }
 
-    // ******************************************************************************
-    // AbstractModule Methods
-
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -153,6 +152,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {

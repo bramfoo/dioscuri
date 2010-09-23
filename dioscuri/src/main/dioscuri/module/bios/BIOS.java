@@ -77,10 +77,8 @@ public class BIOS extends ModuleBIOS {
     private byte[] videoROM; // Contains the Video BIOS
 
     // Memory size
-    private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes
-                                                          // (64 KB, 2^16)
-    private final static int VIDEOBIOS_ROM_SIZE = 32768; // defined in bytes (32
-                                                         // KB, 2^15)
+    private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes (64 KB, 2^16)
+    private final static int VIDEOBIOS_ROM_SIZE = 32768; // defined in bytes (32 KB, 2^15)
 
     /**
      * Class constructor
@@ -97,12 +95,13 @@ public class BIOS extends ModuleBIOS {
         Arrays.fill(systemROM, (byte) 0);
         Arrays.fill(videoROM, (byte) 0);
 
-        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
-                + " -> AbstractModule created successfully.");
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -113,6 +112,8 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -155,14 +156,10 @@ public class BIOS extends ModuleBIOS {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleBIOS Methods
-
     /**
-     * Returns the system BIOS code from ROM with size of SYSTEM_BIOS_ROM_SIZE
-     * 
-     * @return byte[] biosCode containing the binary code of BIOS
+     * {@inheritDoc}
      */
+    @Override
     public byte[] getSystemBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[SYSTEMBIOS_ROM_SIZE];
@@ -176,13 +173,9 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Sets the system BIOS code in ROM Note: System BIOS must be exactly 64 KB
-     * 
-     * @param biosCode
-     * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
-     *         is successful, false otherwise
-     * @throws ModuleException
+     * {@inheritDoc}
      */
+    @Override
     public boolean setSystemBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 64 KB max
         if (biosCode.length == SYSTEMBIOS_ROM_SIZE) {
@@ -208,10 +201,9 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Returns the Video BIOS code from ROM
-     * 
-     * @return byte[] biosCode containing the binary code of Video BIOS
+     * {@inheritDoc}
      */
+    @Override
     public byte[] getVideoBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[VIDEOBIOS_ROM_SIZE];
@@ -225,13 +217,9 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Sets the Video BIOS code in ROM
-     * 
-     * @param biosCode
-     * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
-     *         successful, false otherwise
-     * @throws ModuleException
+     * {@inheritDoc}
      */
+    @Override
     public boolean setVideoBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 32 KB max
         if (biosCode.length == VIDEOBIOS_ROM_SIZE) {

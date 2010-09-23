@@ -121,6 +121,8 @@ public class RTC extends ModuleRTC {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -167,6 +169,8 @@ public class RTC extends ModuleRTC {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -221,17 +225,11 @@ public class RTC extends ModuleRTC {
     }
 
     /**
-     * IN instruction to CMOS<BR>
-     * 
-     * @param portAddress
-     *            the target port; should be either 0x70 or 0x71 <BR>
-     *            IN to portAddress 70 throws an exception as it is a write-only
-     *            port<BR>
-     *            IN to portAddress 71 returns data from previously indicated
-     *            CMOS register<BR>
-     * 
-     * @return byte of data from previously indicated CMOS register
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
             ModuleWriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
@@ -275,17 +273,11 @@ public class RTC extends ModuleRTC {
     }
 
     /**
-     * OUT instruction to CMOS<BR>
-     * 
-     * @param portAddress
-     *            the target port; should be either 0x70 or 0x71
-     * @param data
-     *            the data written to either the lookupRegister or CMOS <BR>
-     *            OUT to portAddress 70 sets lookupRegister for the next CMOS
-     *            port instruction<BR>
-     *            OUT to portAddress 71 writes data to previously indicated CMOS
-     *            register<BR>
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
@@ -326,6 +318,12 @@ public class RTC extends ModuleRTC {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -338,17 +336,26 @@ public class RTC extends ModuleRTC {
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -362,6 +369,12 @@ public class RTC extends ModuleRTC {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
@@ -372,9 +385,6 @@ public class RTC extends ModuleRTC {
         // Do nothing and just return okay
         return;
     }
-
-    // ******************************************************************************
-    // ModuleRTC Methods
 
     /**
      * Return requested CMOS register

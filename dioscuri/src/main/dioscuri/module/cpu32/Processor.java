@@ -946,6 +946,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
+     */
+    @Override
     public boolean reset() {
         resetTime = System.currentTimeMillis();
         eax = ebx = ecx = edx = 0;
@@ -2997,42 +3003,60 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public void timerCallback() {
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String dumpRegisters() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean getCpuInstructionDebug() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public long getCurrentInstructionNumber() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return 0;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleException, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -3048,39 +3072,51 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         return 5 * 1000000;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getNextInstructionInfo() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public String getRegisterHex(int register) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected byte[] getRegisterValue(String registerName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void incrementInstructionCounter() {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean initInstructionTables() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean initRegisters() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -3100,76 +3136,95 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     @Override
     public boolean isAbnormalTermination() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setCpuInstructionDebug(boolean isDebugMode) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setHoldRequest(boolean value, Module origin) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
     public void setIOPortWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setIPS(int ips) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected boolean setRegisterValue(String registerName, byte[] value) {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void setRunning(boolean status) {
-        // TODO Auto-generated method stub
 
     }
 
-    @Override
-    public String getDump() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean isShutdown() {
-        // TODO Auto-generated method stub
         return false;
     }
 }

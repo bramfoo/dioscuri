@@ -45,11 +45,13 @@ import dioscuri.module.dma.DMA16Handler;
 import dioscuri.module.dma.DMA8Handler;
 
 /**
- * Interface representing a generic hardware module.
+ * Interface representing a generic DMA module.
  */
-
 public abstract class ModuleDMA extends AbstractModule implements Addressable {
 
+    /**
+     *
+     */
     public ModuleDMA() {
         super(Module.Type.DMA,
                 Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
@@ -61,8 +63,7 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
      * @param dma8handler
      * @return -
      */
-    public abstract boolean registerDMAChannel(int chanNum,
-            DMA8Handler dma8handler);
+    public abstract boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler);
 
     /**
      *
@@ -70,20 +71,31 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
      * @param dma16handler
      * @return -
      */
-    public abstract boolean registerDMAChannel(int chanNum,
-            DMA16Handler dma16handler);
+    public abstract boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler);
 
     /**
+     * Sets the DMA Requests in the corresponding controller's status register,
+     * and initiates the handling of Hold Requests
      *
      * @param chanNum
+     *            Channel requesting a DMA transfer
      * @param request
+     *            Set request (true); clear request (false)
      */
     public abstract void setDMARequest(int chanNum, boolean request);
+
+    /**
+     * Control has been relinquished of the system busses<BR>
+     * DMA now has control over the system busses, so the highest priority DMA
+     * channel that scheduled a request is located and after setting up the
+     * necessary parameters (address, count, memory), the DMA transfer is
+     * initiated
+     */
     public abstract void acknowledgeBusHold();
 
     /**
      *
-     * @return -
+     * @return 
      */
     public abstract boolean isTerminalCountReached();
 }

@@ -136,6 +136,8 @@ public class PIC extends ModulePIC {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -170,6 +172,8 @@ public class PIC extends ModulePIC {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -220,11 +224,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
@@ -302,9 +306,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data) {
 
         ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
@@ -739,10 +745,11 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (word) to port "
@@ -755,24 +762,24 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
-     * Return a doubleword from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
@@ -785,22 +792,18 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a doubleword in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
-
-    // ******************************************************************************
-    // ModulePIC Methods
-
+    
     /**
      * Returns an IRQ number. Checks if requesting module has a fixed IRQ
      * number.

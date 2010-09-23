@@ -43,16 +43,17 @@ import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Module;
 
 /**
- * Abstract class representing a generic hardware module. This class defines a
- * template for a BIOS module, which may contain a system BIOS, VIDEO BIOS and
- * optional BIOSes.
+ * Abstract class class defining a template for a BIOS module, which
+ * may contain a system BIOS, VIDEO BIOS and optional BIOSes.
  * 
  */
-
 public abstract class ModuleBIOS extends AbstractModule {
 
+    /**
+     * 
+     */
     public ModuleBIOS() {
-        super(Module.Type.BIOS /* no expected connections */);
+        super(Module.Type.BIOS /* no expected connections */ );
     }
 
     /**

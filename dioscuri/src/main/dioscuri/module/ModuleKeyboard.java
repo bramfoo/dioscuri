@@ -46,11 +46,14 @@ import dioscuri.interfaces.Updateable;
 import java.awt.event.KeyEvent;
 
 /**
- * Interface representing a generic hardware module.
+ * Abstract class representing a generic Keyboard module.
  *
  */
 public abstract class ModuleKeyboard extends AbstractModule implements Addressable, Updateable {
 
+    /**
+     *
+     */
     public ModuleKeyboard() {
         super(Module.Type.KEYBOARD,
                 Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
@@ -75,5 +78,4 @@ public abstract class ModuleKeyboard extends AbstractModule implements Addressab
      * @param status
      */
     public abstract void setTimeOut(byte status);
-
 }

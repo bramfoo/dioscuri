@@ -130,6 +130,8 @@ public class Video extends ModuleVideo {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -180,25 +182,6 @@ public class Video extends ModuleVideo {
 
         return true;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDump() {
-        String dump = "Video status:\n";
-
-        dump += "Read mode: " + videocard.graphicsController.readMode + "\n";
-        dump += "Write mode: " + videocard.graphicsController.writeMode + "\n";
-
-        // dump += "Graphics mode: " + ...
-        // dump += "Text mode: " + ...
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
 
     /**
      * Retrieve the interval between subsequent updates
@@ -723,12 +706,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * IN instruction to video adapter<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x3B4, 0x3B5, 0x3BA,
-     *                    0x3C0-0x3CF, 0x3D4, 0x3D4, 0x3DA
-     * @return byte from target port
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
 
@@ -1060,11 +1042,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * OUT instruction to video adapter<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port<BR>
-     * @param data        Value written to the selected port
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
 
@@ -1712,33 +1694,51 @@ public class Video extends ModuleVideo {
             // Mark all video as updated so the changes will go through
             setAreaForUpdate(0, 0, oldScreenWidth, oldScreenHeight);
         }
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort {
         // Support IO words by redirecting to byte handler
         setIOPortByte(portAddress, (byte) (dataWord[1] & 0xff));
         setIOPortByte(portAddress + 1, (byte) (dataWord[0] & 0xff));
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
     }
 
     // ******************************************************************************

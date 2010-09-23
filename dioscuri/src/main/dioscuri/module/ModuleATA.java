@@ -45,12 +45,13 @@ import dioscuri.interfaces.Updateable;
 import dioscuri.module.ata.ATATranslationType;
 
 /**
- * Interface representing a generic hardware module. TODO: this template of
- * moduleATA could also be made more generic for any fixed storage device
+ * Abstract class representing a ATA module.
  */
-
 public abstract class ModuleATA extends AbstractModule implements Addressable, Updateable {
 
+    /**
+     * 
+     */
     public ModuleATA() {
         super(Module.Type.ATA,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC);

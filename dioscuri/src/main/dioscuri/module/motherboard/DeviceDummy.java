@@ -78,6 +78,8 @@ public class DeviceDummy extends AbstractModule implements Addressable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -94,35 +96,10 @@ public class DeviceDummy extends AbstractModule implements Addressable {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public String getDump() {
-        return "Dummy dump";
-    }
-
-    /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    //public int getUpdateInterval() {
-    //    return -1;
-    //}
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    //public void setUpdateInterval(int interval) {
-    //}
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     */
     public byte getIOPortByte(int portAddress) throws ModuleException {
         if (portAddress == 0x92) {
             ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -147,11 +124,11 @@ public class DeviceDummy extends AbstractModule implements Addressable {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleException {
         if (portAddress == 0x92) {
@@ -171,6 +148,12 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + " received. No action taken.");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         if (portAddress == 0x92) {
@@ -194,6 +177,12 @@ public class DeviceDummy extends AbstractModule implements Addressable {
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         if (portAddress == 0x92) {
@@ -213,6 +202,12 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + " received. No action taken.");
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -222,10 +217,15 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + " Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
-                (byte) 0x0FF };
+        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -233,5 +233,4 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
     }
-
 }

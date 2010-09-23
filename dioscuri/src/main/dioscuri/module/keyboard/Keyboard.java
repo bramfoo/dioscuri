@@ -112,8 +112,6 @@ public class Keyboard extends ModuleKeyboard {
     private final static int KEYBOARD = 0; // Source is keyboard
     private final static int MOUSE = 1; // Source is mouse
 
-    // Constructor
-
     /**
      * Class constructor
      */
@@ -168,6 +166,8 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -229,6 +229,8 @@ public class Keyboard extends ModuleKeyboard {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -300,15 +302,11 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * IN instruction to keyboard<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress
-     *            the target port; should be either 0x60 or 0x64 <BR>
-     *            IN to portAddress 60h IN to portAddress 64h returns the
-     *            keyboard status
-     *
-     * @return byte of data from output buffer
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
             ModuleWriteOnlyPortException {
         byte value;
@@ -405,15 +403,11 @@ public class Keyboard extends ModuleKeyboard {
     }
 
     /**
-     * OUT instruction to keyboard<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress
-     *            the target port; should be either 0x60 or 0x64
-     * @param value
-     *            the data written to the keyboard port <BR>
-     *            OUT to portAddress 60h executes data port commands OUT to
-     *            portAddress 64h executes status port commands
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte value)
             throws ModuleUnknownPort {
 
@@ -875,6 +869,12 @@ public class Keyboard extends ModuleKeyboard {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -887,17 +887,26 @@ public class Keyboard extends ModuleKeyboard {
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -911,15 +920,18 @@ public class Keyboard extends ModuleKeyboard {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**

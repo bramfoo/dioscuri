@@ -73,7 +73,7 @@ public class Timer {
     }
 
     // Methods
-    protected void reset() {
+    public void reset() {
         // Reset countdown to initial update interval
         this.currentCount = intervalLength;
 

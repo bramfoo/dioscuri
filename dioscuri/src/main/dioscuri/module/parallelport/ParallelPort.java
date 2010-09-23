@@ -101,6 +101,8 @@ public class ParallelPort extends ModuleParallelPort {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -121,21 +123,6 @@ public class ParallelPort extends ModuleParallelPort {
         return true;
 
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDump() {
-        String dump = "Parallel port status:\n";
-
-        dump += "This module is only a stub, no contents available" + "\n";
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
 
     /**
      * Retrieve the interval between subsequent updates
@@ -161,18 +148,11 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * IN instruction to parallel port<BR>
-     * 
-     * @param portAddress
-     *            the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *            0x03B[C-E]<BR>
-     * 
-     *            IN to portAddress 378h does ...<BR>
-     *            IN to portAddress 379h does ...<BR>
-     *            IN to portAddress 37Ah does ...<BR>
-     * 
-     * @return byte of data from ...
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
             ModuleWriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
@@ -214,16 +194,11 @@ public class ParallelPort extends ModuleParallelPort {
     }
 
     /**
-     * OUT instruction to parallel port<BR>
-     * 
-     * @param portAddress
-     *            the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *            0x03B[C-E]<BR>
-     * 
-     *            OUT to portAddress 378h does ...<BR>
-     *            OUT to portAddress 379h does ...<BR>
-     *            OUT to portAddress 37Ah does ...<BR>
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
@@ -268,30 +243,45 @@ public class ParallelPort extends ModuleParallelPort {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
     }
-
-    // ******************************************************************************
-    // Custom methods
 }

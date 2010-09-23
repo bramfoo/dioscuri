@@ -120,6 +120,8 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -142,6 +144,8 @@ public class Motherboard extends ModuleMotherboard {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -251,11 +255,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Return I/O port data from I/O address space
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException {
         // check if port is available
         if (ioAddressSpace[portAddress] != null) {
@@ -290,11 +294,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte dataByte)
             throws ModuleException {
         // Check for Bochs BIOS ports first:
@@ -361,11 +365,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @return byte[] containing the word at given I/O address port
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
@@ -401,11 +405,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         // check if port range is available
@@ -437,11 +441,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Return a double word from I/O address space at given port
-     * 
-     * @return byte[] containing the double word at given I/O address port
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
@@ -481,11 +485,11 @@ public class Motherboard extends ModuleMotherboard {
     }
 
     /**
-     * Set a double word in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         // check if port range is available

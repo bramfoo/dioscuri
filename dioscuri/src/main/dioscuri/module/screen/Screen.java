@@ -181,6 +181,8 @@ public class Screen extends ModuleScreen {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -193,6 +195,8 @@ public class Screen extends ModuleScreen {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {

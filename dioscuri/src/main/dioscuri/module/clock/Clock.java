@@ -64,7 +64,7 @@ import dioscuri.module.ModuleMotherboard;
  * max
  * 
  */
-public class Clock extends ModuleClock {
+public class Clock extends ModuleClock implements Runnable {
 
     // Logging
     private static final Logger logger = Logger.getLogger(Clock.class.getName());
@@ -100,12 +100,13 @@ public class Clock extends ModuleClock {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
 
         // Register clock to motherboard
         if (!motherboard.registerClock(this)) {
@@ -118,15 +119,18 @@ public class Clock extends ModuleClock {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
     @Override
     public void stop() {
-        // Stop Clock thread
         this.setKeepRunning(false);
     }
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -147,17 +151,10 @@ public class Clock extends ModuleClock {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleClock Methods
-
     /**
-     * Register a device to clock and assign a timer to it
-     * 
-     * @param device 
-     * @param continuous
-     * @param intervalLength
-     * @return boolean true if timer assigned successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean registerDevice(Updateable device, int intervalLength, boolean continuous) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -179,12 +176,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Reset the countdown of a timer to the interval length
-     * 
-     * @param device 
-     * @param updateInterval
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean resetTimer(Updateable device, int updateInterval) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -206,12 +200,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Set a timer to start/stop running
-     * 
-     * @param device 
-     * @param runState
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean setTimerActiveState(Updateable device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
@@ -229,8 +220,9 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Triggers device's update if timer goes off
+     * {@inheritDoc}
      */
+    @Override
     public void pulse() {
         // Check all active timers
         int t = 0;
@@ -246,13 +238,10 @@ public class Clock extends ModuleClock {
         }
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
      * Implements the run method of Thread
-     * 
      */
+    @Override
     public void run() {
         // Generate a clock pulse each n millisecons while running
         while (keepRunning) {
@@ -274,26 +263,5 @@ public class Clock extends ModuleClock {
      */
     protected void setKeepRunning(boolean status) {
         keepRunning = status;
-    }
-
-    /**
-     * Retrieves the current clockrate of this clock in milliseconds
-     * 
-     * @return long milliseconds defining how long the clock sleeps before
-     *         sending a pulse
-     */
-    public long getClockRate() {
-        // Return the current number of milliseconds the clock is sleeping
-        return this.sleepTime;
-    }
-
-    /**
-     * Sets the rate for this clock
-     * 
-     * @param milliseconds
-     */
-    public void setClockRate(long milliseconds) {
-        // Set the number of milliseconds before a pulse is generated
-        this.sleepTime = milliseconds;
     }
 }

@@ -103,6 +103,8 @@ public class Mouse extends ModuleMouse implements UART {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -120,6 +122,8 @@ public class Mouse extends ModuleMouse implements UART {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {

@@ -79,9 +79,8 @@ public class TheProgrammableInterruptController {
     /**
      * Resets all common parameters to their default value NOTE: Not all
      * parameters are reset! (interruptOffset, masterSlave, etc.)
-     * 
      */
-    protected void reset() {
+    public void reset() {
         singleCascadedPIC = false;
         specialFullyNestedMode = false; // normal nested mode
         bufferedMode = false; // unbuffered mode

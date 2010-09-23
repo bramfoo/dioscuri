@@ -177,6 +177,8 @@ public class SerialPort extends ModuleSerialPort {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -227,21 +229,6 @@ public class SerialPort extends ModuleSerialPort {
 
         return true;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDump() {
-        String dump = "Serial port status:\n";
-
-        dump += "This module is only a stub, no contents available" + "\n";
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
 
     /**
      * Retrieve the interval between subsequent updates
@@ -329,12 +316,11 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * IN instruction to serial port<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x03F[8-F], 0x02F[8-F],
-     *                    0x03E[8-F], or 2E[8-F]<BR>
-     * @return byte of data from COM-port register
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
             ModuleWriteOnlyPortException {
         int offset, port;
@@ -523,15 +509,11 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * OUT instruction to serial port<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *                    0x03B[C-E]<BR>
-     *                    <p/>
-     *                    OUT to portAddress 378h does ...<BR>
-     *                    OUT to portAddress 379h does ...<BR>
-     *                    OUT to portAddress 37Ah does ...<BR>
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
 
@@ -964,6 +946,12 @@ public class SerialPort extends ModuleSerialPort {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.INFO, "[" + super.getType()
@@ -976,17 +964,26 @@ public class SerialPort extends ModuleSerialPort {
         return new byte[]{(byte) 0x0FF, (byte) 0x0FF};
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleWriteOnlyPortException {
         logger.log(Level.INFO, "[" + super.getType()
@@ -996,19 +993,21 @@ public class SerialPort extends ModuleSerialPort {
                 + "] Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
-                (byte) 0x0FF};
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF};
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     // ******************************************************************************

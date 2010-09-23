@@ -198,8 +198,10 @@ public class ComPort {
         baudrate = 0;
     }
 
-    // Methods
-    protected void reset() {
+    /**
+     * 
+     */
+    public void reset() {
         // Reset all internal COM parameters
         // Reset registers
 

@@ -173,8 +173,6 @@ public class DMA extends ModuleDMA {
     private final static int FLOPPY_DMA_CHANNEL = 2;
     private final static int CASCADE_DMA_CHANNEL = 4;
 
-    // Constructor
-
     /**
      * Class constructor
      * 
@@ -230,11 +228,10 @@ public class DMA extends ModuleDMA {
                 + " AbstractModule created successfully.");
     }
 
-    // ******************************************************************************
-    // AbstractModule Methods
-
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
@@ -324,6 +321,8 @@ public class DMA extends ModuleDMA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -353,38 +352,12 @@ public class DMA extends ModuleDMA {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleUnknownPort
-     */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
         byte returnValue;
         int chanNum;
@@ -521,10 +494,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
             throws ModuleUnknownPort {
         int chanNum; // Controller channel number
@@ -852,11 +826,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleUnknownPort {
         byte[] data = new byte[2];
         data[0] = getIOPortByte(portAddress);
@@ -866,10 +840,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleUnknownPort {
         setIOPortByte(portAddress, dataWord[1]);
@@ -878,10 +853,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Return a doubleword from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress)
             throws ModuleWriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -895,10 +871,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Set a doubleword in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleUnknownPort {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
@@ -910,15 +887,10 @@ public class DMA extends ModuleDMA {
         return;
     }
 
-    // ******************************************************************************
-    // ModuleDMA methods
-
     /**
-     * Allows a device to register an 8-bit DMA Handler providing
-     * implementations for the ReadFromMem and WriteToMem
-     * 
-     * @return true if succesfully registered, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler) {
         if (chanNum > 3) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -940,11 +912,9 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Allows a device to register an 16-bit DMA Handler providing
-     * implementations for the ReadFromMem and WriteToMem
-     * 
-     * @return true if succesfully registered, false otherwise
+     * {@inheritDoc}
      */
+    @Override
     public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
         if (chanNum < 4 || chanNum > 7) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -966,38 +936,17 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Allows a device to unregister a previously registered handler
-     * 
-     * @param chanNum
-     * @return true if succesfully unregistered, false otherwise
-     * 
+     * {@inheritDoc}
      */
-    public boolean unregisterDMAChannel(int chanNum) {
-        int ctrlNum = (chanNum > 3) ? SLAVE_CTRL : MASTER_CTRL;
-        controller[ctrlNum].channel[chanNum & 0x03].channelUsed = false;
-        logger.log(Level.INFO, "[" + super.getType() + "]" + " Channel " + chanNum
-                + " no longer used");
-        return true;
-    }
-
-    /**
-     * Getter function for the Terminal Count Reached of the current DMA request
-     * 
-     * @return Terminal Count Reached of the current DMA request
-     */
+    @Override
     public boolean isTerminalCountReached() {
         return terminalCountReached;
     }
 
     /**
-     * Sets the DMA Requests in the corresponding controller's status register,
-     * and initiates the handling of Hold Requests
-     * 
-     * @param chanNum
-     *            Channel requesting a DMA transfer
-     * @param dmaRequest
-     *            Set request (true); clear request (false)
+     * {@inheritDoc}
      */
+    @Override
     public void setDMARequest(int chanNum, boolean dmaRequest) {
         int dmaFloor, dmaCeiling; // Memory boundaries of DMA request
         int ctrlNum;
@@ -1234,14 +1183,9 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Control has been relinquished of the system busses<BR>
-     * DMA now has control over the system busses, so the highest priority DMA
-     * channel that scheduled a request is located and after setting up the
-     * necessary parameters (address, count, memory), the DMA transfer is
-     * initiated
-     * 
-     * 
+     * {@inheritDoc}
      */
+    @Override
     public void acknowledgeBusHold() {
         int ctrlNum = MASTER_CTRL; // Controller number (master/slave)
         int chanNum; // DMA channel number
@@ -1444,7 +1388,6 @@ public class DMA extends ModuleDMA {
      * Registers the cascade channel, 4. Does not implement any read or write
      * methods,<BR>
      * as the only use is to prevent other devices from registering on channel 4
-     * 
      */
     private void setCascadeChannel() {
         // Extend the DMA16Handler to provide to registerDMAChannel()

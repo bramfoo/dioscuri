@@ -117,7 +117,7 @@ public class SequencerRegister {
     /**
      * Return variables to default values
      */
-    protected void reset() {
+    public void reset() {
         index = 0;
         aSynchReset = 1;
         synchReset = 1;

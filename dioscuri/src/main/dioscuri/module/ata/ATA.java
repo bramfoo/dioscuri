@@ -99,8 +99,6 @@ public class ATA extends ModuleATA {
 
     private int cdromCount;
 
-    // Constructors
-
     /**
      * Class constructor
      * @param owner
@@ -128,13 +126,13 @@ public class ATA extends ModuleATA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
 
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true) {
@@ -160,6 +158,8 @@ public class ATA extends ModuleATA {
 
     /**
      * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
     @Override
     public String getDump() {
@@ -202,14 +202,10 @@ public class ATA extends ModuleATA {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Defines the interval between subsequent updates.
-     *
-     * @param interval
+     * {@inheritDoc}
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -222,8 +218,9 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Update device
+     * {@inheritDoc}
      */
+    @Override
     public void update() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
@@ -259,15 +256,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a byte from I/O address space at given port.
+     * {@inheritDoc}
      *
-     * @param originalPortAddress
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -279,16 +272,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a byte in I/O address space at given port TODO: BOCHS code writes to
-     * both drives of a channel - this seems wrong but kept in this code to adi
-     * debugging and comparison with BOCHS
+     * {@inheritDoc}
      *
-     * @param originalAddress
-     * @param data
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int originalAddress, byte data)
             throws ModuleException, ModuleUnknownPort {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -302,15 +290,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a word from I/O address space at given port
+     * {@inheritDoc}
      *
-     * @param portAddress
-     * @return byte[] containing the word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -321,14 +305,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a word in I/O address space at given port
+     * {@inheritDoc}
      *
-     * @param portAddress
-     * @param dataWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException, ModuleUnknownPort {
         logger
@@ -341,15 +322,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Return a double word from I/O address space at given port
+     * {@inheritDoc}
      *
-     * @param portAddress
-     * @return byte[] containing the double word at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
-     * @throws ModuleWriteOnlyPortException
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
             ModuleUnknownPort, ModuleWriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -360,14 +337,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set a double word in I/O address space at given port
+     * {@inheritDoc}
      *
-     * @param portAddress
-     * @param dataDoubleWord
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
-     * @throws ModuleUnknownPort
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException, ModuleUnknownPort {
         logger
@@ -377,25 +351,14 @@ public class ATA extends ModuleATA {
                         + " received.");
 
         write(portAddress, dataDoubleWord, 4);
-        return;
     }
 
-    // ******************************************************************************
-    // ModuleATA Methods
-
     /**
-     * Initiate configuration of the disk drive.
+     * {@inheritDoc}
      *
-     * @param theIdeChannel
-     * @param isMaster
-     * @param isHardDisk
-     * @param isWriteProtected
-     * @param numCylinders
-     * @param numHeads
-     * @param numSectorsPerTrack
-     * @param translationType
-     * @param imageFilePath
+     * @see dioscuri.module.ModuleATA
      */
+    @Override
     public void initConfig(int theIdeChannel, boolean isMaster,
             boolean isHardDisk, boolean isWriteProtected, int numCylinders,
             int numHeads, int numSectorsPerTrack,
@@ -459,11 +422,11 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Set CMOS values
+     * {@inheritDoc}
      *
-     * @param bootDrives
-     * @param floppySigCheckDisabled
+     * @see dioscuri.module.ModuleATA
      */
+    @Override
     public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
 
         ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
@@ -711,16 +674,14 @@ public class ATA extends ModuleATA {
     }
 
     /**
-     * Gets the current channel index.
+     * {@inheritDoc}
      *
-     * @return int the current channel index
+     * @see dioscuri.module.ModuleATA
      */
+    @Override
     public int getCurrentChannelIndex() {
         return this.curChannelIndex;
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Get the selected channel

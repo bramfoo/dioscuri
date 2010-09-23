@@ -143,7 +143,7 @@ public class GraphicsController {
     /**
      * Return variables to default values
      */
-    protected void reset() {
+    public void reset() {
         index = 0;
         Arrays.fill(latch, (byte) 0);
         setReset = 0;
