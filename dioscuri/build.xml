@@ -135,12 +135,17 @@
     </target>
 
     <!-- Create a complete release (zip/gzip file, including jar, libs, docs, logs, config and images) -->
-    <target name="release" description="Create a complete release" depends="jar"> <!-- include javadoc -->
+    <target name="release" description="Create a complete release" depends="jar,javadoc">
+
+        <move file="${config.dir}/DioscuriConfig.xml" tofile="DioscuriConfig.xml"/>
+        <copy file="${config.dir}/DefaultConfig.xml" tofile="${config.dir}/DioscuriConfig.xml"/>
+
 		<zip destfile="${build.dir}/${ant.project.name}-${version}.zip">
 			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
 			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
-			<zipfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
+			<zipfileset dir="${images.dir}/bios" excludes="**/*.img" prefix="images/bios"/>
+            <zipfileset dir="${images.dir}/floppy/FreeDOS" excludes="**/*.img" prefix="images/floppy/FreeDOS"/>
 			<zipfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
 			<fileset dir="${basedir}" includes="dioscuri.bat"/>
@@ -150,12 +155,16 @@
 			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
 			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
-    		<tarfileset dir="${images.dir}" excludes="**/*.img" prefix="images"/>
+    		<zipfileset dir="${images.dir}/bios" excludes="**/*.img" prefix="images/bios"/>
+            <zipfileset dir="${images.dir}/floppy/FreeDOS" excludes="**/*.img" prefix="images/floppy/FreeDOS"/>
 			<tarfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
 			<fileset dir="${basedir}" includes="*.txt"/>
             <fileset dir="${basedir}" includes="dioscuri.sh"/>
 			<tarfileset dir="${javadoc.dir}" prefix="api"/>
 		</tar>
+
+        <move file="DioscuriConfig.xml" tofile="${config.dir}/DioscuriConfig.xml"/>
+        
 	</target>
 
     <!-- Execute the jar file -->
