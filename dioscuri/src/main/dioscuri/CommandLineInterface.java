@@ -123,10 +123,12 @@ public class CommandLineInterface {
             File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d1"));
             logger.log(Level.INFO, " [cli] using custom first hard disk image: "+hdImg);
             if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+                emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(false);
                 throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
                         "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
             }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setImagefilepath(hdImg.getAbsolutePath());
+            emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(true);
             changes = true;
         }
 
@@ -134,10 +136,12 @@ public class CommandLineInterface {
             File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d2"));
             logger.log(Level.INFO, " [cli] using custom second hard disk image: "+hdImg);
             if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+                emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(false);
                 throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
                         "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
             }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setImagefilepath(hdImg.getAbsolutePath());
+            emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setEnabled(true);
             changes = true;
         }
 
