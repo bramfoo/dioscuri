@@ -82,7 +82,6 @@ import dioscuri.module.ModuleMotherboard;
  *      address shifted right two bits.
  * 
  */
-// TODO: This module is just a stub and needs further implementation
 public class PCI extends AbstractModule implements Addressable {
 
     // Logging
@@ -91,8 +90,6 @@ public class PCI extends AbstractModule implements Addressable {
     // I/O ports 0CF8-0CFF - PCI Configuration Mechanism 1
     private final static int PORT_PCI1_ADDRESS = 0xCF8;
     private final static int PORT_PCI1_DATA = 0xCFC;
-
-    // Constructor
 
     /**
      * Class constructor

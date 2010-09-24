@@ -63,7 +63,7 @@ import java.math.BigInteger;
  */
 @SuppressWarnings("serial")
 public class AtaConfigDialog extends ConfigurationDialog {
-
+    /*
     private JCheckBox enabledCheckBox;
     private JFormattedTextField channelIndexFTextField;
     private JCheckBox masterCheckBox;
@@ -71,11 +71,15 @@ public class AtaConfigDialog extends ConfigurationDialog {
     private JFormattedTextField cylindersTextField;
     private JFormattedTextField headsTextField;
     private JFormattedTextField sectorsTextField;
+    private JButton imageBrowseButton;
+    */
+
+    dioscuri.config.Emulator emuConfig;
+
+    private HDPanel hdPanel1;
+    private HDPanel hdPanel2;
 
     private JFormattedTextField updateIntField;
-
-    private JButton imageBrowseButton;
-    dioscuri.config.Emulator emuConfig;
 
     /**
      *
@@ -93,41 +97,29 @@ public class AtaConfigDialog extends ConfigurationDialog {
     protected void readInParams() {
 
         emuConfig = parent.getEmuConfig();
-        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
+        Harddiskdrive hddConfig1 = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
+        Harddiskdrive hddConfig2 = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1);
 
         Integer updateInt = emuConfig.getArchitecture().getModules().getAta().getUpdateintervalmicrosecs().intValue();
-        boolean isEnabled = hddConfig.isEnabled();
-        int channelIndex = hddConfig.getChannelindex().intValue();
-        boolean isMaster = hddConfig.isMaster();
-        boolean autoDetect = hddConfig.isAutodetectcylinders();
-        int cylinders = hddConfig.getCylinders().intValue();
-        int heads = hddConfig.getHeads().intValue();
-        int sectors = hddConfig.getSectorspertrack().intValue();
-        String imageFormatPath = Utilities.resolvePathAsString(hddConfig.getImagefilepath());
-
         this.updateIntField.setValue(updateInt);
-        this.enabledCheckBox.setSelected(isEnabled);
-        this.channelIndexFTextField.setValue(channelIndex);
-        this.masterCheckBox.setSelected(isMaster);
-        this.autoDetectCheckBox.setSelected(autoDetect);
-        this.cylindersTextField.setValue(cylinders);
-        this.headsTextField.setValue(heads);
-        this.sectorsTextField.setValue(sectors);
 
-        /*
-        // Check if length of filepath is longer than 30 characters
-        if (imageFormatPath.length() > 30) {
-            // Trail off the beginning of the string
-            this.imageFilePathLabel.setText("..."
-                    + imageFormatPath.substring(imageFormatPath.length() - 30));
-        } else {
-            this.imageFilePathLabel.setText(imageFormatPath);
-        }
-        */
-        
-        this.imageFilePathLabel.setText(imageFormatPath);
+        this.hdPanel1.enabledCheckBox.setSelected(hddConfig1.isEnabled());
+        this.hdPanel1.channelIndexFTextField.setValue(hddConfig1.getChannelindex().intValue());
+        this.hdPanel1.masterCheckBox.setSelected(hddConfig1.isMaster());
+        this.hdPanel1.autoDetectCheckBox.setSelected(hddConfig1.isAutodetectcylinders());
+        this.hdPanel1.cylindersTextField.setValue(hddConfig1.getCylinders().intValue());
+        this.hdPanel1.headsTextField.setValue(hddConfig1.getHeads().intValue());
+        this.hdPanel1.sectorsTextField.setValue(hddConfig1.getSectorspertrack().intValue());
+        this.hdPanel1.imageFilePathLabel.setText(Utilities.resolvePathAsString(hddConfig1.getImagefilepath()));
 
-        this.selectedFile = new File(imageFormatPath);
+        this.hdPanel2.enabledCheckBox.setSelected(hddConfig2.isEnabled());
+        this.hdPanel2.channelIndexFTextField.setValue(hddConfig2.getChannelindex().intValue());
+        this.hdPanel2.masterCheckBox.setSelected(hddConfig2.isMaster());
+        this.hdPanel2.autoDetectCheckBox.setSelected(hddConfig2.isAutodetectcylinders());
+        this.hdPanel2.cylindersTextField.setValue(hddConfig2.getCylinders().intValue());
+        this.hdPanel2.headsTextField.setValue(hddConfig2.getHeads().intValue());
+        this.hdPanel2.sectorsTextField.setValue(hddConfig2.getSectorspertrack().intValue());
+        this.hdPanel2.imageFilePathLabel.setText(Utilities.resolvePathAsString(hddConfig2.getImagefilepath()));
     }
 
     /**
@@ -135,67 +127,26 @@ public class AtaConfigDialog extends ConfigurationDialog {
      */
     @Override
     protected void initMainEntryPanel() {
-        // Create labels
-        JLabel updateIntLabel = new JLabel("Update Interval");
-        JLabel updateIntUnitLabel = new JLabel("microseconds");
-        JLabel enabledLabel = new JLabel("Enabled");
-        JLabel channelIndexLabel = new JLabel("Channel Index");
-        JLabel masterLabel = new JLabel("Master");
-        JLabel autoDetectLabel = new JLabel("Auto Detect");
-        JLabel cylindersLabel = new JLabel("Cylinders");
-        JLabel headsLabel = new JLabel("Heads");
-        JLabel sectorsLabel = new JLabel("Sectors");
-        JLabel imageFileLabel = new JLabel("Image File");
 
         // Create controls
         this.populateControls();
 
-        mainEntryPanel.setLayout(new GridLayout(0, 3, 5, 5));
+        mainEntryPanel.setLayout(new BorderLayout(5, 5));
 
-        // row 1
-        mainEntryPanel.add(updateIntLabel);
-        mainEntryPanel.add(updateIntField);
-        mainEntryPanel.add(updateIntUnitLabel);
+        JPanel top = new JPanel(new GridLayout(0, 3, 5, 5));
+        top.add(new JLabel("Update Interval"));
+        top.add(updateIntField);
+        top.add(new JLabel("microseconds"));
 
-        // row 2
-        mainEntryPanel.add(enabledLabel);
-        mainEntryPanel.add(enabledCheckBox);
-        mainEntryPanel.add(new JLabel());
+        hdPanel1 = new HDPanel(this);
+        hdPanel2 = new HDPanel(this);
 
-        // row 3
-        mainEntryPanel.add(channelIndexLabel);
-        mainEntryPanel.add(channelIndexFTextField);
-        mainEntryPanel.add(new JLabel());
+        JTabbedPane tabbedPane = new JTabbedPane();
+        tabbedPane.addTab("hard disk 1", null, hdPanel1, null);
+        tabbedPane.addTab("hard disk 2", null, hdPanel2, null);
 
-        // row 4
-        mainEntryPanel.add(masterLabel);
-        mainEntryPanel.add(masterCheckBox);
-        mainEntryPanel.add(new JLabel());
-
-        // row 5
-        mainEntryPanel.add(autoDetectLabel);
-        mainEntryPanel.add(autoDetectCheckBox);
-        mainEntryPanel.add(new JLabel());
-
-        // row 6
-        mainEntryPanel.add(cylindersLabel);
-        mainEntryPanel.add(cylindersTextField);
-        mainEntryPanel.add(new JLabel());
-
-        // row 7
-        mainEntryPanel.add(headsLabel);
-        mainEntryPanel.add(headsTextField);
-        mainEntryPanel.add(new JLabel());
-
-        // row 8
-        mainEntryPanel.add(sectorsLabel);
-        mainEntryPanel.add(sectorsTextField);
-        mainEntryPanel.add(new JLabel());
-
-        // row 9
-        mainEntryPanel.add(imageFileLabel);
-        mainEntryPanel.add(imageFilePathLabel);
-        mainEntryPanel.add(imageBrowseButton);
+        mainEntryPanel.add(top, BorderLayout.NORTH);
+        mainEntryPanel.add(tabbedPane, BorderLayout.CENTER);
     }
 
     /**
@@ -210,9 +161,9 @@ public class AtaConfigDialog extends ConfigurationDialog {
         updateIntField.setValue(0);
         updateIntField.setColumns(10);
 
+        /*
         enabledCheckBox = new JCheckBox();
         enabledCheckBox.setSelected(true);
-
         channelIndexFTextField = new JFormattedTextField();
         channelIndexFTextField.setValue(0);
         channelIndexFTextField.setColumns(10);
@@ -225,20 +176,16 @@ public class AtaConfigDialog extends ConfigurationDialog {
         sectorsTextField = new JFormattedTextField();
         sectorsTextField.setValue(0);
         sectorsTextField.setColumns(10);
-
         masterCheckBox = new JCheckBox();
         masterCheckBox.setSelected(true);
-
         autoDetectCheckBox = new JCheckBox();
-
         imageBrowseButton = new JButton("Browse");
-
         imageBrowseButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 launchFileChooser();
             }
         });
-
+        */
     }
 
     /**
@@ -249,29 +196,131 @@ public class AtaConfigDialog extends ConfigurationDialog {
     @Override
     protected Emulator getParamsFromGui() {
 
-        Harddiskdrive hddConfig = emuConfig.getArchitecture().getModules()
-                .getAta().getHarddiskdrive().get(0);
+        Harddiskdrive hddConfig1 = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0);
+        Harddiskdrive hddConfig2 = emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1);
 
-        emuConfig
-                .getArchitecture()
-                .getModules()
-                .getAta()
-                .setUpdateintervalmicrosecs(
-                        BigInteger.valueOf((Integer) updateIntField.getValue()));
-        hddConfig.setEnabled(enabledCheckBox.isSelected());
-        hddConfig.setChannelindex(BigInteger
-                .valueOf((Integer) channelIndexFTextField.getValue()));
-        hddConfig.setMaster(masterCheckBox.isSelected());
-        hddConfig.setAutodetectcylinders(autoDetectCheckBox.isSelected());
-        hddConfig.setCylinders(BigInteger.valueOf((Integer) cylindersTextField
-                .getValue()));
-        hddConfig.setHeads(BigInteger.valueOf((Integer) headsTextField
-                .getValue()));
-        hddConfig.setSectorspertrack(BigInteger
-                .valueOf((Integer) sectorsTextField.getValue()));
-        hddConfig.setImagefilepath(selectedFile.getAbsoluteFile().toString());
+        emuConfig.getArchitecture().getModules().getAta().setUpdateintervalmicrosecs(BigInteger.valueOf((Integer)updateIntField.getValue()));
+
+        hddConfig1.setEnabled(this.hdPanel1.enabledCheckBox.isSelected());
+        hddConfig1.setChannelindex(BigInteger.valueOf((Integer)this.hdPanel1.channelIndexFTextField.getValue()));
+        hddConfig1.setMaster(this.hdPanel1.masterCheckBox.isSelected());
+        hddConfig1.setAutodetectcylinders(this.hdPanel1.autoDetectCheckBox.isSelected());
+        hddConfig1.setCylinders(BigInteger.valueOf((Integer)this.hdPanel1.cylindersTextField.getValue()));
+        hddConfig1.setHeads(BigInteger.valueOf((Integer)this.hdPanel1.headsTextField.getValue()));
+        hddConfig1.setSectorspertrack(BigInteger.valueOf((Integer)this.hdPanel1.sectorsTextField.getValue()));
+        hddConfig1.setImagefilepath(this.hdPanel1.selectedFile().getAbsoluteFile().toString());
+
+        hddConfig2.setEnabled(this.hdPanel2.enabledCheckBox.isSelected());
+        hddConfig2.setChannelindex(BigInteger.valueOf((Integer)this.hdPanel2.channelIndexFTextField.getValue()));
+        hddConfig2.setMaster(this.hdPanel2.masterCheckBox.isSelected());
+        hddConfig2.setAutodetectcylinders(this.hdPanel2.autoDetectCheckBox.isSelected());
+        hddConfig2.setCylinders(BigInteger.valueOf((Integer)this.hdPanel2.cylindersTextField.getValue()));
+        hddConfig2.setHeads(BigInteger.valueOf((Integer)this.hdPanel2.headsTextField.getValue()));
+        hddConfig2.setSectorspertrack(BigInteger.valueOf((Integer)this.hdPanel2.sectorsTextField.getValue()));
+        hddConfig2.setImagefilepath(this.hdPanel2.selectedFile().getAbsoluteFile().toString());
 
         return emuConfig;
     }
 
+    static class HDPanel extends JPanel {
+
+        final ConfigurationDialog owner;
+
+        JLabel enabledLabel = new JLabel("Enabled");
+        JLabel channelIndexLabel = new JLabel("Channel Index");
+        JLabel masterLabel = new JLabel("Master");
+        JLabel autoDetectLabel = new JLabel("Auto Detect");
+        JLabel cylindersLabel = new JLabel("Cylinders");
+        JLabel headsLabel = new JLabel("Heads");
+        JLabel sectorsLabel = new JLabel("Sectors");
+        JLabel imageFileLabel = new JLabel("Image File");
+
+        JCheckBox enabledCheckBox;
+        JFormattedTextField channelIndexFTextField;
+        JCheckBox masterCheckBox;
+        JCheckBox autoDetectCheckBox;
+        JFormattedTextField cylindersTextField;
+        JFormattedTextField headsTextField;
+        JFormattedTextField sectorsTextField;
+        JTextField imageFilePathLabel;
+        JButton imageBrowseButton;
+
+        HDPanel(ConfigurationDialog owner) {
+            this.owner = owner;
+            setLayout(new GridLayout(0, 3, 5, 5));
+            setupGUI();
+        }
+
+        File selectedFile() {
+            return new File(imageFilePathLabel.getText());
+        }
+
+        private void setupGUI() {
+
+            enabledCheckBox = new JCheckBox();
+            enabledCheckBox.setSelected(true);
+            channelIndexFTextField = new JFormattedTextField();
+            channelIndexFTextField.setValue(0);
+            channelIndexFTextField.setColumns(10);
+            cylindersTextField = new JFormattedTextField();
+            cylindersTextField.setValue(0);
+            cylindersTextField.setColumns(10);
+            headsTextField = new JFormattedTextField();
+            headsTextField.setValue(0);
+            headsTextField.setColumns(10);
+            sectorsTextField = new JFormattedTextField();
+            sectorsTextField.setValue(0);
+            sectorsTextField.setColumns(10);
+            masterCheckBox = new JCheckBox();
+            masterCheckBox.setSelected(true);
+            autoDetectCheckBox = new JCheckBox();
+            imageFilePathLabel = new JTextField();
+            imageBrowseButton = new JButton("Browse");
+            imageBrowseButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    HDPanel.this.owner.launchFileChooser();
+                }
+            });
+
+            // row 1
+            add(enabledLabel);
+            add(enabledCheckBox);
+            add(new JLabel());
+
+            // row 2
+            add(channelIndexLabel);
+            add(channelIndexFTextField);
+            add(new JLabel());
+
+            // row 3
+            add(masterLabel);
+            add(masterCheckBox);
+            add(new JLabel());
+
+            // row 4
+            add(autoDetectLabel);
+            add(autoDetectCheckBox);
+            add(new JLabel());
+
+            // row 5
+            add(cylindersLabel);
+            add(cylindersTextField);
+            add(new JLabel());
+
+            // row 6
+            add(headsLabel);
+            add(headsTextField);
+            add(new JLabel());
+
+            // row 7
+            add(sectorsLabel);
+            add(sectorsTextField);
+            add(new JLabel());
+
+            // row 8
+            add(imageFileLabel);
+            add(imageFilePathLabel);
+            add(imageBrowseButton);
+        }
+    }
 }

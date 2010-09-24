@@ -85,6 +85,9 @@ public final class Utilities {
      * @see Utilities#resolvePathAsString(String)
      */
     public static File resolvePathAsFile(String path) {
+        if(path == null) {
+            path = "";
+        }
         File validPath = new File(path);
         if(!validPath.exists()) {
             // assume `path` is relative and Dioscuri is not executed from it's "root" folder

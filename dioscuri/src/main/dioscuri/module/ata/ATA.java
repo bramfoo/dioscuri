@@ -413,8 +413,7 @@ public class ATA extends ModuleATA {
         // Auto detect
         else {
             // Autodetect number of cylinders
-            numCylinders = (int) (drive.getDiskImageSize() / (numHeads
-                    * numSectorsPerTrack * 512));
+            numCylinders = (int) (drive.getDiskImageSize() / (numHeads * numSectorsPerTrack * 512));
 
             drive.setTotalNumCylinders(numCylinders);
 

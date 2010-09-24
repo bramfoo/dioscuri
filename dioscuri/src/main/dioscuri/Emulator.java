@@ -723,8 +723,7 @@ public class Emulator implements Runnable {
         logger.log(Level.INFO,
                 "================= LOAD STORAGE MEDIA ==================");
         result &= setFloppyParams(); // At least one floppy is required
-        setHardDriveParams(); // Harddisk not required, so doesn't influence
-                              // result
+        setHardDriveParams(); // Harddisk not required, so doesn't influence result
 
         // Set other settings
         logger.log(Level.INFO,
@@ -1298,12 +1297,13 @@ public class Emulator implements Runnable {
         // in XML/HashMap (also see note on HashMaps)
         ModuleATA ata = (ATA) modules.getModule(Module.Type.ATA);
 
-        if (moduleConfig.getAta().getHarddiskdrive().isEmpty())
+        if (moduleConfig.getAta().getHarddiskdrive().isEmpty()) {
             return false;
+        }
 
         // FIXME: loop on number of disks defined
-        for (int i = 0; i < 1; i++) {
-            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(0);
+        for (int i = 0; i < 2; i++) {
+            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(i);
             boolean enabled = hddConfig.isEnabled();
             int ideChannelIndex = hddConfig.getChannelindex().intValue();
             boolean isMaster = hddConfig.isMaster();
@@ -1327,6 +1327,9 @@ public class Emulator implements Runnable {
                 // TODO: updates for other hard drives?
                 if (ideChannelIndex == 0 && isMaster) {
                     getGui().updateGUI(GUI.EMU_HD1_INSERT);
+                }
+                else {
+                    // TODO add bling-bling light
                 }
             }
         }

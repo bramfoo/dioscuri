@@ -173,8 +173,9 @@ public abstract class ConfigurationDialog extends JDialog {
             moduleText = moduleType.toString();
         }
 
-        if (moduleType != null
-                && (moduleType == Module.Type.ATA || moduleType == Module.Type.FDC)) {
+        /*
+        if (moduleType != null && (moduleType == Module.Type.ATA || moduleType == Module.Type.FDC)) {
+
             if (selectedFile == null) {
                 JOptionPane.showMessageDialog(this,
                         "Error saving data - please browse for an image file.",
@@ -182,7 +183,8 @@ public abstract class ConfigurationDialog extends JDialog {
                 return;
             }
         }
-
+        */
+        
         try {
 
             params = getParamsFromGui();
