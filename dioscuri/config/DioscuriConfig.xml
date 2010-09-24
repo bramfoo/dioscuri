@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!-- Default DioscuriConfig.xml -->
 <emulator debug="false">
     <architecture name="Von Neumann">
         <modules>
@@ -39,7 +40,7 @@
                 <updateintervalmicrosecs>200</updateintervalmicrosecs>
             </keyboard>
             <mouse debug="false">
-                <enabled>true</enabled>
+                <enabled>false</enabled>
                 <mousetype>serial</mousetype>
             </mouse>
             <ata debug="false">
@@ -48,6 +49,16 @@
                     <enabled>false</enabled>
                     <channelindex>0</channelindex>
                     <master>true</master>
+                    <autodetectcylinders>true</autodetectcylinders>
+                    <cylinders>0</cylinders>
+                    <heads>4</heads>
+                    <sectorspertrack>17</sectorspertrack>
+                    <imagefilepath></imagefilepath>
+                </harddiskdrive>
+                <harddiskdrive>
+                    <enabled>false</enabled>
+                    <channelindex>0</channelindex>
+                    <master>false</master>
                     <autodetectcylinders>true</autodetectcylinders>
                     <cylinders>0</cylinders>
                     <heads>4</heads>
