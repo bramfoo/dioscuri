@@ -83,6 +83,8 @@ public class ATA extends ModuleATA {
 
     private static final Logger logger = Logger.getLogger(ATA.class.getName());
 
+    private static int hdDriveCount = 0;
+
     // Attributes
     private Emulator emu;
 
@@ -375,6 +377,8 @@ public class ATA extends ModuleATA {
         // Set the drive type
         if (isHardDisk) {
             drive = new ATADrive(ATADriveType.HARD_DISK, this, true);
+            hdDriveCount++;
+            drive.hdNumber = hdDriveCount;
         }
         else {
             drive = new ATADrive(ATADriveType.CDROM, this, true, cdromCount);
@@ -2016,9 +2020,10 @@ public class ATA extends ModuleATA {
             motherboard.setTimerActiveState(this, true);
 
             try {
+                int hdNum = getSelectedDrive().hdNumber;
 
-                // Update status to emulator
-                emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_START);
+                if(hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_START);
+                if(hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_START);
 
                 byte[] theData = getSelectedDrive().readData(
                         getSelectedDriveController().getBuffer(),
@@ -2028,8 +2033,8 @@ public class ATA extends ModuleATA {
                     getSelectedDriveController().setBuffer(i, theData[i]);
                 }
 
-                // Update status to emulator
-                emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_STOP);
+                if(hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_STOP);
+                if(hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_STOP);
 
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -2038,8 +2043,7 @@ public class ATA extends ModuleATA {
                         + "  could not read() hard drive image file at byte "
                         + logicalSector * 512 + ".");
 
-                abortCommand(channel, channels[channel].getSelectedController()
-                        .getCurrentCommand());
+                abortCommand(channel, channels[channel].getSelectedController().getCurrentCommand());
                 return false;
             }
             channels[channel].getSelectedDrive().incrementAddress();

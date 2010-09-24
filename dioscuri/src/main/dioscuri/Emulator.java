@@ -145,6 +145,8 @@ public class Emulator implements Runnable {
     public static final int MODULE_KEYBOARD_CAPSLOCK_OFF = 7;
     public static final int MODULE_KEYBOARD_SCROLLLOCK_ON = 8;
     public static final int MODULE_KEYBOARD_SCROLLLOCK_OFF = 9;
+    public static final int MODULE_ATA_HD2_TRANSFER_START = 10;
+    public static final int MODULE_ATA_HD2_TRANSFER_STOP = 11;
 
     // Constructors
 
@@ -591,8 +593,16 @@ public class Emulator implements Runnable {
             gui.updateGUI(GUI.EMU_HD1_TRANSFER_START);
             break;
 
+        case MODULE_ATA_HD2_TRANSFER_START:
+            gui.updateGUI(GUI.EMU_HD2_TRANSFER_START);
+            break;
+
         case MODULE_ATA_HD1_TRANSFER_STOP:
             gui.updateGUI(GUI.EMU_HD1_TRANSFER_STOP);
+            break;
+
+        case MODULE_ATA_HD2_TRANSFER_STOP:
+            gui.updateGUI(GUI.EMU_HD2_TRANSFER_STOP);
             break;
 
         case MODULE_KEYBOARD_NUMLOCK_ON:
@@ -752,7 +762,7 @@ public class Emulator implements Runnable {
         // pointless without one, really)
         cpu32bit = moduleConfig.getCpu().isCpu32Bit();
 
-        this.getGui().setCpyTypeLabel(cpu32bit ? "32 bit" : "16 bit");
+        this.getGui().setCpuTypeLabel(cpu32bit ? "32 bit" : "16 bit");
 
         // Add clock first, as it is needed for 32-bit RAM
         Clock clk = new Clock(this);

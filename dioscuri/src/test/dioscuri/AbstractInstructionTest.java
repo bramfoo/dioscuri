@@ -110,7 +110,7 @@ public abstract class AbstractInstructionTest {
         }
 
         @Override
-        public void setCpyTypeLabel(String cpuType) {
+        public void setCpuTypeLabel(String cpuType) {
             //To change body of implemented methods use File | Settings | File Templates.
         }
     }

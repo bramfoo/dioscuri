@@ -69,7 +69,7 @@ public final class Utilities {
      */
     public static String resolvePathAsString(String path) {
         File file = resolvePathAsFile(path);
-        return file.getAbsolutePath();
+        return file.isFile() ? file.getAbsolutePath() : "";
     }
 
     /**

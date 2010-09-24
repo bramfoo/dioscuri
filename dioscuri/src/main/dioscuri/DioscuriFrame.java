@@ -39,7 +39,6 @@
 
 package dioscuri;
 
-import dioscuri.CommandLineInterface;
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
@@ -80,6 +79,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private JPanel capslockPanel;
     private JPanel floppyAPanel;
     private JPanel hd1Panel;
+    private JPanel hd2Panel;
 
     // Menus
     JMenuBar menuBar;
@@ -119,7 +119,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     // File selection
     private JFileChooser fcFloppy;
 
-    private JLabel cpyTypeLabel;
+    private JLabel cpuTypeLabel;
 
     // Logging
     private static final Logger logger = Logger.getLogger(DioscuriFrame.class.getName());
@@ -357,11 +357,16 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         floppyAPanel.setBorder(blackline);
 
         hd1Panel = new JPanel();
-        // hd1Panel.setLayout(new BoxLayout(hd1Panel, BoxLayout.X_AXIS));
         JLabel hd1PanelLabel = new JLabel("HD1");
         hd1PanelLabel.setHorizontalAlignment(JLabel.CENTER);
         hd1Panel.add(hd1PanelLabel);
         hd1Panel.setBorder(blackline);
+
+        hd2Panel = new JPanel();
+        JLabel hd2PanelLabel = new JLabel("HD2");
+        hd2PanelLabel.setHorizontalAlignment(JLabel.CENTER);
+        hd2Panel.add(hd2PanelLabel);
+        hd2Panel.setBorder(blackline);
 
         // Add panels to statusbar (with spaces inbetween)
         statusPanel.add(Box.createHorizontalGlue());
@@ -374,9 +379,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         statusPanel.add(floppyAPanel);
         statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         statusPanel.add(hd1Panel);
-
-        cpyTypeLabel = new JLabel("");
-        statusPanel.add(cpyTypeLabel);
+        statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        statusPanel.add(hd2Panel);
+        statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        cpuTypeLabel = new JLabel("");
+        statusPanel.add(cpuTypeLabel);
     }
 
     /**
@@ -552,8 +559,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             // Redefine statusbar
             floppyAPanel.setVisible(false);
             hd1Panel.setVisible(false);
+            hd2Panel.setVisible(false);
             miEditConfig.setEnabled(true);
-            cpyTypeLabel.setText("");
+            cpuTypeLabel.setText("");
             break;
 
         case EMU_PROCESS_RESET:
@@ -612,9 +620,17 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             hd1Panel.setBackground(Color.GREEN);
             break;
 
+        case EMU_HD2_TRANSFER_START:
+            // Highlight HD1 in statusbar
+            hd2Panel.setBackground(Color.GREEN);
+            break;
+
         case EMU_HD1_TRANSFER_STOP:
-            // Shadow HD1 in statusbar
             hd1Panel.setBackground(Color.LIGHT_GRAY);
+            break;
+
+        case EMU_HD2_TRANSFER_STOP:
+            hd2Panel.setBackground(Color.LIGHT_GRAY);
             break;
 
         case EMU_KEYBOARD_NUMLOCK_ON:
@@ -667,7 +683,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             // Enable/disable status bar items
             floppyAPanel.setVisible(false);
             hd1Panel.setVisible(false);
-
+            hd2Panel.setVisible(false);
+            cpuTypeLabel.setText("");
             break;
 
         default:
@@ -1026,8 +1043,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     }
 
     @Override
-    public void setCpyTypeLabel(String cpuType) {
-        cpyTypeLabel.setText("  " + cpuType);
+    public void setCpuTypeLabel(String cpuType) {
+        cpuTypeLabel.setText("  " + cpuType);
     }
 
     /**
