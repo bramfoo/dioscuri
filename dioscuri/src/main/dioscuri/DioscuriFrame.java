@@ -41,6 +41,7 @@ package dioscuri;
 
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
+import dioscuri.config.temp.ConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
 
 import javax.imageio.ImageIO;
@@ -779,7 +780,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                                 "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
                                 "Configuration", JOptionPane.WARNING_MESSAGE);
             } else {
-                new SelectionConfigDialog(this);
+                //new SelectionConfigDialog(this);
+                new ConfigDialog(this);
             }
         } else if (c == (JComponent) miHelpAbout) {
             // Show About dialog

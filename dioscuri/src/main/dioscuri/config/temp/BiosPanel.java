@@ -31,6 +31,9 @@ public class BiosPanel extends AbstractModulePanel {
         sysBiosStart.setText(bios.getRamaddresssysbiosstartdec().toString());
         vgaBiosStart.setText(bios.getRamaddressvgabiosstartdec().toString());
 
+        sysBios.setToolTipText(sysBios.getText());
+        vgaBios.setToolTipText(vgaBios.getText());
+
         super.add(new JLabel("System BIOS"));
         super.add(sysBios);
         super.add(browseSysBios);
@@ -53,7 +56,10 @@ public class BiosPanel extends AbstractModulePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
-                sysBios.setText(file == null ? "" : file.getAbsolutePath());
+                if(file != null) {
+                    sysBios.setText(file == null ? "" : file.getAbsolutePath());
+                    sysBios.setToolTipText(sysBios.getText());
+                }
             }
         });
 
@@ -61,7 +67,10 @@ public class BiosPanel extends AbstractModulePanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
-                vgaBios.setText(file == null ? "" : file.getAbsolutePath());
+                if(file != null) {
+                    vgaBios.setText(file == null ? "" : file.getAbsolutePath());
+                    vgaBios.setToolTipText(vgaBios.getText());
+                }
             }
         });
     }

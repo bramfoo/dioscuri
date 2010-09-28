@@ -78,6 +78,8 @@ public class AtaPanel extends AbstractModulePanel {
             imageFile.setText(hd.getImagefilepath());
             imageFile.setEditable(false);
 
+            imageFile.setToolTipText(imageFile.getText());
+
             super.setLayout(new GridLayout(0, 3, 5, 5));
 
             super.add(new JLabel("Enabled"));
@@ -116,7 +118,10 @@ public class AtaPanel extends AbstractModulePanel {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     File file = AtaPanel.super.chooseFile();
-                    imageFile.setText(file == null ? "" : file.getAbsolutePath());
+                    if(file != null) {
+                        imageFile.setText(file == null ? "" : file.getAbsolutePath());
+                        imageFile.setToolTipText(imageFile.getText());
+                    }
                 }
             });
         }
