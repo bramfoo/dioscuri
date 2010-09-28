@@ -47,7 +47,6 @@ public class AtaPanel extends AbstractModulePanel {
         for(HD hd : hdList) {
             hd.save();
         }
-        super.writeXML();
     }
 
     class HD extends JPanel {

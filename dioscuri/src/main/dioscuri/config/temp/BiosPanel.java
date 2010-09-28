@@ -81,6 +81,5 @@ public class BiosPanel extends AbstractModulePanel {
         bios.setVgabiosfilepath(vgaBios.getText());
         bios.setRamaddresssysbiosstartdec(new BigInteger(sysBiosStart.getText()));
         bios.setRamaddressvgabiosstartdec(new BigInteger(vgaBiosStart.getText()));
-        super.writeXML();
     }
 }

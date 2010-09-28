@@ -28,6 +28,11 @@ public abstract class AbstractModulePanel extends JPanel {
     
     abstract void save() throws Exception;
 
+    final void saveAndWrite() throws Exception {
+        save();
+        writeXML();
+    }
+
     void writeXML() {
         if (!Utilities.saveXML(emuConfig, parent.getConfigFilePath())) {
             JOptionPane.showMessageDialog(this, "Error saving " + "???"

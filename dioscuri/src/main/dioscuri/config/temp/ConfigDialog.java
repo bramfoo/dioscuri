@@ -106,7 +106,7 @@ public class ConfigDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 for(AbstractModulePanel p : ConfigDialog.this.moduleMap.values()) {
                     try {
-                        p.save();
+                        p.saveAndWrite();
                     } catch(Exception ex) {
                         ex.printStackTrace();
                     }
