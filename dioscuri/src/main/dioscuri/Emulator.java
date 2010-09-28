@@ -1334,12 +1334,11 @@ public class Emulator implements Runnable {
                         numCylinders, numHeads, numSectorsPerTrack,
                         ATATranslationType.AUTO, imageFilePath);
 
-                // TODO: updates for other hard drives?
-                if (ideChannelIndex == 0 && isMaster) {
+                if (ideChannelIndex == 0 && i == 0) {
                     getGui().updateGUI(GUI.EMU_HD1_INSERT);
                 }
-                else {
-                    // TODO add bling-bling light
+                if (ideChannelIndex == 0 && i == 1) {
+                    getGui().updateGUI(GUI.EMU_HD2_INSERT);
                 }
             }
         }

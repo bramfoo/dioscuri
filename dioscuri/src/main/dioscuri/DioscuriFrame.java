@@ -606,22 +606,26 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             break;
 
         case EMU_HD1_INSERT:
-            // Show HD1 in statusbar
             hd1Panel.setVisible(true);
             break;
 
+        case EMU_HD2_INSERT:
+            hd2Panel.setVisible(true);
+            break;
+
         case EMU_HD1_EJECT:
-            // Hide HD1 in statusbar
             hd1Panel.setVisible(false);
             break;
 
+        case EMU_HD2_EJECT:
+            hd2Panel.setVisible(false);
+            break;
+
         case EMU_HD1_TRANSFER_START:
-            // Highlight HD1 in statusbar
             hd1Panel.setBackground(Color.GREEN);
             break;
 
         case EMU_HD2_TRANSFER_START:
-            // Highlight HD1 in statusbar
             hd2Panel.setBackground(Color.GREEN);
             break;
 

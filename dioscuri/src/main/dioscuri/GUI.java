@@ -76,6 +76,9 @@ public interface GUI {
     static final int EMU_DEVICES_MOUSE_DISABLED = 18;
     static final int EMU_HD2_TRANSFER_START = 19;
     static final int EMU_HD2_TRANSFER_STOP = 20;
+    static final int EMU_HD2_INSERT = 21;
+    static final int EMU_HD2_EJECT = 22;
+
     static final int GUI_RESET = 99;
 
     // Key events
