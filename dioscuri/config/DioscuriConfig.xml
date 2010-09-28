@@ -3,23 +3,23 @@
     <architecture name="Von Neumann">
         <modules>
             <bios>
-                <sysbiosfilepath>C:\BK\IntelliJ\dioscuri-redesign\images\bios\BIOS-bochs-latest</sysbiosfilepath>
-                <vgabiosfilepath>C:\BK\IntelliJ\dioscuri-redesign\images\bios\VGABIOS-lgpl-latest</vgabiosfilepath>
+                <sysbiosfilepath>images/bios/BIOS-bochs-latest</sysbiosfilepath>
+                <vgabiosfilepath>images/bios/VGABIOS-lgpl-latest</vgabiosfilepath>
                 <ramaddresssysbiosstartdec>983040</ramaddresssysbiosstartdec>
                 <ramaddressvgabiosstartdec>786432</ramaddressvgabiosstartdec>
                 <bootdrives>
-                    <bootdrive0>Hard Drive</bootdrive0>
+                    <bootdrive0>Floppy Drive</bootdrive0>
                     <bootdrive1>None</bootdrive1>
                     <bootdrive2>None</bootdrive2>
                 </bootdrives>
                 <floppycheckdisabled>false</floppycheckdisabled>
             </bios>
             <cpu debug="false">
-                <cpu32bit>false</cpu32bit>
+                <cpu32bit>true</cpu32bit>
                 <speedmhz>5</speedmhz>
             </cpu>
             <memory debugaddressdecimal="9295" debug="false">
-                <sizemb>5</sizemb>
+                <sizemb>16</sizemb>
             </memory>
             <fdc debug="false">
                 <updateintervalmicrosecs>250</updateintervalmicrosecs>
@@ -29,7 +29,7 @@
                     <driveletter>A</driveletter>
                     <diskformat>1.44M</diskformat>
                     <writeprotected>false</writeprotected>
-                    <imagefilepath>C:\BK\IntelliJ\dioscuri-redesign\images\floppy\FreeDOS\fd_odin07_1440.ima</imagefilepath>
+                    <imagefilepath>images/floppy/FreeDOS/fd_odin07_1440.ima</imagefilepath>
                 </floppy>
             </fdc>
             <pit debug="false">
@@ -39,30 +39,30 @@
                 <updateintervalmicrosecs>200</updateintervalmicrosecs>
             </keyboard>
             <mouse debug="false">
-                <enabled>true</enabled>
+                <enabled>false</enabled>
                 <mousetype>serial</mousetype>
             </mouse>
             <ata debug="false">
                 <updateintervalmicrosecs>100000</updateintervalmicrosecs>
                 <harddiskdrive>
-                    <enabled>true</enabled>
+                    <enabled>false</enabled>
                     <channelindex>0</channelindex>
                     <master>true</master>
                     <autodetectcylinders>true</autodetectcylinders>
                     <cylinders>0</cylinders>
                     <heads>4</heads>
                     <sectorspertrack>17</sectorspertrack>
-                    <imagefilepath>C:\BK\IntelliJ\dioscuri-redesign\images\hd622.img</imagefilepath>
+                    <imagefilepath></imagefilepath>
                 </harddiskdrive>
                 <harddiskdrive>
-                    <enabled>true</enabled>
+                    <enabled>false</enabled>
                     <channelindex>0</channelindex>
                     <master>false</master>
                     <autodetectcylinders>true</autodetectcylinders>
                     <cylinders>0</cylinders>
                     <heads>4</heads>
                     <sectorspertrack>17</sectorspertrack>
-                    <imagefilepath>C:\BK\IntelliJ\dioscuri-redesign\images\2nddisk.img</imagefilepath>
+                    <imagefilepath></imagefilepath>
                 </harddiskdrive>
             </ata>
             <video debug="false">
