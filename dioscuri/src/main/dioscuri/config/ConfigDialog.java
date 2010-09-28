@@ -2,10 +2,12 @@ package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.interfaces.Module;
+import dioscuri.util.Utilities;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.math.BigInteger;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -13,13 +15,13 @@ public class ConfigDialog extends JDialog {
 
     private final dioscuri.config.Emulator emuConfig;
     private final GUI parent;
-    private final Map<Module.Type, JPanel> moduleMap;
+    private final Map<Module.Type, ModulePanel> moduleMap;
 
     public ConfigDialog(GUI parent) {
         super(parent.asJFrame());
         this.parent = parent;
         this.emuConfig = parent.getEmuConfig();
-        this.moduleMap = new LinkedHashMap<Module.Type, JPanel>();
+        this.moduleMap = new LinkedHashMap<Module.Type, ModulePanel>();
         super.setLayout(new BorderLayout(5, 5));
         setupModuleMap();
         setupGUI();
@@ -64,6 +66,30 @@ public class ConfigDialog extends JDialog {
         mainPanel.add(moduleListPanel, BorderLayout.WEST);
         mainPanel.add(attributesPanel, BorderLayout.CENTER);
 
+        // tree panel
+        final JList moduleList = new JList(moduleMap.keySet().toArray(new Module.Type[moduleMap.keySet().size()]));
+        moduleListPanel.add(new JScrollPane(moduleList));
+        moduleList.addMouseListener(new MouseAdapter(){
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                attributesPanel.removeAll();
+                ModulePanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
+                attributesPanel.add(p, BorderLayout.CENTER);
+                attributesPanel.validate();
+                repaint();
+            }
+        });
+        moduleList.addKeyListener(new KeyAdapter(){
+            @Override
+            public void keyReleased(KeyEvent e) {
+                attributesPanel.removeAll();
+                ModulePanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
+                attributesPanel.add(p, BorderLayout.CENTER);
+                attributesPanel.validate();
+                repaint();
+            }
+        });
+
         // button panel
         final JButton cancel = new JButton("cancel");
         final JButton save = new JButton("save");
@@ -78,31 +104,14 @@ public class ConfigDialog extends JDialog {
         save.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO    
-            }
-        });
-
-        // tree panel
-        final JList moduleList = new JList(moduleMap.keySet().toArray(new Module.Type[moduleMap.keySet().size()]));
-        moduleListPanel.add(new JScrollPane(moduleList));
-        moduleList.addMouseListener(new MouseAdapter(){
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                attributesPanel.removeAll();
-                JPanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
-                attributesPanel.add(p, BorderLayout.CENTER);
-                attributesPanel.validate();
-                repaint();
-            }
-        });
-        moduleList.addKeyListener(new KeyAdapter(){
-            @Override
-            public void keyReleased(KeyEvent e) {
-                attributesPanel.removeAll();
-                JPanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
-                attributesPanel.add(p, BorderLayout.CENTER);
-                attributesPanel.validate();
-                repaint();
+                ModulePanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
+                if(p != null) {
+                    try {
+                        p.save();
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                }
             }
         });
 
@@ -111,24 +120,37 @@ public class ConfigDialog extends JDialog {
     }
 
     private void setupModuleMap() {
-        this.moduleMap.put(Module.Type.ATA, new AtaPanel(emuConfig));
-        this.moduleMap.put(Module.Type.BIOS, new BiosPanel());
-        this.moduleMap.put(Module.Type.BOOT, new BootPanel());
-        this.moduleMap.put(Module.Type.CPU, new CpuPanel());
-        this.moduleMap.put(Module.Type.FDC, new FdcPanel());
-        this.moduleMap.put(Module.Type.KEYBOARD, new KeyboardPanel());
-        this.moduleMap.put(Module.Type.MOUSE, new MousePanel());
-        this.moduleMap.put(Module.Type.MEMORY, new MemoryPanel());
-        this.moduleMap.put(Module.Type.PIT, new PitPanel());
-        this.moduleMap.put(Module.Type.VIDEO, new VideoPanel());
+        this.moduleMap.put(Module.Type.ATA, new AtaPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.BIOS, new BiosPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.BOOT, new BootPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.CPU, new CpuPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.FDC, new FdcPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.KEYBOARD, new KeyboardPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.MOUSE, new MousePanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.MEMORY, new MemoryPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.PIT, new PitPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.VIDEO, new VideoPanel(parent, emuConfig));
     }
 
     private static class ModulePanel extends JPanel {
 
+        final GUI parent;
         final dioscuri.config.Emulator emuConfig;
 
-        ModulePanel(dioscuri.config.Emulator emuConfig) {
+        ModulePanel(GUI parent, dioscuri.config.Emulator emuConfig) {
+            this.parent = parent;
             this.emuConfig = emuConfig;
+        }
+
+        void save() throws Exception { // todo make abstract
+        }
+
+        void writeXML() {
+            if (!Utilities.saveXML(emuConfig, parent.getConfigFilePath())) {
+                JOptionPane.showMessageDialog(this, "Error saving " + "???"
+                        + " parameter to configuration file.", "DIOSCURI",
+                        JOptionPane.WARNING_MESSAGE);
+            }
         }
     }
 
@@ -137,8 +159,8 @@ public class ConfigDialog extends JDialog {
         JTextField updateInterval = new JTextField(10);
         JTabbedPane hds = new JTabbedPane();
 
-        AtaPanel(dioscuri.config.Emulator emuConfig) {
-            super(emuConfig);
+        AtaPanel(GUI parent, dioscuri.config.Emulator emuConfig) {
+            super(parent, emuConfig);
             super.setLayout(new BorderLayout(5, 5));
 
             updateInterval.setText(emuConfig.architecture.modules.ata.getUpdateintervalmicrosecs().toString());
@@ -153,6 +175,13 @@ public class ConfigDialog extends JDialog {
 
             super.add(intervalPanel, BorderLayout.NORTH);
             super.add(hds, BorderLayout.CENTER);
+        }
+
+        @Override
+        void save() throws Exception {
+            emuConfig.architecture.modules.ata.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
+
+            super.writeXML();
         }
 
         class HD extends JPanel {
@@ -215,39 +244,66 @@ public class ConfigDialog extends JDialog {
         }
     }
 
-    private static class BiosPanel extends JPanel {
+    private static class BiosPanel extends ModulePanel {
 
+        BiosPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class BootPanel extends JPanel {
+    private static class BootPanel extends ModulePanel {
 
+        BootPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class CpuPanel extends JPanel {
+    private static class CpuPanel extends ModulePanel {
 
+        CpuPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class FdcPanel extends JPanel {
+    private static class FdcPanel extends ModulePanel {
 
+        FdcPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class KeyboardPanel extends JPanel {
+    private static class KeyboardPanel extends ModulePanel {
 
+        KeyboardPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class MousePanel extends JPanel {
+    private static class MousePanel extends ModulePanel {
 
+        MousePanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class MemoryPanel extends JPanel {
+    private static class MemoryPanel extends ModulePanel {
 
+        MemoryPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class PitPanel extends JPanel {
+    private static class PitPanel extends ModulePanel {
 
+        PitPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 
-    private static class VideoPanel extends JPanel {
+    private static class VideoPanel extends ModulePanel {
 
+        VideoPanel(GUI parent, Emulator emuConfig) {
+            super(parent, emuConfig);
+        }
     }
 }
