@@ -40,7 +40,6 @@
 package dioscuri;
 
 import dioscuri.config.ConfigController;
-import dioscuri.config.SelectionConfigDialog;
 import dioscuri.config.ConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
 
