@@ -41,7 +41,6 @@ package dioscuri;
 
 import dioscuri.config.ConfigController;
 import dioscuri.config.SelectionConfigDialog;
-import dioscuri.config.temp.ConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
 
 import javax.imageio.ImageIO;
@@ -99,9 +98,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     JMenuItem miEmulatorQuit;
     // Menu edit
     JMenuItem miEditCopyText;
-    JMenuItem miEditCopyImage;
-    JMenuItem miEditPasteText;
-    JMenuItem miEditPasteImage;
+    JMenuItem miEditScreenShot;
+
     // Menu media
     JMenuItem miMediaEjectA;
     JMenuItem miMediaInsertA;
@@ -255,13 +253,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Create menu: edit
         menuEdit = new JMenu("Edit");
         miEditCopyText = new JMenuItem("Copy text");
-        miEditCopyImage = new JMenuItem("Copy image");
-        miEditPasteText = new JMenuItem("Paste text");
-        miEditPasteImage = new JMenuItem("Paste image");
+        miEditScreenShot = new JMenuItem("Make screen shot");
         menuEdit.add(miEditCopyText);
-        menuEdit.add(miEditCopyImage);
-        menuEdit.add(miEditPasteText);
-        menuEdit.add(miEditPasteImage);
+        menuEdit.add(miEditScreenShot);
 
         // Create menu: media
         menuMedia = new JMenu("Media");
@@ -307,6 +301,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         miDevicesMouseDisabled.addActionListener(this);
         miEditConfig.addActionListener(this);
         miHelpAbout.addActionListener(this);
+        miEditScreenShot.addActionListener(this);
 
         // Assign menubar to frame
         this.setJMenuBar(menuBar);
@@ -541,6 +536,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             miEmulatorStart.setEnabled(false);
             miEmulatorStop.setEnabled(true);
             miEmulatorReset.setEnabled(true);
+            miEditScreenShot.setEnabled(true);
             miEditConfig.setEnabled(false);
             miEditCopyText.setEnabled(true);
             break;
@@ -677,9 +673,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             miEmulatorStop.setEnabled(false);
             miEmulatorReset.setEnabled(false);
             miEditCopyText.setEnabled(false);
-            miEditCopyImage.setEnabled(false);
-            miEditPasteText.setEnabled(false);
-            miEditPasteImage.setEnabled(false);
+            miEditScreenShot.setEnabled(false);
             miMediaInsertA.setEnabled(false);
             miMediaEjectA.setEnabled(false);
             miDevicesMouseEnabled.setEnabled(false);
@@ -780,8 +774,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                                 "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
                                 "Configuration", JOptionPane.WARNING_MESSAGE);
             } else {
-                //new SelectionConfigDialog(this);
-                new ConfigDialog(this);
+                new SelectionConfigDialog(this);
+                //new ConfigDialog(this);
             }
         } else if (c == (JComponent) miHelpAbout) {
             // Show About dialog
@@ -810,6 +804,19 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                                     + " GNU General Public License for more details.\n\n\n"
                                     + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven",
                             "About", JOptionPane.INFORMATION_MESSAGE);
+        } else if(c == miEditScreenShot) {
+            String fileName = "Screenshot_"+System.currentTimeMillis()+".png";
+            File file = new File(fileName);
+            BufferedImage image = new BufferedImage(screen.getWidth(), screen.getHeight(), BufferedImage.TYPE_INT_RGB);
+		    screen.paint(image.createGraphics());
+            try {
+                ImageIO.write(image, "png", file);
+                JOptionPane.showMessageDialog(this, "An image was created and saved as:\n\n"+
+                        file.getAbsolutePath());
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(this, "Could not create an image at:\n\n"+
+                        file.getAbsolutePath()+"\n\n"+e1.getMessage());
+            } 
         }
     }
 
