@@ -70,7 +70,6 @@ public interface Module {
         RTC,
         SCREEN,
         SERIALPORT,
-        SOUNDCARD,
         VIDEO;
 
         /**
