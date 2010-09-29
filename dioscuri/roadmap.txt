@@ -9,8 +9,6 @@ Projects         : Dioscuri project, Planets, KEEP
 
 Roadmap
 ------------------------------------------------------------
-- Create a second status light for the 2nd hard disk
-- Finalise Intel 8086 CPU (Windows 3.0 capable, 32 bit works)
 - Finalise Intel 80386 CPU (Windows 3.11 capable)
 - Mouse support (ongoing)
 - CD-ROM support

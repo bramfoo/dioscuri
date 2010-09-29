@@ -217,3 +217,23 @@ th.left_cell, td.left_cell {
 .half {
     width: 300px;
 }
+
+.green, .orange, .red {
+    font-size: large;
+}
+
+.green {
+    color: green;
+}
+
+.orange {
+    color: orange;
+}
+
+.red {
+    color: red;
+}
+
+.clear {
+    clear: both;
+}
