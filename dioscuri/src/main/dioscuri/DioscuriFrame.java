@@ -185,7 +185,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Build frame
         this.setLocation(GUI_X_LOCATION, GUI_Y_LOCATION);
-        this.setSize(guiWidth, guiHeight);
+        this.setSize(guiWidth, guiHeight+10);
         this.setTitle(this.getEmulatorName());
         this.setResizable(false);
         this.updateGUI(GUI_RESET);
