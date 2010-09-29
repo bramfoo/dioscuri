@@ -1,12 +1,13 @@
-package dioscuri.config.temp;
+package dioscuri.config;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.math.BigInteger;
 
@@ -34,6 +35,19 @@ public class BiosPanel extends AbstractModulePanel {
         sysBios.setToolTipText(sysBios.getText());
         vgaBios.setToolTipText(vgaBios.getText());
 
+        sysBios.addFocusListener(new FocusAdapter(){
+            @Override
+            public void focusGained(FocusEvent e) {
+                sysBios.setCaretPosition(sysBios.getText().length());
+            }
+        });
+        vgaBios.addFocusListener(new FocusAdapter(){
+            @Override
+            public void focusGained(FocusEvent e) {
+                vgaBios.setCaretPosition(vgaBios.getText().length());
+            }
+        });
+
         super.add(new JLabel("System BIOS"));
         super.add(sysBios);
         super.add(browseSysBios);
@@ -57,7 +71,7 @@ public class BiosPanel extends AbstractModulePanel {
             public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
                 if(file != null) {
-                    sysBios.setText(file == null ? "" : file.getAbsolutePath());
+                    sysBios.setText(file.getAbsolutePath());
                     sysBios.setToolTipText(sysBios.getText());
                 }
             }
@@ -68,7 +82,7 @@ public class BiosPanel extends AbstractModulePanel {
             public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
                 if(file != null) {
-                    vgaBios.setText(file == null ? "" : file.getAbsolutePath());
+                    vgaBios.setText(file.getAbsolutePath());
                     vgaBios.setToolTipText(vgaBios.getText());
                 }
             }

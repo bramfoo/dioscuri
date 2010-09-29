@@ -1,12 +1,13 @@
-package dioscuri.config.temp;
+package dioscuri.config;
 
 import dioscuri.GUI;
-import dioscuri.config.Emulator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
@@ -79,6 +80,13 @@ public class AtaPanel extends AbstractModulePanel {
 
             imageFile.setToolTipText(imageFile.getText());
 
+            imageFile.addFocusListener(new FocusAdapter(){
+                @Override
+                public void focusGained(FocusEvent e) {
+                    imageFile.setCaretPosition(imageFile.getText().length());
+                }
+            });
+
             super.setLayout(new GridLayout(0, 3, 5, 5));
 
             super.add(new JLabel("Enabled"));
@@ -118,7 +126,7 @@ public class AtaPanel extends AbstractModulePanel {
                 public void actionPerformed(ActionEvent e) {
                     File file = AtaPanel.super.chooseFile();
                     if(file != null) {
-                        imageFile.setText(file == null ? "" : file.getAbsolutePath());
+                        imageFile.setText(file.getAbsolutePath());
                         imageFile.setToolTipText(imageFile.getText());
                     }
                 }

@@ -1,12 +1,15 @@
-package dioscuri.config.temp;
+package dioscuri.config;
+
+// TODO create more descriptive error messages in case of wrong input.
 
 import dioscuri.GUI;
 import dioscuri.interfaces.Module;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -34,7 +37,7 @@ public class ConfigDialog extends JDialog {
     private void loadPanel(JPanel attributesPanel, JList moduleList) {
         attributesPanel.removeAll();
         AbstractModulePanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
-        attributesPanel.add(p, BorderLayout.SOUTH);
+        attributesPanel.add(p, BorderLayout.NORTH);
         attributesPanel.validate();
         repaint();
     }
@@ -67,7 +70,7 @@ public class ConfigDialog extends JDialog {
         final JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         final JPanel attributesPanel = new JPanel(new BorderLayout(5, 5));
-        attributesPanel.add(new JLabel("Select a module in the left menu."));
+        attributesPanel.add(new JLabel("Select a module in the left menu to change its properties."));
         final JPanel moduleListPanel = new JPanel(new BorderLayout(5, 5));
         moduleListPanel.setPreferredSize(new Dimension(180, 0));
 
@@ -77,15 +80,10 @@ public class ConfigDialog extends JDialog {
         // tree panel
         final JList moduleList = new JList(moduleMap.keySet().toArray(new Module.Type[moduleMap.keySet().size()]));
         moduleListPanel.add(new JScrollPane(moduleList));
-        moduleList.addMouseListener(new MouseAdapter(){
+        moduleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+        moduleList.addListSelectionListener(new ListSelectionListener(){
             @Override
-            public void mouseClicked(MouseEvent e) {
-                loadPanel(attributesPanel, moduleList);
-            }
-        });
-        moduleList.addKeyListener(new KeyAdapter(){
-            @Override
-            public void keyReleased(KeyEvent e) {
+            public void valueChanged(ListSelectionEvent e) {
                 loadPanel(attributesPanel, moduleList);
             }
         });
@@ -111,6 +109,7 @@ public class ConfigDialog extends JDialog {
                         ex.printStackTrace();
                     }
                 }
+                ConfigDialog.this.dispose();
             }
         });
 

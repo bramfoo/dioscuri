@@ -1,4 +1,4 @@
-package dioscuri.config.temp;
+package dioscuri.config;
 
 import dioscuri.GUI;
 import dioscuri.util.Utilities;
@@ -28,16 +28,21 @@ public abstract class AbstractModulePanel extends JPanel {
     
     abstract void save() throws Exception;
 
-    final void saveAndWrite() throws Exception {
-        save();
-        writeXML();
+    final void saveAndWrite() {
+        try {
+            save();
+            writeXML();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Error saving parameter to configuration file.\n\n"+
+                    e.getMessage(), "DIOSCURI",
+                    JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     void writeXML() {
         if (!Utilities.saveXML(emuConfig, parent.getConfigFilePath())) {
-            JOptionPane.showMessageDialog(this, "Error saving " + "???"
-                    + " parameter to configuration file.", "DIOSCURI",
-                    JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error saving parameter to configuration file.",
+                    "DIOSCURI", JOptionPane.WARNING_MESSAGE);
         }
     }
 }
