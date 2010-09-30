@@ -18,6 +18,8 @@ Projects        : Dioscuri project, Planets, KEEP
   the mouse
 - Windows 3.0 runs smoothly under 32 bit
 - cleaned up the code base quite a bit
+- improved the configuration menu
+- possible to create screen shots during emulation
 
 0.5.2 : 21-04-2010
 -------------------------------------------------------
