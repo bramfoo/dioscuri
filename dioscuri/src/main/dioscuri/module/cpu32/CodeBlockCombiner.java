@@ -141,7 +141,7 @@ public class CodeBlockCombiner {
             return block0;
         }
         // check jump is small enough
-        if (jumpSize > 255) // ************check this
+        if (jumpSize > 255)
         {
             // System.out.println("big jump");
             return block0;

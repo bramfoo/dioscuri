@@ -74,6 +74,11 @@ public interface GUI {
     static final int EMU_FLOPPYA_TRANSFER_STOP = 16;
     static final int EMU_DEVICES_MOUSE_ENABLED = 17;
     static final int EMU_DEVICES_MOUSE_DISABLED = 18;
+    static final int EMU_HD2_TRANSFER_START = 19;
+    static final int EMU_HD2_TRANSFER_STOP = 20;
+    static final int EMU_HD2_INSERT = 21;
+    static final int EMU_HD2_EJECT = 22;
+
     static final int GUI_RESET = 99;
 
     // Key events
@@ -133,5 +138,5 @@ public interface GUI {
      * Display the CPU type (16 or 32 bit)
      * @param cpuType the CPU type   
      */
-    void setCpyTypeLabel(String cpuType);
+    void setCpuTypeLabel(String cpuType);
 }

@@ -49,16 +49,16 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleParallelPort;
 
 /**
  * An implementation of a parallel port module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : parallelport general.name : General Parallel Port
@@ -71,21 +71,7 @@ import dioscuri.module.ModuleParallelPort;
  * 
  * 
  */
-
-// TODO: Class is (mostly) a stub to return requested values to the BIOS
-@SuppressWarnings("unused")
 public class ParallelPort extends ModuleParallelPort {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard" };
-    private ModuleMotherboard motherboard;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(ParallelPort.class.getName());
@@ -100,11 +86,6 @@ public class ParallelPort extends ModuleParallelPort {
     private final static int STATUS_PORT2 = 0x279; // Read/Write port
     private final static int CONTROL_PORT2 = 0x27A; // Read/Write port
 
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "parallelport";
-    public final static String MODULE_NAME = "25-pin IEEE 1284 parallel port";
-
     // Constructor
 
     /**
@@ -113,100 +94,20 @@ public class ParallelPort extends ModuleParallelPort {
      * @param owner
      */
     public ParallelPort(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
+                + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (motherboard != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        
         // Register I/O ports 0x37[8-A], 0x27[8-A] in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);
@@ -216,229 +117,78 @@ public class ParallelPort extends ModuleParallelPort {
         motherboard.setIOPort(STATUS_PORT2, this);
         motherboard.setIOPort(CONTROL_PORT2, this);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
 
         return true;
 
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
-    public String getDump() {
-        String dump = "Parallel port status:\n";
-
-        dump += "This module is only a stub, no contents available" + "\n";
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
-
-    /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
-     */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
-     * IN instruction to parallel port<BR>
-     * 
-     * @param portAddress
-     *            the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *            0x03B[C-E]<BR>
-     * 
-     *            IN to portAddress 378h does ...<BR>
-     *            IN to portAddress 379h does ...<BR>
-     *            IN to portAddress 37Ah does ...<BR>
-     * 
-     * @return byte of data from ...
-     */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from "
+    @Override
+    public byte getIOPortByte(int portAddress) throws UnknownPortException,
+            WriteOnlyPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
         switch (portAddress) {
         // Return identical values to Bochs during BIOS boot:
         case (DATA_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'available'");
             return (byte) 0xAA;
 
         case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
         case (STATUS_PORT):
         case (STATUS_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 0x58");
             return 0x58;
 
             // Return identical values to Bochs during BIOS boot:
         case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'available'");
             return (byte) 0x0C;
 
         case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE
+            logger.log(Level.INFO, "[" + super.getType()
                     + "] returning default value 'not available'");
             return (byte) 0xFF;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
 
     /**
-     * OUT instruction to parallel port<BR>
-     * 
-     * @param portAddress
-     *            the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *            0x03B[C-E]<BR>
-     * 
-     *            OUT to portAddress 378h does ...<BR>
-     *            OUT to portAddress 379h does ...<BR>
-     *            OUT to portAddress 37Ah does ...<BR>
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to "
+            throws UnknownPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
         switch (portAddress) {
         case (DATA_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(DATA_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
@@ -446,53 +196,68 @@ public class ParallelPort extends ModuleParallelPort {
         case (STATUS_PORT):
         case (STATUS_PORT2):
             // Do nothing
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT).toUpperCase()
                     + " received, not handled");
             return;
 
         case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] OUT on port "
+            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
                     + Integer.toHexString(CONTROL_PORT2).toUpperCase()
                     + " received, not handled");
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
+            throws ModuleException, UnknownPortException {
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
+            throws ModuleException, UnknownPortException {
     }
-
-    // ******************************************************************************
-    // Custom methods
 }

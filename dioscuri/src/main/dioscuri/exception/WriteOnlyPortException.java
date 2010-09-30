@@ -1,4 +1,4 @@
-/* $Revision: 159 $ $Date: 2009-08-17 12:52:56 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
+/* $Revision: 160 $ $Date: 2009-08-17 12:56:40 +0000 (ma, 17 aug 2009) $ $Author: blohman $ 
  * 
  * Copyright (C) 2007-2009  National Library of the Netherlands, 
  *                          Nationaal Archief of the Netherlands, 
@@ -37,72 +37,20 @@
  * Project Title: DIOSCURI
  */
 
-package dioscuri.module.motherboard;
-
-import java.util.ArrayList;
-
-import dioscuri.module.ModuleDevice;
+package dioscuri.exception;
 
 /**
  *
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
-public class Devices extends ArrayList<ModuleDevice> {
-    // Attributes
-
-    // Constructors
-    /**
-     * Class Constructor
-     * 
-     */
-    public Devices() {
-        super();
-    }
+public class WriteOnlyPortException extends Exception {
 
     /**
-     * Class Constructor
-     * 
-     * @param capacity
+     *
+     * @param message
      */
-    public Devices(int capacity) {
-        super(capacity);
-    }
-
-    // Methods
-    /**
-     * Add a device to array
-     * 
-     * @param device
-     * @return boolean true if succesful, false otherwise
-     */
-    public boolean addDevice(ModuleDevice device) {
-        return super.add(device);
-    }
-
-    /**
-     * Return a device from array based on given type
-     * 
-     * @param type
-     * @return ModuleDevice
-     */
-    public ModuleDevice getDevice(String type) {
-        for (int i = 0; i < super.size(); i++) {
-            if ((this.getDevice(i)).getType().equalsIgnoreCase(type)) {
-                return (ModuleDevice) super.get(i);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Return a device from array based on given index
-     * 
-     * @param index
-     * @return ModuleDevice
-     */
-    public ModuleDevice getDevice(int index) {
-        return (ModuleDevice) super.get(index);
+    public WriteOnlyPortException(String message) {
+        super(message);
     }
 }

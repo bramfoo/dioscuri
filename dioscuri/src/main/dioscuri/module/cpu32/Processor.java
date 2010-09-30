@@ -25,19 +25,13 @@
  */
 package dioscuri.module.cpu32;
 
-//import org.jpc.emulator.*;
-//import org.jpc.emulator.motherboard.*;
-//import org.jpc.emulator.memory.*;
-//import org.jpc.emulator.processor.fpu64.*;
-//import org.jpc.support.*;
 import java.io.*;
 import java.util.*;
 
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModulePIC;
 
 /**
@@ -46,6 +40,7 @@ import dioscuri.module.ModulePIC;
  * @author Bart Kiers
  */
 public class Processor extends ModuleCPU implements HardwareComponent {
+    
     public static final int STATE_VERSION = 1;
     public static final int STATE_MINOR_VERSION = 0;
     public static final int CLOCK_SPEED = 50; // CPU "Clock Speed" in MHz
@@ -137,7 +132,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public IOPortHandler ioports;
 
     private int interruptFlags;
-    private ModulePIC interruptController;
+    //private ModulePIC interruptController;
     // private InterruptController interruptController;
     // Seems unneeded
     // private Clock virtualClock;
@@ -466,6 +461,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         if ((cr0 & CR0_NUMERIC_ERROR) == 0) {
             System.err.println("Reporting FPU Error Via IRQ#13");
             // interruptController.setIRQ(13, 1);
+            ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
             interruptController.setIRQ(13);
         } else {
             System.err.println("Reporting FPU Error Via Exception 0x10");
@@ -950,6 +946,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
+     */
+    @Override
     public boolean reset() {
         resetTime = System.currentTimeMillis();
         eax = ebx = ecx = edx = 0;
@@ -1019,6 +1021,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public final int getInstructionPointer() {
         return cs.translateAddressRead(eip);
     }
+
     public final void processRealModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -1030,12 +1033,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // int vector = interruptController.cpuGetInterrupt();
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                 int vector = interruptController.interruptAcknowledge();
                 handleRealModeInterrupt(vector);
             }
         }
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
+
     public final void processProtectedModeInterrupts() {
         if (eflagsInterruptEnable) {
 
@@ -1047,6 +1052,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
                 // handleHardProtectedModeInterrupt(interruptController.cpuGetInterrupt());
+                ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                 handleHardProtectedModeInterrupt(interruptController
                         .interruptAcknowledge());
             }
@@ -1063,11 +1069,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0) {
                 interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
-                if ((getCR4() & CR4_VIRTUAL8086_MODE_EXTENSIONS) != 0)
+                if ((getCR4() & CR4_VIRTUAL8086_MODE_EXTENSIONS) != 0) {
                     throw new IllegalStateException();
-                else
+                }
+                else {
                     // handleHardVirtual8086ModeInterrupt(interruptController.cpuGetInterrupt());
+                    ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
                     handleHardVirtual8086ModeInterrupt(interruptController.interruptAcknowledge());
+                }
 
             }
         }
@@ -2409,6 +2418,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean initialised() {
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
         boolean result = ((physicalMemory != null) && (linearMemory != null)
                 && (ioports != null) && (interruptController != null)); // &&
                                                                         // (virtualClock
@@ -2437,23 +2447,6 @@ public class Processor extends ModuleCPU implements HardwareComponent {
             ioports = (IOPortHandler) component;
         // if (component instanceof Clock)
         // virtualClock = (Clock)component;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        if (mod.getType().equals("pic")) {
-            this.interruptController = (ModulePIC) mod;
-            return true;
-        }
-        // No connection has been established
-        return false;
     }
 
     private int auxiliaryCarryOne, auxiliaryCarryTwo, auxiliaryCarryThree;
@@ -2988,6 +2981,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     public boolean updated() {
+        ModulePIC interruptController = (ModulePIC)super.getConnection(Module.Type.PIC);
         boolean result = (physicalMemory.updated() && linearMemory.updated()
                 && ioports.updated() && interruptController.isConnected());// &&
                                                                            // virtualClock.updated()
@@ -3009,257 +3003,263 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     public void timerCallback() {
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public String dumpRegisters() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public boolean getCpuInstructionDebug() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public long getCurrentInstructionNumber() {
-        // TODO Auto-generated method stub
         return 0;
     }
 
-    @Override
-    protected byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    @Override
-    protected byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    protected byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see dioscuri.module.ModuleCPU#getIPS() Added constant to keep Dioscuri
-     * clock happy
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
+    public byte getIOPortByte(int portAddress) throws ModuleException,
+            WriteOnlyPortException {
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
+    public byte[] getIOPortDoubleWord(int portAddress)
+            throws ModuleException, WriteOnlyPortException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
+    public byte[] getIOPortWord(int portAddress) throws ModuleException,
+            WriteOnlyPortException {
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
+    @Override
     public int getIPS() {
 
         // 5 MHz clock
         return 5 * 1000000;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public String getNextInstructionInfo() {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public String getRegisterHex(int register) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected byte[] getRegisterValue(String registerName) {
-        // TODO Auto-generated method stub
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected void incrementInstructionCounter() {
-        // TODO Auto-generated method stub
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected boolean initInstructionTables() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected boolean initRegisters() {
-        // TODO Auto-generated method stub
         return false;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see dioscuri.module.ModuleCPU#interruptRequest(boolean) Added method
-     * body to propagate JPC generated commands.
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
      */
+    @Override
     public void interruptRequest(boolean value) {
-        if (value)
+        if (value) {
             raiseInterrupt();
-        else
+        }
+        else {
             clearInterrupt();
+        }
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public boolean isAbnormalTermination() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public void setCpuInstructionDebug(boolean isDebugMode) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
-    public void setHoldRequest(boolean value, ModuleDevice origin) {
-        // TODO Auto-generated method stub
-
+    public void setHoldRequest(boolean value, Module origin) {
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
-    protected void setIOPortByte(int portAddress, byte value)
+    public void setIOPortByte(int portAddress, byte value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
-    protected void setIOPortDoubleWord(int portAddress, byte[] value)
+    public void setIOPortDoubleWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
     @Override
-    protected void setIOPortWord(int portAddress, byte[] value)
+    public void setIOPortWord(int portAddress, byte[] value)
             throws ModuleException {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public void setIPS(int ips) {
-        // TODO Auto-generated method stub
 
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public void setIPS(int ips, int lowestUpdatePeriod) {
-        // TODO Auto-generated method stub
-
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected boolean setRegisterValue(String registerName, byte[] value) {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     protected void setRunning(boolean status) {
-        // TODO Auto-generated method stub
-
     }
 
-    @Override
-    public String[] getConnection() {
-        return new String[] {};
-    }
-
-    @Override
-    public byte[] getData(Module module) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public boolean getDebugMode() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public String getDump() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public int getID() {
-        return 1;
-    }
-
-    public String getName() {
-        return "8086 compatible CPU";
-    }
-
-    @Override
-    public String getType() {
-        return "cpu";
-    }
-
-    @Override
-    public boolean isConnected() {
-        // TODO Auto-generated method stub
-        return true;
-    }
-
-    @Override
-    public boolean isObserved() {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setData(byte[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public boolean setData(String[] data, Module module) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
-    @Override
-    public void setDebugMode(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void setObserved(boolean status) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void start() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void stop() {
-        // TODO Auto-generated method stub
-
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleCPU
+     */
     @Override
     public boolean isShutdown() {
-        // TODO Auto-generated method stub
         return false;
     }
 }

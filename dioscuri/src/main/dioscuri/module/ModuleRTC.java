@@ -39,13 +39,22 @@
 
 package dioscuri.module;
 
-/**
- * Interface representing a generic hardware module.
- * 
- */
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
-public abstract class ModuleRTC extends ModuleDevice {
-    // Methods
+/**
+ * Abstract class representing a generic RTC module.
+ */
+public abstract class ModuleRTC extends AbstractModule implements Addressable {
+
+    /**
+     * 
+     */
+    public ModuleRTC() {
+        super(Module.Type.RTC,
+                Module.Type.MOTHERBOARD, Module.Type.PIC);
+    }
+
     /**
      * Return requested CMOS register
      * 

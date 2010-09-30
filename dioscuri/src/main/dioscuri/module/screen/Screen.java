@@ -40,7 +40,7 @@
 package dioscuri.module.screen;
 
 import dioscuri.Emulator;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleScreen;
 import dioscuri.module.ModuleVideo;
 
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
 /**
  * An implementation of a hardware visual screen module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : screen general.name : Compatible CRT/LCD computer screen
@@ -66,20 +66,10 @@ import java.util.logging.Logger;
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      screen.resolutionRange : unlimited screen.colorDepth : 256
  */
-@SuppressWarnings("unused")
 public class Screen extends ModuleScreen {
 
     // Attributes
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "video" };
     private ScreenPanel screenPanel;
-    protected ModuleVideo video;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // TODO: these properties should be set by configuration data of ESD
     // Data and color properties
@@ -147,11 +137,6 @@ public class Screen extends ModuleScreen {
 
     // Constants
 
-    // Module specifics
-    private final static int MODULE_ID = 1;
-    private final static String MODULE_TYPE = "screen";
-    private final static String MODULE_NAME = "Compatible CRT/LCD computer screen";
-
     // Raster, ColourModel and BufferedImage properties
     protected static final int RED = 0;
     protected static final int GREEN = 1;
@@ -162,11 +147,6 @@ public class Screen extends ModuleScreen {
      * @param owner
      */
     public Screen(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Create an initial (temporary) colourmodel, filled with black
         Arrays.fill(palette[RED], (byte) 0);
@@ -195,195 +175,30 @@ public class Screen extends ModuleScreen {
         // Create creen canvas
         screenPanel = new ScreenPanel();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " . Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
+                + " . AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for video
-        if (mod.getType().equalsIgnoreCase("video")) {
-            this.video = (ModuleVideo) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check connections
-        if (video != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Sets given String[] data for this module
-     * 
-     * @param sender
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * @see Module
-     */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";
@@ -399,46 +214,62 @@ public class Screen extends ModuleScreen {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleScreen Methods
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
+     */
+    @Override
     public JPanel getScreen() {
         return screenPanel;
     }
 
     /**
-     * Return the number of rows on screen (text based)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenRows() {
         return textRows;
     }
 
     /**
-     * Return the number of columns on screen (text based)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenColumns() {
         return textColumns;
     }
 
     /**
-     * Return width of screen in number of pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenWidth() {
         return screenWidth;
     }
 
     /**
-     * Return height of screen in number of pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public int getScreenHeight() {
         return screenHeight;
     }
 
     /**
-     * Set the screen size in number of pixels
-     * @param width
-     * @param height
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void setScreenSize(int width, int height) {
         // Update image size
         this.setImage(width, height);
@@ -449,25 +280,19 @@ public class Screen extends ModuleScreen {
         screenPanel.setSize(width, height);
         screenPanel.setBackground(Color.black);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Size of screen has been set.");
     }
 
     /**
-     * Update the screen size (if necesarry)
-     * 
-     * @param newWidth
-     *            New screen width in pixels
-     * @param newHeight
-     *            New screen height in pixels
-     * @param newFontHeight
-     *            New font height in pixels
-     * @param newFontWidth
-     *            New font width in pixels
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
             int newFontHeight) {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " call to updateScreenSize() w/ fonts");
 
         // Check if the font size needs updating
@@ -485,9 +310,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Set the screen image to black
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void clearScreen() {
         // "I see a red door and I want it painted black; No colours anymore I want them to turn black"
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
@@ -503,19 +330,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Set a colour in the private colourmap to a particular RGB value
-     * 
-     * @param index
-     *            Index into the palette
-     * @param red
-     *            New value of red
-     * @param green
-     *            New value of green
-     * @param blue
-     *            New value of blue
-     * 
-     * @return true if succesfull update, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public boolean setPaletteColour(byte index, int red, int green, int blue) {
         // Assure byte is within array bounds
         int indx = index & 0xFF;
@@ -530,7 +349,7 @@ public class Screen extends ModuleScreen {
         palette[BLUE][indx] = (byte) blue;
         this.updatePalette();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Palette[" + indx
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " Palette[" + indx
                 + "] changed to: {" + (byte) red + "," + (byte) green + ","
                 + (byte) blue + "}");
 
@@ -539,13 +358,11 @@ public class Screen extends ModuleScreen {
     }
 
     /**
-     * Update a byte in the codePage
-     * 
-     * @param index
-     *            location of byte in codePage array
-     * @param data
-     *            value of new byte
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void setByteInCodePage(int index, byte data) {
         // Set data
         codePage[index] = data;
@@ -554,18 +371,20 @@ public class Screen extends ModuleScreen {
         codePageUpdateIndex[index >> 5] = true;
         codePageReqsUpdate = true;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " codePage[" + index
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " codePage[" + index
                 + "] = " + data);
     }
 
     /**
-     * Update the complete character set
-     * 
-     * @param start
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateCodePage(int start) {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
         System.arraycopy(codePage, 0, video.getVideoBuffer(), start, 0x2000);
 
         // Set codePage and and all codePage indices to require update
@@ -573,9 +392,17 @@ public class Screen extends ModuleScreen {
         codePageReqsUpdate = true;
     }
 
-    // BK TODO fix the RasterFormatException properly
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
+     */
+    @Override
     public void updateText(int oldText, int newText, long cursorXPos,
             long cursorYPos, short[] textModeAttribs, int numberRows) {
+
+        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+
         logger.log(Level.INFO, String.format(
                 "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 
                 oldText, newText, cursorXPos, cursorYPos, Arrays.toString(textModeAttribs), numberRows));
@@ -872,17 +699,17 @@ public class Screen extends ModuleScreen {
             // Refresh screen
             screenPanel.repaint();
         } catch(RasterFormatException e) {
-            logger.log(Level.SEVERE, "RasterFormatException details: "+e.getMessage());
+            // TODO fix the RasterFormatException properly
+            logger.log(Level.INFO, "RasterFormatException details: "+e.getMessage());
         }
     }
 
     /**
-     * Update a tile on screen with given bytes A tile is a part of the
-     * screenbuffer
-     * 
-     * @param x0
-     * @param y0
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleScreen
      */
+    @Override
     public void updateGraphicsTile(byte[] tile, int x0, int y0) {
 
         int x, y, y_size;
@@ -906,9 +733,6 @@ public class Screen extends ModuleScreen {
         this.image.setData(ras.createTranslatedChild(x0, y0));
         screenPanel.repaint();
     }
-
-    // ******************************************************************************
-    // Custom Methods
 
     /**
      * Set an image with data on screen
@@ -989,7 +813,7 @@ public class Screen extends ModuleScreen {
             rastr.setPixels(0, 0, fntWidth, fntHeight, pxels);
 
             if (fontImages[i] == null) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " Can't create  font [" + i + "]");
             }
         }

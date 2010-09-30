@@ -54,15 +54,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleATA;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleMotherboard;
-import dioscuri.module.ModulePIC;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.interfaces.Module;
+import dioscuri.module.*;
+import dioscuri.module.AbstractModule;
 
 /**
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : pic general.name : Programmable Interrupt Controller
@@ -78,38 +76,22 @@ import dioscuri.module.ModulePIC;
  *      by PIC
  * 
  */
-@SuppressWarnings("unused")
 public class PIC extends ModulePIC {
+
     // Instance (array of master and slave PIC)
     TheProgrammableInterruptController[] thePIC = new TheProgrammableInterruptController[] {
             new TheProgrammableInterruptController(),
             new TheProgrammableInterruptController() };
 
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "cpu", "motherboard" };
-    private ModuleCPU cpu;
-    private ModuleMotherboard motherboard;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
     // Logging
     private static final Logger logger = Logger.getLogger(PIC.class.getName());
 
     // IRQ list
-    private Module[] irqList; // Contains references to modules that registered
+    private AbstractModule[] irqList; // Contains references to modules that registered
                               // an IRQ
     private boolean[] irqEnabled; // Contains a list of set or cleared IRQs
 
     // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "pic";
-    public final static String MODULE_NAME = "Programmable Interrupt Controller (Intel 8259A compatible)";
     public final static int MASTER = 0;
     public final static int SLAVE = 1;
 
@@ -132,10 +114,7 @@ public class PIC extends ModulePIC {
     private final static int PIC_IRQ_NUMBER_RTC = 8; // RTC / CMOS
     private final static int PIC_IRQ_NUMBER_MOUSE = 12; // Mouse
 
-    private final static int[] PIC_IRQ_NUMBER_ATA = { 14, 15, 11, 9 }; // ATA
-                                                                       // controller
-
-    // Constructor
+    private final static int[] PIC_IRQ_NUMBER_ATA = { 14, 15, 11, 9 }; // ATA controller
 
     /**
      * Class constructor
@@ -143,114 +122,25 @@ public class PIC extends ModulePIC {
      * @param owner
      */
     public PIC(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise IRQ list
         irqList = null;
         irqEnabled = null;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "]"
+                + " AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for cpu
-        if (mod.getType().equalsIgnoreCase("cpu")) {
-            System.out.println("PIC connected to :: " + mod.getClass() + "\n");
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-        // Set connection for motherboard
-        else if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (this.cpu != null && this.motherboard != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+
         // Reset master and slave PICs
         thePIC[MASTER].reset();
         thePIC[SLAVE].reset();
@@ -269,119 +159,20 @@ public class PIC extends ModulePIC {
         motherboard.setIOPort(SLAVE_PIC_MASK_REG, this);
 
         // Reset IRQ list and clear all pending IRQs
-        irqList = new Module[PIC_IRQ_SPACE];
+        irqList = new AbstractModule[PIC_IRQ_SPACE];
         irqEnabled = new boolean[PIC_IRQ_SPACE];
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "]"
+                + " AbstractModule has been reset.");
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -403,40 +194,14 @@ public class PIC extends ModulePIC {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleUnknownPort
-     */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO read from 0x"
+    @Override
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
 
         if ((portAddress == 0x20 || portAddress == 0x21) && thePIC[MASTER].isPolled) {
@@ -461,20 +226,20 @@ public class PIC extends ModulePIC {
         case 0x20:
             if (thePIC[MASTER].readRegisterSelect != 0) {
                 // ISR
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " read master ISR = "
                         + thePIC[MASTER].inServiceRegister);
                 return (thePIC[MASTER].inServiceRegister);
             } else {
                 // IRR
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " read master IRR = "
                         + thePIC[MASTER].interruptRequestRegister);
                 return (thePIC[MASTER].interruptRequestRegister);
             }
 
         case 0x21:
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " read master IMR = "
                     + thePIC[MASTER].interruptMaskRegister);
             return (thePIC[MASTER].interruptMaskRegister);
@@ -482,28 +247,28 @@ public class PIC extends ModulePIC {
         case 0xA0:
             if (thePIC[SLAVE].readRegisterSelect != 0) {
                 // ISR
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " read slave ISR = "
                         + thePIC[SLAVE].inServiceRegister);
                 return (thePIC[SLAVE].inServiceRegister);
             } else {
                 // IRR
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " read slave IRR = "
                         + thePIC[SLAVE].interruptRequestRegister);
                 return (thePIC[SLAVE].interruptRequestRegister);
             }
 
         case 0xA1:
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " read slave IMR = "
                     + thePIC[SLAVE].interruptMaskRegister);
             return (thePIC[SLAVE].interruptMaskRegister);
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Unknown I/O address " + portAddress);
-            throw new ModuleUnknownPort("[" + MODULE_TYPE + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
 
@@ -512,11 +277,17 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data) {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IO write to 0x"
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
 
@@ -524,11 +295,11 @@ public class PIC extends ModulePIC {
         case 0x20:
             if ((data & 0x10) != 0) {
                 // initialization command 1: master
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + " master: init command 1 found");
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "         requires 4 = " + (data & 0x01));
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "         cascade mode: [0=cascade,1=single] "
                         + ((data & 0x02) >> 1));
                 thePIC[MASTER].initSequence.inInitSequence = true;
@@ -547,18 +318,18 @@ public class PIC extends ModulePIC {
                 thePIC[MASTER].autoEndOfInt = false;
                 thePIC[MASTER].rotateOnAutoEOI = false;
                 if ((data & 0x02) != 0)
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " master: ICW1: single mode not supported");
                 if ((data & 0x08) != 0) {
                     logger
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " master: ICW1: level sensitive mode not supported");
                 } else {
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
                             + " master: ICW1: edge triggered mode selected");
                 }
                 cpu.interruptRequest(false);
@@ -567,7 +338,7 @@ public class PIC extends ModulePIC {
 
             if ((data & 0x18) == 0x08) {
                 // OCW3
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + " master: OCW3; data: " + data);
                 int specialMask, poll, readOperation;
 
@@ -611,7 +382,7 @@ public class PIC extends ModulePIC {
 
             case (byte) 0xA0: // Rotate on non-specific end of interrupt
             case 0x20: // end of interrupt command
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " OCW2: Clear highest interrupt");
                 this.clearHighestInterrupt(MASTER);
 
@@ -628,7 +399,7 @@ public class PIC extends ModulePIC {
 
             case 0x40: // Intel PIC spec-sheet seems to indicate this should be
                        // ignored
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " IRQ no-op");
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
                 break;
 
             case 0x60: // specific EOI 0
@@ -652,7 +423,7 @@ public class PIC extends ModulePIC {
             case (byte) 0xC5: // 5 4 3 2 1 0 7 6
             case (byte) 0xC6: // 6 5 4 3 2 1 0 7
             case (byte) 0xC7: // 7 6 5 4 3 2 1 0
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " IRQ lowest command " + data);
                 thePIC[MASTER].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
                 break;
@@ -671,7 +442,7 @@ public class PIC extends ModulePIC {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " write to port 0x20 did not match");
                 return;
             } // switch
@@ -684,15 +455,15 @@ public class PIC extends ModulePIC {
                 case 2:
                     thePIC[MASTER].interruptOffset = (((int) data) & 0xFF) & 0xF8;
                     thePIC[MASTER].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " master: init command 2 = " + data);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + "         offset = INT "
                             + thePIC[MASTER].interruptOffset);
                     return;
 
                 case 3:
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " master: init command 3 = " + data);
                     if (thePIC[MASTER].initSequence.numComWordsReq != 0) {
                         thePIC[MASTER].initSequence.currentComWordExpected = 4;
@@ -702,34 +473,34 @@ public class PIC extends ModulePIC {
                     return;
 
                 case 4:
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " master: init command 4 = " + data);
                     if ((data & 0x02) != 0) {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + "        auto EOI");
                         thePIC[MASTER].autoEndOfInt = true;
                     } else {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " normal EOI interrupt");
                         thePIC[MASTER].autoEndOfInt = false;
                     }
                     if ((data & 0x01) != 0) {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + "        80x86 mode");
                     } else
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "        not 80x86 mode");
                     thePIC[MASTER].initSequence.inInitSequence = false;
                     return;
                 default:
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " master expecting bad init command");
                     return;
                 }
             }
 
             // normal operation
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " setting master pic IMR to %02x", data);
             thePIC[MASTER].interruptMaskRegister = data;
             serviceMasterPIC();
@@ -738,11 +509,11 @@ public class PIC extends ModulePIC {
         case 0xA0:
             if ((data & 0x10) != 0) {
                 // initialization command 1: slave
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " slave: init command 1 found");
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "        requires 4 = " + (data & 0x01));
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + "        cascade mode: [0=cascade,1=single] "
                         + ((data & 0x02) >> 1));
                 thePIC[SLAVE].initSequence.inInitSequence = true;
@@ -760,18 +531,18 @@ public class PIC extends ModulePIC {
                 thePIC[SLAVE].autoEndOfInt = false;
                 thePIC[SLAVE].rotateOnAutoEOI = false;
                 if ((data & 0x02) != 0)
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " slave: ICW1: single mode not supported");
                 if ((data & 0x08) != 0) {
                     logger
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " slave: ICW1: level sensitive mode not supported");
                 } else {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " slave: ICW1: edge triggered mode selected");
                 }
                 return;
@@ -832,7 +603,7 @@ public class PIC extends ModulePIC {
 
             case 0x40: // Intel PIC spec-sheet seems to indicate this should be
                        // ignored
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " IRQ no-op");
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
                 break;
 
             case 0x60: // specific EOI 0
@@ -856,7 +627,7 @@ public class PIC extends ModulePIC {
             case (byte) 0xC5: // 5 4 3 2 1 0 7 6
             case (byte) 0xC6: // 6 5 4 3 2 1 0 7
             case (byte) 0xC7: // 7 6 5 4 3 2 1 0
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " IRQ lowest command " + data);
                 thePIC[SLAVE].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
                 break;
@@ -875,7 +646,7 @@ public class PIC extends ModulePIC {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " write to port 0xA0 did not match");
                 return;
             } // switch
@@ -888,15 +659,15 @@ public class PIC extends ModulePIC {
                 case 2:
                     thePIC[SLAVE].interruptOffset = (((int) data) & 0xFF) & 0xF8;
                     thePIC[SLAVE].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " slave: init command 2 = " + data);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + "        offset = INT "
                             + thePIC[SLAVE].interruptOffset);
                     return;
 
                 case 3:
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " slave: init command 3 = " + data);
                     if (thePIC[SLAVE].initSequence.numComWordsReq != 0) {
                         thePIC[SLAVE].initSequence.currentComWordExpected = 4;
@@ -906,28 +677,28 @@ public class PIC extends ModulePIC {
                     return;
 
                 case 4:
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " slave: init command 4 = " + data);
                     if ((data & 0x02) != 0) {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + "        auto EOI");
                         thePIC[SLAVE].autoEndOfInt = true;
                     } else {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " normal EOI interrupt");
                         thePIC[SLAVE].autoEndOfInt = false;
                     }
                     if ((data & 0x01) != 0) {
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + "        80x86 mode");
                     } else
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + "        not 80x86 mode");
                     thePIC[SLAVE].initSequence.inInitSequence = false;
                     return;
 
                 default:
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " slave: encountered bad init command");
                     return;
                 }
@@ -936,24 +707,24 @@ public class PIC extends ModulePIC {
 
         default:
             // normal operation
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " setting slave pic IMR to %02x", data);
             thePIC[SLAVE].interruptMaskRegister = data;
             serviceSlavePIC();
-            return;
-        } // switch
+        }
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortWord(int portAddress) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> Returned default value 0xFFFF");
 
         // Return dummy value 0xFFFF
@@ -961,29 +732,29 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
-     * Return a doubleword from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> Returned default value 0xFFFFFFFF");
 
         // Return dummy value 0xFFFFFFFF
@@ -991,109 +762,103 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Set a doubleword in I/O address space at given port
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
-
-    // ******************************************************************************
-    // ModulePIC Methods
-
+    
     /**
-     * Returns an IRQ number. Checks if requesting module has a fixed IRQ
-     * number.
-     * 
-     * @param module
-     *            that would like to have an IRQ number
-     * @return int IRQ number from IRQ address space, or -1 if not
-     *         allowed/possible
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
-    public int requestIRQNumber(Module module) {
+    @Override
+    public int requestIRQNumber(AbstractModule module) {
 
         int irqNumber = -1;
 
         // Check which device is requesting an IRQ number
         // If module is part of reserved IRQ-list, return fixed IRQ number
-        if (module.getType().equalsIgnoreCase("pit")) {
-            // Module PIT
+        if (module.getType() == Module.Type.PIT) { //.equalsIgnoreCase("pit")) {
+            // AbstractModule PIT
             irqNumber = PIC_IRQ_NUMBER_PIT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("keyboard")) {
-            // Module Keyboard
+        } else if (module.getType() == Module.Type.KEYBOARD) { //.equalsIgnoreCase("keyboard")) {
+            // AbstractModule Keyboard
             irqNumber = PIC_IRQ_NUMBER_KEYBOARD;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("serialport")) {
-            // Module Serialport
+        } else if (module.getType() == Module.Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {
+            // AbstractModule Serialport
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("fdc")) {
-            // Module FDC
+        } else if (module.getType() == Module.Type.FDC) { //.equalsIgnoreCase("fdc")) {
+            // AbstractModule FDC
             irqNumber = PIC_IRQ_NUMBER_FDC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("rtc")) {
-            // Module RTC
+        } else if (module.getType() == Module.Type.RTC) { //.equalsIgnoreCase("rtc")) {
+            // AbstractModule RTC
             irqNumber = PIC_IRQ_NUMBER_RTC;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("mouse")) {
-            // Module Mouse
+        } else if (module.getType() == Module.Type.MOUSE) { //.equalsIgnoreCase("mouse")) {
+            // AbstractModule Mouse
             irqNumber = PIC_IRQ_NUMBER_MOUSE;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("ata")) {
-            // Module ATA
+        } else if (module.getType() == Module.Type.ATA) { //.equalsIgnoreCase("ata")) {
+            // AbstractModule ATA
             ModuleATA ata = (ModuleATA) module;
             int currentChannelIndex = ata.getCurrentChannelIndex();
             irqNumber = PIC_IRQ_NUMBER_ATA[currentChannelIndex];
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
-        } else if (module.getType().equalsIgnoreCase("serialport")) {
-            // Module SerialPort
+        } else if (module.getType() == Module.Type.SERIALPORT) { //.equalsIgnoreCase("serialport")) {      // TODO duplicate else-if!
+            // AbstractModule SerialPort
             irqNumber = PIC_IRQ_NUMBER_SERIALPORT;
             irqList[irqNumber] = module;
             irqEnabled[irqNumber] = false;
         } else {
             // FIXME: Return any of the free available IRQ numbers
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Should return free IRQ number, but is not implemented");
         }
-        System.out.println("PIC.requestIRQNumber(Module) :: "+module.getClass()+" :: IRQ = " + irqNumber);
+        //System.out.println("PIC.requestIRQNumber(AbstractModule) :: "+module.getClass()+" :: IRQ = " + irqNumber);
         return irqNumber;
     }
 
     /**
-     * Raises an interrupt request (IRQ) of given IRQ number
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public void setIRQ(int irqNumber) {
-        System.out.println("irqNumber="+irqNumber);
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
 
         int mask = (1 << (irqNumber & 7));
         // Check if IRQ should be handled by master or slave and check if irqPin
         // was low
         if ((irqNumber <= 7) && !((thePIC[MASTER].irqPins & mask) != 0)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IRQ line "
                     + irqNumber + " now high");
             thePIC[MASTER].irqPins |= mask;
             thePIC[MASTER].interruptRequestRegister |= mask;
             this.serviceMasterPIC();
         } else if ((irqNumber > 7) && (irqNumber <= 15)
                 && !((thePIC[SLAVE].irqPins & mask) != 0)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IRQ line "
                     + irqNumber + " now high");
             thePIC[SLAVE].irqPins |= mask;
             thePIC[SLAVE].interruptRequestRegister |= mask;
@@ -1102,22 +867,24 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Lowers an interrupt request (IRQ) of given IRQ number
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public void clearIRQ(int irqNumber) {
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " low");
 
         int mask = (1 << (irqNumber & 7));
         if ((irqNumber <= 7) && ((thePIC[MASTER].irqPins & mask) != 0)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IRQ line "
                     + irqNumber + " now low");
             thePIC[MASTER].irqPins &= ~(mask);
             thePIC[MASTER].interruptRequestRegister &= ~(mask);
         } else if ((irqNumber > 7) && (irqNumber <= 15)
                 && ((thePIC[SLAVE].irqPins & mask) != 0)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " IRQ line "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IRQ line "
                     + irqNumber + " now low");
             thePIC[SLAVE].irqPins &= ~(mask);
             thePIC[SLAVE].interruptRequestRegister &= ~(mask);
@@ -1125,13 +892,16 @@ public class PIC extends ModulePIC {
     }
 
     /**
-     * Acknowledges an interrupt request from PIC by CPU Note: only the CPU can
-     * acknowledge an interrupt
-     * 
-     * @return int address defining the jump address for handling the IRQ by the
-     *         CPU
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModulePIC
      */
+    @Override
     public int interruptAcknowledge() {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+
         int vector;
         int irq;
 
@@ -1179,9 +949,6 @@ public class PIC extends ModulePIC {
         return (vector);
     }
 
-    // ******************************************************************************
-    // Custom Methods
-
     /**
      * Handle interrupts on the slave PIC
      */
@@ -1221,7 +988,7 @@ public class PIC extends ModulePIC {
                 }
 
                 if (maxIRQ > 7) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " error in serviceSlavePic()");
                 }
             } else {
@@ -1237,7 +1004,7 @@ public class PIC extends ModulePIC {
                 // current IRQ is already in-service
                 if (!(thePIC[SLAVE].specialMask && (((thePIC[SLAVE].inServiceRegister >> irq) & 0x01) != 0))) {
                     if ((unmaskedRequests & (1 << irq)) != 0) {
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " slave: signalling IRQ(" + 8 + irq + ")");
 
                         thePIC[SLAVE].intRequestPin = true;
@@ -1261,6 +1028,10 @@ public class PIC extends ModulePIC {
      * Handle interrupts on the master PIC
      */
     private void serviceMasterPIC() {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        //ModuleMotherboard motherboard = (ModuleMotherboard)super.getExpectedConnections(Type.MOTHERBOARD);
+        
         int unmaskedRequests;
         int irq;
         int isr, maxIRQ;
@@ -1296,7 +1067,7 @@ public class PIC extends ModulePIC {
                     return;
                 }
                 if (maxIRQ > 7) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " error in servicMasterPic()");
                 }
             } else {
@@ -1312,7 +1083,7 @@ public class PIC extends ModulePIC {
                 // current IRQ is already in-service
                 if (!(thePIC[MASTER].specialMask && (((thePIC[MASTER].inServiceRegister >> irq) & 0x01) != 0))) {
                     if ((unmaskedRequests & (1 << irq)) != 0) {
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " signalling IRQ(" + irq + ")");
                         thePIC[MASTER].intRequestPin = true;
                         thePIC[MASTER].currentIrqNumber = (byte) irq;
@@ -1332,8 +1103,7 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupt with highest priority
      * 
-     * @param masterSlave
-     *            Indicates the source of the interrupt
+     * @param masterSlave the source of the interrupt
      */
     private void clearHighestInterrupt(int masterSlave) {
         int irq;

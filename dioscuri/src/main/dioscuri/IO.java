@@ -57,6 +57,7 @@ import dioscuri.exception.CommandException;
  * Interface for user to interact with emulator
  */
 public class IO {
+    
     private String[] cmd;
     private String[] prevCmd;
     private int cmdPointer;

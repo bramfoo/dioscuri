@@ -39,22 +39,31 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
+
 import java.io.File;
 
 /**
- * Interface representing a generic hardware module. TODO: this template of
- * moduleFDC could also be made more generic for any removable storage device
+ * Abstract class representing a generic FDC module.
  */
+public abstract class ModuleFDC extends AbstractModule implements Addressable, Updateable {
 
-public abstract class ModuleFDC extends ModuleDevice {
-    // Methods
+    /**
+     *
+     */
+    public ModuleFDC() {
+        super(Module.Type.FDC,
+                Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC, Module.Type.ATA, Module.Type.DMA);
+    }
 
     /**
      * Defines the total number of available drives Note: total number may not
      * exceed 4
      * 
      * @param totalDrives
-     * @return boolean true if drives set successfully, false otherwise
+     * @return            true if drives set successfully, false otherwise
      */
     public abstract boolean setNumberOfDrives(int totalDrives);
 

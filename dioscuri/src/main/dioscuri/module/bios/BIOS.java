@@ -45,7 +45,6 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.module.Module;
 import dioscuri.module.ModuleBIOS;
 
 /**
@@ -53,7 +52,7 @@ import dioscuri.module.ModuleBIOS;
  * 
  * Contains: - 64 KB of ROM - CMOS settings
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : bios general.name : BIOS ROM general.architecture : Von
@@ -70,39 +69,16 @@ import dioscuri.module.ModuleBIOS;
  */
 public class BIOS extends ModuleBIOS {
 
-    // Attributes
-
-    // Relations
-    @SuppressWarnings("unused")
-    private Emulator emu;
-    private String[] moduleConnections = new String[] {};
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // BIOS ROM
-    private byte[] systemROM; // Contains the System BIOS, using signed bytes as
-                              // both signed/unsigned
-    private byte[] videoROM; // Contains the Video BIOS
-    @SuppressWarnings("unused")
-    private byte[] optionalROM; // TODO: can contain optional BIOSes
-
     // Logging
     private static final Logger logger = Logger.getLogger(BIOS.class.getName());
-
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "bios";
-    public final static String MODULE_NAME = "BIOS ROM";
+    
+    // BIOS ROM
+    private byte[] systemROM; // Contains the System BIOS, using signed bytes as both signed/unsigned
+    private byte[] videoROM; // Contains the Video BIOS
 
     // Memory size
-    private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes
-                                                          // (64 KB, 2^16)
-    private final static int VIDEOBIOS_ROM_SIZE = 32768; // defined in bytes (32
-                                                         // KB, 2^15)
+    private final static int SYSTEMBIOS_ROM_SIZE = 65536; // defined in bytes (64 KB, 2^16)
+    private final static int VIDEOBIOS_ROM_SIZE = 32768; // defined in bytes (32 KB, 2^15)
 
     /**
      * Class constructor
@@ -110,12 +86,7 @@ public class BIOS extends ModuleBIOS {
      * @param owner
      */
     public BIOS(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
+        
         // Create new empty bios roms
         systemROM = new byte[SYSTEMBIOS_ROM_SIZE];
         videoROM = new byte[VIDEOBIOS_ROM_SIZE];
@@ -124,199 +95,27 @@ public class BIOS extends ModuleBIOS {
         Arrays.fill(systemROM, (byte) 0);
         Arrays.fill(videoROM, (byte) 0);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // No connections to return;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param module
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module module) {
-        // No connections required
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // All connections are in place
-        return true;
-    }
-
-    /**
-     * Reset all parameters of module. BIOS ROM is not reset. ROM will keep all
-     * BIOS ROM data.
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
-        // TODO: Reset particular CMOS settings
-
-        logger
-                .log(Level.CONFIG, "[" + MODULE_TYPE
-                        + "] Module has been reset.");
+        // Reset particular CMOS settings?
+        logger.log(Level.CONFIG, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Sets given String[] data for this module
-     * 
-     * @param data
-     * @param sender 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";
@@ -357,14 +156,12 @@ public class BIOS extends ModuleBIOS {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleBIOS Methods
-
     /**
-     * Returns the system BIOS code from ROM with size of SYSTEM_BIOS_ROM_SIZE
-     * 
-     * @return byte[] biosCode containing the binary code of BIOS
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
+    @Override
     public byte[] getSystemBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[SYSTEMBIOS_ROM_SIZE];
@@ -378,13 +175,11 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Sets the system BIOS code in ROM Note: System BIOS must be exactly 64 KB
-     * 
-     * @param biosCode
-     * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
-     *         is successful, false otherwise
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
+    @Override
     public boolean setSystemBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 64 KB max
         if (biosCode.length == SYSTEMBIOS_ROM_SIZE) {
@@ -396,24 +191,25 @@ public class BIOS extends ModuleBIOS {
                 }
                 return true;
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " System BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
-                throw new ModuleException("[" + MODULE_TYPE + "]"
+                throw new ModuleException("[" + super.getType() + "]"
                         + " System BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
             }
         } else {
-            throw new ModuleException("[" + MODULE_TYPE + "]"
+            throw new ModuleException("[" + super.getType() + "]"
                     + " System BIOS is not " + SYSTEMBIOS_ROM_SIZE + " bytes");
         }
     }
 
     /**
-     * Returns the Video BIOS code from ROM
-     * 
-     * @return byte[] biosCode containing the binary code of Video BIOS
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
+    @Override
     public byte[] getVideoBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[VIDEOBIOS_ROM_SIZE];
@@ -427,13 +223,11 @@ public class BIOS extends ModuleBIOS {
     }
 
     /**
-     * Sets the Video BIOS code in ROM
-     * 
-     * @param biosCode
-     * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
-     *         successful, false otherwise
-     * @throws ModuleException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleBIOS
      */
+    @Override
     public boolean setVideoBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 32 KB max
         if (biosCode.length == VIDEOBIOS_ROM_SIZE) {
@@ -445,20 +239,16 @@ public class BIOS extends ModuleBIOS {
                 }
                 return true;
             } catch (ArrayIndexOutOfBoundsException e) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + " Video BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
-                throw new ModuleException("[" + MODULE_TYPE
+                throw new ModuleException("[" + super.getType()
                         + " Video BIOS is larger than " + SYSTEMBIOS_ROM_SIZE
                         + " bytes");
             }
         } else {
-            throw new ModuleException("[" + MODULE_TYPE + " Video BIOS is not "
+            throw new ModuleException("[" + super.getType() + " Video BIOS is not "
                     + SYSTEMBIOS_ROM_SIZE + " bytes");
         }
     }
-
-    // ******************************************************************************
-    // Additional Methods
-
 }

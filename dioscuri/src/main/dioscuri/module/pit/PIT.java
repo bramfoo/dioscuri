@@ -49,11 +49,9 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
-import dioscuri.module.ModuleCPU;
-import dioscuri.module.ModuleDevice;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModulePIT;
@@ -62,8 +60,7 @@ import dioscuri.module.ModulePIT;
  * An implementation of a Programmable Interval Timer (PIT) module based on the
  * Intel 82C54 PIT chip.
  * 
- * @see ModuleDevice
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : pit general.name : Programmable Interval Timer (PIT)
@@ -93,62 +90,32 @@ import dioscuri.module.ModulePIT;
  *      a different frequency).
  * 
  */
-
-@SuppressWarnings("unused")
 public class PIT extends ModulePIT {
 
-    // Attributes
-
     // Relations
-    private Emulator emu;
-    // BRAM: Removed CPU connection, as it was unnecessary
-    private String[] moduleConnections = new String[] { "motherboard", "pic" };// ,
-                                                                               // "cpu"};
-    protected ModuleMotherboard motherboard;
-    // private ModuleCPU cpu;
-    protected ModulePIC pic;
     private Counter[] counters;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // IRQ number
     protected int irqNumber;
 
     // Timing
-    private int updateInterval; // Denotes the update interval for the clock
-                                // timer
+    private int updateInterval; // Denotes the update interval for the clock timer
 
     // Logging
     private static final Logger logger = Logger.getLogger(PIT.class.getName());
-
-    // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "pit";
-    public final static String MODULE_NAME = "Intel 8254 Programmable Interval Timer (PIT)";
 
     // I/O ports PIT
     private final static int PORT_PIT_COUNTER0 = 0x040; // RW
     private final static int PORT_PIT_COUNTER1 = 0x041; // RW
     private final static int PORT_PIT_COUNTER2 = 0x042; // RW
-    private final static int PORT_PIT_CONTROLWORD1 = 0x043; // RW - control word
-                                                            // for counters 0-2
-    private final static int PORT_PIT_COUNTER3 = 0x044; // RW - counter 3 (PS/2,
-                                                        // EISA), fail-safe
-                                                        // timer
-    private final static int PORT_PIT_CONTROLWORD2 = 0x047; // W - control word
-                                                            // for counter 3
+    private final static int PORT_PIT_CONTROLWORD1 = 0x043; // RW - control word for counters 0-2
+    private final static int PORT_PIT_COUNTER3 = 0x044; // RW - counter 3 (PS/2, EISA), fail-safe timer
+    private final static int PORT_PIT_CONTROLWORD2 = 0x047; // W - control word for counter 3
     private final static int PORT_PIT_EISA = 0x048; // ?? -
     private final static int PORT_PIT_TIMER2 = 0x049; // ?? - timer 2 (not used)
     private final static int PORT_PIT_EISA_PIT2A = 0x04A; // ?? - EISA PIT 2
     private final static int PORT_PIT_EISA_PIT2B = 0x04B; // ?? - EISA PIT 2
-    private final static int PORT_KB_CTRL_B = 0x61; // Keyboard Controller Port
-                                                    // B, in Bochs assigned to
-                                                    // PIT (PC speaker??)
-
-    // Constructor
+    private final static int PORT_KB_CTRL_B = 0x61; // Keyboard Controller Port B, in Bochs assigned to PIT (PC speaker??)
 
     /**
      * Class constructor
@@ -156,11 +123,6 @@ public class PIT extends ModulePIT {
      * @param owner
      */
     public PIT(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise timing
         updateInterval = -1;
@@ -171,115 +133,21 @@ public class PIT extends ModulePIT {
             counters[c] = new Counter(this, c);
         }
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
+                + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for CPU
-        // BRAM: Removed CPU connection, as it was unnecessary
-        // if (mod.getType().equalsIgnoreCase("cpu"))
-        // {
-        // this.cpu = (ModuleCPU)mod;
-        // return true;
-        // }
-
-        // Set connection for PIC
-        if (mod.getType().equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        // BRAM: Removed CPU connection, as it was unnecessary
-        if (this.motherboard != null && this.pic != null) // && this.cpu !=
-                                                          // null)
-        {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+
         // Register I/O ports 0x000 - 0x00F in I/O address space
         motherboard.setIOPort(PORT_PIT_COUNTER0, this);
         motherboard.setIOPort(PORT_PIT_COUNTER1, this);
@@ -295,135 +163,35 @@ public class PIT extends ModulePIT {
         // Register IRQ number
         irqNumber = pic.requestIRQNumber(this);
         if (irqNumber > -1) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] IRQ number set to: " + irqNumber);
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE
+            logger.log(Level.WARNING, "[" + super.getType()
                     + "] Request of IRQ number failed.");
         }
 
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, true) == true) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Timer requested successfully.");
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Failed to request a timer.");
         }
 
         // Activate timer
         motherboard.setTimerActiveState(this, true);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Stop Clock thread
-        // clock.setKeepRunning(false);
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return boolean true if successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -460,22 +228,22 @@ public class PIT extends ModulePIT {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -483,13 +251,16 @@ public class PIT extends ModulePIT {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
     /**
-     * Update device
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
         // Send pulse to all counters
         for (int c = 0; c < counters.length; c++) {
@@ -498,15 +269,14 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            UnknownPortException {
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " I/O read from address 0x"
                 + Integer.toHexString(portAddress));
 
@@ -519,7 +289,7 @@ public class PIT extends ModulePIT {
             break;
 
         case PORT_PIT_COUNTER1: // Counter 1
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Attempted read of Counter 1 [0x41]");
             returnValue = counters[1].getCounterValue();
             break;
@@ -530,18 +300,18 @@ public class PIT extends ModulePIT {
 
         case PORT_PIT_CONTROLWORD1: // Control word
             // Do nothing as reading from control word register is not possible
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Attempted read of control word port [0x43]");
             break;
 
         case PORT_KB_CTRL_B: // Port 0x61
             // Report reading from port
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Attempted read of KB_CTRL_B [0x61]");
             break;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
 
@@ -550,35 +320,35 @@ public class PIT extends ModulePIT {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleException
-     *             , ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " I/O write to 0x"
+            throws ModuleException, UnknownPortException {
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " I/O write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
 
         // Handle writing data based on portAddress
         switch (portAddress) {
         case PORT_PIT_COUNTER0: // Counter 0
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] Counter 0: value set to 0x"
                     + Integer.toHexString(data & 0xFF));
             counters[0].setCounterValue(data);
             break;
 
         case PORT_PIT_COUNTER1: // Counter 1
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] Counter 1: value set to 0x"
                     + Integer.toHexString(data & 0xFF));
             counters[1].setCounterValue(data);
             break;
 
         case PORT_PIT_COUNTER2: // Counter 2
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] Counter 2: value set to 0x"
                     + Integer.toHexString(data & 0xFF));
             counters[2].setCounterValue(data);
@@ -600,7 +370,7 @@ public class PIT extends ModulePIT {
 
             // Check for valid data
             if ((counterMode > 6) || (rwMode > 4)) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE
+                logger.log(Level.SEVERE, "[" + super.getType()
                         + "] ControlWord counterMode (" + counterMode
                         + ") / rwMode (" + rwMode + ") out of range");
                 break;
@@ -610,7 +380,7 @@ public class PIT extends ModulePIT {
             if (cNum == 0x03) {
                 // Read-back command: set appropriate counter in read-back mode
                 // TODO: implement this following Intel 82C54 specs
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] Read-Back Command is not implemented");
                 break;
             }
@@ -619,7 +389,7 @@ public class PIT extends ModulePIT {
             switch (rwMode) {
             case 0x00: // Counter latch
                 // Read operation: Counter latch command
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] Counter "
                         + cNum + " in latch mode.");
                 // Set specified counter in latch register
                 counters[cNum].latchCounter();
@@ -627,89 +397,74 @@ public class PIT extends ModulePIT {
 
             case 0x01: // LSB mode
             case 0x02: // MSB mode
-                logger.log(Level.WARNING, "[" + MODULE_TYPE
+                logger.log(Level.WARNING, "[" + super.getType()
                         + "] LSB/MSB command not implemented");
                 break;
 
             case 0x03: // 16-bit mode
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter "
+                logger.log(Level.CONFIG, "[" + super.getType() + "] Counter "
                         + cNum + " in 16-bit mode.");
                 counters[cNum].setCounterMode(counterMode);
                 counters[cNum].rwMode = rwMode;
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] rwMode ["
+                logger.log(Level.WARNING, "[" + super.getType() + "] rwMode ["
                         + rwMode + "] not recognised");
                 break;
 
             }
             break;
-
-        //
-        // // Enable counter
-        // if (counters[cNum].isEnabled() == true)
-        // {
-        // logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Counter " + cNum +
-        // " is already in use. Resetting may cause timing issues.");
-        // }
-        // counters[cNum].setEnabled(true);
-        //                	
-        // counters[cNum].rwMode = rwMode;
-        //                    
-        // {
-        //
-        // }
-        // else
-        // {
-        // // Mode of operation (M2/M1/M0)
-        // counters[cNum].setCounterMode((data >> 1) & 0x00000007);
-        //                        
-        // // Binary or Binary Code Decimal (BCD)
-        // counters[cNum].bcd = (data & 0x00000001) == 0x00000001 ? true :
-        // false;
-        // }
-        // logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Counter " + cNum +
-        // " has been set.");
-        // }
-        // break;
-
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE
+            throw new UnknownPortException("[" + super.getType()
                     + "] Unknown I/O port requested");
         }
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+            WriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+            WriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
@@ -717,45 +472,26 @@ public class PIT extends ModulePIT {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return
-        return;
     }
 
-    // ******************************************************************************
-    // ModulePIT Methods
-
     /**
-     * Retrieves the current clockrate of this clock in milliseconds
-     * 
-     * @return long milliseconds defining how long the clock sleeps before
-     *         sending a pulse
-     */
-    /*
-     * public long getClockRate() { // Return the current number of milliseconds
-     * the clock is sleeping return clock.getClockRate(); }
-     */
-
-    /**
-     * Sets the clock rate for this PIT
-     * 
+     *
      * @param counter
      */
-    /*
-     * public void setClockRate(long milliseconds) { // Set the clockrate of
-     * clock clock.setClockRate(milliseconds); }
-     */
-
-    // ******************************************************************************
-    // Custom Methods
-
     protected void raiseIRQ(Counter counter) {
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
     }
 
@@ -764,7 +500,7 @@ public class PIT extends ModulePIT {
      * @param counter
      */
     protected void lowerIRQ(Counter counter) {
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
     }
-
 }

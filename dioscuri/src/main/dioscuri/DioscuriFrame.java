@@ -39,9 +39,8 @@
 
 package dioscuri;
 
-import dioscuri.CommandLineInterface;
 import dioscuri.config.ConfigController;
-import dioscuri.config.SelectionConfigDialog;
+import dioscuri.config.ConfigDialog;
 import dioscuri.datatransfer.TextTransfer;
 
 import javax.imageio.ImageIO;
@@ -80,6 +79,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     private JPanel capslockPanel;
     private JPanel floppyAPanel;
     private JPanel hd1Panel;
+    private JPanel hd2Panel;
 
     // Menus
     JMenuBar menuBar;
@@ -98,9 +98,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     JMenuItem miEmulatorQuit;
     // Menu edit
     JMenuItem miEditCopyText;
-    JMenuItem miEditCopyImage;
-    JMenuItem miEditPasteText;
-    JMenuItem miEditPasteImage;
+    JMenuItem miEditScreenShot;
+
     // Menu media
     JMenuItem miMediaEjectA;
     JMenuItem miMediaInsertA;
@@ -119,7 +118,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     // File selection
     private JFileChooser fcFloppy;
 
-    private JLabel cpyTypeLabel;
+    private JLabel cpuTypeLabel;
 
     // Logging
     private static final Logger logger = Logger.getLogger(DioscuriFrame.class.getName());
@@ -186,7 +185,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Build frame
         this.setLocation(GUI_X_LOCATION, GUI_Y_LOCATION);
-        this.setSize(guiWidth, guiHeight);
+        this.setSize(guiWidth, guiHeight+10);
         this.setTitle(this.getEmulatorName());
         this.setResizable(false);
         this.updateGUI(GUI_RESET);
@@ -254,13 +253,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Create menu: edit
         menuEdit = new JMenu("Edit");
         miEditCopyText = new JMenuItem("Copy text");
-        miEditCopyImage = new JMenuItem("Copy image");
-        miEditPasteText = new JMenuItem("Paste text");
-        miEditPasteImage = new JMenuItem("Paste image");
+        miEditScreenShot = new JMenuItem("Make screen shot");
         menuEdit.add(miEditCopyText);
-        menuEdit.add(miEditCopyImage);
-        menuEdit.add(miEditPasteText);
-        menuEdit.add(miEditPasteImage);
+        menuEdit.add(miEditScreenShot);
 
         // Create menu: media
         menuMedia = new JMenu("Media");
@@ -306,6 +301,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         miDevicesMouseDisabled.addActionListener(this);
         miEditConfig.addActionListener(this);
         miHelpAbout.addActionListener(this);
+        miEditScreenShot.addActionListener(this);
 
         // Assign menubar to frame
         this.setJMenuBar(menuBar);
@@ -357,11 +353,16 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         floppyAPanel.setBorder(blackline);
 
         hd1Panel = new JPanel();
-        // hd1Panel.setLayout(new BoxLayout(hd1Panel, BoxLayout.X_AXIS));
         JLabel hd1PanelLabel = new JLabel("HD1");
         hd1PanelLabel.setHorizontalAlignment(JLabel.CENTER);
         hd1Panel.add(hd1PanelLabel);
         hd1Panel.setBorder(blackline);
+
+        hd2Panel = new JPanel();
+        JLabel hd2PanelLabel = new JLabel("HD2");
+        hd2PanelLabel.setHorizontalAlignment(JLabel.CENTER);
+        hd2Panel.add(hd2PanelLabel);
+        hd2Panel.setBorder(blackline);
 
         // Add panels to statusbar (with spaces inbetween)
         statusPanel.add(Box.createHorizontalGlue());
@@ -374,9 +375,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         statusPanel.add(floppyAPanel);
         statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         statusPanel.add(hd1Panel);
-
-        cpyTypeLabel = new JLabel("");
-        statusPanel.add(cpyTypeLabel);
+        statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        statusPanel.add(hd2Panel);
+        statusPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        cpuTypeLabel = new JLabel("");
+        statusPanel.add(cpuTypeLabel);
     }
 
     /**
@@ -533,6 +536,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             miEmulatorStart.setEnabled(false);
             miEmulatorStop.setEnabled(true);
             miEmulatorReset.setEnabled(true);
+            miEditScreenShot.setEnabled(true);
             miEditConfig.setEnabled(false);
             miEditCopyText.setEnabled(true);
             break;
@@ -552,8 +556,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             // Redefine statusbar
             floppyAPanel.setVisible(false);
             hd1Panel.setVisible(false);
+            hd2Panel.setVisible(false);
             miEditConfig.setEnabled(true);
-            cpyTypeLabel.setText("");
+            cpuTypeLabel.setText("");
             break;
 
         case EMU_PROCESS_RESET:
@@ -598,23 +603,35 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             break;
 
         case EMU_HD1_INSERT:
-            // Show HD1 in statusbar
             hd1Panel.setVisible(true);
             break;
 
+        case EMU_HD2_INSERT:
+            hd2Panel.setVisible(true);
+            break;
+
         case EMU_HD1_EJECT:
-            // Hide HD1 in statusbar
             hd1Panel.setVisible(false);
             break;
 
+        case EMU_HD2_EJECT:
+            hd2Panel.setVisible(false);
+            break;
+
         case EMU_HD1_TRANSFER_START:
-            // Highlight HD1 in statusbar
             hd1Panel.setBackground(Color.GREEN);
             break;
 
+        case EMU_HD2_TRANSFER_START:
+            hd2Panel.setBackground(Color.GREEN);
+            break;
+
         case EMU_HD1_TRANSFER_STOP:
-            // Shadow HD1 in statusbar
             hd1Panel.setBackground(Color.LIGHT_GRAY);
+            break;
+
+        case EMU_HD2_TRANSFER_STOP:
+            hd2Panel.setBackground(Color.LIGHT_GRAY);
             break;
 
         case EMU_KEYBOARD_NUMLOCK_ON:
@@ -656,9 +673,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             miEmulatorStop.setEnabled(false);
             miEmulatorReset.setEnabled(false);
             miEditCopyText.setEnabled(false);
-            miEditCopyImage.setEnabled(false);
-            miEditPasteText.setEnabled(false);
-            miEditPasteImage.setEnabled(false);
+            miEditScreenShot.setEnabled(false);
             miMediaInsertA.setEnabled(false);
             miMediaEjectA.setEnabled(false);
             miDevicesMouseEnabled.setEnabled(false);
@@ -667,7 +682,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             // Enable/disable status bar items
             floppyAPanel.setVisible(false);
             hd1Panel.setVisible(false);
-
+            hd2Panel.setVisible(false);
+            cpuTypeLabel.setText("");
             break;
 
         default:
@@ -758,7 +774,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                                 "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
                                 "Configuration", JOptionPane.WARNING_MESSAGE);
             } else {
-                new SelectionConfigDialog(this);
+                //new SelectionConfigDialog(this);
+                new ConfigDialog(this);
             }
         } else if (c == (JComponent) miHelpAbout) {
             // Show About dialog
@@ -787,6 +804,19 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                                     + " GNU General Public License for more details.\n\n\n"
                                     + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven",
                             "About", JOptionPane.INFORMATION_MESSAGE);
+        } else if(c == miEditScreenShot) {
+            String fileName = "Screenshot_"+System.currentTimeMillis()+".png";
+            File file = new File(fileName);
+            BufferedImage image = new BufferedImage(screen.getWidth(), screen.getHeight(), BufferedImage.TYPE_INT_RGB);
+		    screen.paint(image.createGraphics());
+            try {
+                ImageIO.write(image, "png", file);
+                JOptionPane.showMessageDialog(this, "An image was created and saved as:\n\n"+
+                        file.getAbsolutePath());
+            } catch (IOException e1) {
+                JOptionPane.showMessageDialog(this, "Could not create an image at:\n\n"+
+                        file.getAbsolutePath()+"\n\n"+e1.getMessage());
+            } 
         }
     }
 
@@ -1026,8 +1056,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     }
 
     @Override
-    public void setCpyTypeLabel(String cpuType) {
-        cpyTypeLabel.setText("  " + cpuType);
+    public void setCpuTypeLabel(String cpuType) {
+        cpuTypeLabel.setText("  " + cpuType);
     }
 
     /**

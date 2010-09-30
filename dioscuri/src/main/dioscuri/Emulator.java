@@ -44,8 +44,9 @@ import dioscuri.config.Emulator.Architecture.Modules.Ata.Harddiskdrive;
 import dioscuri.config.Emulator.Architecture.Modules.Bios;
 import dioscuri.config.Emulator.Architecture.Modules.Bios.Bootdrives;
 import dioscuri.config.Emulator.Architecture.Modules.Fdc.Floppy;
-import dioscuri.config.ModuleType;
 import dioscuri.exception.ModuleException;
+import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.*;
 import dioscuri.module.ata.ATA;
 import dioscuri.module.ata.ATAConstants;
@@ -81,7 +82,6 @@ import java.util.logging.Logger;
 
 /**
  * Top class owning all classes of the emulator. Entry point
- * 
  */
 public class Emulator implements Runnable {
 
@@ -145,6 +145,8 @@ public class Emulator implements Runnable {
     public static final int MODULE_KEYBOARD_CAPSLOCK_OFF = 7;
     public static final int MODULE_KEYBOARD_SCROLLLOCK_ON = 8;
     public static final int MODULE_KEYBOARD_SCROLLLOCK_OFF = 9;
+    public static final int MODULE_ATA_HD2_TRANSFER_START = 10;
+    public static final int MODULE_ATA_HD2_TRANSFER_STOP = 11;
 
     // Constructors
 
@@ -171,9 +173,7 @@ public class Emulator implements Runnable {
     }
 
     public void run() {
-        // TODO: Perform semantic analysis of command (syntaxis is checked by IO
-        // class)
-        // Especially important when running with multiple threads!!!
+        // TODO: Perform semantic analysis of command (syntaxis is checked by IO class) especially important when running with multiple threads!!!
         int instr = 0;
         int total = 0;
         int loop = 0;
@@ -224,8 +224,7 @@ public class Emulator implements Runnable {
                         "[emu] Emulation process started (32-bit).");
                 try {
                     AddressSpace addressSpace = null;
-                    Processor cpu = (Processor) modules
-                            .getModule(ModuleType.CPU.toString());
+                    Processor cpu = (Processor) modules.getModule(Module.Type.CPU);
 
                     if (cpu.isProtectedMode())
                         addressSpace = (AddressSpace) hwComponents.get(0); // linearAddr
@@ -238,7 +237,6 @@ public class Emulator implements Runnable {
                         try {
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                         total += instr;
@@ -259,12 +257,12 @@ public class Emulator implements Runnable {
                 logger.log(Level.INFO,
                         "[emu] Emulation process started (16-bit).");
 
-                if (((ModuleCPU) modules.getModule("cpu")).getDebugMode() == false) {
+                if (((ModuleCPU) modules.getModule(Module.Type.CPU)).getDebugMode() == false) {
                     // Start CPU process
-                    ((ModuleCPU) modules.getModule("cpu")).start();
+                    ((ModuleCPU) modules.getModule(Module.Type.CPU)).start();
 
                     // Check if CPU terminated abnormally -> stop emulation process
-                    if (((ModuleCPU) modules.getModule("cpu"))
+                    if (((ModuleCPU) modules.getModule(Module.Type.CPU))
                             .isAbnormalTermination() == true) {
                         logger
                                 .log(Level.SEVERE,
@@ -275,7 +273,7 @@ public class Emulator implements Runnable {
 
                     // Check if CPU calls a full shutdown of PC -> stop
                     // emulation process
-                    if (((ModuleCPU) modules.getModule("cpu")).isShutdown() == true) {
+                    if (((ModuleCPU) modules.getModule(Module.Type.CPU)).isShutdown() == true) {
                         logger
                                 .log(Level.SEVERE,
                                         "[emu] Emulation process halted due to request for shutdown by CPU module.");
@@ -288,7 +286,7 @@ public class Emulator implements Runnable {
                     // Then continue with rebooting the system.
                 } else {
                     // Show first upcoming instruction
-                    ModuleCPU cpu = (ModuleCPU) modules.getModule("cpu");
+                    ModuleCPU cpu = (ModuleCPU) modules.getModule(Module.Type.CPU);
                     logger.log(Level.INFO, cpu.getNextInstructionInfo());
                     while (isAlive == true) {
                         this.debug(io.getCommand());
@@ -302,7 +300,6 @@ public class Emulator implements Runnable {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
@@ -332,7 +329,7 @@ public class Emulator implements Runnable {
 
         if (modules != null) {
             // Reset emulation process
-            ((ModuleCPU) modules.getModule("cpu")).stop();
+            ((ModuleCPU) modules.getModule(Module.Type.CPU)).stop();
 
             coldStart = false;
             logger.log(Level.INFO, "[emu] Reset in progress...");
@@ -354,7 +351,7 @@ public class Emulator implements Runnable {
 
         case CMD_DEBUG_STEP:
             // Debug command STEP -> execute 1 or n instructions
-            ModuleCPU cpu = (ModuleCPU) modules.getModule("cpu");
+            ModuleCPU cpu = (ModuleCPU) modules.getModule(Module.Type.CPU);
 
             // Execute n number of instructions (or else 1 if no argument
             // supplied)
@@ -375,7 +372,7 @@ public class Emulator implements Runnable {
 
         case CMD_DEBUG_SHOWREG:
             // Debug command SHOWREG -> show CPU registers
-            ModuleCPU cpu1 = (ModuleCPU) modules.getModule("cpu");
+            ModuleCPU cpu1 = (ModuleCPU) modules.getModule(Module.Type.CPU);
 
             // Show simple view of CPU registers and flags
             logger.log(Level.SEVERE, cpu1.dumpRegisters());
@@ -386,11 +383,12 @@ public class Emulator implements Runnable {
 
             // Check if moduletype is given
             String[] moduleTypeArray = io.getArguments();
+            
             if (moduleTypeArray != null) {
                 String moduleType = moduleTypeArray[0];
 
                 // Show dump of one single module requested
-                Module mod = modules.getModule(moduleType);
+                Module mod = modules.getModule(Module.Type.resolveType(moduleType));
                 if (mod != null) {
                     // Show dump of module
                     logger.log(Level.INFO, mod.getDump());
@@ -403,7 +401,7 @@ public class Emulator implements Runnable {
         case CMD_DEBUG_MEM_DUMP:
             // Debug command MEMORY_DUMP -> show contents of n bytes at memory
             // location y
-            ModuleMemory mem = (ModuleMemory) modules.getModule("memory");
+            ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
 
             // Show n bytes at memory x (or else 2 if no number of bytes is
             // supplied)
@@ -514,13 +512,13 @@ public class Emulator implements Runnable {
 
     /**
      * Return reference to module from given type
-     * 
-     * @param moduleType stating the type of the requested module
-     * 
+     *
+     * @param type stating the type of the requested module
+     *
      * @return Module requested module, or null if module does not exist
      */
-    protected Module getModule(String moduleType) {
-        return modules.getModule(moduleType);
+    protected Module getModule(Module.Type type) {
+        return modules.getModule(type);
     }
 
     /**
@@ -529,7 +527,7 @@ public class Emulator implements Runnable {
      * @param keyEventType
      */
     protected void notifyKeyboard(KeyEvent keyEvent, int keyEventType) {
-        ModuleKeyboard keyboard = (ModuleKeyboard) modules.getModule("keyboard");
+        ModuleKeyboard keyboard = (ModuleKeyboard) modules.getModule(Module.Type.KEYBOARD);
         if (keyboard != null) {
             keyboard.generateScancode(keyEvent, keyEventType);
         }
@@ -540,7 +538,7 @@ public class Emulator implements Runnable {
      * @param mouseEvent
      */
     protected void notifyMouse(MouseEvent mouseEvent) {
-        ModuleMouse mouse = (ModuleMouse) modules.getModule("mouse");
+        ModuleMouse mouse = (ModuleMouse) modules.getModule(Module.Type.MOUSE);
         if (mouse != null) {
             mouse.mouseMotion(mouseEvent);
         }
@@ -556,7 +554,7 @@ public class Emulator implements Runnable {
      */
     protected boolean insertFloppy(String driveLetter, byte carrierType,
             File imageFile, boolean writeProtected) {
-        ModuleFDC fdc = (ModuleFDC) modules.getModule("fdc");
+        ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
         if (fdc != null) {
             return fdc.insertCarrier(driveLetter, carrierType, imageFile,
                     writeProtected);
@@ -570,7 +568,7 @@ public class Emulator implements Runnable {
      * @return -
      */
     protected boolean ejectFloppy(String driveLetter) {
-        ModuleFDC fdc = (ModuleFDC) modules.getModule("fdc");
+        ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
         if (fdc != null) {
             return fdc.ejectCarrier(driveLetter);
         }
@@ -595,8 +593,16 @@ public class Emulator implements Runnable {
             gui.updateGUI(GUI.EMU_HD1_TRANSFER_START);
             break;
 
+        case MODULE_ATA_HD2_TRANSFER_START:
+            gui.updateGUI(GUI.EMU_HD2_TRANSFER_START);
+            break;
+
         case MODULE_ATA_HD1_TRANSFER_STOP:
             gui.updateGUI(GUI.EMU_HD1_TRANSFER_STOP);
+            break;
+
+        case MODULE_ATA_HD2_TRANSFER_STOP:
+            gui.updateGUI(GUI.EMU_HD2_TRANSFER_STOP);
             break;
 
         case MODULE_KEYBOARD_NUMLOCK_ON:
@@ -634,7 +640,7 @@ public class Emulator implements Runnable {
      */
     public String getScreenText() {
         // Request characters on screen from video module (if available)
-        ModuleVideo video = (ModuleVideo) modules.getModule("video");
+        ModuleVideo video = (ModuleVideo) modules.getModule(Module.Type.VIDEO);
         if (video != null) {
             return video.getVideoBufferCharacters();
         }
@@ -683,12 +689,12 @@ public class Emulator implements Runnable {
             // Set timers in relevant modules
             logger.log(Level.INFO,
                     "===================   INIT TIMERS   ===================");
-            result &= setTimingParams(modules.getModule("cpu"));
-            result &= setTimingParams(modules.getModule("video"));
-            result &= setTimingParams(modules.getModule("pit"));
-            result &= setTimingParams(modules.getModule("keyboard"));
-            result &= setTimingParams(modules.getModule("fdc"));
-            result &= setTimingParams(modules.getModule("ata"));
+            result &= setTimingParams(modules.getModule(Module.Type.CPU));
+            result &= setTimingParams(modules.getModule(Module.Type.VIDEO));
+            result &= setTimingParams(modules.getModule(Module.Type.PIT));
+            result &= setTimingParams(modules.getModule(Module.Type.KEYBOARD));
+            result &= setTimingParams(modules.getModule(Module.Type.FDC));
+            result &= setTimingParams(modules.getModule(Module.Type.ATA));
         } else {
             // Warm start (soft reset)
             logger.log(Level.INFO,
@@ -727,8 +733,7 @@ public class Emulator implements Runnable {
         logger.log(Level.INFO,
                 "================= LOAD STORAGE MEDIA ==================");
         result &= setFloppyParams(); // At least one floppy is required
-        setHardDriveParams(); // Harddisk not required, so doesn't influence
-                              // result
+        setHardDriveParams(); // Harddisk not required, so doesn't influence result
 
         // Set other settings
         logger.log(Level.INFO,
@@ -757,7 +762,7 @@ public class Emulator implements Runnable {
         // pointless without one, really)
         cpu32bit = moduleConfig.getCpu().isCpu32Bit();
 
-        this.getGui().setCpyTypeLabel(cpu32bit ? "32 bit" : "16 bit");
+        this.getGui().setCpuTypeLabel(cpu32bit ? "32 bit" : "16 bit");
 
         // Add clock first, as it is needed for 32-bit RAM
         Clock clk = new Clock(this);
@@ -878,7 +883,7 @@ public class Emulator implements Runnable {
         Module mod1, mod2;
         for (int i = 0; i < modules.size(); i++) {
             mod1 = modules.getModule(i);
-            String[] connections = mod1.getConnection();
+            Module.Type[] connections = mod1.getExpectedConnections();
             for (int c = 0; c < connections.length; c++) {
                 mod2 = modules.getModule(connections[c]);
                 if (mod2 != null) {
@@ -888,7 +893,7 @@ public class Emulator implements Runnable {
                                         + mod1.getType() + " and "
                                         + mod2.getType());
                     } else {
-                        logger.log(Level.SEVERE,
+                        logger.log(Level.INFO,
                                 "[emu] Failed to establish connection between "
                                         + mod1.getType() + " and "
                                         + mod2.getType());
@@ -926,12 +931,10 @@ public class Emulator implements Runnable {
         // above
         if (cpu32bit) {
 
-            Processor cpu = (Processor) modules.getModule(ModuleType.CPU
-                    .toString());
-            Video vid = (Video) modules.getModule(ModuleType.VGA.toString());
-            Motherboard mb = (Motherboard) modules
-                    .getModule(ModuleType.MOTHERBOARD.toString());
-            FDC fdc = (FDC) modules.getModule(ModuleType.FDC.toString());
+            Processor cpu = (Processor) modules.getModule(Module.Type.CPU);
+            Video vid = (Video) modules.getModule(Module.Type.VIDEO);
+            Motherboard mb = (Motherboard) modules.getModule(Module.Type.MOTHERBOARD);
+            FDC fdc = (FDC) modules.getModule(Module.Type.FDC);
             // TODO: remove hardcoded hwComponents index values
             LinearAddressSpace linearAddr = (LinearAddressSpace) hwComponents
                     .get(0);
@@ -939,7 +942,7 @@ public class Emulator implements Runnable {
                     .get(1);
             DMAController primaryDMA = (DMAController) hwComponents.get(2);
             DMAController secondaryDMA = (DMAController) hwComponents.get(3);
-            PIC pic = (PIC) modules.getModule(ModuleType.PIC.toString());
+            PIC pic = (PIC) modules.getModule(Module.Type.PIC);
 
             IOPortHandler ioports = new IOPortHandler();
             ioports.setConnection(mb);
@@ -976,38 +979,45 @@ public class Emulator implements Runnable {
      * @return -
      */
     public boolean setTimingParams(Module module) {
-        boolean result = true;
-
         // There are 3 types of timing: speed (cpu), clock rate (pit), update
         // intervals (floppy/keyboard/ata/video/)
 
         if (module instanceof ModuleCPU) {
             int mhz = moduleConfig.getCpu().getSpeedmhz().intValue();
             ((ModuleCPU) module).setIPS(mhz * 1000000);
-            result &= true;
-        } else if (module instanceof ModuleDevice) {
-            // Cast the module to ModuleDevice for the setUpdate
-            if (module instanceof ModulePIT)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getPit()
-                        .getClockrate().intValue());
-            else if (module instanceof ModuleVideo)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig
-                        .getVideo().getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleKeyboard)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig
-                        .getKeyboard().getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleFDC)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getFdc()
-                        .getUpdateintervalmicrosecs().intValue());
-            else if (module instanceof ModuleATA)
-                ((ModuleDevice) module).setUpdateInterval(moduleConfig.getAta()
-                        .getUpdateintervalmicrosecs().intValue());
-            result &= true;
-        } else {
-            // Unhandled module timing
-            result &= false;
+            return true;
         }
-        return result;
+        else if (module instanceof Updateable) {
+
+            int updateInterval;
+
+            if (module instanceof ModulePIT) {
+                updateInterval = moduleConfig.getPit().getClockrate().intValue();
+            }
+            else if (module instanceof ModuleVideo) {
+                updateInterval = moduleConfig.getVideo().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleKeyboard) {
+                updateInterval = moduleConfig.getKeyboard().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleFDC) {
+                updateInterval = moduleConfig.getFdc().getUpdateintervalmicrosecs().intValue();
+            }
+            else if (module instanceof ModuleATA) {
+                updateInterval = moduleConfig.getAta().getUpdateintervalmicrosecs().intValue();
+            }
+            else {
+                logger.log(Level.WARNING, "Could not set updateInterval for type: "+module.getType());
+                return false;
+            }
+
+            ((Updateable)module).setUpdateInterval(updateInterval);
+            
+            return true;
+        }
+        
+        // Unhandled module timing
+        return false;
     }
 
     /**
@@ -1042,8 +1052,7 @@ public class Emulator implements Runnable {
 
         // Set screen output
         // Connect screen (check if screen is available)
-        ModuleScreen screen = (ModuleScreen) modules
-                .getModule(ModuleType.SCREEN.toString());
+        ModuleScreen screen = (ModuleScreen) modules.getModule(Module.Type.SCREEN);
         if (screen != null) {
             getGui().setScreen(screen.getScreen());
             return true;
@@ -1059,7 +1068,7 @@ public class Emulator implements Runnable {
      */
     public boolean setMouseParams() {
 
-        Mouse mouse = (Mouse) modules.getModule(ModuleType.MOUSE.toString());
+        Mouse mouse = (Mouse) modules.getModule(Module.Type.MOUSE);
         logger.log(Level.INFO, "mouse = "+mouse);
         if (mouse != null) {
 
@@ -1088,8 +1097,7 @@ public class Emulator implements Runnable {
      * @return -
      */
     public boolean setMemoryParams() {
-        ModuleMemory mem = (ModuleMemory) modules.getModule(ModuleType.MEMORY
-                .toString());
+        ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
 
         if (mem != null) {
             int size = moduleConfig.getMemory().getSizemb().intValue();
@@ -1120,8 +1128,7 @@ public class Emulator implements Runnable {
                 // Close input stream
                 bdis.close();
 
-                Clock clk = (Clock) modules.getModule(ModuleType.CLOCK
-                        .toString());
+                Clock clk = (Clock) modules.getModule(Module.Type.CLOCK);
                 sysBIOS = new SystemBIOS(byteArray, clk);
 
                 // open input stream
@@ -1155,7 +1162,7 @@ public class Emulator implements Runnable {
 
             return result;
         } else {
-            BIOS bios = (BIOS) modules.getModule(ModuleType.BIOS.toString());
+            BIOS bios = (BIOS) modules.getModule(Module.Type.BIOS);
 
             // FIXME: Do iteration over BIOS list???
             String sysBiosFilePath = Utilities.resolvePathAsString(moduleConfig.getBios().get(0).getSysbiosfilepath());
@@ -1173,8 +1180,7 @@ public class Emulator implements Runnable {
                             "[emu] System BIOS successfully stored in ROM.");
 
                     // Retrieve System BIOS and store it in RAM
-                    ModuleMemory mem = (ModuleMemory) modules
-                            .getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
 
                     mem.setBytes(ramAddressSysBiosStart, bios.getSystemBIOS());
 
@@ -1205,8 +1211,7 @@ public class Emulator implements Runnable {
                             "[emu] Video BIOS successfully stored in ROM.");
 
                     // Retrieve VGA BIOS and store it in RAM at address 0xC0000
-                    ModuleMemory mem = (ModuleMemory) modules
-                            .getModule(ModuleType.MEMORY.toString());
+                    ModuleMemory mem = (ModuleMemory) modules.getModule(Module.Type.MEMORY);
                     mem.setBytes(ramAddressVgaBiosStart, bios.getVideoBIOS());
                     logger.log(Level.CONFIG,
                             "[emu] Video BIOS successfully loaded in RAM.");
@@ -1236,8 +1241,7 @@ public class Emulator implements Runnable {
     public boolean setFloppyParams() {
         // Module FDC: set number of drives (max 4), insert floppy and set
         // update interval
-        ModuleFDC fdc = (ModuleFDC) modules
-                .getModule(ModuleType.FDC.toString());
+        ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
 
         // FIXME: This needs to be set depending on number of floppies defined
         // in XML/HashMap (also see note on HashMaps)
@@ -1301,14 +1305,15 @@ public class Emulator implements Runnable {
 
         // FIXME: This needs to be set depending on number of floppies defined
         // in XML/HashMap (also see note on HashMaps)
-        ModuleATA ata = (ATA) modules.getModule(ModuleType.ATA.toString());
+        ModuleATA ata = (ATA) modules.getModule(Module.Type.ATA);
 
-        if (moduleConfig.getAta().getHarddiskdrive().isEmpty())
+        if (moduleConfig.getAta().getHarddiskdrive().isEmpty()) {
             return false;
+        }
 
         // FIXME: loop on number of disks defined
-        for (int i = 0; i < 1; i++) {
-            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(0);
+        for (int i = 0; i < 2; i++) {
+            Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(i);
             boolean enabled = hddConfig.isEnabled();
             int ideChannelIndex = hddConfig.getChannelindex().intValue();
             boolean isMaster = hddConfig.isMaster();
@@ -1329,9 +1334,11 @@ public class Emulator implements Runnable {
                         numCylinders, numHeads, numSectorsPerTrack,
                         ATATranslationType.AUTO, imageFilePath);
 
-                // TODO: updates for other hard drives?
-                if (ideChannelIndex == 0 && isMaster) {
+                if (ideChannelIndex == 0 && i == 0) {
                     getGui().updateGUI(GUI.EMU_HD1_INSERT);
+                }
+                if (ideChannelIndex == 0 && i == 1) {
+                    getGui().updateGUI(GUI.EMU_HD2_INSERT);
                 }
             }
         }
@@ -1346,7 +1353,7 @@ public class Emulator implements Runnable {
 
         // TODO: This is currently done via ATA, perhaps it can be generalised
         // to BIOS/CMOS?
-        ATA ata = (ATA) modules.getModule(ModuleType.ATA.toString());
+        ATA ata = (ATA) modules.getModule(Module.Type.ATA);
 
         // These values are currently stored in the BIOS, and bootdrives
         // FIXME: Do iteration of BIOS???
@@ -1412,21 +1419,21 @@ public class Emulator implements Runnable {
         }
 
         // Set debug for modules individually
-        modules.getModule(ModuleType.ATA.toString()).setDebugMode(
+        modules.getModule(Module.Type.ATA).setDebugMode(
                 moduleConfig.getAta().isDebug());
-        modules.getModule(ModuleType.CPU.toString()).setDebugMode(
+        modules.getModule(Module.Type.CPU).setDebugMode(
                 moduleConfig.getCpu().isDebug());
-        modules.getModule(ModuleType.MEMORY.toString()).setDebugMode(
+        modules.getModule(Module.Type.MEMORY).setDebugMode(
                 moduleConfig.getMemory().isDebug());
-        modules.getModule(ModuleType.FDC.toString()).setDebugMode(
+        modules.getModule(Module.Type.FDC).setDebugMode(
                 moduleConfig.getFdc().isDebug());
-        modules.getModule(ModuleType.PIT.toString()).setDebugMode(
+        modules.getModule(Module.Type.PIT).setDebugMode(
                 moduleConfig.getPit().isDebug());
-        modules.getModule(ModuleType.KEYBOARD.toString()).setDebugMode(
+        modules.getModule(Module.Type.KEYBOARD).setDebugMode(
                 moduleConfig.getKeyboard().isDebug());
-        modules.getModule(ModuleType.MOUSE.toString()).setDebugMode(
+        modules.getModule(Module.Type.MOUSE).setDebugMode(
                 moduleConfig.getMouse().isDebug());
-        modules.getModule(ModuleType.VGA.toString()).setDebugMode(
+        modules.getModule(Module.Type.VIDEO).setDebugMode(
                 moduleConfig.getVideo().isDebug());
 
         // Set RAM address watch
@@ -1435,7 +1442,7 @@ public class Emulator implements Runnable {
                 .intValue();
 
         if (moduleConfig.getMemory().isDebug()) {
-            ((ModuleMemory) modules.getModule(ModuleType.MEMORY.toString()))
+            ((ModuleMemory) modules.getModule(Module.Type.MEMORY))
                     .setWatchValueAndAddress(memDebug, memAddress);
             logger.log(Level.CONFIG, "[emu] RAM address watch set to "
                     + memDebug + "; address: " + memAddress);

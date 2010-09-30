@@ -45,9 +45,9 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleRTC;
@@ -62,7 +62,7 @@ import dioscuri.module.cpu32.Processor;
 /**
  * An implementation of a video (VGA) module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *      <p/>
  *      Metadata module ********************************************
  *      general.type : video general.name : General VGA display adapter
@@ -79,25 +79,12 @@ import dioscuri.module.cpu32.Processor;
 public class Video extends ModuleVideo {
 
     static long counter = 0;
-    // Attributes
 
     // Relations
-    @SuppressWarnings("unused")
-    private Emulator emu;
-    private String[] moduleConnections = new String[]{"motherboard", "cpu",
-            "screen", "rtc"};
-    private ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
-    private ModuleScreen screen;
-    private ModuleRTC rtc;
     private VideoCard videocard;
     private TextModeAttributes textModeAttribs;
     private TextTranslation textTranslation;
     public DiosJPCVideoConnect vidMemConnect = new DiosJPCVideoConnect();
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Timing
     private int updateInterval;
@@ -113,12 +100,6 @@ public class Video extends ModuleVideo {
     private static final Logger logger = Logger.getLogger(Video.class.getName());
 
     // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "video";
-    public final static String MODULE_NAME = "Video Graphics Array (VGA) adapter";
-
     private final static int MAX_TEXT_LINES = 100;
 
     // Constructor
@@ -129,7 +110,6 @@ public class Video extends ModuleVideo {
      * @param owner
      */
     public Video(Emulator owner) {
-        emu = owner;
 
         // Create new videocard
         videocard = new VideoCard();
@@ -144,103 +124,21 @@ public class Video extends ModuleVideo {
         // characters
         textTranslation = new TextTranslation();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     *
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
+                + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
+     * {@inheritDoc}
      *
-     * @return string containing the type of module
-     * @see Module
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     *
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for video
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        if (mod.getType().equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        } else if (mod.getType().equals("screen")) {
-            this.screen = (ModuleScreen) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType().equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     *
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (motherboard != null && screen != null && rtc != null && cpu != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+
         // Register I/O ports in I/O address space
         int ioAddress;
 
@@ -279,136 +177,28 @@ public class Video extends ModuleVideo {
         rtc.setCMOSRegister(0x14,
                 (byte) ((rtc.getCMOSRegister(0x14) & 0xCF) | 0x00));
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module has been reset");
+        logger.log(Level.INFO, "[" + super.getType() + "]"
+                + " AbstractModule has been reset");
 
         return true;
     }
 
     /**
-     * Starts the module
+     * {@inheritDoc}
      *
-     * @see Module
+     * @see dioscuri.interfaces.Updateable
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     *
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     *
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     *
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     *
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     *
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
-     */
-    public String getDump() {
-        String dump = "Video status:\n";
-
-        dump += "Read mode: " + videocard.graphicsController.readMode + "\n";
-        dump += "Write mode: " + videocard.graphicsController.writeMode + "\n";
-
-        // dump += "Graphics mode: " + ...
-        // dump += "Text mode: " + ...
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
-
-    /**
-     * Retrieve the interval between subsequent updates
-     *
-     * @return int interval in microseconds
-     */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -416,13 +206,20 @@ public class Video extends ModuleVideo {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
     /**
-     * Update device Refreshes the framebuffer and send redraw to screen
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
+
         int screenHeight;
         int screenWidth;
 
@@ -454,7 +251,7 @@ public class Video extends ModuleVideo {
             int byteOffset, startAddress;
             int xc, yc, xti, yti;
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " update() in progress; graphics mode");
 
             startAddress = (((int) videocard.crtControllerRegister.regArray[0x0C] & 0xFF) << 8)
@@ -655,7 +452,7 @@ public class Video extends ModuleVideo {
                         int pixely, pixelx, plane;
 
                         if (videocard.miscOutputRegister.lowHighPage != 1)
-                            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                     + " update: select_high_bank != 1");
 
                         for (yc = 0, yti = 0; yc < screenHeight; yc += VideoCard.Y_TILESIZE, yti++) {
@@ -715,13 +512,12 @@ public class Video extends ModuleVideo {
                     break; // case 2
 
                 default:
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " update: shift_reg == "
                             + videocard.graphicsController.shift256Reg);
             }
 
             videocard.vgaMemReqUpdate = false;
-            return;
         }
 
         // alphaNumDisable == 0; Text mode
@@ -766,7 +562,7 @@ public class Video extends ModuleVideo {
                                                                     // of
                                                                     // screen
             logger.log(Level.INFO, "---------------------------------------------------------------------------");
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " update() in progress; text mode "+(++counter));
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " update() in progress; text mode "+(++counter));
 
             // Collect text features to be passed to screen update
             textModeAttribs.fullStartAddress = (short) fullStartAddress;
@@ -793,7 +589,7 @@ public class Video extends ModuleVideo {
             // Check character height to update; if this is some silly value
             // (i.e. not visible), ignore update
             if (maxScanLine == 0) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " character height = 1, skipping text update");
                 return;
             } else if ((maxScanLine == 1) && (videocard.verticalDisplayEnd == 399)) {
@@ -804,7 +600,7 @@ public class Video extends ModuleVideo {
             // Determine number of rows now the maxScanLine has been set
             numRows = (videocard.verticalDisplayEnd + 1) / (maxScanLine + 1);
             if (numRows > MAX_TEXT_LINES) {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " Number of text rows (" + numRows
                         + ") exceeds maximum (" + MAX_TEXT_LINES + ")!");
                 return;
@@ -916,14 +712,16 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * IN instruction to video adapter<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x3B4, 0x3B5, 0x3BA,
-     *                    0x3C0-0x3CF, 0x3D4, 0x3D4, 0x3DA
-     * @return byte from target port
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+
         byte returnValue = 0; // Data returned from requested port
 
         // Ensure the correct ports are used for colour/monochrome mode
@@ -1010,7 +808,7 @@ public class Video extends ModuleVideo {
                             .log(
                                     Level.SEVERE,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " Port [0x3C0] read, but flipflop not set to address mode");
                     return 0;
@@ -1061,7 +859,7 @@ public class Video extends ModuleVideo {
 
                     default:
                         logger.log(Level.SEVERE, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " Port [0x3C1] reads unknown register 0x"
                                 + Integer.toHexString(
@@ -1071,7 +869,7 @@ public class Video extends ModuleVideo {
                 }
 
             case 0x3C2: // Input Status 0
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port [0x3C1] reads Input Status #0; ignored");
                 return 0;
 
@@ -1084,12 +882,12 @@ public class Video extends ModuleVideo {
             case 0x3C5: // Sequencer Registers 0-4, based on index
                 switch (videocard.sequencer.index) {
                     case 0: // Asynch and synch reset
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " Port [0x3C5] reads sequencer reset");
                         return (byte) (videocard.sequencer.aSynchReset | (videocard.sequencer.synchReset << 1));
 
                     case 1: // Clocking mode
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
                                 + " Port [0x3C5] reads sequencer clocking mode");
                         return (videocard.sequencer.clockingMode);
 
@@ -1105,7 +903,7 @@ public class Video extends ModuleVideo {
 
                     default:
                         logger.log(Level.SEVERE, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " Port [0x3C5] reads unknown register 0x"
                                 + Integer.toHexString(videocard.sequencer.index)
@@ -1162,7 +960,7 @@ public class Video extends ModuleVideo {
                         | ((videocard.miscOutputRegister.horizontalSyncPol & 0x01) << 6) | ((videocard.miscOutputRegister.verticalSyncPol & 0x01) << 7)));
 
             case 0x3CD: // GDC segment select ???
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port [0x3CD] read; unknown register, returned 0x00");
                 return 0x00;
 
@@ -1193,7 +991,7 @@ public class Video extends ModuleVideo {
 
                         if (videocard.graphicsController.hostOddEvenEnable != 0
                                 || videocard.graphicsController.shift256Reg != 0)
-                            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
                                     + " io read 0x3cf: reg 05 = " + returnValue);
                         return (returnValue);
 
@@ -1209,7 +1007,7 @@ public class Video extends ModuleVideo {
 
                     default:
                         logger.log(Level.SEVERE, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " Port [0x3CF] reads unknown register 0x"
                                 + Integer.toHexString(
@@ -1225,7 +1023,7 @@ public class Video extends ModuleVideo {
             case 0x3D5: // CRTC Registers (colour emulation modes)
                 if (videocard.crtControllerRegister.index > 0x18) {
                     logger.log(Level.INFO, "["
-                            + MODULE_TYPE
+                            + super.getType()
                             + "]"
                             + " Port [0x"
                             + Integer.toHexString(portAddress).toUpperCase()
@@ -1241,7 +1039,7 @@ public class Video extends ModuleVideo {
                 // TODO: return crt index register here, same as 0x3D4???
             case 0x3CB: // GDC segment select register 2 ???
             default:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Port [0x"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Port [0x"
                         + Integer.toHexString(portAddress).toUpperCase()
                         + "] read; unknown register, returned 0x00");
                 return 0;
@@ -1250,13 +1048,16 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * OUT instruction to video adapter<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port<BR>
-     * @param data        Value written to the selected port
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
+
         boolean needUpdate = false; // Determine if a screen refresh is needed
 
         // Check if correct ports are addressed while in monochrome / colour
@@ -1274,7 +1075,7 @@ public class Video extends ModuleVideo {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " I/O write port 0x3BA (Feature Control Register, monochrome): reserved");
                 break;
@@ -1328,7 +1129,7 @@ public class Video extends ModuleVideo {
                             if (videocard.attributeController.modeControlReg.paletteBitsSelect != oldPaletteBitsSelect) {
                                 needUpdate = true;
                             }
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3C0: Mode control: " + data);
                             break;
 
@@ -1338,7 +1139,7 @@ public class Video extends ModuleVideo {
                                     .log(
                                             Level.CONFIG,
                                             "["
-                                                    + MODULE_TYPE
+                                                    + super.getType()
                                                     + "]"
                                                     + "I/O write port 0x3C0: Overscan colour = "
                                                     + data);
@@ -1347,7 +1148,7 @@ public class Video extends ModuleVideo {
                         case 0x12: // Colour Plane Enable Register
                             videocard.attributeController.colourPlaneEnable = (byte) (data & 0x0f);
                             needUpdate = true;
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3C0: Colour plane enable = "
                                     + data);
                             break;
@@ -1355,7 +1156,7 @@ public class Video extends ModuleVideo {
                         case 0x13: // Horizontal Pixel Panning Register
                             videocard.attributeController.horizPixelPanning = (byte) (data & 0x0f);
                             needUpdate = true;
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3C0: Horiz. pixel panning = "
                                     + data);
                             break;
@@ -1363,7 +1164,7 @@ public class Video extends ModuleVideo {
                         case 0x14: // Colour Select Register
                             videocard.attributeController.colourSelect = (byte) (data & 0x0f);
                             needUpdate = true;
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3C0: Colour select = "
                                     + videocard.attributeController.colourSelect);
                             break;
@@ -1373,7 +1174,7 @@ public class Video extends ModuleVideo {
                                     .log(
                                             Level.WARNING,
                                             "["
-                                                    + MODULE_TYPE
+                                                    + super.getType()
                                                     + "]"
                                                     + "I/O write port 0x3C0: Data mode (unknown register) "
                                                     + videocard.attributeController.index);
@@ -1384,14 +1185,14 @@ public class Video extends ModuleVideo {
                     int oldPaletteAddressSource = videocard.attributeController.paletteAddressSource;
 
                     videocard.attributeController.paletteAddressSource = (byte) ((data >> 5) & 0x01);
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
                             + "I/O write port 0x3C0: address mode = "
                             + videocard.attributeController.paletteAddressSource);
 
                     if (videocard.attributeController.paletteAddressSource == 0)
                         screen.clearScreen();
                     else if (!(oldPaletteAddressSource != 0)) {
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "found enable transition");
                         needUpdate = true;
                     }
@@ -1419,7 +1220,7 @@ public class Video extends ModuleVideo {
                             break;
 
                         default:
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3C0: Address mode reg = "
                                     + data);
                     }
@@ -1437,24 +1238,24 @@ public class Video extends ModuleVideo {
                 videocard.miscOutputRegister.horizontalSyncPol = (byte) ((data >> 6) & 0x01);
                 videocard.miscOutputRegister.verticalSyncPol = (byte) ((data >> 7) & 0x01);
 
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + " I/O write port 0x3C2:");
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  I/O Address select  = "
                         + videocard.miscOutputRegister.ioAddressSelect);
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Ram Enable          = "
                         + videocard.miscOutputRegister.ramEnable);
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Clock Select        = "
                         + videocard.miscOutputRegister.clockSelect);
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Low/High Page       = "
                         + videocard.miscOutputRegister.lowHighPage);
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Horiz Sync Polarity = "
                         + videocard.miscOutputRegister.horizontalSyncPol);
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  Vert Sync Polarity  = "
                         + videocard.miscOutputRegister.verticalSyncPol);
                 break;
@@ -1462,14 +1263,14 @@ public class Video extends ModuleVideo {
             case 0x3C3: // Video Subsystem Enable; currently only uses bit 0 to
                 // check if enabled/disabled
                 videocard.vgaEnabled = (data & 0x01) == 1 ? true : false;
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " set I/O port 0x3C3: VGA Enabled = "
                         + videocard.vgaEnabled);
                 break;
 
             case 0x3C4: // Sequencer Index Register
                 if (data > 4) {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " I/O write port 0x3C4: index > 4");
                 }
                 videocard.sequencer.index = data;
@@ -1479,7 +1280,7 @@ public class Video extends ModuleVideo {
                 // Determine register to write to
                 switch (videocard.sequencer.index) {
                     case 0: // Reset register
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " I/O write 0x3C5: Sequencer reset:  " + data);
                         if ((videocard.sequencer.aSynchReset != 0)
                                 && ((data & 0x01) == 0)) {
@@ -1494,7 +1295,7 @@ public class Video extends ModuleVideo {
                         break;
 
                     case 1: // Clocking mode register
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "I/O write port 0x3C5 (clocking mode): " + data);
                         videocard.sequencer.clockingMode = (byte) (data & 0x3D);
                         videocard.sequencer.dotClockRate = ((data & 0x08) > 0) ? (byte) 1
@@ -1534,7 +1335,7 @@ public class Video extends ModuleVideo {
 
                         // Different fonts not supported at this time
                         if (charSetB != charSetA)
-                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.WARNING, "[" + super.getType() + "]"
                                     + "Character map select: map #2 in block "
                                     + charSetB + " unused");
                         break;
@@ -1544,21 +1345,21 @@ public class Video extends ModuleVideo {
                         videocard.sequencer.oddEvenDisable = (byte) ((data >> 2) & 0x01);
                         videocard.sequencer.chainFourEnable = (byte) ((data >> 3) & 0x01);
 
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " I/O write port 0x3C5 (memory mode):");
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Extended Memory  = "
                                 + videocard.sequencer.extendedMemory);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Odd/Even disable = "
                                 + videocard.sequencer.oddEvenDisable);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Chain 4 enable   = "
                                 + videocard.sequencer.chainFourEnable);
                         break;
 
                     default:
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "I/O write port 0x3C5: index "
                                 + videocard.sequencer.index + " unhandled");
                 }
@@ -1567,7 +1368,7 @@ public class Video extends ModuleVideo {
             case 0x3C6: // Pixel mask
                 videocard.colourRegister.pixelMask = data;
                 if (videocard.colourRegister.pixelMask != (byte) 0xFF)
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " I/O write port 0x3C6: Pixel mask= " + data
                             + " != 0xFF");
                 break;
@@ -1624,14 +1425,14 @@ public class Video extends ModuleVideo {
                 break;
 
             case 0x3CD: // Unknown
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " I/O write to unknown port 0x3CD = " + data);
                 break;
 
             case 0x3CE: // Graphics Controller Address Register
                 // Only 9 register accessible
                 if (data > 0x08)
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
                             + " /O write port 0x3CE: index > 8");
                 videocard.graphicsController.index = data;
                 break;
@@ -1657,7 +1458,7 @@ public class Video extends ModuleVideo {
 
                     case 4: // Read Map Select
                         videocard.graphicsController.readMapSelect = (byte) (data & 0x03);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "I/O write port 0x3CF (Read Map Select): " + data);
                         break;
 
@@ -1668,11 +1469,11 @@ public class Video extends ModuleVideo {
                         videocard.graphicsController.shift256Reg = (byte) ((data >> 5) & 0x03);
 
                         if (videocard.graphicsController.hostOddEvenEnable != 0)
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3CF (graphics mode): value = "
                                     + data);
                         if (videocard.graphicsController.shift256Reg != 0)
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                     + "I/O write port 0x3CF (graphics mode): value = "
                                     + data);
                         break;
@@ -1686,15 +1487,15 @@ public class Video extends ModuleVideo {
                         videocard.graphicsController.chainOddEvenEnable = (byte) ((data >> 1) & 0x01);
                         videocard.graphicsController.memoryMapSelect = (byte) ((data >> 2) & 0x03);
 
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " I/O write port 0x3CF (Miscellaneous): " + data);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Alpha Num Disable: "
                                 + videocard.graphicsController.alphaNumDisable);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Memory map select: "
                                 + videocard.graphicsController.memoryMapSelect);
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                                 + "  Odd/Even enable  : "
                                 + videocard.graphicsController.hostOddEvenEnable);
 
@@ -1716,7 +1517,7 @@ public class Video extends ModuleVideo {
 
                     default:
                         // Unknown index addressed
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
                                 + " I/O write port 0x3CF: index "
                                 + videocard.graphicsController.index + " unhandled");
                 }
@@ -1727,7 +1528,7 @@ public class Video extends ModuleVideo {
                 // Set index to be accessed in CRTC Data Register cycle
                 videocard.crtControllerRegister.index = (byte) (data & 0x7F);
                 if (videocard.crtControllerRegister.index > 0x18)
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " I/O write port 0x3(B|D)4: invalid CRTC register "
                             + videocard.crtControllerRegister.index + " selected");
                 break;
@@ -1735,7 +1536,7 @@ public class Video extends ModuleVideo {
             case 0x3B5: // CRTC Data Register (monochrome)
             case 0x3D5: // CRTC Data Register (colour)
                 if (videocard.crtControllerRegister.index > 0x18) {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + "  I/O write port 0x3(B|D)5: invalid CRTC Register ("
                             + videocard.crtControllerRegister.index + "); ignored");
                     return;
@@ -1879,7 +1680,7 @@ public class Video extends ModuleVideo {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " I/O write port 0x3DA (Feature Control Register, colour): reserved");
                 break;
@@ -1889,7 +1690,7 @@ public class Video extends ModuleVideo {
                 break;
 
             default:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " unsupported I/O write to port " + portAddress
                         + ", data =" + data);
 
@@ -1899,70 +1700,93 @@ public class Video extends ModuleVideo {
             // Mark all video as updated so the changes will go through
             setAreaForUpdate(0, 0, oldScreenWidth, oldScreenHeight);
         }
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, ModuleUnknownPort {
+            throws ModuleException, UnknownPortException {
         // Support IO words by redirecting to byte handler
         setIOPortByte(portAddress, (byte) (dataWord[1] & 0xff));
         setIOPortByte(portAddress + 1, (byte) (dataWord[0] & 0xff));
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        // TODO Auto-generated method stub
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, ModuleUnknownPort {
-        // TODO Auto-generated method stub
-        return;
+            throws ModuleException, UnknownPortException {
     }
 
-    // ******************************************************************************
-    // ModuleVideo methods
-
     /**
-     * Returns a pointer to the whole video buffer
+     * {@inheritDoc}
      *
-     * @return byte[] containing the video buffer
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte[] getVideoBuffer() {
         return this.videocard.vgaMemory;
     }
 
     /**
-     * Returns a byte from video buffer at position index
+     * {@inheritDoc}
      *
-     * @return byte from video buffer
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getVideoBufferByte(int index) {
         return this.videocard.vgaMemory[index];
     }
 
     /**
-     * Stores a byte in video buffer at position index
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void setVideoBufferByte(int index, byte data) {
         this.videocard.vgaMemory[index] = data;
     }
 
     /**
-     * Returns all characters (as Unicode) that are currently in buffer
+     * {@inheritDoc}
      *
-     * @return String containing all characters in the buffer or null when no
-     *         characters exist
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public String getVideoBufferCharacters() {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
+
         int maxRows, maxCols, index;
         StringBuffer text;
 
@@ -1990,37 +1814,41 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * Returns a byte from text snapshot at position index
+     * {@inheritDoc}
      *
-     * @return byte from textsnapshot
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getTextSnapshot(int index) {
         return this.videocard.textSnapshot[index];
     }
 
     /**
-     * Stores a byte in text snapshot at position index
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void setTextSnapshot(int index, byte data) {
         this.videocard.textSnapshot[index] = data;
     }
 
     /**
-     * Translate the text attribute/graphic colour input value into the CRT
-     * display colour
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte getAttributePaletteRegister(int index) {
         return videocard.attributeController.paletteRegister[index];
     }
 
-    // ******************************************************************************
-    // Custom methods
-
     /**
-     * Determine the screen size in pixels
+     * {@inheritDoc}
      *
-     * @return integer array containing [height, width] of screen in pixels
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public int[] determineScreenSize() {
         int heightInPixels, widthInPixels;
         int horizontal, vertical;
@@ -2071,10 +1899,11 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * VGA memory Read Modes 0 and 1 functionality
+     * {@inheritDoc}
      *
-     * @param address
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public byte readMode(int address) {
         int i; // Counter
         int offset; // Offset in the memory bank
@@ -2155,11 +1984,15 @@ public class Video extends ModuleVideo {
     }
 
     /**
-     * VGA memory Write Modes 0, 1, 2 and 3 functionality
+     * {@inheritDoc}
      *
-     * @param value
+     * @see dioscuri.module.ModuleVideo
      */
+    @Override
     public void writeMode(int address, byte value) {
+
+        ModuleScreen screen = (ModuleScreen)super.getConnection(Module.Type.SCREEN);
+
         int offset;
         byte newValue[] = new byte[4];
         int startAddress;
@@ -2239,7 +2072,7 @@ public class Video extends ModuleVideo {
                 /* CGA 320x200x4 / 640x200x2 end */
             } else if (videocard.graphicsController.memoryMapSelect != 1) {
 
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " mem_write: graphics: mapping = "
                         + videocard.graphicsController.memoryMapSelect);
                 return;
@@ -2356,7 +2189,7 @@ public class Video extends ModuleVideo {
                                 & bitmask);
                         break;
                     default:
-                        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
                                 + " vga_mem_write: write mode 0: op = "
                                 + videocard.graphicsController.dataOperation);
                 }
@@ -2474,7 +2307,7 @@ public class Video extends ModuleVideo {
             break;
 
             default:
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " vga_mem_write: write mode "
                         + videocard.graphicsController.writeMode + " ?");
         }
@@ -2559,7 +2392,6 @@ public class Video extends ModuleVideo {
      * used to connect the memory range A0000 - C0000 to the vgaMemory array in
      * VideoCard
      */
-    @SuppressWarnings("unused")
     public class DiosJPCVideoConnect extends Memory {
         // Added because needed - need to check if used elsewhere in JPC
         private int bankOffset = 0;

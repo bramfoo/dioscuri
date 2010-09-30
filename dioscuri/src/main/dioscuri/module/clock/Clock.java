@@ -43,14 +43,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleClock;
-import dioscuri.module.ModuleDevice;
 import dioscuri.module.ModuleMotherboard;
 
 /**
- * Module Clock This module implements a pulsing clock mechanism. Based on a
+ * AbstractModule Clock This module implements a pulsing clock mechanism. Based on a
  * user-defined sleepTime the clock sends a pulse to the PIT-counters after
  * sleeping.
  * 
@@ -64,45 +64,27 @@ import dioscuri.module.ModuleMotherboard;
  * max
  * 
  */
-public class Clock extends ModuleClock {
-    // Attributes
+public class Clock extends ModuleClock implements Runnable {
 
-    // Relations
-    @SuppressWarnings("unused")
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "cpu" };
-    private ModuleMotherboard motherboard;
-    private ModuleCPU cpu;
+    // Logging
+    private static final Logger logger = Logger.getLogger(Clock.class.getName());
+
     private Timer[] timers;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
     private boolean keepRunning;
 
     // Timing
     private long sleepTime;
     private int arrayIndex;
 
-    // Logging
-    private static final Logger logger = Logger.getLogger(Clock.class.getName());
-
     // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "clock";
-    public final static String MODULE_NAME = "Crystal clock";
     public final static int TIMER_ARRAY_SIZE = 10;
 
-    // Constructor
     /**
      * Constructor Clock
      * 
      * @param owner
      */
     public Clock(Emulator owner) {
-        emu = owner;
-
         // Initialise array for all timers
         timers = new Timer[TIMER_ARRAY_SIZE];
         arrayIndex = 0;
@@ -112,220 +94,45 @@ public class Clock extends ModuleClock {
         // Set sleepTime on default value
         sleepTime = 1000;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "]" + getClass().getName()
+                + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for cpu
-        else if (mod.getType().equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (this.motherboard != null && this.cpu != null) {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+
         // Register clock to motherboard
-        if (motherboard.registerClock(this) == false) {
+        if (!motherboard.registerClock(this)) {
             return false;
         }
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
+    @Override
     public void stop() {
-        // Stop Clock thread
         this.setKeepRunning(false);
     }
 
     /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true if successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param data
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -344,26 +151,23 @@ public class Clock extends ModuleClock {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleClock Methods
-
     /**
-     * Register a device to clock and assign a timer to it
-     * 
-     * @param device 
-     * @param continuous
-     * @param intervalLength
-     * @return boolean true if timer assigned successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
-    public boolean registerDevice(ModuleDevice device, int intervalLength,
-            boolean continuous) {
+    @Override
+    public boolean registerDevice(Updateable device, int intervalLength, boolean continuous) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+
         // Check if timers are still available
         if (arrayIndex < TIMER_ARRAY_SIZE) {
             // Change the interval length from useconds to instructions
-            timers[arrayIndex] = new Timer(device, intervalLength
-                    * (cpu.getIPS() / 1000000), continuous);
+            timers[arrayIndex] = new Timer(device, intervalLength * (cpu.getIPS() / 1000000), continuous);
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                     + device.getType() + "' registered a timer with interval "
                     + timers[arrayIndex].intervalLength + " instructions");
 
@@ -374,19 +178,22 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Reset the countdown of a timer to the interval length
-     * 
-     * @param device 
-     * @param updateInterval
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
-    public boolean resetTimer(ModuleDevice device, int updateInterval) {
+    @Override
+    public boolean resetTimer(Updateable device, int updateInterval) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].reset(updateInterval * (cpu.getIPS() / 1000000));
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer reset to "
                         + timers[t].intervalLength + " instructions");
                 return true;
@@ -397,19 +204,18 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Set a timer to start/stop running
-     * 
-     * @param device 
-     * @param runState
-     * @return boolean true if timer is reset successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
-    public boolean setTimerActiveState(ModuleDevice device, boolean runState) {
+    @Override
+    public boolean setTimerActiveState(Updateable device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
+            if (timers[t].user.getType() == device.getType()) {
                 timers[t].active = runState;
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Device '"
+                logger.log(Level.INFO, "[" + super.getType() + "]" + " Device '"
                         + device.getType() + "' timer active state set to "
                         + runState);
                 return true;
@@ -420,9 +226,11 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Triggers device's update if timer goes off
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleClock
      */
+    @Override
     public void pulse() {
         // Check all active timers
         int t = 0;
@@ -438,26 +246,17 @@ public class Clock extends ModuleClock {
         }
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
-     * Implements the run method of Thread
-     * 
+     * Implements the run method of Runnable
      */
+    @Override
     public void run() {
-        // Generate a clock pulse each n millisecons while running
+        // Generate a clock pulse each n milliseconds while running
         while (keepRunning) {
-            // Send pulse to all counters
-            /*
-             * for (int c = 0; c < counters.length; c++) {
-             * counters[c].clockPulse(); }
-             */
             // Try to sleep for a while
             try {
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
                 keepRunning = false;
             }
@@ -465,69 +264,12 @@ public class Clock extends ModuleClock {
     }
 
     /**
-     * Calibrates the system clock in comparison with host machine It sets a
-     * penalty time to which the clock should pause until the next pulse may be
-     * send. FIXME: This method is not completely implemented yet!!!
-     * 
-     */
-    @SuppressWarnings("unused")
-    private void calibrate() {
-        // Get system time
-        boolean isCalibrated;
-
-        isCalibrated = false;
-
-        while (isCalibrated == false) {
-
-        }
-
-    }
-
-    /**
-     * Sets the keepRunning toggle keepRunning states if the clockthread should
+     * Sets the keepRunning toggle keepRunning states if the clock-thread should
      * keep running or not
      * 
      * @param status
      */
     protected void setKeepRunning(boolean status) {
         keepRunning = status;
-    }
-
-    /**
-     * Retrieves the current clockrate of this clock in milliseconds
-     * 
-     * @return long milliseconds defining how long the clock sleeps before
-     *         sending a pulse
-     */
-    public long getClockRate() {
-        // Return the current number of milliseconds the clock is sleeping
-        return this.sleepTime;
-    }
-
-    /**
-     * Sets the rate for this clock
-     * 
-     * @param milliseconds
-     */
-    public void setClockRate(long milliseconds) {
-        // Set the number of milliseconds before a pulse is generated
-        this.sleepTime = milliseconds;
-    }
-
-    /**
-     * Sets the active state for this clock
-     * 
-     * @param device
-     * @param state
-     */
-    public void setActiveState(ModuleDevice device, boolean state) {
-        // Check if timer exists for given device
-        int t = 0;
-        while (timers[t] != null) {
-            if (timers[t].user.getType().equalsIgnoreCase(device.getType())) {
-                timers[t].active = state;
-            }
-            t++;
-        }
     }
 }

@@ -37,7 +37,6 @@
  */
 package dioscuri;
 
-import dioscuri.Constants;
 import dioscuri.config.ConfigController;
 import dioscuri.util.Utilities;
 import org.apache.commons.cli.*;
@@ -120,14 +119,29 @@ public class CommandLineInterface {
             changes = true;
         }
 
-        if(commandLine.hasOption("d")) {
-            File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d"));
-            logger.log(Level.INFO, " [cli] using custom hard disk image: "+hdImg);
-            if(hdImg == null || !hdImg.exists()) {
-                throw new IOException(" [cli] floppy image '"+hdImg.getName()+
+        if(commandLine.hasOption("d1")) {
+            File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d1"));
+            logger.log(Level.INFO, " [cli] using custom first hard disk image: "+hdImg);
+            if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+                emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(false);
+                throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
                         "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
             }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setImagefilepath(hdImg.getAbsolutePath());
+            emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(true);
+            changes = true;
+        }
+
+        if(commandLine.hasOption("d2")) {
+            File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d2"));
+            logger.log(Level.INFO, " [cli] using custom second hard disk image: "+hdImg);
+            if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+                emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setEnabled(false);
+                throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
+                        "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
+            }
+            emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setImagefilepath(hdImg.getAbsolutePath());
+            emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setEnabled(true);
             changes = true;
         }
 
@@ -216,7 +230,11 @@ public class CommandLineInterface {
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* d */ config = new Option("d", "harddisk", true, "loads a custom hard disk image");
+/* d1 */config = new Option("d1", "harddisk1", true, "loads a custom first hard disk image");
+        config.setArgName("file");
+        commandLineOptions.addOption(config);
+
+/* d2 */config = new Option("d2", "harddisk2", true, "loads a custom second hard disk image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
@@ -228,7 +246,7 @@ public class CommandLineInterface {
         config.setArgName("'floppy'|'harddisk'");
         commandLineOptions.addOption(config);
 
-/* m */ config = new Option("m", "mouse", true, "enables or disables th mouse");
+/* m */ config = new Option("m", "mouse", true, "enables or disables the mouse");
         config.setArgName("'enabled'|'disabled'");
         commandLineOptions.addOption(config);
     }

@@ -39,25 +39,32 @@
 
 package dioscuri.module;
 
-import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Interface representing a generic CPU module.
  */
+public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
-public abstract class ModuleCPU extends Module {
-    // Methods
+    /**
+     *
+     */
+    public ModuleCPU() {
+        super(Module.Type.CPU,
+                Module.Type.MEMORY, Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.CLOCK);
+    }
 
     /**
      * Set the Instructions Per Second (ips) for this CPU.
+     * 
      * @param ips the Instructions Per Second (ips) for this CPU.
      */
     public abstract void setIPS(int ips);
 
     /**
      * Get the Instructions Per Second (ips) for this CPU.
+     *
      * @return the Instructions Per Second (ips) for this CPU.
      */
     public abstract int getIPS();
@@ -75,7 +82,6 @@ public abstract class ModuleCPU extends Module {
      * Retrieve string with information about next instruction to be executed
      * 
      * @return string containing next instruction information
-     * 
      */
     public abstract String getNextInstructionInfo();
 
@@ -83,13 +89,11 @@ public abstract class ModuleCPU extends Module {
      * Retrieve current number of instruction (instructions executed so far)
      * 
      * @return long containing number of instructions
-     * 
      */
     public abstract long getCurrentInstructionNumber();
 
     /**
      * Increment current number of instruction by one
-     * 
      */
     protected abstract void incrementInstructionCounter();
 
@@ -104,25 +108,27 @@ public abstract class ModuleCPU extends Module {
      * Initialise registers
      * 
      * @return true if initialisation is successful, false otherwise
-     * 
      */
     protected abstract boolean initRegisters();
 
     /**
      * Initialise the single and double byte opcode lookup arrays with
      * instructions corresponding to the Intel hexadecimal machinecode values.
-     * @return -
+     *
+     * @return
      */
     protected abstract boolean initInstructionTables();
 
     /**
      * Set the boolean that starts and stops the CPU loop
+     * 
      * @param status sets the isRunning boolean
      */
     protected abstract void setRunning(boolean status);
 
     /**
      * Returns the value of a named register.
+     *
      * @param registerName
      * @return int[] with value of register, null otherwise
      */
@@ -130,71 +136,12 @@ public abstract class ModuleCPU extends Module {
 
     /**
      * Sets the value of a named register to given value.
+     *
      * @param registerName
      * @param value containing the value
      * @return true if set was successful, false otherwise
      */
-    protected abstract boolean setRegisterValue(String registerName,
-            byte[] value);
-
-    /**
-     * Returns the value (byte) in I/O address space at given port address.
-     * 
-     * @param portAddress
-     * @return byte value
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte getIOPortByte(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (byte) in I/O address space at given port address.
-     * @param portAddress
-     * @param value
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortByte(int portAddress, byte value)
-            throws ModuleException;
-
-    /**
-     * Returns the value (word) in I/O address space at given port address.
-     * @param portAddress
-     * @return byte[] value (word)
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte[] getIOPortWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (word) in I/O address space at given port address.
-     * @param portAddress
-     * @param value (word)
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortWord(int portAddress, byte[] value)
-            throws ModuleException;
-
-    /**
-     * Returns the value (double word) in I/O address space at given port
-     * address.
-     * @param portAddress
-     * @return byte[] value (double word)
-     * @throws ModuleException
-     * @throws ModuleWriteOnlyPortException
-     */
-    protected abstract byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, ModuleWriteOnlyPortException;
-
-    /**
-     * Sets the value (double word) in I/O address space at given port address.
-     * @param portAddress
-     * @param value (double word)
-     * @throws ModuleException
-     */
-    protected abstract void setIOPortDoubleWord(int portAddress, byte[] value)
-            throws ModuleException;
+    protected abstract boolean setRegisterValue(String registerName, byte[] value);
 
     /**
      * Set the interrupt request (IRQ).
@@ -203,27 +150,33 @@ public abstract class ModuleCPU extends Module {
     public abstract void interruptRequest(boolean value);
 
     /**
+     * Sets the CPU hold mode by asserting a Hold Request.<BR>
+     * This informs the CPU to avoid using the (non-existent) bus as another
+     * device (usually via DMA) is using it; it should be scheduled as a
+     * asynchronous event in CPU.
      *
-     * @param value
-     * @param origin
+     * @param value      state of the Hold Request
+     * @param originator -
      */
-    public abstract void setHoldRequest(boolean value, ModuleDevice origin);
+    public abstract void setHoldRequest(boolean value, Module originator);
 
     /**
      *
      * @param register
-     * @return -
+     * @return
      */
     public abstract String getRegisterHex(int register);
 
     /**
      * Get CPU instruction debug.
+     *
      * @return cpuInstructionDebug.
      */
     public abstract boolean getCpuInstructionDebug();
 
     /**
      * Set the CPU instruction debug.
+     *
      * @param isDebugMode status of instructionDebug (on/off)
      */
     public abstract void setCpuInstructionDebug(boolean isDebugMode);

@@ -56,7 +56,7 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
      */
     public DMA8Handler(FDC fdc) {
         this.fdc = fdc;
-        super.owner = this.fdc.getType();
+        super.owner = this.fdc.getType().toString().toLowerCase(); // TODO FIX into enum
     }
 
     // Methods

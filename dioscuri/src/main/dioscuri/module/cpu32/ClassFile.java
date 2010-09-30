@@ -86,7 +86,6 @@ public class ClassFile {
         // System.out.println("methods");
         readAttributes(in, constantPool);
         // System.out.println("attributes");
-        return;
     }
 
     /**
@@ -115,7 +114,6 @@ public class ClassFile {
         // System.out.println("methods");
         writeAttributes(out);
         // System.out.println("attributes");
-        return;
     }
     public void update() {
         /*

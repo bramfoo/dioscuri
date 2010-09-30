@@ -44,7 +44,6 @@ package dioscuri.exception;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-@SuppressWarnings("serial")
 public class ModuleException extends Exception {
 
     /**
@@ -54,5 +53,4 @@ public class ModuleException extends Exception {
     public ModuleException(String message) {
         super(message);
     }
-
 }

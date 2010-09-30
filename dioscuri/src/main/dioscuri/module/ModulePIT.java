@@ -39,27 +39,20 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
+
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic PIT module.
  */
-
-public abstract class ModulePIT extends ModuleDevice {
-    // Methods
+public abstract class ModulePIT extends AbstractModule implements Addressable, Updateable {
 
     /**
-     * Retrieves the current clockrate of this clock in milliseconds
      * 
-     * @return long milliseconds defining how long the clock sleeps before
-     *         sending a pulse
      */
-    // public abstract long getClockRate();
-
-    /**
-     * Sets the clock rate for this PIT
-     * 
-     * @param long milliseconds, the time between two consequtive clock pulses
-     */
-    // public abstract void setClockRate(long milliseconds);
-
+    public ModulePIT() {
+        super(Module.Type.PIT,
+                Module.Type.MOTHERBOARD, Module.Type.PIC);
+    }
 }

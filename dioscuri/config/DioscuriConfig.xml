@@ -54,6 +54,16 @@
                     <sectorspertrack>17</sectorspertrack>
                     <imagefilepath></imagefilepath>
                 </harddiskdrive>
+                <harddiskdrive>
+                    <enabled>false</enabled>
+                    <channelindex>0</channelindex>
+                    <master>false</master>
+                    <autodetectcylinders>true</autodetectcylinders>
+                    <cylinders>0</cylinders>
+                    <heads>4</heads>
+                    <sectorspertrack>17</sectorspertrack>
+                    <imagefilepath></imagefilepath>
+                </harddiskdrive>
             </ata>
             <video debug="false">
                 <updateintervalmicrosecs>40000</updateintervalmicrosecs>

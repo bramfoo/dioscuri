@@ -53,44 +53,56 @@ Organisations : The National Library of the Netherlands
             <!-- Intro -->
 
             <h2>Dioscuri - the modular emulator</h2>
+            <p>
             Dioscuri is an x86 computer hardware emulator written in Java. It is designed by the digital preservation
-            community to ensure documents and programs from the past can still be accessed in the future.<br>
+            community to ensure documents and programs from the past can still be accessed in the future.
+            </p>
+            <p>
             The Dioscuri emulator has two key features: it is durable and flexible. Because it is implemented in Java,
             it can be ported to any computer platform which supports the Java Virtual Machine (JVM), without any extra
             effort. This reduces the risk that emulation will fail to work on a single architecture in the future, as it
-            will continue to work on another architecture.<br>
+            will continue to work on another architecture.
+            </p>
+            <p>
             Dioscuri is flexible because it is completely component-based. Each hardware component is emulated by a
             software surrogate called a module. Combining several modules allows the user to configure any computer
             system, as long as these modules are compatible. New or upgraded modules can be added to the software
-            library, giving the emulator the capability to run these.<br>
+            library, giving the emulator the capability to run these.
+            </p>
 
+            <p class="quote">
+            Dioscuri is the best choice to retain access to your old documents, games and other applications!
+            </p>
 
-            <p class="quote">Dioscuri is the best choice to retain access to your old documents, games and other
-                applications!</p>
-            <hr>
-            </hr>
+            <hr />
 
+            <hr />
 
             <!-- Latest news -->
 
             <h2>Latest news</h2>
-            <b>21 April 2010</b><br>
-            <a class="img_link" href="https://sourceforge.net/project/showfiles.php?group_id=200001"><img
-                    class="img_news" align="right" src="images/news/20100318_small.gif"></a>
-            A new release of Dioscuri has been made available by the Dioscuri project team. The new version (0.5.2)
+            <b>23 September 2010</b><br>
+            <a class="img_link" href="https://sourceforge.net/project/showfiles.php?group_id=200001">
+                <img class="img_news" align="right" src="images/news/20100318_small.gif" alt="" />
+            </a>
+            A new release of Dioscuri has been made available by the Dioscuri project team. The new version (0.6.0)
             offers the following fixes:<br>
             <ul>
-                <li>can now write to HD in 32 bit mode</li>
-                <li>Windows XP look and feel no longer looses a part of the characters at the bottom of the screen</li>
-                <li>white spaces in paths to disc images (files) no longer cause trouble</li>
+                <li>complete redesign of the hardware module structure</li>
+                <li>there can now be 2 hard disks connected at once</li>
+                <li>the mouse works under 16 bit, be it with quite a bit of lag: so there's still work to be done on that front</li>
+                <li>fixed the fact that file paths were not entirely visible in the GUI config menus</li>
+                <li>added a command line parameter option to enable, or disable the mouse</li>
+                <li>Windows 3.0 runs smoothly under 32 bit</li>
+                <li>improved the configuration menu</li>
+                <li>possible to create screen shots during emulation</li>
             </ul>
 
             <p>For an overview of the full change history, please check the changelog.</p>
 
             <div class="download">
                 <img src="images/icon_download.gif">
-                <a href="https://sourceforge.net/project/showfiles.php?group_id=200001">Download: Dioscuri version
-                    0.5.2</a>
+                <a href="https://sourceforge.net/project/showfiles.php?group_id=200001">Download: Dioscuri version 0.6.0</a>
             </div>
 
             <br><br>
@@ -142,6 +154,7 @@ Organisations : The National Library of the Netherlands
                 <li><a href="https://sourceforge.net/tracker/?group_id=200001&atid=971753" class="menu_link">Feature
                     requests (tracker)</a></li>
                 <li><a href="roadmap.html" class="menu_link">Roadmap</a></li>
+                <li><a href="features.html" class="menu_link">Features</a></li>
             </ul>
             <div class="menu_title">Contact</div>
             <ul>
@@ -167,7 +180,7 @@ Organisations : The National Library of the Netherlands
 
     <div id="footer">
         <a href="http://sourceforge.net"><img align="left" src="images/logo_sf.gif" width="88" eight="31" border="0" alt="SourceForge.net Logo"/></a>
-        <strong>Copyright &copy; 2007</strong> |
+        <strong>Copyright &copy; 2007-2010</strong> |
         <a href="http://dioscuri.sourceforge.net">Dioscuri website</a> |
         <a target="_blank" href="http://www.kb.nl">Koninklijke Bibliotheek</a> |
         <a target="_blank" href="http://www.nationaalarchief.nl">Nationaal Archief</a> |

@@ -184,3 +184,56 @@ a.menu_link:hover {
 a.img_link {
     border: 0px solid black;
 }
+
+th {
+    border-bottom: double black;  
+}
+
+th, td {
+    border-left: 1px solid black;
+    border-spacing: 0;
+    text-align: center;
+    padding: 6px 10px 4px 10px;
+}
+
+table {
+	border-collapse: separate;
+	border-spacing: 0;
+}
+
+th.left_cell, td.left_cell {
+    text-align: left;
+    border-left: none;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.half {
+    width: 300px;
+}
+
+.green, .orange, .red {
+    font-size: large;
+}
+
+.green {
+    color: green;
+}
+
+.orange {
+    color: orange;
+}
+
+.red {
+    color: red;
+}
+
+.clear {
+    clear: both;
+}

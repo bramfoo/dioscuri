@@ -39,13 +39,21 @@
 
 package dioscuri.module;
 
-/**
- * Interface representing a generic hardware module.
- * 
- */
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 
-public abstract class ModulePIC extends ModuleDevice {
-    // Methods
+/**
+ * Abstract class representing a generic PIC module.
+ */
+public abstract class ModulePIC extends AbstractModule implements Addressable {
+
+    /**
+     * 
+     */
+    public ModulePIC() {
+        super(Module.Type.PIC,
+                Module.Type.CPU, Module.Type.MOTHERBOARD);
+    }
 
     /**
      * Returns an IRQ number.
@@ -54,7 +62,7 @@ public abstract class ModulePIC extends ModuleDevice {
      *            that would like to have an IRQ number
      * @return int IRQ number between 1 to 16, or -1 if not allowed/possible
      */
-    public abstract int requestIRQNumber(Module module);
+    public abstract int requestIRQNumber(AbstractModule module);
 
     /**
      * Lowers an interrupt request (IRQ) of given IRQ number

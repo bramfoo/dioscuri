@@ -1,12 +1,27 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date            : 21 April 2010
+Date            : 23 September 2010
 Organisations   : Koninklijke Bibliotheek,
                   Nationaal Archief of the Netherlands,
                   Tessella Support Services plc.
 Projects        : Dioscuri project, Planets, KEEP
 
-0.5.1 : 21-04-2010
+0.6.0 : 23-09-2010
+-------------------------------------------------------
+- complete redesign of the hardware module structure
+- there can now be 2 hard disks connected at once
+- the mouse works under 16 bit, be it with quite a bit of lag:
+  so there's still work to be done on that front
+- fixed the fact that file paths were not entirely visible in
+  the GUI config menus
+- added a command line parameter option to enable, or disable
+  the mouse
+- Windows 3.0 runs smoothly under 32 bit
+- cleaned up the code base quite a bit
+- improved the configuration menu
+- possible to create screen shots during emulation
+
+0.5.2 : 21-04-2010
 -------------------------------------------------------
 Some bug fixes:
 - can now write to HD in 32 bit mode

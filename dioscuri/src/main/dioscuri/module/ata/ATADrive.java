@@ -60,6 +60,8 @@ public class ATADrive {
     // Drive parameters
     protected ATADriveType driveType; // Type of drive
 
+    protected int hdNumber = -1;
+    
     // 512 byte buffer for ID drive command
     // These words are stored in native word endian format, as
     // they are fetched and returned via a return(), so
@@ -85,8 +87,7 @@ public class ATADrive {
     // Disk parameters
     private DiskImage disk; // Disk in drive (if any, else null)
     protected boolean containsDisk;
-    protected boolean isWriteProtected; // Indicates if the floppy is write
-                                        // protected
+    protected boolean isWriteProtected; // Indicates if the floppy is write protected
     protected int ioLightCounter;
     protected int statusbarId;
     protected int features;

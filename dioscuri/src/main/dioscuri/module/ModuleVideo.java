@@ -39,19 +39,29 @@
 
 package dioscuri.module;
 
-/**
- * Interface representing a generic hardware module.
- * 
- */
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
+import dioscuri.interfaces.Updateable;
 
-public abstract class ModuleVideo extends ModuleDevice {
-    // Methods
+/**
+ * Abstract class representing a generic video module.
+ */
+public abstract class ModuleVideo extends AbstractModule implements Addressable, Updateable {
+
+    /**
+     *
+     */
+    public ModuleVideo() {
+        super(Module.Type.VIDEO,
+                Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.SCREEN, Module.Type.RTC);
+    }
+
     /**
      * Video read mode implementations
-     * @param addr 
+     * @param address 
      * @return -
      */
-    public abstract byte readMode(int addr);
+    public abstract byte readMode(int address);
 
     /**
      * Video write mode implementations
@@ -60,6 +70,13 @@ public abstract class ModuleVideo extends ModuleDevice {
      * @param data
      */
     public abstract void writeMode(int address, byte data);
+
+    /**
+     * Determine the screen size in pixels
+     *
+     * @return integer array containing [height, width] of screen in pixels
+     */
+    public abstract int[] determineScreenSize();
 
     /**
      * Returns a pointer to the whole video buffer

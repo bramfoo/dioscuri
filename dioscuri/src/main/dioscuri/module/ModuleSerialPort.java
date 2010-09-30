@@ -39,15 +39,24 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Addressable;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
+import dioscuri.interfaces.Updateable;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic serial port module.
  */
+public abstract class ModuleSerialPort extends AbstractModule  implements Addressable, Updateable {
 
-public abstract class ModuleSerialPort extends ModuleDevice {
-    // Methods
+    /**
+     * 
+     */
+    public ModuleSerialPort() {
+        super(Module.Type.SERIALPORT,
+                Module.Type.MOTHERBOARD, Module.Type.PIC);
+    }
+
     /**
      *
      * @param device

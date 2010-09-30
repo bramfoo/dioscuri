@@ -51,10 +51,10 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
 import dioscuri.exception.StorageDeviceException;
-import dioscuri.module.Module;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleATA;
 import dioscuri.module.ModuleDMA;
 import dioscuri.module.ModuleFDC;
@@ -68,7 +68,7 @@ import dioscuri.module.cpu32.HardwareComponent;
 /**
  * An implementation of a Floppy disk controller module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : fdc general.name : Floppy Disk Controller
@@ -133,34 +133,19 @@ import dioscuri.module.cpu32.HardwareComponent;
  *      300 Kb/S mode (MFM) = 10 250 Kb/S mode (MFM) = 11 1 Mb/S mode (MFM) (on
  *      82072/82077AA) conflict bit 0 FIXED DISK drive 0 select
  */
-@SuppressWarnings("unused")
 public class FDC extends ModuleFDC implements DMATransferCapable {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections;
-    private ModuleMotherboard motherboard;
-    private ModuleRTC rtc;
-    private ModulePIC pic;
-    private ModuleDMA dma;
-    private DMAController dma32;
-    private ModuleATA ata; // TODO: implement alternative for using ata (prefer
-                           // no ref to ata directly)
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(FDC.class.getName());
 
+    // Relations
+    private Emulator emu;
+    private DMAController dma32;
+
     // IRQ and DMA variables
     private int irqNumber; // Interrupt number assigned by PIC
     private boolean pendingIRQ; // IRQ is still in progress
-    private int resetSenseInterrupt; // TODO: Maybe this variable has to be
-                                     // extended for multiple drives
+    private int resetSenseInterrupt; // TODO: Maybe this variable has to be extended for multiple drives
     public DMA8Handler dma8Handler; // 8-bit DMA handler for transfer of bytes
     private boolean tc; // TC, Terminal Count status from DMA controller
     private boolean dmaAndInterruptEnabled; // DMA and IRQ are both enabled
@@ -188,19 +173,16 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                                  // value
 
     // Buffer for DMA transfer
-    protected byte[] floppyBuffer; // Buffer for data transfer between DMA and
-                                   // floppy
+    protected byte[] floppyBuffer; // Buffer for data transfer between DMA and floppy
     private int floppyBufferIndex; // Index for floppy buffer
-    private byte floppyBufferCurrentByte; // Contains the current byte of the
-                                          // floppy buffer
+    private byte floppyBufferCurrentByte; // Contains the current byte of the floppy buffer
 
     // Command variables
     private byte[] command; // Array containing bytes that form a command
     private int commandIndex; // Pointer to current byte in command array
     private int commandSize; // Total size of command (in number of bytes)
     private int commandPending; // Denotes if command is pending or not
-    private boolean commandComplete; // Denotes if all bytes of command have
-                                     // been received
+    private boolean commandComplete; // Denotes if all bytes of command have been received
 
     // Result variables
     private byte[] result; // Array containing bytes that form result
@@ -210,8 +192,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // Status and control bits
     byte nonDMA; // non-DMA mode
     byte lock; // FDC lock status
-    byte srt; // step rate time, defines the stepping rate in milliseconds (1 -
-              // 16) for all drives
+    byte srt; // step rate time, defines the stepping rate in milliseconds (1 - 16) for all drives
     byte hut; // head unload time
     byte hlt; // head load time
 
@@ -312,10 +293,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     private int statusRegister3;
 
     // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "fdc";
-    public final static String MODULE_NAME = "Floppy Disk Controller";
 
     // I/O ports 03F0-03F7 - Floppy Disk Controller
     private final static int PORT_FLOPPY_STATUS_A = 0x03F0; // R Status register
@@ -380,8 +357,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     // DMA channel
     private final static int FDC_DMA_CHANNEL = 2;
 
-    // Constructor
-
     /**
      * Class constructor
      * 
@@ -389,10 +364,6 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      */
     public FDC(Emulator owner) {
         emu = owner;
-
-        // Initialise module variables
-        isObserved = false;
-        debugMode = false;
 
         // Initialise timing
         updateInterval = -1;
@@ -454,135 +425,23 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         statusRegister2 = 0;
         statusRegister3 = 0;
 
-        // Set module connections
-        if (!emu.isCpu32bit())
-            moduleConnections = new String[] { "motherboard", "rtc", "pic",
-                    "dma", "ata" };
-        else
-            moduleConnections = new String[] { "motherboard", "rtc", "pic",
-                    "ata" };
-
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for rtc
-        else if (mod.getType().equalsIgnoreCase("rtc")) {
-            this.rtc = (ModuleRTC) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        // Set connection for dma
-        else if (mod.getType().equalsIgnoreCase("dma")) {
-            this.dma = (ModuleDMA) mod;
-            return true;
-        }
-        // Set connection for ata
-        else if (mod.getType().equalsIgnoreCase("ata")) {
-            this.ata = (ModuleATA) mod;
-            return true;
-        }
-
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module is fully connected
-
-        if (!emu.isCpu32bit()) {
-            if (this.motherboard != null && this.rtc != null
-                    && this.pic != null && this.dma != null && this.ata != null) {
-                return true;
-            }
-        } else {
-            if (this.motherboard != null && this.rtc != null
-                    && this.pic != null && this.ata != null) {
-                return true;
-            }
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Default inherited reset. Calls specific reset(int)
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+
         // Register I/O ports 03F0-03F7 - Floppy Disk Controller in I/O address
         // space
         motherboard.setIOPort(PORT_FLOPPY_STATUS_A, this);
@@ -597,19 +456,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         // Request IRQ number
         irqNumber = pic.requestIRQNumber(this);
         if (irqNumber > -1) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IRQ number set to: " + irqNumber);
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Request of IRQ number failed.");
         }
 
         // Request a timer
         if (motherboard.requestTimer(this, updateInterval, false) == true) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Timer requested successfully.");
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Failed to request a timer.");
         }
 
@@ -619,12 +478,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             if (dma.registerDMAChannel(FDC_DMA_CHANNEL, dma8Handler) == true) {
                 // Request successful
                 logger
-                        .log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                        .log(Level.CONFIG, "[" + super.getType() + "]"
                                 + " DMA channel registered to line: "
                                 + FDC_DMA_CHANNEL);
             } else {
                 // Request failed
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Failed to register DMA channel " + FDC_DMA_CHANNEL);
             }
         }
@@ -647,7 +506,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
-    public boolean reset(int resetType) {
+    private boolean reset(int resetType) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+
         pendingIRQ = false;
         resetSenseInterrupt = 0; // No reset result present
 
@@ -669,7 +535,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             dataRate = 2; // 250 Kbps
             lock = 0;
         } else {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " FDC controller reset (software)");
         }
 
@@ -695,27 +561,19 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         this.enterIdlePhase();
 
         if (resetType == 1) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                    + " Module has been reset.");
+            logger.log(Level.INFO, "[" + super.getType() + "]"
+                    + " AbstractModule has been reset.");
         }
 
         return true;
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Module
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
+    @Override
     public void stop() {
         // Make sure all data on virtual floppies in drives are stored to image
         // files
@@ -723,7 +581,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             if (drives[i] != null && drives[i].containsFloppy() == true) {
                 // Eject floppy from drive and store data in disk image
                 if (this.ejectCarrier(i) == false) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Drive " + i
+                    logger.log(Level.SEVERE, "[" + super.getType() + "] Drive " + i
                             + ": eject floppy failed.");
                 }
             }
@@ -731,92 +589,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     * 
-     * @return string
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         // Show some status information of this module
         String dump = "";
@@ -838,22 +615,22 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -861,18 +638,25 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         } else {
             updateInterval = 1000; // default is 1 ms
         }
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
     /**
-     * Update device
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+
         // Perform an update on FDC
         // Cannot guarantee the following instruction since 32-bit update:
         // logger.log(Level.INFO, motherboard.getCurrentInstructionNumber() +
-        // " " + "[" + MODULE_TYPE + "]" + " UPDATE IN PROGRESS");
+        // " " + "[" + super.getType() + "]" + " UPDATE IN PROGRESS");
 
         // Check if there is a command pending (= zero if nothing to do)
         if (commandPending != 0x00) {
@@ -911,7 +695,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     statusRegister1 = 0;
                     statusRegister2 = 0;
 
-                    // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" +
+                    // logger.log(Level.INFO, "[" + super.getType() + "]" +
                     // " WRITE DONE: drive=" + drive + ", hds=" +
                     // drives[drive].hds + ", cylinder=" +
                     // drives[drive].cylinder + ", sector=" +
@@ -964,22 +748,28 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: unknown command during update.");
             }
         }
     }
 
     /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleException
-     *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            ModuleUnknownPort, ModuleWriteOnlyPortException {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            UnknownPortException, WriteOnlyPortException {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
 
@@ -989,12 +779,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         switch (portAddress) {
         case 0x03F0: // Read diskette controller status A
         case 0x03F1: // Read diskette controller status B
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Reading ports 0x3F0 and 0x3F1 not implemented");
             break;
 
         case 0x03F2: // Digital output register (DMA mode)
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Is reading allowed of port 0x3F2? Returned DOR");
             value = dor;
             break;
@@ -1035,7 +825,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         case 0x03F5: // Diskette controller data
             if (resultSize == 0) {
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Port 0x3F5: no results to read");
                 // Clear whole MSR to reset its status
                 msr = 0 | FDC_CMD_DIO; // Set to data direction to read -
@@ -1059,7 +849,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x03F6: // Reserved for future floppy controllers
             // This address is shared with the hard drive controller
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " IN (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ": reserved port.");
@@ -1084,7 +874,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 if (drives[drv] != null) {
                     value |= (drives[drv].dir & 0x80);
                 } else {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Non-existing drive requested at port "
                             + Integer.toHexString(portAddress).toUpperCase());
                 }
@@ -1092,7 +882,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             break;
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Unknown port address encountered: "
                     + Integer.toHexString(portAddress).toUpperCase());
             break;
@@ -1103,15 +893,21 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @param value
-     * @throws ModuleException
-     *             , ModuleUnknownPort, ModuleWriteOnlyPortException
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte value)
-            throws ModuleException, ModuleUnknownPort {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " OUT (byte) to port "
+            throws ModuleException, UnknownPortException {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+        
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " OUT (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(((int) value) & 0xFF).toUpperCase());
 
@@ -1119,7 +915,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         switch (portAddress) {
         case 0x03F0:
         case 0x03F1:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Port address is read only and cannot be written to: "
                     + Integer.toHexString(portAddress).toUpperCase());
             break;
@@ -1144,7 +940,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         break;
                     default:
                         logger.log(Level.WARNING, "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " Unknown drive selected at port "
                                 + Integer.toHexString(portAddress)
@@ -1152,7 +948,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         break;
                     }
                 } else {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Non-existing drive selected at port "
                             + Integer.toHexString(portAddress).toUpperCase());
                 }
@@ -1183,7 +979,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 commandPending = 0xFE; // is reset command, see update()
             }
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " OUT (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ", DMA/IRQ=" + dmaAndInterruptEnabled + ", FDC="
@@ -1222,7 +1018,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " OUT (byte) to port "
                                         + Integer.toHexString(portAddress)
@@ -1247,7 +1043,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " new command received while old command is still pending.");
                 }
@@ -1344,7 +1140,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     break;
 
                 default:
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " OUT (byte) to port "
                             + Integer.toHexString(portAddress).toUpperCase()
                             + ": invalid FDC command.");
@@ -1367,7 +1163,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         case 0x03F6: // Reserved I/O address
 
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " OUT (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + ": reserved port.");
@@ -1381,63 +1177,76 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             dataRate = value & 0x03;
             switch (dataRate) {
             case 0:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Datarate is set to 500 Kbps");
                 break;
             case 1:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Datarate is set to 300 Kbps");
                 break;
             case 2:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Datarate is set to 250 Kbps");
                 break;
             case 3:
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Datarate is set to 1 Mbps");
                 break;
             }
             break;
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Unknown port address encountered: "
                     + Integer.toHexString(portAddress).toUpperCase());
             break;
         }
-
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            WriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFF");
 
         // Return dummy value 0xFFFF
         return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            WriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " Returned default value 0xFFFFFFFF");
 
         // Return dummy value 0xFFFFFFFF
@@ -1445,23 +1254,26 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 (byte) 0x0FF };
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
     /**
      * Raise interrupt signal
-     * 
      */
     protected void setInterrupt() {
         // Raise an interrupt at IRQ 6 at PIC
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
         pendingIRQ = true;
         resetSenseInterrupt = 0;
@@ -1469,28 +1281,27 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
     /**
      * Clear interrupt signal
-     * 
      */
     protected void clearInterrupt() {
         // Clear an interrupt at IRQ 6 at PIC
         if (pendingIRQ == true) {
             // Lower an interrupt at IRQ 6 at PIC
+            ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
             pic.clearIRQ(irqNumber);
             pendingIRQ = false;
         }
     }
 
-    // ******************************************************************************
-    // FDC Methods
-
     /**
-     * Defines the total number of available drives Note: total number may not
-     * exceed 4, but must be more than 0
-     * 
-     * @return boolean true if drives set successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
+    @Override
     public boolean setNumberOfDrives(int totalDrives) {
         // Set number of drives (must be > 0 and <= 4)
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+
         if (totalDrives > 0 && totalDrives <= 4) {
             numberOfDrives = totalDrives;
             drives = new Drive[numberOfDrives];
@@ -1522,11 +1333,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Inserts a new carrier into a selected drive
-     * 
-     * @param driveLetter
-     * @return boolean true if carrier is inserted successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
+    @Override
     public boolean insertCarrier(String driveLetter, byte carrierType,
             File imageFile, boolean writeProtected) {
         // Convert driveletter into index
@@ -1542,11 +1353,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Ejects a carrier (if any) from a selected drive
-     * 
-     * @param driveLetter
-     * @return boolean true if carrier is ejected successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
+    @Override
     public boolean ejectCarrier(String driveLetter) {
         // Convert driveletter into index
         int driveIndex = -1;
@@ -1561,12 +1372,20 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Inserts a new carrier into a selected drive
-     * 
-     * @return boolean true if carrier is inserted successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
+    @Override
     public boolean insertCarrier(int driveIndex, byte carrierType,
             File imageFile, boolean writeProtected) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+        
         // Select drive
         if (driveIndex == 0) {
             // Drive A
@@ -1617,7 +1436,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0x0f) | 0x60));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 6");
                     break;
@@ -1626,7 +1445,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0x0f) | 0x70));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 7");
                     break;
@@ -1635,14 +1454,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0x0f) | 0x80));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 8");
                     break;
 
                 default:
                     // Unknown floppy drive type
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Unsupported floppy drive type.");
                     break;
                 }
@@ -1651,12 +1470,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 try {
                     drives[driveIndex].insertFloppy(carrierType, imageFile,
                             writeProtected);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Floppy \"" + imageFile.getName()
                             + "\" is inserted in drive " + driveIndex);
                     return true;
                 } catch (StorageDeviceException e) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " Error: " + e.getMessage());
                 }
             } else {
@@ -1665,7 +1484,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.SEVERE,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " Drive "
                                         + driveLetter
@@ -1720,7 +1539,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0xf0) | 0x06));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 6");
                     break;
@@ -1729,7 +1548,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0xf0) | 0x07));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 7");
                     break;
@@ -1738,14 +1557,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     rtc.setCMOSRegister(0x10, (byte) ((rtc
                             .getCMOSRegister(0x10) & 0xf0) | 0x08));
                     drives[driveIndex].setDriveType(FLOPPY_DRIVETYPE_525DD);
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Drive " + driveLetter
                             + " set to reserved CMOS floppy drive type 8");
                     break;
 
                 default:
                     // Unknown floppy drive type
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Unsupported floppy drive type.");
                     break;
                 }
@@ -1754,12 +1573,12 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 try {
                     drives[driveIndex].insertFloppy(carrierType, imageFile,
                             writeProtected);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " Floppy \"" + imageFile.getName()
                             + "\" is inserted in drive " + driveIndex);
                     return true;
                 } catch (StorageDeviceException e) {
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " Error: " + e.getMessage());
                 }
             } else {
@@ -1768,7 +1587,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.SEVERE,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " Drive "
                                         + driveLetter
@@ -1779,7 +1598,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     .log(
                             Level.SEVERE,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " Can not insert floppy because additional drives are not implemented.");
         }
@@ -1789,10 +1608,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
     }
 
     /**
-     * Ejects a carrier (if any) from a selected drive
-     * 
-     * @return boolean true if carrier is ejected successfully, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleFDC
      */
+    @Override
     public boolean ejectCarrier(int driveIndex) {
         // Try to eject the floppy by removing reference (will be carbage
         // collected)
@@ -1801,11 +1621,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 boolean writeProtected = drives[driveIndex].writeProtected;
                 drives[driveIndex].ejectFloppy();
 
-                logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                logger.log(Level.INFO, "[" + super.getType() + "]"
                         + " Floppy is ejected from drive " + drive + ".");
 
                 if (writeProtected == false) {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " Floppy data is stored to image file.");
                 }
                 return true;
@@ -1815,28 +1635,28 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.SEVERE,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " Can not eject floppy because drive is not recognized.");
             }
         } catch (StorageDeviceException e) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]" + e.getMessage());
+            logger.log(Level.SEVERE, "[" + super.getType() + "]" + e.getMessage());
             return false;
         }
 
         return false;
     }
 
-    // ******************************************************************************
-    // Additional Methods
-
     /**
      * Execute command of FDC Note: assumed is that all bytes of the command are
      * fetched. After execution of the command, the FDC will automatically enter
      * the result or idle phase.
-     * 
      */
     private void executeCommand() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        
         // Drive parameters
         int drv, hds, cylinder, sector, eot;
         int sectorSize, sectorTime, logicalSector, dataLength;
@@ -1846,7 +1666,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
          * String commandString = ""; for (int i = 0; i < commandSize; i++) {
          * commandString += "[" + Integer.toHexString(0x100 | command[i] &
          * 0xFF).substring(1) + "] "; } logger.log(Level.CONFIG, "[" +
-         * MODULE_TYPE + "]" + " COMMAND: " + commandString);
+         * super.getType() + "]" + " COMMAND: " + commandString);
          */
         // Get first part of command
         commandPending = command[0] & 0xFF;
@@ -1854,7 +1674,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x03: // Specify (3 bytes)
             // Execution : specified parameters are loaded
             // Result : none, no interrupt
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: specify");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " CMD: specify");
 
             srt = (byte) ((command[1] >> 4) & 0x0F);
             hut = (byte) (command[1] & 0x0F);
@@ -1867,7 +1687,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x04: // Sense drive status (2 bytes)
             // Execution :
             // Result : status register 3 is set
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: sense drive status");
 
             drv = (command[1] & 0x03);
@@ -1890,7 +1710,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0xE6: // read normal data, MT=1, SK=1
             // Execution : data transfer between the FDD and CPU/memory
             // Result : status info (st0,st1,st2) + sector ID
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: Read/write data");
 
             // Update status to emulator
@@ -1899,7 +1719,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Check if DMA is enabled
             if ((dor & 0x08) == 0) {
                 // TODO: this should also work, but for now DMA is necessary
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: read/write normal data -> DMA is disabled");
             }
             drv = command[1] & 0x03;
@@ -1925,7 +1745,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> drive motor of drive "
                                         + drv + " is not running.");
@@ -1939,7 +1759,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> incorrect drive type if drive "
                                         + drv + ".");
@@ -1952,7 +1772,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "] head number in command[1] doesn't match head field");
                 ableToTransfer = false;
                 statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv; // abnormal
@@ -1968,7 +1788,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> floppy is not inserted in drive "
                                         + drv + ".");
@@ -1982,7 +1802,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> sector size (bytes per sector) not supported.");
                 ableToTransfer = false;
@@ -1994,7 +1814,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> cylinder number exceeds maximum number of tracks.");
                 ableToTransfer = false;
@@ -2002,7 +1822,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Check if sector number is not higher than maximum available
             // sectors per track
             if (sector > drives[drv].sectorsPerTrack) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: read/write normal data -> sector number ("
                         + sector + ") exceeds sectors per track ("
                         + drives[drv].sectorsPerTrack + ").");
@@ -2022,7 +1842,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> requested cylinder differs from selected cylinder on drive. Will proceed.");
                 drives[drv].resetChangeline();
@@ -2032,7 +1852,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             logicalSector = (cylinder * drives[drv].heads * drives[drv].sectorsPerTrack)
                     + (hds * drives[drv].sectorsPerTrack) + (sector - 1);
 
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Logical sectors calculated: " + logicalSector);
 
             // Check if logical sector does not exceed total number of available
@@ -2042,7 +1862,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: read/write normal data -> logical sectors exceeds total number of sectors on disk.");
                 ableToTransfer = false;
@@ -2068,7 +1888,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         drives[drv].readData(logicalSector * 512, 512,
                                 floppyBuffer);
                     } catch (StorageDeviceException e) {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
+                        logger.log(Level.WARNING, "[" + super.getType() + "]" + " "
                                 + e.getMessage());
                     }
 
@@ -2106,11 +1926,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     // NOTE (bram): Added this undocumented msr feature for DMA:
                     // Set data direction to read; for safety.
                     msr |= FDC_CMD_DIO;
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " CMD: unknown read/write command");
                 }
             } else {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " CMD: not able to transfer data");
             }
             break;
@@ -2118,7 +1938,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x07: // Recalibrate (2 bytes)
             // Execution : head retracked to track 0
             // Result : none, no interrupt
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: recalibrate drive");
 
             drv = (command[1] & 0x03);
@@ -2143,7 +1963,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Result : status information (status reg0 + current cylinder
             // number) at the end of each seek operation about the FDC, no
             // interrupt
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: sense interrupt status");
 
             // Set status register 0 based on interrupt
@@ -2162,7 +1982,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             // Execution : the first correct ID information on the cylinder is
             // stored in data register
             // Result : status info + sector ID
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: read ID");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " CMD: read ID");
 
             drv = command[1] & 0x03;
             drives[drv].hds = (command[1] >> 2) & 0x01;
@@ -2171,21 +1991,21 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             // Check if motor is running
             if (drives[drv].isMotorRunning()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: read ID -> drive motor is not running.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check drive type
             if (drives[drv].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: read ID -> incorrect drive type.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check if floppy is present
             if (!drives[drv].containsFloppy()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: read ID -> floppy is not inserted.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
@@ -2207,7 +2027,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x4D: // Format track (10 bytes)
             // Execution : FDC formats an entire cylinder
             // Result : status info + sector ID
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: format track");
 
             drv = command[1] & 0x03;
@@ -2216,7 +2036,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             // Check if motor is running
             if (drives[drv].isMotorRunning()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: format track -> drive motor is not running.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
@@ -2227,14 +2047,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
             // Check drive type
             if (drives[drv].getDriveType() == FLOPPY_DRIVETYPE_NONE) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: format track -> incorrect drive type.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
             }
             // Check if floppy is present
             if (!drives[drv].containsFloppy()) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " CMD: format track -> floppy is not inserted.");
                 msr = FDC_CMD_BUSY;
                 return; // Hang controller
@@ -2254,7 +2074,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: format track -> sector size (bytes per sector) not supported.");
             }
@@ -2264,14 +2084,14 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " CMD: format track -> wrong number of sectors per track encountered.");
             }
             // Check if floppy is write protected
             if (drives[drv].writeProtected) {
                 // Floppy is write-protected
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                logger.log(Level.SEVERE, "[" + super.getType() + "]"
                         + " CMD: format track -> floppy is write protected.");
                 statusRegister0 = 0x40 | (drives[drv].hds << 2) | drv; // abnormal
                                                                            // termination
@@ -2297,7 +2117,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         case 0x0F: // Seek (3 bytes)
             // Execution : position head over specified cylinder
             // Result : none, issues an interrupt
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " CMD: seek");
+            logger.log(Level.INFO, "[" + super.getType() + "]" + " CMD: seek");
 
             drv = command[1] & 0x03;
             dor &= 0xFC;
@@ -2319,20 +2139,20 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         // Enhanced drives (EHD) commands
         case 0x0E: // Dump registers (Enhanced, 1 byte)
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: dump registers (EHD)");
             this.enterResultPhase();
             break;
 
         case 0x12: // Perpendicular mode (Enhanced, 2 bytes)
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: perpendicular mode (EHD)");
             perpMode = command[1];
             this.enterIdlePhase();
             break;
 
         case 0x13: // Configure (Enhanced, 4 bytes)
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " CMD: configure (EHD)");
             config = command[2];
             preTrack = command[3];
@@ -2341,14 +2161,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         default: // invalid or unsupported command; these are captured in
                  // write() above
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " Unsupported FDC command 0x" + command[0]);
         }
     }
 
     /**
      * Store result after execution phase
-     * 
      */
     private void enterResultPhase() {
         // Init variables
@@ -2361,7 +2180,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         if ((statusRegister0 & 0xc0) == 0x80) {
             resultSize = 1;
             result[0] = (byte) statusRegister0;
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " result phase: invalid command.");
             return;
         }
@@ -2431,7 +2250,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
             break;
 
         default:
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            logger.log(Level.WARNING, "[" + super.getType() + "]"
                     + " CMD: no command match");
             break;
         }
@@ -2459,7 +2278,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         floppyBufferIndex = 0;
 
         logger
-                .log(Level.INFO, "[" + MODULE_TYPE + "]"
+                .log(Level.INFO, "[" + super.getType() + "]"
                         + " idle phase finished");
     }
 
@@ -2470,10 +2289,17 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return byte current byte from floppy buffer
      */
     protected byte getDMAByte() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+        
         int drv, logicalSector, sectorTime;
 
         // if (floppyBufferIndex > 500)
-        // logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " MEM(DMA) byte: " +
+        // logger.log(Level.INFO, "[" + super.getType() + "]" + " MEM(DMA) byte: " +
         // floppyBufferIndex + "=" +
         // Integer.toHexString(floppyBuffer[floppyBufferIndex] &
         // 0xFF).toUpperCase());
@@ -2522,7 +2348,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     drives[drv].readData(logicalSector * 512, 512,
                             floppyBuffer);
                 } catch (StorageDeviceException e) {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
+                    logger.log(Level.WARNING, "[" + super.getType() + "]" + " "
                             + e.getMessage());
                 }
 
@@ -2536,7 +2362,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         .getCurrentInstructionNumber()
                         + " "
                         + "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + " Activating floppy time to sector time of "
                         + sectorTime + "(" + sectorTime * 5 + ")");
@@ -2556,6 +2382,13 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @param data
      */
     protected void setDMAByte(byte data) {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+        
         int drv, logicalSector, sectorTime;
 
         // Get Terminal Count from DMA
@@ -2580,7 +2413,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " DMA transfer formatting track: head number does not match head field.");
                 }
@@ -2596,11 +2429,11 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " DMA transfer formatting track: sector size is not supported.");
                 } else {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " DMA transfer formatting track: cyl="
                             + drives[drv].cylinder + ", head="
                             + drives[drv].hds + ", sector="
@@ -2623,7 +2456,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         drives[drv].writeData(logicalSector * 512, 512,
                                 floppyBuffer);
                     } catch (StorageDeviceException e) {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
+                        logger.log(Level.WARNING, "[" + super.getType() + "]" + " "
                                 + e.getMessage());
                     }
 
@@ -2639,7 +2472,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " DMA transfer formatting track failed.");
                 break;
             }
@@ -2661,7 +2494,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                             .log(
                                     Level.WARNING,
                                     "["
-                                            + MODULE_TYPE
+                                            + super.getType()
                                             + "]"
                                             + " DMA transfer to floppy failed: floppy is write protected.");
                     // ST0: IC1,0=01 (abnormal termination: started execution
@@ -2686,7 +2519,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                     // Reset floppy buffer index
                     floppyBufferIndex = 0;
                 } catch (StorageDeviceException e) {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
+                    logger.log(Level.WARNING, "[" + super.getType() + "]" + " "
                             + e.getMessage());
                 }
 
@@ -2728,7 +2561,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         // Calculate the delay for one step (this value is based on Bochs)
         oneStepDelayTime = ((srt ^ 0x0f) + 1) * 500000 / dataRates[dataRate];
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Calculated step delay: " + numSteps * oneStepDelayTime);
 
         return (numSteps * oneStepDelayTime);
@@ -2740,23 +2573,30 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
      * @return boolean true if succesfully, false otherwise
      */
     private boolean unregisterDevices() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleDMA dma = (ModuleDMA)super.getConnection(Module.Type.DMA);
+        ModuleATA ata = (ModuleATA)super.getConnection(Module.Type.ATA);
+        
         boolean reslt = false;
 
         // Unregister IRQ number
         // Make sure no interrupt is pending
         pic.clearIRQ(irqNumber);
         // result = pic.unregisterIRQNumber(this);
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " IRQ unregister result: " + reslt);
 
         // Unregister timer
         // result = motherboard.unregisterTimer(this);
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Timer unregister result: " + reslt);
 
         // Unregister DMA channel
         // result = dma.unregisterDMAChannel(FDC_DMA_CHANNEL);
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " DMA unregister result: " + reslt);
 
         return reslt;
@@ -2777,7 +2617,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
         if (drives[drive] == null) {
             // Check if this ever occurs:
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " no floppy in DMA transfer, aborting");
             return 0;
         }
@@ -2834,7 +2674,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
                         floppyBufferIndex = 0;
                     }
                 } catch (StorageDeviceException e) {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]" + " "
+                    logger.log(Level.WARNING, "[" + super.getType() + "]" + " "
                             + e.getMessage());
                 }
             }

@@ -179,7 +179,7 @@ public class VideoCard {
     /**
      * Return variables to default values
      */
-    protected void reset() {
+    public void reset() {
         miscOutputRegister.reset();
         sequencer.reset();
         graphicsController.reset();

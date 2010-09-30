@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import dioscuri.Emulator;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
-import dioscuri.module.Module;
 import dioscuri.module.ModuleKeyboard;
 import dioscuri.module.ModuleMouse;
 import dioscuri.module.ModuleSerialPort;
@@ -16,7 +16,7 @@ import dioscuri.module.ModuleSerialPort;
 /**
  * An implementation of a mouse module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *      <p/>
  *      Metadata module
  *      ********************************************
@@ -43,16 +43,9 @@ import dioscuri.module.ModuleSerialPort;
  */
 
 public class Mouse extends ModuleMouse implements UART {
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[]{"keyboard", "serialport"};
-    private ModuleKeyboard keyboard;
-    private ModuleSerialPort serialPort;
-    private Queue<Byte> buffer;
 
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
+    // Relations
+    private Queue<Byte> buffer;
 
     // Variables
     private boolean mouseEnabled;                     // Defines if this mouse if enabled
@@ -77,14 +70,6 @@ public class Mouse extends ModuleMouse implements UART {
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.mouse");
 
-
-    // Constants
-
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "mouse";
-    public final static String MODULE_NAME = "Serial mouse";
-
     // Mouse type
     private final static int MOUSE_TYPE_PS2 = 1;            // PS/2 mouse
     private final static int MOUSE_TYPE_IMPS2 = 2;            // PS/2 wheel mouse
@@ -106,116 +91,22 @@ public class Mouse extends ModuleMouse implements UART {
     // Mouse buffer capacity
     private final static int MOUSE_BUFFER_SIZE = 16;
 
-
-    // Constructor
-
     /**
      * Class constructor
      */
     public Mouse(Emulator owner) {
-        emu = owner;
-
         // Create mouse buffer
         buffer = new LinkedList<Byte>();
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
-
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME + " -> Module created successfully.");
-    }
-
-
-    //******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     *
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
     }
 
 
     /**
-     * Returns the type of the module
+     * {@inheritDoc}
      *
-     * @return string containing the type of module
-     * @see Module
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-
-    /**
-     * Returns the name of the module
-     *
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-
-    /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for keyboard
-        if (mod.getType().equalsIgnoreCase("keyboard")) {
-            this.keyboard = (ModuleKeyboard) mod;
-            this.keyboard.setConnection(this);    // Set connection to keyboard
-            return true;
-        }
-        // Set connection for serialport
-        else if (mod.getType().equalsIgnoreCase("serialport")) {
-            this.serialPort = (ModuleSerialPort) mod;
-            this.serialPort.setConnection(this);    // Set connection to serialport
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Checks if this module is connected to operate normally
-     *
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (keyboard != null && serialPort != null) {
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Default inherited reset. Calls specific reset(int)
-     *
-     * @return boolean true if module has been reset successfully, false otherwise
-     */
+    @Override
     public boolean reset() {
         // Reset variables
         // TODO: add all vars
@@ -224,158 +115,71 @@ public class Mouse extends ModuleMouse implements UART {
         //previousX = -1;
         //previousY = -1;
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "]" + " AbstractModule has been reset.");
 
         return true;
     }
 
-
     /**
-     * Starts the module
+     * {@inheritDoc}
      *
-     * @see Module
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-
-    /**
-     * Returns the status of observed toggle
-     *
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-
-    /**
-     * Sets the observed toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-
-    /**
-     * Returns the status of the debug mode toggle
-     *
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-
-    /**
-     * Sets the debug mode toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-
-    /**
-     * Returns data from this module
-     *
-     * @param requester, the requester of the data
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-
-    /**
-     * Set data for this module
-     *
-     * @param data
-     * @param sender, the sender of the data
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-
-    /**
-     * Set String[] data for this module
-     *
-     * @param data
-     * @param sender, the sender of the data
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-
-    /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
-     */
+    @Override
     public String getDump() {
         String keyboardDump = "Mouse status:\n";
 
         return keyboardDump;
     }
 
-
-    //******************************************************************************
-    // ModuleMouse Methods
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void setMouseEnabled(boolean status) {
         mouseEnabled = status;
     }
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void setMouseType(String type) {
+
+        ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Module.Type.SERIALPORT);
+
         // Check the type of mouse by matching string
         if (type.equalsIgnoreCase("serial")) {
             // Serial mouse
             mouseType = MOUSE_TYPE_SERIAL;
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to serial");
+            logger.log(Level.INFO, "[" + super.getType() + "] Mouse type set to serial");
             // Connect mouse to serialport on COM 1 (port 0)
-            if (serialPort.setUARTDevice(this, 0) == true) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse connected to COM port 1");
+            if (serialPort.setUARTDevice(this, 0)) {
+                logger.log(Level.CONFIG, "[" + super.getType() + "] Mouse connected to COM port 1");
             } else {
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Could not connect mouse to COM port 1");
+                logger.log(Level.SEVERE, "[" + super.getType() + "] Could not connect mouse to COM port 1");
             }
         } else if (type.equalsIgnoreCase("ps/2")) {
             // PS/2 mouse
             mouseType = MOUSE_TYPE_PS2;
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse type set to PS/2");
+            logger.log(Level.INFO, "[" + super.getType() + "] Mouse type set to PS/2");
         } else {
             // Unknown mouse type
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse type not recognised: set to default (serial)");
+            logger.log(Level.WARNING, "[" + super.getType() + "] Mouse type not recognised: set to default (serial)");
             mouseType = MOUSE_TYPE_SERIAL;
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public boolean isBufferEmpty() {
         return buffer.isEmpty();
     }
@@ -385,7 +189,11 @@ public class Mouse extends ModuleMouse implements UART {
     final double scaleX = 710.0 / pointerWidth;
     final double scaleY = 400.0 / pointerHeight;
 
-    // TODO references
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
     @Override
     public void storeBufferData(boolean forceEnqueue) {
 
@@ -399,7 +207,7 @@ public class Mouse extends ModuleMouse implements UART {
         //if(b3 < -pointerHeight) b3 = -((byte)pointerHeight);
         //if(b3 > 0) b3 = 0;
 
-        logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] moved to ("+b2+","+b3+")"); // TODO change SEVERE to INFO
+        logger.log(Level.INFO, "[" + super.getType() + "] moved to ("+b2+","+b3+")"); 
 
         // Only act on mouse-presses: ignore mouse releases
         if(this.mouseEvent != null && this.mouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
@@ -409,9 +217,9 @@ public class Mouse extends ModuleMouse implements UART {
         }
 
         if (this.enqueueData(b1, b2, b3, (byte)0, (byte)0)) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
+            logger.log(Level.INFO, "[" + super.getType() + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
         } else {
-            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Mouse data could not be stored in mouse buffer");
+            logger.log(Level.WARNING, "[" + super.getType() + "] Mouse data could not be stored in mouse buffer");
         }
     }
 
@@ -419,18 +227,33 @@ public class Mouse extends ModuleMouse implements UART {
         return buffer.offer(b1) && buffer.offer(b2) && buffer.offer(b3) && buffer.offer(b4) && buffer.offer(b5);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public byte getDataFromBuffer() {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
-    
+
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void controlMouse(byte value) {
+
+        ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Module.Type.KEYBOARD);
+
         // FIXME: if we are not using a ps2 mouse, some of the following commands need to return different values
         boolean isMousePS2 = false;
         if ((mouseType == MOUSE_TYPE_PS2) || (mouseType == MOUSE_TYPE_IMPS2)) {
             isMousePS2 = true;
         }
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse " + value);
+        logger.log(Level.CONFIG, "[" + super.getType() + "] kbd_ctrl_to_mouse " + value);
 
         // An ACK (0xFA) is always the first response to any valid input
         // received from the system other than Set-Wrap-Mode & Resend-Command
@@ -444,7 +267,7 @@ public class Mouse extends ModuleMouse implements UART {
             switch (lastMouseCommand) {
                 case (byte) 0xF3: // Set Mouse Sample Rate
                     sampleRate = value;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Sampling rate set to " + value);
+                    logger.log(Level.INFO, "[" + super.getType() + "] Sampling rate set to " + value);
 
                     if ((value == 200) && (imRequest == 0)) {
                         imRequest = 1;
@@ -453,10 +276,10 @@ public class Mouse extends ModuleMouse implements UART {
                     } else if ((value == 80) && (imRequest == 2)) {
                         // Check if wheel mouse should be enabled
                         if (mouseType == MOUSE_TYPE_IMPS2) {
-                            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode enabled");
+                            logger.log(Level.INFO, "[" + super.getType() + "] Wheel mouse mode enabled");
                             imMode = true;
                         } else {
-                            logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wheel mouse mode request rejected");
+                            logger.log(Level.INFO, "[" + super.getType() + "] Wheel mouse mode request rejected");
                         }
 
                         imRequest = 0;
@@ -482,16 +305,16 @@ public class Mouse extends ModuleMouse implements UART {
                             resolutionCpmm = 8;
                             break;
                         default:
-                            logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Unknown resolution");
+                            logger.log(Level.WARNING, "[" + super.getType() + "] Unknown resolution");
                             break;
                     }
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Resolution set to " + resolutionCpmm + " counts per mm");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Resolution set to " + resolutionCpmm + " counts per mm");
 
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ack
                     break;
 
                 default:
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] unknown last command " + lastMouseCommand);
+                    logger.log(Level.WARNING, "[" + super.getType() + "] unknown last command " + lastMouseCommand);
             }
         } else {
             // This is the first mouse command
@@ -503,7 +326,7 @@ public class Mouse extends ModuleMouse implements UART {
                 // if not a reset command or reset wrap mode
                 // then just echo the byte.
                 if ((value != 0xFF) && (value != 0xEC)) {
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode: ignoring command " + value);
+                    logger.log(Level.INFO, "[" + super.getType() + "] Wrap mode: ignoring command " + value);
                     keyboard.enqueueControllerBuffer(value, 1);
                     return;
                 }
@@ -512,19 +335,19 @@ public class Mouse extends ModuleMouse implements UART {
             switch (value) {
 
                 case (byte) 0xBB: // OS/2 Warp 3 uses this command
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Ignoring command 0xBB");
+                    logger.log(Level.WARNING, "[" + super.getType() + "] Ignoring command 0xBB");
                     break;
 
                 case (byte) 0xE6: // Set Mouse Scaling to 1:1
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
                     scaling = 2;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Scaling set to 1:1");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Scaling set to 1:1");
                     break;
 
                 case (byte) 0xE7: // Set Mouse Scaling to 2:1
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
                     scaling = 2;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Scaling set to 2:1");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Scaling set to 2:1");
                     break;
 
                 case (byte) 0xE8: // Set Mouse Resolution
@@ -537,13 +360,13 @@ public class Mouse extends ModuleMouse implements UART {
                     keyboard.enqueueControllerBuffer(this.getStatusByte(), 1); // status
                     keyboard.enqueueControllerBuffer(this.getResolutionByte(), 1); // resolution
                     keyboard.enqueueControllerBuffer(sampleRate, 1); // sample rate
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Mouse information returned");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Mouse information returned");
                     break;
 
                 case (byte) 0xEA: // Set Stream Mode
                     mouseMode = MOUSE_MODE_STREAM;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Stream mode on");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Stream mode on");
                     break;
 
                 case (byte) 0xEB: // Read Data (send a packet when in Remote Mode)
@@ -551,7 +374,7 @@ public class Mouse extends ModuleMouse implements UART {
                     // FIXME: unsure if we should send a packet to mouse buffer. Bochs does so:
                     this.enqueueData((byte) ((buttonStatus & 0x0F) | 0x08), (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00); // bit3 of first byte always set // TODO BK commented mouse test
                     // FIXME: assumed we really aren't in polling mode, a rather odd assumption.
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Read Data command partially supported");
+                    logger.log(Level.WARNING, "[" + super.getType() + "] Read Data command partially supported");
                     break;
 
                 case (byte) 0xEC: // Reset Wrap Mode
@@ -561,7 +384,7 @@ public class Mouse extends ModuleMouse implements UART {
                         // TODO disabling reporting in stream mode
                         mouseMode = mousePreviousMode;
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode off. Set to previous mode");
+                        logger.log(Level.INFO, "[" + super.getType() + "] Wrap mode off. Set to previous mode");
                     }
                     break;
 
@@ -571,14 +394,14 @@ public class Mouse extends ModuleMouse implements UART {
                     mousePreviousMode = mouseMode;
                     mouseMode = MOUSE_MODE_WRAP;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Wrap mode on");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Wrap mode on");
                     break;
 
                 case (byte) 0xF0: // Set Remote Mode (polling mode, i.e. not stream mode.)
                     // TODO should we flush/discard/ignore any already queued packets?
                     mouseMode = MOUSE_MODE_REMOTE;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Remote mode on");
+                    logger.log(Level.CONFIG, "[" + super.getType() + "] Remote mode on");
                     break;
 
                 case (byte) 0xF2: // Read Device Type
@@ -588,7 +411,7 @@ public class Mouse extends ModuleMouse implements UART {
                     } else {
                         keyboard.enqueueControllerBuffer((byte) 0x00, 1); // Device ID (standard)
                     }
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Read mouse ID");
+                    logger.log(Level.CONFIG, "[" + super.getType() + "] Read mouse ID");
                     break;
 
                 case (byte) 0xF3: // Enable set Mouse Sample Rate (sample rate written to port 0x60)
@@ -601,7 +424,7 @@ public class Mouse extends ModuleMouse implements UART {
                     if (isMousePS2) {
                         mouseEnabled = true;
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse enabled (stream mode)");
+                        logger.log(Level.CONFIG, "[" + super.getType() + "] Mouse enabled (stream mode)");
                     } else {
                         // No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // ACK
@@ -612,7 +435,7 @@ public class Mouse extends ModuleMouse implements UART {
                 case (byte) 0xF5: // Disable (in stream mode)
                     mouseEnabled = false;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse disabled (stream mode)");
+                    logger.log(Level.CONFIG, "[" + super.getType() + "] Mouse disabled (stream mode)");
                     break;
 
                 case (byte) 0xF6: // Set mouse to defaults
@@ -622,7 +445,7 @@ public class Mouse extends ModuleMouse implements UART {
                     mouseEnabled = false;
                     mouseMode = MOUSE_MODE_STREAM;
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse set to default settings");
+                    logger.log(Level.CONFIG, "[" + super.getType() + "] Mouse set to default settings");
                     break;
 
                 case (byte) 0xFF: // Reset
@@ -634,7 +457,7 @@ public class Mouse extends ModuleMouse implements UART {
                         mouseEnabled = false;
                         mouseMode = MOUSE_MODE_RESET;
                         if (imMode == true) {
-                            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Wheel mouse mode disabled");
+                            logger.log(Level.CONFIG, "[" + super.getType() + "] Wheel mouse mode disabled");
                         }
                         imMode = false;
 
@@ -642,7 +465,7 @@ public class Mouse extends ModuleMouse implements UART {
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_COMPLETION, 1); // COMPLETION
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_ID, 1); // ID
-                        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Mouse has been reset");
+                        logger.log(Level.CONFIG, "[" + super.getType() + "] Mouse has been reset");
                     } else {
                         // No mouse present.  A 0xFE (resend) need to be returned instead of a 0xFA (ACK)
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND
@@ -653,7 +476,7 @@ public class Mouse extends ModuleMouse implements UART {
                 default:
                     // If PS/2 mouse present, send NACK for unknown commands, otherwise ignore
                     if (isMousePS2) {
-                        logger.log(Level.WARNING, "[" + MODULE_TYPE + "] kbd_ctrl_to_mouse(): no command match");
+                        logger.log(Level.WARNING, "[" + super.getType() + "] kbd_ctrl_to_mouse(): no command match");
                         keyboard.enqueueControllerBuffer(MOUSE_CMD_RESEND, 1); // RESEND/NACK
                     }
             }
@@ -684,7 +507,12 @@ public class Mouse extends ModuleMouse implements UART {
 	}
 */
 
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleMouse
+     */
+    @Override
     public void mouseMotion(MouseEvent event) {
 
         this.mouseEvent = event;
@@ -702,8 +530,8 @@ public class Mouse extends ModuleMouse implements UART {
         delayed_dy = event.getY();// - previousY;
         delayed_dz = event.getButton();
 
-        //logger.log(Level.INFO, "[" + MODULE_TYPE + "] previous :: ("+previousX+","+previousY+"), delayed :: ("+delayed_dx+","+delayed_dy+")");
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] delayed :: ("+delayed_dx+","+delayed_dy+")");
+        //logger.log(Level.INFO, "[" + super.getType() + "] previous :: ("+previousX+","+previousY+"), delayed :: ("+delayed_dx+","+delayed_dy+")");
+        logger.log(Level.INFO, "[" + super.getType() + "] delayed :: ("+delayed_dx+","+delayed_dy+")");
 
         //previousX += delayed_dx; // TODO BK try out
         //previousY += delayed_dy; // TODO BK try out   
@@ -729,7 +557,7 @@ public class Mouse extends ModuleMouse implements UART {
             }
 
             if (delta_x != 0 || delta_y != 0 || delta_z != 0) {
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
+                logger.log(Level.CONFIG, "[" + super.getType() + "] mouse position changed: Dx=" + delta_x + ", Dy=" + delta_y + ", Dz=" + delta_z);
             }
 
             if ((buttonStatus != (buttonState & 0x7)) || delta_z != 0) {
@@ -755,10 +583,6 @@ public class Mouse extends ModuleMouse implements UART {
         }
         */
     }
-
-
-    //******************************************************************************
-    // Custom Methods
 
     private byte getStatusByte() {
         // top bit is 0 , bit 6 is 1 if remote mode.
@@ -793,14 +617,12 @@ public class Mouse extends ModuleMouse implements UART {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] Invalid resolution cpmm");
+                logger.log(Level.WARNING, "[" + super.getType() + "] Invalid resolution cpmm");
         }
 
         return resolution;
     }
 
-    //******************************************************************************
-    // UART interface
     @Override
     public synchronized boolean isDataAvailable() {
         return !(buffer.isEmpty());

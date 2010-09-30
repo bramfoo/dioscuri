@@ -56,9 +56,9 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
-import dioscuri.module.Module;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleCPU;
 import dioscuri.module.ModuleDMA;
 import dioscuri.module.ModuleMemory;
@@ -67,7 +67,7 @@ import dioscuri.module.ModuleMotherboard;
 /**
  * An implementation of a DMA controller module.
  * 
- * @see Module
+ * @see dioscuri.module.AbstractModule
  * 
  *      Metadata module ********************************************
  *      general.type : dma general.name : DMA Controller general.architecture :
@@ -80,8 +80,11 @@ import dioscuri.module.ModuleMotherboard;
  * 
  * 
  */
-@SuppressWarnings("unused")
 public class DMA extends ModuleDMA {
+
+    // Logging
+    private static final Logger logger = Logger.getLogger(DMA.class.getName());
+    
     boolean busHoldAcknowledged; // Hold Acknowlege; CPU has relinquished
                                  // control of the system busses
     boolean terminalCountReached; // Terminal Count; generated when transfer is
@@ -108,27 +111,6 @@ public class DMA extends ModuleDMA {
     // (controller 1)
     public DMA8Handler[] dma8Handler = new DMA8Handler[4];
     public DMA16Handler[] dma16Handler = new DMA16Handler[4];
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[] { "motherboard", "cpu",
-            "memory" };
-    private ModuleMotherboard motherboard;
-    private ModuleMemory memory;
-    private ModuleCPU cpu;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
-
-    // Logging
-    private static final Logger logger = Logger.getLogger(DMA.class.getName());
-
-    // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "dma";
-    public final static String MODULE_NAME = "8237 DMA Controller";
 
     // Master/Slave identifiers
     private final static int MASTER_CTRL = 0;
@@ -191,21 +173,14 @@ public class DMA extends ModuleDMA {
     private final static int FLOPPY_DMA_CHANNEL = 2;
     private final static int CASCADE_DMA_CHANNEL = 4;
 
-    // Constructor
-
     /**
      * Class constructor
      * 
      * @param owner
      */
     public DMA(Emulator owner) {
-        emu = owner;
 
         int chanNum, ctrlNum, i; // Counters
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Set DMA REQs and ACKs to 0
         for (ctrlNum = 0; ctrlNum < 2; ctrlNum++) {
@@ -249,111 +224,20 @@ public class DMA extends ModuleDMA {
         // Cascade controllers via channel 4.
         this.setCascadeChannel();
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     * 
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "]"
+                + " AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
-     * 
-     * @return string containing the type of module
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     * 
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     * 
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     * 
-     * @param mod
-     *            Module that is to be connected to this class
-     * 
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * 
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-
-        // Set connection for memory
-        if (mod.getType().equalsIgnoreCase("memory")) {
-            this.memory = (ModuleMemory) mod;
-            return true;
-        }
-
-        // Set connection for cpu
-        if (mod.getType().equalsIgnoreCase("cpu")) {
-            this.cpu = (ModuleCPU) mod;
-            return true;
-        }
-        // No connection has been established
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     * 
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (this.motherboard != null && this.cpu != null) // && this.memory !=
-                                                          // null
-        {
-            return true;
-        }
-
-        // One or more connections may be missing
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     * 
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+
         // Register I/O ports 0x00 - 0x0F in I/O address space
         motherboard.setIOPort(PORT_DMA1_CH0_ADDRESS, this);
         motherboard.setIOPort(PORT_DMA1_CH0_COUNT, this);
@@ -412,8 +296,8 @@ public class DMA extends ModuleDMA {
         resetController(MASTER_CTRL);
         resetController(SLAVE_CTRL);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
-                + " Module has been reset");
+        logger.log(Level.INFO, "[" + super.getType() + "]"
+                + " AbstractModule has been reset");
         return true;
     }
 
@@ -436,110 +320,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Starts the module
-     * 
-     * @see Module
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.AbstractModule
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     * 
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     * 
-     * @return state of observed toggle
-     * 
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     * 
-     * @return state of debug mode toggle
-     * 
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     * 
-     * @param status
-     * 
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     * 
-     * @param requester
-     * @return byte[] with data
-     * 
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     * 
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     * 
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * 
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns information of this module
-     * 
-     * @return string String of current information about this module
-     * 
-     * @see Module
-     */
+    @Override
     public String getDump() {
         String dump = "";
         String ret = "\r\n";
@@ -567,43 +352,17 @@ public class DMA extends ModuleDMA {
         return dump;
     }
 
-    // ******************************************************************************
-    // ModuleDevice Methods
-
     /**
-     * Retrieve the interval between subsequent updates
-     * 
-     * @return int interval in microseconds
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
-    public int getUpdateInterval() {
-        return -1;
-    }
-
-    /**
-     * Defines the interval between subsequent updates
-     * 
-     */
-    public void setUpdateInterval(int interval) {
-    }
-
-    /**
-     * Update device
-     * 
-     */
-    public void update() {
-    }
-
-    /**
-     * Return a byte from I/O address space at given port
-     * 
-     * @return byte containing the data at given I/O address port
-     * @throws ModuleUnknownPort
-     */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort {
+    @Override
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
         byte returnValue;
         int chanNum;
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Read from port 0x"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Read from port 0x"
                 + Integer.toHexString(portAddress).toUpperCase());
 
         // DMA is currently only used for the floppy drive, so if no floppy I/O
@@ -681,7 +440,7 @@ public class DMA extends ModuleDMA {
                     .log(
                             Level.CONFIG,
                             "["
-                                    + MODULE_TYPE
+                                    + super.getType()
                                     + "]"
                                     + " Controller ["
                                     + ctrlNum
@@ -728,22 +487,23 @@ public class DMA extends ModuleDMA {
             return (byte) (0xF0 | returnValue);
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
     }
 
     /**
-     * Set a byte in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         int chanNum; // Controller channel number
 
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+        logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " I/O write to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(data));
@@ -771,7 +531,7 @@ public class DMA extends ModuleDMA {
                                                              // channel number
                                                              // from above port
                                                              // addresses
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + "  Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
                     + ctrlNum + ",  channel " + chanNum
                     + " base and current address set.");
             if (controller[ctrlNum].flipflop) {
@@ -782,7 +542,7 @@ public class DMA extends ModuleDMA {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + "    base = 0x"
                                         + Integer
@@ -793,7 +553,7 @@ public class DMA extends ModuleDMA {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + "    curr = 0x"
                                         + Integer
@@ -823,7 +583,7 @@ public class DMA extends ModuleDMA {
                                                              // channel number
                                                              // from above port
                                                              // addresses
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + "  Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
                     + ctrlNum + ",  channel " + chanNum
                     + " base and current count set.");
             if (controller[ctrlNum].flipflop) {
@@ -831,7 +591,7 @@ public class DMA extends ModuleDMA {
                 controller[ctrlNum].channel[chanNum].baseCount |= ((((int) data) & 0xFF) << 8);
                 controller[ctrlNum].channel[chanNum].currentCount |= ((((int) data) & 0xFF) << 8);
                 logger.log(Level.CONFIG, "["
-                        + MODULE_TYPE
+                        + super.getType()
                         + "]"
                         + "    base = 0x"
                         + Integer.toHexString(
@@ -841,7 +601,7 @@ public class DMA extends ModuleDMA {
                         .log(
                                 Level.CONFIG,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + "    curr = 0x"
                                         + Integer
@@ -869,13 +629,12 @@ public class DMA extends ModuleDMA {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " command register functionality setting not supported");
             }
             controller[ctrlNum].commandRegister = data;
-            controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1 ? true
-                    : false;
+            controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1;
             controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
                                          // accordingly
             return;
@@ -895,13 +654,13 @@ public class DMA extends ModuleDMA {
             {
                 // Set request bit
                 controller[ctrlNum].statusRegister |= (1 << (chanNum + 4));
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + " Controller " + ctrlNum
                         + ": Set DMA request bit for channel " + chanNum);
             } else {
                 // Clear request bit
                 controller[ctrlNum].statusRegister &= ~(1 << (chanNum + 4));
-                logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                logger.log(Level.CONFIG, "[" + super.getType() + "]"
                         + " Controller " + ctrlNum
                         + ": Clear DMA request bit for channel " + chanNum);
             }
@@ -921,7 +680,7 @@ public class DMA extends ModuleDMA {
             chanNum = data & 0x03; // Determine channel number from bits 0-1
             controller[ctrlNum].mask[chanNum] = (byte) ((data & 0x04) > 0 ? 1
                     : 0); // Set/clear appropriate channel's mask
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ", channel " + chanNum + ": set mask as "
                     + ((data & 0x04) > 0 ? 1 : 0) + "; mask now=0x"
                     + controller[ctrlNum].mask[chanNum]);
@@ -934,12 +693,10 @@ public class DMA extends ModuleDMA {
         case 0xD6: // Controller 1
             chanNum = data & 0x03; // Determine channel number from bits 0-1
             controller[ctrlNum].channel[chanNum].mode.modeType = (byte) ((data >> 6) & 0x03);
-            controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1 ? true
-                    : false;
-            controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1 ? true
-                    : false;
+            controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1;
+            controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1;
             controller[ctrlNum].channel[chanNum].mode.transferType = (byte) ((data >> 2) & 0x03);
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ", channel " + chanNum
                     + ": mode register set to 0x"
                     + Integer.toHexString(data).toUpperCase());
@@ -948,7 +705,7 @@ public class DMA extends ModuleDMA {
             // Clear flip-flop
         case 0x0C: // Controller 0
         case 0xD8: // Controller 1
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": flip-flop cleared");
             controller[ctrlNum].flipflop = false;
             return;
@@ -959,7 +716,7 @@ public class DMA extends ModuleDMA {
             // The Mask register is set (disabling all channels)
         case 0x0D: // Controller 0
         case 0xDA: // Controller 1
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": master clear (reset)");
             resetController(ctrlNum);
             return;
@@ -967,7 +724,7 @@ public class DMA extends ModuleDMA {
             // Clear mask register
         case 0x0E: // Controller 0
         case 0xDC: // Controller 1
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": clear mask register");
             controller[ctrlNum].mask[0] = 0;
             controller[ctrlNum].mask[1] = 0;
@@ -980,7 +737,7 @@ public class DMA extends ModuleDMA {
             // Write mask register
         case 0x0F: // Controller 0
         case 0xDE: // Controller 1
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": write mask register");
             controller[ctrlNum].mask[0] = (byte) (data & 0x01);
             data >>= 1;
@@ -997,50 +754,50 @@ public class DMA extends ModuleDMA {
             // Address bits A16-A23 for DMA channel
         case 0x81: // Controller 0, channel 2
             controller[ctrlNum].channel[2].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 2 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x82: // Controller 0, channel 3
             controller[ctrlNum].channel[3].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 3 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x83: // Controller 0, channel 1
             controller[ctrlNum].channel[1].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 1 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x87: // Controller 0, channel 0
             controller[ctrlNum].channel[0].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 0 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
 
         case 0x89: // Controller 1, channel 2
             controller[ctrlNum].channel[2].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 2 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x8A: // Controller 1, channel 3
             controller[ctrlNum].channel[3].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 3 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x8B: // Controller 1, channel 1
             controller[ctrlNum].channel[1].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 1 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
         case 0x8F: // Controller 1, channel 0
             controller[ctrlNum].channel[0].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Controller "
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
                     + ctrlNum + ": page register 0 = 0x"
                     + Integer.toHexString(data).toUpperCase());
             return;
@@ -1059,19 +816,19 @@ public class DMA extends ModuleDMA {
             return;
 
         default:
-            throw new ModuleUnknownPort("[" + MODULE_TYPE + "]"
+            throw new UnknownPortException("[" + super.getType() + "]"
                     + " does not recognise port 0x"
                     + Integer.toHexString(portAddress).toUpperCase());
         }
     }
 
     /**
-     * Return a word from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
-    public byte[] getIOPortWord(int portAddress) throws ModuleUnknownPort {
+    @Override
+    public byte[] getIOPortWord(int portAddress) throws UnknownPortException {
         byte[] data = new byte[2];
         data[0] = getIOPortByte(portAddress);
         data[1] = getIOPortByte(portAddress);
@@ -1080,28 +837,29 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Set a word in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleUnknownPort {
+            throws UnknownPortException {
         setIOPortByte(portAddress, dataWord[1]);
         setIOPortByte(portAddress, dataWord[0]);
-        return;
     }
 
     /**
-     * Return a doubleword from I/O address space at given port
-     * 
-     * @return byte[] containing the data at given I/O address port
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleWriteOnlyPortException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            throws WriteOnlyPortException {
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
@@ -1109,44 +867,39 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Set a doubleword in I/O address space at given port
-     * 
-     * @throws ModuleUnknownPort
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleUnknownPort {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+            throws UnknownPortException {
+        logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
-    // ******************************************************************************
-    // ModuleDMA methods
-
     /**
-     * Allows a device to register an 8-bit DMA Handler providing
-     * implementations for the ReadFromMem and WriteToMem
-     * 
-     * @return true if succesfully registered, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
+    @Override
     public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler) {
         if (chanNum > 3) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA8Channel: invalid channel number: "
                     + chanNum);
             return false; // Fail
         }
         if (controller[0].channel[chanNum].channelUsed) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA8Channel: channel " + chanNum
                     + " already in use.");
             return false; // Fail
         }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Channel "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Channel "
                 + chanNum + " (8-bit) used by " + dma8handler.owner);
         dma8Handler[chanNum] = dma8handler;
         controller[0].channel[chanNum].channelUsed = true;
@@ -1154,25 +907,25 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Allows a device to register an 16-bit DMA Handler providing
-     * implementations for the ReadFromMem and WriteToMem
-     * 
-     * @return true if succesfully registered, false otherwise
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
+    @Override
     public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
         if (chanNum < 4 || chanNum > 7) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA16Channel: invalid channel number: "
                     + chanNum);
             return false; // Fail
         }
         if (controller[1].channel[chanNum - 4].channelUsed) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA16Channel: channel " + chanNum
                     + " already in use.");
             return false; // Fail
         }
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " Channel "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Channel "
                 + chanNum + " (16-bit) used by " + dma16handler.owner);
         dma16Handler[chanNum - 4] = dma16handler;
         controller[1].channel[chanNum - 4].channelUsed = true;
@@ -1180,44 +933,27 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Allows a device to unregister a previously registered handler
-     * 
-     * @param chanNum
-     * @return true if succesfully unregistered, false otherwise
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
-    public boolean unregisterDMAChannel(int chanNum) {
-        int ctrlNum = (chanNum > 3) ? SLAVE_CTRL : MASTER_CTRL;
-        controller[ctrlNum].channel[chanNum & 0x03].channelUsed = false;
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]" + " Channel " + chanNum
-                + " no longer used");
-        return true;
-    }
-
-    /**
-     * Getter function for the Terminal Count Reached of the current DMA request
-     * 
-     * @return Terminal Count Reached of the current DMA request
-     */
+    @Override
     public boolean isTerminalCountReached() {
         return terminalCountReached;
     }
 
     /**
-     * Sets the DMA Requests in the corresponding controller's status register,
-     * and initiates the handling of Hold Requests
-     * 
-     * @param chanNum
-     *            Channel requesting a DMA transfer
-     * @param dmaRequest
-     *            Set request (true); clear request (false)
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
+    @Override
     public void setDMARequest(int chanNum, boolean dmaRequest) {
         int dmaFloor, dmaCeiling; // Memory boundaries of DMA request
         int ctrlNum;
 
         if (chanNum > 7) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " setDMARequest(): channel " + chanNum
                     + " not connected to any device");
         }
@@ -1233,7 +969,7 @@ public class DMA extends ModuleDMA {
 
         // Check if the DMA Request came from a registered device
         if (!controller[ctrlNum].channel[chanNum & 0x03].channelUsed) {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " setDMARequest(): channel " + chanNum
                     + " not connected to any device");
         }
@@ -1243,7 +979,7 @@ public class DMA extends ModuleDMA {
         // Check if a DMA request is to be set/cleared
         if (!dmaRequest) {
             // DMA request is cleared, so exit here
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " setDMARequest(): val == 0");
             // Clear statusRegister request bit
             controller[ctrlNum].statusRegister &= ~(1 << (chanNum + 4));
@@ -1254,23 +990,23 @@ public class DMA extends ModuleDMA {
         }
 
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " mask["
                 + chanNum
                 + "]: 0x"
                 + Integer.toHexString(controller[0].mask[chanNum])
                         .toUpperCase());
-        logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " flipflop: "
+        logger.log(Level.CONFIG, "[" + super.getType() + "]" + " flipflop: "
                 + ((Boolean) controller[0].flipflop).toString());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " statusRegister: 0x"
                 + Integer.toHexString(controller[0].statusRegister)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " modeType: 0x"
                 + Integer.toHexString(
@@ -1280,7 +1016,7 @@ public class DMA extends ModuleDMA {
                 .log(
                         Level.CONFIG,
                         "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " addressDecrement: "
                                 + ((Boolean) controller[0].channel[chanNum].mode.addressDecrement)
@@ -1289,47 +1025,47 @@ public class DMA extends ModuleDMA {
                 .log(
                         Level.CONFIG,
                         "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " autoInitEnable: "
                                 + ((Boolean) controller[0].channel[chanNum].mode.autoInitEnable)
                                         .toString());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " transferType: 0x"
                 + Integer.toHexString(
                         controller[0].channel[chanNum].mode.transferType)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " baseAddress: 0x"
                 + Integer.toHexString(
                         controller[0].channel[chanNum].baseAddress)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " currentAddress: 0x"
                 + Integer.toHexString(
                         controller[0].channel[chanNum].currentAddress)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " baseCount: 0x"
                 + Integer.toHexString(controller[0].channel[chanNum].baseCount)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " currentCount: 0x"
                 + Integer.toHexString(
                         controller[0].channel[chanNum].currentCount)
                         .toUpperCase());
         logger.log(Level.CONFIG, "["
-                + MODULE_TYPE
+                + super.getType()
                 + "]"
                 + " pageReg: 0x"
                 + Integer.toHexString(
@@ -1344,7 +1080,7 @@ public class DMA extends ModuleDMA {
                 && (controller[ctrlNum].channel[chanNum].mode.modeType != DMAModeRegister.DMA_MODE_DEMAND)
                 && (controller[ctrlNum].channel[chanNum].mode.modeType != DMAModeRegister.DMA_MODE_CASCADE)) {
             logger.log(Level.SEVERE, "["
-                    + MODULE_TYPE
+                    + super.getType()
                     + "]"
                     + " setDMARequest(): mode_type(0x"
                     + Integer.toHexString(
@@ -1369,28 +1105,25 @@ public class DMA extends ModuleDMA {
         // Ensure these boundaries are within accepted boundaries (should this
         // be done by memory, and why these values???)
         if ((dmaFloor & (0x7fff0000 << ctrlNum)) != (dmaCeiling & (0x7fff0000 << ctrlNum))) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]" + " dmaFloor = 0x"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " dmaFloor = 0x"
                     + Integer.toHexString(dmaFloor).toUpperCase());
             logger.log(Level.CONFIG, "["
-                    + MODULE_TYPE
+                    + super.getType()
                     + "]"
                     + " dmaBaseCount = 0x"
                     + Integer.toHexString(
                             controller[ctrlNum].channel[chanNum].baseCount)
                             .toUpperCase());
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+            logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " dmaCeiling = 0x"
                     + Integer.toHexString(dmaCeiling).toUpperCase());
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " request outside " + (64 << ctrlNum) + "k boundary");
         }
 
         // Set the Hold Request (HRQ) accordingly
         controlHoldRequest(ctrlNum);
     }
-
-    // ******************************************************************************
-    // Custom methods
 
     /**
      * Handles the Hold Request (HRQ)<BR>
@@ -1404,6 +1137,9 @@ public class DMA extends ModuleDMA {
      *            originated
      */
     private void controlHoldRequest(int ctrlNum) {
+
+        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+
         int chanNum;
 
         // Do nothing if controller is disabled
@@ -1445,14 +1181,11 @@ public class DMA extends ModuleDMA {
     }
 
     /**
-     * Control has been relinquished of the system busses<BR>
-     * DMA now has control over the system busses, so the highest priority DMA
-     * channel that scheduled a request is located and after setting up the
-     * necessary parameters (address, count, memory), the DMA transfer is
-     * initiated
-     * 
-     * 
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleDMA
      */
+    @Override
     public void acknowledgeBusHold() {
         int ctrlNum = MASTER_CTRL; // Controller number (master/slave)
         int chanNum; // DMA channel number
@@ -1493,7 +1226,7 @@ public class DMA extends ModuleDMA {
                 .log(
                         Level.INFO,
                         "["
-                                + MODULE_TYPE
+                                + super.getType()
                                 + "]"
                                 + " Hold ACK: OK in response to DRQ("
                                 + chanNum
@@ -1557,6 +1290,8 @@ public class DMA extends ModuleDMA {
                                           // handlerWrite()/handlerRead(), so
                                           // can clear TC
             busHoldAcknowledged = false;
+
+            ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
             cpu.setHoldRequest(false, this); // clear HRQ to CPU
             if (ctrlNum == 0) // Master controller, so cascade HRQ via DREQ4
             {
@@ -1582,6 +1317,9 @@ public class DMA extends ModuleDMA {
      */
     private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
             throws ModuleException {
+        
+        ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
+
         byte dataByte; // 8-bit data read/written to/from memory
         byte[] dataWord = new byte[2]; // 16-bit data read/written to/from
                                        // memory
@@ -1599,7 +1337,7 @@ public class DMA extends ModuleDMA {
                     dataByte = dma8Handler[chanNum].dma8WriteToMem();
                     memory.setByte(memoryAddress, dataByte);
                 } else
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " no dma8 write handler for channel " + chanNum);
             } else // 16-bit transfer
             {
@@ -1607,7 +1345,7 @@ public class DMA extends ModuleDMA {
                     dataWord = dma16Handler[chanNum].dma16WriteToMem();
                     memory.setWord(memoryAddress, dataWord);
                 } else
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " no dma16 write handler for channel " + chanNum);
             }
         } else if (controller[ctrlNum].channel[chanNum].mode.transferType == DMAModeRegister.DMA_TRANSFER_READ) // memory
@@ -1631,17 +1369,17 @@ public class DMA extends ModuleDMA {
                 if (dma8Handler[chanNum] != null)
                     dataByte = dma8Handler[chanNum].dma8WriteToMem();
                 else
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " no dma8 write handler for channel " + chanNum);
             } else {
                 if (dma16Handler[chanNum] != null)
                     dataWord = dma16Handler[chanNum].dma16WriteToMem();
                 else
-                    logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
                             + " no dma16 write handler for channel " + chanNum);
             }
         } else {
-            logger.log(Level.SEVERE, "[" + MODULE_TYPE + "]"
+            logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " HLDA: memory->memory transfer (type 3) undefined");
         }
     }
@@ -1650,7 +1388,6 @@ public class DMA extends ModuleDMA {
      * Registers the cascade channel, 4. Does not implement any read or write
      * methods,<BR>
      * as the only use is to prevent other devices from registering on channel 4
-     * 
      */
     private void setCascadeChannel() {
         // Extend the DMA16Handler to provide to registerDMAChannel()

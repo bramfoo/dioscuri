@@ -39,15 +39,23 @@
 
 package dioscuri.module;
 
+import dioscuri.interfaces.Module;
+
 import java.awt.event.MouseEvent;
 
 /**
- * Interface representing a generic hardware module.
- * 
+ * Abstract class representing a generic mouse module.
  */
+public abstract class ModuleMouse extends AbstractModule {
 
-public abstract class ModuleMouse extends Module {
-    // Methods
+    /**
+     *
+     */
+    public ModuleMouse() {
+        super(Module.Type.MOUSE,
+                Module.Type.KEYBOARD, Module.Type.SERIALPORT);
+    }
+
     /**
      *
      * @param status
@@ -62,17 +70,16 @@ public abstract class ModuleMouse extends Module {
 
     /**
      *
-     * @return -
+     * @return
      */
     public abstract boolean isBufferEmpty();
 
     /**
+     * Returns the head of the buffer FIFO, data is automatically removed from buffer
      *
-     * @return -
+     * @return the head of the buffer FIFO, data is automatically removed from buffer
      */
-    public abstract byte getDataFromBuffer(); // returns the head of the buffer
-                                              // FIFO, data is automatically
-                                              // removed from buffer
+    public abstract byte getDataFromBuffer();
 
     /**
      *

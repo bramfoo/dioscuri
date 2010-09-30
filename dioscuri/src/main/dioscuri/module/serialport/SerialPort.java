@@ -44,10 +44,10 @@ import java.util.logging.Logger;
 
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
-import dioscuri.exception.ModuleUnknownPort;
-import dioscuri.exception.ModuleWriteOnlyPortException;
+import dioscuri.exception.UnknownPortException;
+import dioscuri.exception.WriteOnlyPortException;
+import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
-import dioscuri.module.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleSerialPort;
@@ -55,7 +55,7 @@ import dioscuri.module.ModuleSerialPort;
 /**
  * An implementation of a serial port module.
  *
- * @see Module
+ * @see dioscuri.module.AbstractModule
  *      <p/>
  *      Metadata module ********************************************
  *      general.type : serialport general.name : UART 16550A Serial Port
@@ -66,7 +66,7 @@ import dioscuri.module.ModuleSerialPort;
  *      general.relations : Motherboard, PIC general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      <p/>
- *      Notes: - Module serial port supports up to 4 COM ports - It is based on
+ *      Notes: - AbstractModule serial port supports up to 4 COM ports - It is based on
  *      the UART 16550A interface (including FIFO buffer) - Data is transmitted
  *      in little-endian order (least significant bit first)
  *      <p/>
@@ -110,20 +110,7 @@ import dioscuri.module.ModuleSerialPort;
  *      serial I/O; available to any application using 16450, 16550) (not
  *      present on original 8250)
  */
-@SuppressWarnings("unused")
 public class SerialPort extends ModuleSerialPort {
-
-    // Attributes
-
-    // Relations
-    private Emulator emu;
-    private String[] moduleConnections = new String[]{"motherboard", "pic"};
-    private ModuleMotherboard motherboard;
-    private ModulePIC pic;
-
-    // Toggles
-    private boolean isObserved;
-    private boolean debugMode;
 
     // Logging
     private static final Logger logger = Logger.getLogger(SerialPort.class.getName());
@@ -137,10 +124,6 @@ public class SerialPort extends ModuleSerialPort {
     private ComPort[] comPorts;
 
     // Constants
-    // Module specifics
-    public final static int MODULE_ID = 1;
-    public final static String MODULE_TYPE = "serialport";
-    public final static String MODULE_NAME = "UART 16550A serial port";
     public final static int TOTALCOMPORTS = 4; // Defines the total number of
     // COM ports
 
@@ -181,11 +164,6 @@ public class SerialPort extends ModuleSerialPort {
      * @param owner
      */
     public SerialPort(Emulator owner) {
-        emu = owner;
-
-        // Initialise variables
-        isObserved = false;
-        debugMode = false;
 
         // Create COM-ports
         comPorts = new ComPort[TOTALCOMPORTS];
@@ -193,96 +171,21 @@ public class SerialPort extends ModuleSerialPort {
             comPorts[c] = new ComPort();
         }
         
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] " + MODULE_NAME
-                + " -> Module created successfully.");
-    }
-
-    // ******************************************************************************
-    // Module Methods
-
-    /**
-     * Returns the ID of the module
-     *
-     * @return string containing the ID of module
-     * @see Module
-     */
-    public int getID() {
-        return MODULE_ID;
+        logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
+                + " -> AbstractModule created successfully.");
     }
 
     /**
-     * Returns the type of the module
+     * {@inheritDoc}
      *
-     * @return string containing the type of module
-     * @see Module
+     * @see dioscuri.module.AbstractModule
      */
-    public String getType() {
-        return MODULE_TYPE;
-    }
-
-    /**
-     * Returns the name of the module
-     *
-     * @return string containing the name of module
-     * @see Module
-     */
-    public String getName() {
-        return MODULE_NAME;
-    }
-
-    /**
-     * Returns a String[] with all names of modules it needs to be connected to
-     *
-     * @return String[] containing the names of modules, or null if no
-     *         connections
-     */
-    public String[] getConnection() {
-        // Return all required connections;
-        return moduleConnections;
-    }
-
-    /**
-     * Sets up a connection with another module
-     *
-     * @param mod Module that is to be connected to this class
-     * @return true if connection has been established successfully, false
-     *         otherwise
-     * @see Module
-     */
-    public boolean setConnection(Module mod) {
-        // Set connection for motherboard
-        if (mod.getType().equalsIgnoreCase("motherboard")) {
-            this.motherboard = (ModuleMotherboard) mod;
-            return true;
-        }
-        // Set connection for pic
-        else if (mod.getType().equalsIgnoreCase("pic")) {
-            this.pic = (ModulePIC) mod;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Checks if this module is connected to operate normally
-     *
-     * @return true if this module is connected successfully, false otherwise
-     */
-    public boolean isConnected() {
-        // Check if module if connected
-        if (motherboard != null && pic != null) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Reset all parameters of module
-     *
-     * @return boolean true if module has been reset successfully, false
-     *         otherwise
-     */
+    @Override
     public boolean reset() {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+
         // Reset COM-ports
         for (int c = 0; c < comPorts.length; c++) {
             // Register I/O ports
@@ -303,10 +206,10 @@ public class SerialPort extends ModuleSerialPort {
                 comPorts[c].irq = pic.requestIRQNumber(this);
 
                 if (comPorts[c].irq > -1) {
-                    logger.log(Level.CONFIG, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
                             + " IRQ number set to: " + comPorts[c].irq);
                 } else {
-                    logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
                             + " Request of IRQ number failed.");
                 }
             }
@@ -322,131 +225,27 @@ public class SerialPort extends ModuleSerialPort {
         // Keep timer passive
         motherboard.setTimerActiveState(this, false);
 
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] Module has been reset.");
+        logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
 
         return true;
     }
 
     /**
-     * Starts the module
+     * {@inheritDoc}
      *
-     * @see Module
+     * @see dioscuri.interfaces.Updateable
      */
-    public void start() {
-        // Nothing to start
-    }
-
-    /**
-     * Stops the module
-     *
-     * @see Module
-     */
-    public void stop() {
-        // Nothing to stop
-    }
-
-    /**
-     * Returns the status of observed toggle
-     *
-     * @return state of observed toggle
-     * @see Module
-     */
-    public boolean isObserved() {
-        return isObserved;
-    }
-
-    /**
-     * Sets the observed toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setObserved(boolean status) {
-        isObserved = status;
-    }
-
-    /**
-     * Returns the status of the debug mode toggle
-     *
-     * @return state of debug mode toggle
-     * @see Module
-     */
-    public boolean getDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * Sets the debug mode toggle
-     *
-     * @param status
-     * @see Module
-     */
-    public void setDebugMode(boolean status) {
-        debugMode = status;
-    }
-
-    /**
-     * Returns data from this module
-     *
-     * @param requester
-     * @return byte[] with data
-     * @see Module
-     */
-    public byte[] getData(Module requester) {
-        return null;
-    }
-
-    /**
-     * Set data for this module
-     *
-     * @param sender
-     * @return true if data is set successfully, false otherwise
-     * @see Module
-     */
-    public boolean setData(byte[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Set String[] data for this module
-     *
-     * @param sender
-     * @return boolean true is successful, false otherwise
-     * @see Module
-     */
-    public boolean setData(String[] data, Module sender) {
-        return false;
-    }
-
-    /**
-     * Returns a dump of this module
-     *
-     * @return string
-     * @see Module
-     */
-    public String getDump() {
-        String dump = "Serial port status:\n";
-
-        dump += "This module is only a stub, no contents available" + "\n";
-
-        return dump;
-    }
-
-    // ******************************************************************************
-    // ModuleDevice Methods
-
-    /**
-     * Retrieve the interval between subsequent updates
-     *
-     * @return int interval in microseconds
-     */
+    @Override
     public int getUpdateInterval() {
         return updateInterval;
     }
 
     /**
-     * Defines the interval between subsequent updates
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
@@ -458,12 +257,16 @@ public class SerialPort extends ModuleSerialPort {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
     /**
-     * Update device
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Updateable
      */
+    @Override
     public void update() {
         int port = 0;
         int timer_id, baudrate;
@@ -513,20 +316,20 @@ public class SerialPort extends ModuleSerialPort {
             }
 
             // Activate timer as one shot
+            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
             motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
             motherboard.setTimerActiveState(this, true);
         }
     }
 
     /**
-     * IN instruction to serial port<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x03F[8-F], 0x02F[8-F],
-     *                    0x03E[8-F], or 2E[8-F]<BR>
-     * @return byte of data from COM-port register
+     * @see dioscuri.interfaces.Addressable
      */
-    public byte getIOPortByte(int portAddress) throws ModuleUnknownPort,
-            ModuleWriteOnlyPortException {
+    @Override
+    public byte getIOPortByte(int portAddress) throws UnknownPortException,
+            WriteOnlyPortException {
         int offset, port;
         byte value = 0x00;
 
@@ -553,7 +356,7 @@ public class SerialPort extends ModuleSerialPort {
 
             default:
                 port = 0;
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Unknown COM-port. Selected default (COM1)");
         }
 
@@ -697,14 +500,14 @@ public class SerialPort extends ModuleSerialPort {
 
             default:
                 value = -1;
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Error while reading I/O port 0x"
                         + Integer.toHexString(portAddress).toUpperCase()
                         + ": no case match");
                 break;
         }
 
-        logger.log(Level.FINE, "[" + MODULE_TYPE + "]"
+        logger.log(Level.FINE, "[" + super.getType() + "]"
                 + " Read (byte) from port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(((int) value) & 0xFF).toUpperCase());
@@ -713,18 +516,18 @@ public class SerialPort extends ModuleSerialPort {
     }
 
     /**
-     * OUT instruction to serial port<BR>
+     * {@inheritDoc}
      *
-     * @param portAddress the target port; can be any of 0x027[8-A], 0x037[8-A], or
-     *                    0x03B[C-E]<BR>
-     *                    <p/>
-     *                    OUT to portAddress 378h does ...<BR>
-     *                    OUT to portAddress 379h does ...<BR>
-     *                    OUT to portAddress 37Ah does ...<BR>
+     * @see dioscuri.interfaces.Addressable
      */
+    @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleUnknownPort {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+            throws UnknownPortException {
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+
+        logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Write (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + ": 0x"
                 + Integer.toHexString(((int) data) & 0xFF).toUpperCase());
@@ -769,7 +572,7 @@ public class SerialPort extends ModuleSerialPort {
 
             default:
                 port = 0;
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Unknown COM-port. Selected default (COM1)");
         }
 
@@ -825,7 +628,7 @@ public class SerialPort extends ModuleSerialPort {
                                             this,
                                             (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
                             motherboard.setTimerActiveState(this, true);
-                            logger.log(Level.INFO, "[" + MODULE_TYPE
+                            logger.log(Level.INFO, "[" + super.getType()
                                     + "] Timer activated");
                         } else {
                             // No changes to TSR
@@ -841,7 +644,7 @@ public class SerialPort extends ModuleSerialPort {
                                         .offer((byte) (data & bitmask));
                             } else {
                                 // FIFO buffer overflow
-                                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                                logger.log(Level.WARNING, "[" + super.getType() + "]"
                                         + " Error: FIFO buffer overflow");
                                 comPorts[port].lsr_overrun_error = 1;
                             }
@@ -850,7 +653,7 @@ public class SerialPort extends ModuleSerialPort {
                                     .log(
                                             Level.WARNING,
                                             "["
-                                                    + MODULE_TYPE
+                                                    + super.getType()
                                                     + "]"
                                                     + " Error: THR buffer overflow. Can not write to buffer while not empty");
                             comPorts[port].lsr_overrun_error = 1;
@@ -977,7 +780,7 @@ public class SerialPort extends ModuleSerialPort {
                     // Activate FIFO buffers
                     comPorts[port].rcvrFIFO.clear();
                     comPorts[port].xmitFIFO.clear();
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " FIFO buffer enabled");
                 }
 
@@ -1025,11 +828,11 @@ public class SerialPort extends ModuleSerialPort {
                                         this,
                                         (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5)));
                         motherboard.setTimerActiveState(this, true);
-                        logger.log(Level.INFO, "[" + MODULE_TYPE
+                        logger.log(Level.INFO, "[" + super.getType()
                                 + "] Timer activated");
                     }
 
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "]"
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
                             + " baud rate of COM1 set to "
                             + comPorts[port].baudrate);
                 }
@@ -1118,7 +921,7 @@ public class SerialPort extends ModuleSerialPort {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " Not allowed to write to line status register (LSR) on port 0x"
                                         + Integer.toHexString(portAddress)
@@ -1130,7 +933,7 @@ public class SerialPort extends ModuleSerialPort {
                         .log(
                                 Level.WARNING,
                                 "["
-                                        + MODULE_TYPE
+                                        + super.getType()
                                         + "]"
                                         + " Not allowed to write to modem status register (MSR) on port 0x"
                                         + Integer.toHexString(portAddress)
@@ -1142,7 +945,7 @@ public class SerialPort extends ModuleSerialPort {
                 break;
 
             default:
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "]"
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " Error while writing I/O port 0x"
                         + Integer.toHexString(portAddress).toUpperCase()
                         + ": no case match");
@@ -1150,56 +953,76 @@ public class SerialPort extends ModuleSerialPort {
         }
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.INFO, "[" + MODULE_TYPE
+            WriteOnlyPortException {
+        logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.INFO, "[" + MODULE_TYPE
+        logger.log(Level.INFO, "[" + super.getType()
                 + "] Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
         return new byte[]{(byte) 0x0FF, (byte) 0x0FF};
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
             throws ModuleException {
-        logger.log(Level.WARNING, "[" + MODULE_TYPE
+        logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            ModuleWriteOnlyPortException {
-        logger.log(Level.INFO, "[" + MODULE_TYPE
+            WriteOnlyPortException {
+        logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
-        logger.log(Level.INFO, "[" + MODULE_TYPE
+        logger.log(Level.INFO, "[" + super.getType()
                 + "] Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
-                (byte) 0x0FF};
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF};
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.interfaces.Addressable
+     */
+    @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
             throws ModuleException {
-        logger.log(Level.INFO, "[" + MODULE_TYPE
+        logger.log(Level.INFO, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
-
-        // Do nothing and just return okay
-        return;
     }
 
-    // ******************************************************************************
-    // ModuleSerialPort methods
-
+    /**
+     * {@inheritDoc}
+     *
+     * @see dioscuri.module.ModuleSerialPort
+     */
+    @Override
     public boolean setUARTDevice(UART device, int comPort) {
         // Check if valid com port
         if (comPort >= 0 && comPort < comPorts.length) {
@@ -1208,20 +1031,20 @@ public class SerialPort extends ModuleSerialPort {
                 comPorts[comPort].uartDevice = device;
                 return true;
             } else {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] COM port "
+                logger.log(Level.WARNING, "[" + super.getType() + "] COM port "
                         + (comPort + 1) + " already occupied.");
             }
         }
         return false;
     }
 
-    // ******************************************************************************
-    // Custom methods
-
     private void setIRQ(int port, int type) {
         // TODO BK always port=0, type=1 
         boolean raiseInterrupt = false;
-        
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+
         switch (type) {
             case INTERRUPT_IER: // IER has changed
                 raiseInterrupt = true;
@@ -1232,10 +1055,10 @@ public class SerialPort extends ModuleSerialPort {
                 if (comPorts[port].ier_rxdata_enable == 1) {                                    // TODO BK 16 && 32 here
                     comPorts[port].rx_interrupt = 1;
                     raiseInterrupt = true;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] RXDATA interrupt raised and enabled");
+                    logger.log(Level.INFO, "[" + super.getType() + "] RXDATA interrupt raised and enabled");
                 } else {
                     comPorts[port].rx_ipending = 1;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] RXDATA interrupt pending...");
+                    logger.log(Level.INFO, "[" + super.getType() + "] RXDATA interrupt pending...");
                 }
                 break;
 
@@ -1275,7 +1098,7 @@ public class SerialPort extends ModuleSerialPort {
         }
 
         if (raiseInterrupt && (comPorts[port].mcr_out2 == 1)) {                                 // TODO BK 16 && 32 here
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE + "] Raising IRQ (signalling to PIC)");
+            logger.log(Level.CONFIG, "[" + super.getType() + "] Raising IRQ (signalling to PIC)");
             pic.setIRQ(comPorts[port].irq);
         }
     }
@@ -1287,22 +1110,27 @@ public class SerialPort extends ModuleSerialPort {
                 && (comPorts[port].ls_interrupt == 0)
                 && (comPorts[port].ms_interrupt == 0)
                 && (comPorts[port].fifo_interrupt == 0)) {
-            logger.log(Level.CONFIG, "[" + MODULE_TYPE
+            logger.log(Level.CONFIG, "[" + super.getType()
                     + "] Lowering IRQ (signalling to PIC)");
+            ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
             pic.clearIRQ(comPorts[port].irq);
         }
     }
 
     private void enqueueReceivedData(int port, byte data) {
-        logger.log(Level.INFO, "[" + MODULE_TYPE + "] enqueueReceivedData(...)");
+        logger.log(Level.INFO, "[" + super.getType() + "] enqueueReceivedData(...)");
+
+        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        
         boolean raiseInterrupt = false;
 
         // Check if FIFO is active
         if (comPorts[port].fcr_enable == 1) {
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] enqueue data in FIFO");
+            logger.log(Level.INFO, "[" + super.getType() + "] enqueue data in FIFO");
             // Check if FIFO buffer is full
             if (comPorts[port].rcvrFIFO.size() == 16) {
-                logger.log(Level.WARNING, "[" + MODULE_TYPE + "] FIFO buffer overflow");
+                logger.log(Level.WARNING, "[" + super.getType() + "] FIFO buffer overflow");
                 comPorts[port].lsr_overrun_error = 1;
                 this.setIRQ(port, INTERRUPT_RXLSTAT);
             } else {
@@ -1335,7 +1163,7 @@ public class SerialPort extends ModuleSerialPort {
                     // Deactivate timer
                     motherboard.setTimerActiveState(this, false);
                     comPorts[port].lsr_rxdata_ready = 1;
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Timer deactivated");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Timer deactivated");
 
                     // Throw IRQ
                     this.setIRQ(port, INTERRUPT_RXDATA);
@@ -1345,15 +1173,15 @@ public class SerialPort extends ModuleSerialPort {
                     // Activate timer as one shot
                     motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate * (comPorts[port].lcr_wordlen_sel + 5) * 16));
                     motherboard.setTimerActiveState(this, true);
-                    logger.log(Level.INFO, "[" + MODULE_TYPE + "] Timer activated");
+                    logger.log(Level.INFO, "[" + super.getType() + "] Timer activated");
                 }
             }
         } else {
             // FIFO buffer is not active
-            logger.log(Level.INFO, "[" + MODULE_TYPE + "] enqueue data in RBR");
+            logger.log(Level.INFO, "[" + super.getType() + "] enqueue data in RBR");
             if (comPorts[port].lsr_rxdata_ready == 1) {
                 // Unread data still exists in receive buffer
-                logger.log(Level.SEVERE, "[" + MODULE_TYPE + "] Overflow in receive buffer");
+                logger.log(Level.SEVERE, "[" + super.getType() + "] Overflow in receive buffer");
                 comPorts[port].lsr_overrun_error = 1;
                 this.setIRQ(port, INTERRUPT_RXLSTAT);
             }

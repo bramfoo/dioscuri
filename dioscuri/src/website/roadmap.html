@@ -62,14 +62,11 @@ Organisations : The National Library of the Netherlands
 
             <h3>Roadmap</h3>
             <ul>
-                <li>Finalise Intel 8086 CPU (Windows 3.0 capable)</li>
-                <li>Mouse support</li>
                 <li>CD-ROM support</li>
                 <li>Sound support</li>
                 <li>Store/restore state functionality</li>
                 <li>Introduce shortcut keys to menu items</li>
                 <li>Screen data extraction support (VGA dump/text dump)</li>
-                <li>Command-line interface (automated invocation)</li>
                 <li>Metadata for each module based on metadata schema</li>
                 <li>Improve exception handling model (take care of CPU exceptions)</li>
                 <li>Upgrade to Intel 80286, 16-bit, protected mode (Windows 3.x capable)</li>
@@ -83,20 +80,6 @@ Organisations : The National Library of the Netherlands
                 <li>Wrapping emulator in service-based architecture</li>
             </ul>
             <br>
-
-            <h3>Considerations</h3>
-            <ul>
-                <li>Performance improvements:</li>
-                + run profiler on emulator<br>
-                + implement CPU caching mechanism to avoid extensive recalculation of memory addressing
-                <li>Refactoring:</li>
-                + module structure<br>
-                + constants vs hex values
-                <li>Testing:</li>
-                + create Unit tests, especially for CPU instructions<br>
-                + write a test suite in assembler x86 which automatically checks the correctness of all instructions
-            </ul>
-
 
         </div>
         <!-- close content-->
@@ -146,6 +129,7 @@ Organisations : The National Library of the Netherlands
                 <li><a href="https://sourceforge.net/tracker/?group_id=200001&atid=971753" class="menu_link">Feature
                     requests (tracker)</a></li>
                 <li><a href="roadmap.html" class="menu_link">Roadmap</a></li>
+                <li><a href="features.html" class="menu_link">Features</a></li>
             </ul>
             <div class="menu_title">Contact</div>
             <ul>

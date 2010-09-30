@@ -32,8 +32,8 @@ package dioscuri.module.cpu32;
  * @author Bram Lohman
  * @author Bart Kiers
  */
-public final class RealModeUDecoder implements MicrocodeSet, Decoder,
-        InstructionSource {
+public final class RealModeUDecoder implements MicrocodeSet, Decoder, InstructionSource {  
+
     private static final boolean[] modrmArray = new boolean[] { // true for
                                                                 // opcodes that
                                                                 // require a
@@ -284,7 +284,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder,
             return getNext();
     }
 
-    private void reset() {
+    public void reset() {
         working.reset();
         waiting.reset();
         current.reset();
