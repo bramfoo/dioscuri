@@ -11,7 +11,8 @@ public class MemoryPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Memory memory;
     final JTextField size = new JTextField();
 
-    MemoryPanel(GUI parent, Emulator emuConfig) {
+    MemoryPanel(GUI parent, Emulator emuConfig)
+    {
         super(parent, emuConfig);
         this.memory = emuConfig.getArchitecture().getModules().getMemory();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -24,7 +25,8 @@ public class MemoryPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception {
+    void save() throws Exception
+    {
         memory.setSizemb(new BigDecimal(size.getText()));
     }
 }

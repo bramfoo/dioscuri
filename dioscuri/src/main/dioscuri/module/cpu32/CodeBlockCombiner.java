@@ -29,7 +29,6 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -40,20 +39,20 @@ public class CodeBlockCombiner {
     private int depth;
 
     /**
-     *
      * @param factory
      */
-    public CodeBlockCombiner(CodeBlockFactory factory) {
+    public CodeBlockCombiner(CodeBlockFactory factory)
+    {
         this.factory = factory;
     }
 
     /**
-     *
      * @param memory
      * @param offset
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
+    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset)
+    {
         source.set(memory, offset & AddressSpace.BLOCK_MASK);
         RealModeCodeBlock block = null;
 
@@ -68,7 +67,8 @@ public class CodeBlockCombiner {
         return block;
     }
 
-    private RealModeCodeBlock combineCodeBlocks(ByteSourceWrappedMemory source) {
+    private RealModeCodeBlock combineCodeBlocks(ByteSourceWrappedMemory source)
+    {
         int start = source.getOffset();
 
         // decode initial block
@@ -111,7 +111,7 @@ public class CodeBlockCombiner {
         }
 
         if (block0 instanceof SpanningCodeBlock) // dont' think this is
-                                                 // necessary
+            // necessary
             return null;
 
         // begin checks ************************************
@@ -141,8 +141,7 @@ public class CodeBlockCombiner {
             return block0;
         }
         // check jump is small enough
-        if (jumpSize > 255)
-        {
+        if (jumpSize > 255) {
             // System.out.println("big jump");
             return block0;
         }
@@ -180,7 +179,7 @@ public class CodeBlockCombiner {
         // check the three blocks are within the code 4k code segment
         if ((start + block0.getX86Length() + block1.getX86Length() > 4095)
                 || (start + block0.getX86Length() + jumpSize
-                        + block2.getX86Length() > 4095))
+                + block2.getX86Length() > 4095))
             return block0;
 
         CombiningRealCodeBlock combinedBlock = new CombiningRealCodeBlock(
@@ -196,13 +195,13 @@ public class CodeBlockCombiner {
     }
 
     /**
-     *
      * @param source
      * @param operandSize
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
-            boolean operandSize) {
+                                                            boolean operandSize)
+    {
         return factory.getProtectedModeCodeBlock(source, operandSize);
     }
 }

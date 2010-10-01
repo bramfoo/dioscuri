@@ -50,20 +50,21 @@ public class Instruction_MOV_Imm_CL implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_MOV_Imm_CL() {
+    public Instruction_MOV_Imm_CL()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_CL(CPU processor) {
+    public Instruction_MOV_Imm_CL(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_MOV_Imm_CL implements Instruction {
     /**
      * Copy immediate byte to register CL
      */
-    public void execute() {
+    public void execute()
+    {
         // Put next byte into CL
         cpu.cx[CPU.REGISTER_GENERAL_LOW] = cpu.getByteFromCode();
     }

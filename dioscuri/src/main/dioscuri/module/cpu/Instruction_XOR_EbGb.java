@@ -64,19 +64,21 @@ public class Instruction_XOR_EbGb implements Instruction {
     byte logicalXORResult = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_XOR_EbGb() {
+    public Instruction_XOR_EbGb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_XOR_EbGb(CPU processor) {
+    public Instruction_XOR_EbGb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,7 +91,8 @@ public class Instruction_XOR_EbGb implements Instruction {
      * Logical XOR of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute() {
+    public void execute()
+    {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

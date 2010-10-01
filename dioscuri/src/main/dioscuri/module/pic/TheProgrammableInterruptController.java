@@ -43,17 +43,16 @@ package dioscuri.module.pic;
  * Programmable Interrupt Controller<BR>
  * Class representing the structure of a PIC<BR>
  * Includes a reset function to reset certain variables to their defaults<BR>
- * 
  */
 public class TheProgrammableInterruptController {
     // PIC settings
     boolean singleCascadedPIC; // PIC is single or cascaded (true=master only,
-                               // false=cascaded PIC)
+    // false=cascaded PIC)
     int interruptOffset; // INT routine <-> IRQ offset (ex. IRQ0 == INT8)
     boolean specialFullyNestedMode; // Specially fully nested mode (true=yes,
-                                    // false=no)
+    // false=no)
     boolean bufferedMode; // Buffer mode (true=buffered mode, false=no buffered
-                          // mode)
+    // mode)
     boolean isMaster; // master/slave PIC (true=master PIC, false=slave PIC)
     boolean autoEndOfInt; // true=automatic EOI, false=manual EOI
 
@@ -68,7 +67,7 @@ public class TheProgrammableInterruptController {
     int lowestPriorityIRQ; // current lowest priority irq
     boolean intRequestPin; // INT request pin of PIC
     int irqPins; // IRQ pins of PIC. Each pin is a bit in irqPins. If pin is
-                 // high, bit is 1: IRQ 4 high = 0000.0100
+    // high, bit is 1: IRQ 4 high = 0000.0100
     boolean specialMask;
     boolean isPolled; // Set when poll command is issued.
     boolean rotateOnAutoEOI; // Set when should rotate in auto-eoi mode.
@@ -80,7 +79,8 @@ public class TheProgrammableInterruptController {
      * Resets all common parameters to their default value NOTE: Not all
      * parameters are reset! (interruptOffset, masterSlave, etc.)
      */
-    public void reset() {
+    public void reset()
+    {
         singleCascadedPIC = false;
         specialFullyNestedMode = false; // normal nested mode
         bufferedMode = false; // unbuffered mode

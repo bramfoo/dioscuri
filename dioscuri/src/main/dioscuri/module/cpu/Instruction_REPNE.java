@@ -56,34 +56,38 @@ public class Instruction_REPNE implements Instruction {
     byte[] word0x01;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_REPNE() {
+    public Instruction_REPNE()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_REPNE(CPU processor) {
+    public Instruction_REPNE(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
         cpu = processor;
 
-        word0x01 = new byte[] { 0x00, 0x01 };
+        word0x01 = new byte[]{0x00, 0x01};
     }
 
     // Methods
 
     /**
      * Repeat string instruction until CX == 0 or ZF == 1
+     *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException {
+    public void execute() throws CPUInstructionException
+    {
         cpu.prefixRep = true;
         // Set type of prefix
         cpu.prefixRepType = 0xF2;

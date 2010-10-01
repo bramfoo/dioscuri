@@ -51,19 +51,21 @@ public class Instruction_STI implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_STI() {
+    public Instruction_STI()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_STI(CPU processor) {
+    public Instruction_STI(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +77,8 @@ public class Instruction_STI implements Instruction {
     /**
      * Set IF to 1
      */
-    public void execute() {
+    public void execute()
+    {
         // Set interrupt flag in FLAGS register
         // Note: Interrupt should be sensed by processor with a delay of one
         // instruction

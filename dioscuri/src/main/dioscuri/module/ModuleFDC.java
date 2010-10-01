@@ -53,7 +53,8 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
     /**
      *
      */
-    public ModuleFDC() {
+    public ModuleFDC()
+    {
         super(Module.Type.FDC,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC, Module.Type.ATA, Module.Type.DMA);
     }
@@ -61,15 +62,15 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
     /**
      * Defines the total number of available drives Note: total number may not
      * exceed 4
-     * 
+     *
      * @param totalDrives
-     * @return            true if drives set successfully, false otherwise
+     * @return true if drives set successfully, false otherwise
      */
     public abstract boolean setNumberOfDrives(int totalDrives);
 
     /**
      * Inserts a new carrier into a selected drive
-     * 
+     *
      * @param drive
      * @param carrierType
      * @param imageFile
@@ -77,11 +78,11 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
     public abstract boolean insertCarrier(String drive, byte carrierType,
-            File imageFile, boolean writeProtected);
+                                          File imageFile, boolean writeProtected);
 
     /**
      * Ejects a carrier (if any) from a selected drive
-     * 
+     *
      * @param drive
      * @return boolean true if carrier is ejected successfully, false otherwise
      */
@@ -89,19 +90,19 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
 
     /**
      * Inserts a new carrier into a selected drive
-     * 
-     * @param driveIndex 
+     *
+     * @param driveIndex
      * @param carrierType
      * @param imageFile
      * @param writeProtected
      * @return boolean true if carrier is inserted successfully, false otherwise
      */
     public abstract boolean insertCarrier(int driveIndex, byte carrierType,
-            File imageFile, boolean writeProtected);
+                                          File imageFile, boolean writeProtected);
 
     /**
      * Ejects a carrier (if any) from a selected drive
-     * 
+     *
      * @param driveIndex
      * @return boolean true if carrier is ejected successfully, false otherwise
      */

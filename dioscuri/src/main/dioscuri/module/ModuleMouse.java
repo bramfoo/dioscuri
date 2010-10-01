@@ -51,25 +51,23 @@ public abstract class ModuleMouse extends AbstractModule {
     /**
      *
      */
-    public ModuleMouse() {
+    public ModuleMouse()
+    {
         super(Module.Type.MOUSE,
                 Module.Type.KEYBOARD, Module.Type.SERIALPORT);
     }
 
     /**
-     *
      * @param status
      */
     public abstract void setMouseEnabled(boolean status);
 
     /**
-     *
      * @param type
      */
     public abstract void setMouseType(String type);
 
     /**
-     *
      * @return
      */
     public abstract boolean isBufferEmpty();
@@ -82,19 +80,16 @@ public abstract class ModuleMouse extends AbstractModule {
     public abstract byte getDataFromBuffer();
 
     /**
-     *
      * @param forceEnqueue
      */
     public abstract void storeBufferData(boolean forceEnqueue);
 
     /**
-     *
      * @param value
      */
     public abstract void controlMouse(byte value);
 
     /**
-     *
      * @param mouseEvent
      */
     public abstract void mouseMotion(MouseEvent mouseEvent);

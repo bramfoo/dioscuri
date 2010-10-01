@@ -50,19 +50,21 @@ public class Instruction_AND_ALIb implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_AND_ALIb() {
+    public Instruction_AND_ALIb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_AND_ALIb(CPU processor) {
+    public Instruction_AND_ALIb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +77,8 @@ public class Instruction_AND_ALIb implements Instruction {
      * Logical AND of immediate byte and AL.<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;

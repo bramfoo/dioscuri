@@ -53,20 +53,21 @@ public class Instruction_MOV_ObAL implements Instruction {
     private byte dataSegmentAddressByte = 0;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_MOV_ObAL() {
+    public Instruction_MOV_ObAL()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOV_ObAL(CPU processor) {
+    public Instruction_MOV_ObAL(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -79,7 +80,8 @@ public class Instruction_MOV_ObAL implements Instruction {
      * Copy byte from register AL to DS:DISPL (DISPL given by word following
      * opcode)
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement within segment
         displ = cpu.getWordFromCode();
 

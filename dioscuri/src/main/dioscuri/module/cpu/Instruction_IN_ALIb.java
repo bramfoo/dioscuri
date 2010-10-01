@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode E4<BR>
@@ -61,19 +61,21 @@ public class Instruction_IN_ALIb implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_IN_ALIb.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_IN_ALIb() {
+    public Instruction_IN_ALIb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_IN_ALIb(CPU processor) {
+    public Instruction_IN_ALIb(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -84,9 +86,9 @@ public class Instruction_IN_ALIb implements Instruction {
 
     /**
      * Input byte from I/O port address indicated by immediate byte into AL
-     * 
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Fetch immediate byte from memory and convert to unsigned integer,
         // to prevent lookup table out of bounds

@@ -50,14 +50,15 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModuleCPU() {
+    public ModuleCPU()
+    {
         super(Module.Type.CPU,
                 Module.Type.MEMORY, Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.CLOCK);
     }
 
     /**
      * Set the Instructions Per Second (ips) for this CPU.
-     * 
+     *
      * @param ips the Instructions Per Second (ips) for this CPU.
      */
     public abstract void setIPS(int ips);
@@ -72,7 +73,7 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
     /**
      * Set the Instructions Per Second (ips) for this CPU. Also, define what the
      * smallest period is for sending a clockpulse (in microseconds)
-     * 
+     *
      * @param ips
      * @param lowestUpdatePeriod the lowest update period in microseconds
      */
@@ -80,14 +81,14 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
     /**
      * Retrieve string with information about next instruction to be executed
-     * 
+     *
      * @return string containing next instruction information
      */
     public abstract String getNextInstructionInfo();
 
     /**
      * Retrieve current number of instruction (instructions executed so far)
-     * 
+     *
      * @return long containing number of instructions
      */
     public abstract long getCurrentInstructionNumber();
@@ -99,14 +100,14 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
     /**
      * Returns a dump of the current registers with their value
-     * 
+     *
      * @return String containing a register dump
      */
     public abstract String dumpRegisters();
 
     /**
      * Initialise registers
-     * 
+     *
      * @return true if initialisation is successful, false otherwise
      */
     protected abstract boolean initRegisters();
@@ -121,7 +122,7 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
     /**
      * Set the boolean that starts and stops the CPU loop
-     * 
+     *
      * @param status sets the isRunning boolean
      */
     protected abstract void setRunning(boolean status);
@@ -138,13 +139,14 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
      * Sets the value of a named register to given value.
      *
      * @param registerName
-     * @param value containing the value
+     * @param value        containing the value
      * @return true if set was successful, false otherwise
      */
     protected abstract boolean setRegisterValue(String registerName, byte[] value);
 
     /**
      * Set the interrupt request (IRQ).
+     *
      * @param value
      */
     public abstract void interruptRequest(boolean value);
@@ -161,7 +163,6 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
     public abstract void setHoldRequest(boolean value, Module originator);
 
     /**
-     *
      * @param register
      * @return
      */
@@ -183,14 +184,14 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
 
     /**
      * Returns if CPU halted abnormally or not
-     * 
+     *
      * @return boolean abnormalTermination true if abnormal, false otherwise
      */
     public abstract boolean isAbnormalTermination();
 
     /**
      * Returns if CPU halted due to full system shutdown or not
-     * 
+     *
      * @return boolean shutDown true if emulator should shutdown, false
      *         otherwise
      */

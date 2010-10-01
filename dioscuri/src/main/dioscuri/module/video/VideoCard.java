@@ -57,7 +57,6 @@ import java.util.Arrays;
  * Implementation of a VGA videocard Based on Bochs code
  * (http://bochs.sourceforge.net/) Implements all VGA registers (Sequencer,
  * CRTC, Graphics, Attribute, Colour and Miscellaneous) and more...
- * 
  */
 public class VideoCard {
 
@@ -72,17 +71,17 @@ public class VideoCard {
     private final static int X_NUM_TILES = (XRES_MAX / X_TILESIZE);
     private final static int Y_NUM_TILES = (YRES_MAX / Y_TILESIZE);
     byte[] tile = new byte[X_TILESIZE * Y_TILESIZE * 4]; // Array of 8-bit
-                                                         // values representing
-                                                         // a block of pixels
-                                                         // with
+    // values representing
+    // a block of pixels
+    // with
     // dimension equal to the 'tilewidth' & 'tileheight' parameters to
     // Each value specifies an index into the array of colours allocated
     boolean vgaTileUpdated[][] = new boolean[X_NUM_TILES][Y_NUM_TILES]; // Indicates
-                                                                        // if a
-                                                                        // tile
-                                                                        // needs
-                                                                        // to be
-                                                                        // updated/redrawn
+    // if a
+    // tile
+    // needs
+    // to be
+    // updated/redrawn
 
     // Create instances of all required registers
     MiscellaneousOutputRegister miscOutputRegister = new MiscellaneousOutputRegister();
@@ -118,60 +117,60 @@ public class VideoCard {
 
     // Video memory variables
     public byte[] vgaMemory = new byte[256 * 1024]; // VGA memory contents 2 *
-                                                    // [A0000 - BFFFF] (??)
+    // [A0000 - BFFFF] (??)
     boolean vgaMemReqUpdate; // Indicates if the vga memory has been updated,
-                             // and a redraw is necessary
+    // and a redraw is necessary
     public byte[] textSnapshot = new byte[128 * 1024]; // Currenttext snapshot,
-                                                       // is used to compare
-                                                       // current screen
-                                                       // characters with newly
-                                                       // arrived characters.
+    // is used to compare
+    // current screen
+    // characters with newly
+    // arrived characters.
     // If no differences are found, do not draw anything again. Else, only
     // redraw changed character.
 
     // Helper variables
     int lineOffset; // Specifies address difference between consecutive
-                    // scanlines/character lines
+    // scanlines/character lines
     int lineCompare; // Indicates scan line where horiz. division can occur. No
-                     // division when set to 0x3FF
+    // division when set to 0x3FF
     int verticalDisplayEnd; // Vertical scanline counter: scanline value
-                            // immediately after last scanline of active display
-                            // (i.e. roughly the screenHeight)
+    // immediately after last scanline of active display
+    // (i.e. roughly the screenHeight)
 
     // Holds same value as CRTC[0x07]&0x42 + CRTC[0x12]
 
     // Constructor
     // Initialises Pixel array
-    public VideoCard() {
+
+    public VideoCard()
+    {
         Arrays.fill(pixels, new Pixel());
     }
 
     // Methods
+
     /**
      * If within tile bounds, sets the vgaTileUpdate to value
-     * 
-     * @param xtile
-     *            Location of x tile
-     * @param ytile
-     *            Location of y tile
-     * @param value
-     *            True or false reflecting whether this tile has been updated
+     *
+     * @param xtile Location of x tile
+     * @param ytile Location of y tile
+     * @param value True or false reflecting whether this tile has been updated
      */
-    final protected void setTileUpdate(int xtile, int ytile, boolean value) {
+    final protected void setTileUpdate(int xtile, int ytile, boolean value)
+    {
         if (((xtile) < X_NUM_TILES) && ((ytile) < Y_NUM_TILES))
             vgaTileUpdated[(xtile)][(ytile)] = value;
     }
 
     /**
      * If within tile bounds, retrieves the status of the vgaTileUpdate value
-     * 
-     * @param xtile
-     *            Location of x tile
-     * @param ytile
-     *            Location of y tile
+     *
+     * @param xtile Location of x tile
+     * @param ytile Location of y tile
      * @return True or false reflecting whether this tile has been updated
      */
-    final protected boolean getTileUpdate(int xtile, int ytile) {
+    final protected boolean getTileUpdate(int xtile, int ytile)
+    {
         return ((((xtile) < X_NUM_TILES) && ((ytile) < Y_NUM_TILES)) ? vgaTileUpdated[xtile][ytile]
                 : false);
     }
@@ -179,7 +178,8 @@ public class VideoCard {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         miscOutputRegister.reset();
         sequencer.reset();
         graphicsController.reset();

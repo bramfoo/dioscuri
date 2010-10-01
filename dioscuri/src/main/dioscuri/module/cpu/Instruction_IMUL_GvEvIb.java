@@ -66,10 +66,12 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
     byte tempByte;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_IMUL_GvEvIb() {
+    public Instruction_IMUL_GvEvIb()
+    {
         operandWordSize = true;
 
         addressByte = 0;
@@ -88,11 +90,11 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_IMUL_GvEvIb(CPU processor) {
+    public Instruction_IMUL_GvEvIb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -107,7 +109,8 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
      * 3=second source<BR>
      * Flags modified: CF, OF. Flags SF, ZF, AF, and PF are undefined
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -148,7 +151,7 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
 
             // Retrieve source1 imm
             tempByte = cpu.getByteFromCode();
-            sourceWord2 = new byte[] { Util.signExtend(tempByte), tempByte };
+            sourceWord2 = new byte[]{Util.signExtend(tempByte), tempByte};
         }
 
         // Signed multiply source1 and source2

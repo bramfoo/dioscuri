@@ -40,7 +40,6 @@
 package dioscuri.module.fdc;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -49,26 +48,29 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
     private FDC fdc;
 
     // Constructors
+
     /**
      * Class Constructor
-     * 
+     *
      * @param fdc
      */
-    public DMA8Handler(FDC fdc) {
+    public DMA8Handler(FDC fdc)
+    {
         this.fdc = fdc;
         super.owner = this.fdc.getType().toString().toLowerCase(); // TODO FIX into enum
     }
 
     // Methods
+
     /**
      * Implementation of the 8-bit DMA read functionality.<BR>
      * This provides a way for DMA to pass a byte read from memory (by way of
      * DMA request) to the device for further processing.
-     * 
-     * @param data
-     *            Byte from memory that is passed to the device for handling
+     *
+     * @param data Byte from memory that is passed to the device for handling
      */
-    public void dma8ReadFromMem(byte data) {
+    public void dma8ReadFromMem(byte data)
+    {
         // DMA read: from memory to I/O
         fdc.setDMAByte(data);
 
@@ -78,10 +80,11 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
      * Implementation of the 8-bit DMA write functionality.<BR>
      * This provides a way for DMA to write a byte to memory (by way of DMA
      * request) passed from the device.
-     * 
+     *
      * @return Byte from device that will be written to memory
      */
-    public byte dma8WriteToMem() {
+    public byte dma8WriteToMem()
+    {
         // DMA write: from I/O to memory
         // Return value; this is the value at the current index, before the
         // index is incremented

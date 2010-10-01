@@ -26,29 +26,25 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface CodeBlockFactory {
     /**
-     *
      * @param source
      * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(ByteSource source);
 
     /**
-     *
      * @param source
      * @param operandSize
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
-            boolean operandSize);
+                                                            boolean operandSize);
 
     /**
-     *
      * @param source
      * @return -
      */

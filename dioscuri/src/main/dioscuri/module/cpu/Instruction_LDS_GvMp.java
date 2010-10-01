@@ -63,20 +63,22 @@ public class Instruction_LDS_GvMp implements Instruction {
     byte[] eDestinationRegister = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_LDS_GvMp() {
+    public Instruction_LDS_GvMp()
+    {
         operandWordSize = true;
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LDS_GvMp(CPU processor) {
+    public Instruction_LDS_GvMp(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,7 +91,8 @@ public class Instruction_LDS_GvMp implements Instruction {
      * Load DS:r16 or DS:r32 with far pointer from memory m16:16 or m16:32.<BR>
      * Flags modified: none
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -106,7 +109,7 @@ public class Instruction_LDS_GvMp implements Instruction {
 
         // Redetermine memory location (increment displacement with 2)
         memoryReferenceDisplacement = Util.addWords(
-                memoryReferenceDisplacement, new byte[] { 0x00, 0x02 }, 0);
+                memoryReferenceDisplacement, new byte[]{0x00, 0x02}, 0);
         memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
                 memoryReferenceDisplacement);
 
@@ -130,7 +133,7 @@ public class Instruction_LDS_GvMp implements Instruction {
         {
             // Redetermine memory location (increment displacement with 4)
             Util.addWords(memoryReferenceDisplacement,
-                    new byte[] { 0x00, 0x04 }, 0);
+                    new byte[]{0x00, 0x04}, 0);
             memoryReferenceLocation = cpu.decodeSSSMemDest(addressByte,
                     memoryReferenceDisplacement);
 

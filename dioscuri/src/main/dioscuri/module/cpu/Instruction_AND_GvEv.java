@@ -61,19 +61,21 @@ public class Instruction_AND_GvEv implements Instruction {
     byte[] destinationRegister = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_AND_GvEv() {
+    public Instruction_AND_GvEv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_AND_GvEv(CPU processor) {
+    public Instruction_AND_GvEv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -86,7 +88,8 @@ public class Instruction_AND_GvEv implements Instruction {
      * Logical AND of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute() {
+    public void execute()
+    {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

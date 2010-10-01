@@ -51,19 +51,21 @@ public class Instruction_CLC implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CLC() {
+    public Instruction_CLC()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CLC(CPU processor) {
+    public Instruction_CLC(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +77,8 @@ public class Instruction_CLC implements Instruction {
     /**
      * Set CF to 0
      */
-    public void execute() {
+    public void execute()
+    {
         // Clear carry flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;
     }

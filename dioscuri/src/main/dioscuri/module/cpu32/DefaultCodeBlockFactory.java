@@ -26,7 +26,6 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -35,43 +34,43 @@ public class DefaultCodeBlockFactory implements CodeBlockFactory {
     private CodeBlockCompiler compiler;
 
     /**
-     *
      * @param decoder
      * @param compiler
      */
-    public DefaultCodeBlockFactory(Decoder decoder, CodeBlockCompiler compiler) {
+    public DefaultCodeBlockFactory(Decoder decoder, CodeBlockCompiler compiler)
+    {
         this.decoder = decoder;
         this.compiler = compiler;
     }
 
     /**
-     *
      * @param source
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlock(ByteSource source) {
+    public RealModeCodeBlock getRealModeCodeBlock(ByteSource source)
+    {
         return compiler.getRealModeCodeBlock(decoder.decodeReal(source));
     }
 
     /**
-     *
      * @param source
      * @param operandSize
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
-            boolean operandSize) {
+                                                            boolean operandSize)
+    {
         return compiler.getProtectedModeCodeBlock(decoder.decodeProtected(
                 source, operandSize));
     }
 
     /**
-     *
      * @param source
      * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
-            ByteSource source) {
+            ByteSource source)
+    {
         return compiler.getVirtual8086ModeCodeBlock(decoder
                 .decodeVirtual8086(source));
     }

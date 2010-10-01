@@ -53,20 +53,21 @@ public class Instruction_DEC_SI implements Instruction {
     private byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_DEC_SI() {
+    public Instruction_DEC_SI()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_DEC_SI(CPU processor) {
+    public Instruction_DEC_SI(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -75,7 +76,7 @@ public class Instruction_DEC_SI implements Instruction {
         temp = new byte[2];
 
         // Set decrement word to 1
-        decWord = new byte[] { 0x00, 0x01 };
+        decWord = new byte[]{0x00, 0x01};
     }
 
     // Methods
@@ -83,7 +84,8 @@ public class Instruction_DEC_SI implements Instruction {
     /**
      * Decrement general register SI
      */
-    public void execute() {
+    public void execute()
+    {
         // Store old value
         System.arraycopy(cpu.si, 0, oldDest, 0, cpu.si.length);
 

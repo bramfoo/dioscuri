@@ -54,20 +54,21 @@ public class Instruction_INC_AX implements Instruction {
     private byte[] incWord;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_INC_AX() {
+    public Instruction_INC_AX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_INC_AX(CPU processor) {
+    public Instruction_INC_AX(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -75,7 +76,7 @@ public class Instruction_INC_AX implements Instruction {
         temp = new byte[2];
         oldDestWord = new byte[2];
         oldDestDoubleWord = new byte[2];
-        incWord = new byte[] { 0x00, 0x01 };
+        incWord = new byte[]{0x00, 0x01};
     }
 
     // Methods
@@ -83,7 +84,8 @@ public class Instruction_INC_AX implements Instruction {
     /**
      * Increment general register AX
      */
-    public void execute() {
+    public void execute()
+    {
         if (cpu.doubleWord) {
             // 32-bit
             // Make copy of old value

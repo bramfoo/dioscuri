@@ -25,10 +25,11 @@
  */
 package dioscuri.module.cpu32;
 
-import java.io.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -49,13 +50,13 @@ public class FieldInfo {
     public static final int ENUM = 0x4000;
 
     /**
-     *
      * @param in
      * @param pool
      * @throws IOException
      */
     public FieldInfo(DataInputStream in, ConstantPoolInfo[] pool)
-            throws IOException {
+            throws IOException
+    {
         accessFlags = in.readUnsignedShort();
         nameIndex = in.readUnsignedShort();
         descriptorIndex = in.readUnsignedShort();
@@ -67,11 +68,11 @@ public class FieldInfo {
     }
 
     /**
-     *
      * @param out
      * @throws IOException
      */
-    public void write(DataOutputStream out) throws IOException {
+    public void write(DataOutputStream out) throws IOException
+    {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
         out.writeShort(descriptorIndex);

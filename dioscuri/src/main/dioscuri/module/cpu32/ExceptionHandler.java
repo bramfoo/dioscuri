@@ -25,14 +25,14 @@
  */
 package dioscuri.module.cpu32;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Map;
 
 //import org.jpc.classfile.*;
 //import org.jpc.emulator.processor.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -45,13 +45,13 @@ public abstract class ExceptionHandler {
     private int lastX86Position;
 
     /**
-     *
      * @param lastX86Position
      * @param initialNode
      * @param stateMap
      */
     public ExceptionHandler(int lastX86Position, RPNNode initialNode,
-            Map<Integer, RPNNode> stateMap) {
+                            Map<Integer, RPNNode> stateMap)
+    {
         rootNodes = stateMap;
         for (int i = FASTCompiler.PROCESSOR_ELEMENT_COUNT; i < FASTCompiler.ELEMENT_COUNT; i++)
             rootNodes.remove(new Integer(i));
@@ -64,55 +64,55 @@ public abstract class ExceptionHandler {
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Index() {
+    public int getX86Index()
+    {
         return initialNode.getX86Index();
     }
 
     /**
-     *
      * @param min
      * @param max
      */
-    public void assignRange(int min, int max) {
+    public void assignRange(int min, int max)
+    {
         minPC = Math.min(minPC, min);
         maxPC = Math.max(maxPC, max);
     }
 
     /**
-     *
      * @return -
      */
-    public boolean used() {
+    public boolean used()
+    {
         return (minPC != Integer.MAX_VALUE);
     }
 
     /**
-     *
      * @return -
      */
-    public int start() {
+    public int start()
+    {
         return minPC;
     }
 
     /**
-     *
      * @return -
      */
-    public int end() {
+    public int end()
+    {
         return maxPC;
     }
 
     /**
-     *
      * @param byteCodes
      * @param cf
      * @throws IOException
      */
     public void write(CountingOutputStream byteCodes, ClassFile cf)
-            throws IOException {
+            throws IOException
+    {
         int affectedCount = 0;
         for (Iterator<RPNNode> itt = rootNodes.values().iterator(); itt
                 .hasNext();) {
@@ -168,11 +168,10 @@ public abstract class ExceptionHandler {
     }
 
     /**
-     *
      * @param byteCodes
      * @param cf
      * @throws IOException
      */
     protected abstract void writeHandlerRoutine(CountingOutputStream byteCodes,
-            ClassFile cf) throws IOException;
+                                                ClassFile cf) throws IOException;
 }

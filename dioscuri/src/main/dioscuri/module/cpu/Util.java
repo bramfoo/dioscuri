@@ -40,7 +40,6 @@
 package dioscuri.module.cpu;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -48,7 +47,7 @@ package dioscuri.module.cpu;
 public class Util {
 
     // Attributes
-    private static boolean[] parityLookupByte = { true, false, false, true,
+    private static boolean[] parityLookupByte = {true, false, false, true,
             false, true, true, false, false, true, true, false, true, false,
             false, true, false, true, true, false, true, false, false, true,
             true, false, false, true, false, true, true, false, false, true,
@@ -74,7 +73,7 @@ public class Util {
             false, true, true, false, true, false, false, true, true, false,
             false, true, false, true, true, false, true, false, false, true,
             false, true, true, false, false, true, true, false, true, false,
-            false, true };
+            false, true};
 
     // Temporary flag variables
     protected static boolean cf = false;
@@ -91,7 +90,9 @@ public class Util {
     private final static int CARRY_FLAG = 1;
 
     // Constructor
-    private Util() {
+
+    private Util()
+    {
         //cf = false;
     }
 
@@ -99,11 +100,12 @@ public class Util {
 
     /**
      * Check the parity of a given byte and given size in bits.
-     * 
+     *
      * @param data
      * @return -
      */
-    protected static boolean checkParityOfByte(byte data) {
+    protected static boolean checkParityOfByte(byte data)
+    {
         // Extend byte to unsigned int
         int check = data & 0x000000FF;
 
@@ -116,15 +118,14 @@ public class Util {
      * Takes care of possible carry from LSB to MSB. Not beyond MSB. Does not
      * care about signed/unsigned as this doesn't effect the actual result in
      * hex.
-     * 
-     * @param word1
-     *            first word
-     * @param word2
-     *            second word
+     *
+     * @param word1    first word
+     * @param word2    second word
      * @param carryBit
      * @return sum of both words including possible carry between LSB and MSB
      */
-    protected static byte[] addWords(byte[] word1, byte[] word2, int carryBit) {
+    protected static byte[] addWords(byte[] word1, byte[] word2, int carryBit)
+    {
         byte[] result = new byte[2];
         lowerByteCarry = ((int) word1[CPU.REGISTER_LOW] & 0xFF)
                 + ((int) word2[CPU.REGISTER_LOW] & 0xFF) + carryBit;
@@ -144,17 +145,16 @@ public class Util {
      * Takes care of possible borrow from LSB to MSB. Not beyond MSB. Does not
      * care about signed/unsigned as this doesn't effect the actual result in
      * hex. Operation: word1 - (word2 + borrow)
-     * 
-     * @param word1
-     *            first word
-     * @param word2
-     *            second word
+     *
+     * @param word1     first word
+     * @param word2     second word
      * @param borrowBit
      * @return subtraction of both words plus borrow including possible borrow
      *         between LSB and MSB
      */
     protected static byte[] subtractWords(byte[] word1, byte[] word2,
-            int borrowBit) {
+                                          int borrowBit)
+    {
         byte[] result = new byte[2];
         result[CPU.REGISTER_LOW] = (byte) (word1[CPU.REGISTER_LOW] - (word2[CPU.REGISTER_LOW] + borrowBit));
         result[CPU.REGISTER_HIGH] = (byte) (word1[CPU.REGISTER_HIGH] - word2[CPU.REGISTER_HIGH]);
@@ -170,16 +170,15 @@ public class Util {
     /**
      * Adds two registers and the memory reference displacement.<BR>
      * Does not check carry or overflow flags.
-     * 
-     * @param reg1
-     *            first register to be added
-     * @param reg2
-     *            second register to be added
+     *
+     * @param reg1         first register to be added
+     * @param reg2         second register to be added
      * @param displacement
      * @return sum of both registers and memory displacement
      */
     protected static byte[] addRegRegDisp(byte[] reg1, byte[] reg2,
-            byte[] displacement) {
+                                          byte[] displacement)
+    {
         byte[] result = new byte[2];
         result[CPU.REGISTER_GENERAL_LOW] = (byte) (reg1[CPU.REGISTER_GENERAL_LOW]
                 + reg2[CPU.REGISTER_GENERAL_LOW] + displacement[CPU.REGISTER_GENERAL_LOW]);
@@ -206,12 +205,13 @@ public class Util {
     /**
      * Test the auxiliary flag (AF) for addition with possible carry.<BR>
      * AF is set when carry occurs to higher nibble.
-     * 
+     *
      * @param input
      * @param result
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_AF_ADD(byte input, byte result) {
+    protected static boolean test_AF_ADD(byte input, byte result)
+    {
         // Carry has occurred if result < input
         // E.g. 0000.1111 + 0000.0001 = 0001.0000
         if ((result & 0x0F) < (input & 0x0F)) {
@@ -223,12 +223,13 @@ public class Util {
     /**
      * Test the auxiliary flag (AF) for subtraction with possible borrow.<BR>
      * AF is set when borrow occurs from higher nibble.
-     * 
+     *
      * @param input
      * @param result
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_AF_SUB(byte input, byte result) {
+    protected static boolean test_AF_SUB(byte input, byte result)
+    {
         // Borrow has occurred if result > input
         // E.g. 0001.0000 - 0000.0001 = 0000.1111
         if ((result & 0x0F) > (input & 0x0F)) {
@@ -241,13 +242,13 @@ public class Util {
      * Test the auxiliary flag (AF) for shift operations with byte.<BR>
      * AF is set when carry occurs. This happens when last shift causes a carry
      * out of lowest nibble
-     * 
+     *
      * @param input
      * @param shifts
-     * 
      * @return true if carry/borrow occurs, false otherwise
      */
-    protected static boolean test_AF_ShiftLeft(byte input, int shifts) {
+    protected static boolean test_AF_ShiftLeft(byte input, int shifts)
+    {
         // Check if number of shifts is in range of bits in lowest nibble, else
         // no carry happens
         if (shifts > 0 && shifts <= 4) {
@@ -265,14 +266,14 @@ public class Util {
      * CF is set when unsigned overflow occurs. This happens when we cross over
      * from 255 to 0 while adding or cross over from 0 to 255 while subtracting.
      * The operation is (input1 + carry) + input2
-     * 
+     *
      * @param input1
      * @param input2
      * @param carry
-     * 
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_CF_ADD(byte input1, byte input2, int carry) {
+    protected static boolean test_CF_ADD(byte input1, byte input2, int carry)
+    {
         // There is one unsigned case when CF occurs:
         // addition: input1 + input2 + carry > 255
         if ((((int) input1) & 0xFF) + (((int) input2) & 0xFF) + carry > (((int) 0xFF) & 0xFF)) {
@@ -286,13 +287,14 @@ public class Util {
      * CF is set when unsigned overflow occurs. This happens when we cross over
      * from 65535 (0xFFFF) to 0 while adding or cross over from 0 to 65535
      * (0xFFFF) while subtracting. The operation is (input1 + carry) + input2
-     * 
+     *
      * @param input1
      * @param input2
      * @param carry
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_CF_ADD(byte[] input1, byte[] input2, int carry) {
+    protected static boolean test_CF_ADD(byte[] input1, byte[] input2, int carry)
+    {
         // There is one unsigned case when CF occurs:
         // addition: input1 + input2 + carry > 0xFFFF
         if (((((int) input1[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8)
@@ -309,17 +311,14 @@ public class Util {
      * CF is set when unsigned overflow occurs. This happens when we cross over
      * from 255 to 0 while adding or cross over from 0 to 255 while subtracting.
      * The operation is input1 - (input2 + carry)
-     * 
-     * @param input1
-     *            unsigned input1 of operation
-     * @param input2
-     *            unsigned input2 of operation
-     * @param carry
-     *            possible carry bit
-     * 
+     *
+     * @param input1 unsigned input1 of operation
+     * @param input2 unsigned input2 of operation
+     * @param carry  possible carry bit
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_CF_SUB(byte input1, byte input2, int carry) {
+    protected static boolean test_CF_SUB(byte input1, byte input2, int carry)
+    {
         // There is one unsigned case when CF occurs:
         // subtraction (input1 - (input2 + carry)): input1 + carry < input2
         // if ((((int) input1) & 0xFF) + carry < (((int) input2) & 0xFF))
@@ -334,13 +333,14 @@ public class Util {
      * CF is set when unsigned overflow occurs. This happens when we cross over
      * from 255 to 0 while adding or cross over from 0 to 255 while subtracting.
      * The operation is input1 - (input2 + carry)
-     * 
+     *
      * @param input1
      * @param input2
      * @param carry
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_CF_SUB(byte[] input1, byte[] input2, int carry) {
+    protected static boolean test_CF_SUB(byte[] input1, byte[] input2, int carry)
+    {
         // There is one unsigned case when CF occurs:
         // subtraction (input1 - (input2 + carry)): input1 < input2 + carry
         if (((((int) input1[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8)
@@ -356,15 +356,16 @@ public class Util {
      * OF is set when 2's complement signed overflow occur. This happens when we
      * cross over from 127 to -128 while adding or cross over from -128 to 127
      * while subtracting.
-     * 
+     *
      * @param input1
-     * @param input2 
+     * @param input2
      * @param result
      * @param carry
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte input1, byte input2, byte result,
-            int carry) {
+                                         int carry)
+    {
         // There are two signed cases when OF occurs:
         // "input1" + "input2" = "result"
         // (a) (positive) + (positive) = (negative)
@@ -392,15 +393,16 @@ public class Util {
      * OF is set when 2's complement signed overflow occur. This happens when we
      * cross over from 32767 (0x7FFF) to -32768 (0x8000) while adding or cross
      * over from -32768 to 32767 while subtracting.
-     * 
+     *
      * @param input1
-     * @param result 
+     * @param result
      * @param input2
      * @param carry
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte[] input1, byte[] input2,
-            byte[] result, int carry) {
+                                         byte[] result, int carry)
+    {
         // There are two signed cases when OF occurs:
         // "input1" + "input2" = "result"
         // (a) (positive) + (positive) = (negative)
@@ -413,7 +415,7 @@ public class Util {
             if ((((int) input1[CPU.REGISTER_GENERAL_HIGH]) << 8)
                     + (((int) input1[CPU.REGISTER_GENERAL_LOW]) & 0xFF) + carry < 0
                     && (((int) input2[CPU.REGISTER_GENERAL_HIGH]) << 8)
-                            + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) < 0)
+                    + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) < 0)
                 return true;
             else
                 return false;
@@ -423,7 +425,7 @@ public class Util {
             if ((((int) input1[CPU.REGISTER_GENERAL_HIGH]) << 8)
                     + (((int) input1[CPU.REGISTER_GENERAL_LOW]) & 0xFF) + carry >= 0
                     && (((int) input2[CPU.REGISTER_GENERAL_HIGH]) << 8)
-                            + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) >= 0)
+                    + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) >= 0)
                 return true;
             else
                 return false;
@@ -435,7 +437,7 @@ public class Util {
      * OF is set when 2's complement signed overflow occurs. This happens when
      * we cross over from 127 to -128 while adding or cross over from -128 to
      * 127 while subtracting.
-     * 
+     *
      * @param input1
      * @param input2
      * @param carry
@@ -443,7 +445,8 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte input1, byte input2, byte result,
-            int carry) {
+                                         int carry)
+    {
         // There are two signed cases when OF occurs:
         // "input1" - "input2" = "result"
         // (a) (positive) - (negative) = (negative)
@@ -471,7 +474,7 @@ public class Util {
      * OF is set when 2's complement signed overflow occurs. This happens when
      * we cross over from 32767 (0x7FFF) to -32768 (0x8000) while adding or
      * cross over from -32768 to 32767 while subtracting.
-     * 
+     *
      * @param input1
      * @param input2
      * @param result
@@ -479,7 +482,8 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte[] input1, byte[] input2,
-            byte[] result, int carry) {
+                                         byte[] result, int carry)
+    {
         // There are two signed cases when OF occurs:
         // "input1" - "input2" = "result"
         // (a) (positive) - (negative) = (negative)
@@ -492,7 +496,7 @@ public class Util {
             if ((((int) input2[CPU.REGISTER_GENERAL_HIGH]) << 8)
                     + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) + carry < 0
                     && (((int) result[CPU.REGISTER_GENERAL_HIGH]) << 8)
-                            + (((int) result[CPU.REGISTER_GENERAL_LOW]) & 0xFF) < 0)
+                    + (((int) result[CPU.REGISTER_GENERAL_LOW]) & 0xFF) < 0)
                 return true;
             else
                 return false;
@@ -502,7 +506,7 @@ public class Util {
             if ((((int) input2[CPU.REGISTER_GENERAL_HIGH]) << 8)
                     + (((int) input2[CPU.REGISTER_GENERAL_LOW]) & 0xFF) + carry >= 0
                     && (((int) result[CPU.REGISTER_GENERAL_HIGH]) << 8)
-                            + (((int) result[CPU.REGISTER_GENERAL_LOW]) & 0xFF) >= 0)
+                    + (((int) result[CPU.REGISTER_GENERAL_LOW]) & 0xFF) >= 0)
                 return true;
             else
                 return false;
@@ -512,13 +516,12 @@ public class Util {
     /**
      * Determines the sign of the input byte and returns the complementary
      * (sign-extended) byte
-     * 
-     * @param inputByte
-     *            Byte whose sign determines value of sign-extension
-     * 
+     *
+     * @param inputByte Byte whose sign determines value of sign-extension
      * @return Byte of value 0x00 if no sign, 0xFF if signed
      */
-    protected static byte signExtend(byte inputByte) {
+    protected static byte signExtend(byte inputByte)
+    {
         // Depending on sign from input byte, return either 0x00 (positive) or
         // 0xFF (negative)
         return (inputByte >> 7) == 0 ? (byte) 0x00 : (byte) 0xFF;
@@ -528,15 +531,16 @@ public class Util {
      * Converts a boolean[] into a byte[] Each boolean value is converted into a
      * hexadecimal (0 or 1) value and placed in a byte[]. Note: boolean[] must
      * be of multiple of 8 booleans.
-     * 
+     *
      * @param booleans
      * @return byte[] containing the converted booleans
      */
-    protected static byte[] booleansToBytes(boolean[] booleans) {
+    protected static byte[] booleansToBytes(boolean[] booleans)
+    {
         int tempValue = 0;
         // Create temporary array of integers
         int[] tempHex = new int[booleans.length / 8]; // Assumes boolean array
-                                                      // is multiple of 8
+        // is multiple of 8
 
         // Build integer array
         for (int b = tempHex.length - 1; b >= 0; b--) {
@@ -562,11 +566,12 @@ public class Util {
     /**
      * Converts a byte[] into a boolean[] Each bit is converted into a boolean
      * value and placed in a boolean[].
-     * 
+     *
      * @param bytes
      * @return boolean[] containing the converted bytes
      */
-    protected static boolean[] bytesToBooleans(byte[] bytes) {
+    protected static boolean[] bytesToBooleans(byte[] bytes)
+    {
         int tempValue = 0;
         boolean[] booleans = new boolean[bytes.length * 8];
 
@@ -586,31 +591,32 @@ public class Util {
     }
 
     /**
-     *
      * @param b
      * @return -
      */
-    protected static String convertByteToString(byte b) {
+    protected static String convertByteToString(byte b)
+    {
         return (Integer.toHexString(0x100 | (b & 0xFF)).substring(1));
     }
 
     /**
-     *
      * @param word
      * @return -
      */
-    protected static String convertWordToString(byte[] word) {
+    protected static String convertWordToString(byte[] word)
+    {
         return (Integer.toHexString(0x100 | (word[0] & 0xFF)).substring(1) + Integer
                 .toHexString(0x100 | (word[1] & 0xFF)).substring(1));
     }
 
     /**
      * Converts a given string into a byte of one integer
-     * 
+     *
      * @param strValue
      * @return int as byte
      */
-    protected static byte convertStringToByte(String strValue) {
+    protected static byte convertStringToByte(String strValue)
+    {
         // FIXME: Check if correct byte implementation
         // Parse from string to int (hex)
         try {
@@ -630,11 +636,12 @@ public class Util {
 
     /**
      * Converts a given string into a word of bytes
-     * 
+     *
      * @param strValue
      * @return byte[] as word
      */
-    protected static byte[] convertStringToWord(String strValue) {
+    protected static byte[] convertStringToWord(String strValue)
+    {
         // Create empty word
         byte[] word = new byte[2];
 
@@ -665,21 +672,22 @@ public class Util {
      * "getExponent("+d+") = "+getExponent(d)+ " != "+
      * "Math.getExponent("+d+") = "+Math.getExponent(d)); } } }
      */
+
     /**
-     *
      * @param val
      * @return -
      */
-    public static int getExponent(double val) {
+    public static int getExponent(double val)
+    {
         return (int) (((Double.doubleToRawLongBits(val) & 0x7ff0000000000000L) >> 52) - 1023L);
     }
 
     /**
-     *
      * @param val
      * @return -
      */
-    public static int getExponent(float val) {
+    public static int getExponent(float val)
+    {
         return ((Float.floatToRawIntBits(val) & 0x7f800000) >> 23) - 127;
     }
 
@@ -695,13 +703,14 @@ public class Util {
      * "scalb("+f+", "+i+") = "+scalb(f, i)+ " != "+
      * "Math.scalb("+f+", "+i+") = "+Math.scalb(f, i)); } } }
      */
+
     /**
-     *
      * @param d
      * @param i
      * @return -
      */
-    public static double scalb(double d, int i) {
+    public static double scalb(double d, int i)
+    {
         int j = 0;
         char c = '\0';
         double d1 = 0.0;
@@ -724,12 +733,12 @@ public class Util {
     }
 
     /**
-     *
      * @param f
      * @param i
      * @return -
      */
-    public static float scalb(float f, int i) {
+    public static float scalb(float f, int i)
+    {
         i = Math.max(Math.min(i, 278), -278);
         return (float) ((double) f * Math.pow(2, i));
     }

@@ -31,7 +31,6 @@ import dioscuri.exception.ModuleException;
 //import org.jpc.emulator.motherboard.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -41,6 +40,7 @@ public class UCodeStaticMethods {
     private static final ProcessorException exceptionGP = new ProcessorException(
             Processor.PROC_EXCEPTION_GP, 0, true);
     protected static final boolean[] parityMap;
+
     static {
         parityMap = new boolean[256];
         for (int i = 0; i < 256; i++) {
@@ -54,345 +54,344 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eip
      * @param x86length
      * @return -
      */
-    public static int eip_nef_EIP_UPDATE_eip_x86length(int eip, int x86length) {
+    public static int eip_nef_EIP_UPDATE_eip_x86length(int eip, int x86length)
+    {
         return eip + x86length;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg0_nef_LOAD0_AL_eax(int eax) {
+    public static int reg0_nef_LOAD0_AL_eax(int eax)
+    {
         return eax & 0xff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg0_nef_LOAD0_CL_ecx(int ecx) {
+    public static int reg0_nef_LOAD0_CL_ecx(int ecx)
+    {
         return ecx & 0xff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg0_nef_LOAD0_DL_edx(int edx) {
+    public static int reg0_nef_LOAD0_DL_edx(int edx)
+    {
         return edx & 0xff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg0_nef_LOAD0_BL_ebx(int ebx) {
+    public static int reg0_nef_LOAD0_BL_ebx(int ebx)
+    {
         return ebx & 0xff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg0_nef_LOAD0_AH_eax(int eax) {
+    public static int reg0_nef_LOAD0_AH_eax(int eax)
+    {
         return (eax >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg0_nef_LOAD0_CH_ecx(int ecx) {
+    public static int reg0_nef_LOAD0_CH_ecx(int ecx)
+    {
         return (ecx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg0_nef_LOAD0_DH_edx(int edx) {
+    public static int reg0_nef_LOAD0_DH_edx(int edx)
+    {
         return (edx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg0_nef_LOAD0_BH_ebx(int ebx) {
+    public static int reg0_nef_LOAD0_BH_ebx(int ebx)
+    {
         return (ebx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg0_nef_LOAD0_AX_eax(int eax) {
+    public static int reg0_nef_LOAD0_AX_eax(int eax)
+    {
         return eax & 0xffff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg0_nef_LOAD0_CX_ecx(int ecx) {
+    public static int reg0_nef_LOAD0_CX_ecx(int ecx)
+    {
         return ecx & 0xffff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg0_nef_LOAD0_DX_edx(int edx) {
+    public static int reg0_nef_LOAD0_DX_edx(int edx)
+    {
         return edx & 0xffff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg0_nef_LOAD0_BX_ebx(int ebx) {
+    public static int reg0_nef_LOAD0_BX_ebx(int ebx)
+    {
         return ebx & 0xffff;
     }
 
     /**
-     *
      * @param esp
      * @return -
      */
-    public static int reg0_nef_LOAD0_SP_esp(int esp) {
+    public static int reg0_nef_LOAD0_SP_esp(int esp)
+    {
         return esp & 0xffff;
     }
 
     /**
-     *
      * @param ebp
      * @return -
      */
-    public static int reg0_nef_LOAD0_BP_ebp(int ebp) {
+    public static int reg0_nef_LOAD0_BP_ebp(int ebp)
+    {
         return ebp & 0xffff;
     }
 
     /**
-     *
      * @param esi
      * @return -
      */
-    public static int reg0_nef_LOAD0_SI_esi(int esi) {
+    public static int reg0_nef_LOAD0_SI_esi(int esi)
+    {
         return esi & 0xffff;
     }
 
     /**
-     *
      * @param edi
      * @return -
      */
-    public static int reg0_nef_LOAD0_DI_edi(int edi) {
+    public static int reg0_nef_LOAD0_DI_edi(int edi)
+    {
         return edi & 0xffff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg0_nef_LOAD0_EAX_eax(int eax) {
+    public static int reg0_nef_LOAD0_EAX_eax(int eax)
+    {
         return eax;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg0_nef_LOAD0_ECX_ecx(int ecx) {
+    public static int reg0_nef_LOAD0_ECX_ecx(int ecx)
+    {
         return ecx;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg0_nef_LOAD0_EDX_edx(int edx) {
+    public static int reg0_nef_LOAD0_EDX_edx(int edx)
+    {
         return edx;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg0_nef_LOAD0_EBX_ebx(int ebx) {
+    public static int reg0_nef_LOAD0_EBX_ebx(int ebx)
+    {
         return ebx;
     }
 
     /**
-     *
      * @param esp
      * @return -
      */
-    public static int reg0_nef_LOAD0_ESP_esp(int esp) {
+    public static int reg0_nef_LOAD0_ESP_esp(int esp)
+    {
         return esp;
     }
 
     /**
-     *
      * @param ebp
      * @return -
      */
-    public static int reg0_nef_LOAD0_EBP_ebp(int ebp) {
+    public static int reg0_nef_LOAD0_EBP_ebp(int ebp)
+    {
         return ebp;
     }
 
     /**
-     *
      * @param esi
      * @return -
      */
-    public static int reg0_nef_LOAD0_ESI_esi(int esi) {
+    public static int reg0_nef_LOAD0_ESI_esi(int esi)
+    {
         return esi;
     }
 
     /**
-     *
      * @param edi
      * @return -
      */
-    public static int reg0_nef_LOAD0_EDI_edi(int edi) {
+    public static int reg0_nef_LOAD0_EDI_edi(int edi)
+    {
         return edi;
     }
 
     /**
-     *
      * @param es
      * @return -
      */
-    public static int reg0_hef_LOAD0_ES_es(Segment es) {
+    public static int reg0_hef_LOAD0_ES_es(Segment es)
+    {
         return 0xffff & es.getSelector();
     }
 
     /**
-     *
      * @param cs
      * @return -
      */
-    public static int reg0_hef_LOAD0_CS_cs(Segment cs) {
+    public static int reg0_hef_LOAD0_CS_cs(Segment cs)
+    {
         return 0xffff & cs.getSelector();
     }
 
     /**
-     *
      * @param ss
      * @return -
      */
-    public static int reg0_hef_LOAD0_SS_ss(Segment ss) {
+    public static int reg0_hef_LOAD0_SS_ss(Segment ss)
+    {
         return 0xffff & ss.getSelector();
     }
 
     /**
-     *
      * @param ds
      * @return -
      */
-    public static int reg0_hef_LOAD0_DS_ds(Segment ds) {
+    public static int reg0_hef_LOAD0_DS_ds(Segment ds)
+    {
         return 0xffff & ds.getSelector();
     }
 
     /**
-     *
      * @param fs
      * @return -
      */
-    public static int reg0_hef_LOAD0_FS_fs(Segment fs) {
+    public static int reg0_hef_LOAD0_FS_fs(Segment fs)
+    {
         return 0xffff & fs.getSelector();
     }
 
     /**
-     *
      * @param gs
      * @return -
      */
-    public static int reg0_hef_LOAD0_GS_gs(Segment gs) {
+    public static int reg0_hef_LOAD0_GS_gs(Segment gs)
+    {
         return 0xffff & gs.getSelector();
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg0_nef_LOAD0_IB_immediate(int immediate) {
+    public static int reg0_nef_LOAD0_IB_immediate(int immediate)
+    {
         return immediate & 0xff;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg0_nef_LOAD0_IW_immediate(int immediate) {
+    public static int reg0_nef_LOAD0_IW_immediate(int immediate)
+    {
         return immediate & 0xffff;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg0_nef_LOAD0_ID_immediate(int immediate) {
+    public static int reg0_nef_LOAD0_ID_immediate(int immediate)
+    {
         return immediate;
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
-    public static int reg0_hef_LOAD0_MEM_BYTE_seg0_addr0(Segment seg0, int addr0) {
+    public static int reg0_hef_LOAD0_MEM_BYTE_seg0_addr0(Segment seg0, int addr0)
+    {
         return 0xff & seg0.getByte(addr0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
-    public static int reg0_hef_LOAD0_MEM_WORD_seg0_addr0(Segment seg0, int addr0) {
+    public static int reg0_hef_LOAD0_MEM_WORD_seg0_addr0(Segment seg0, int addr0)
+    {
         return 0xffff & seg0.getWord(addr0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int reg0_hef_LOAD0_MEM_DWORD_seg0_addr0(Segment seg0,
-            int addr0) {
+                                                          int addr0)
+    {
         return seg0.getDoubleWord(addr0);
     }
 
     /**
-     *
      * @param cflag
      * @param pflag
      * @param aflag
@@ -408,7 +407,8 @@ public class UCodeStaticMethods {
      */
     public static int reg0_nef_LOAD0_FLAGS_cflag_pflag_aflag_zflag_sflag_tflag_iflag_dflag_oflag_iopl_ntflag(
             int cflag, int pflag, int aflag, int zflag, int sflag, int tflag,
-            int iflag, int dflag, int oflag, int iopl, int ntflag) {
+            int iflag, int dflag, int oflag, int iopl, int ntflag)
+    {
         int eflags = 0;
         eflags |= ntflag << 14;
         eflags |= iopl << 12;
@@ -426,7 +426,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cflag
      * @param pflag
      * @param aflag
@@ -449,7 +448,8 @@ public class UCodeStaticMethods {
     public static int reg0_nef_LOAD0_EFLAGS_cflag_pflag_aflag_zflag_sflag_tflag_iflag_dflag_oflag_iopl_ntflag_rflag_vmflag_acflag_viflag_vipflag_idflag(
             int cflag, int pflag, int aflag, int zflag, int sflag, int tflag,
             int iflag, int dflag, int oflag, int iopl, int ntflag, int rflag,
-            int vmflag, int acflag, int viflag, int vipflag, int idflag) {
+            int vmflag, int acflag, int viflag, int vipflag, int idflag)
+    {
         int eflags = 0;
         eflags |= idflag << 21;
         eflags |= vipflag << 20;
@@ -474,616 +474,616 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param addr0
      * @return -
      */
-    public static int reg0_nef_LOAD0_ADDR_addr0(int addr0) {
+    public static int reg0_nef_LOAD0_ADDR_addr0(int addr0)
+    {
         return addr0;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg1_nef_LOAD1_AL_eax(int eax) {
+    public static int reg1_nef_LOAD1_AL_eax(int eax)
+    {
         return eax & 0xff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg1_nef_LOAD1_CL_ecx(int ecx) {
+    public static int reg1_nef_LOAD1_CL_ecx(int ecx)
+    {
         return ecx & 0xff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg1_nef_LOAD1_DL_edx(int edx) {
+    public static int reg1_nef_LOAD1_DL_edx(int edx)
+    {
         return edx & 0xff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg1_nef_LOAD1_BL_ebx(int ebx) {
+    public static int reg1_nef_LOAD1_BL_ebx(int ebx)
+    {
         return ebx & 0xff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg1_nef_LOAD1_AH_eax(int eax) {
+    public static int reg1_nef_LOAD1_AH_eax(int eax)
+    {
         return (eax >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg1_nef_LOAD1_CH_ecx(int ecx) {
+    public static int reg1_nef_LOAD1_CH_ecx(int ecx)
+    {
         return (ecx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg1_nef_LOAD1_DH_edx(int edx) {
+    public static int reg1_nef_LOAD1_DH_edx(int edx)
+    {
         return (edx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg1_nef_LOAD1_BH_ebx(int ebx) {
+    public static int reg1_nef_LOAD1_BH_ebx(int ebx)
+    {
         return (ebx >>> 8) & 0xff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg1_nef_LOAD1_AX_eax(int eax) {
+    public static int reg1_nef_LOAD1_AX_eax(int eax)
+    {
         return eax & 0xffff;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg1_nef_LOAD1_CX_ecx(int ecx) {
+    public static int reg1_nef_LOAD1_CX_ecx(int ecx)
+    {
         return ecx & 0xffff;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg1_nef_LOAD1_DX_edx(int edx) {
+    public static int reg1_nef_LOAD1_DX_edx(int edx)
+    {
         return edx & 0xffff;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg1_nef_LOAD1_BX_ebx(int ebx) {
+    public static int reg1_nef_LOAD1_BX_ebx(int ebx)
+    {
         return ebx & 0xffff;
     }
 
     /**
-     *
      * @param esp
      * @return -
      */
-    public static int reg1_nef_LOAD1_SP_esp(int esp) {
+    public static int reg1_nef_LOAD1_SP_esp(int esp)
+    {
         return esp & 0xffff;
     }
 
     /**
-     *
      * @param ebp
      * @return -
      */
-    public static int reg1_nef_LOAD1_BP_ebp(int ebp) {
+    public static int reg1_nef_LOAD1_BP_ebp(int ebp)
+    {
         return ebp & 0xffff;
     }
 
     /**
-     *
      * @param esi
      * @return -
      */
-    public static int reg1_nef_LOAD1_SI_esi(int esi) {
+    public static int reg1_nef_LOAD1_SI_esi(int esi)
+    {
         return esi & 0xffff;
     }
 
     /**
-     *
      * @param edi
      * @return -
      */
-    public static int reg1_nef_LOAD1_DI_edi(int edi) {
+    public static int reg1_nef_LOAD1_DI_edi(int edi)
+    {
         return edi & 0xffff;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg1_nef_LOAD1_EAX_eax(int eax) {
+    public static int reg1_nef_LOAD1_EAX_eax(int eax)
+    {
         return eax;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg1_nef_LOAD1_ECX_ecx(int ecx) {
+    public static int reg1_nef_LOAD1_ECX_ecx(int ecx)
+    {
         return ecx;
     }
 
     /**
-     *
      * @param edx
      * @return -
      */
-    public static int reg1_nef_LOAD1_EDX_edx(int edx) {
+    public static int reg1_nef_LOAD1_EDX_edx(int edx)
+    {
         return edx;
     }
 
     /**
-     *
      * @param ebx
      * @return -
      */
-    public static int reg1_nef_LOAD1_EBX_ebx(int ebx) {
+    public static int reg1_nef_LOAD1_EBX_ebx(int ebx)
+    {
         return ebx;
     }
 
     /**
-     *
      * @param esp
      * @return -
      */
-    public static int reg1_nef_LOAD1_ESP_esp(int esp) {
+    public static int reg1_nef_LOAD1_ESP_esp(int esp)
+    {
         return esp;
     }
 
     /**
-     *
      * @param ebp
      * @return -
      */
-    public static int reg1_nef_LOAD1_EBP_ebp(int ebp) {
+    public static int reg1_nef_LOAD1_EBP_ebp(int ebp)
+    {
         return ebp;
     }
 
     /**
-     *
      * @param esi
      * @return -
      */
-    public static int reg1_nef_LOAD1_ESI_esi(int esi) {
+    public static int reg1_nef_LOAD1_ESI_esi(int esi)
+    {
         return esi;
     }
 
     /**
-     *
      * @param edi
      * @return -
      */
-    public static int reg1_nef_LOAD1_EDI_edi(int edi) {
+    public static int reg1_nef_LOAD1_EDI_edi(int edi)
+    {
         return edi;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg1_nef_LOAD1_IB_immediate(int immediate) {
+    public static int reg1_nef_LOAD1_IB_immediate(int immediate)
+    {
         return immediate & 0xff;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg1_nef_LOAD1_IW_immediate(int immediate) {
+    public static int reg1_nef_LOAD1_IW_immediate(int immediate)
+    {
         return immediate & 0xffff;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg1_nef_LOAD1_ID_immediate(int immediate) {
+    public static int reg1_nef_LOAD1_ID_immediate(int immediate)
+    {
         return immediate;
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
-    public static int reg1_hef_LOAD1_MEM_BYTE_seg0_addr0(Segment seg0, int addr0) {
+    public static int reg1_hef_LOAD1_MEM_BYTE_seg0_addr0(Segment seg0, int addr0)
+    {
         return 0xff & seg0.getByte(addr0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
-    public static int reg1_hef_LOAD1_MEM_WORD_seg0_addr0(Segment seg0, int addr0) {
+    public static int reg1_hef_LOAD1_MEM_WORD_seg0_addr0(Segment seg0, int addr0)
+    {
         return 0xffff & seg0.getWord(addr0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int reg1_hef_LOAD1_MEM_DWORD_seg0_addr0(Segment seg0,
-            int addr0) {
+                                                          int addr0)
+    {
         return seg0.getDoubleWord(addr0);
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg2_nef_LOAD2_EAX_eax(int eax) {
+    public static int reg2_nef_LOAD2_EAX_eax(int eax)
+    {
         return eax;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg2_nef_LOAD2_AX_eax(int eax) {
+    public static int reg2_nef_LOAD2_AX_eax(int eax)
+    {
         return 0xffff & eax;
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int reg2_nef_LOAD2_AL_eax(int eax) {
+    public static int reg2_nef_LOAD2_AL_eax(int eax)
+    {
         return 0xff & eax;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int reg2_nef_LOAD2_CL_ecx(int ecx) {
+    public static int reg2_nef_LOAD2_CL_ecx(int ecx)
+    {
         return 0xff & ecx;
     }
 
     /**
-     *
      * @param immediate
      * @return -
      */
-    public static int reg2_nef_LOAD2_IB_immediate(int immediate) {
+    public static int reg2_nef_LOAD2_IB_immediate(int immediate)
+    {
         return immediate & 0xff;
     }
 
     /**
-     *
      * @param cs
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_CS_cs(Segment cs) {
+    public static Segment seg0_nef_LOAD_SEG_CS_cs(Segment cs)
+    {
         return cs;
     }
 
     /**
-     *
      * @param ds
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_DS_ds(Segment ds) {
+    public static Segment seg0_nef_LOAD_SEG_DS_ds(Segment ds)
+    {
         return ds;
     }
 
     /**
-     *
      * @param es
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_ES_es(Segment es) {
+    public static Segment seg0_nef_LOAD_SEG_ES_es(Segment es)
+    {
         return es;
     }
 
     /**
-     *
      * @param fs
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_FS_fs(Segment fs) {
+    public static Segment seg0_nef_LOAD_SEG_FS_fs(Segment fs)
+    {
         return fs;
     }
 
     /**
-     *
      * @param gs
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_GS_gs(Segment gs) {
+    public static Segment seg0_nef_LOAD_SEG_GS_gs(Segment gs)
+    {
         return gs;
     }
 
     /**
-     *
      * @param ss
      * @return -
      */
-    public static Segment seg0_nef_LOAD_SEG_SS_ss(Segment ss) {
+    public static Segment seg0_nef_LOAD_SEG_SS_ss(Segment ss)
+    {
         return ss;
     }
 
     /**
-     *
      * @param eax
      * @param reg0
      * @return -
      */
-    public static int eax_nef_STORE0_AL_eax_reg0(int eax, int reg0) {
+    public static int eax_nef_STORE0_AL_eax_reg0(int eax, int reg0)
+    {
         return (eax & ~0xff) | (reg0 & 0xff);
     }
 
     /**
-     *
      * @param ecx
      * @param reg0
      * @return -
      */
-    public static int ecx_nef_STORE0_CL_ecx_reg0(int ecx, int reg0) {
+    public static int ecx_nef_STORE0_CL_ecx_reg0(int ecx, int reg0)
+    {
         return (ecx & ~0xff) | (reg0 & 0xff);
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @return -
      */
-    public static int edx_nef_STORE0_DL_edx_reg0(int edx, int reg0) {
+    public static int edx_nef_STORE0_DL_edx_reg0(int edx, int reg0)
+    {
         return (edx & ~0xff) | (reg0 & 0xff);
     }
 
     /**
-     *
      * @param ebx
      * @param reg0
      * @return -
      */
-    public static int ebx_nef_STORE0_BL_ebx_reg0(int ebx, int reg0) {
+    public static int ebx_nef_STORE0_BL_ebx_reg0(int ebx, int reg0)
+    {
         return (ebx & ~0xff) | (reg0 & 0xff);
     }
 
     /**
-     *
      * @param eax
      * @param reg0
      * @return -
      */
-    public static int eax_nef_STORE0_AH_eax_reg0(int eax, int reg0) {
+    public static int eax_nef_STORE0_AH_eax_reg0(int eax, int reg0)
+    {
         return (eax & ~0xff00) | ((reg0 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param ecx
      * @param reg0
      * @return -
      */
-    public static int ecx_nef_STORE0_CH_ecx_reg0(int ecx, int reg0) {
+    public static int ecx_nef_STORE0_CH_ecx_reg0(int ecx, int reg0)
+    {
         return (ecx & ~0xff00) | ((reg0 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @return -
      */
-    public static int edx_nef_STORE0_DH_edx_reg0(int edx, int reg0) {
+    public static int edx_nef_STORE0_DH_edx_reg0(int edx, int reg0)
+    {
         return (edx & ~0xff00) | ((reg0 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param ebx
      * @param reg0
      * @return -
      */
-    public static int ebx_nef_STORE0_BH_ebx_reg0(int ebx, int reg0) {
+    public static int ebx_nef_STORE0_BH_ebx_reg0(int ebx, int reg0)
+    {
         return (ebx & ~0xff00) | ((reg0 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param eax
      * @param reg0
      * @return -
      */
-    public static int eax_nef_STORE0_AX_eax_reg0(int eax, int reg0) {
+    public static int eax_nef_STORE0_AX_eax_reg0(int eax, int reg0)
+    {
         return (eax & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param ecx
      * @param reg0
      * @return -
      */
-    public static int ecx_nef_STORE0_CX_ecx_reg0(int ecx, int reg0) {
+    public static int ecx_nef_STORE0_CX_ecx_reg0(int ecx, int reg0)
+    {
         return (ecx & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @return -
      */
-    public static int edx_nef_STORE0_DX_edx_reg0(int edx, int reg0) {
+    public static int edx_nef_STORE0_DX_edx_reg0(int edx, int reg0)
+    {
         return (edx & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param ebx
      * @param reg0
      * @return -
      */
-    public static int ebx_nef_STORE0_BX_ebx_reg0(int ebx, int reg0) {
+    public static int ebx_nef_STORE0_BX_ebx_reg0(int ebx, int reg0)
+    {
         return (ebx & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param esp
      * @param reg0
      * @return -
      */
-    public static int esp_nef_STORE0_SP_esp_reg0(int esp, int reg0) {
+    public static int esp_nef_STORE0_SP_esp_reg0(int esp, int reg0)
+    {
         return (esp & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param ebp
      * @param reg0
      * @return -
      */
-    public static int ebp_nef_STORE0_BP_ebp_reg0(int ebp, int reg0) {
+    public static int ebp_nef_STORE0_BP_ebp_reg0(int ebp, int reg0)
+    {
         return (ebp & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param esi
      * @param reg0
      * @return -
      */
-    public static int esi_nef_STORE0_SI_esi_reg0(int esi, int reg0) {
+    public static int esi_nef_STORE0_SI_esi_reg0(int esi, int reg0)
+    {
         return (esi & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param edi
      * @param reg0
      * @return -
      */
-    public static int edi_nef_STORE0_DI_edi_reg0(int edi, int reg0) {
+    public static int edi_nef_STORE0_DI_edi_reg0(int edi, int reg0)
+    {
         return (edi & ~0xffff) | (reg0 & 0xffff);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int eax_nef_STORE0_EAX_reg0(int reg0) {
+    public static int eax_nef_STORE0_EAX_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int ecx_nef_STORE0_ECX_reg0(int reg0) {
+    public static int ecx_nef_STORE0_ECX_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int edx_nef_STORE0_EDX_reg0(int reg0) {
+    public static int edx_nef_STORE0_EDX_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int ebx_nef_STORE0_EBX_reg0(int reg0) {
+    public static int ebx_nef_STORE0_EBX_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int esp_nef_STORE0_ESP_reg0(int reg0) {
+    public static int esp_nef_STORE0_ESP_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int ebp_nef_STORE0_EBP_reg0(int reg0) {
+    public static int ebp_nef_STORE0_EBP_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int esi_nef_STORE0_ESI_reg0(int reg0) {
+    public static int esi_nef_STORE0_ESI_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int edi_nef_STORE0_EDI_reg0(int reg0) {
+    public static int edi_nef_STORE0_EDI_reg0(int reg0)
+    {
         return reg0;
     }
 
@@ -1165,134 +1165,134 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg0
      */
     public static void memorywrite_hef_STORE0_MEM_BYTE_seg0_addr0_reg0(
-            Segment seg0, int addr0, int reg0) {
+            Segment seg0, int addr0, int reg0)
+    {
         seg0.setByte(addr0, (byte) reg0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg0
      */
     public static void memorywrite_hef_STORE0_MEM_WORD_seg0_addr0_reg0(
-            Segment seg0, int addr0, int reg0) {
+            Segment seg0, int addr0, int reg0)
+    {
         seg0.setWord(addr0, (short) reg0);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg0
      */
     public static void memorywrite_hef_STORE0_MEM_DWORD_seg0_addr0_reg0(
-            Segment seg0, int addr0, int reg0) {
+            Segment seg0, int addr0, int reg0)
+    {
         seg0.setDoubleWord(addr0, reg0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0010) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0001) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean dflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean dflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0400) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean iflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean iflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0200) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int iopl_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static int iopl_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 >>> 12) & 0x0003);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean ntflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean ntflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x4000) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0800) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0004) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0080) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean tflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean tflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0100) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_STORE0_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_STORE0_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0x0040) != 0);
     }
 
@@ -1386,234 +1386,234 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param eax
      * @param reg1
      * @return -
      */
-    public static int eax_nef_STORE1_AL_eax_reg1(int eax, int reg1) {
+    public static int eax_nef_STORE1_AL_eax_reg1(int eax, int reg1)
+    {
         return (eax & ~0xff) | (reg1 & 0xff);
     }
 
     /**
-     *
      * @param ecx
      * @param reg1
      * @return -
      */
-    public static int ecx_nef_STORE1_CL_ecx_reg1(int ecx, int reg1) {
+    public static int ecx_nef_STORE1_CL_ecx_reg1(int ecx, int reg1)
+    {
         return (ecx & ~0xff) | (reg1 & 0xff);
     }
 
     /**
-     *
      * @param edx
      * @param reg1
      * @return -
      */
-    public static int edx_nef_STORE1_DL_edx_reg1(int edx, int reg1) {
+    public static int edx_nef_STORE1_DL_edx_reg1(int edx, int reg1)
+    {
         return (edx & ~0xff) | (reg1 & 0xff);
     }
 
     /**
-     *
      * @param ebx
      * @param reg1
      * @return -
      */
-    public static int ebx_nef_STORE1_BL_ebx_reg1(int ebx, int reg1) {
+    public static int ebx_nef_STORE1_BL_ebx_reg1(int ebx, int reg1)
+    {
         return (ebx & ~0xff) | (reg1 & 0xff);
     }
 
     /**
-     *
      * @param eax
      * @param reg1
      * @return -
      */
-    public static int eax_nef_STORE1_AH_eax_reg1(int eax, int reg1) {
+    public static int eax_nef_STORE1_AH_eax_reg1(int eax, int reg1)
+    {
         return (eax & ~0xff00) | ((reg1 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param ecx
      * @param reg1
      * @return -
      */
-    public static int ecx_nef_STORE1_CH_ecx_reg1(int ecx, int reg1) {
+    public static int ecx_nef_STORE1_CH_ecx_reg1(int ecx, int reg1)
+    {
         return (ecx & ~0xff00) | ((reg1 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param edx
      * @param reg1
      * @return -
      */
-    public static int edx_nef_STORE1_DH_edx_reg1(int edx, int reg1) {
+    public static int edx_nef_STORE1_DH_edx_reg1(int edx, int reg1)
+    {
         return (edx & ~0xff00) | ((reg1 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param ebx
      * @param reg1
      * @return -
      */
-    public static int ebx_nef_STORE1_BH_ebx_reg1(int ebx, int reg1) {
+    public static int ebx_nef_STORE1_BH_ebx_reg1(int ebx, int reg1)
+    {
         return (ebx & ~0xff00) | ((reg1 << 8) & 0xff00);
     }
 
     /**
-     *
      * @param eax
      * @param reg1
      * @return -
      */
-    public static int eax_nef_STORE1_AX_eax_reg1(int eax, int reg1) {
+    public static int eax_nef_STORE1_AX_eax_reg1(int eax, int reg1)
+    {
         return (eax & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param ecx
      * @param reg1
      * @return -
      */
-    public static int ecx_nef_STORE1_CX_ecx_reg1(int ecx, int reg1) {
+    public static int ecx_nef_STORE1_CX_ecx_reg1(int ecx, int reg1)
+    {
         return (ecx & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param edx
      * @param reg1
      * @return -
      */
-    public static int edx_nef_STORE1_DX_edx_reg1(int edx, int reg1) {
+    public static int edx_nef_STORE1_DX_edx_reg1(int edx, int reg1)
+    {
         return (edx & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param ebx
      * @param reg1
      * @return -
      */
-    public static int ebx_nef_STORE1_BX_ebx_reg1(int ebx, int reg1) {
+    public static int ebx_nef_STORE1_BX_ebx_reg1(int ebx, int reg1)
+    {
         return (ebx & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param esp
      * @param reg1
      * @return -
      */
-    public static int esp_nef_STORE1_SP_esp_reg1(int esp, int reg1) {
+    public static int esp_nef_STORE1_SP_esp_reg1(int esp, int reg1)
+    {
         return (esp & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param ebp
      * @param reg1
      * @return -
      */
-    public static int ebp_nef_STORE1_BP_ebp_reg1(int ebp, int reg1) {
+    public static int ebp_nef_STORE1_BP_ebp_reg1(int ebp, int reg1)
+    {
         return (ebp & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param esi
      * @param reg1
      * @return -
      */
-    public static int esi_nef_STORE1_SI_esi_reg1(int esi, int reg1) {
+    public static int esi_nef_STORE1_SI_esi_reg1(int esi, int reg1)
+    {
         return (esi & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param edi
      * @param reg1
      * @return -
      */
-    public static int edi_nef_STORE1_DI_edi_reg1(int edi, int reg1) {
+    public static int edi_nef_STORE1_DI_edi_reg1(int edi, int reg1)
+    {
         return (edi & ~0xffff) | (reg1 & 0xffff);
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int eax_nef_STORE1_EAX_reg1(int reg1) {
+    public static int eax_nef_STORE1_EAX_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int ecx_nef_STORE1_ECX_reg1(int reg1) {
+    public static int ecx_nef_STORE1_ECX_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int edx_nef_STORE1_EDX_reg1(int reg1) {
+    public static int edx_nef_STORE1_EDX_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int ebx_nef_STORE1_EBX_reg1(int reg1) {
+    public static int ebx_nef_STORE1_EBX_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int esp_nef_STORE1_ESP_reg1(int reg1) {
+    public static int esp_nef_STORE1_ESP_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int ebp_nef_STORE1_EBP_reg1(int reg1) {
+    public static int ebp_nef_STORE1_EBP_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int esi_nef_STORE1_ESI_reg1(int reg1) {
+    public static int esi_nef_STORE1_ESI_reg1(int reg1)
+    {
         return reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int edi_nef_STORE1_EDI_reg1(int reg1) {
+    public static int edi_nef_STORE1_EDI_reg1(int reg1)
+    {
         return reg1;
     }
 
@@ -1695,542 +1695,541 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg1
      */
     public static void memorywrite_hef_STORE1_MEM_BYTE_seg0_addr0_reg1(
-            Segment seg0, int addr0, int reg1) {
+            Segment seg0, int addr0, int reg1)
+    {
         seg0.setByte(addr0, (byte) reg1);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg1
      */
     public static void memorywrite_hef_STORE1_MEM_WORD_seg0_addr0_reg1(
-            Segment seg0, int addr0, int reg1) {
+            Segment seg0, int addr0, int reg1)
+    {
         seg0.setWord(addr0, (short) reg1);
     }
 
     /**
-     *
      * @param seg0
      * @param addr0
      * @param reg1
      */
     public static void memorywrite_hef_STORE1_MEM_DWORD_seg0_addr0_reg1(
-            Segment seg0, int addr0, int reg1) {
+            Segment seg0, int addr0, int reg1)
+    {
         seg0.setDoubleWord(addr0, reg1);
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_AX_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_AX_addr0_eax(int addr0, int eax)
+    {
         return addr0 + ((short) eax);
     }
 
     /**
-     *
      * @param addr0
      * @param ecx
      * @return -
      */
-    public static int addr0_nef_ADDR_CX_addr0_ecx(int addr0, int ecx) {
+    public static int addr0_nef_ADDR_CX_addr0_ecx(int addr0, int ecx)
+    {
         return addr0 + ((short) ecx);
     }
 
     /**
-     *
      * @param addr0
      * @param edx
      * @return -
      */
-    public static int addr0_nef_ADDR_DX_addr0_edx(int addr0, int edx) {
+    public static int addr0_nef_ADDR_DX_addr0_edx(int addr0, int edx)
+    {
         return addr0 + ((short) edx);
     }
 
     /**
-     *
      * @param addr0
      * @param ebx
      * @return -
      */
-    public static int addr0_nef_ADDR_BX_addr0_ebx(int addr0, int ebx) {
+    public static int addr0_nef_ADDR_BX_addr0_ebx(int addr0, int ebx)
+    {
         return addr0 + ((short) ebx);
     }
 
     /**
-     *
      * @param addr0
      * @param esp
      * @return -
      */
-    public static int addr0_nef_ADDR_SP_addr0_esp(int addr0, int esp) {
+    public static int addr0_nef_ADDR_SP_addr0_esp(int addr0, int esp)
+    {
         return addr0 + ((short) esp);
     }
 
     /**
-     *
      * @param addr0
      * @param ebp
      * @return -
      */
-    public static int addr0_nef_ADDR_BP_addr0_ebp(int addr0, int ebp) {
+    public static int addr0_nef_ADDR_BP_addr0_ebp(int addr0, int ebp)
+    {
         return addr0 + ((short) ebp);
     }
 
     /**
-     *
      * @param addr0
      * @param esi
      * @return -
      */
-    public static int addr0_nef_ADDR_SI_addr0_esi(int addr0, int esi) {
+    public static int addr0_nef_ADDR_SI_addr0_esi(int addr0, int esi)
+    {
         return addr0 + ((short) esi);
     }
 
     /**
-     *
      * @param addr0
      * @param edi
      * @return -
      */
-    public static int addr0_nef_ADDR_DI_addr0_edi(int addr0, int edi) {
+    public static int addr0_nef_ADDR_DI_addr0_edi(int addr0, int edi)
+    {
         return addr0 + ((short) edi);
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_EAX_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_EAX_addr0_eax(int addr0, int eax)
+    {
         return addr0 + eax;
     }
 
     /**
-     *
      * @param addr0
      * @param ecx
      * @return -
      */
-    public static int addr0_nef_ADDR_ECX_addr0_ecx(int addr0, int ecx) {
+    public static int addr0_nef_ADDR_ECX_addr0_ecx(int addr0, int ecx)
+    {
         return addr0 + ecx;
     }
 
     /**
-     *
      * @param addr0
      * @param edx
      * @return -
      */
-    public static int addr0_nef_ADDR_EDX_addr0_edx(int addr0, int edx) {
+    public static int addr0_nef_ADDR_EDX_addr0_edx(int addr0, int edx)
+    {
         return addr0 + edx;
     }
 
     /**
-     *
      * @param addr0
      * @param ebx
      * @return -
      */
-    public static int addr0_nef_ADDR_EBX_addr0_ebx(int addr0, int ebx) {
+    public static int addr0_nef_ADDR_EBX_addr0_ebx(int addr0, int ebx)
+    {
         return addr0 + ebx;
     }
 
     /**
-     *
      * @param addr0
      * @param esp
      * @return -
      */
-    public static int addr0_nef_ADDR_ESP_addr0_esp(int addr0, int esp) {
+    public static int addr0_nef_ADDR_ESP_addr0_esp(int addr0, int esp)
+    {
         return addr0 + esp;
     }
 
     /**
-     *
      * @param addr0
      * @param ebp
      * @return -
      */
-    public static int addr0_nef_ADDR_EBP_addr0_ebp(int addr0, int ebp) {
+    public static int addr0_nef_ADDR_EBP_addr0_ebp(int addr0, int ebp)
+    {
         return addr0 + ebp;
     }
 
     /**
-     *
      * @param addr0
      * @param esi
      * @return -
      */
-    public static int addr0_nef_ADDR_ESI_addr0_esi(int addr0, int esi) {
+    public static int addr0_nef_ADDR_ESI_addr0_esi(int addr0, int esi)
+    {
         return addr0 + esi;
     }
 
     /**
-     *
      * @param addr0
      * @param edi
      * @return -
      */
-    public static int addr0_nef_ADDR_EDI_addr0_edi(int addr0, int edi) {
+    public static int addr0_nef_ADDR_EDI_addr0_edi(int addr0, int edi)
+    {
         return addr0 + edi;
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_2EAX_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_2EAX_addr0_eax(int addr0, int eax)
+    {
         return addr0 + (eax << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param ecx
      * @return -
      */
-    public static int addr0_nef_ADDR_2ECX_addr0_ecx(int addr0, int ecx) {
+    public static int addr0_nef_ADDR_2ECX_addr0_ecx(int addr0, int ecx)
+    {
         return addr0 + (ecx << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param edx
      * @return -
      */
-    public static int addr0_nef_ADDR_2EDX_addr0_edx(int addr0, int edx) {
+    public static int addr0_nef_ADDR_2EDX_addr0_edx(int addr0, int edx)
+    {
         return addr0 + (edx << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param ebx
      * @return -
      */
-    public static int addr0_nef_ADDR_2EBX_addr0_ebx(int addr0, int ebx) {
+    public static int addr0_nef_ADDR_2EBX_addr0_ebx(int addr0, int ebx)
+    {
         return addr0 + (ebx << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param esp
      * @return -
      */
-    public static int addr0_nef_ADDR_2ESP_addr0_esp(int addr0, int esp) {
+    public static int addr0_nef_ADDR_2ESP_addr0_esp(int addr0, int esp)
+    {
         return addr0 + (esp << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param ebp
      * @return -
      */
-    public static int addr0_nef_ADDR_2EBP_addr0_ebp(int addr0, int ebp) {
+    public static int addr0_nef_ADDR_2EBP_addr0_ebp(int addr0, int ebp)
+    {
         return addr0 + (ebp << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param esi
      * @return -
      */
-    public static int addr0_nef_ADDR_2ESI_addr0_esi(int addr0, int esi) {
+    public static int addr0_nef_ADDR_2ESI_addr0_esi(int addr0, int esi)
+    {
         return addr0 + (esi << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param edi
      * @return -
      */
-    public static int addr0_nef_ADDR_2EDI_addr0_edi(int addr0, int edi) {
+    public static int addr0_nef_ADDR_2EDI_addr0_edi(int addr0, int edi)
+    {
         return addr0 + (edi << 1);
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_4EAX_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_4EAX_addr0_eax(int addr0, int eax)
+    {
         return addr0 + (eax << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param ecx
      * @return -
      */
-    public static int addr0_nef_ADDR_4ECX_addr0_ecx(int addr0, int ecx) {
+    public static int addr0_nef_ADDR_4ECX_addr0_ecx(int addr0, int ecx)
+    {
         return addr0 + (ecx << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param edx
      * @return -
      */
-    public static int addr0_nef_ADDR_4EDX_addr0_edx(int addr0, int edx) {
+    public static int addr0_nef_ADDR_4EDX_addr0_edx(int addr0, int edx)
+    {
         return addr0 + (edx << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param ebx
      * @return -
      */
-    public static int addr0_nef_ADDR_4EBX_addr0_ebx(int addr0, int ebx) {
+    public static int addr0_nef_ADDR_4EBX_addr0_ebx(int addr0, int ebx)
+    {
         return addr0 + (ebx << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param esp
      * @return -
      */
-    public static int addr0_nef_ADDR_4ESP_addr0_esp(int addr0, int esp) {
+    public static int addr0_nef_ADDR_4ESP_addr0_esp(int addr0, int esp)
+    {
         return addr0 + (esp << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param ebp
      * @return -
      */
-    public static int addr0_nef_ADDR_4EBP_addr0_ebp(int addr0, int ebp) {
+    public static int addr0_nef_ADDR_4EBP_addr0_ebp(int addr0, int ebp)
+    {
         return addr0 + (ebp << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param esi
      * @return -
      */
-    public static int addr0_nef_ADDR_4ESI_addr0_esi(int addr0, int esi) {
+    public static int addr0_nef_ADDR_4ESI_addr0_esi(int addr0, int esi)
+    {
         return addr0 + (esi << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param edi
      * @return -
      */
-    public static int addr0_nef_ADDR_4EDI_addr0_edi(int addr0, int edi) {
+    public static int addr0_nef_ADDR_4EDI_addr0_edi(int addr0, int edi)
+    {
         return addr0 + (edi << 2);
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_8EAX_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_8EAX_addr0_eax(int addr0, int eax)
+    {
         return addr0 + (eax << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param ecx
      * @return -
      */
-    public static int addr0_nef_ADDR_8ECX_addr0_ecx(int addr0, int ecx) {
+    public static int addr0_nef_ADDR_8ECX_addr0_ecx(int addr0, int ecx)
+    {
         return addr0 + (ecx << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param edx
      * @return -
      */
-    public static int addr0_nef_ADDR_8EDX_addr0_edx(int addr0, int edx) {
+    public static int addr0_nef_ADDR_8EDX_addr0_edx(int addr0, int edx)
+    {
         return addr0 + (edx << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param ebx
      * @return -
      */
-    public static int addr0_nef_ADDR_8EBX_addr0_ebx(int addr0, int ebx) {
+    public static int addr0_nef_ADDR_8EBX_addr0_ebx(int addr0, int ebx)
+    {
         return addr0 + (ebx << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param esp
      * @return -
      */
-    public static int addr0_nef_ADDR_8ESP_addr0_esp(int addr0, int esp) {
+    public static int addr0_nef_ADDR_8ESP_addr0_esp(int addr0, int esp)
+    {
         return addr0 + (esp << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param ebp
      * @return -
      */
-    public static int addr0_nef_ADDR_8EBP_addr0_ebp(int addr0, int ebp) {
+    public static int addr0_nef_ADDR_8EBP_addr0_ebp(int addr0, int ebp)
+    {
         return addr0 + (ebp << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param esi
      * @return -
      */
-    public static int addr0_nef_ADDR_8ESI_addr0_esi(int addr0, int esi) {
+    public static int addr0_nef_ADDR_8ESI_addr0_esi(int addr0, int esi)
+    {
         return addr0 + (esi << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param edi
      * @return -
      */
-    public static int addr0_nef_ADDR_8EDI_addr0_edi(int addr0, int edi) {
+    public static int addr0_nef_ADDR_8EDI_addr0_edi(int addr0, int edi)
+    {
         return addr0 + (edi << 3);
     }
 
     /**
-     *
      * @param addr0
      * @param immediate
      * @return -
      */
-    public static int addr0_nef_ADDR_IB_addr0_immediate(int addr0, int immediate) {
+    public static int addr0_nef_ADDR_IB_addr0_immediate(int addr0, int immediate)
+    {
         return addr0 + ((byte) immediate);
     }
 
     /**
-     *
      * @param addr0
      * @param immediate
      * @return -
      */
-    public static int addr0_nef_ADDR_IW_addr0_immediate(int addr0, int immediate) {
+    public static int addr0_nef_ADDR_IW_addr0_immediate(int addr0, int immediate)
+    {
         return addr0 + ((short) immediate);
     }
 
     /**
-     *
      * @param addr0
      * @param immediate
      * @return -
      */
-    public static int addr0_nef_ADDR_ID_addr0_immediate(int addr0, int immediate) {
+    public static int addr0_nef_ADDR_ID_addr0_immediate(int addr0, int immediate)
+    {
         return addr0 + immediate;
     }
 
     /**
-     *
      * @param addr0
      * @return -
      */
-    public static int addr0_nef_ADDR_MASK16_addr0(int addr0) {
+    public static int addr0_nef_ADDR_MASK16_addr0(int addr0)
+    {
         return addr0 & 0xffff;
     }
 
     /**
-     *
      * @param addr0
      * @param eax
      * @return -
      */
-    public static int addr0_nef_ADDR_uAL_addr0_eax(int addr0, int eax) {
+    public static int addr0_nef_ADDR_uAL_addr0_eax(int addr0, int eax)
+    {
         return addr0 + (0xff & eax);
     }
 
     /**
-     *
      * @param addr0
      * @param reg1
      * @return -
      */
-    public static int addr0_nef_ADDR_REG1_addr0_reg1(int addr0, int reg1) {
+    public static int addr0_nef_ADDR_REG1_addr0_reg1(int addr0, int reg1)
+    {
         return addr0 + reg1;
     }
 
     /**
-     *
      * @return -
      */
-    public static int addr0_nef_MEM_RESET() {
+    public static int addr0_nef_MEM_RESET()
+    {
         return 0;
     }
 
     /**
-     *
      * @return -
      */
-    public static Segment seg0_nef_MEM_RESET() {
+    public static Segment seg0_nef_MEM_RESET()
+    {
         return null;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_SIGN_EXTEND_8_16_reg0(int reg0) {
+    public static int reg0_nef_SIGN_EXTEND_8_16_reg0(int reg0)
+    {
         return 0xffff & ((byte) reg0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_SIGN_EXTEND_8_32_reg0(int reg0) {
+    public static int reg0_nef_SIGN_EXTEND_8_32_reg0(int reg0)
+    {
         return (int) ((byte) reg0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_SIGN_EXTEND_16_32_reg0(int reg0) {
+    public static int reg0_nef_SIGN_EXTEND_16_32_reg0(int reg0)
+    {
         return (int) ((short) reg0);
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2238,7 +2237,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JUMP_O8_cs_eip_reg0(Segment cs, int eip, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         // if ((byte)reg0 == 0)
         // return eip;
 
@@ -2248,7 +2248,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2256,14 +2255,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JUMP_O16_cs_eip_reg0(Segment cs, int eip, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         eip = (eip + reg0) & 0xffff;
         cs.checkAddress(eip);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2271,36 +2270,36 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JUMP_O32_cs_eip_reg0(Segment cs, int eip, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         eip += reg0;
         cs.checkAddress(eip);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param reg0
      * @return -
      * @throws ProcessorException
      */
     public static int eip_nef_JUMP_ABS_O32_cs_reg0(Segment cs, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         cs.checkAddress(reg0);
         return reg0;
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int ecx_nef_LOOP_CX_ecx(int ecx) {
+    public static int ecx_nef_LOOP_CX_ecx(int ecx)
+    {
         return (ecx & ~0xffff) | ((ecx - 1) & 0xffff);
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2309,7 +2308,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_LOOP_CX_cs_eip_reg0_ecx(Segment cs, int eip,
-            int reg0, int ecx) throws ProcessorException {
+                                                      int reg0, int ecx) throws ProcessorException
+    {
         if ((0xffff & (ecx - 1)) != 0)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         else
@@ -2317,16 +2317,15 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ecx
      * @return -
      */
-    public static int ecx_nef_LOOP_ECX_ecx(int ecx) {
+    public static int ecx_nef_LOOP_ECX_ecx(int ecx)
+    {
         return ecx - 1;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2335,7 +2334,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_LOOP_ECX_cs_eip_reg0_ecx(Segment cs, int eip,
-            int reg0, int ecx) throws ProcessorException {
+                                                       int reg0, int ecx) throws ProcessorException
+    {
         if ((ecx - 1) != 0)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         else
@@ -2343,7 +2343,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2352,14 +2351,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JO_O8_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                      int reg0, boolean oflag) throws ProcessorException
+    {
         if (oflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2368,14 +2367,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JO_O16_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                       int reg0, boolean oflag) throws ProcessorException
+    {
         if (oflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2384,14 +2383,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JO_O32_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                       int reg0, boolean oflag) throws ProcessorException
+    {
         if (oflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2400,14 +2399,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNO_O8_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                       int reg0, boolean oflag) throws ProcessorException
+    {
         if (!oflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2416,14 +2415,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNO_O16_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                        int reg0, boolean oflag) throws ProcessorException
+    {
         if (!oflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2432,14 +2431,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNO_O32_cs_eip_reg0_oflag(Segment cs, int eip,
-            int reg0, boolean oflag) throws ProcessorException {
+                                                        int reg0, boolean oflag) throws ProcessorException
+    {
         if (!oflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2448,14 +2447,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JC_O8_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                      int reg0, boolean cflag) throws ProcessorException
+    {
         if (cflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2464,14 +2463,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JC_O16_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                       int reg0, boolean cflag) throws ProcessorException
+    {
         if (cflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2480,14 +2479,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JC_O32_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                       int reg0, boolean cflag) throws ProcessorException
+    {
         if (cflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2496,14 +2495,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNC_O8_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                       int reg0, boolean cflag) throws ProcessorException
+    {
         if (!cflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2512,14 +2511,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNC_O16_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                        int reg0, boolean cflag) throws ProcessorException
+    {
         if (!cflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2528,14 +2527,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNC_O32_cs_eip_reg0_cflag(Segment cs, int eip,
-            int reg0, boolean cflag) throws ProcessorException {
+                                                        int reg0, boolean cflag) throws ProcessorException
+    {
         if (!cflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2544,14 +2543,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JZ_O8_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                      int reg0, boolean zflag) throws ProcessorException
+    {
         if (zflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2560,14 +2559,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JZ_O16_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                       int reg0, boolean zflag) throws ProcessorException
+    {
         if (zflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2576,14 +2575,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JZ_O32_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                       int reg0, boolean zflag) throws ProcessorException
+    {
         if (zflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2592,14 +2591,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNZ_O8_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                       int reg0, boolean zflag) throws ProcessorException
+    {
         if (!zflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2608,14 +2607,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNZ_O16_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                        int reg0, boolean zflag) throws ProcessorException
+    {
         if (!zflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2624,14 +2623,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNZ_O32_cs_eip_reg0_zflag(Segment cs, int eip,
-            int reg0, boolean zflag) throws ProcessorException {
+                                                        int reg0, boolean zflag) throws ProcessorException
+    {
         if (!zflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2641,15 +2640,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNA_O8_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if (cflag || zflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2659,15 +2658,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNA_O16_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                              int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if (cflag || zflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2677,15 +2676,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNA_O32_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                              int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if (cflag || zflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2695,15 +2694,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JA_O8_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                            int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if ((!cflag) && (!zflag))
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2713,15 +2712,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JA_O16_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if ((!cflag) && (!zflag))
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2731,15 +2730,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JA_O32_cs_eip_reg0_cflag_zflag(Segment cs,
-            int eip, int reg0, boolean cflag, boolean zflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean cflag, boolean zflag)
+            throws ProcessorException
+    {
         if ((!cflag) && (!zflag))
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2748,14 +2747,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JS_O8_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                      int reg0, boolean sflag) throws ProcessorException
+    {
         if (sflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2764,14 +2763,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JS_O16_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                       int reg0, boolean sflag) throws ProcessorException
+    {
         if (sflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2780,14 +2779,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JS_O32_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                       int reg0, boolean sflag) throws ProcessorException
+    {
         if (sflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2796,14 +2795,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNS_O8_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                       int reg0, boolean sflag) throws ProcessorException
+    {
         if (!sflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2812,14 +2811,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNS_O16_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                        int reg0, boolean sflag) throws ProcessorException
+    {
         if (!sflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2828,14 +2827,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNS_O32_cs_eip_reg0_sflag(Segment cs, int eip,
-            int reg0, boolean sflag) throws ProcessorException {
+                                                        int reg0, boolean sflag) throws ProcessorException
+    {
         if (!sflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2844,14 +2843,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JP_O8_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                      int reg0, boolean pflag) throws ProcessorException
+    {
         if (pflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2860,14 +2859,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JP_O16_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                       int reg0, boolean pflag) throws ProcessorException
+    {
         if (pflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2876,14 +2875,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JP_O32_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                       int reg0, boolean pflag) throws ProcessorException
+    {
         if (pflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2892,14 +2891,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNP_O8_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                       int reg0, boolean pflag) throws ProcessorException
+    {
         if (!pflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2908,14 +2907,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNP_O16_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                        int reg0, boolean pflag) throws ProcessorException
+    {
         if (!pflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2924,14 +2923,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNP_O32_cs_eip_reg0_pflag(Segment cs, int eip,
-            int reg0, boolean pflag) throws ProcessorException {
+                                                        int reg0, boolean pflag) throws ProcessorException
+    {
         if (!pflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2941,15 +2940,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JL_O8_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                            int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag != oflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2959,15 +2958,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JL_O16_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag != oflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2977,15 +2976,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JL_O32_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag != oflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -2995,15 +2994,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNL_O8_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                             int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag == oflag)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3013,15 +3012,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNL_O16_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                              int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag == oflag)
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3031,15 +3030,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNL_O32_cs_eip_reg0_oflag_sflag(Segment cs,
-            int eip, int reg0, boolean oflag, boolean sflag)
-            throws ProcessorException {
+                                                              int eip, int reg0, boolean oflag, boolean sflag)
+            throws ProcessorException
+    {
         if (sflag == oflag)
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3050,15 +3049,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNG_O8_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                   int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if (zflag || (sflag != oflag))
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3069,15 +3068,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNG_O16_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                    int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if (zflag || (sflag != oflag))
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3088,15 +3087,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JNG_O32_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                    int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if (zflag || (sflag != oflag))
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3107,15 +3106,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JG_O8_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                  int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if ((!zflag) && (sflag == oflag))
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3126,15 +3125,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JG_O16_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                   int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if ((!zflag) && (sflag == oflag))
             return eip_nef_JUMP_O16_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3145,15 +3144,15 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JG_O32_cs_eip_reg0_zflag_sflag_oflag(Segment cs,
-            int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
-            throws ProcessorException {
+                                                                   int eip, int reg0, boolean zflag, boolean sflag, boolean oflag)
+            throws ProcessorException
+    {
         if ((!zflag) && (sflag == oflag))
             return eip_nef_JUMP_O32_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3162,14 +3161,14 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JCXZ_cs_eip_reg0_ecx(Segment cs, int eip,
-            int reg0, int ecx) throws ProcessorException {
+                                                   int reg0, int ecx) throws ProcessorException
+    {
         if ((ecx & 0xffff) == 0)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -3178,371 +3177,372 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_JECXZ_cs_eip_reg0_ecx(Segment cs, int eip,
-            int reg0, int ecx) throws ProcessorException {
+                                                    int reg0, int ecx) throws ProcessorException
+    {
         if (ecx == 0)
             return eip_nef_JUMP_O8_cs_eip_reg0(cs, eip, reg0);
         return eip;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_AND_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_AND_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 & reg1;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_OR_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_OR_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 | reg1;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_XOR_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_XOR_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 ^ reg1;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_NOT_reg0(int reg0) {
+    public static int reg0_nef_NOT_reg0(int reg0)
+    {
         return ~reg0;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean cflag_nef_BITWISE_FLAGS_O8() {
+    public static boolean cflag_nef_BITWISE_FLAGS_O8()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean oflag_nef_BITWISE_FLAGS_O8() {
+    public static boolean oflag_nef_BITWISE_FLAGS_O8()
+    {
         return false;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_BITWISE_FLAGS_O8_reg0(int reg0) {
+    public static boolean pflag_nef_BITWISE_FLAGS_O8_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_BITWISE_FLAGS_O8_reg0(int reg0) {
+    public static boolean sflag_nef_BITWISE_FLAGS_O8_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_BITWISE_FLAGS_O8_reg0(int reg0) {
+    public static boolean zflag_nef_BITWISE_FLAGS_O8_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean cflag_nef_BITWISE_FLAGS_O16() {
+    public static boolean cflag_nef_BITWISE_FLAGS_O16()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean oflag_nef_BITWISE_FLAGS_O16() {
+    public static boolean oflag_nef_BITWISE_FLAGS_O16()
+    {
         return false;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_BITWISE_FLAGS_O16_reg0(int reg0) {
+    public static boolean pflag_nef_BITWISE_FLAGS_O16_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_BITWISE_FLAGS_O16_reg0(int reg0) {
+    public static boolean sflag_nef_BITWISE_FLAGS_O16_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_BITWISE_FLAGS_O16_reg0(int reg0) {
+    public static boolean zflag_nef_BITWISE_FLAGS_O16_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean cflag_nef_BITWISE_FLAGS_O32() {
+    public static boolean cflag_nef_BITWISE_FLAGS_O32()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean oflag_nef_BITWISE_FLAGS_O32() {
+    public static boolean oflag_nef_BITWISE_FLAGS_O32()
+    {
         return false;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_BITWISE_FLAGS_O32_reg0(int reg0) {
+    public static boolean pflag_nef_BITWISE_FLAGS_O32_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_BITWISE_FLAGS_O32_reg0(int reg0) {
+    public static boolean sflag_nef_BITWISE_FLAGS_O32_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_BITWISE_FLAGS_O32_reg0(int reg0) {
+    public static boolean zflag_nef_BITWISE_FLAGS_O32_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_SHL_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_SHL_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 << reg1; // count masking is done by java << operation
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_SHL_reg1(int reg1) {
+    public static int reg1_nef_SHL_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHL_reg0(int reg0) {
+    public static int reg2_nef_SHL_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHL_O8_FLAGS_cflag_reg0_reg1(boolean cflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x100) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHL_O8_FLAGS_oflag_reg2_reg1(boolean oflag,
-            int reg2, int reg1) {
+                                                                 int reg2, int reg1)
+    {
         if (reg1 == 1)
             return ((reg2 & 0xc0) != 0) && ((reg2 & 0xc0) != 0xc0);
         return oflag;
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHL_O8_FLAGS_pflag_reg0_reg1(boolean pflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHL_O8_FLAGS_sflag_reg0_reg1(boolean sflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHL_O8_FLAGS_zflag_reg0_reg1(boolean zflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) == 0);
         return zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHL_O16_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x10000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHL_O16_FLAGS_oflag_reg2_reg1(
-            boolean oflag, int reg2, int reg1) {
+            boolean oflag, int reg2, int reg1)
+    {
         if (reg1 == 1)
             return ((reg2 & 0xc000) != 0) && ((reg2 & 0xc000) != 0xc000);
         return oflag;
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHL_O16_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHL_O16_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHL_O16_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) == 0);
         return zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHL_O32_FLAGS_cflag_reg2_reg1(
-            boolean cflag, int reg2, int reg1) {
+            boolean cflag, int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 << (reg1 - 1)) & 0x80000000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHL_O32_FLAGS_oflag_reg2_reg1(
-            boolean oflag, int reg2, int reg1) {
+            boolean oflag, int reg2, int reg1)
+    {
         if (reg1 == 1)
             return ((reg2 & 0xc0000000) != 0)
                     && ((reg2 & 0xc0000000) != 0xc0000000);
@@ -3550,378 +3550,378 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHL_O32_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHL_O32_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHL_O32_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 == 0);
         return zflag;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_SHR_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_SHR_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 >>> reg1; // count masking is done by java >>> operation
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_SHR_reg1(int reg1) {
+    public static int reg1_nef_SHR_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHR_reg0(int reg0) {
+    public static int reg2_nef_SHR_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHR_O8_FLAGS_cflag_reg2_reg1(boolean cflag,
-            int reg2, int reg1) {
+                                                                 int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >>> (reg1 - 1)) & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHR_O8_FLAGS_oflag_reg2_reg1(boolean oflag,
-            int reg2, int reg1) {
+                                                                 int reg2, int reg1)
+    {
         if (reg1 == 1)
             return (reg2 & 0x80) != 0;
         return oflag;
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHR_O8_FLAGS_pflag_reg0_reg1(boolean pflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHR_O8_FLAGS_sflag_reg0_reg1(boolean sflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHR_O8_FLAGS_zflag_reg0_reg1(boolean zflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) == 0);
         return zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHR_O16_FLAGS_cflag_reg2_reg1(
-            boolean cflag, int reg2, int reg1) {
+            boolean cflag, int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >>> (reg1 - 1)) & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHR_O16_FLAGS_oflag_reg2_reg1(
-            boolean oflag, int reg2, int reg1) {
+            boolean oflag, int reg2, int reg1)
+    {
         if (reg1 == 1)
             return (reg2 & 0x8000) != 0;
         return oflag;
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHR_O16_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHR_O16_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHR_O16_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) == 0);
         return zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SHR_O32_FLAGS_cflag_reg2_reg1(
-            boolean cflag, int reg2, int reg1) {
+            boolean cflag, int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >>> (reg1 - 1)) & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SHR_O32_FLAGS_oflag_reg2_reg1(
-            boolean oflag, int reg2, int reg1) {
+            boolean oflag, int reg2, int reg1)
+    {
         if (reg1 == 1)
             return (reg2 & 0x80000000) != 0;
         return oflag;
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SHR_O32_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
         return pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SHR_O32_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 < 0);
         return sflag;
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SHR_O32_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 == 0);
         return zflag;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_SAR_O8_reg1_reg0(int reg1, int reg0) {
+    public static int reg0_nef_SAR_O8_reg1_reg0(int reg1, int reg0)
+    {
         return ((byte) reg0) >> reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_SAR_O8_reg1(int reg1) {
+    public static int reg1_nef_SAR_O8_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SAR_O8_reg0(int reg0) {
+    public static int reg2_nef_SAR_O8_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_SAR_O16_reg1_reg0(int reg1, int reg0) {
+    public static int reg0_nef_SAR_O16_reg1_reg0(int reg1, int reg0)
+    {
         return ((short) reg0) >> reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_SAR_O16_reg1(int reg1) {
+    public static int reg1_nef_SAR_O16_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SAR_O16_reg0(int reg0) {
+    public static int reg2_nef_SAR_O16_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_SAR_O32_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_SAR_O32_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 >> reg1;
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_SAR_O32_reg1(int reg1) {
+    public static int reg1_nef_SAR_O32_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SAR_O32_reg0(int reg0) {
+    public static int reg2_nef_SAR_O32_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SAR_O8_FLAGS_cflag_reg2_reg1(boolean cflag,
-            int reg2, int reg1) {
+                                                                 int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >> (reg1 - 1)) & 0x1) != 0);
 
@@ -3929,13 +3929,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param oflag
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SAR_O8_FLAGS_oflag_reg1(boolean oflag,
-            int reg1) {
+                                                            int reg1)
+    {
         if (reg1 == 1)
             return false;
 
@@ -3943,14 +3943,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SAR_O8_FLAGS_pflag_reg0_reg1(boolean pflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
 
@@ -3958,14 +3958,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SAR_O8_FLAGS_sflag_reg0_reg1(boolean sflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) < 0);
 
@@ -3973,14 +3973,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SAR_O8_FLAGS_zflag_reg0_reg1(boolean zflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((byte) reg0) == 0);
 
@@ -3988,14 +3988,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SAR_O16_FLAGS_cflag_reg2_reg1(
-            boolean cflag, int reg2, int reg1) {
+            boolean cflag, int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >> (reg1 - 1)) & 0x1) != 0);
 
@@ -4003,13 +4003,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param oflag
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SAR_O16_FLAGS_oflag_reg1(boolean oflag,
-            int reg1) {
+                                                             int reg1)
+    {
         if (reg1 == 1)
             return false;
 
@@ -4017,14 +4017,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SAR_O16_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
 
@@ -4032,14 +4032,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SAR_O16_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) < 0);
 
@@ -4047,14 +4047,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SAR_O16_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (((short) reg0) == 0);
 
@@ -4062,14 +4062,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cflag
      * @param reg2
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_SAR_O32_FLAGS_cflag_reg2_reg1(
-            boolean cflag, int reg2, int reg1) {
+            boolean cflag, int reg2, int reg1)
+    {
         if (reg1 > 0)
             return (((reg2 >> (reg1 - 1)) & 0x1) != 0);
 
@@ -4077,13 +4077,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param oflag
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_SAR_O32_FLAGS_oflag_reg1(boolean oflag,
-            int reg1) {
+                                                             int reg1)
+    {
         if (reg1 == 1)
             return false;
 
@@ -4091,14 +4091,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param pflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean pflag_nef_SAR_O32_FLAGS_pflag_reg0_reg1(
-            boolean pflag, int reg0, int reg1) {
+            boolean pflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return parityMap[reg0 & 0xff];
 
@@ -4106,14 +4106,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param sflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean sflag_nef_SAR_O32_FLAGS_sflag_reg0_reg1(
-            boolean sflag, int reg0, int reg1) {
+            boolean sflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 < 0);
 
@@ -4121,14 +4121,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param zflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean zflag_nef_SAR_O32_FLAGS_zflag_reg0_reg1(
-            boolean zflag, int reg0, int reg1) {
+            boolean zflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return (reg0 == 0);
 
@@ -4136,144 +4136,144 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROL_O8_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROL_O8_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0x7;
         return (reg0 << reg1) | (reg0 >>> (8 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROL_O8_reg1(int reg1) {
+    public static int reg1_nef_ROL_O8_reg1(int reg1)
+    {
         return reg1 & 0x7;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROL_O16_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROL_O16_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0xf;
         return (reg0 << reg1) | (reg0 >>> (16 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROL_O16_reg1(int reg1) {
+    public static int reg1_nef_ROL_O16_reg1(int reg1)
+    {
         return reg1 & 0xf;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROL_O32_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROL_O32_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0x1f;
         return (reg0 << reg1) | (reg0 >>> (32 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROL_O32_reg1(int reg1) {
+    public static int reg1_nef_ROL_O32_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROL_O8_FLAGS_cflag_reg0_reg1(boolean cflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROL_O8_FLAGS_oflag_reg0_reg1(boolean oflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x81) != 0) && ((reg0 & 0x81) != 0x81);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROL_O16_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROL_O16_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x8001) != 0) && ((reg0 & 0x8001) != 0x8001);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROL_O32_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x1) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROL_O32_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x80000001) != 0)
                     && ((reg0 & 0x80000001) != 0x80000001);
@@ -4281,144 +4281,144 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROR_O8_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROR_O8_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0x7;
         return (reg0 >>> reg1) | (reg0 << (8 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROR_O8_reg1(int reg1) {
+    public static int reg1_nef_ROR_O8_reg1(int reg1)
+    {
         return reg1 & 0x7;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROR_O16_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROR_O16_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0xf;
         return (reg0 >>> reg1) | (reg0 << (16 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROR_O16_reg1(int reg1) {
+    public static int reg1_nef_ROR_O16_reg1(int reg1)
+    {
         return reg1 & 0xf;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ROR_O32_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ROR_O32_reg0_reg1(int reg0, int reg1)
+    {
         reg1 &= 0x1f;
         return (reg0 >>> reg1) | (reg0 << (32 - reg1));
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_ROR_O32_reg1(int reg1) {
+    public static int reg1_nef_ROR_O32_reg1(int reg1)
+    {
         return reg1 & 0x1f;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROR_O8_FLAGS_cflag_reg0_reg1(boolean cflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x80) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROR_O8_FLAGS_oflag_reg0_reg1(boolean oflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0xc0) != 0) && ((reg0 & 0xc0) != 0xc0);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROR_O16_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x8000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROR_O16_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0xc000) != 0) && ((reg0 & 0xc000) != 0xc000);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_ROR_O32_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x80000000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_ROR_O32_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0xc0000000) != 0)
                     && ((reg0 & 0xc0000000) != 0xc0000000);
@@ -4426,14 +4426,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @param cflag
      * @return -
      */
     public static int reg0_nef_RCL_O8_reg1_reg0_cflag(int reg1, int reg0,
-            boolean cflag) {
+                                                      boolean cflag)
+    {
         reg1 &= 0x1f;
         reg1 %= 9;
         reg0 |= (cflag ? 0x100 : 0);
@@ -4441,24 +4441,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_RCL_O8_reg1(int reg1) {
+    public static int reg1_nef_RCL_O8_reg1(int reg1)
+    {
         reg1 &= 0x1f;
         return reg1 % 9;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @param cflag
      * @return -
      */
     public static int reg0_nef_RCL_O16_reg1_reg0_cflag(int reg1, int reg0,
-            boolean cflag) {
+                                                       boolean cflag)
+    {
         reg1 &= 0x1f;
         reg1 %= 17;
         reg0 |= (cflag ? 0x10000 : 0);
@@ -4466,80 +4466,80 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_RCL_O16_reg1(int reg1) {
+    public static int reg1_nef_RCL_O16_reg1(int reg1)
+    {
         reg1 &= 0x1f;
         return reg1 % 17;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_RCL_O8_FLAGS_cflag_reg0_reg1(boolean cflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x100) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_RCL_O8_FLAGS_oflag_reg0_reg1(boolean oflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x180) != 0) && ((reg0 & 0x180) != 0x180);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_RCL_O16_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x10000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_RCL_O16_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x18000) != 0) && ((reg0 & 0x18000) != 0x18000);
         return oflag;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @param cflag
      * @return -
      */
     public static int reg0_nef_RCR_O8_reg1_reg0_cflag(int reg1, int reg0,
-            boolean cflag) {
+                                                      boolean cflag)
+    {
         reg1 &= 0x1f;
         reg1 %= 9;
         reg0 |= (cflag ? 0x100 : 0);
@@ -4547,24 +4547,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_RCR_O8_reg1(int reg1) {
+    public static int reg1_nef_RCR_O8_reg1(int reg1)
+    {
         reg1 &= 0x1f;
         return reg1 % 9;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @param cflag
      * @return -
      */
     public static int reg0_nef_RCR_O16_reg1_reg0_cflag(int reg1, int reg0,
-            boolean cflag) {
+                                                       boolean cflag)
+    {
         reg1 &= 0x1f;
         reg1 %= 17;
         reg0 |= (cflag ? 0x10000 : 0);
@@ -4572,80 +4572,80 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int reg1_nef_RCR_O16_reg1(int reg1) {
+    public static int reg1_nef_RCR_O16_reg1(int reg1)
+    {
         reg1 &= 0x1f;
         return reg1 % 17;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_RCR_O8_FLAGS_cflag_reg0_reg1(boolean cflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x100) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_RCR_O8_FLAGS_oflag_reg0_reg1(boolean oflag,
-            int reg0, int reg1) {
+                                                                 int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x180) != 0) && ((reg0 & 0x180) != 0x180);
         return oflag;
     }
 
     /**
-     *
      * @param cflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean cflag_nef_RCR_O16_FLAGS_cflag_reg0_reg1(
-            boolean cflag, int reg0, int reg1) {
+            boolean cflag, int reg0, int reg1)
+    {
         if (reg1 > 0)
             return ((reg0 & 0x10000) != 0);
         return cflag;
     }
 
     /**
-     *
      * @param oflag
      * @param reg0
      * @param reg1
      * @return -
      */
     public static boolean oflag_nef_RCR_O16_FLAGS_oflag_reg0_reg1(
-            boolean oflag, int reg0, int reg1) {
+            boolean oflag, int reg0, int reg1)
+    {
         if (reg1 == 1)
             return ((reg0 & 0x18000) != 0) && ((reg0 & 0x18000) != 0x18000);
         return oflag;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static int reg0_nef_SHRD_O16_reg0_reg1_reg2(int reg0, int reg1,
-            int reg2) {
+                                                       int reg2)
+    {
         reg2 &= 0x1f;
         if (reg2 != 0)
             return (reg0 >>> reg2) | (reg1 << (16 - reg2));
@@ -4654,32 +4654,32 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg2
      * @return -
      */
-    public static int reg1_nef_SHRD_O16_reg2(int reg2) {
+    public static int reg1_nef_SHRD_O16_reg2(int reg2)
+    {
         return reg2 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHRD_O16_reg0(int reg0) {
+    public static int reg2_nef_SHRD_O16_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static int reg0_nef_SHRD_O32_reg0_reg1_reg2(int reg0, int reg1,
-            int reg2) {
+                                                       int reg2)
+    {
         reg2 &= 0x1f;
         if (reg2 != 0)
             return (reg0 >>> reg2) | (reg1 << (32 - reg2));
@@ -4688,32 +4688,32 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg2
      * @return -
      */
-    public static int reg1_nef_SHRD_O32_reg2(int reg2) {
+    public static int reg1_nef_SHRD_O32_reg2(int reg2)
+    {
         return reg2 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHRD_O32_reg0(int reg0) {
+    public static int reg2_nef_SHRD_O32_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static int reg0_nef_SHLD_O16_reg0_reg1_reg2(int reg0, int reg1,
-            int reg2) {
+                                                       int reg2)
+    {
         reg2 &= 0x1f;
         if (reg2 != 0)
             return (reg0 << reg2) | (reg1 >>> (16 - reg2));
@@ -4722,32 +4722,32 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg2
      * @return -
      */
-    public static int reg1_nef_SHLD_O16_reg2(int reg2) {
+    public static int reg1_nef_SHLD_O16_reg2(int reg2)
+    {
         return reg2 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHLD_O16_reg0(int reg0) {
+    public static int reg2_nef_SHLD_O16_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static int reg0_nef_SHLD_O32_reg0_reg1_reg2(int reg0, int reg1,
-            int reg2) {
+                                                       int reg2)
+    {
         reg2 &= 0x1f;
         if (reg2 != 0)
             return (reg0 << reg2) | (reg1 >>> (32 - reg2));
@@ -4756,30 +4756,30 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg2
      * @return -
      */
-    public static int reg1_nef_SHLD_O32_reg2(int reg2) {
+    public static int reg1_nef_SHLD_O32_reg2(int reg2)
+    {
         return reg2 & 0x1f;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SHLD_O32_reg0(int reg0) {
+    public static int reg2_nef_SHLD_O32_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_BSF_reg1_reg0(int reg1, int reg0) {
+    public static int reg0_nef_BSF_reg1_reg0(int reg1, int reg0)
+    {
         if (reg1 == 0)
             return reg0;
         else
@@ -4787,11 +4787,11 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int zflag_nef_BSF_reg1(int reg1) {
+    public static int zflag_nef_BSF_reg1(int reg1)
+    {
         if (reg1 == 0)
             return 1;
         else
@@ -4799,12 +4799,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_BSR_reg1_reg0(int reg1, int reg0) {
+    public static int reg0_nef_BSR_reg1_reg0(int reg1, int reg0)
+    {
         if (reg1 == 0)
             return reg0;
         else
@@ -4812,11 +4812,11 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @return -
      */
-    public static int zflag_nef_BSR_reg1(int reg1) {
+    public static int zflag_nef_BSR_reg1(int reg1)
+    {
         if (reg1 == 0)
             return 1;
         else
@@ -4824,54 +4824,54 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_ADD_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_ADD_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 + reg1;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_ADD_reg0(int reg0) {
+    public static int reg2_nef_ADD_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADD_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_ADD_O8_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_ADD_O8_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & (~0xff)) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADD_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return (((reg2 & 0x80) == (reg1 & 0x80)) && ((reg2 & 0x80) != (reg0 & 0x80)));
 
         // if ((byte)reg1 > 0)
@@ -4881,62 +4881,62 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADD_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADD_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADD_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADD_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADD_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADD_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADD_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_ADD_O16_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_ADD_O16_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & (~0xffff)) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADD_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x8000) == (reg1 & 0x8000)) && ((reg2 & 0x8000) != (reg0 & 0x8000)));
 
         // if ((short)reg1 > 0)
@@ -4946,64 +4946,64 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADD_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADD_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADD_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADD_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADD_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADD_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADD_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
-    public static boolean cflag_nef_ADD_O32_FLAGS_reg1_reg2(int reg1, int reg2) {
+    public static boolean cflag_nef_ADD_O32_FLAGS_reg1_reg2(int reg1, int reg2)
+    {
         long result = (0xffffffffL & reg2) + (0xffffffffL & reg1);
         return ((result & ~0xffffffffL) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADD_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x80000000) == (reg1 & 0x80000000)) && ((reg2 & 0x80000000) != (reg0 & 0x80000000)));
 
         // if (reg1 > 0)
@@ -5013,81 +5013,81 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADD_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADD_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADD_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADD_O32_FLAGS_reg0(int reg0)
+    {
         return reg0 < 0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADD_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADD_O32_FLAGS_reg0(int reg0)
+    {
         return reg0 == 0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_SUB_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_SUB_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 - reg1;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SUB_reg0(int reg0) {
+    public static int reg2_nef_SUB_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SUB_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_SUB_O8_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_SUB_O8_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & (~0xff)) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SUB_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return (((reg2 & 0x80) != (reg1 & 0x80)) && ((reg2 & 0x80) != (reg0 & 0x80)));
 
         // if ((byte)reg1 > 0)
@@ -5097,62 +5097,62 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SUB_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SUB_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SUB_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SUB_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SUB_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SUB_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SUB_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_SUB_O16_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_SUB_O16_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & (~0xffff)) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SUB_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x8000) != (reg1 & 0x8000)) && ((reg2 & 0x8000) != (reg0 & 0x8000)));
 
         // if ((short)reg1 > 0)
@@ -5162,64 +5162,64 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SUB_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SUB_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SUB_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SUB_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SUB_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SUB_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SUB_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg2
      * @param reg1
      * @return -
      */
-    public static boolean cflag_nef_SUB_O32_FLAGS_reg2_reg1(int reg2, int reg1) {
+    public static boolean cflag_nef_SUB_O32_FLAGS_reg2_reg1(int reg2, int reg1)
+    {
         long result = (0xffffffffL & reg2) - (0xffffffffL & reg1);
         return (result & (~0xffffffffL)) != 0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SUB_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x80000000) != (reg1 & 0x80000000)) && ((reg2 & 0x80000000) != (reg0 & 0x80000000)));
 
         // if (reg1 > 0)
@@ -5229,361 +5229,361 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SUB_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SUB_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SUB_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SUB_O32_FLAGS_reg0(int reg0)
+    {
         return reg0 < 0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SUB_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SUB_O32_FLAGS_reg0(int reg0)
+    {
         return reg0 == 0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_INC_reg0(int reg0) {
+    public static int reg0_nef_INC_reg0(int reg0)
+    {
         return reg0 + 1;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_INC_O8_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_INC_O8_FLAGS_reg0(int reg0)
+    {
         return (reg0 & 0xf) == 0x0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_INC_O8_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_INC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == ((byte) 0x80));
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_INC_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_INC_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_INC_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_INC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_INC_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_INC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_INC_O16_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_INC_O16_FLAGS_reg0(int reg0)
+    {
         return ((((short) reg0) & 0xf) == 0x0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_INC_O16_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_INC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == ((short) 0x8000));
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_INC_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_INC_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_INC_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_INC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_INC_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_INC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_INC_O32_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_INC_O32_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0xf) == 0x0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_INC_O32_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_INC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0x80000000);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_INC_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_INC_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_INC_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_INC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_INC_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_INC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_DEC_reg0(int reg0) {
+    public static int reg0_nef_DEC_reg0(int reg0)
+    {
         return reg0 - 1;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_DEC_O8_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_DEC_O8_FLAGS_reg0(int reg0)
+    {
         return (reg0 & 0xf) == 0xf;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_DEC_O8_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_DEC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0x7f);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_DEC_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_DEC_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_DEC_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_DEC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_DEC_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_DEC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_DEC_O16_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_DEC_O16_FLAGS_reg0(int reg0)
+    {
         return (reg0 & 0xf) == 0xf;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_DEC_O16_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_DEC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0x7fff);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_DEC_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_DEC_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_DEC_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_DEC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_DEC_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_DEC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_DEC_O32_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_DEC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 & 0xf) == 0xf;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_DEC_O32_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_DEC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0x7fffffff);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_DEC_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_DEC_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_DEC_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_DEC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_DEC_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_DEC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
      * @return -
      */
-    public static int reg0_nef_ADC_reg0_reg1_cflag(int reg0, int reg1, int cflag) {
+    public static int reg0_nef_ADC_reg0_reg1_cflag(int reg0, int reg1, int cflag)
+    {
         return reg0 + reg1 + cflag;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_ADC_reg0(int reg0) {
+    public static int reg2_nef_ADC_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADC_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param cflag
      * @param reg1
      * @param reg0
      * @return -
      */
     public static boolean cflag_nef_ADC_O8_FLAGS_cflag_reg1_reg0(boolean cflag,
-            int reg1, int reg0) {
+                                                                 int reg1, int reg0)
+    {
         if (cflag && (reg1 == 0xff))
             return true;
         else
@@ -5591,14 +5591,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADC_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return (((reg2 & 0x80) == (reg1 & 0x80)) && ((reg2 & 0x80) != (reg0 & 0x80)));
 
         // if (((byte)(reg1 + cflag)) > 0)
@@ -5608,53 +5608,53 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADC_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADC_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADC_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADC_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADC_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADC_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param cflag
      * @param reg1
      * @param reg0
      * @return -
      */
     public static boolean cflag_nef_ADC_O16_FLAGS_cflag_reg1_reg0(
-            boolean cflag, int reg1, int reg0) {
+            boolean cflag, int reg1, int reg0)
+    {
         if (cflag && (reg1 == 0xffff))
             return true;
         else
@@ -5662,14 +5662,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADC_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x8000) == (reg1 & 0x8000)) && ((reg2 & 0x8000) != (reg0 & 0x8000)));
 
         // if (((short)(reg1 + cflag)) > 0)
@@ -5679,53 +5679,53 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADC_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADC_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADC_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADC_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADC_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_ADC_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param cflag
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean cflag_nef_ADC_O32_FLAGS_cflag_reg1_reg2(
-            boolean cflag, int reg1, int reg2) {
+            boolean cflag, int reg1, int reg2)
+    {
         if (cflag && (reg1 == 0xffffffff))
             return true;
         else {
@@ -5736,14 +5736,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_ADC_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x80000000) == (reg1 & 0x80000000)) && ((reg2 & 0x80000000) != (reg0 & 0x80000000)));
 
         // if ((reg1 + cflag) > 0)
@@ -5753,82 +5753,82 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_ADC_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_ADC_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_ADC_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_ADC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_ADC_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_ADC_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
      * @return -
      */
-    public static int reg0_nef_SBB_reg0_reg1_cflag(int reg0, int reg1, int cflag) {
+    public static int reg0_nef_SBB_reg0_reg1_cflag(int reg0, int reg1, int cflag)
+    {
         return reg0 - (reg1 + cflag);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg2_nef_SBB_reg0(int reg0) {
+    public static int reg2_nef_SBB_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SBB_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_SBB_O8_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_SBB_O8_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & ~0xff) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SBB_O8_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                int reg1, int reg2)
+    {
         return (((reg2 & 0x80) != (reg1 & 0x80)) && ((reg2 & 0x80) != (reg0 & 0x80)));
 
         // if (((byte) (reg1 + cflag)) > 0)
@@ -5838,62 +5838,62 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SBB_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SBB_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SBB_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SBB_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SBB_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SBB_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SBB_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_SBB_O16_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_SBB_O16_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & ~0xffff) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SBB_O16_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x8000) != (reg1 & 0x8000)) && ((reg2 & 0x8000) != (reg0 & 0x8000)));
 
         // if (((short) (reg1 + cflag)) > 0)
@@ -5903,66 +5903,66 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SBB_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SBB_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SBB_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SBB_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SBB_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SBB_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_SBB_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @param cflag
      * @return -
      */
     public static boolean cflag_nef_SBB_O32_FLAGS_reg1_reg2_cflag(int reg1,
-            int reg2, int cflag) {
+                                                                  int reg2, int cflag)
+    {
         long result = (0xffffffffL & reg2) - ((0xffffffffL & reg1) + cflag);
         return (result & (~0xffffffffL)) != 0;
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_SBB_O32_FLAGS_reg0_reg1_reg2(int reg0,
-            int reg1, int reg2) {
+                                                                 int reg1, int reg2)
+    {
         return (((reg2 & 0x80000000) != (reg1 & 0x80000000)) && ((reg2 & 0x80000000) != (reg0 & 0x80000000)));
 
         // if ((reg1 + cflag) > 0)
@@ -5972,210 +5972,210 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_SBB_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_SBB_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_SBB_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_SBB_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_SBB_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_SBB_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg0_nef_NEG_reg0(int reg0) {
+    public static int reg0_nef_NEG_reg0(int reg0)
+    {
         return -reg0;
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0xf) == 0x0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == ((byte) 0x80));
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_NEG_O8_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_NEG_O8_FLAGS_reg0(int reg0)
+    {
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0xf) == 0x0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == ((short) 0x8000));
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_NEG_O16_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_NEG_O16_FLAGS_reg0(int reg0)
+    {
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean aflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean aflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return ((reg0 & 0xf) == 0x0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean cflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean cflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 != 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean oflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean oflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0x80000000);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean pflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean pflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean sflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean sflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static boolean zflag_nef_NEG_O32_FLAGS_reg0(int reg0) {
+    public static boolean zflag_nef_NEG_O32_FLAGS_reg0(int reg0)
+    {
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param edx
      * @param eax
      * @return -
      */
-    public static int edx_nef_CWD_edx_eax(int edx, int eax) {
+    public static int edx_nef_CWD_edx_eax(int edx, int eax)
+    {
         if ((eax & 0x8000) == 0)
             return edx & 0xffff0000;
         else
@@ -6183,11 +6183,11 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @return -
      */
-    public static int edx_nef_CDQ_eax(int eax) {
+    public static int edx_nef_CDQ_eax(int eax)
+    {
         if ((eax & 0x80000000) == 0)
             return 0;
         else
@@ -6195,14 +6195,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param reg0
      * @return -
      * @throws ProcessorException
      */
     public static int eax_nef_DIV_O8_eax_reg0(int eax, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         if (reg0 == 0)
             throw exceptionDE;
 
@@ -6216,7 +6216,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param edx
      * @param eax
      * @param reg0
@@ -6224,7 +6223,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eax_nef_DIV_O16_edx_eax_reg0(int edx, int eax, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         if (reg0 == 0)
             throw exceptionDE;
 
@@ -6240,13 +6240,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
      * @return -
      */
-    public static int edx_nef_DIV_O16_reg0_eax_edx(int reg0, int eax, int edx) {
+    public static int edx_nef_DIV_O16_reg0_eax_edx(int reg0, int eax, int edx)
+    {
         long x = (edx & 0xffffl);
         x <<= 16;
         x |= (eax & 0xffffl);
@@ -6256,7 +6256,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param edx
      * @param eax
      * @param reg0
@@ -6264,7 +6263,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eax_nef_DIV_O32_edx_eax_reg0(int edx, int eax, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         long d = 0xffffffffL & reg0;
 
         if (d == 0)
@@ -6289,13 +6289,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
      * @return -
      */
-    public static int edx_nef_DIV_O32_reg0_eax_edx(int reg0, int eax, int edx) {
+    public static int edx_nef_DIV_O32_reg0_eax_edx(int reg0, int eax, int edx)
+    {
         long d = 0xffffffffL & reg0;
         long x = (long) edx;
         x <<= 32;
@@ -6310,14 +6310,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      * @throws ProcessorException
      */
     public static int eax_nef_IDIV_O8_reg0_eax(int reg0, int eax)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         if ((byte) reg0 == 0)
             throw exceptionDE;
 
@@ -6327,12 +6327,11 @@ public class UCodeStaticMethods {
             throw exceptionDE;
 
         return (eax & ~0xffff) | (0xff & result) | ((0xff & remainder) << 8); // AH
-                                                                              // is
-                                                                              // remainder
+        // is
+        // remainder
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
@@ -6340,7 +6339,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eax_nef_IDIV_O16_reg0_eax_edx(int reg0, int eax, int edx)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         if ((short) reg0 == 0)
             throw exceptionDE;
 
@@ -6354,20 +6354,19 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
      * @return -
      */
-    public static int edx_nef_IDIV_O16_reg0_eax_edx(int reg0, int eax, int edx) {
+    public static int edx_nef_IDIV_O16_reg0_eax_edx(int reg0, int eax, int edx)
+    {
         int x = (edx << 16) | (eax & 0xffff);
         int remainder = x % ((short) reg0);
         return (edx & ~0xffff) | (remainder & 0xffff);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
@@ -6375,7 +6374,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eax_nef_IDIV_O32_reg0_eax_edx(int reg0, int eax, int edx)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         if (reg0 == 0)
             throw exceptionDE;
 
@@ -6389,104 +6389,104 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @param edx
      * @return -
      */
-    public static int edx_nef_IDIV_O32_reg0_eax_edx(int reg0, int eax, int edx) {
+    public static int edx_nef_IDIV_O32_reg0_eax_edx(int reg0, int eax, int edx)
+    {
         long x = ((0xffffffffL & edx) << 32) | (eax & 0xffffffffL);
         int remainder = (int) (x % reg0);
         return remainder;
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_MUL_O8_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_MUL_O8_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xff) * reg0;
         return ((result & 0xff00) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_MUL_O8_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_MUL_O8_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xff) * reg0;
         return ((result & 0xff00) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_MUL_O8_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_MUL_O8_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xff) * reg0;
         return (eax & ~0xffff) | (0xffff & result);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_MUL_O16_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_MUL_O16_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xffff) * reg0;
         return ((result & 0xffff0000) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_MUL_O16_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_MUL_O16_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xffff) * reg0;
         return ((result & 0xffff0000) != 0);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_MUL_O16_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_MUL_O16_reg0_eax(int reg0, int eax)
+    {
         int result = (eax & 0xffff) * reg0;
         return (eax & ~0xffff) | (0xffff & result);
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int edx_nef_MUL_O16_edx_reg0_eax(int edx, int reg0, int eax) {
+    public static int edx_nef_MUL_O16_edx_reg0_eax(int edx, int reg0, int eax)
+    {
         int result = (eax & 0xffff) * reg0;
         result = result >> 16;
         return (edx & ~0xffff) | (0xffff & result);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_MUL_O32_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_MUL_O32_reg0_eax(int reg0, int eax)
+    {
         long x = eax & 0xffffffffl;
         long y = reg0 & 0xffffffffl;
         long result = x * y;
@@ -6494,12 +6494,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int edx_nef_MUL_O32_reg0_eax(int reg0, int eax) {
+    public static int edx_nef_MUL_O32_reg0_eax(int reg0, int eax)
+    {
         long x = eax & 0xffffffffl;
         long y = reg0 & 0xffffffffl;
         long result = x * y;
@@ -6508,12 +6508,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_MUL_O32_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_MUL_O32_reg0_eax(int reg0, int eax)
+    {
         long x = eax & 0xffffffffl;
         long y = reg0 & 0xffffffffl;
         long result = x * y;
@@ -6522,12 +6522,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_MUL_O32_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_MUL_O32_reg0_eax(int reg0, int eax)
+    {
         long x = eax & 0xffffffffl;
         long y = reg0 & 0xffffffffl;
         long result = x * y;
@@ -6536,193 +6536,192 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_IMULA_O8_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_IMULA_O8_reg0_eax(int reg0, int eax)
+    {
         int result = ((byte) eax) * ((byte) reg0);
         return (eax & ~0xffff) | (result & 0xffff);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_IMULA_O8_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_IMULA_O8_reg0_eax(int reg0, int eax)
+    {
         int result = ((byte) eax) * ((byte) reg0);
         return (result != ((byte) result));
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_IMULA_O8_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_IMULA_O8_reg0_eax(int reg0, int eax)
+    {
         int result = ((byte) eax) * ((byte) reg0);
         return (result != ((byte) result));
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_IMULA_O16_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_IMULA_O16_reg0_eax(int reg0, int eax)
+    {
         int result = ((short) eax) * ((short) reg0);
         return (eax & ~0xffff) | (result & 0xffff);
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int edx_nef_IMULA_O16_edx_reg0_eax(int edx, int reg0, int eax) {
+    public static int edx_nef_IMULA_O16_edx_reg0_eax(int edx, int reg0, int eax)
+    {
         int result = ((short) eax) * ((short) reg0);
         return (edx & ~0xffff) | (result >>> 16);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_IMULA_O16_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_IMULA_O16_reg0_eax(int reg0, int eax)
+    {
         int result = ((short) eax) * ((short) reg0);
         return (result != ((short) result));
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_IMULA_O16_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_IMULA_O16_reg0_eax(int reg0, int eax)
+    {
         int result = ((short) eax) * ((short) reg0);
         return (result != ((short) result));
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int eax_nef_IMULA_O32_reg0_eax(int reg0, int eax) {
+    public static int eax_nef_IMULA_O32_reg0_eax(int reg0, int eax)
+    {
         return eax * reg0;
     }
 
     /**
-     *
      * @param edx
      * @param reg0
      * @param eax
      * @return -
      */
-    public static int edx_nef_IMULA_O32_edx_reg0_eax(int edx, int reg0, int eax) {
+    public static int edx_nef_IMULA_O32_edx_reg0_eax(int edx, int reg0, int eax)
+    {
         long result = ((long) eax) * ((long) reg0);
         return (int) (result >>> 32);
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean cflag_nef_IMULA_O32_reg0_eax(int reg0, int eax) {
+    public static boolean cflag_nef_IMULA_O32_reg0_eax(int reg0, int eax)
+    {
         long result = ((long) eax) * ((long) reg0);
         return (result != ((int) result));
     }
 
     /**
-     *
      * @param reg0
      * @param eax
      * @return -
      */
-    public static boolean oflag_nef_IMULA_O32_reg0_eax(int reg0, int eax) {
+    public static boolean oflag_nef_IMULA_O32_reg0_eax(int reg0, int eax)
+    {
         long result = ((long) eax) * ((long) reg0);
         return (result != ((int) result));
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static boolean cflag_nef_IMUL_O16_reg0_reg1(int reg0, int reg1) {
+    public static boolean cflag_nef_IMUL_O16_reg0_reg1(int reg0, int reg1)
+    {
         int result = ((short) reg0) * ((short) reg1);
         return (result != ((short) result));
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static boolean oflag_nef_IMUL_O16_reg0_reg1(int reg0, int reg1) {
+    public static boolean oflag_nef_IMUL_O16_reg0_reg1(int reg0, int reg1)
+    {
         int result = ((short) reg0) * ((short) reg1);
         return (result != ((short) result));
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_IMUL_O16_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_IMUL_O16_reg0_reg1(int reg0, int reg1)
+    {
         return ((short) reg0) * ((short) reg1);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static boolean cflag_nef_IMUL_O32_reg0_reg1(int reg0, int reg1) {
+    public static boolean cflag_nef_IMUL_O32_reg0_reg1(int reg0, int reg1)
+    {
         long result = ((long) reg0) * ((long) reg1);
         return (result != ((int) result));
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static boolean oflag_nef_IMUL_O32_reg0_reg1(int reg0, int reg1) {
+    public static boolean oflag_nef_IMUL_O32_reg0_reg1(int reg0, int reg1)
+    {
         long result = ((long) reg0) * ((long) reg1);
         return (result != ((int) result));
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @return -
      */
-    public static int reg0_nef_IMUL_O32_reg0_reg1(int reg0, int reg1) {
+    public static int reg0_nef_IMUL_O32_reg0_reg1(int reg0, int reg1)
+    {
         return reg0 * reg1;
     }
 
     /**
-     *
      * @param eax
      * @param cflag
      * @param pflag
@@ -6732,8 +6731,9 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int eax_nef_LAHF_eax_cflag_pflag_aflag_zflag_sflag(int eax,
-            boolean cflag, boolean pflag, boolean aflag, boolean zflag,
-            boolean sflag) {
+                                                                     boolean cflag, boolean pflag, boolean aflag, boolean zflag,
+                                                                     boolean sflag)
+    {
         int result = 0x0200;
         if (sflag)
             result |= 0x8000;
@@ -6750,24 +6750,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param seg0
      * @param esi
      * @return -
      */
     public static int eax_hef_LODSB_A16_eax_seg0_esi(int eax, Segment seg0,
-            int esi) {
+                                                     int esi)
+    {
         return (eax & ~0xff) | (0xff & seg0.getByte(esi & 0xffff));
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSB_A16_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSB_A16_esi_dflag(int esi, boolean dflag)
+    {
         int addr = esi;
 
         if (dflag)
@@ -6779,24 +6779,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param seg0
      * @param esi
      * @return -
      */
     public static int eax_hef_LODSB_A32_eax_seg0_esi(int eax, Segment seg0,
-            int esi) {
+                                                     int esi)
+    {
         return (eax & ~0xff) | (0xff & seg0.getByte(esi));
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSB_A32_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSB_A32_esi_dflag(int esi, boolean dflag)
+    {
         if (dflag)
             return esi - 1;
         else
@@ -6804,24 +6804,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param seg0
      * @param esi
      * @return -
      */
     public static int eax_hef_LODSW_A16_eax_seg0_esi(int eax, Segment seg0,
-            int esi) {
+                                                     int esi)
+    {
         return (eax & ~0xffff) | (0xffff & seg0.getWord(esi & 0xffff));
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSW_A16_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSW_A16_esi_dflag(int esi, boolean dflag)
+    {
         int addr = esi & 0xffff;
 
         if (dflag)
@@ -6833,24 +6833,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param seg0
      * @param esi
      * @return -
      */
     public static int eax_hef_LODSW_A32_eax_seg0_esi(int eax, Segment seg0,
-            int esi) {
+                                                     int esi)
+    {
         return (eax & ~0xffff) | (0xffff & seg0.getWord(esi));
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSW_A32_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSW_A32_esi_dflag(int esi, boolean dflag)
+    {
         if (dflag)
             return esi - 2;
         else
@@ -6858,22 +6858,22 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param seg0
      * @param esi
      * @return -
      */
-    public static int eax_hef_LODSD_A16_seg0_esi(Segment seg0, int esi) {
+    public static int eax_hef_LODSD_A16_seg0_esi(Segment seg0, int esi)
+    {
         return seg0.getDoubleWord(esi & 0xffff);
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSD_A16_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSD_A16_esi_dflag(int esi, boolean dflag)
+    {
         int addr = esi & 0xffff;
 
         if (dflag)
@@ -6885,22 +6885,22 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param seg0
      * @param esi
      * @return -
      */
-    public static int eax_hef_LODSD_A32_seg0_esi(Segment seg0, int esi) {
+    public static int eax_hef_LODSD_A32_seg0_esi(Segment seg0, int esi)
+    {
         return seg0.getDoubleWord(esi);
     }
 
     /**
-     *
      * @param esi
      * @param dflag
      * @return -
      */
-    public static int esi_nef_LODSD_A32_esi_dflag(int esi, boolean dflag) {
+    public static int esi_nef_LODSD_A32_esi_dflag(int esi, boolean dflag)
+    {
         if (dflag)
             return esi - 4;
         else
@@ -6908,12 +6908,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSB_A16_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSB_A16_dflag_edi(boolean dflag, int edi)
+    {
         int inAddr = edi & 0xffff;
 
         if (dflag)
@@ -6925,12 +6925,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSB_A16_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSB_A16_dflag_esi(boolean dflag, int esi)
+    {
         int outAddr = esi & 0xffff;
 
         if (dflag)
@@ -6942,24 +6942,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSB_A16_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setByte(edi & 0xffff, seg0.getByte(esi & 0xffff));
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSB_A32_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSB_A32_dflag_edi(boolean dflag, int edi)
+    {
         if (dflag)
             return edi - 1;
         else
@@ -6967,12 +6967,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSB_A32_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSB_A32_dflag_esi(boolean dflag, int esi)
+    {
         if (dflag)
             return esi - 1;
         else
@@ -6980,24 +6980,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSB_A32_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setByte(edi, seg0.getByte(esi));
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSW_A16_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSW_A16_dflag_edi(boolean dflag, int edi)
+    {
         int inAddr = edi & 0xffff;
 
         if (dflag)
@@ -7009,12 +7009,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSW_A16_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSW_A16_dflag_esi(boolean dflag, int esi)
+    {
         int outAddr = esi & 0xffff;
 
         if (dflag)
@@ -7026,24 +7026,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSW_A16_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setWord(edi & 0xffff, seg0.getWord(esi & 0xffff));
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSW_A32_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSW_A32_dflag_edi(boolean dflag, int edi)
+    {
         if (dflag)
             return edi - 2;
         else
@@ -7051,12 +7051,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSW_A32_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSW_A32_dflag_esi(boolean dflag, int esi)
+    {
         if (dflag)
             return esi - 2;
         else
@@ -7064,24 +7064,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSW_A32_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setWord(edi, seg0.getWord(esi));
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSD_A16_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSD_A16_dflag_edi(boolean dflag, int edi)
+    {
         int inAddr = edi & 0xffff;
 
         if (dflag)
@@ -7093,12 +7093,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSD_A16_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSD_A16_dflag_esi(boolean dflag, int esi)
+    {
         int outAddr = esi & 0xffff;
 
         if (dflag)
@@ -7110,24 +7110,24 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSD_A16_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setDoubleWord(edi & 0xffff, seg0.getDoubleWord(esi & 0xffff));
     }
 
     /**
-     *
      * @param dflag
      * @param edi
      * @return -
      */
-    public static int edi_nef_MOVSD_A32_dflag_edi(boolean dflag, int edi) {
+    public static int edi_nef_MOVSD_A32_dflag_edi(boolean dflag, int edi)
+    {
         if (dflag)
             return edi - 4;
         else
@@ -7135,12 +7135,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param dflag
      * @param esi
      * @return -
      */
-    public static int esi_nef_MOVSD_A32_dflag_esi(boolean dflag, int esi) {
+    public static int esi_nef_MOVSD_A32_dflag_esi(boolean dflag, int esi)
+    {
         if (dflag)
             return esi - 4;
         else
@@ -7148,19 +7148,18 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param edi
      * @param seg0
      * @param esi
      */
     public static void memorywrite_hef_MOVSD_A32_es_edi_seg0_esi(Segment es,
-            int edi, Segment seg0, int esi) {
+                                                                 int edi, Segment seg0, int esi)
+    {
         es.setDoubleWord(edi, seg0.getDoubleWord(esi));
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7170,8 +7169,9 @@ public class UCodeStaticMethods {
      * @throws ModuleException
      */
     public static int reg0_hef_IN_O8_cpl_iopl_tss_reg0_ioports(int cpl,
-            int iopl, Segment tss, int reg0, IOPortHandler ioports)
-            throws ModuleException {
+                                                               int iopl, Segment tss, int reg0, IOPortHandler ioports)
+            throws ModuleException
+    {
         if (checkIOPermissionsByte(cpl, iopl, tss, reg0))
             return 0xff & ioports.ioPortReadByte(reg0);
         else
@@ -7179,7 +7179,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7189,8 +7188,9 @@ public class UCodeStaticMethods {
      * @throws ModuleException
      */
     public static int reg0_hef_IN_O16_cpl_iopl_tss_reg0_ioports(int cpl,
-            int iopl, Segment tss, int reg0, IOPortHandler ioports)
-            throws ModuleException {
+                                                                int iopl, Segment tss, int reg0, IOPortHandler ioports)
+            throws ModuleException
+    {
         if (checkIOPermissionsShort(cpl, iopl, tss, reg0))
             return 0xffff & ioports.ioPortReadWord(reg0);
         else
@@ -7198,7 +7198,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7208,8 +7207,9 @@ public class UCodeStaticMethods {
      * @throws ModuleException
      */
     public static int reg0_hef_IN_O32_cpl_iopl_tss_reg0_ioports(int cpl,
-            int iopl, Segment tss, int reg0, IOPortHandler ioports)
-            throws ModuleException {
+                                                                int iopl, Segment tss, int reg0, IOPortHandler ioports)
+            throws ModuleException
+    {
         if (checkIOPermissionsInt(cpl, iopl, tss, reg0))
             return ioports.ioPortReadLong(reg0);
         else
@@ -7217,7 +7217,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7228,7 +7227,8 @@ public class UCodeStaticMethods {
      */
     public static void ioportwrite_hef_OUT_O8_cpl_iopl_tss_reg0_reg1_ioports(
             int cpl, int iopl, Segment tss, int reg0, int reg1,
-            IOPortHandler ioports) throws ModuleException {
+            IOPortHandler ioports) throws ModuleException
+    {
         if (checkIOPermissionsByte(cpl, iopl, tss, reg0))
             ioports.ioPortWriteByte(reg0, reg1);
         else
@@ -7236,7 +7236,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7247,7 +7246,8 @@ public class UCodeStaticMethods {
      */
     public static void ioportwrite_hef_OUT_O16_cpl_iopl_tss_reg0_reg1_ioports(
             int cpl, int iopl, Segment tss, int reg0, int reg1,
-            IOPortHandler ioports) throws ModuleException {
+            IOPortHandler ioports) throws ModuleException
+    {
         if (checkIOPermissionsShort(cpl, iopl, tss, reg0))
             ioports.ioPortWriteWord(reg0, reg1);
         else
@@ -7255,7 +7255,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cpl
      * @param iopl
      * @param tss
@@ -7266,7 +7265,8 @@ public class UCodeStaticMethods {
      */
     public static void ioportwrite_hef_OUT_O32_cpl_iopl_tss_reg0_reg1_ioports(
             int cpl, int iopl, Segment tss, int reg0, int reg1,
-            IOPortHandler ioports) throws ModuleException {
+            IOPortHandler ioports) throws ModuleException
+    {
         if (checkIOPermissionsInt(cpl, iopl, tss, reg0))
             ioports.ioPortWriteLong(reg0, reg1);
         else
@@ -7274,28 +7274,28 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int cflag_hef_BT_MEM_reg1_seg0_addr0(int reg1, Segment seg0,
-            int addr0) {
+                                                       int addr0)
+    {
         addr0 += (reg1 >>> 3);
         reg1 &= 0x7;
         return (seg0.getByte(addr0) >>> reg1) & 0x1;
     }
 
     /**
-     *
      * @param reg1
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int cflag_hef_BTS_MEM_reg1_seg0_addr0(int reg1, Segment seg0,
-            int addr0) {
+                                                        int addr0)
+    {
         addr0 += (reg1 >>> 3);
         reg1 &= 0x7;
         byte data = seg0.getByte(addr0);
@@ -7307,14 +7307,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int cflag_hef_BTR_MEM_reg1_seg0_addr0(int reg1, Segment seg0,
-            int addr0) {
+                                                        int addr0)
+    {
         addr0 += (reg1 >>> 3);
         reg1 &= 0x7;
         byte data = seg0.getByte(addr0);
@@ -7326,14 +7326,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param seg0
      * @param addr0
      * @return -
      */
     public static int cflag_hef_BTC_MEM_reg1_seg0_addr0(int reg1, Segment seg0,
-            int addr0) {
+                                                        int addr0)
+    {
         addr0 += (reg1 >>> 3);
         reg1 &= 0x7;
         byte data = seg0.getByte(addr0);
@@ -7343,12 +7343,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_PUSH_O16_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_PUSH_O16_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 2;
         else
@@ -7356,13 +7356,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param reg0
      * @param esp
      */
     public static void memorywrite_hef_PUSH_O16_A32_ss_reg0_esp(Segment ss,
-            int reg0, int esp) {
+                                                                int reg0, int esp)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 2) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -7377,12 +7377,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_PUSH_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_PUSH_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 4;
         else
@@ -7390,13 +7390,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param reg0
      * @param esp
      */
     public static void memorywrite_hef_PUSH_O32_A32_ss_reg0_esp(Segment ss,
-            int reg0, int esp) {
+                                                                int reg0, int esp)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 4) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -7427,12 +7427,12 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int reg0_hef_POP_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int reg0_hef_POP_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp);
         else
@@ -7440,12 +7440,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int reg1_nef_POP_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int reg1_nef_POP_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp + 4;
         else
@@ -7475,12 +7475,12 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_PUSHF_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_PUSHF_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 4;
         else
@@ -7488,13 +7488,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param reg0
      * @param esp
      */
     public static void memorywrite_hef_PUSHF_O32_A32_ss_reg0_esp(Segment ss,
-            int reg0, int esp) {
+                                                                 int reg0, int esp)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 4) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -7535,7 +7535,6 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param ss
      * @param esp
      * @param cpl
@@ -7546,7 +7545,8 @@ public class UCodeStaticMethods {
      */
     public static int reg0_hef_POPF_O32_A32_ss_esp_cpl_iopl_vmflag_iflag(
             Segment ss, int esp, int cpl, int iopl, boolean vmflag,
-            boolean iflag) {
+            boolean iflag)
+    {
         int flags = 0;
         if (ss.getDefaultSizeFlag())
             flags = ss.getDoubleWord(esp);
@@ -7568,12 +7568,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_POPF_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_POPF_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp + 4;
         else
@@ -7657,12 +7657,12 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_PUSHAD_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_PUSHAD_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 32;
         else
@@ -7670,7 +7670,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param edi
      * @param esi
      * @param ebp
@@ -7683,7 +7682,8 @@ public class UCodeStaticMethods {
      */
     public static void memorywrite_hef_PUSHAD_A32_edi_esi_ebp_ebx_edx_ecx_eax_ss_esp(
             int edi, int esi, int ebp, int ebx, int edx, int ecx, int eax,
-            Segment ss, int esp) {
+            Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 32) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -7732,13 +7732,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param eax
      * @param ss
      * @param esp
      * @return -
      */
-    public static int eax_hef_POPAD_A32_eax_ss_esp(int eax, Segment ss, int esp) {
+    public static int eax_hef_POPAD_A32_eax_ss_esp(int eax, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 28);
         else
@@ -7746,13 +7746,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ebp
      * @param ss
      * @param esp
      * @return -
      */
-    public static int ebp_hef_POPAD_A32_ebp_ss_esp(int ebp, Segment ss, int esp) {
+    public static int ebp_hef_POPAD_A32_ebp_ss_esp(int ebp, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 8);
         else
@@ -7760,13 +7760,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ebx
      * @param ss
      * @param esp
      * @return -
      */
-    public static int ebx_hef_POPAD_A32_ebx_ss_esp(int ebx, Segment ss, int esp) {
+    public static int ebx_hef_POPAD_A32_ebx_ss_esp(int ebx, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 16);
         else
@@ -7774,13 +7774,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ecx
      * @param ss
      * @param esp
      * @return -
      */
-    public static int ecx_hef_POPAD_A32_ecx_ss_esp(int ecx, Segment ss, int esp) {
+    public static int ecx_hef_POPAD_A32_ecx_ss_esp(int ecx, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 24);
         else
@@ -7788,13 +7788,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param edi
      * @param ss
      * @param esp
      * @return -
      */
-    public static int edi_hef_POPAD_A32_edi_ss_esp(int edi, Segment ss, int esp) {
+    public static int edi_hef_POPAD_A32_edi_ss_esp(int edi, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp);
         else
@@ -7802,13 +7802,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param edx
      * @param ss
      * @param esp
      * @return -
      */
-    public static int edx_hef_POPAD_A32_edx_ss_esp(int edx, Segment ss, int esp) {
+    public static int edx_hef_POPAD_A32_edx_ss_esp(int edx, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 20);
         else
@@ -7816,13 +7816,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param esi
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esi_hef_POPAD_A32_esi_ss_esp(int esi, Segment ss, int esp) {
+    public static int esi_hef_POPAD_A32_esi_ss_esp(int esi, Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp + 4);
         else
@@ -7830,12 +7830,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_POPAD_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_POPAD_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp + 32;
         else
@@ -8393,170 +8393,170 @@ public class UCodeStaticMethods {
     // }
 
     /**
-     *
      * @param oflag
      * @return -
      */
-    public static boolean reg0_nef_SETO_oflag(boolean oflag) {
+    public static boolean reg0_nef_SETO_oflag(boolean oflag)
+    {
         return oflag;
     }
 
     /**
-     *
      * @param oflag
      * @return -
      */
-    public static boolean reg0_nef_SETNO_oflag(boolean oflag) {
+    public static boolean reg0_nef_SETNO_oflag(boolean oflag)
+    {
         return !oflag;
     }
 
     /**
-     *
      * @param cflag
      * @return -
      */
-    public static boolean reg0_nef_SETC_cflag(boolean cflag) {
+    public static boolean reg0_nef_SETC_cflag(boolean cflag)
+    {
         return cflag;
     }
 
     /**
-     *
      * @param cflag
      * @return -
      */
-    public static boolean reg0_nef_SETNC_cflag(boolean cflag) {
+    public static boolean reg0_nef_SETNC_cflag(boolean cflag)
+    {
         return !cflag;
     }
 
     /**
-     *
      * @param zflag
      * @return -
      */
-    public static boolean reg0_nef_SETZ_zflag(boolean zflag) {
+    public static boolean reg0_nef_SETZ_zflag(boolean zflag)
+    {
         return zflag;
     }
 
     /**
-     *
      * @param zflag
      * @return -
      */
-    public static boolean reg0_nef_SETNZ_zflag(boolean zflag) {
+    public static boolean reg0_nef_SETNZ_zflag(boolean zflag)
+    {
         return !zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param zflag
      * @return -
      */
     public static boolean reg0_nef_SETNA_cflag_zflag(boolean cflag,
-            boolean zflag) {
+                                                     boolean zflag)
+    {
         return cflag || zflag;
     }
 
     /**
-     *
      * @param cflag
      * @param zflag
      * @return -
      */
-    public static boolean reg0_nef_SETA_cflag_zflag(boolean cflag, boolean zflag) {
+    public static boolean reg0_nef_SETA_cflag_zflag(boolean cflag, boolean zflag)
+    {
         return !cflag && !zflag;
     }
 
     /**
-     *
      * @param sflag
      * @return -
      */
-    public static boolean reg0_nef_SETS_sflag(boolean sflag) {
+    public static boolean reg0_nef_SETS_sflag(boolean sflag)
+    {
         return sflag;
     }
 
     /**
-     *
      * @param sflag
      * @return -
      */
-    public static boolean reg0_nef_SETNS_sflag(boolean sflag) {
+    public static boolean reg0_nef_SETNS_sflag(boolean sflag)
+    {
         return !sflag;
     }
 
     /**
-     *
      * @param pflag
      * @return -
      */
-    public static boolean reg0_nef_SETP_pflag(boolean pflag) {
+    public static boolean reg0_nef_SETP_pflag(boolean pflag)
+    {
         return pflag;
     }
 
     /**
-     *
      * @param pflag
      * @return -
      */
-    public static boolean reg0_nef_SETNP_pflag(boolean pflag) {
+    public static boolean reg0_nef_SETNP_pflag(boolean pflag)
+    {
         return !pflag;
     }
 
     /**
-     *
      * @param sflag
      * @param oflag
      * @return -
      */
-    public static boolean reg0_nef_SETL_sflag_oflag(boolean sflag, boolean oflag) {
+    public static boolean reg0_nef_SETL_sflag_oflag(boolean sflag, boolean oflag)
+    {
         return sflag != oflag;
     }
 
     /**
-     *
      * @param sflag
      * @param oflag
      * @return -
      */
     public static boolean reg0_nef_SETNL_sflag_oflag(boolean sflag,
-            boolean oflag) {
+                                                     boolean oflag)
+    {
         return sflag == oflag;
     }
 
     /**
-     *
      * @param zflag
      * @param sflag
      * @param oflag
      * @return -
      */
     public static boolean reg0_nef_SETNG_zflag_sflag_oflag(boolean zflag,
-            boolean sflag, boolean oflag) {
+                                                           boolean sflag, boolean oflag)
+    {
         return zflag || (sflag != oflag);
     }
 
     /**
-     *
      * @param zflag
      * @param sflag
      * @param oflag
      * @return -
      */
     public static boolean reg0_nef_SETG_zflag_sflag_oflag(boolean zflag,
-            boolean sflag, boolean oflag) {
+                                                          boolean sflag, boolean oflag)
+    {
         return !zflag && (sflag == oflag);
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param oflag
      * @return -
      */
     public static int reg0_nef_CMOVO_reg0_reg1_oflag(int reg0, int reg1,
-            boolean oflag) {
+                                                     boolean oflag)
+    {
         if (oflag)
             return reg1;
         else
@@ -8564,14 +8564,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param oflag
      * @return -
      */
     public static int reg0_nef_CMOVNO_reg0_reg1_oflag(int reg0, int reg1,
-            boolean oflag) {
+                                                      boolean oflag)
+    {
         if (!oflag)
             return reg1;
         else
@@ -8579,14 +8579,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
      * @return -
      */
     public static int reg0_nef_CMOVC_reg0_reg1_cflag(int reg0, int reg1,
-            boolean cflag) {
+                                                     boolean cflag)
+    {
         if (cflag)
             return reg1;
         else
@@ -8594,14 +8594,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
      * @return -
      */
     public static int reg0_nef_CMOVNC_reg0_reg1_cflag(int reg0, int reg1,
-            boolean cflag) {
+                                                      boolean cflag)
+    {
         if (!cflag)
             return reg1;
         else
@@ -8609,14 +8609,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param zflag
      * @return -
      */
     public static int reg0_nef_CMOVZ_reg0_reg1_zflag(int reg0, int reg1,
-            boolean zflag) {
+                                                     boolean zflag)
+    {
         if (zflag)
             return reg1;
         else
@@ -8624,14 +8624,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param zflag
      * @return -
      */
     public static int reg0_nef_CMOVNZ_reg0_reg1_zflag(int reg0, int reg1,
-            boolean zflag) {
+                                                      boolean zflag)
+    {
         if (!zflag)
             return reg1;
         else
@@ -8639,7 +8639,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
@@ -8647,7 +8646,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVNA_reg0_reg1_cflag_zflag(int reg0, int reg1,
-            boolean cflag, boolean zflag) {
+                                                            boolean cflag, boolean zflag)
+    {
         if (cflag || zflag)
             return reg1;
         else
@@ -8655,7 +8655,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param cflag
@@ -8663,7 +8662,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVA_reg0_reg1_cflag_zflag(int reg0, int reg1,
-            boolean cflag, boolean zflag) {
+                                                           boolean cflag, boolean zflag)
+    {
         if (!cflag && !zflag)
             return reg1;
         else
@@ -8671,14 +8671,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param sflag
      * @return -
      */
     public static int reg0_nef_CMOVS_reg0_reg1_sflag(int reg0, int reg1,
-            boolean sflag) {
+                                                     boolean sflag)
+    {
         if (sflag)
             return reg1;
         else
@@ -8686,14 +8686,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param sflag
      * @return -
      */
     public static int reg0_nef_CMOVNS_reg0_reg1_sflag(int reg0, int reg1,
-            boolean sflag) {
+                                                      boolean sflag)
+    {
         if (!sflag)
             return reg1;
         else
@@ -8701,14 +8701,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param pflag
      * @return -
      */
     public static int reg0_nef_CMOVP_reg0_reg1_pflag(int reg0, int reg1,
-            boolean pflag) {
+                                                     boolean pflag)
+    {
         if (pflag)
             return reg1;
         else
@@ -8716,14 +8716,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param pflag
      * @return -
      */
     public static int reg0_nef_CMOVNP_reg0_reg1_pflag(int reg0, int reg1,
-            boolean pflag) {
+                                                      boolean pflag)
+    {
         if (!pflag)
             return reg1;
         else
@@ -8731,7 +8731,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param sflag
@@ -8739,7 +8738,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVL_reg0_reg1_sflag_oflag(int reg0, int reg1,
-            boolean sflag, boolean oflag) {
+                                                           boolean sflag, boolean oflag)
+    {
         if (sflag != oflag)
             return reg1;
         else
@@ -8747,7 +8747,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param sflag
@@ -8755,7 +8754,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVNL_reg0_reg1_sflag_oflag(int reg0, int reg1,
-            boolean sflag, boolean oflag) {
+                                                            boolean sflag, boolean oflag)
+    {
         if (sflag == oflag)
             return reg1;
         else
@@ -8763,7 +8763,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param zflag
@@ -8772,7 +8771,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVNG_reg0_reg1_zflag_sflag_oflag(int reg0,
-            int reg1, boolean zflag, boolean sflag, boolean oflag) {
+                                                                  int reg1, boolean zflag, boolean sflag, boolean oflag)
+    {
         if (zflag || (sflag != oflag))
             return reg1;
         else
@@ -8780,7 +8780,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param zflag
@@ -8789,7 +8788,8 @@ public class UCodeStaticMethods {
      * @return -
      */
     public static int reg0_nef_CMOVG_reg0_reg1_zflag_sflag_oflag(int reg0,
-            int reg1, boolean zflag, boolean sflag, boolean oflag) {
+                                                                 int reg1, boolean zflag, boolean sflag, boolean oflag)
+    {
         if (!zflag && (sflag == oflag))
             return reg1;
         else
@@ -8797,14 +8797,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @param reg1
      * @param reg2
      * @return -
      */
     public static int reg0_nef_CMPXCHG_reg0_reg1_reg2(int reg0, int reg1,
-            int reg2) {
+                                                      int reg2)
+    {
         if (reg2 == reg0)
             return reg1;
         else
@@ -8812,46 +8812,46 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg0
      * @return -
      */
-    public static int reg1_nef_CMPXCHG_reg0(int reg0) {
+    public static int reg1_nef_CMPXCHG_reg0(int reg0)
+    {
         return reg0;
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean cflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return ((reg0 & (~0xff)) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((reg2 & 0x80) != (reg1 & 0x80)) && ((reg2 & 0x80) != (reg0 & 0x80)));
 
@@ -8862,73 +8862,73 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean pflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean sflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((byte) reg0) < 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean zflag_nef_CMPXCHG_O8_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                               int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((byte) reg0) == 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean cflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return ((reg0 & (~0xffff)) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((reg2 & 0x8000) != (reg1 & 0x8000)) && ((reg2 & 0x8000) != (reg0 & 0x8000)));
 
@@ -8939,73 +8939,73 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean pflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean sflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((short) reg0) < 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean zflag_nef_CMPXCHG_O16_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((short) reg0) == 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean aflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return ((((reg2 ^ reg1) ^ reg0) & 0x10) != 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean cflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         long result = (0xffffffffL & reg2) - (0xffffffffL & reg1);
         return (result & (~0xffffffffL)) != 0;
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean oflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (((reg2 & 0x80000000) != (reg1 & 0x80000000)) && ((reg2 & 0x80000000) != (reg0 & 0x80000000)));
 
@@ -9016,48 +9016,48 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean pflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return parityMap[reg0 & 0xff];
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean sflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (reg0 < 0);
     }
 
     /**
-     *
      * @param reg1
      * @param reg2
      * @return -
      */
     public static boolean zflag_nef_CMPXCHG_O32_FLAGS_reg1_reg2(int reg1,
-            int reg2) {
+                                                                int reg2)
+    {
         int reg0 = reg2 - reg1;
         return (reg0 == 0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSB_A16_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSB_A16_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return (edi & ~0xffff) | ((edi - 1) & 0xffff);
         else
@@ -9065,23 +9065,23 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSB_A16_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setByte(edi & 0xffff, (byte) reg0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSB_A32_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSB_A32_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return edi - 1;
         else
@@ -9089,23 +9089,23 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSB_A32_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setByte(edi, (byte) reg0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSW_A16_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSW_A16_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return (edi & ~0xffff) | ((edi - 2) & 0xffff);
         else
@@ -9113,23 +9113,23 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSW_A16_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setWord(edi & 0xffff, (short) reg0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSW_A32_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSW_A32_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return edi - 2;
         else
@@ -9137,23 +9137,23 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSW_A32_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setWord(edi, (short) reg0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSD_A16_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSD_A16_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return (edi & ~0xffff) | ((edi - 4) & 0xffff);
         else
@@ -9161,23 +9161,23 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSD_A16_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setDoubleWord(edi & 0xffff, reg0);
     }
 
     /**
-     *
      * @param edi
      * @param dflag
      * @return -
      */
-    public static int edi_nef_STOSD_A32_edi_dflag(int edi, boolean dflag) {
+    public static int edi_nef_STOSD_A32_edi_dflag(int edi, boolean dflag)
+    {
         if (dflag)
             return edi - 4;
         else
@@ -9185,75 +9185,74 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param es
      * @param reg0
      * @param edi
      */
     public static void memorywrite_hef_STOSD_A32_es_reg0_edi(Segment es,
-            int reg0, int edi) {
+                                                             int reg0, int edi)
+    {
         es.setDoubleWord(edi, reg0);
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean cflag_nef_CLC() {
+    public static boolean cflag_nef_CLC()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean dflag_nef_CLD() {
+    public static boolean dflag_nef_CLD()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean iflag_nef_CLI() {
+    public static boolean iflag_nef_CLI()
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean cflag_nef_STC() {
+    public static boolean cflag_nef_STC()
+    {
         return true;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean dflag_nef_STD() {
+    public static boolean dflag_nef_STD()
+    {
         return true;
     }
 
     /**
-     *
      * @return -
      */
-    public static boolean iflag_nef_STI() {
+    public static boolean iflag_nef_STI()
+    {
         return true;
     }
 
     /**
-     *
      * @param cflag
      * @return -
      */
-    public static boolean cflag_nef_CMC_cflag(boolean cflag) {
+    public static boolean cflag_nef_CMC_cflag(boolean cflag)
+    {
         return cflag ^ true;
     }
 
     /**
-     *
      * @param cs
      * @param eip
      * @param reg0
@@ -9261,19 +9260,20 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int eip_nef_CALL_O32_A32_cs_eip_reg0(Segment cs, int eip,
-            int reg0) throws ProcessorException {
+                                                       int reg0) throws ProcessorException
+    {
         eip += reg0;
         cs.checkAddress(eip);
         return eip;
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_CALL_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_CALL_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 4;
         else
@@ -9281,13 +9281,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @param eip
      */
     public static void memorywrite_hef_CALL_O32_A32_ss_esp_eip(Segment ss,
-            int esp, int eip) {
+                                                               int esp, int eip)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 4) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -9302,25 +9302,25 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param cs
      * @param reg0
      * @return -
      * @throws ProcessorException
      */
     public static int eip_nef_CALL_ABS_O32_A32_cs_reg0(Segment cs, int reg0)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         cs.checkAddress(reg0);
         return reg0;
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_CALL_ABS_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_CALL_ABS_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp - 4;
         else
@@ -9328,13 +9328,13 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @param eip
      */
     public static void memorywrite_hef_CALL_ABS_O32_A32_ss_esp_eip(Segment ss,
-            int esp, int eip) {
+                                                                   int esp, int eip)
+    {
         if (ss.getDefaultSizeFlag()) {
             if ((esp < 4) && (esp > 0))
                 throw new ProcessorException(Processor.PROC_EXCEPTION_SS, 0,
@@ -9349,12 +9349,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int eip_hef_RET_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int eip_hef_RET_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp);
         else
@@ -9362,12 +9362,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int esp_nef_RET_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int esp_nef_RET_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return esp + 4;
         else
@@ -9375,12 +9375,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @return -
      */
-    public static int eip_hef_RET_IW_O32_A32_ss_esp(Segment ss, int esp) {
+    public static int eip_hef_RET_IW_O32_A32_ss_esp(Segment ss, int esp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(esp);
         else
@@ -9388,14 +9388,14 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param esp
      * @param reg0
      * @return -
      */
     public static int esp_nef_RET_IW_O32_A32_ss_esp_reg0(Segment ss, int esp,
-            int reg0) {
+                                                         int reg0)
+    {
         if (ss.getDefaultSizeFlag())
             return esp + 4 + (short) reg0;
         else
@@ -9403,7 +9403,6 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param ebp
      * @param esp
@@ -9411,7 +9410,8 @@ public class UCodeStaticMethods {
      * @throws ProcessorException
      */
     public static int esp_nef_LEAVE_O32_A32_ss_ebp_esp(Segment ss, int ebp,
-            int esp) throws ProcessorException {
+                                                       int esp) throws ProcessorException
+    {
         if (ss.getDefaultSizeFlag()) {
             ss.checkAddress(ebp);
             return ebp + 4;
@@ -9422,12 +9422,12 @@ public class UCodeStaticMethods {
     }
 
     /**
-     *
      * @param ss
      * @param ebp
      * @return -
      */
-    public static int ebp_hef_LEAVE_O32_A32_ss_ebp(Segment ss, int ebp) {
+    public static int ebp_hef_LEAVE_O32_A32_ss_ebp(Segment ss, int ebp)
+    {
         if (ss.getDefaultSizeFlag())
             return ss.getDoubleWord(ebp);
         else
@@ -9435,7 +9435,8 @@ public class UCodeStaticMethods {
     }
 
     private static final boolean checkIOPermissionsByte(int cpl, int iopl,
-            Segment tss, int ioportAddress) {
+                                                        Segment tss, int ioportAddress)
+    {
         if (cpl <= iopl)
             return true;
 
@@ -9453,7 +9454,8 @@ public class UCodeStaticMethods {
     }
 
     private static final boolean checkIOPermissionsShort(int cpl, int iopl,
-            Segment tss, int ioportAddress) {
+                                                         Segment tss, int ioportAddress)
+    {
         if (cpl <= iopl)
             return true;
 
@@ -9471,7 +9473,8 @@ public class UCodeStaticMethods {
     }
 
     private static final boolean checkIOPermissionsInt(int cpl, int iopl,
-            Segment tss, int ioportAddress) {
+                                                       Segment tss, int ioportAddress)
+    {
         if (cpl <= iopl)
             return true;
 

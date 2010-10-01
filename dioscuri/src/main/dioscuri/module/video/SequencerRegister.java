@@ -56,7 +56,7 @@ public class SequencerRegister {
 
     byte aSynchReset; // Register 0x00: Reset register (bits 0 - 1)
     byte synchReset; // Bit 0: Asynchronous Reset: 0 commands sequencer to
-                     // asynch. clear and halt.
+    // asynch. clear and halt.
     // Bit 1: Synchromous Reset: 0 commands sequencer to synch. clear and halt.
     // Both bits must be set to 1 for the sequencer to operate
     byte clockingMode; // Register 0x01: Clocking mode register (bits 0 - 5)
@@ -68,8 +68,8 @@ public class SequencerRegister {
     // Bit 0: 9/8 dot mode
     byte mapMask; // Register 0x02: Map Mask register (bits 0 - 3)
     byte[] mapMaskArray = new byte[4]; // Each bit corresponds to a plane of
-                                       // video display memory. Write enabled is
-                                       // set per plane here.
+    // video display memory. Write enabled is
+    // set per plane here.
     // 0: Write disabled
     // 1: Write enabled
     byte characterMapSelect; // Register 0x03: Character Map Select (bits 0 - 5)
@@ -84,18 +84,18 @@ public class SequencerRegister {
     // 101b - Font residing at 6000h - 7FFFh
     // 110b - Font residing at A000h - BFFFh
     // 111b - Font residing at E000h - FFFFh
-    final static short charMapOffset[] = new short[] {
+    final static short charMapOffset[] = new short[]{
             (short) 0x0000, // Array holding above offset values
             (short) 0x4000, // Note: the values given here exceed the range of a
-                            // signed short, but should
+            // signed short, but should
             (short) 0x8000, // return the correct hex values, e.g. (short)0xE000
-                            // = -8192 signed = E000h
+            // = -8192 signed = E000h
             (short) 0xC000, (short) 0x2000, (short) 0x6000, (short) 0xA000,
-            (short) 0xE000 };
+            (short) 0xE000};
     short charMapAddress; // Holds the character map address
     // Register 0x04: Memory Mode Register (bits 1 - 3)
     byte chainFourEnable; // Bit 3: Chain 4 enable - controls map selected
-                          // during system read operations
+    // during system read operations
     // 0: System addresses sequentially access data within bit map using Map
     // Mask register
     // 1: Map selection based on lower bits (oddEvenDisable,extendedMemory):
@@ -104,7 +104,7 @@ public class SequencerRegister {
     // 10 - map 2
     // 11 - map 3
     byte oddEvenDisable; // Bit 2: Odd/Even Host Memory Write Addressing
-                         // Disabled
+    // Disabled
     // 0: Even system addresses access maps 0 and 2; odd system addresses access
     // maps 1 and 3
     // 1: System addresses sequentially access data, maps are accessed according
@@ -117,7 +117,8 @@ public class SequencerRegister {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         index = 0;
         aSynchReset = 1;
         synchReset = 1;

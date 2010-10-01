@@ -56,20 +56,21 @@ public class Instruction_PUSH_DS implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_PUSH_DS.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_PUSH_DS() {
+    public Instruction_PUSH_DS()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_DS(CPU processor) {
+    public Instruction_PUSH_DS(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -81,7 +82,8 @@ public class Instruction_PUSH_DS implements Instruction {
     /**
      * This pushes the word in DS onto stack top SS:SP
      */
-    public void execute() {
+    public void execute()
+    {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord) {
             logger.log(Level.WARNING, "[" + cpu.getType()

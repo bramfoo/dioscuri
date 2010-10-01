@@ -49,24 +49,25 @@ public class Instruction_LODS_ALXb implements Instruction {
     // Attributes
     private CPU cpu;
     byte source;
-    byte[] incrementSize = new byte[] { 0x00, 0x01 }; // Byte size increment for
-                                                      // SI
+    byte[] incrementSize = new byte[]{0x00, 0x01}; // Byte size increment for
+    // SI
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_LODS_ALXb() {
+    public Instruction_LODS_ALXb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LODS_ALXb(CPU processor) {
+    public Instruction_LODS_ALXb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -78,7 +79,8 @@ public class Instruction_LODS_ALXb implements Instruction {
     /**
      * Load byte from DS:SI into AL; update SI
      */
-    public void execute() {
+    public void execute()
+    {
         // Get byte at DS:SI and assign to AL; DS segment override is allowed
         if (cpu.segmentOverride) {
             source = cpu.getByteFromMemorySegment((byte) 0, cpu.si);

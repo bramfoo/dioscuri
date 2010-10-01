@@ -25,8 +25,8 @@
  */
 package dioscuri.module.cpu32;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Map;
 
 //import org.jpc.classfile.*;
 //import org.jpc.emulator.processor.*;
@@ -35,30 +35,29 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class ProtectedModeExceptionHandler extends ExceptionHandler {
     /**
-     *
      * @param lastX86Position
      * @param initialNode
      * @param stateMap
      */
     public ProtectedModeExceptionHandler(int lastX86Position,
-            ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
+                                         ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
+    {
         super(lastX86Position, initialNode, stateMap);
     }
 
     /**
-     *
      * @param byteCodes
      * @param cf
      * @throws IOException
      */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
-            ClassFile cf) throws IOException {
+                                       ClassFile cf) throws IOException
+    {
         // update eip?
 
         byteCodes.write(JavaOpcode.ALOAD_1); // cpu, e
@@ -108,8 +107,8 @@ public class ProtectedModeExceptionHandler extends ExceptionHandler {
         try {
             int cpIndex = cf.addToConstantPool(Processor.class
                     .getDeclaredMethod("handleProtectedModeException",
-                            new Class[] { Integer.TYPE, Boolean.TYPE,
-                                    Integer.TYPE }));
+                    new Class[]{Integer.TYPE, Boolean.TYPE,
+                            Integer.TYPE}));
             if (cpIndex > 0xffff)
                 throw new IllegalStateException(
                         "Compilation ran out of constant pool slots");

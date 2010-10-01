@@ -44,9 +44,6 @@
  */
 package dioscuri.module.pci;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.WriteOnlyPortException;
@@ -55,11 +52,14 @@ import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleMotherboard;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a PCI controller module.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : pci general.name : Peripheral Component Interconnect
  *      general.architecture : Von Neumann general.description : Implements a
@@ -68,19 +68,18 @@ import dioscuri.module.ModuleMotherboard;
  *      general.version : 1.0 general.keywords : PCI, controller
  *      general.relations : motherboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
- * 
+ *      <p/>
  *      Notes: PCI can be defined by configuration mechanism 1 or 2. However,
  *      mechanism 2 is deprecated as of PCI version 2.1; only mechanism 1 should
  *      be used for new systems. The Intel "Saturn" and "Neptune" chipsets use
  *      configuration mechanism 2.
- * 
+ *      <p/>
  *      Bitfields for PCI configuration address port: Bit(s) Description (Table
  *      P207) 1-0 reserved (00) 7-2 configuration register number (see #0597)
  *      10-8 function 15-11 device number 23-16 bus number 30-24 reserved (0) 31
  *      enable configuration space mapping Configuration registers are
  *      considered DWORDs, so the number in bits 7-2 is the configuration space
  *      address shifted right two bits.
- * 
  */
 public class PCI extends AbstractModule implements Addressable {
 
@@ -93,10 +92,11 @@ public class PCI extends AbstractModule implements Addressable {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public PCI(Emulator owner) {
+    public PCI(Emulator owner)
+    {
         super(Module.Type.PCI);
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " AbstractModule created successfully.");
@@ -108,10 +108,11 @@ public class PCI extends AbstractModule implements Addressable {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Register I/O ports PORT 0CF8-0CFF - PCI Configuration Mechanism 1 and
         // 2 in I/O address space
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.setIOPort(PORT_PCI1_ADDRESS, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 1, this);
         motherboard.setIOPort(PORT_PCI1_ADDRESS + 2, this);
@@ -131,7 +132,8 @@ public class PCI extends AbstractModule implements Addressable {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleException {
+    public byte getIOPortByte(int portAddress) throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -149,7 +151,8 @@ public class PCI extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (byte) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -163,7 +166,8 @@ public class PCI extends AbstractModule implements Addressable {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -171,7 +175,7 @@ public class PCI extends AbstractModule implements Addressable {
                 + " Returned default value 0xFFFF");
 
         // Return dummy value 0xFFFF
-        return new byte[] { (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF};
     }
 
     /**
@@ -181,7 +185,8 @@ public class PCI extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -195,7 +200,8 @@ public class PCI extends AbstractModule implements Addressable {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -203,7 +209,7 @@ public class PCI extends AbstractModule implements Addressable {
                 + " Returned default value 0xFFFFFFFF");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
     }
 
     /**
@@ -213,7 +219,8 @@ public class PCI extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()

@@ -66,19 +66,21 @@ public class Instruction_GRP11_MOV_EvIv implements Instruction {
     byte displacement;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_GRP11_MOV_EvIv() {
+    public Instruction_GRP11_MOV_EvIv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_GRP11_MOV_EvIv(CPU processor) {
+    public Instruction_GRP11_MOV_EvIv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,10 +91,11 @@ public class Instruction_GRP11_MOV_EvIv implements Instruction {
 
     /**
      * MOV immediate byte into memory/register.<BR>
-     * 
+     *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException {
+    public void execute() throws CPUInstructionException
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

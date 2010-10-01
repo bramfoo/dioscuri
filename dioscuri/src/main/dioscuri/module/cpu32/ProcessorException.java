@@ -26,7 +26,6 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -38,12 +37,12 @@ public final class ProcessorException extends RuntimeException {
     private boolean hasErrorCode;
 
     /**
-     *
      * @param vector
      * @param errorCode
      * @param pointsToSelf
      */
-    public ProcessorException(int vector, int errorCode, boolean pointsToSelf) {
+    public ProcessorException(int vector, int errorCode, boolean pointsToSelf)
+    {
         this.vector = vector;
         this.hasErrorCode = true;
         this.errorCode = errorCode;
@@ -51,11 +50,11 @@ public final class ProcessorException extends RuntimeException {
     }
 
     /**
-     *
      * @param vector
      * @param pointsToSelf
      */
-    public ProcessorException(int vector, boolean pointsToSelf) {
+    public ProcessorException(int vector, boolean pointsToSelf)
+    {
         this.vector = vector;
         this.hasErrorCode = false;
         this.errorCode = 0;
@@ -63,70 +62,73 @@ public final class ProcessorException extends RuntimeException {
     }
 
     /**
-     *
      * @return -
      */
-    public int getVector() {
+    public int getVector()
+    {
         return vector;
     }
 
     /**
-     *
      * @return -
      */
-    public boolean hasErrorCode() {
+    public boolean hasErrorCode()
+    {
         return hasErrorCode;
     }
 
     /**
-     *
      * @return -
      */
-    public int getErrorCode() {
+    public int getErrorCode()
+    {
         return errorCode;
     }
 
     /**
-     *
      * @return -
      */
-    public boolean pointsToSelf() {
+    public boolean pointsToSelf()
+    {
         return pointsToSelf;
     }
 
-    private static final boolean isContributory(int vector) {
+    private static final boolean isContributory(int vector)
+    {
         switch (vector) {
-        case Processor.PROC_EXCEPTION_DE:
-        case Processor.PROC_EXCEPTION_TS:
-        case Processor.PROC_EXCEPTION_NP:
-        case Processor.PROC_EXCEPTION_SS:
-        case Processor.PROC_EXCEPTION_GP:
-            return true;
-        default:
-            return false;
+            case Processor.PROC_EXCEPTION_DE:
+            case Processor.PROC_EXCEPTION_TS:
+            case Processor.PROC_EXCEPTION_NP:
+            case Processor.PROC_EXCEPTION_SS:
+            case Processor.PROC_EXCEPTION_GP:
+                return true;
+            default:
+                return false;
         }
     }
 
-    private static final boolean isPageFault(int vector) {
+    private static final boolean isPageFault(int vector)
+    {
         return (vector == Processor.PROC_EXCEPTION_PF);
     }
 
     /**
-     *
      * @param vector
      * @return -
      */
-    public boolean combinesToDoubleFault(int vector) {
+    public boolean combinesToDoubleFault(int vector)
+    {
         // Here we are the "second exception"
         return isContributory(vector)
                 && isContributory(this.getVector())
                 || isPageFault(vector)
                 && (isContributory(this.getVector()) || isPageFault(this
-                        .getVector()));
+                .getVector()));
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         if (hasErrorCode())
             return "Processor Exception: " + getVector() + " [errorcode:0x"
                     + Integer.toHexString(getErrorCode()) + "]";

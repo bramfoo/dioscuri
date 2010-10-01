@@ -42,7 +42,6 @@ package dioscuri.module.dma;
 /**
  * DMA mode register<BR>
  * Class representing the mode register a DMA controller<BR>
- * 
  */
 public class DMAModeRegister {
     protected final static int DMA_MODE_DEMAND = 0;
@@ -59,7 +58,7 @@ public class DMAModeRegister {
     // 10b - Block mode
     // 11b - Cascade mode
     boolean addressDecrement; // Bit 5: INC; when set address is decremented,
-                              // when cleared incremented
+    // when cleared incremented
     boolean autoInitEnable; // Bit 4: AI; when set enables auto initialisation
     byte transferType; // Bits 3-2: Type; 00b - Verify
     // 01b - Write to memory

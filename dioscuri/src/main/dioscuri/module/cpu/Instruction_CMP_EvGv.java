@@ -64,19 +64,21 @@ public class Instruction_CMP_EvGv implements Instruction {
     byte[] tempResult = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CMP_EvGv() {
+    public Instruction_CMP_EvGv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CMP_EvGv(CPU processor) {
+    public Instruction_CMP_EvGv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -84,11 +86,13 @@ public class Instruction_CMP_EvGv implements Instruction {
     }
 
     // Methods
+
     /**
      * Word-sized comparison (SUB) of memory/register with register.<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

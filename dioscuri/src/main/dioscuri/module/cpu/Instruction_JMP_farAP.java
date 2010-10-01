@@ -53,20 +53,21 @@ public class Instruction_JMP_farAP implements Instruction {
     byte[] newIP = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_JMP_farAP() {
+    public Instruction_JMP_farAP()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JMP_farAP(CPU processor) {
+    public Instruction_JMP_farAP(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,7 +77,8 @@ public class Instruction_JMP_farAP implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement words (immediate).
         byte[] tmpIP = cpu.getWordFromCode();
         byte[] tmpCS = cpu.getWordFromCode();

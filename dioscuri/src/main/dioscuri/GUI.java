@@ -44,7 +44,6 @@ import dioscuri.config.Emulator;
 import javax.swing.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -87,56 +86,49 @@ public interface GUI {
     static final int KEY_TYPED = 2;
 
     /**
-     *
      * @return -
      */
     JFrame asJFrame();
 
     /**
-     *
      * @return -
      */
     Emulator getEmuConfig();
 
     /**
-     *
      * @return -
      */
     String getConfigFilePath();
 
     /**
-     *
      * @param emuProcess
      */
     void notifyGUI(int emuProcess);
 
     /**
-     *
      * @param activity
      */
     void updateGUI(int activity);
 
     /**
-     *
      * @param screen
      */
     void setScreen(JPanel screen);
 
     /**
-     *
      * @return -
      */
     boolean setMouseEnabled();
 
     /**
-     *
      * @return -
      */
     boolean setMouseDisabled();
 
     /**
      * Display the CPU type (16 or 32 bit)
-     * @param cpuType the CPU type   
+     *
+     * @param cpuType the CPU type
      */
     void setCpuTypeLabel(String cpuType);
 }

@@ -47,14 +47,14 @@ import java.awt.event.KeyEvent;
 
 /**
  * Abstract class representing a generic Keyboard module.
- *
  */
 public abstract class ModuleKeyboard extends AbstractModule implements Addressable, Updateable {
 
     /**
      *
      */
-    public ModuleKeyboard() {
+    public ModuleKeyboard()
+    {
         super(Module.Type.KEYBOARD,
                 Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
     }
@@ -78,7 +78,6 @@ public abstract class ModuleKeyboard extends AbstractModule implements Addressab
     public abstract void enqueueControllerBuffer(byte data, int source);
 
     /**
-     *
      * @param status
      */
     public abstract void setTimeOut(byte status);

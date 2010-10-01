@@ -54,20 +54,20 @@ import java.util.Arrays;
 public class GraphicsController {
     int index; // Index used to address registers; set via I/O port 0x3C0
     byte[] latch = new byte[4]; // Latches used to store data for used in
-                                // Read/Write Modes
+    // Read/Write Modes
     // Contains byte from corresponding plane read during last CPU read
 
     byte setReset; // Register 0x00: Set/Reset register (bits 0 - 3)
     // Used in Write Mode 0 and 3; see documentation for details
     byte enableSetReset; // Register 0x01: Enable Set/Reset register (bits 0 -
-                         // 3)
+    // 3)
     // Used in Write Mode 0 to select if data is derived from host or Set/Reset
     // register
     byte colourCompare; // Register 0x02: Colour compare (bits 0 - 3)
     // Holds a reference colour used in Read Mode 1
     // Register 0x03: Data rotate (bits 0 - 4)
     byte dataOperation; // Used in Write Mode 0 and 2; logical operations
-                        // defined by bits 4,3 are:
+    // defined by bits 4,3 are:
     // 00b - Result is input from previous stage unmodified.
     // 01b - Result is input from previous stage logical ANDed with latch
     // register.
@@ -87,17 +87,17 @@ public class GraphicsController {
     // 1: Format serial data with even-number bits from both maps on
     // even-numbered maps, likewise for odd.
     byte hostOddEvenEnable; // Bit 4: Host Odd/Even Memory Read Addressing
-                            // Enable
+    // Enable
     // 0: Do not select odd/even mode
     // 1: Select odd/even addressing mode used by the IBM Colour/Graphics
     // Monitor Adapter
     byte readMode; // Bit 3: Read Mode; selects between two read modes (0 and
-                   // 1). See documentation for more detail
+    // 1). See documentation for more detail
     // 0: Read mode 0
     // 1: Read mode 1
     // Bit 2: Not used
     byte writeMode; // Bits 1-0: Write mode; selects between four write modes
-                    // (0-3). See documentation for more detail
+    // (0-3). See documentation for more detail
     // 00b - Write mode 0
     // 01b - Write mode 1
     // 10b - Write mode 2
@@ -124,26 +124,27 @@ public class GraphicsController {
     // Helper table used to XOR and AND each latch in Read Mode 1 using
     // colourCompare and colourDontCare as indices, respectively
     protected final static byte colourCompareTable[][] = {
-            { 0x00, 0x00, 0x00, 0x00 }, { (byte) 0xFF, 0x00, 0x00, 0x00 },
-            { 0x00, (byte) 0xFF, 0x00, 0x00 },
-            { (byte) 0xFF, (byte) 0xFF, 0x00, 0x00 },
-            { 0x00, 0x00, (byte) 0xFF, 0x00 },
-            { (byte) 0xFF, 0x00, (byte) 0xFF, 0x00 },
-            { 0x00, (byte) 0xFF, (byte) 0xFF, 0x00 },
-            { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0x00 },
-            { 0x00, 0x00, 0x00, (byte) 0xFF },
-            { (byte) 0xFF, 0x00, 0x00, (byte) 0xFF },
-            { 0x00, (byte) 0xFF, 0x00, (byte) 0xFF },
-            { (byte) 0xFF, (byte) 0xFF, 0x00, (byte) 0xFF },
-            { 0x00, 0x00, (byte) 0xFF, (byte) 0xFF },
-            { (byte) 0xFF, 0x00, (byte) 0xFF, (byte) 0xFF },
-            { 0x00, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF },
-            { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF } };
+            {0x00, 0x00, 0x00, 0x00}, {(byte) 0xFF, 0x00, 0x00, 0x00},
+            {0x00, (byte) 0xFF, 0x00, 0x00},
+            {(byte) 0xFF, (byte) 0xFF, 0x00, 0x00},
+            {0x00, 0x00, (byte) 0xFF, 0x00},
+            {(byte) 0xFF, 0x00, (byte) 0xFF, 0x00},
+            {0x00, (byte) 0xFF, (byte) 0xFF, 0x00},
+            {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, 0x00},
+            {0x00, 0x00, 0x00, (byte) 0xFF},
+            {(byte) 0xFF, 0x00, 0x00, (byte) 0xFF},
+            {0x00, (byte) 0xFF, 0x00, (byte) 0xFF},
+            {(byte) 0xFF, (byte) 0xFF, 0x00, (byte) 0xFF},
+            {0x00, 0x00, (byte) 0xFF, (byte) 0xFF},
+            {(byte) 0xFF, 0x00, (byte) 0xFF, (byte) 0xFF},
+            {0x00, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF},
+            {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF}};
 
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         index = 0;
         Arrays.fill(latch, (byte) 0);
         setReset = 0;

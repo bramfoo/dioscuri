@@ -66,19 +66,21 @@ public class Instruction_ADC_GvEv implements Instruction {
     byte[] temp = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ADC_GvEv() {
+    public Instruction_ADC_GvEv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ADC_GvEv(CPU processor) {
+    public Instruction_ADC_GvEv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -90,7 +92,8 @@ public class Instruction_ADC_GvEv implements Instruction {
     /**
      * Add word in memory/register (source) + CF to register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

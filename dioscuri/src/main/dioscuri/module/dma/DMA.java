@@ -50,10 +50,6 @@ package dioscuri.module.dma;
  * -Bram
  */
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
@@ -64,11 +60,15 @@ import dioscuri.module.ModuleDMA;
 import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a DMA controller module.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : dma general.name : DMA Controller general.architecture :
  *      Von Neumann general.description : Implements a standard DMA controller
@@ -77,21 +77,19 @@ import dioscuri.module.ModuleMotherboard;
  *      general.keywords : DMA, PIO, ATA, IDE, 8237 general.relations :
  *      motherboard, memory general.yearOfIntroduction : general.yearOfEnding :
  *      general.ancestor : general.successor :
- * 
- * 
  */
 public class DMA extends ModuleDMA {
 
     // Logging
     private static final Logger logger = Logger.getLogger(DMA.class.getName());
-    
+
     boolean busHoldAcknowledged; // Hold Acknowlege; CPU has relinquished
-                                 // control of the system busses
+    // control of the system busses
     boolean terminalCountReached; // Terminal Count; generated when transfer is
-                                  // complete and signals operation complete.
+    // complete and signals operation complete.
     byte[] ext_page_reg = new byte[16]; // Extra page registers. Can be
-                                        // read/written using I/O ports, but is
-                                        // otherwise unused.
+    // read/written using I/O ports, but is
+    // otherwise unused.
 
     // Attributes
     // Create two DMA controllers - these are cascaded via channel 4.
@@ -104,8 +102,8 @@ public class DMA extends ModuleDMA {
     // cascaded to DREQ4, which results in an HRQ from
     // the "slave" that is passed to the CPU. So the "slave" controller actually
     // raises the HRQ to the CPU!
-    public DMAController[] controller = new DMAController[] {
-            new DMAController(), new DMAController() };
+    public DMAController[] controller = new DMAController[]{
+            new DMAController(), new DMAController()};
 
     // Create two 4-channel handlers: 8-bit (controller 0) and 16-bit
     // (controller 1)
@@ -175,10 +173,11 @@ public class DMA extends ModuleDMA {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public DMA(Emulator owner) {
+    public DMA(Emulator owner)
+    {
 
         int chanNum, ctrlNum, i; // Counters
 
@@ -198,11 +197,11 @@ public class DMA extends ModuleDMA {
         for (ctrlNum = 0; ctrlNum < 2; ctrlNum++) {
             for (chanNum = 0; chanNum < 4; chanNum++) {
                 controller[ctrlNum].channel[chanNum].mode.modeType = 0; // Demand
-                                                                        // mode
+                // mode
                 controller[ctrlNum].channel[chanNum].mode.addressDecrement = false; // Address
-                                                                                    // increment
+                // increment
                 controller[ctrlNum].channel[chanNum].mode.autoInitEnable = false; // Autoinit
-                                                                                  // disabled
+                // disabled
                 controller[ctrlNum].channel[chanNum].mode.transferType = 0; // Verify
                 controller[ctrlNum].channel[chanNum].baseAddress = 0;
                 controller[ctrlNum].channel[chanNum].currentAddress = 0;
@@ -210,9 +209,9 @@ public class DMA extends ModuleDMA {
                 controller[ctrlNum].channel[chanNum].currentCount = 0;
                 controller[ctrlNum].channel[chanNum].pageRegister = 0;
                 controller[ctrlNum].channel[chanNum].channelUsed = false; // Channel
-                                                                          // not
-                                                                          // in
-                                                                          // use
+                // not
+                // in
+                // use
             }
         }
 
@@ -234,9 +233,10 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Register I/O ports 0x00 - 0x0F in I/O address space
         motherboard.setIOPort(PORT_DMA1_CH0_ADDRESS, this);
@@ -304,11 +304,11 @@ public class DMA extends ModuleDMA {
     /**
      * Reset controller's mask, command register, status registers, and
      * flip-flop
-     * 
-     * @param ctrlNum
-     *            Number of controller to be reset (0 or 1)
+     *
+     * @param ctrlNum Number of controller to be reset (0 or 1)
      */
-    void resetController(int ctrlNum) {
+    void resetController(int ctrlNum)
+    {
         // Set entire mask register (default on reset)
         for (int i = 0; i < 4; i++) {
             controller[ctrlNum].mask[i] = 1;
@@ -325,7 +325,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
 
@@ -333,7 +334,7 @@ public class DMA extends ModuleDMA {
         for (int ctrlNum = 0; ctrlNum < 2; ctrlNum++) {
             for (int chanNum = 0; chanNum < 4; chanNum++) {
                 if (controller[ctrlNum].channel[chanNum].channelUsed) // Channel
-                                                                      // used
+                // used
                 {
                     if (ctrlNum == 0) // Check for 8-bit handlers
                     {
@@ -358,7 +359,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws UnknownPortException {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException
+    {
         byte returnValue;
         int chanNum;
 
@@ -374,122 +376,122 @@ public class DMA extends ModuleDMA {
         int ctrlNum = (portAddress >= 0xC0 ? SLAVE_CTRL : MASTER_CTRL);
 
         switch (portAddress) {
-        // Read current address byte; depending on flipflop state,
-        // this is either the high (1) or low (0) byte
-        case 0x00: // Controller 0, channel 0
-        case 0x02: // Controller 0, channel 1
-        case 0x04: // Controller 0, channel 2
-        case 0x06: // Controller 0, channel 3
-        case 0xC0: // Controller 1, channel 0
-        case 0xC4: // Controller 1, channel 1
-        case 0xC8: // Controller 1, channel 2
-        case 0xCC: // Controller 1, channel 3
-            chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
-                                                             // channel number
-                                                             // from above port
-                                                             // addresses
-            if (controller[ctrlNum].flipflop) {
-                // Return high byte, and 'flip' flipflop
-                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-                return (byte) (controller[ctrlNum].channel[chanNum].currentAddress >> 8);
-            } else {
-                // Return low byte, and 'flip' flipflop
-                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-                return (byte) (controller[ctrlNum].channel[chanNum].currentAddress & 0xFF);
-            }
-
-            // Read current word count byte; depending on flipflop state,
+            // Read current address byte; depending on flipflop state,
             // this is either the high (1) or low (0) byte
-        case 0x01: // Controller 0, channel 0
-        case 0x03: // Controller 0, channel 1
-        case 0x05: // Controller 0, channel 2
-        case 0x07: // Controller 0, channel 3
-        case 0xC2: // Controller 1, channel 0
-        case 0xC6: // Controller 1, channel 1
-        case 0xCA: // Controller 1, channel 2
-        case 0xCE: // Controller 1, channel 3
-            chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
-                                                             // channel number
-                                                             // from above port
-                                                             // addresses
-            if (controller[ctrlNum].flipflop) {
-                // Return high byte, and 'flip' flipflop
-                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-                return (byte) (controller[ctrlNum].channel[chanNum].currentCount >> 8);
-            } else {
-                // Return low byte, and 'flip' flipflop
-                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-                return (byte) (controller[ctrlNum].channel[chanNum].currentCount & 0xFF);
-            }
+            case 0x00: // Controller 0, channel 0
+            case 0x02: // Controller 0, channel 1
+            case 0x04: // Controller 0, channel 2
+            case 0x06: // Controller 0, channel 3
+            case 0xC0: // Controller 1, channel 0
+            case 0xC4: // Controller 1, channel 1
+            case 0xC8: // Controller 1, channel 2
+            case 0xCC: // Controller 1, channel 3
+                chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
+                // channel number
+                // from above port
+                // addresses
+                if (controller[ctrlNum].flipflop) {
+                    // Return high byte, and 'flip' flipflop
+                    controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                    return (byte) (controller[ctrlNum].channel[chanNum].currentAddress >> 8);
+                } else {
+                    // Return low byte, and 'flip' flipflop
+                    controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                    return (byte) (controller[ctrlNum].channel[chanNum].currentAddress & 0xFF);
+                }
 
-            // Read controller's status register
-            // Reading this register clears the TC flags (bits 0-3)
-        case 0x08: // Controller 0
-        case 0xD0: // Controller 1
-            returnValue = controller[ctrlNum].statusRegister;
-            controller[ctrlNum].statusRegister &= 0xF0; // Clear TC flags on
-                                                        // read
-            return returnValue;
+                // Read current word count byte; depending on flipflop state,
+                // this is either the high (1) or low (0) byte
+            case 0x01: // Controller 0, channel 0
+            case 0x03: // Controller 0, channel 1
+            case 0x05: // Controller 0, channel 2
+            case 0x07: // Controller 0, channel 3
+            case 0xC2: // Controller 1, channel 0
+            case 0xC6: // Controller 1, channel 1
+            case 0xCA: // Controller 1, channel 2
+            case 0xCE: // Controller 1, channel 3
+                chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
+                // channel number
+                // from above port
+                // addresses
+                if (controller[ctrlNum].flipflop) {
+                    // Return high byte, and 'flip' flipflop
+                    controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                    return (byte) (controller[ctrlNum].channel[chanNum].currentCount >> 8);
+                } else {
+                    // Return low byte, and 'flip' flipflop
+                    controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                    return (byte) (controller[ctrlNum].channel[chanNum].currentCount & 0xFF);
+                }
+
+                // Read controller's status register
+                // Reading this register clears the TC flags (bits 0-3)
+            case 0x08: // Controller 0
+            case 0xD0: // Controller 1
+                returnValue = controller[ctrlNum].statusRegister;
+                controller[ctrlNum].statusRegister &= 0xF0; // Clear TC flags on
+                // read
+                return returnValue;
 
             // Read controller's temporary register, used in memory-to-memory
             // transfers
             // Unused register, so return 0 as default value
-        case 0x0D: // Controller 0
-        case 0xDA: // Controller 1
-            logger
-                    .log(
-                            Level.CONFIG,
-                            "["
-                                    + super.getType()
-                                    + "]"
-                                    + " Controller ["
-                                    + ctrlNum
-                                    + "] temporary register (unused) read. Returned 0 (default)");
-            return 0;
+            case 0x0D: // Controller 0
+            case 0xDA: // Controller 1
+                logger
+                        .log(
+                                Level.CONFIG,
+                                "["
+                                        + super.getType()
+                                        + "]"
+                                        + " Controller ["
+                                        + ctrlNum
+                                        + "] temporary register (unused) read. Returned 0 (default)");
+                return 0;
 
             // Read controller's page register
-        case 0x81: // Controller 0, channel 2
-            return controller[ctrlNum].channel[2].pageRegister;
-        case 0x82: // Controller 0, channel 3
-            return controller[ctrlNum].channel[3].pageRegister;
-        case 0x83: // Controller 0, channel 1
-            return controller[ctrlNum].channel[1].pageRegister;
-        case 0x87: // Controller 0, channel 0
-            return controller[ctrlNum].channel[0].pageRegister;
+            case 0x81: // Controller 0, channel 2
+                return controller[ctrlNum].channel[2].pageRegister;
+            case 0x82: // Controller 0, channel 3
+                return controller[ctrlNum].channel[3].pageRegister;
+            case 0x83: // Controller 0, channel 1
+                return controller[ctrlNum].channel[1].pageRegister;
+            case 0x87: // Controller 0, channel 0
+                return controller[ctrlNum].channel[0].pageRegister;
 
-        case 0x89: // Controller 1, channel 2
-            return controller[ctrlNum].channel[2].pageRegister;
-        case 0x8A: // Controller 1, channel 3
-            return controller[ctrlNum].channel[3].pageRegister;
-        case 0x8B: // Controller 1, channel 1
-            return controller[ctrlNum].channel[1].pageRegister;
-        case 0x8F: // Controller 1, channel 0
-            return controller[ctrlNum].channel[0].pageRegister;
+            case 0x89: // Controller 1, channel 2
+                return controller[ctrlNum].channel[2].pageRegister;
+            case 0x8A: // Controller 1, channel 3
+                return controller[ctrlNum].channel[3].pageRegister;
+            case 0x8B: // Controller 1, channel 1
+                return controller[ctrlNum].channel[1].pageRegister;
+            case 0x8F: // Controller 1, channel 0
+                return controller[ctrlNum].channel[0].pageRegister;
 
             // Read extra page registers (temporary storage)
             // This are only read and written via I/O but serve no other use
-        case 0x0080:
-        case 0x0084:
-        case 0x0085:
-        case 0x0086:
-        case 0x0088:
-        case 0x008C:
-        case 0x008D:
-        case 0x008E:
-            return ext_page_reg[portAddress & 0x0F];
+            case 0x0080:
+            case 0x0084:
+            case 0x0085:
+            case 0x0086:
+            case 0x0088:
+            case 0x008C:
+            case 0x008D:
+            case 0x008E:
+                return ext_page_reg[portAddress & 0x0F];
 
             // Read all Mask bits (only in Intel 82374)
-        case 0x0F: // Controller 0
-        case 0xDE: // Controller 1
-            returnValue = (byte) (controller[ctrlNum].mask[0]
-                    | (controller[ctrlNum].mask[1] << 1)
-                    | (controller[ctrlNum].mask[2] << 2) | (controller[ctrlNum].mask[3] << 3));
-            return (byte) (0xF0 | returnValue);
+            case 0x0F: // Controller 0
+            case 0xDE: // Controller 1
+                returnValue = (byte) (controller[ctrlNum].mask[0]
+                        | (controller[ctrlNum].mask[1] << 1)
+                        | (controller[ctrlNum].mask[2] << 2) | (controller[ctrlNum].mask[3] << 3));
+                return (byte) (0xF0 | returnValue);
 
-        default:
-            throw new UnknownPortException("[" + super.getType() + "]"
-                    + " does not recognise port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase());
+            default:
+                throw new UnknownPortException("[" + super.getType() + "]"
+                        + " does not recognise port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase());
         }
     }
 
@@ -500,7 +502,8 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
         int chanNum; // Controller channel number
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -517,127 +520,127 @@ public class DMA extends ModuleDMA {
         int ctrlNum = (byte) (portAddress >= 0xC0 ? SLAVE_CTRL : MASTER_CTRL);
 
         switch (portAddress) {
-        // Write current and base address byte; depending on flipflop state,
-        // this is either the high (1) or low (0) byte
-        case 0x00: // Controller 0, channel 0
-        case 0x02: // Controller 0, channel 1
-        case 0x04: // Controller 0, channel 2
-        case 0x06: // Controller 0, channel 3
-        case 0xC0: // Controller 0, channel 0
-        case 0xC4: // Controller 0, channel 1
-        case 0xC8: // Controller 0, channel 2
-        case 0xCC: // Controller 0, channel 3
-            chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
-                                                             // channel number
-                                                             // from above port
-                                                             // addresses
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
-                    + ctrlNum + ",  channel " + chanNum
-                    + " base and current address set.");
-            if (controller[ctrlNum].flipflop) {
-                // High byte; mask sign because a cast from byte occurs
-                controller[ctrlNum].channel[chanNum].baseAddress |= ((((int) data) & 0xFF) << 8);
-                controller[ctrlNum].channel[chanNum].currentAddress |= ((((int) data) & 0xFF) << 8);
-                logger
-                        .log(
-                                Level.CONFIG,
-                                "["
-                                        + super.getType()
-                                        + "]"
-                                        + "    base = 0x"
-                                        + Integer
-                                                .toHexString(
-                                                        controller[ctrlNum].channel[chanNum].baseAddress)
-                                                .toUpperCase());
-                logger
-                        .log(
-                                Level.CONFIG,
-                                "["
-                                        + super.getType()
-                                        + "]"
-                                        + "    curr = 0x"
-                                        + Integer
-                                                .toHexString(
-                                                        controller[ctrlNum].channel[chanNum].currentAddress)
-                                                .toUpperCase());
-            } else {
-                // Lower byte; mask sign because a cast from byte occurs
-                controller[ctrlNum].channel[chanNum].baseAddress = ((int) data) & 0xFF;
-                controller[ctrlNum].channel[chanNum].currentAddress = ((int) data) & 0xFF;
-            }
-            // 'Flip' flipflop
-            controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-            return;
+            // Write current and base address byte; depending on flipflop state,
+            // this is either the high (1) or low (0) byte
+            case 0x00: // Controller 0, channel 0
+            case 0x02: // Controller 0, channel 1
+            case 0x04: // Controller 0, channel 2
+            case 0x06: // Controller 0, channel 3
+            case 0xC0: // Controller 0, channel 0
+            case 0xC4: // Controller 0, channel 1
+            case 0xC8: // Controller 0, channel 2
+            case 0xCC: // Controller 0, channel 3
+                chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
+                // channel number
+                // from above port
+                // addresses
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
+                        + ctrlNum + ",  channel " + chanNum
+                        + " base and current address set.");
+                if (controller[ctrlNum].flipflop) {
+                    // High byte; mask sign because a cast from byte occurs
+                    controller[ctrlNum].channel[chanNum].baseAddress |= ((((int) data) & 0xFF) << 8);
+                    controller[ctrlNum].channel[chanNum].currentAddress |= ((((int) data) & 0xFF) << 8);
+                    logger
+                            .log(
+                                    Level.CONFIG,
+                                    "["
+                                            + super.getType()
+                                            + "]"
+                                            + "    base = 0x"
+                                            + Integer
+                                            .toHexString(
+                                                    controller[ctrlNum].channel[chanNum].baseAddress)
+                                            .toUpperCase());
+                    logger
+                            .log(
+                                    Level.CONFIG,
+                                    "["
+                                            + super.getType()
+                                            + "]"
+                                            + "    curr = 0x"
+                                            + Integer
+                                            .toHexString(
+                                                    controller[ctrlNum].channel[chanNum].currentAddress)
+                                            .toUpperCase());
+                } else {
+                    // Lower byte; mask sign because a cast from byte occurs
+                    controller[ctrlNum].channel[chanNum].baseAddress = ((int) data) & 0xFF;
+                    controller[ctrlNum].channel[chanNum].currentAddress = ((int) data) & 0xFF;
+                }
+                // 'Flip' flipflop
+                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                return;
 
             // Write current word count byte; depending on flipflop state,
             // this is either the high (1) or low (0) byte
-        case 0x01:
-        case 0x03:
-        case 0x05:
-        case 0x07:
-        case 0xC2:
-        case 0xC6:
-        case 0xCA:
-        case 0xCE:
-            chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
-                                                             // channel number
-                                                             // from above port
-                                                             // addresses
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
-                    + ctrlNum + ",  channel " + chanNum
-                    + " base and current count set.");
-            if (controller[ctrlNum].flipflop) {
-                // High byte; mask sign because a cast from byte occurs
-                controller[ctrlNum].channel[chanNum].baseCount |= ((((int) data) & 0xFF) << 8);
-                controller[ctrlNum].channel[chanNum].currentCount |= ((((int) data) & 0xFF) << 8);
-                logger.log(Level.CONFIG, "["
-                        + super.getType()
-                        + "]"
-                        + "    base = 0x"
-                        + Integer.toHexString(
-                                controller[ctrlNum].channel[chanNum].baseCount)
-                                .toUpperCase());
-                logger
-                        .log(
-                                Level.CONFIG,
-                                "["
-                                        + super.getType()
-                                        + "]"
-                                        + "    curr = 0x"
-                                        + Integer
-                                                .toHexString(
-                                                        controller[ctrlNum].channel[chanNum].currentCount)
-                                                .toUpperCase());
-            } else {
-                // Lower byte; mask sign because a cast from byte occurs
-                controller[ctrlNum].channel[chanNum].baseCount = (((int) data) & 0xFF);
-                controller[ctrlNum].channel[chanNum].currentCount = (((int) data) & 0xFF);
-            }
-            // 'Flip' flipflop
-            controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
-            return;
+            case 0x01:
+            case 0x03:
+            case 0x05:
+            case 0x07:
+            case 0xC2:
+            case 0xC6:
+            case 0xCA:
+            case 0xCE:
+                chanNum = (portAddress >> (1 + ctrlNum)) & 0x03; // Determine
+                // channel number
+                // from above port
+                // addresses
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + "  Controller "
+                        + ctrlNum + ",  channel " + chanNum
+                        + " base and current count set.");
+                if (controller[ctrlNum].flipflop) {
+                    // High byte; mask sign because a cast from byte occurs
+                    controller[ctrlNum].channel[chanNum].baseCount |= ((((int) data) & 0xFF) << 8);
+                    controller[ctrlNum].channel[chanNum].currentCount |= ((((int) data) & 0xFF) << 8);
+                    logger.log(Level.CONFIG, "["
+                            + super.getType()
+                            + "]"
+                            + "    base = 0x"
+                            + Integer.toHexString(
+                            controller[ctrlNum].channel[chanNum].baseCount)
+                            .toUpperCase());
+                    logger
+                            .log(
+                                    Level.CONFIG,
+                                    "["
+                                            + super.getType()
+                                            + "]"
+                                            + "    curr = 0x"
+                                            + Integer
+                                            .toHexString(
+                                                    controller[ctrlNum].channel[chanNum].currentCount)
+                                            .toUpperCase());
+                } else {
+                    // Lower byte; mask sign because a cast from byte occurs
+                    controller[ctrlNum].channel[chanNum].baseCount = (((int) data) & 0xFF);
+                    controller[ctrlNum].channel[chanNum].currentCount = (((int) data) & 0xFF);
+                }
+                // 'Flip' flipflop
+                controller[ctrlNum].flipflop = !controller[ctrlNum].flipflop;
+                return;
 
             // Write controller's command register
             // The only supported functionality here is enable/disable
             // controller (bit 2), report all other commands as unsupported
-        case 0x08: // Controller 0
-        case 0xD0: // Controller 1
-            if ((data & 0xFB) != 0x00) // Attempting to enter commands other
-                                       // than [en|dis]abling controller
-            {
-                logger
-                        .log(
-                                Level.WARNING,
-                                "["
-                                        + super.getType()
-                                        + "]"
-                                        + " command register functionality setting not supported");
-            }
-            controller[ctrlNum].commandRegister = data;
-            controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1;
-            controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
-                                         // accordingly
-            return;
+            case 0x08: // Controller 0
+            case 0xD0: // Controller 1
+                if ((data & 0xFB) != 0x00) // Attempting to enter commands other
+                // than [en|dis]abling controller
+                {
+                    logger
+                            .log(
+                                    Level.WARNING,
+                                    "["
+                                            + super.getType()
+                                            + "]"
+                                            + " command register functionality setting not supported");
+                }
+                controller[ctrlNum].commandRegister = data;
+                controller[ctrlNum].ctrlDisabled = ((data >> 2) & 0x01) == 1;
+                controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
+                // accordingly
+                return;
 
             // Set/Clear DMA request bit in status register
             // Bit 7-3: reserved (0)
@@ -647,26 +650,26 @@ public class DMA extends ModuleDMA {
             // 10 channel 2 select
             // 11 channel 3 select
             // Note: a write to 0x0D / 0xDA clears this register
-        case 0x09: // Controller 0
-        case 0xD2: // Controller 1
-            chanNum = data & 0x03; // Determine channel number from bits 0-1
-            if ((data & 0x04) != 0) // Check bit 2 for set/clear
-            {
-                // Set request bit
-                controller[ctrlNum].statusRegister |= (1 << (chanNum + 4));
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + " Controller " + ctrlNum
-                        + ": Set DMA request bit for channel " + chanNum);
-            } else {
-                // Clear request bit
-                controller[ctrlNum].statusRegister &= ~(1 << (chanNum + 4));
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + " Controller " + ctrlNum
-                        + ": Clear DMA request bit for channel " + chanNum);
-            }
-            controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
-                                         // accordingly
-            return;
+            case 0x09: // Controller 0
+            case 0xD2: // Controller 1
+                chanNum = data & 0x03; // Determine channel number from bits 0-1
+                if ((data & 0x04) != 0) // Check bit 2 for set/clear
+                {
+                    // Set request bit
+                    controller[ctrlNum].statusRegister |= (1 << (chanNum + 4));
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + " Controller " + ctrlNum
+                            + ": Set DMA request bit for channel " + chanNum);
+                } else {
+                    // Clear request bit
+                    controller[ctrlNum].statusRegister &= ~(1 << (chanNum + 4));
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + " Controller " + ctrlNum
+                            + ": Clear DMA request bit for channel " + chanNum);
+                }
+                controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
+                // accordingly
+                return;
 
             // Set/Clear mask register in status register
             // Bit 7-3: reserved (0)
@@ -675,150 +678,150 @@ public class DMA extends ModuleDMA {
             // 01 channel 1 select
             // 10 channel 2 select
             // 11 channel 3 select
-        case 0x0A:
-        case 0xD4:
-            chanNum = data & 0x03; // Determine channel number from bits 0-1
-            controller[ctrlNum].mask[chanNum] = (byte) ((data & 0x04) > 0 ? 1
-                    : 0); // Set/clear appropriate channel's mask
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ", channel " + chanNum + ": set mask as "
-                    + ((data & 0x04) > 0 ? 1 : 0) + "; mask now=0x"
-                    + controller[ctrlNum].mask[chanNum]);
-            controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
-                                         // accordingly
-            return;
+            case 0x0A:
+            case 0xD4:
+                chanNum = data & 0x03; // Determine channel number from bits 0-1
+                controller[ctrlNum].mask[chanNum] = (byte) ((data & 0x04) > 0 ? 1
+                        : 0); // Set/clear appropriate channel's mask
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ", channel " + chanNum + ": set mask as "
+                        + ((data & 0x04) > 0 ? 1 : 0) + "; mask now=0x"
+                        + controller[ctrlNum].mask[chanNum]);
+                controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
+                // accordingly
+                return;
 
             // Write controller's channel's mode register
-        case 0x0B: // Controller 0
-        case 0xD6: // Controller 1
-            chanNum = data & 0x03; // Determine channel number from bits 0-1
-            controller[ctrlNum].channel[chanNum].mode.modeType = (byte) ((data >> 6) & 0x03);
-            controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1;
-            controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1;
-            controller[ctrlNum].channel[chanNum].mode.transferType = (byte) ((data >> 2) & 0x03);
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ", channel " + chanNum
-                    + ": mode register set to 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
+            case 0x0B: // Controller 0
+            case 0xD6: // Controller 1
+                chanNum = data & 0x03; // Determine channel number from bits 0-1
+                controller[ctrlNum].channel[chanNum].mode.modeType = (byte) ((data >> 6) & 0x03);
+                controller[ctrlNum].channel[chanNum].mode.addressDecrement = ((data >> 5) & 0x01) == 1;
+                controller[ctrlNum].channel[chanNum].mode.autoInitEnable = ((data >> 4) & 0x01) == 1;
+                controller[ctrlNum].channel[chanNum].mode.transferType = (byte) ((data >> 2) & 0x03);
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ", channel " + chanNum
+                        + ": mode register set to 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
 
             // Clear flip-flop
-        case 0x0C: // Controller 0
-        case 0xD8: // Controller 1
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": flip-flop cleared");
-            controller[ctrlNum].flipflop = false;
-            return;
+            case 0x0C: // Controller 0
+            case 0xD8: // Controller 1
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": flip-flop cleared");
+                controller[ctrlNum].flipflop = false;
+                return;
 
             // Master clear
             // Similar to hardware reset: Command, Status, Request, and
             // Temporary registers, and flip-flop are cleared;
             // The Mask register is set (disabling all channels)
-        case 0x0D: // Controller 0
-        case 0xDA: // Controller 1
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": master clear (reset)");
-            resetController(ctrlNum);
-            return;
+            case 0x0D: // Controller 0
+            case 0xDA: // Controller 1
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": master clear (reset)");
+                resetController(ctrlNum);
+                return;
 
             // Clear mask register
-        case 0x0E: // Controller 0
-        case 0xDC: // Controller 1
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": clear mask register");
-            controller[ctrlNum].mask[0] = 0;
-            controller[ctrlNum].mask[1] = 0;
-            controller[ctrlNum].mask[2] = 0;
-            controller[ctrlNum].mask[3] = 0;
-            controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
-                                         // accordingly
-            return;
+            case 0x0E: // Controller 0
+            case 0xDC: // Controller 1
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": clear mask register");
+                controller[ctrlNum].mask[0] = 0;
+                controller[ctrlNum].mask[1] = 0;
+                controller[ctrlNum].mask[2] = 0;
+                controller[ctrlNum].mask[3] = 0;
+                controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
+                // accordingly
+                return;
 
             // Write mask register
-        case 0x0F: // Controller 0
-        case 0xDE: // Controller 1
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": write mask register");
-            controller[ctrlNum].mask[0] = (byte) (data & 0x01);
-            data >>= 1;
-            controller[ctrlNum].mask[1] = (byte) (data & 0x01);
-            data >>= 1;
-            controller[ctrlNum].mask[2] = (byte) (data & 0x01);
-            data >>= 1;
-            controller[ctrlNum].mask[3] = (byte) (data & 0x01);
-            controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
-                                         // accordingly
-            return;
+            case 0x0F: // Controller 0
+            case 0xDE: // Controller 1
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": write mask register");
+                controller[ctrlNum].mask[0] = (byte) (data & 0x01);
+                data >>= 1;
+                controller[ctrlNum].mask[1] = (byte) (data & 0x01);
+                data >>= 1;
+                controller[ctrlNum].mask[2] = (byte) (data & 0x01);
+                data >>= 1;
+                controller[ctrlNum].mask[3] = (byte) (data & 0x01);
+                controlHoldRequest(ctrlNum); // Set the HoldRequest (HRQ)
+                // accordingly
+                return;
 
             // Write page registers
             // Address bits A16-A23 for DMA channel
-        case 0x81: // Controller 0, channel 2
-            controller[ctrlNum].channel[2].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 2 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x82: // Controller 0, channel 3
-            controller[ctrlNum].channel[3].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 3 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x83: // Controller 0, channel 1
-            controller[ctrlNum].channel[1].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 1 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x87: // Controller 0, channel 0
-            controller[ctrlNum].channel[0].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 0 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
+            case 0x81: // Controller 0, channel 2
+                controller[ctrlNum].channel[2].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 2 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x82: // Controller 0, channel 3
+                controller[ctrlNum].channel[3].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 3 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x83: // Controller 0, channel 1
+                controller[ctrlNum].channel[1].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 1 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x87: // Controller 0, channel 0
+                controller[ctrlNum].channel[0].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 0 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
 
-        case 0x89: // Controller 1, channel 2
-            controller[ctrlNum].channel[2].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 2 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x8A: // Controller 1, channel 3
-            controller[ctrlNum].channel[3].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 3 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x8B: // Controller 1, channel 1
-            controller[ctrlNum].channel[1].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 1 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
-        case 0x8F: // Controller 1, channel 0
-            controller[ctrlNum].channel[0].pageRegister = data;
-            logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
-                    + ctrlNum + ": page register 0 = 0x"
-                    + Integer.toHexString(data).toUpperCase());
-            return;
+            case 0x89: // Controller 1, channel 2
+                controller[ctrlNum].channel[2].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 2 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x8A: // Controller 1, channel 3
+                controller[ctrlNum].channel[3].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 3 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x8B: // Controller 1, channel 1
+                controller[ctrlNum].channel[1].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 1 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
+            case 0x8F: // Controller 1, channel 0
+                controller[ctrlNum].channel[0].pageRegister = data;
+                logger.log(Level.CONFIG, "[" + super.getType() + "]" + " Controller "
+                        + ctrlNum + ": page register 0 = 0x"
+                        + Integer.toHexString(data).toUpperCase());
+                return;
 
             // Write extra page registers (temporary storage)
             // This are only read and written via I/O but serve no other use
-        case 0x0080:
-        case 0x0084:
-        case 0x0085:
-        case 0x0086:
-        case 0x0088:
-        case 0x008C:
-        case 0x008D:
-        case 0x008E:
-            ext_page_reg[portAddress & 0x0F] = data;
-            return;
+            case 0x0080:
+            case 0x0084:
+            case 0x0085:
+            case 0x0086:
+            case 0x0088:
+            case 0x008C:
+            case 0x008D:
+            case 0x008E:
+                ext_page_reg[portAddress & 0x0F] = data;
+                return;
 
-        default:
-            throw new UnknownPortException("[" + super.getType() + "]"
-                    + " does not recognise port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase());
+            default:
+                throw new UnknownPortException("[" + super.getType() + "]"
+                        + " does not recognise port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase());
         }
     }
 
@@ -828,7 +831,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws UnknownPortException {
+    public byte[] getIOPortWord(int portAddress) throws UnknownPortException
+    {
         byte[] data = new byte[2];
         data[0] = getIOPortByte(portAddress);
         data[1] = getIOPortByte(portAddress);
@@ -843,7 +847,8 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
         setIOPortByte(portAddress, dataWord[1]);
         setIOPortByte(portAddress, dataWord[0]);
     }
@@ -855,7 +860,8 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws WriteOnlyPortException {
+            throws WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -863,7 +869,7 @@ public class DMA extends ModuleDMA {
                 + " -> Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
     }
 
     /**
@@ -873,7 +879,8 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -886,7 +893,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler) {
+    public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler)
+    {
         if (chanNum > 3) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA8Channel: invalid channel number: "
@@ -912,7 +920,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
+    public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler)
+    {
         if (chanNum < 4 || chanNum > 7) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA16Channel: invalid channel number: "
@@ -938,7 +947,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean isTerminalCountReached() {
+    public boolean isTerminalCountReached()
+    {
         return terminalCountReached;
     }
 
@@ -948,7 +958,8 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public void setDMARequest(int chanNum, boolean dmaRequest) {
+    public void setDMARequest(int chanNum, boolean dmaRequest)
+    {
         int dmaFloor, dmaCeiling; // Memory boundaries of DMA request
         int ctrlNum;
 
@@ -959,13 +970,13 @@ public class DMA extends ModuleDMA {
         }
 
         ctrlNum = chanNum > 3 ? SLAVE_CTRL : MASTER_CTRL; // Determine
-                                                          // controller that
-                                                          // should handle DMA
-                                                          // request
+        // controller that
+        // should handle DMA
+        // request
 
         controller[ctrlNum].DRQ[chanNum & 0x03] = dmaRequest; // Set DMA Request
-                                                              // in the
-                                                              // controller
+        // in the
+        // controller
 
         // Check if the DMA Request came from a registered device
         if (!controller[ctrlNum].channel[chanNum & 0x03].channelUsed) {
@@ -996,7 +1007,7 @@ public class DMA extends ModuleDMA {
                 + chanNum
                 + "]: 0x"
                 + Integer.toHexString(controller[0].mask[chanNum])
-                        .toUpperCase());
+                .toUpperCase());
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " flipflop: "
                 + ((Boolean) controller[0].flipflop).toString());
         logger.log(Level.CONFIG, "["
@@ -1004,14 +1015,14 @@ public class DMA extends ModuleDMA {
                 + "]"
                 + " statusRegister: 0x"
                 + Integer.toHexString(controller[0].statusRegister)
-                        .toUpperCase());
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " modeType: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].mode.modeType)
-                        .toUpperCase());
+                controller[0].channel[chanNum].mode.modeType)
+                .toUpperCase());
         logger
                 .log(
                         Level.CONFIG,
@@ -1020,7 +1031,7 @@ public class DMA extends ModuleDMA {
                                 + "]"
                                 + " addressDecrement: "
                                 + ((Boolean) controller[0].channel[chanNum].mode.addressDecrement)
-                                        .toString());
+                                .toString());
         logger
                 .log(
                         Level.CONFIG,
@@ -1029,48 +1040,48 @@ public class DMA extends ModuleDMA {
                                 + "]"
                                 + " autoInitEnable: "
                                 + ((Boolean) controller[0].channel[chanNum].mode.autoInitEnable)
-                                        .toString());
+                                .toString());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " transferType: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].mode.transferType)
-                        .toUpperCase());
+                controller[0].channel[chanNum].mode.transferType)
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " baseAddress: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].baseAddress)
-                        .toUpperCase());
+                controller[0].channel[chanNum].baseAddress)
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " currentAddress: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].currentAddress)
-                        .toUpperCase());
+                controller[0].channel[chanNum].currentAddress)
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " baseCount: 0x"
                 + Integer.toHexString(controller[0].channel[chanNum].baseCount)
-                        .toUpperCase());
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " currentCount: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].currentCount)
-                        .toUpperCase());
+                controller[0].channel[chanNum].currentCount)
+                .toUpperCase());
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"
                 + " pageReg: 0x"
                 + Integer.toHexString(
-                        controller[0].channel[chanNum].pageRegister)
-                        .toUpperCase());
+                controller[0].channel[chanNum].pageRegister)
+                .toUpperCase());
 
         // Set the request in the status register
         controller[ctrlNum].statusRegister |= (1 << (chanNum + 4));
@@ -1084,8 +1095,8 @@ public class DMA extends ModuleDMA {
                     + "]"
                     + " setDMARequest(): mode_type(0x"
                     + Integer.toHexString(
-                            controller[ctrlNum].channel[chanNum].mode.modeType)
-                            .toUpperCase() + " not supported");
+                    controller[ctrlNum].channel[chanNum].mode.modeType)
+                    .toUpperCase() + " not supported");
         }
 
         // Determine the lower boundary of the DMA transfer
@@ -1112,8 +1123,8 @@ public class DMA extends ModuleDMA {
                     + "]"
                     + " dmaBaseCount = 0x"
                     + Integer.toHexString(
-                            controller[ctrlNum].channel[chanNum].baseCount)
-                            .toUpperCase());
+                    controller[ctrlNum].channel[chanNum].baseCount)
+                    .toUpperCase());
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " dmaCeiling = 0x"
                     + Integer.toHexString(dmaCeiling).toUpperCase());
@@ -1131,14 +1142,14 @@ public class DMA extends ModuleDMA {
      * the CPU (if the origin is slave), or cascaded via DREQ4 to the slave
      * controller (if the origin is master), to be eventually set/cleared
      * depending on the DMA request status.
-     * 
-     * @param ctrlNum
-     *            Controller (master [0] /slave [1]) from where the Hold Request
-     *            originated
+     *
+     * @param ctrlNum Controller (master [0] /slave [1]) from where the Hold Request
+     *                originated
      */
-    private void controlHoldRequest(int ctrlNum) {
+    private void controlHoldRequest(int ctrlNum)
+    {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
 
         int chanNum;
 
@@ -1149,13 +1160,13 @@ public class DMA extends ModuleDMA {
         // Clear HoldRequest if no DMA Request is pending
         if ((controller[ctrlNum].statusRegister & 0xF0) == 0) {
             if (ctrlNum != 0) // Any Hold Request from the master are cascaded
-                              // via the slave
+            // via the slave
             {
                 cpu.setHoldRequest(false, this); // Request originated from
-                                                 // slave, so clear HRQ here
+                // slave, so clear HRQ here
             } else {
                 setDMARequest(4, false); // Request originated from master, so
-                                         // cascade via slave first
+                // cascade via slave first
             }
             return;
         }
@@ -1167,13 +1178,13 @@ public class DMA extends ModuleDMA {
             if (((controller[ctrlNum].statusRegister & (1 << (chanNum + 4))) != 0)
                     && (controller[ctrlNum].mask[chanNum] == 0)) {
                 if (ctrlNum != 0) // Any Hold Request from the master are
-                                  // cascaded via the slave
+                // cascaded via the slave
                 {
                     cpu.setHoldRequest(true, this); // Request originated from
-                                                    // slave, so set HRQ here
+                    // slave, so set HRQ here
                 } else {
                     setDMARequest(4, true); // Request originated from master,
-                                            // so cascade via slave first
+                    // so cascade via slave first
                 }
                 break;
             }
@@ -1186,12 +1197,13 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public void acknowledgeBusHold() {
+    public void acknowledgeBusHold()
+    {
         int ctrlNum = MASTER_CTRL; // Controller number (master/slave)
         int chanNum; // DMA channel number
         int memoryAddress; // Address in memory data is written to/read from
         boolean countExpired = false; // Extra count variable to check terminal
-                                      // count (TC)
+        // count (TC)
 
         // CPU acknowledged hold, so set HLDA
         busHoldAcknowledged = true;
@@ -1212,7 +1224,7 @@ public class DMA extends ModuleDMA {
         // select highest priority channel in master controller
         if (chanNum == 0) {
             controller[SLAVE_CTRL].DACK[0] = true; // Acknowledge DMA Request in
-                                                   // slave controller
+            // slave controller
             for (chanNum = 0; chanNum < 4; chanNum++) {
                 if (((controller[MASTER_CTRL].statusRegister & (1 << (chanNum + 4))) != 0)
                         && (controller[0].mask[chanNum] == 0)) {
@@ -1232,9 +1244,9 @@ public class DMA extends ModuleDMA {
                                 + chanNum
                                 + "), address 0x"
                                 + Integer
-                                        .toHexString(
-                                                controller[ctrlNum].channel[chanNum].currentAddress & 0xFF)
-                                        .toUpperCase());
+                                .toHexString(
+                                        controller[ctrlNum].channel[chanNum].currentAddress & 0xFF)
+                                .toUpperCase());
 
         // Determine memory address - this is stored in the DMA channel
         memoryAddress = ((controller[ctrlNum].channel[chanNum].pageRegister << 16) | (controller[ctrlNum].channel[chanNum].currentAddress << ctrlNum));
@@ -1261,8 +1273,8 @@ public class DMA extends ModuleDMA {
             // Transfer complete
             // Assert TC, deassert HRQ, DACK(n) lines
             controller[ctrlNum].statusRegister |= (1 << chanNum); // Set TC in
-                                                                  // status
-                                                                  // register
+            // status
+            // register
             terminalCountReached = true;
             countExpired = true; // Set extra variable for check later
             if (controller[ctrlNum].channel[chanNum].mode.autoInitEnable) {
@@ -1284,14 +1296,14 @@ public class DMA extends ModuleDMA {
         }
 
         if (countExpired) // DMA process finished, so reset all involved
-                          // variables
+        // variables
         {
             terminalCountReached = false; // Device has checked TC during
-                                          // handlerWrite()/handlerRead(), so
-                                          // can clear TC
+            // handlerWrite()/handlerRead(), so
+            // can clear TC
             busHoldAcknowledged = false;
 
-            ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+            ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
             cpu.setHoldRequest(false, this); // clear HRQ to CPU
             if (ctrlNum == 0) // Master controller, so cascade HRQ via DREQ4
             {
@@ -1299,37 +1311,35 @@ public class DMA extends ModuleDMA {
                 controller[1].DACK[0] = false; // clear DACK to cascade
             }
             controller[ctrlNum].DACK[chanNum] = false; // clear DACK to adapter
-                                                       // card
+            // card
         }
     }
 
     /**
      * The DMA transfer type (verify/write/read) set in the mode register is
      * initiated by calling the registered 8-bit/16-bit handler
-     * 
-     * @param ctrlNum
-     *            Controller whose channel is requesting a transfer
-     * @param chanNum
-     *            Channel number of the request
-     * @param memoryAddress
-     *            Source/destination address in memory of the DMA operation
+     *
+     * @param ctrlNum       Controller whose channel is requesting a transfer
+     * @param chanNum       Channel number of the request
+     * @param memoryAddress Source/destination address in memory of the DMA operation
      * @throws ModuleException
      */
     private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
-            throws ModuleException {
-        
-        ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
+            throws ModuleException
+    {
+
+        ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
 
         byte dataByte; // 8-bit data read/written to/from memory
         byte[] dataWord = new byte[2]; // 16-bit data read/written to/from
-                                       // memory
+        // memory
 
         // Initiate DMA transfer; check type and channel, call registered
         // handler to proceed
 
         if (controller[ctrlNum].channel[chanNum].mode.transferType == DMAModeRegister.DMA_TRANSFER_WRITE) // device
-                                                                                                          // ->
-                                                                                                          // memory
+        // ->
+        // memory
         {
             if (ctrlNum == 0) // 8-bit transfer
             {
@@ -1349,8 +1359,8 @@ public class DMA extends ModuleDMA {
                             + " no dma16 write handler for channel " + chanNum);
             }
         } else if (controller[ctrlNum].channel[chanNum].mode.transferType == DMAModeRegister.DMA_TRANSFER_READ) // memory
-                                                                                                                // ->
-                                                                                                                // device
+        // ->
+        // device
         {
             if (ctrlNum == 0) // 8-bit transfer
             {
@@ -1389,19 +1399,22 @@ public class DMA extends ModuleDMA {
      * methods,<BR>
      * as the only use is to prevent other devices from registering on channel 4
      */
-    private void setCascadeChannel() {
+    private void setCascadeChannel()
+    {
         // Extend the DMA16Handler to provide to registerDMAChannel()
         // This class does not implement any of the methods.
         class Cascade16Handler extends DMA16Handler {
             @Override
             // Cascade channel does not support reading
-            public void dma16ReadFromMem(byte[] data) {
+            public void dma16ReadFromMem(byte[] data)
+            {
                 // Do nothing
             }
 
             @Override
             // Casace channel does not support writing
-            public byte[] dma16WriteToMem() {
+            public byte[] dma16WriteToMem()
+            {
                 // Do nothing
                 return null;
             }

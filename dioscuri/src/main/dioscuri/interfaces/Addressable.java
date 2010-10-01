@@ -43,12 +43,11 @@ import dioscuri.exception.UnknownPortException;
 import dioscuri.exception.WriteOnlyPortException;
 
 /**
- * 
+ *
  */
 public interface Addressable extends Module {
 
     /**
-     *
      * @param address
      * @return
      * @throws ModuleException
@@ -58,7 +57,6 @@ public interface Addressable extends Module {
     byte getIOPortByte(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
     /**
-     *
      * @param address
      * @return
      * @throws ModuleException
@@ -68,7 +66,6 @@ public interface Addressable extends Module {
     byte[] getIOPortWord(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
     /**
-     *
      * @param address
      * @return
      * @throws ModuleException
@@ -78,7 +75,6 @@ public interface Addressable extends Module {
     byte[] getIOPortDoubleWord(int address) throws ModuleException, UnknownPortException, WriteOnlyPortException;
 
     /**
-     *
      * @param address
      * @param value
      * @throws ModuleException
@@ -87,7 +83,6 @@ public interface Addressable extends Module {
     void setIOPortByte(int address, byte value) throws ModuleException, UnknownPortException;
 
     /**
-     *
      * @param address
      * @param value
      * @throws ModuleException
@@ -96,7 +91,6 @@ public interface Addressable extends Module {
     void setIOPortWord(int address, byte[] value) throws ModuleException, UnknownPortException;
 
     /**
-     * 
      * @param address
      * @param value
      * @throws ModuleException

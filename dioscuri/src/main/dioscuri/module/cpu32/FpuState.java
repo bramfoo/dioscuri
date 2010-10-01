@@ -27,10 +27,12 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.processor.*;
 //import org.jpc.emulator.*;
-import java.io.*;
+
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -53,179 +55,163 @@ public abstract class FpuState implements Hibernatable {
     // note exception bits are "sticky" - cleared only explicitly
     // accessors to flag an exception - these will set the bit,
     // check the mask, and throw a ProcessorException if unmasked
+
     public abstract void setInvalidOperation();
+
     public abstract void setDenormalizedOperand();
+
     public abstract void setZeroDivide();
+
     public abstract void setOverflow();
+
     public abstract void setUnderflow();
+
     public abstract void setPrecision();
+
     public abstract void setStackFault();
+
     public abstract void clearExceptions();
 
     /**
-     *
      * @throws ProcessorException
      */
     public abstract void checkExceptions() throws ProcessorException;
 
     // read accessors
+
     /**
-     *
      * @return -
      */
     public abstract boolean getInvalidOperation();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getDenormalizedOperand();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getZeroDivide();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getOverflow();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getUnderflow();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getPrecision();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getStackFault();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getErrorSummaryStatus(); // derived from other bits
 
     /**
-     *
      * @return -
      */
     public abstract boolean getBusy();// same as fpuErrorSummaryStatus()
-                                      // (legacy)
+    // (legacy)
     public int conditionCode; // 4 bits
     public int top; // top of stack pointer (3 bits)
 
     // control word
+
     /**
-     *
      * @return -
      */
     public abstract boolean getInvalidOperationMask();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getDenormalizedOperandMask();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getZeroDivideMask();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getOverflowMask();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getUnderflowMask();
 
     /**
-     *
      * @return -
      */
     public abstract boolean getPrecisionMask();
+
     public boolean infinityControl; // legacy: not really used anymore
 
     /**
-     *
      * @return -
      */
     public abstract int getPrecisionControl(); // 2 bits
 
     /**
-     *
      * @return -
      */
     public abstract int getRoundingControl(); // 2 bits
 
     /**
-     *
      * @param value
      */
     public abstract void setInvalidOperationMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setDenormalizedOperandMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setZeroDivideMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setOverflowMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setUnderflowMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setPrecisionMask(boolean value);
 
     /**
-     *
      * @param value
      */
     public abstract void setPrecisionControl(int value);
 
     /**
-     *
      * @param value
      */
     public abstract void setRoundingControl(int value);
 
     /**
-     *
      * @param value
      */
     public abstract void setAllMasks(boolean value);
@@ -236,24 +222,22 @@ public abstract class FpuState implements Hibernatable {
     public int lastOpcode; // 11 bits
 
     // x87 access
+
     public abstract void init();
 
     /**
-     *
      * @param x
      * @throws ProcessorException
      */
     public abstract void push(double x) throws ProcessorException;
 
     /**
-     *
      * @return -
      * @throws ProcessorException
      */
     public abstract double pop() throws ProcessorException;
 
     /**
-     *
      * @param index
      * @return -
      * @throws ProcessorException
@@ -261,7 +245,6 @@ public abstract class FpuState implements Hibernatable {
     public abstract double ST(int index) throws ProcessorException;
 
     /**
-     *
      * @param index
      * @param value
      */
@@ -271,68 +254,60 @@ public abstract class FpuState implements Hibernatable {
     // public abstract BigDecimal popBig() throws ProcessorException;
     // public abstract BigDecimal bigST(int index) throws ProcessorException;
     // public abstract void setBigST(int index, BigDecimal value);
+
     /**
-     *
      * @return -
      */
     public abstract int getStatus();
 
     /**
-     *
      * @param w
      */
     public abstract void setStatus(int w);
 
     /**
-     *
      * @return -
      */
     public abstract int getControl();
 
     /**
-     *
      * @param w
      */
     public abstract void setControl(int w);
 
     /**
-     *
      * @return -
      */
     public abstract int getTagWord();
 
     /**
-     *
      * @param w
      */
     public abstract void setTagWord(int w);
 
     /**
-     *
      * @param index
      * @return -
      */
     public abstract int getTag(int index);
 
     /**
-     *
      * @param output
      * @throws IOException
      */
     public abstract void dumpState(DataOutput output) throws IOException;
 
     /**
-     *
      * @param input
      * @throws IOException
      */
     public abstract void loadState(DataInput input) throws IOException;
 
     /**
-     *
      * @param copy
      */
-    public void copyStateInto(FpuState copy) {
+    public void copyStateInto(FpuState copy)
+    {
         copy.conditionCode = conditionCode;
         copy.top = top;
         copy.infinityControl = infinityControl;
@@ -342,7 +317,8 @@ public abstract class FpuState implements Hibernatable {
     }
 
     @Override
-    public boolean equals(Object another) {
+    public boolean equals(Object another)
+    {
         if (!(another instanceof FpuState))
             return false;
         FpuState s = (FpuState) another;
@@ -356,7 +332,8 @@ public abstract class FpuState implements Hibernatable {
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = 3;
         hash = 79 * hash + this.conditionCode;
         hash = 79 * hash + this.top;

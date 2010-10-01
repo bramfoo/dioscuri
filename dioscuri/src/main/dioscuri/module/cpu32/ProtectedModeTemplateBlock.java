@@ -29,7 +29,6 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -58,25 +57,26 @@ public abstract class ProtectedModeTemplateBlock implements
     }
 
     /**
-     *
      * @return -
      */
-    public String getDisplayString() {
+    public String getDisplayString()
+    {
         return getClass().getName();
     }
 
     /**
-     *
      * @param startAddress
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
+    {
         return false;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "ByteCodeCompiled ProtectedModeUBlock";
     }
 }

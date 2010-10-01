@@ -39,10 +39,6 @@
 
 package dioscuri.module.memory;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Module;
@@ -51,13 +47,17 @@ import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleVideo;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a hardware memory module.
- *
+ * <p/>
  * Contains an array of 2^20 integers, offering 1MB of RAM.
  *
  * @see dioscuri.module.AbstractModule
- *
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : memory general.name : 1 Megabyte Random Access Memory
  *      general.architecture : Von Neumann general.description : General
@@ -67,11 +67,10 @@ import dioscuri.module.ModuleVideo;
  *      line general.relations : cpu, mainboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      memory.size : 1 MB
- *
+ *      <p/>
  *      Notes: This memory implementation using dynamic allocation was designed
  *      and coded by Tiago Leite, Tiago Taveira and Bruno Martins, students at
  *      the Insituto Superior Tecnico, May 2009.
- *
  */
 public class DynamicAllocationMemory extends ModuleMemory {
 
@@ -83,9 +82,9 @@ public class DynamicAllocationMemory extends ModuleMemory {
     private int ramBlock; // Size of first dimension
     private int ramBlockSize; // Size of second dimension
     private int blockIndex; // Index into ram; shifting by this index determines
-                            // corresponding ramBlock for memory address
+    // corresponding ramBlock for memory address
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
-                                   // addresses
+    // addresses
 
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
@@ -102,7 +101,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      *
      * @param owner
      */
-    public DynamicAllocationMemory(Emulator owner) {
+    public DynamicAllocationMemory(Emulator owner)
+    {
 
         // Split ram into sections, more or less arbitrarily chosen size
         // (multiple of two)
@@ -118,7 +118,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // To determine logarithm, two methods can be used:
         // blockIndex = Math.log(ramBlockSize)/Math.log(2.0);
         // or some bit-voodoo:
-        for (int i = ramBlockSize; i > 1; blockIndex++, i = i >> 1);
+        for (int i = ramBlockSize; i > 1; blockIndex++, i = i >> 1) ;
 
         // Debugging functionality
         watchValue = false;
@@ -134,7 +134,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         Arrays.fill(ram, null);
 
         // Initialise A20 address bit to non-wrap (0xFFFF FFFF)
@@ -155,7 +156,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -201,11 +203,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte getByte(int address) {
+    public byte getByte(int address)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -227,7 +230,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // Check if address is in range
         try {
             // Watch certain memory address
-            if (watchValue == true && address == watchAddress) {
+            if (watchValue && address == watchAddress) {
                 // logger.log(Level.CONFIG, "[" + super.getType() + "] " +
                 // cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1) +
                 // " Watched BYTE at address " + watchAddress + " is read: [" +
@@ -261,11 +264,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setByte(int address, byte value) {
+    public void setByte(int address, byte value)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setByte(" +
         // address + ", " + value + ")");
@@ -278,7 +282,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
         try {
             // Watch certain memory address
-            if (watchValue == true && address == watchAddress) {
+            if (watchValue && address == watchAddress) {
                 logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
@@ -322,11 +326,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte[] getWord(int address) {
+    public byte[] getWord(int address)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -355,7 +360,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
         // Check if address is in range
         try {
             // Watch certain memory address
-            if (watchValue == true
+            if (watchValue
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
@@ -368,17 +373,17 @@ public class DynamicAllocationMemory extends ModuleMemory {
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF) {
                 // Honour little-endian, put MSB in array[0], LSB in array[1]
-                return new byte[] { video.readMode(address + 1),
-                        video.readMode(address) };
+                return new byte[]{video.readMode(address + 1),
+                        video.readMode(address)};
             } else {
                 // Honour little-endian, put MSB in array[0], LSB in array[1]
-                return new byte[] { addrValue2, addrValue1 };
+                return new byte[]{addrValue2, addrValue1};
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFFFF");
             // Out of range, return default value
-            return new byte[] { (byte) 0xFF, (byte) 0xFF };
+            return new byte[]{(byte) 0xFF, (byte) 0xFF};
         }
     }
 
@@ -388,11 +393,12 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWord(int address, byte[] value) {
+    public void setWord(int address, byte[] value)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -406,7 +412,7 @@ public class DynamicAllocationMemory extends ModuleMemory {
 
         try {
             // Watch certain memory address
-            if (watchValue == true
+            if (watchValue
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
@@ -462,7 +468,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      */
     @Override
     public void setBytes(int address, byte[] binaryStream)
-            throws ModuleException {
+            throws ModuleException
+    {
         // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setBytes(" +
         // address + ")");
 
@@ -502,7 +509,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setA20AddressLine(boolean status) {
+    public void setA20AddressLine(boolean status)
+    {
         // Change the status of A20 address line check
         if (status) {
             // Enable 0x100000 address bit (memory wrapping is turned off)
@@ -522,7 +530,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress) {
+    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress)
+    {
         this.watchValue = isWatchOn;
         this.watchAddress = watchAddress;
     }
@@ -533,7 +542,8 @@ public class DynamicAllocationMemory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setRamSizeInMB(int ramSizeMB) {
+    public void setRamSizeInMB(int ramSizeMB)
+    {
         this.ramSize = ramSizeMB * BYTES_IN_MB;
 
         // Create new empty memory
@@ -554,12 +564,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     /**
      * Converts a given string into a byte of one integer
      *
-     * @param strValue
-     *            value
-     *
+     * @param strValue value
      * @return int as byte
      */
-    private int convertStringToByte(String strValue) {
+    private int convertStringToByte(String strValue)
+    {
         // Parse from string to int (hex)
         try {
             int intRegVal = 0;

@@ -50,20 +50,21 @@ public class Instruction_POP_ES implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_POP_ES() {
+    public Instruction_POP_ES()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_POP_ES(CPU processor) {
+    public Instruction_POP_ES(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_POP_ES implements Instruction {
     /**
      * This pops the word at stack top SS:SP into ES onto
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word SS:SP and assign to ES
         cpu.es = cpu.getWordFromStack();
 

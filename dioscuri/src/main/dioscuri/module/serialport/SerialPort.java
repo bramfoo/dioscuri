@@ -39,9 +39,6 @@
 
 package dioscuri.module.serialport;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
@@ -51,6 +48,9 @@ import dioscuri.interfaces.UART;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleSerialPort;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of a serial port module.
@@ -163,14 +163,15 @@ public class SerialPort extends ModuleSerialPort {
      *
      * @param owner
      */
-    public SerialPort(Emulator owner) {
+    public SerialPort(Emulator owner)
+    {
 
         // Create COM-ports
         comPorts = new ComPort[TOTALCOMPORTS];
         for (int c = 0; c < TOTALCOMPORTS; c++) {
             comPorts[c] = new ComPort();
         }
-        
+
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> AbstractModule created successfully.");
     }
@@ -181,10 +182,11 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
         // Reset COM-ports
         for (int c = 0; c < comPorts.length; c++) {
@@ -236,7 +238,8 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval() {
+    public int getUpdateInterval()
+    {
         return updateInterval;
     }
 
@@ -246,7 +249,8 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval) {
+    public void setUpdateInterval(int interval)
+    {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -257,7 +261,7 @@ public class SerialPort extends ModuleSerialPort {
         // Notify motherboard that interval has changed
         // (only if motherboard contains a clock, which may not be the case at
         // startup, but may be during execution)
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -267,7 +271,8 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void update() {
+    public void update()
+    {
         int port = 0;
         int timer_id, baudrate;
         boolean isDataReady = false;
@@ -316,7 +321,7 @@ public class SerialPort extends ModuleSerialPort {
             }
 
             // Activate timer as one shot
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
             motherboard.resetTimer(this, (int) (1000000.0 / comPorts[port].baudrate));
             motherboard.setTimerActiveState(this, true);
         }
@@ -329,7 +334,8 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         int offset, port;
         byte value = 0x00;
 
@@ -522,10 +528,11 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " Write (byte) to port "
@@ -769,7 +776,7 @@ public class SerialPort extends ModuleSerialPort {
                     }
 
                     // Check if interrupt should be raised (do it once)
-                    if (raiseInterrupt == true) {
+                    if (raiseInterrupt) {
                         this.setIRQ(port, INTERRUPT_IER);
                     }
                 }
@@ -960,7 +967,8 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -978,7 +986,8 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -992,7 +1001,8 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -1010,7 +1020,8 @@ public class SerialPort extends ModuleSerialPort {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.INFO, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -1023,7 +1034,8 @@ public class SerialPort extends ModuleSerialPort {
      * @see dioscuri.module.ModuleSerialPort
      */
     @Override
-    public boolean setUARTDevice(UART device, int comPort) {
+    public boolean setUARTDevice(UART device, int comPort)
+    {
         // Check if valid com port
         if (comPort >= 0 && comPort < comPorts.length) {
             // Check if device is not already connected
@@ -1038,12 +1050,13 @@ public class SerialPort extends ModuleSerialPort {
         return false;
     }
 
-    private void setIRQ(int port, int type) {
+    private void setIRQ(int port, int type)
+    {
         // TODO BK always port=0, type=1 
         boolean raiseInterrupt = false;
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
         switch (type) {
             case INTERRUPT_IER: // IER has changed
@@ -1103,7 +1116,8 @@ public class SerialPort extends ModuleSerialPort {
         }
     }
 
-    private void clearIRQ(int port) {
+    private void clearIRQ(int port)
+    {
         // Check pending interrupts. If none, clear interrupt at PIC
         if ((comPorts[port].rx_interrupt == 0)
                 && (comPorts[port].tx_interrupt == 0)
@@ -1112,17 +1126,18 @@ public class SerialPort extends ModuleSerialPort {
                 && (comPorts[port].fifo_interrupt == 0)) {
             logger.log(Level.CONFIG, "[" + super.getType()
                     + "] Lowering IRQ (signalling to PIC)");
-            ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+            ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
             pic.clearIRQ(comPorts[port].irq);
         }
     }
 
-    private void enqueueReceivedData(int port, byte data) {
+    private void enqueueReceivedData(int port, byte data)
+    {
         logger.log(Level.INFO, "[" + super.getType() + "] enqueueReceivedData(...)");
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
-        
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
+
         boolean raiseInterrupt = false;
 
         // Check if FIFO is active

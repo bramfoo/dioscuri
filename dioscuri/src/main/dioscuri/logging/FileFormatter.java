@@ -39,15 +39,16 @@
 
 package dioscuri.logging;
 
-import java.util.logging.*;
+import java.util.logging.Formatter;
+import java.util.logging.LogRecord;
 
 /**
- * 
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class FileFormatter extends Formatter {
-    public String format(LogRecord record) {
+    public String format(LogRecord record)
+    {
         return record.getMillis() + "\t" + record.getLoggerName() + "\t"
                 + record.getLevel() + "\t: " + record.getMessage() + '\n';
     }

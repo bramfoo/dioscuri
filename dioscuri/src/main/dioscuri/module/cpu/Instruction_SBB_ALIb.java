@@ -53,10 +53,12 @@ public class Instruction_SBB_ALIb implements Instruction {
     int iCarryFlag;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SBB_ALIb() {
+    public Instruction_SBB_ALIb()
+    {
         immediateByte = 0;
         oldDest = 0;
         iCarryFlag = 0;
@@ -64,11 +66,11 @@ public class Instruction_SBB_ALIb implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SBB_ALIb(CPU processor) {
+    public Instruction_SBB_ALIb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -80,7 +82,8 @@ public class Instruction_SBB_ALIb implements Instruction {
     /**
      * Subtract (immediate byte + CF) from AL
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;

@@ -64,19 +64,21 @@ public class Instruction_AND_GbEb implements Instruction {
     byte logicalANDResult = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_AND_GbEb() {
+    public Instruction_AND_GbEb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_AND_GbEb(CPU processor) {
+    public Instruction_AND_GbEb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,7 +91,8 @@ public class Instruction_AND_GbEb implements Instruction {
      * Logical AND of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute() {
+    public void execute()
+    {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

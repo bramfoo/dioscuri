@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode 6D<BR>
@@ -62,27 +62,28 @@ public class Instruction_INSW_YvDX implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_INSW_YvDX.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_INSW_YvDX() {
+    public Instruction_INSW_YvDX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_INSW_YvDX(CPU processor) {
+    public Instruction_INSW_YvDX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
         cpu = processor;
 
         // Set transition that holds the amount DI should be altered (word = 2)
-        transition = new byte[] { 0x00, 0x02 };
+        transition = new byte[]{0x00, 0x02};
     }
 
     // Methods
@@ -90,7 +91,8 @@ public class Instruction_INSW_YvDX implements Instruction {
     /**
      * Copy word from I/O port to ES:DI; update DI register according to DF
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;
@@ -106,8 +108,8 @@ public class Instruction_INSW_YvDX implements Instruction {
 
                 // Write the doubleword as two words into the Extra segment
                 // TODO: Should this set to cpu.di or cpu.edi - or both??
-                cpu.setWordToExtra(cpu.di, new byte[] { ePortValue[1],
-                        ePortValue[0] });
+                cpu.setWordToExtra(cpu.di, new byte[]{ePortValue[1],
+                        ePortValue[0]});
 
                 // Note: DI is updated by word-size here, the other word-size is
                 // done below
@@ -123,8 +125,8 @@ public class Instruction_INSW_YvDX implements Instruction {
                 }
 
                 // Set the second part of the doubleword
-                cpu.setWordToExtra(cpu.di, new byte[] { ePortValue[3],
-                        ePortValue[2] });
+                cpu.setWordToExtra(cpu.di, new byte[]{ePortValue[3],
+                        ePortValue[2]});
                 // Second update of DI is done below
 
             } else // Word-size

@@ -25,8 +25,12 @@
  */
 package dioscuri.module.cpu32;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.Vector;
 
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.emulator.memory.codeblock.optimised.*;
@@ -34,7 +38,6 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -123,25 +126,27 @@ public class UCodeMethodParser implements MicrocodeSet {
     }
 
     /**
-     *
      * @param operations
      * @param operandArray
      * @param externalEffectsArray
      * @param explicitThrowArray
      */
     public UCodeMethodParser(Object[][][] operations, int[][][] operandArray,
-            boolean[][] externalEffectsArray, boolean[][] explicitThrowArray) {
+                             boolean[][] externalEffectsArray, boolean[][] explicitThrowArray)
+    {
         this.operations = operations;
         this.operandArray = operandArray;
         this.externalEffectsArray = externalEffectsArray;
         this.explicitThrowArray = explicitThrowArray;
     }
 
-    private void syntaxError(String message) {
+    private void syntaxError(String message)
+    {
         throw new IllegalStateException(message);
     }
 
-    private void printFragmentArrays() {
+    private void printFragmentArrays()
+    {
         for (int i = 0; i < MICROCODE_LIMIT; i++)
             for (int j = 0; j < FASTCompiler.ELEMENT_COUNT; j++) {
                 if (operations[i][j] != null) {
@@ -158,7 +163,8 @@ public class UCodeMethodParser implements MicrocodeSet {
             }
     }
 
-    private void printIndexs() {
+    private void printIndexs()
+    {
         System.out.println();
         System.out.println("microcodeIndex");
         Enumeration<String> en = microcodeIndex.keys();
@@ -187,8 +193,9 @@ public class UCodeMethodParser implements MicrocodeSet {
     }
 
     private void insertIntoFragmentArrays(String uCodeName, String resultName,
-            String[] args, boolean externalEffect, boolean explicitThrow,
-            Vector<Integer> instructions) {
+                                          String[] args, boolean externalEffect, boolean explicitThrow,
+                                          Vector<Integer> instructions)
+    {
         try {
             Integer codeVal = microcodeIndex.get(uCodeName);
             if (codeVal == null)
@@ -227,7 +234,8 @@ public class UCodeMethodParser implements MicrocodeSet {
     }
 
     @SuppressWarnings("unchecked")
-    private void parseMethod(Method m) {
+    private void parseMethod(Method m)
+    {
         String name = m.getName();
 
         int pos = 0;
@@ -304,10 +312,10 @@ public class UCodeMethodParser implements MicrocodeSet {
     }
 
     /**
-     *
      * @return -
      */
-    public int parse() {
+    public int parse()
+    {
         Method[] methods = UCodeStaticMethods.class.getDeclaredMethods();
         for (int i = 0; i < methods.length; i++) {
             if (Modifier.isPrivate(methods[i].getModifiers()))
@@ -319,10 +327,10 @@ public class UCodeMethodParser implements MicrocodeSet {
     }
 
     /**
-     *
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         // If using main(), make sure the static in BytecodeFragments that cause
         // this to parse() is disabled!!
 

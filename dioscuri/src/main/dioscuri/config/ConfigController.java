@@ -39,8 +39,6 @@
 
 package dioscuri.config;
 
-import dioscuri.GUI;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -53,7 +51,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -72,7 +69,7 @@ public class ConfigController {
         } catch (JAXBException e) {
             logger.log(Level.SEVERE,
                     "[Config] Cannot initialise JAXBContext for binding Emulator config xml files: "
-                    + e.getMessage());
+                            + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -93,7 +90,8 @@ public class ConfigController {
      * @return A new unmarshaller
      * @throws JAXBException
      */
-    public static Unmarshaller getEmuUnmarshaller() throws JAXBException {
+    public static Unmarshaller getEmuUnmarshaller() throws JAXBException
+    {
         return jc.createUnmarshaller();
     }
 
@@ -103,7 +101,8 @@ public class ConfigController {
      * @return A new marshaller
      * @throws JAXBException
      */
-    public static Marshaller getEmuMarshaller() throws JAXBException {
+    public static Marshaller getEmuMarshaller() throws JAXBException
+    {
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         return m;
@@ -112,14 +111,13 @@ public class ConfigController {
     /**
      * save JAXB Emu object to disk as an XML file
      *
-     * @param emuObject
-     *            The Emulator object
-     * @param outputXMLFile
-     *            The xml output file
+     * @param emuObject     The Emulator object
+     * @param outputXMLFile The xml output file
      * @throws Exception
      */
     public static void saveToXML(Emulator emuObject, File outputXMLFile)
-            throws Exception {
+            throws Exception
+    {
         FileOutputStream fos = new FileOutputStream(outputXMLFile);
         try {
             Marshaller marshaller = jc.createMarshaller();
@@ -134,12 +132,12 @@ public class ConfigController {
     /**
      * Load a whole Emu object from an XML file on disk
      *
-     * @param inputEmuFile
-     *            An Emulator XML config file to load into memory
+     * @param inputEmuFile An Emulator XML config file to load into memory
      * @return An Emulator object representing the whole Emulator file
      * @throws Exception
      */
-    public static Emulator loadFromXML(File inputEmuFile) throws Exception {
+    public static Emulator loadFromXML(File inputEmuFile) throws Exception
+    {
         FileInputStream fis = new FileInputStream(inputEmuFile);
         try {
             return (Emulator) jc.createUnmarshaller().unmarshal(fis);
@@ -149,12 +147,12 @@ public class ConfigController {
     }
 
     /**
-     *
      * @param is
      * @return -
      * @throws Exception
      */
-    public static Emulator loadFromXML(InputStream is) throws Exception {
+    public static Emulator loadFromXML(InputStream is) throws Exception
+    {
         return (Emulator) jc.createUnmarshaller().unmarshal(is);
     }
 }

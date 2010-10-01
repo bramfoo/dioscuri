@@ -28,20 +28,17 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.processor.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface CodeBlock {
-    
+
     /**
-     *
      * @return -
      */
     public int getX86Length();
 
     /**
-     *
      * @return -
      */
     public int getX86Count();
@@ -49,20 +46,19 @@ public interface CodeBlock {
     /**
      * Returns the number of equivalent x86 instructions executed. Negative
      * results indicate an error
+     *
      * @param cpu
      * @return the number of equivalent x86 instructions executed. Negative
-     * results indicate an error
+     *         results indicate an error
      */
     public int execute(Processor cpu);
 
     /**
-     *
      * @return -
      */
     public String getDisplayString();
 
     /**
-     *
      * @param startAddress
      * @param endAddress
      * @return -

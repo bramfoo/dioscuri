@@ -52,20 +52,22 @@ public class Instruction_JZ_JE_long implements Instruction {
     byte[] displacement;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_JZ_JE_long() {
+    public Instruction_JZ_JE_long()
+    {
         displacement = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JZ_JE_long(CPU processor) {
+    public Instruction_JZ_JE_long(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -77,7 +79,8 @@ public class Instruction_JZ_JE_long implements Instruction {
     /**
      * Execute conditional long jump not zero
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

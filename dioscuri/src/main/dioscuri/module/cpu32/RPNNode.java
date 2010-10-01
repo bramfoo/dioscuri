@@ -25,13 +25,14 @@
  */
 package dioscuri.module.cpu32;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Vector;
 
 //import org.jpc.classfile.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -50,11 +51,11 @@ public abstract class RPNNode {
     private static int counter = 0;
 
     /**
-     *
      * @param id
      * @param parent
      */
-    public RPNNode(int id, MicrocodeNode parent) {
+    public RPNNode(int id, MicrocodeNode parent)
+    {
         this.id = id;
         this.parent = parent;
 
@@ -67,68 +68,65 @@ public abstract class RPNNode {
     }
 
     /**
-     *
      * @return -
      */
     public abstract boolean hasExternalEffect();
 
     /**
-     *
      * @return -
      */
     public abstract boolean canThrowException();
 
     /**
-     *
      * @return -
      */
     protected abstract Object[] getByteCodes();
 
     /**
-     *
      * @return -
      */
-    public int getX86Index() {
+    public int getX86Index()
+    {
         return parent.getX86Index();
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Position() {
+    public int getX86Position()
+    {
         return parent.getX86Position();
     }
 
     /**
-     *
      * @return -
      */
-    public int getImmediate() {
+    public int getImmediate()
+    {
         return parent.getImmediate();
     }
 
     /**
-     *
      * @return -
      */
-    public boolean hasImmediate() {
+    public boolean hasImmediate()
+    {
         return parent.hasImmediate();
     }
 
     /**
-     *
      * @return -
      */
-    public int getID() {
+    public int getID()
+    {
         return id;
     }
 
     /**
-     *
      * @return -
      */
-    public int getMicrocode() {
+    public int getMicrocode()
+    {
         if (parent == null)
             return -1;
 
@@ -136,27 +134,27 @@ public abstract class RPNNode {
     }
 
     /**
-     *
      * @return -
      */
-    public boolean hasLinks() {
+    public boolean hasLinks()
+    {
         return argLinks.size() > 0;
     }
 
     /**
-     *
      * @param link
      */
-    public void linkTo(RPNNode link) {
+    public void linkTo(RPNNode link)
+    {
         argLinks.add(link);
     }
 
     /**
-     *
      * @param index
      * @return -
      */
-    public int markSubtrees(int index) {
+    public int markSubtrees(int index)
+    {
         useCount++;
         if ((id != FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE)
                 && (id != FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE)
@@ -179,18 +177,18 @@ public abstract class RPNNode {
     }
 
     /**
-     *
      * @param handler
      */
-    public void attachExceptionHandler(ExceptionHandler handler) {
+    public void attachExceptionHandler(ExceptionHandler handler)
+    {
         exceptionHandler = handler;
     }
 
     /**
-     *
      * @param indent
      */
-    public void print(String indent) {
+    public void print(String indent)
+    {
         System.out.println(indent + "[" + id + "] by "
                 + MicrocodeNode.getName(getMicrocode()) + "  {" + count
                 + " used " + useCount + "}");
@@ -201,19 +199,21 @@ public abstract class RPNNode {
             ((RPNNode) argLinks.get(i)).print(indent + " ");
         System.out.println(indent + "}");
     }
-    public void print() {
+
+    public void print()
+    {
         print("");
     }
 
     /**
-     *
      * @param output
      * @param cf
      * @param bytecodes
      * @throws IOException
      */
     public static void writeBytecodes(CountingOutputStream output,
-            ClassFile cf, Object[] bytecodes) throws IOException {
+                                      ClassFile cf, Object[] bytecodes) throws IOException
+    {
         int lastByte = -1;
         for (int i = 0; i < bytecodes.length; i++) {
             Object o = bytecodes[i];
@@ -231,15 +231,15 @@ public abstract class RPNNode {
                     output.write(lastByte);
 
                     switch (JavaOpcode.getConstantPoolIndexSize(lastByte)) {
-                    case 1:
-                        output.write(index & 0xff);
-                        break;
-                    case 2:
-                        output.write(index >>> 8);
-                        output.write(index & 0xff);
-                        break;
-                    default:
-                        throw new IllegalStateException();
+                        case 1:
+                            output.write(index & 0xff);
+                            break;
+                        case 2:
+                            output.write(index >>> 8);
+                            output.write(index & 0xff);
+                            break;
+                        default:
+                            throw new IllegalStateException();
                     }
                     i++;
                 } else
@@ -252,14 +252,14 @@ public abstract class RPNNode {
     }
 
     /**
-     *
      * @param output
      * @param cf
      * @param leaveResultOnStack
      * @throws IOException
      */
     public void write(CountingOutputStream output, ClassFile cf,
-            boolean leaveResultOnStack) throws IOException {
+                      boolean leaveResultOnStack) throws IOException
+    {
         reset = false;
         writeCount++;
         try {
@@ -277,7 +277,7 @@ public abstract class RPNNode {
                 || !((subtreeIndex >= 0) && (subtreeIndex <= 0xFF))) {
             if ((writeCount > 1)
                     && ((id == FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE)
-                            || (id == FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE) || (id == FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT))) {
+                    || (id == FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE) || (id == FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT))) {
                 return;
             }
 
@@ -293,6 +293,48 @@ public abstract class RPNNode {
 
             if ((subtreeIndex >= 0) && (subtreeIndex <= 0xFF)) {
                 switch (id) {
+                    case FASTCompiler.PROCESSOR_ELEMENT_ES:
+                    case FASTCompiler.PROCESSOR_ELEMENT_CS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_SS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_DS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_FS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_GS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_TSS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
+                        if (leaveResultOnStack) {
+                            output.write(JavaOpcode.DUP);
+                            output.write(JavaOpcode.ASTORE);
+                            output.write(subtreeIndex);
+                        } else {
+                            output.write(JavaOpcode.ASTORE);
+                            output.write(subtreeIndex);
+                        }
+                        break;
+                    default:
+                        if (leaveResultOnStack) {
+                            output.write(JavaOpcode.DUP);
+                            output.write(JavaOpcode.ISTORE);
+                            output.write(subtreeIndex);
+                        } else {
+                            output.write(JavaOpcode.ISTORE);
+                            output.write(subtreeIndex);
+                        }
+                        break;
+                    case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
+                    case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
+                    case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
+                        break;
+                }
+            }
+        } else {
+            if (!leaveResultOnStack)
+                return;
+
+            switch (id) {
                 case FASTCompiler.PROCESSOR_ELEMENT_ES:
                 case FASTCompiler.PROCESSOR_ELEMENT_CS:
                 case FASTCompiler.PROCESSOR_ELEMENT_SS:
@@ -305,72 +347,30 @@ public abstract class RPNNode {
                 case FASTCompiler.PROCESSOR_ELEMENT_TSS:
                 case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
                 case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
-                    if (leaveResultOnStack) {
-                        output.write(JavaOpcode.DUP);
-                        output.write(JavaOpcode.ASTORE);
-                        output.write(subtreeIndex);
-                    } else {
-                        output.write(JavaOpcode.ASTORE);
-                        output.write(subtreeIndex);
-                    }
+                    output.write(JavaOpcode.ALOAD);
+                    output.write(subtreeIndex);
                     break;
                 default:
-                    if (leaveResultOnStack) {
-                        output.write(JavaOpcode.DUP);
-                        output.write(JavaOpcode.ISTORE);
-                        output.write(subtreeIndex);
-                    } else {
-                        output.write(JavaOpcode.ISTORE);
-                        output.write(subtreeIndex);
-                    }
+                    output.write(JavaOpcode.ILOAD);
+                    output.write(subtreeIndex);
                     break;
                 case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
                 case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
                 case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
                     break;
-                }
-            }
-        } else {
-            if (!leaveResultOnStack)
-                return;
-
-            switch (id) {
-            case FASTCompiler.PROCESSOR_ELEMENT_ES:
-            case FASTCompiler.PROCESSOR_ELEMENT_CS:
-            case FASTCompiler.PROCESSOR_ELEMENT_SS:
-            case FASTCompiler.PROCESSOR_ELEMENT_DS:
-            case FASTCompiler.PROCESSOR_ELEMENT_FS:
-            case FASTCompiler.PROCESSOR_ELEMENT_GS:
-            case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_TSS:
-            case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
-            case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
-                output.write(JavaOpcode.ALOAD);
-                output.write(subtreeIndex);
-                break;
-            default:
-                output.write(JavaOpcode.ILOAD);
-                output.write(subtreeIndex);
-                break;
-            case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
-            case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
-            case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
-                break;
             }
         }
     }
 
     /**
-     *
      * @param output
      * @param cf
      * @param leaveResultOnStack
      * @throws IOException
      */
     public void writeExceptionCleanup(CountingOutputStream output,
-            ClassFile cf, boolean leaveResultOnStack) throws IOException {
+                                      ClassFile cf, boolean leaveResultOnStack) throws IOException
+    {
         reset = false;
         writeCount++;
 
@@ -379,34 +379,34 @@ public abstract class RPNNode {
                 return;
 
             switch (id) {
-            case FASTCompiler.PROCESSOR_ELEMENT_ES:
-            case FASTCompiler.PROCESSOR_ELEMENT_CS:
-            case FASTCompiler.PROCESSOR_ELEMENT_SS:
-            case FASTCompiler.PROCESSOR_ELEMENT_DS:
-            case FASTCompiler.PROCESSOR_ELEMENT_FS:
-            case FASTCompiler.PROCESSOR_ELEMENT_GS:
-            case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
-            case FASTCompiler.PROCESSOR_ELEMENT_TSS:
-            case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
-            case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
-                output.write(JavaOpcode.ALOAD);
-                output.write(subtreeIndex);
-                break;
-            default:
-                output.write(JavaOpcode.ILOAD);
-                output.write(subtreeIndex);
-                break;
-            case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
-            case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
-            case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
-                break;
+                case FASTCompiler.PROCESSOR_ELEMENT_ES:
+                case FASTCompiler.PROCESSOR_ELEMENT_CS:
+                case FASTCompiler.PROCESSOR_ELEMENT_SS:
+                case FASTCompiler.PROCESSOR_ELEMENT_DS:
+                case FASTCompiler.PROCESSOR_ELEMENT_FS:
+                case FASTCompiler.PROCESSOR_ELEMENT_GS:
+                case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
+                case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
+                case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
+                case FASTCompiler.PROCESSOR_ELEMENT_TSS:
+                case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
+                case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
+                    output.write(JavaOpcode.ALOAD);
+                    output.write(subtreeIndex);
+                    break;
+                default:
+                    output.write(JavaOpcode.ILOAD);
+                    output.write(subtreeIndex);
+                    break;
+                case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
+                case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
+                case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
+                    break;
             }
         } else {
             if ((writeCount > 1)
                     && ((id == FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE)
-                            || (id == FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE) || (id == FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT)))
+                    || (id == FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE) || (id == FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT)))
                 return;
 
             for (int i = 0; i < argLinks.size(); i++)
@@ -417,42 +417,42 @@ public abstract class RPNNode {
 
             if ((subtreeIndex >= 0) && (subtreeIndex <= 0xFF)) {
                 switch (id) {
-                case FASTCompiler.PROCESSOR_ELEMENT_ES:
-                case FASTCompiler.PROCESSOR_ELEMENT_CS:
-                case FASTCompiler.PROCESSOR_ELEMENT_SS:
-                case FASTCompiler.PROCESSOR_ELEMENT_DS:
-                case FASTCompiler.PROCESSOR_ELEMENT_FS:
-                case FASTCompiler.PROCESSOR_ELEMENT_GS:
-                case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
-                case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
-                case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
-                case FASTCompiler.PROCESSOR_ELEMENT_TSS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_ES:
+                    case FASTCompiler.PROCESSOR_ELEMENT_CS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_SS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_DS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_FS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_GS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_IDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_GDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_LDTR:
+                    case FASTCompiler.PROCESSOR_ELEMENT_TSS:
 
-                case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
-                case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
-                    if (leaveResultOnStack) {
-                        output.write(JavaOpcode.DUP);
-                        output.write(JavaOpcode.ASTORE);
-                        output.write(subtreeIndex);
-                    } else {
-                        output.write(JavaOpcode.ASTORE);
-                        output.write(subtreeIndex);
-                    }
-                    break;
-                default:
-                    if (leaveResultOnStack) {
-                        output.write(JavaOpcode.DUP);
-                        output.write(JavaOpcode.ISTORE);
-                        output.write(subtreeIndex);
-                    } else {
-                        output.write(JavaOpcode.ISTORE);
-                        output.write(subtreeIndex);
-                    }
-                    break;
-                case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
-                case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
-                case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
-                    break;
+                    case FASTCompiler.PROCESSOR_ELEMENT_IOPORTS:
+                    case FASTCompiler.PROCESSOR_ELEMENT_SEG0:
+                        if (leaveResultOnStack) {
+                            output.write(JavaOpcode.DUP);
+                            output.write(JavaOpcode.ASTORE);
+                            output.write(subtreeIndex);
+                        } else {
+                            output.write(JavaOpcode.ASTORE);
+                            output.write(subtreeIndex);
+                        }
+                        break;
+                    default:
+                        if (leaveResultOnStack) {
+                            output.write(JavaOpcode.DUP);
+                            output.write(JavaOpcode.ISTORE);
+                            output.write(subtreeIndex);
+                        } else {
+                            output.write(JavaOpcode.ISTORE);
+                            output.write(subtreeIndex);
+                        }
+                        break;
+                    case FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE:
+                    case FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE:
+                    case FASTCompiler.PROCESSOR_ELEMENT_EXECUTECOUNT:
+                        break;
                 }
             }
         }
@@ -461,10 +461,10 @@ public abstract class RPNNode {
     private boolean reset;
 
     /**
-     *
      * @param location
      */
-    public void reset(int location) {
+    public void reset(int location)
+    {
         if (reset)
             return;
         reset = true;

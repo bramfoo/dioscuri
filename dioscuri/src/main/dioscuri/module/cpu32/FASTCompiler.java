@@ -36,7 +36,6 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.prot.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -96,12 +95,12 @@ public class FASTCompiler implements CodeBlockCompiler {
     private static int classIndex = 0;
 
     /**
-     *
      * @param source
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
-            InstructionSource source) {
+            InstructionSource source)
+    {
         MicrocodeNode[] microcodes = MicrocodeNode.getMicrocodes(source);
         ClassFile newClass = null;
 
@@ -139,22 +138,22 @@ public class FASTCompiler implements CodeBlockCompiler {
     }
 
     /**
-     *
      * @param source
      * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
-            InstructionSource source) {
+            InstructionSource source)
+    {
         throw new IllegalStateException(
                 "Cannot compile Virtual8086 Mode FAST blocks");
     }
 
     /**
-     *
      * @param source
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
+    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source)
+    {
         MicrocodeNode[] microcodes = MicrocodeNode.getMicrocodes(source);
         ClassFile newClass = null;
 
@@ -192,7 +191,8 @@ public class FASTCompiler implements CodeBlockCompiler {
 
     private static void compileProtectedModeExecuteMethod(
             MicrocodeNode[] microcodes, ClassFile cf, int x86CountIndex)
-            throws IOException {
+            throws IOException
+    {
         List<ProtectedModeRPNNode> externalEffects = new ArrayList<ProtectedModeRPNNode>();
         Map<Integer, ProtectedModeRPNNode> currentElements = new HashMap<Integer, ProtectedModeRPNNode>();
 
@@ -227,7 +227,7 @@ public class FASTCompiler implements CodeBlockCompiler {
                 if (rpn.canThrowException()) {
                     if ((currentExceptionHandler == null)
                             || (currentExceptionHandler.getX86Index() != rpn
-                                    .getX86Index())) {
+                            .getX86Index())) {
                         currentExceptionHandler = new ProtectedModeExceptionHandler(
                                 lastX86Position, rpn,
                                 new HashMap<Integer, RPNNode>(currentElements));
@@ -258,7 +258,7 @@ public class FASTCompiler implements CodeBlockCompiler {
 
             if (((i + 1) < microcodes.length)
                     && (node.getX86Position() != microcodes[i + 1]
-                            .getX86Position()))
+                    .getX86Position()))
                 lastX86Position = node.getX86Position();
         }
 
@@ -351,7 +351,8 @@ public class FASTCompiler implements CodeBlockCompiler {
 
     private static void compileRealModeExecuteMethod(
             MicrocodeNode[] microcodes, ClassFile cf, int x86CountIndex)
-            throws IOException {
+            throws IOException
+    {
         List<RealModeRPNNode> externalEffects = new ArrayList<RealModeRPNNode>();
         Map<Integer, RealModeRPNNode> currentElements = new HashMap<Integer, RealModeRPNNode>();
 
@@ -385,7 +386,7 @@ public class FASTCompiler implements CodeBlockCompiler {
                 if (rpn.canThrowException()) {
                     if ((currentExceptionHandler == null)
                             || (currentExceptionHandler.getX86Index() != rpn
-                                    .getX86Index())) {
+                            .getX86Index())) {
                         currentExceptionHandler = new RealModeExceptionHandler(
                                 lastX86Position, rpn,
                                 new HashMap<Integer, RPNNode>(currentElements));
@@ -414,7 +415,7 @@ public class FASTCompiler implements CodeBlockCompiler {
 
             if (((i + 1) < microcodes.length)
                     && (node.getX86Position() != microcodes[i + 1]
-                            .getX86Position()))
+                    .getX86Position()))
                 lastX86Position = node.getX86Position();
         }
 
@@ -503,7 +504,8 @@ public class FASTCompiler implements CodeBlockCompiler {
         cf.setMethodExceptionTable("execute", exceptionTable);
     }
 
-    private static void compileX86CountMethod(ClassFile cf, int x86CountIndex) {
+    private static void compileX86CountMethod(ClassFile cf, int x86CountIndex)
+    {
         ByteArrayOutputStream byteCodes = new ByteArrayOutputStream();
 
         byteCodes.write(JavaOpcode.LDC);
@@ -519,7 +521,8 @@ public class FASTCompiler implements CodeBlockCompiler {
         cf.setMethodCode("getX86Count", ints);
     }
 
-    private static void compileX86LengthMethod(ClassFile cf, int x86LengthIndex) {
+    private static void compileX86LengthMethod(ClassFile cf, int x86LengthIndex)
+    {
         ByteArrayOutputStream byteCodes = new ByteArrayOutputStream();
 
         byteCodes.write(JavaOpcode.LDC);
@@ -536,7 +539,8 @@ public class FASTCompiler implements CodeBlockCompiler {
     }
 
     @SuppressWarnings("unused")
-    private static void dumpClass(ClassFile cls) {
+    private static void dumpClass(ClassFile cls)
+    {
         try {
             File dump = new File(cls.getClassName().replace('.', '/')
                     + ".class");

@@ -54,20 +54,21 @@ public class Instruction_RETN_Iw implements Instruction {
     byte[] displacement;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_RETN_Iw() {
+    public Instruction_RETN_Iw()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_RETN_Iw(CPU processor) {
+    public Instruction_RETN_Iw(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -79,7 +80,8 @@ public class Instruction_RETN_Iw implements Instruction {
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute() {
+    public void execute()
+    {
         // Get immediate word from code segment
         displacement = cpu.getWordFromCode();
 

@@ -40,7 +40,6 @@
 package dioscuri.exception;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -48,10 +47,10 @@ package dioscuri.exception;
 public class StorageDeviceException extends Exception {
 
     /**
-     *
      * @param message
      */
-    public StorageDeviceException(String message) {
+    public StorageDeviceException(String message)
+    {
         super(message);
     }
 

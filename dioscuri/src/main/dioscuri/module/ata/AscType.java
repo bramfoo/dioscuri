@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * Enumeration class for Asc Type.
- * 
  */
 public enum AscType {
     NOT_SET(0x00),
@@ -61,16 +60,19 @@ public enum AscType {
     /*
      * Constructor
      */
-    private AscType(int theValue) {
+
+    private AscType(int theValue)
+    {
         this.value = theValue;
     }
 
     /**
      * get the value associated with the enum entry
-     * 
+     *
      * @return the value
      */
-    public int getValue() {
+    public int getValue()
+    {
         return this.value;
     }
 

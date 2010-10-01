@@ -66,10 +66,12 @@ public class Instruction_CMP_GvEv implements Instruction {
     int intermediateResult;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CMP_GvEv() {
+    public Instruction_CMP_GvEv()
+    {
         operandWordSize = true;
 
         addressByte = 0;
@@ -85,11 +87,11 @@ public class Instruction_CMP_GvEv implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CMP_GvEv(CPU processor) {
+    public Instruction_CMP_GvEv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -97,12 +99,14 @@ public class Instruction_CMP_GvEv implements Instruction {
     }
 
     // Methods
+
     /**
      * Word-sized comparison (SUB) of register ("destination") with
      * memory/register (source).<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

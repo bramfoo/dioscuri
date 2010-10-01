@@ -52,20 +52,21 @@ public class Instruction_JMP_shortJb implements Instruction {
     byte displacement;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_JMP_shortJb() {
+    public Instruction_JMP_shortJb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JMP_shortJb(CPU processor) {
+    public Instruction_JMP_shortJb(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -78,7 +79,8 @@ public class Instruction_JMP_shortJb implements Instruction {
      * Execute unconditional relative short jump indicated by immediate signed
      * byte
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time the
         // displacement is added to
@@ -86,7 +88,7 @@ public class Instruction_JMP_shortJb implements Instruction {
         // necessary
         displacement = cpu.getByteFromCode();
 
-        cpu.ip = Util.addWords(cpu.ip, new byte[] {
-                Util.signExtend(displacement), displacement }, 0);
+        cpu.ip = Util.addWords(cpu.ip, new byte[]{
+                Util.signExtend(displacement), displacement}, 0);
     }
 }

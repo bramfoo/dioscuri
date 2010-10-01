@@ -25,14 +25,13 @@
  */
 package dioscuri.module.cpu32;
 
-import java.lang.reflect.*;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Vector;
 
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.emulator.memory.codeblock.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -41,12 +40,12 @@ public class MicrocodeNode implements MicrocodeSet {
     private int microcode, x86Position, immediate, x86Index;
 
     /**
-     *
      * @param microcode
      * @param x86Position
      * @param x86Index
      */
-    public MicrocodeNode(int microcode, int x86Position, int x86Index) {
+    public MicrocodeNode(int microcode, int x86Position, int x86Index)
+    {
         this.x86Index = x86Index;
         this.x86Position = x86Position;
         this.microcode = microcode;
@@ -54,14 +53,14 @@ public class MicrocodeNode implements MicrocodeSet {
     }
 
     /**
-     *
      * @param microcode
      * @param x86Position
      * @param x86Index
      * @param immediate
      */
     public MicrocodeNode(int microcode, int x86Position, int x86Index,
-            int immediate) {
+                         int immediate)
+    {
         this.x86Index = x86Index;
         this.x86Position = x86Position;
         this.microcode = microcode;
@@ -70,56 +69,57 @@ public class MicrocodeNode implements MicrocodeSet {
     }
 
     /**
-     *
      * @return -
      */
-    public int getMicrocode() {
+    public int getMicrocode()
+    {
         return microcode;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Index() {
+    public int getX86Index()
+    {
         return x86Index;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Position() {
+    public int getX86Position()
+    {
         return x86Position;
     }
 
     /**
-     *
      * @return -
      */
-    public boolean hasImmediate() {
+    public boolean hasImmediate()
+    {
         return hasImmediate;
     }
 
     /**
-     *
      * @return -
      */
-    public int getImmediate() {
+    public int getImmediate()
+    {
         return immediate;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return getName(microcode);
     }
 
     /**
-     *
      * @param microcode
      * @return -
      */
-    public static String getName(int microcode) {
+    public static String getName(int microcode)
+    {
         try {
             return microcodeNames[microcode];
         } catch (Exception e) {
@@ -128,6 +128,7 @@ public class MicrocodeNode implements MicrocodeSet {
     }
 
     private static final String[] microcodeNames;
+
     static {
         Field[] fields = MicrocodeSet.class.getDeclaredFields();
         microcodeNames = new String[MicrocodeSet.MICROCODE_LIMIT];
@@ -142,34 +143,35 @@ public class MicrocodeNode implements MicrocodeSet {
         }
     }
 
-    private static boolean hasImmediate(int microcode) {
+    private static boolean hasImmediate(int microcode)
+    {
         switch (microcode) {
-        case LOAD0_IB:
-        case LOAD0_IW:
-        case LOAD0_ID:
+            case LOAD0_IB:
+            case LOAD0_IW:
+            case LOAD0_ID:
 
-        case LOAD1_IB:
-        case LOAD1_IW:
-        case LOAD1_ID:
+            case LOAD1_IB:
+            case LOAD1_IW:
+            case LOAD1_ID:
 
-        case LOAD2_IB:
+            case LOAD2_IB:
 
-        case ADDR_IB:
-        case ADDR_IW:
-        case ADDR_ID:
-            return true;
+            case ADDR_IB:
+            case ADDR_IW:
+            case ADDR_ID:
+                return true;
 
-        default:
-            return false;
+            default:
+                return false;
         }
     }
 
     /**
-     *
      * @param source
      * @return -
      */
-    public static MicrocodeNode[] getMicrocodes(InstructionSource source) {
+    public static MicrocodeNode[] getMicrocodes(InstructionSource source)
+    {
         int x86Length = 0, x86Count = 0;
         Vector<MicrocodeNode> buffer = new Vector<MicrocodeNode>();
 

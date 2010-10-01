@@ -43,7 +43,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -56,18 +55,21 @@ public class Instruction_HLT implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_HLT.class.getName());
 
     // Constructors
+
     /**
      * Construct class
      */
-    public Instruction_HLT() {
+    public Instruction_HLT()
+    {
     }
 
     /**
      * Construct class
-     * 
+     *
      * @param processor
      */
-    public Instruction_HLT(CPU processor) {
+    public Instruction_HLT(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -79,7 +81,8 @@ public class Instruction_HLT implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute() {
+    public void execute()
+    {
         cpu.asyncEvent = false;
         cpu.setShutdown(true);
         cpu.setRunning(false);

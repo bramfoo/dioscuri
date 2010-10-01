@@ -48,16 +48,17 @@ import dioscuri.interfaces.Module;
 public abstract class ModuleRTC extends AbstractModule implements Addressable {
 
     /**
-     * 
+     *
      */
-    public ModuleRTC() {
+    public ModuleRTC()
+    {
         super(Module.Type.RTC,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }
 
     /**
      * Return requested CMOS register
-     * 
+     *
      * @param register
      * @return byte containing value of register
      */
@@ -65,7 +66,7 @@ public abstract class ModuleRTC extends AbstractModule implements Addressable {
 
     /**
      * Set given CMOS register with value
-     * 
+     *
      * @param register
      * @param value
      */

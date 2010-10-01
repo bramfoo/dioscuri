@@ -58,10 +58,12 @@ public class Instruction_SCAS_ALYb implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SCAS_ALYb() {
+    public Instruction_SCAS_ALYb()
+    {
         operandWordSize = false;
 
         source = 0;
@@ -69,17 +71,17 @@ public class Instruction_SCAS_ALYb implements Instruction {
 
         // Set transition that holds the amount si and di should be altered
         // (byte = 1)
-        transition = new byte[] { 0x00, 0x01 };
+        transition = new byte[]{0x00, 0x01};
         temp = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SCAS_ALYb(CPU processor) {
+    public Instruction_SCAS_ALYb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -93,7 +95,8 @@ public class Instruction_SCAS_ALYb implements Instruction {
      * ES:(E)DI is incremented/decremented depending on DF flag.<BR>
      * Flags modified: OF, SF, ZF, AF, PF, and CF.
      */
-    public void execute() {
+    public void execute()
+    {
         // Get byte from ES:DI; no segment override is allowed.
         source = cpu.getByteFromExtra(cpu.di);
 
@@ -119,7 +122,7 @@ public class Instruction_SCAS_ALYb implements Instruction {
         cpu.flags[CPU.REGISTER_FLAGS_PF] = Util.checkParityOfByte(result);
 
         // Increment or decrement DI depending on DF flag
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true) {
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement register
             temp = Util.subtractWords(cpu.di, transition, 0);
             System.arraycopy(temp, 0, cpu.di, 0, temp.length);

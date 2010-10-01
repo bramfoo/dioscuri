@@ -26,31 +26,26 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface InstructionSource {
     /**
-     *
      * @return -
      */
     public boolean getNext();
 
     /**
-     *
      * @return -
      */
     public int getMicrocode();
 
     /**
-     *
      * @return -
      */
     public int getLength();
 
     /**
-     *
      * @return -
      */
     public int getX86Length();

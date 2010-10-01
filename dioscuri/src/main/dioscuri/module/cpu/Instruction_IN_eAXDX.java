@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode ED<BR>
@@ -61,19 +61,21 @@ public class Instruction_IN_eAXDX implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_IN_eAXDX.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_IN_eAXDX() {
+    public Instruction_IN_eAXDX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_IN_eAXDX(CPU processor) {
+    public Instruction_IN_eAXDX(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -85,7 +87,8 @@ public class Instruction_IN_eAXDX implements Instruction {
     /**
      * Input word/doubleword from I/O port address specified by DX into eAX
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Convert value in DX to unsigned integer to prevent lookup table out
         // of bounds;

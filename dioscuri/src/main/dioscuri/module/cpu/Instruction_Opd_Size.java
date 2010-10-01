@@ -53,19 +53,21 @@ public class Instruction_Opd_Size implements Instruction {
     int instruction;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_Opd_Size() {
+    public Instruction_Opd_Size()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_Opd_Size(CPU processor) {
+    public Instruction_Opd_Size(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,7 +78,8 @@ public class Instruction_Opd_Size implements Instruction {
      * Set cpu.doubleWord to true, indicating next instruction should work with
      * doublewords
      */
-    public void execute() {
+    public void execute()
+    {
         // Let CPU know this is an instruction prefix
         cpu.prefixInstruction = 0x66;
 

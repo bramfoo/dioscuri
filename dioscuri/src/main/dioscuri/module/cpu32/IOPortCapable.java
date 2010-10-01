@@ -30,13 +30,11 @@ import dioscuri.exception.ModuleException;
 //import org.jpc.emulator.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface IOPortCapable extends HardwareComponent {
     /**
-     *
      * @param address
      * @param data
      * @throws ModuleException
@@ -44,7 +42,6 @@ public interface IOPortCapable extends HardwareComponent {
     public void ioPortWriteByte(int address, int data) throws ModuleException;
 
     /**
-     *
      * @param address
      * @param data
      * @throws ModuleException
@@ -52,7 +49,6 @@ public interface IOPortCapable extends HardwareComponent {
     public void ioPortWriteWord(int address, int data) throws ModuleException;
 
     /**
-     *
      * @param address
      * @param data
      * @throws ModuleException
@@ -60,7 +56,6 @@ public interface IOPortCapable extends HardwareComponent {
     public void ioPortWriteLong(int address, int data) throws ModuleException;
 
     /**
-     *
      * @param address
      * @return -
      * @throws ModuleException
@@ -68,7 +63,6 @@ public interface IOPortCapable extends HardwareComponent {
     public int ioPortReadByte(int address) throws ModuleException;
 
     /**
-     *
      * @param address
      * @return -
      * @throws ModuleException
@@ -76,7 +70,6 @@ public interface IOPortCapable extends HardwareComponent {
     public int ioPortReadWord(int address) throws ModuleException;
 
     /**
-     *
      * @param address
      * @return -
      * @throws ModuleException
@@ -84,7 +77,6 @@ public interface IOPortCapable extends HardwareComponent {
     public int ioPortReadLong(int address) throws ModuleException;
 
     /**
-     *
      * @return -
      */
     public int[] ioPortsRequested();

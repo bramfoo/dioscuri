@@ -54,20 +54,21 @@ public class Instruction_NOP implements Instruction {
     // int[] tmp;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_NOP() {
+    public Instruction_NOP()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_NOP(CPU processor) {
+    public Instruction_NOP(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -82,7 +83,8 @@ public class Instruction_NOP implements Instruction {
     /**
      * Execute no operation, does not affect machine content except IP register
      */
-    public void execute() {
+    public void execute()
+    {
         // Alias for XCHG AX,AX here implemented as a null instruction
         // temp = cpu.ax;
         // cpu.ax =cpu.ax;

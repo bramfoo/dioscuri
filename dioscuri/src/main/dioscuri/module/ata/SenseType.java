@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * Enumeration class for sense type.
- * 
  */
 public enum SenseType {
     NONE(0),
@@ -59,16 +58,19 @@ public enum SenseType {
     /*
      * Constructor
      */
-    private SenseType(int theValue) {
+
+    private SenseType(int theValue)
+    {
         this.value = theValue;
     }
 
     /**
      * get the value associated with the enum entry.
-     * 
+     *
      * @return the value
      */
-    public int getValue() {
+    public int getValue()
+    {
         return this.value;
     }
 

@@ -39,21 +39,21 @@
 
 package dioscuri.module.bios;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.module.ModuleBIOS;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a hardware BIOS module.
- * 
+ * <p/>
  * Contains: - 64 KB of ROM - CMOS settings
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : bios general.name : BIOS ROM general.architecture : Von
  *      Neumann general.description : General implementation of BIOS ROM chip.
@@ -63,15 +63,14 @@ import dioscuri.module.ModuleBIOS;
  *      bios, optional rom general.relations : cpu, memory
  *      general.yearOfIntroduction : general.yearOfEnding : general.ancestor :
  *      general.successor : bios.romsize : 64 + 32 KB bios.settings : CMOS
- * 
+ *      <p/>
  *      Notes: none
- * 
  */
 public class BIOS extends ModuleBIOS {
 
     // Logging
     private static final Logger logger = Logger.getLogger(BIOS.class.getName());
-    
+
     // BIOS ROM
     private byte[] systemROM; // Contains the System BIOS, using signed bytes as both signed/unsigned
     private byte[] videoROM; // Contains the Video BIOS
@@ -82,11 +81,12 @@ public class BIOS extends ModuleBIOS {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public BIOS(Emulator owner) {
-        
+    public BIOS(Emulator owner)
+    {
+
         // Create new empty bios roms
         systemROM = new byte[SYSTEMBIOS_ROM_SIZE];
         videoROM = new byte[VIDEOBIOS_ROM_SIZE];
@@ -104,7 +104,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Reset particular CMOS settings?
         logger.log(Level.CONFIG, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
@@ -116,7 +117,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -162,7 +164,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public byte[] getSystemBIOS() {
+    public byte[] getSystemBIOS()
+    {
         // Make a copy of ROM
         byte[] biosCode = new byte[SYSTEMBIOS_ROM_SIZE];
 
@@ -180,7 +183,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public boolean setSystemBIOS(byte[] biosCode) throws ModuleException {
+    public boolean setSystemBIOS(byte[] biosCode) throws ModuleException
+    {
         // Check if BIOS code complies to 64 KB max
         if (biosCode.length == SYSTEMBIOS_ROM_SIZE) {
             try {
@@ -210,7 +214,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public byte[] getVideoBIOS() {
+    public byte[] getVideoBIOS()
+    {
         // Make a copy of ROM
         byte[] biosCode = new byte[VIDEOBIOS_ROM_SIZE];
 
@@ -228,7 +233,8 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public boolean setVideoBIOS(byte[] biosCode) throws ModuleException {
+    public boolean setVideoBIOS(byte[] biosCode) throws ModuleException
+    {
         // Check if BIOS code complies to 32 KB max
         if (biosCode.length == VIDEOBIOS_ROM_SIZE) {
             try {

@@ -53,20 +53,21 @@ public class Instruction_XLAT implements Instruction {
     byte[] memoryReferenceLocation;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_XLAT() {
+    public Instruction_XLAT()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_XLAT(CPU processor) {
+    public Instruction_XLAT(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -81,10 +82,11 @@ public class Instruction_XLAT implements Instruction {
     /**
      * Set AL to memory byte DS:[BX + unsigned AL]
      */
-    public void execute() {
+    public void execute()
+    {
         // Set memory location as BX + AL
-        memoryReferenceLocation = Util.addWords(cpu.bx, new byte[] { 0x00,
-                cpu.ax[CPU.REGISTER_GENERAL_LOW] }, 0);
+        memoryReferenceLocation = Util.addWords(cpu.bx, new byte[]{0x00,
+                cpu.ax[CPU.REGISTER_GENERAL_LOW]}, 0);
 
         // Get byte from DS:[BX+AL] (segment overrides are possible) and store
         // in AL

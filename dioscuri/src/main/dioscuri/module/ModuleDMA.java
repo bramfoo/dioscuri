@@ -52,13 +52,13 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModuleDMA() {
+    public ModuleDMA()
+    {
         super(Module.Type.DMA,
                 Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
     }
 
     /**
-     *
      * @param chanNum
      * @param dma8handler
      * @return
@@ -66,7 +66,6 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
     public abstract boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler);
 
     /**
-     *
      * @param chanNum
      * @param dma16handler
      * @return
@@ -92,8 +91,7 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
     public abstract void acknowledgeBusHold();
 
     /**
-     *
-     * @return 
+     * @return
      */
     public abstract boolean isTerminalCountReached();
 }

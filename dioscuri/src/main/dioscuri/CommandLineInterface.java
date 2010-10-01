@@ -60,7 +60,7 @@ public class CommandLineInterface {
     dioscuri.config.Emulator emuConfig;
     Options commandLineOptions;
     CommandLine commandLine;
-    
+
     final boolean help;
     final boolean hide;
     final boolean visible;
@@ -71,10 +71,12 @@ public class CommandLineInterface {
 
     /**
      * Creates a CommandLineInterface with the provided parameters
+     *
      * @param parameters the parameters to be parsed
      * @throws Exception when there are invalid parameters
      */
-    public CommandLineInterface(String... parameters) throws Exception {
+    public CommandLineInterface(String... parameters) throws Exception
+    {
 
         initOptions();
         parse(parameters);
@@ -86,19 +88,19 @@ public class CommandLineInterface {
         autorun = commandLine.hasOption("r");
         autoshutdown = commandLine.hasOption("s");
 
-        if(commandLine.hasOption("?")) {
+        if (commandLine.hasOption("?")) {
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("java -jar Dioscuri.jar [OPTIONS]\n", commandLineOptions);
             System.exit(0);
         }
 
         // a custom config file is used
-        if(commandLine.hasOption("c")) {
+        if (commandLine.hasOption("c")) {
             File cfg = Utilities.resolvePathAsFile(commandLine.getOptionValue("c"));
-            logger.log(Level.INFO, "using custom config file: "+cfg);
-            if(cfg == null || !cfg.exists()) {
-                throw new IOException(" [cli] config file '"+cfg.getName()+
-                        "' does not exist in folder '"+cfg.getParentFile().getAbsolutePath()+"'");
+            logger.log(Level.INFO, "using custom config file: " + cfg);
+            if (cfg == null || !cfg.exists()) {
+                throw new IOException(" [cli] config file '" + cfg.getName() +
+                        "' does not exist in folder '" + cfg.getParentFile().getAbsolutePath() + "'");
             }
             configFilePath = cfg.getAbsolutePath();
         } else {
@@ -108,96 +110,94 @@ public class CommandLineInterface {
 
         boolean changes = false;
 
-        if(commandLine.hasOption("f")) {
+        if (commandLine.hasOption("f")) {
             File floppyImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("f"));
-            logger.log(Level.INFO, " [cli] using custom floppy image: "+floppyImg);
-            if(floppyImg == null || !floppyImg.exists()) {
-                throw new IOException(" [cli] floppy image '"+floppyImg.getName()+
-                        "' does not exist in folder '"+floppyImg.getParentFile().getAbsolutePath()+"'");
+            logger.log(Level.INFO, " [cli] using custom floppy image: " + floppyImg);
+            if (floppyImg == null || !floppyImg.exists()) {
+                throw new IOException(" [cli] floppy image '" + floppyImg.getName() +
+                        "' does not exist in folder '" + floppyImg.getParentFile().getAbsolutePath() + "'");
             }
             emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0).setImagefilepath(floppyImg.getAbsolutePath());
             changes = true;
         }
 
-        if(commandLine.hasOption("d1")) {
+        if (commandLine.hasOption("d1")) {
             File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d1"));
-            logger.log(Level.INFO, " [cli] using custom first hard disk image: "+hdImg);
-            if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+            logger.log(Level.INFO, " [cli] using custom first hard disk image: " + hdImg);
+            if (hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
                 emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(false);
-                throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
-                        "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
+                throw new IOException(" [cli] hard disk image '" + hdImg.getName() +
+                        "' does not exist in folder '" + hdImg.getParentFile().getAbsolutePath() + "'");
             }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setImagefilepath(hdImg.getAbsolutePath());
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(true);
             changes = true;
         }
 
-        if(commandLine.hasOption("d2")) {
+        if (commandLine.hasOption("d2")) {
             File hdImg = Utilities.resolvePathAsFile(commandLine.getOptionValue("d2"));
-            logger.log(Level.INFO, " [cli] using custom second hard disk image: "+hdImg);
-            if(hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
+            logger.log(Level.INFO, " [cli] using custom second hard disk image: " + hdImg);
+            if (hdImg == null || !hdImg.exists() || !hdImg.isFile()) {
                 emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setEnabled(false);
-                throw new IOException(" [cli] hard disk image '"+hdImg.getName()+
-                        "' does not exist in folder '"+hdImg.getParentFile().getAbsolutePath()+"'");
+                throw new IOException(" [cli] hard disk image '" + hdImg.getName() +
+                        "' does not exist in folder '" + hdImg.getParentFile().getAbsolutePath() + "'");
             }
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setImagefilepath(hdImg.getAbsolutePath());
             emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(1).setEnabled(true);
             changes = true;
         }
 
-        if(commandLine.hasOption("a")) {
+        if (commandLine.hasOption("a")) {
             String val = commandLine.getOptionValue("a");
             int bits;
-            if(val.matches("16|32")) {
+            if (val.matches("16|32")) {
                 bits = Integer.valueOf(val);
             } else {
-                throw new UnrecognizedOptionException("illegal architecture value: "+val);
+                throw new UnrecognizedOptionException("illegal architecture value: " + val);
             }
-            logger.log(Level.INFO, " [cli] setting cpu architecture to: "+bits+" bits");
+            logger.log(Level.INFO, " [cli] setting cpu architecture to: " + bits + " bits");
             emuConfig.getArchitecture().getModules().getCpu().setCpu32Bit(bits == 32);
             changes = true;
         }
 
-        if(commandLine.hasOption("b")) {
+        if (commandLine.hasOption("b")) {
             String val = commandLine.getOptionValue("b").toLowerCase();
             String floppy = "Floppy Drive";
             String hd = "Hard Drive";
             boolean hdEnabled = true;
             String boot = hd;
-            if(val.matches("floppy|harddisk")) {
-                if(val.equals("floppy")) {
+            if (val.matches("floppy|harddisk")) {
+                if (val.equals("floppy")) {
                     hdEnabled = false;
                     boot = floppy;
                 }
+            } else {
+                throw new UnrecognizedOptionException("illegal boot value: " + boot);
             }
-            else {
-                throw new UnrecognizedOptionException("illegal boot value: "+boot);
-            }
-            logger.log(Level.INFO, " [cli] setting boot drive: "+val);
+            logger.log(Level.INFO, " [cli] setting boot drive: " + val);
             emuConfig.getArchitecture().getModules().getBios().get(0).getBootdrives().setBootdrive0(boot);
-            if(hdEnabled) {
+            if (hdEnabled) {
                 emuConfig.getArchitecture().getModules().getAta().getHarddiskdrive().get(0).setEnabled(true);
-            }
-            else {
-                emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0).setEnabled(true);   
+            } else {
+                emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0).setEnabled(true);
             }
             changes = true;
         }
 
-        if(commandLine.hasOption("m")) {
+        if (commandLine.hasOption("m")) {
             String val = commandLine.getOptionValue("m").toLowerCase();
             boolean enabled;
-            if(val.matches("enabled|disabled")) {
+            if (val.matches("enabled|disabled")) {
                 enabled = val.equals("enabled");
             } else {
-                throw new UnrecognizedOptionException("illegal value: "+val+", expected 'enabled' or 'disabled'.");
+                throw new UnrecognizedOptionException("illegal value: " + val + ", expected 'enabled' or 'disabled'.");
             }
-            logger.log(Level.INFO, " [cli] mouse enabled? "+enabled);
+            logger.log(Level.INFO, " [cli] mouse enabled? " + enabled);
             emuConfig.getArchitecture().getModules().getMouse().setEnabled(enabled);
             changes = true;
         }
 
-        if(changes) {
+        if (changes) {
             Utilities.saveXML(emuConfig, configFilePath);
         }
     }
@@ -205,7 +205,9 @@ public class CommandLineInterface {
     /*
      * load the config file
      */
-    private void loadConfigFile() throws Exception {
+
+    private void loadConfigFile() throws Exception
+    {
         File config = Utilities.resolvePathAsFile(configFilePath);
         emuConfig = ConfigController.loadFromXML(config);
     }
@@ -213,40 +215,54 @@ public class CommandLineInterface {
     /*
      * initialize the options
      */
-    private void initOptions() {
+
+    private void initOptions()
+    {
         commandLineOptions = new Options();
 
-/* ? */ commandLineOptions.addOption("?", "help", false, "print this message");
-/* h */ commandLineOptions.addOption("h", "hide", false, "hides the GUI");
-/* r */ commandLineOptions.addOption("r", "autorun", false, "emulator will directly start emulation process");
-/* e */ commandLineOptions.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
-/* s */ commandLineOptions.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
+/* ? */
+        commandLineOptions.addOption("?", "help", false, "print this message");
+/* h */
+        commandLineOptions.addOption("h", "hide", false, "hides the GUI");
+/* r */
+        commandLineOptions.addOption("r", "autorun", false, "emulator will directly start emulation process");
+/* e */
+        commandLineOptions.addOption("e", "exit", false, "used for testing purposes, will cause Dioscuri to exit immediately");
+/* s */
+        commandLineOptions.addOption("s", "autoshutdown", false, "emulator will shutdown automatically when emulation process is finished");
 
-/* c */ Option config = new Option("c", "config", true, "loads a custom config xml file");
+/* c */
+        Option config = new Option("c", "config", true, "loads a custom config xml file");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* f */ config = new Option("f", "floppy", true, "loads a custom floppy image");
+/* f */
+        config = new Option("f", "floppy", true, "loads a custom floppy image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* d1 */config = new Option("d1", "harddisk1", true, "loads a custom first hard disk image");
+/* d1 */
+        config = new Option("d1", "harddisk1", true, "loads a custom first hard disk image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* d2 */config = new Option("d2", "harddisk2", true, "loads a custom second hard disk image");
+/* d2 */
+        config = new Option("d2", "harddisk2", true, "loads a custom second hard disk image");
         config.setArgName("file");
         commandLineOptions.addOption(config);
 
-/* a */ config = new Option("a", "architecture", true, "sets the cpu's architecture");
+/* a */
+        config = new Option("a", "architecture", true, "sets the cpu's architecture");
         config.setArgName("'16'|'32'");
         commandLineOptions.addOption(config);
 
-/* b */ config = new Option("b", "boot", true, "sets the boot drive");
+/* b */
+        config = new Option("b", "boot", true, "sets the boot drive");
         config.setArgName("'floppy'|'harddisk'");
         commandLineOptions.addOption(config);
 
-/* m */ config = new Option("m", "mouse", true, "enables or disables the mouse");
+/* m */
+        config = new Option("m", "mouse", true, "enables or disables the mouse");
         config.setArgName("'enabled'|'disabled'");
         commandLineOptions.addOption(config);
     }
@@ -254,7 +270,9 @@ public class CommandLineInterface {
     /*
      * parse the parameters
      */
-    private void parse(String[] parameters) throws ParseException {
+
+    private void parse(String[] parameters) throws ParseException
+    {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(commandLineOptions, parameters);
     }

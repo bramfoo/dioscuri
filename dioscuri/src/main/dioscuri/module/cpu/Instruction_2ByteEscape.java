@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.CPUInstructionException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.CPUInstructionException;
 
 /**
  * Intel opcode 0F<BR>
@@ -61,20 +61,21 @@ public class Instruction_2ByteEscape implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_2ByteEscape.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_2ByteEscape() {
+    public Instruction_2ByteEscape()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_2ByteEscape(CPU processor) {
+    public Instruction_2ByteEscape(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -85,9 +86,11 @@ public class Instruction_2ByteEscape implements Instruction {
 
     /**
      * Execute doubleByteInstructions[instruction]
+     *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException {
+    public void execute() throws CPUInstructionException
+    {
         // Retrieve instruction number after escape byte
         instruction = cpu.getByteFromCode();
 
@@ -101,7 +104,7 @@ public class Instruction_2ByteEscape implements Instruction {
                     + Integer.toHexString(cpu.codeByte) + " "
                     + Integer.toHexString(cpu.codeByte2)
                     + "h): 32-bit not supported!");
-            System.out.println(">> executing cpu.doubleByteInstructions["+(instruction & 0xFF)+"]");
+            System.out.println(">> executing cpu.doubleByteInstructions[" + (instruction & 0xFF) + "]");
         }
 
         // Cast signed byte to integer to avoid invalid array lookup

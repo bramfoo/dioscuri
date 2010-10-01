@@ -48,32 +48,32 @@ import dioscuri.interfaces.Module;
 public abstract class ModulePIC extends AbstractModule implements Addressable {
 
     /**
-     * 
+     *
      */
-    public ModulePIC() {
+    public ModulePIC()
+    {
         super(Module.Type.PIC,
                 Module.Type.CPU, Module.Type.MOTHERBOARD);
     }
 
     /**
      * Returns an IRQ number.
-     * 
-     * @param module
-     *            that would like to have an IRQ number
+     *
+     * @param module that would like to have an IRQ number
      * @return int IRQ number between 1 to 16, or -1 if not allowed/possible
      */
     public abstract int requestIRQNumber(AbstractModule module);
 
     /**
      * Lowers an interrupt request (IRQ) of given IRQ number
-     * 
+     *
      * @param irqNumber
      */
     public abstract void clearIRQ(int irqNumber);
 
     /**
      * Raises an interrupt request (IRQ) of given IRQ number
-     * 
+     *
      * @param irqNumber
      */
     public abstract void setIRQ(int irqNumber);
@@ -81,7 +81,7 @@ public abstract class ModulePIC extends AbstractModule implements Addressable {
     /**
      * Acknowledges an interrupt request from PIC by CPU Note: only the CPU can
      * acknowledge an interrupt
-     * 
+     *
      * @return int address defining the jump address for handling the IRQ by the
      *         CPU
      */

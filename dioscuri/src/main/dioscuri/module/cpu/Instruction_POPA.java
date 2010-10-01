@@ -52,20 +52,21 @@ public class Instruction_POPA implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_POPA() {
+    public Instruction_POPA()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_POPA(CPU processor) {
+    public Instruction_POPA(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -79,7 +80,8 @@ public class Instruction_POPA implements Instruction {
      * The order is DI, SI, BP, SP, BX, DX, CX, AX<BR>
      * The SP value popped from the stack is discarded
      */
-    public void execute() {
+    public void execute()
+    {
         // Get words from stack and assign to general purpose registers
         cpu.di = cpu.getWordFromStack();
         cpu.si = cpu.getWordFromStack();

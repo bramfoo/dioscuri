@@ -54,20 +54,21 @@ public class Instruction_AAD_Ib implements Instruction {
     int tempResult;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_AAD_Ib() {
+    public Instruction_AAD_Ib()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_AAD_Ib(CPU processor) {
+    public Instruction_AAD_Ib(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -86,7 +87,8 @@ public class Instruction_AAD_Ib implements Instruction {
      * (defined by imm8); for example, 08H for octal, 0AH for decimal, or 0CH
      * for base 12.
      */
-    public void execute() {
+    public void execute()
+    {
         // Get immediate byte for base
         base = cpu.getByteFromCode();
 

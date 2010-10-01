@@ -51,19 +51,21 @@ public class Instruction_LAR implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_LAR() {
+    public Instruction_LAR()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LAR(CPU processor) {
+    public Instruction_LAR(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +77,8 @@ public class Instruction_LAR implements Instruction {
     /**
      * Load Access Rights byte. Test ZF flag
      */
-    public void execute() {
+    public void execute()
+    {
         // FIXME: instruction LAR is not implemented, because it is only
         // executed in protected mode
 

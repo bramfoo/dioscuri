@@ -33,7 +33,6 @@ import dioscuri.exception.ModuleException;
 //import org.jpc.emulator.memory.codeblock.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -75,15 +74,17 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     protected int[] microcodes;
     protected int[] cumulativeX86Length;
     private int executeCount;
-    public ProtectedModeUBlock() {
+
+    public ProtectedModeUBlock()
+    {
     }
 
     /**
-     *
      * @param microcodes
      * @param x86lengths
      */
-    public ProtectedModeUBlock(int[] microcodes, int[] x86lengths) {
+    public ProtectedModeUBlock(int[] microcodes, int[] x86lengths)
+    {
         this.microcodes = microcodes;
         cumulativeX86Length = x86lengths;
         if (cumulativeX86Length.length == 0)
@@ -99,38 +100,38 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Length() {
+    public int getX86Length()
+    {
         if (microcodes.length == 0)
             return 0;
         return cumulativeX86Length[microcodes.length - 1];
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Count() {
+    public int getX86Count()
+    {
         return x86Count;
     }
 
     /**
-     *
      * @param startAddress
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public String getDisplayString() {
+    public String getDisplayString()
+    {
         StringBuffer buf = new StringBuffer();
         buf.append(this.toString() + "\n");
         for (int i = 0; i < microcodes.length; i++)
@@ -139,15 +140,16 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Protected Mode Interpreted Block";
     }
 
     /**
-     *
      * @return -
      */
-    public InstructionSource getAsInstructionSource() {
+    public InstructionSource getAsInstructionSource()
+    {
         int[] codes = new int[microcodes.length];
         int[] positions = new int[microcodes.length];
         System.arraycopy(microcodes, 0, codes, 0, codes.length);
@@ -159,16 +161,17 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     /**
-     *
      * @return -
      */
-    public int[] getMicrocodes() {
+    public int[] getMicrocodes()
+    {
         int[] result = new int[microcodes.length];
         System.arraycopy(microcodes, 0, result, 0, result.length);
         return result;
     }
 
-    public int execute(Processor cpu) {
+    public int execute(Processor cpu)
+    {
         this.fpu = cpu.fpu;
         this.cpu = cpu;
 
@@ -185,2728 +188,2728 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         try {
             while (position < microcodes.length) {
                 switch (microcodes[position++]) {
-                case EIP_UPDATE:
-                    if (!eipUpdated) {
-                        eipUpdated = true;
-                        cpu.eip += cumulativeX86Length[position - 1];
+                    case EIP_UPDATE:
+                        if (!eipUpdated) {
+                            eipUpdated = true;
+                            cpu.eip += cumulativeX86Length[position - 1];
+                        }
+                        break;
+
+                    case UNDEFINED:
+                        System.err.println("Undefined Opcode");
+                        throw exceptionUD;
+
+                    case MEM_RESET:
+                        addr0 = 0;
+                        seg0 = null;
+                        break;
+
+                    case LOAD0_EAX:
+                        reg0 = cpu.eax;
+                        break;
+                    case LOAD0_ECX:
+                        reg0 = cpu.ecx;
+                        break;
+                    case LOAD0_EDX:
+                        reg0 = cpu.edx;
+                        break;
+                    case LOAD0_EBX:
+                        reg0 = cpu.ebx;
+                        break;
+                    case LOAD0_ESP:
+                        reg0 = cpu.esp;
+                        break;
+                    case LOAD0_EBP:
+                        reg0 = cpu.ebp;
+                        break;
+                    case LOAD0_ESI:
+                        reg0 = cpu.esi;
+                        break;
+                    case LOAD0_EDI:
+                        reg0 = cpu.edi;
+                        break;
+
+                    case STORE0_EAX:
+                        cpu.eax = reg0;
+                        break;
+                    case STORE0_ECX:
+                        cpu.ecx = reg0;
+                        break;
+                    case STORE0_EDX:
+                        cpu.edx = reg0;
+                        break;
+                    case STORE0_EBX:
+                        cpu.ebx = reg0;
+                        break;
+                    case STORE0_ESP:
+                        cpu.esp = reg0;
+                        break;
+                    case STORE0_EBP:
+                        cpu.ebp = reg0;
+                        break;
+                    case STORE0_ESI:
+                        cpu.esi = reg0;
+                        break;
+                    case STORE0_EDI:
+                        cpu.edi = reg0;
+                        break;
+
+                    case LOAD1_EAX:
+                        reg1 = cpu.eax;
+                        break;
+                    case LOAD1_ECX:
+                        reg1 = cpu.ecx;
+                        break;
+                    case LOAD1_EDX:
+                        reg1 = cpu.edx;
+                        break;
+                    case LOAD1_EBX:
+                        reg1 = cpu.ebx;
+                        break;
+                    case LOAD1_ESP:
+                        reg1 = cpu.esp;
+                        break;
+                    case LOAD1_EBP:
+                        reg1 = cpu.ebp;
+                        break;
+                    case LOAD1_ESI:
+                        reg1 = cpu.esi;
+                        break;
+                    case LOAD1_EDI:
+                        reg1 = cpu.edi;
+                        break;
+
+                    case STORE1_EAX:
+                        cpu.eax = reg1;
+                        break;
+                    case STORE1_ECX:
+                        cpu.ecx = reg1;
+                        break;
+                    case STORE1_EDX:
+                        cpu.edx = reg1;
+                        break;
+                    case STORE1_EBX:
+                        cpu.ebx = reg1;
+                        break;
+                    case STORE1_ESP:
+                        cpu.esp = reg1;
+                        break;
+                    case STORE1_EBP:
+                        cpu.ebp = reg1;
+                        break;
+                    case STORE1_ESI:
+                        cpu.esi = reg1;
+                        break;
+                    case STORE1_EDI:
+                        cpu.edi = reg1;
+                        break;
+
+                    case LOAD0_AX:
+                        reg0 = cpu.eax & 0xffff;
+                        break;
+                    case LOAD0_CX:
+                        reg0 = cpu.ecx & 0xffff;
+                        break;
+                    case LOAD0_DX:
+                        reg0 = cpu.edx & 0xffff;
+                        break;
+                    case LOAD0_BX:
+                        reg0 = cpu.ebx & 0xffff;
+                        break;
+                    case LOAD0_SP:
+                        reg0 = cpu.esp & 0xffff;
+                        break;
+                    case LOAD0_BP:
+                        reg0 = cpu.ebp & 0xffff;
+                        break;
+                    case LOAD0_SI:
+                        reg0 = cpu.esi & 0xffff;
+                        break;
+                    case LOAD0_DI:
+                        reg0 = cpu.edi & 0xffff;
+                        break;
+
+                    case STORE0_AX:
+                        cpu.eax = (cpu.eax & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_CX:
+                        cpu.ecx = (cpu.ecx & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_DX:
+                        cpu.edx = (cpu.edx & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_BX:
+                        cpu.ebx = (cpu.ebx & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_SP:
+                        cpu.esp = (cpu.esp & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_BP:
+                        cpu.ebp = (cpu.ebp & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_SI:
+                        cpu.esi = (cpu.esi & ~0xffff) | (reg0 & 0xffff);
+                        break;
+                    case STORE0_DI:
+                        cpu.edi = (cpu.edi & ~0xffff) | (reg0 & 0xffff);
+                        break;
+
+                    case STORE1_AX:
+                        cpu.eax = (cpu.eax & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_CX:
+                        cpu.ecx = (cpu.ecx & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_DX:
+                        cpu.edx = (cpu.edx & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_BX:
+                        cpu.ebx = (cpu.ebx & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_SP:
+                        cpu.esp = (cpu.esp & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_BP:
+                        cpu.ebp = (cpu.ebp & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_SI:
+                        cpu.esi = (cpu.esi & ~0xffff) | (reg1 & 0xffff);
+                        break;
+                    case STORE1_DI:
+                        cpu.edi = (cpu.edi & ~0xffff) | (reg1 & 0xffff);
+                        break;
+
+                    case LOAD1_AX:
+                        reg1 = cpu.eax & 0xffff;
+                        break;
+                    case LOAD1_CX:
+                        reg1 = cpu.ecx & 0xffff;
+                        break;
+                    case LOAD1_DX:
+                        reg1 = cpu.edx & 0xffff;
+                        break;
+                    case LOAD1_BX:
+                        reg1 = cpu.ebx & 0xffff;
+                        break;
+                    case LOAD1_SP:
+                        reg1 = cpu.esp & 0xffff;
+                        break;
+                    case LOAD1_BP:
+                        reg1 = cpu.ebp & 0xffff;
+                        break;
+                    case LOAD1_SI:
+                        reg1 = cpu.esi & 0xffff;
+                        break;
+                    case LOAD1_DI:
+                        reg1 = cpu.edi & 0xffff;
+                        break;
+
+                    case LOAD0_AL:
+                        reg0 = cpu.eax & 0xff;
+                        break;
+                    case LOAD0_CL:
+                        reg0 = cpu.ecx & 0xff;
+                        break;
+                    case LOAD0_DL:
+                        reg0 = cpu.edx & 0xff;
+                        break;
+                    case LOAD0_BL:
+                        reg0 = cpu.ebx & 0xff;
+                        break;
+                    case LOAD0_AH:
+                        reg0 = (cpu.eax >> 8) & 0xff;
+                        break;
+                    case LOAD0_CH:
+                        reg0 = (cpu.ecx >> 8) & 0xff;
+                        break;
+                    case LOAD0_DH:
+                        reg0 = (cpu.edx >> 8) & 0xff;
+                        break;
+                    case LOAD0_BH:
+                        reg0 = (cpu.ebx >> 8) & 0xff;
+                        break;
+
+                    case STORE0_AL:
+                        cpu.eax = (cpu.eax & ~0xff) | (reg0 & 0xff);
+                        break;
+                    case STORE0_CL:
+                        cpu.ecx = (cpu.ecx & ~0xff) | (reg0 & 0xff);
+                        break;
+                    case STORE0_DL:
+                        cpu.edx = (cpu.edx & ~0xff) | (reg0 & 0xff);
+                        break;
+                    case STORE0_BL:
+                        cpu.ebx = (cpu.ebx & ~0xff) | (reg0 & 0xff);
+                        break;
+                    case STORE0_AH:
+                        cpu.eax = (cpu.eax & ~0xff00) | ((reg0 << 8) & 0xff00);
+                        break;
+                    case STORE0_CH:
+                        cpu.ecx = (cpu.ecx & ~0xff00) | ((reg0 << 8) & 0xff00);
+                        break;
+                    case STORE0_DH:
+                        cpu.edx = (cpu.edx & ~0xff00) | ((reg0 << 8) & 0xff00);
+                        break;
+                    case STORE0_BH:
+                        cpu.ebx = (cpu.ebx & ~0xff00) | ((reg0 << 8) & 0xff00);
+                        break;
+
+                    case LOAD1_AL:
+                        reg1 = cpu.eax & 0xff;
+                        break;
+                    case LOAD1_CL:
+                        reg1 = cpu.ecx & 0xff;
+                        break;
+                    case LOAD1_DL:
+                        reg1 = cpu.edx & 0xff;
+                        break;
+                    case LOAD1_BL:
+                        reg1 = cpu.ebx & 0xff;
+                        break;
+                    case LOAD1_AH:
+                        reg1 = (cpu.eax >> 8) & 0xff;
+                        break;
+                    case LOAD1_CH:
+                        reg1 = (cpu.ecx >> 8) & 0xff;
+                        break;
+                    case LOAD1_DH:
+                        reg1 = (cpu.edx >> 8) & 0xff;
+                        break;
+                    case LOAD1_BH:
+                        reg1 = (cpu.ebx >> 8) & 0xff;
+                        break;
+
+                    case STORE1_AL:
+                        cpu.eax = (cpu.eax & ~0xff) | (reg1 & 0xff);
+                        break;
+                    case STORE1_CL:
+                        cpu.ecx = (cpu.ecx & ~0xff) | (reg1 & 0xff);
+                        break;
+                    case STORE1_DL:
+                        cpu.edx = (cpu.edx & ~0xff) | (reg1 & 0xff);
+                        break;
+                    case STORE1_BL:
+                        cpu.ebx = (cpu.ebx & ~0xff) | (reg1 & 0xff);
+                        break;
+                    case STORE1_AH:
+                        cpu.eax = (cpu.eax & ~0xff00) | ((reg1 << 8) & 0xff00);
+                        break;
+                    case STORE1_CH:
+                        cpu.ecx = (cpu.ecx & ~0xff00) | ((reg1 << 8) & 0xff00);
+                        break;
+                    case STORE1_DH:
+                        cpu.edx = (cpu.edx & ~0xff00) | ((reg1 << 8) & 0xff00);
+                        break;
+                    case STORE1_BH:
+                        cpu.ebx = (cpu.ebx & ~0xff00) | ((reg1 << 8) & 0xff00);
+                        break;
+
+                    case LOAD0_CR0:
+                        reg0 = cpu.getCR0();
+                        break;
+                    case LOAD0_CR2:
+                        reg0 = cpu.getCR2();
+                        break;
+                    case LOAD0_CR3:
+                        reg0 = cpu.getCR3();
+                        break;
+                    case LOAD0_CR4:
+                        reg0 = cpu.getCR4();
+                        break;
+
+                    case STORE0_CR0:
+                        cpu.setCR0(reg0);
+                        break;
+                    case STORE0_CR2:
+                        cpu.setCR2(reg0);
+                        break;
+                    case STORE0_CR3:
+                        cpu.setCR3(reg0);
+                        break;
+                    case STORE0_CR4:
+                        cpu.setCR4(reg0);
+                        break;
+
+                    case LOAD0_DR0:
+                        reg0 = cpu.getDR0();
+                        break;
+                    case LOAD0_DR1:
+                        reg0 = cpu.getDR1();
+                        break;
+                    case LOAD0_DR2:
+                        reg0 = cpu.getDR2();
+                        break;
+                    case LOAD0_DR3:
+                        reg0 = cpu.getDR3();
+                        break;
+                    case LOAD0_DR6:
+                        reg0 = cpu.getDR6();
+                        break;
+                    case LOAD0_DR7:
+                        reg0 = cpu.getDR7();
+                        break;
+
+                    case STORE0_DR0:
+                        cpu.setDR0(reg0);
+                        break;
+                    case STORE0_DR1:
+                        cpu.setDR1(reg0);
+                        break;
+                    case STORE0_DR2:
+                        cpu.setDR2(reg0);
+                        break;
+                    case STORE0_DR3:
+                        cpu.setDR3(reg0);
+                        break;
+                    case STORE0_DR6:
+                        cpu.setDR6(reg0);
+                        break;
+                    case STORE0_DR7:
+                        cpu.setDR7(reg0);
+                        break;
+
+                    case LOAD0_ES:
+                        reg0 = 0xffff & cpu.es.getSelector();
+                        break;
+                    case LOAD0_CS:
+                        reg0 = 0xffff & cpu.cs.getSelector();
+                        break;
+                    case LOAD0_SS:
+                        reg0 = 0xffff & cpu.ss.getSelector();
+                        break;
+                    case LOAD0_DS:
+                        reg0 = 0xffff & cpu.ds.getSelector();
+                        break;
+                    case LOAD0_FS:
+                        reg0 = 0xffff & cpu.fs.getSelector();
+                        break;
+                    case LOAD0_GS:
+                        reg0 = 0xffff & cpu.gs.getSelector();
+                        break;
+
+                    case STORE0_ES:
+                        cpu.es = loadSegment(reg0);
+                        break;
+                    // case STORE0_CS:
+                    case STORE0_SS: {
+                        Segment temp = loadSegment(reg0);
+                        if (temp == SegmentFactory.NULL_SEGMENT)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.ss = temp;
+                        cpu.eflagsInterruptEnable = false;
                     }
                     break;
-
-                case UNDEFINED:
-                    System.err.println("Undefined Opcode");
-                    throw exceptionUD;
-
-                case MEM_RESET:
-                    addr0 = 0;
-                    seg0 = null;
-                    break;
-
-                case LOAD0_EAX:
-                    reg0 = cpu.eax;
-                    break;
-                case LOAD0_ECX:
-                    reg0 = cpu.ecx;
-                    break;
-                case LOAD0_EDX:
-                    reg0 = cpu.edx;
-                    break;
-                case LOAD0_EBX:
-                    reg0 = cpu.ebx;
-                    break;
-                case LOAD0_ESP:
-                    reg0 = cpu.esp;
-                    break;
-                case LOAD0_EBP:
-                    reg0 = cpu.ebp;
-                    break;
-                case LOAD0_ESI:
-                    reg0 = cpu.esi;
-                    break;
-                case LOAD0_EDI:
-                    reg0 = cpu.edi;
-                    break;
-
-                case STORE0_EAX:
-                    cpu.eax = reg0;
-                    break;
-                case STORE0_ECX:
-                    cpu.ecx = reg0;
-                    break;
-                case STORE0_EDX:
-                    cpu.edx = reg0;
-                    break;
-                case STORE0_EBX:
-                    cpu.ebx = reg0;
-                    break;
-                case STORE0_ESP:
-                    cpu.esp = reg0;
-                    break;
-                case STORE0_EBP:
-                    cpu.ebp = reg0;
-                    break;
-                case STORE0_ESI:
-                    cpu.esi = reg0;
-                    break;
-                case STORE0_EDI:
-                    cpu.edi = reg0;
-                    break;
-
-                case LOAD1_EAX:
-                    reg1 = cpu.eax;
-                    break;
-                case LOAD1_ECX:
-                    reg1 = cpu.ecx;
-                    break;
-                case LOAD1_EDX:
-                    reg1 = cpu.edx;
-                    break;
-                case LOAD1_EBX:
-                    reg1 = cpu.ebx;
-                    break;
-                case LOAD1_ESP:
-                    reg1 = cpu.esp;
-                    break;
-                case LOAD1_EBP:
-                    reg1 = cpu.ebp;
-                    break;
-                case LOAD1_ESI:
-                    reg1 = cpu.esi;
-                    break;
-                case LOAD1_EDI:
-                    reg1 = cpu.edi;
-                    break;
-
-                case STORE1_EAX:
-                    cpu.eax = reg1;
-                    break;
-                case STORE1_ECX:
-                    cpu.ecx = reg1;
-                    break;
-                case STORE1_EDX:
-                    cpu.edx = reg1;
-                    break;
-                case STORE1_EBX:
-                    cpu.ebx = reg1;
-                    break;
-                case STORE1_ESP:
-                    cpu.esp = reg1;
-                    break;
-                case STORE1_EBP:
-                    cpu.ebp = reg1;
-                    break;
-                case STORE1_ESI:
-                    cpu.esi = reg1;
-                    break;
-                case STORE1_EDI:
-                    cpu.edi = reg1;
-                    break;
-
-                case LOAD0_AX:
-                    reg0 = cpu.eax & 0xffff;
-                    break;
-                case LOAD0_CX:
-                    reg0 = cpu.ecx & 0xffff;
-                    break;
-                case LOAD0_DX:
-                    reg0 = cpu.edx & 0xffff;
-                    break;
-                case LOAD0_BX:
-                    reg0 = cpu.ebx & 0xffff;
-                    break;
-                case LOAD0_SP:
-                    reg0 = cpu.esp & 0xffff;
-                    break;
-                case LOAD0_BP:
-                    reg0 = cpu.ebp & 0xffff;
-                    break;
-                case LOAD0_SI:
-                    reg0 = cpu.esi & 0xffff;
-                    break;
-                case LOAD0_DI:
-                    reg0 = cpu.edi & 0xffff;
-                    break;
-
-                case STORE0_AX:
-                    cpu.eax = (cpu.eax & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_CX:
-                    cpu.ecx = (cpu.ecx & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_DX:
-                    cpu.edx = (cpu.edx & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_BX:
-                    cpu.ebx = (cpu.ebx & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_SP:
-                    cpu.esp = (cpu.esp & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_BP:
-                    cpu.ebp = (cpu.ebp & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_SI:
-                    cpu.esi = (cpu.esi & ~0xffff) | (reg0 & 0xffff);
-                    break;
-                case STORE0_DI:
-                    cpu.edi = (cpu.edi & ~0xffff) | (reg0 & 0xffff);
-                    break;
-
-                case STORE1_AX:
-                    cpu.eax = (cpu.eax & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_CX:
-                    cpu.ecx = (cpu.ecx & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_DX:
-                    cpu.edx = (cpu.edx & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_BX:
-                    cpu.ebx = (cpu.ebx & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_SP:
-                    cpu.esp = (cpu.esp & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_BP:
-                    cpu.ebp = (cpu.ebp & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_SI:
-                    cpu.esi = (cpu.esi & ~0xffff) | (reg1 & 0xffff);
-                    break;
-                case STORE1_DI:
-                    cpu.edi = (cpu.edi & ~0xffff) | (reg1 & 0xffff);
-                    break;
-
-                case LOAD1_AX:
-                    reg1 = cpu.eax & 0xffff;
-                    break;
-                case LOAD1_CX:
-                    reg1 = cpu.ecx & 0xffff;
-                    break;
-                case LOAD1_DX:
-                    reg1 = cpu.edx & 0xffff;
-                    break;
-                case LOAD1_BX:
-                    reg1 = cpu.ebx & 0xffff;
-                    break;
-                case LOAD1_SP:
-                    reg1 = cpu.esp & 0xffff;
-                    break;
-                case LOAD1_BP:
-                    reg1 = cpu.ebp & 0xffff;
-                    break;
-                case LOAD1_SI:
-                    reg1 = cpu.esi & 0xffff;
-                    break;
-                case LOAD1_DI:
-                    reg1 = cpu.edi & 0xffff;
-                    break;
-
-                case LOAD0_AL:
-                    reg0 = cpu.eax & 0xff;
-                    break;
-                case LOAD0_CL:
-                    reg0 = cpu.ecx & 0xff;
-                    break;
-                case LOAD0_DL:
-                    reg0 = cpu.edx & 0xff;
-                    break;
-                case LOAD0_BL:
-                    reg0 = cpu.ebx & 0xff;
-                    break;
-                case LOAD0_AH:
-                    reg0 = (cpu.eax >> 8) & 0xff;
-                    break;
-                case LOAD0_CH:
-                    reg0 = (cpu.ecx >> 8) & 0xff;
-                    break;
-                case LOAD0_DH:
-                    reg0 = (cpu.edx >> 8) & 0xff;
-                    break;
-                case LOAD0_BH:
-                    reg0 = (cpu.ebx >> 8) & 0xff;
-                    break;
-
-                case STORE0_AL:
-                    cpu.eax = (cpu.eax & ~0xff) | (reg0 & 0xff);
-                    break;
-                case STORE0_CL:
-                    cpu.ecx = (cpu.ecx & ~0xff) | (reg0 & 0xff);
-                    break;
-                case STORE0_DL:
-                    cpu.edx = (cpu.edx & ~0xff) | (reg0 & 0xff);
-                    break;
-                case STORE0_BL:
-                    cpu.ebx = (cpu.ebx & ~0xff) | (reg0 & 0xff);
-                    break;
-                case STORE0_AH:
-                    cpu.eax = (cpu.eax & ~0xff00) | ((reg0 << 8) & 0xff00);
-                    break;
-                case STORE0_CH:
-                    cpu.ecx = (cpu.ecx & ~0xff00) | ((reg0 << 8) & 0xff00);
-                    break;
-                case STORE0_DH:
-                    cpu.edx = (cpu.edx & ~0xff00) | ((reg0 << 8) & 0xff00);
-                    break;
-                case STORE0_BH:
-                    cpu.ebx = (cpu.ebx & ~0xff00) | ((reg0 << 8) & 0xff00);
-                    break;
-
-                case LOAD1_AL:
-                    reg1 = cpu.eax & 0xff;
-                    break;
-                case LOAD1_CL:
-                    reg1 = cpu.ecx & 0xff;
-                    break;
-                case LOAD1_DL:
-                    reg1 = cpu.edx & 0xff;
-                    break;
-                case LOAD1_BL:
-                    reg1 = cpu.ebx & 0xff;
-                    break;
-                case LOAD1_AH:
-                    reg1 = (cpu.eax >> 8) & 0xff;
-                    break;
-                case LOAD1_CH:
-                    reg1 = (cpu.ecx >> 8) & 0xff;
-                    break;
-                case LOAD1_DH:
-                    reg1 = (cpu.edx >> 8) & 0xff;
-                    break;
-                case LOAD1_BH:
-                    reg1 = (cpu.ebx >> 8) & 0xff;
-                    break;
-
-                case STORE1_AL:
-                    cpu.eax = (cpu.eax & ~0xff) | (reg1 & 0xff);
-                    break;
-                case STORE1_CL:
-                    cpu.ecx = (cpu.ecx & ~0xff) | (reg1 & 0xff);
-                    break;
-                case STORE1_DL:
-                    cpu.edx = (cpu.edx & ~0xff) | (reg1 & 0xff);
-                    break;
-                case STORE1_BL:
-                    cpu.ebx = (cpu.ebx & ~0xff) | (reg1 & 0xff);
-                    break;
-                case STORE1_AH:
-                    cpu.eax = (cpu.eax & ~0xff00) | ((reg1 << 8) & 0xff00);
-                    break;
-                case STORE1_CH:
-                    cpu.ecx = (cpu.ecx & ~0xff00) | ((reg1 << 8) & 0xff00);
-                    break;
-                case STORE1_DH:
-                    cpu.edx = (cpu.edx & ~0xff00) | ((reg1 << 8) & 0xff00);
-                    break;
-                case STORE1_BH:
-                    cpu.ebx = (cpu.ebx & ~0xff00) | ((reg1 << 8) & 0xff00);
-                    break;
-
-                case LOAD0_CR0:
-                    reg0 = cpu.getCR0();
-                    break;
-                case LOAD0_CR2:
-                    reg0 = cpu.getCR2();
-                    break;
-                case LOAD0_CR3:
-                    reg0 = cpu.getCR3();
-                    break;
-                case LOAD0_CR4:
-                    reg0 = cpu.getCR4();
-                    break;
-
-                case STORE0_CR0:
-                    cpu.setCR0(reg0);
-                    break;
-                case STORE0_CR2:
-                    cpu.setCR2(reg0);
-                    break;
-                case STORE0_CR3:
-                    cpu.setCR3(reg0);
-                    break;
-                case STORE0_CR4:
-                    cpu.setCR4(reg0);
-                    break;
-
-                case LOAD0_DR0:
-                    reg0 = cpu.getDR0();
-                    break;
-                case LOAD0_DR1:
-                    reg0 = cpu.getDR1();
-                    break;
-                case LOAD0_DR2:
-                    reg0 = cpu.getDR2();
-                    break;
-                case LOAD0_DR3:
-                    reg0 = cpu.getDR3();
-                    break;
-                case LOAD0_DR6:
-                    reg0 = cpu.getDR6();
-                    break;
-                case LOAD0_DR7:
-                    reg0 = cpu.getDR7();
-                    break;
-
-                case STORE0_DR0:
-                    cpu.setDR0(reg0);
-                    break;
-                case STORE0_DR1:
-                    cpu.setDR1(reg0);
-                    break;
-                case STORE0_DR2:
-                    cpu.setDR2(reg0);
-                    break;
-                case STORE0_DR3:
-                    cpu.setDR3(reg0);
-                    break;
-                case STORE0_DR6:
-                    cpu.setDR6(reg0);
-                    break;
-                case STORE0_DR7:
-                    cpu.setDR7(reg0);
-                    break;
-
-                case LOAD0_ES:
-                    reg0 = 0xffff & cpu.es.getSelector();
-                    break;
-                case LOAD0_CS:
-                    reg0 = 0xffff & cpu.cs.getSelector();
-                    break;
-                case LOAD0_SS:
-                    reg0 = 0xffff & cpu.ss.getSelector();
-                    break;
-                case LOAD0_DS:
-                    reg0 = 0xffff & cpu.ds.getSelector();
-                    break;
-                case LOAD0_FS:
-                    reg0 = 0xffff & cpu.fs.getSelector();
-                    break;
-                case LOAD0_GS:
-                    reg0 = 0xffff & cpu.gs.getSelector();
-                    break;
-
-                case STORE0_ES:
-                    cpu.es = loadSegment(reg0);
-                    break;
-                // case STORE0_CS:
-                case STORE0_SS: {
-                    Segment temp = loadSegment(reg0);
-                    if (temp == SegmentFactory.NULL_SEGMENT)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.ss = temp;
-                    cpu.eflagsInterruptEnable = false;
-                }
-                    break;
-                case STORE0_DS:
-                    cpu.ds = loadSegment(reg0);
-                    break;
-                case STORE0_FS:
-                    cpu.fs = loadSegment(reg0);
-                    break;
-                case STORE0_GS:
-                    cpu.gs = loadSegment(reg0);
-                    break;
-
-                case STORE1_ES:
-                    cpu.es = loadSegment(reg1);
-                    break;
-                // case STORE1_CS:
-                case STORE1_SS: {
-                    Segment temp = loadSegment(reg1);
-                    if (temp == SegmentFactory.NULL_SEGMENT)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.ss = temp;
-                    cpu.eflagsInterruptEnable = false;
-                }
-                    break;
-                case STORE1_DS:
-                    cpu.ds = loadSegment(reg1);
-                    break;
-                case STORE1_FS:
-                    cpu.fs = loadSegment(reg1);
-                    break;
-                case STORE1_GS:
-                    cpu.gs = loadSegment(reg1);
-                    break;
-
-                case STORE0_FLAGS:
-                    cpu
-                            .setEFlags((cpu.getEFlags() & ~0xffff)
-                                    | (reg0 & 0xffff));
-                    break;
-                case STORE0_EFLAGS:
-                    cpu.setEFlags(reg0);
-                    break;
-
-                case LOAD0_FLAGS:
-                    reg0 = 0xffff & cpu.getEFlags();
-                    break;
-                case LOAD0_EFLAGS:
-                    reg0 = cpu.getEFlags();
-                    break;
-
-                case LOAD0_IB:
-                    reg0 = microcodes[position++] & 0xff;
-                    break;
-                case LOAD0_IW:
-                    reg0 = microcodes[position++] & 0xffff;
-                    break;
-                case LOAD0_ID:
-                    reg0 = microcodes[position++];
-                    break;
-
-                case LOAD1_IB:
-                    reg1 = microcodes[position++] & 0xff;
-                    break;
-                case LOAD1_IW:
-                    reg1 = microcodes[position++] & 0xffff;
-                    break;
-                case LOAD1_ID:
-                    reg1 = microcodes[position++];
-                    break;
-
-                case LOAD2_EAX:
-                    reg2 = cpu.eax;
-                    break;
-                case LOAD2_AX:
-                    reg2 = cpu.eax & 0xffff;
-                    break;
-                case LOAD2_AL:
-                    reg2 = cpu.eax & 0xff;
-                    break;
-                case LOAD2_CL:
-                    reg2 = cpu.ecx & 0xffff;
-                    break;
-                case LOAD2_IB:
-                    reg2 = microcodes[position++] & 0xff;
-                    break;
-
-                case LOAD_SEG_ES:
-                    seg0 = cpu.es;
-                    break;
-                case LOAD_SEG_CS:
-                    seg0 = cpu.cs;
-                    break;
-                case LOAD_SEG_SS:
-                    seg0 = cpu.ss;
-                    break;
-                case LOAD_SEG_DS:
-                    seg0 = cpu.ds;
-                    break;
-                case LOAD_SEG_FS:
-                    seg0 = cpu.fs;
-                    break;
-                case LOAD_SEG_GS:
-                    seg0 = cpu.gs;
-                    break;
-
-                case ADDR_REG1:
-                    addr0 += reg1;
-                    break;
-                case ADDR_2REG1:
-                    addr0 += (reg1 << 1);
-                    break;
-                case ADDR_4REG1:
-                    addr0 += (reg1 << 2);
-                    break;
-                case ADDR_8REG1:
-                    addr0 += (reg1 << 3);
-                    break;
-
-                case ADDR_EAX:
-                    addr0 += cpu.eax;
-                    break;
-                case ADDR_ECX:
-                    addr0 += cpu.ecx;
-                    break;
-                case ADDR_EDX:
-                    addr0 += cpu.edx;
-                    break;
-                case ADDR_EBX:
-                    addr0 += cpu.ebx;
-                    break;
-                case ADDR_ESP:
-                    addr0 += cpu.esp;
-                    break;
-                case ADDR_EBP:
-                    addr0 += cpu.ebp;
-                    break;
-                case ADDR_ESI:
-                    addr0 += cpu.esi;
-                    break;
-                case ADDR_EDI:
-                    addr0 += cpu.edi;
-                    break;
-
-                case ADDR_AX:
-                    addr0 += ((short) cpu.eax);
-                    break;
-                case ADDR_CX:
-                    addr0 += ((short) cpu.ecx);
-                    break;
-                case ADDR_DX:
-                    addr0 += ((short) cpu.edx);
-                    break;
-                case ADDR_BX:
-                    addr0 += ((short) cpu.ebx);
-                    break;
-                case ADDR_SP:
-                    addr0 += ((short) cpu.esp);
-                    break;
-                case ADDR_BP:
-                    addr0 += ((short) cpu.ebp);
-                    break;
-                case ADDR_SI:
-                    addr0 += ((short) cpu.esi);
-                    break;
-                case ADDR_DI:
-                    addr0 += ((short) cpu.edi);
-                    break;
-
-                case ADDR_2EAX:
-                    addr0 += (cpu.eax << 1);
-                    break;
-                case ADDR_2ECX:
-                    addr0 += (cpu.ecx << 1);
-                    break;
-                case ADDR_2EDX:
-                    addr0 += (cpu.edx << 1);
-                    break;
-                case ADDR_2EBX:
-                    addr0 += (cpu.ebx << 1);
-                    break;
-                case ADDR_2ESP:
-                    addr0 += (cpu.esp << 1);
-                    break;
-                case ADDR_2EBP:
-                    addr0 += (cpu.ebp << 1);
-                    break;
-                case ADDR_2ESI:
-                    addr0 += (cpu.esi << 1);
-                    break;
-                case ADDR_2EDI:
-                    addr0 += (cpu.edi << 1);
-                    break;
-
-                case ADDR_4EAX:
-                    addr0 += (cpu.eax << 2);
-                    break;
-                case ADDR_4ECX:
-                    addr0 += (cpu.ecx << 2);
-                    break;
-                case ADDR_4EDX:
-                    addr0 += (cpu.edx << 2);
-                    break;
-                case ADDR_4EBX:
-                    addr0 += (cpu.ebx << 2);
-                    break;
-                case ADDR_4ESP:
-                    addr0 += (cpu.esp << 2);
-                    break;
-                case ADDR_4EBP:
-                    addr0 += (cpu.ebp << 2);
-                    break;
-                case ADDR_4ESI:
-                    addr0 += (cpu.esi << 2);
-                    break;
-                case ADDR_4EDI:
-                    addr0 += (cpu.edi << 2);
-                    break;
-
-                case ADDR_8EAX:
-                    addr0 += (cpu.eax << 3);
-                    break;
-                case ADDR_8ECX:
-                    addr0 += (cpu.ecx << 3);
-                    break;
-                case ADDR_8EDX:
-                    addr0 += (cpu.edx << 3);
-                    break;
-                case ADDR_8EBX:
-                    addr0 += (cpu.ebx << 3);
-                    break;
-                case ADDR_8ESP:
-                    addr0 += (cpu.esp << 3);
-                    break;
-                case ADDR_8EBP:
-                    addr0 += (cpu.ebp << 3);
-                    break;
-                case ADDR_8ESI:
-                    addr0 += (cpu.esi << 3);
-                    break;
-                case ADDR_8EDI:
-                    addr0 += (cpu.edi << 3);
-                    break;
-
-                case ADDR_IB:
-                    addr0 += ((byte) microcodes[position++]);
-                    break;
-                case ADDR_IW:
-                    addr0 += ((short) microcodes[position++]);
-                    break;
-                case ADDR_ID:
-                    addr0 += microcodes[position++];
-                    break;
-
-                case ADDR_MASK16:
-                    addr0 &= 0xffff;
-                    break;
-
-                case ADDR_uAL:
-                    addr0 += 0xff & cpu.eax;
-                    break;
-
-                case LOAD0_ADDR:
-                    reg0 = addr0;
-                    break;
-
-                case LOAD0_MEM_BYTE:
-                    reg0 = 0xff & seg0.getByte(addr0);
-                    break;
-                case LOAD0_MEM_WORD:
-                    reg0 = 0xffff & seg0.getWord(addr0);
-                    break;
-                case LOAD0_MEM_DWORD:
-                    reg0 = seg0.getDoubleWord(addr0);
-                    break;
-                case LOAD0_MEM_QWORD:
-                    reg0l = seg0.getQuadWord(addr0);
-                    break;
-
-                case LOAD1_MEM_BYTE:
-                    reg1 = 0xff & seg0.getByte(addr0);
-                    break;
-                case LOAD1_MEM_WORD:
-                    reg1 = 0xffff & seg0.getWord(addr0);
-                    break;
-                case LOAD1_MEM_DWORD:
-                    reg1 = seg0.getDoubleWord(addr0);
-                    break;
-
-                case STORE0_MEM_BYTE:
-                    seg0.setByte(addr0, (byte) reg0);
-                    break;
-                case STORE0_MEM_WORD:
-                    seg0.setWord(addr0, (short) reg0);
-                    break;
-                case STORE0_MEM_DWORD:
-                    seg0.setDoubleWord(addr0, reg0);
-                    break;
-                case STORE0_MEM_QWORD:
-                    seg0.setQuadWord(addr0, reg0l);
-                    break;
-
-                case STORE1_MEM_BYTE:
-                    seg0.setByte(addr0, (byte) reg1);
-                    break;
-                case STORE1_MEM_WORD:
-                    seg0.setWord(addr0, (short) reg1);
-                    break;
-                case STORE1_MEM_DWORD:
-                    seg0.setDoubleWord(addr0, reg1);
-                    break;
-
-                case XOR:
-                    reg0 ^= reg1;
-                    break;
-                case AND:
-                    reg0 &= reg1;
-                    break;
-                case OR:
-                    reg0 |= reg1;
-                    break;
-                case NOT:
-                    reg0 = ~reg0;
-                    break;
-
-                case SUB:
-                    reg2 = reg0;
-                    reg0 = reg2 - reg1;
-                    break;
-                case SBB:
-                    reg2 = reg0;
-                    reg0 = reg2 - (reg1 + (cpu.getCarryFlag() ? 1 : 0));
-                    break;
-                case ADD:
-                    reg2 = reg0;
-                    reg0 = reg2 + reg1;
-                    break;
-                case ADC:
-                    reg2 = reg0;
-                    reg0 = reg2 + reg1 + (cpu.getCarryFlag() ? 1 : 0);
-                    break;
-                case NEG:
-                    reg0 = -reg0;
-                    break;
-
-                case MUL_O8:
-                    mul_o8(reg0);
-                    break;
-                case MUL_O16:
-                    mul_o16(reg0);
-                    break;
-                case MUL_O32:
-                    mul_o32(reg0);
-                    break;
-
-                case IMULA_O8:
-                    imula_o8((byte) reg0);
-                    break;
-                case IMULA_O16:
-                    imula_o16((short) reg0);
-                    break;
-                case IMULA_O32:
-                    imula_o32(reg0);
-                    break;
-
-                case IMUL_O16:
-                    reg0 = imul_o16((short) reg0, (short) reg1);
-                    break;
-                case IMUL_O32:
-                    reg0 = imul_o32(reg0, reg1);
-                    break;
-
-                case DIV_O8:
-                    div_o8(reg0);
-                    break;
-                case DIV_O16:
-                    div_o16(reg0);
-                    break;
-                case DIV_O32:
-                    div_o32(reg0);
-                    break;
-
-                case IDIV_O8:
-                    idiv_o8((byte) reg0);
-                    break;
-                case IDIV_O16:
-                    idiv_o16((short) reg0);
-                    break;
-                case IDIV_O32:
-                    idiv_o32(reg0);
-                    break;
-
-                case BSF:
-                    reg0 = bsf(reg1, reg0);
-                    break;
-                case BSR:
-                    reg0 = bsr(reg1, reg0);
-                    break;
-
-                case BT_MEM:
-                    bt_mem(reg1, seg0, addr0);
-                    break;
-                case BTS_MEM:
-                    bts_mem(reg1, seg0, addr0);
-                    break;
-                case BTR_MEM:
-                    btr_mem(reg1, seg0, addr0);
-                    break;
-                case BTC_MEM:
-                    btc_mem(reg1, seg0, addr0);
-                    break;
-
-                case BT_O32:
-                    reg1 &= 0x1f;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    break;
-                case BT_O16:
-                    reg1 &= 0xf;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    break;
-                case BTS_O32:
-                    reg1 &= 0x1f;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 |= (1 << reg1);
-                    break;
-                case BTS_O16:
-                    reg1 &= 0xf;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 |= (1 << reg1);
-                    break;
-                case BTR_O32:
-                    reg1 &= 0x1f;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 &= ~(1 << reg1);
-                    break;
-                case BTR_O16:
-                    reg1 &= 0xf;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 &= ~(1 << reg1);
-                    break;
-                case BTC_O32:
-                    reg1 &= 0x1f;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 ^= (1 << reg1);
-                    break;
-                case BTC_O16:
-                    reg1 &= 0xf;
-                    cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
-                    reg0 ^= (1 << reg1);
-                    break;
-
-                case ROL_O8:
-                    reg1 &= 0x7;
-                    reg0 = (reg0 << reg1) | (reg0 >>> (8 - reg1));
-                    break;
-                case ROL_O16:
-                    reg1 &= 0xf;
-                    reg0 = (reg0 << reg1) | (reg0 >>> (16 - reg1));
-                    break;
-                case ROL_O32:
-                    reg1 &= 0x1f;
-                    reg0 = (reg0 << reg1) | (reg0 >>> (32 - reg1));
-                    break;
-
-                case ROR_O8:
-                    reg1 &= 0x7;
-                    reg0 = (reg0 >>> reg1) | (reg0 << (8 - reg1));
-                    break;
-                case ROR_O16:
-                    reg1 &= 0xf;
-                    reg0 = (reg0 >>> reg1) | (reg0 << (16 - reg1));
-                    break;
-                case ROR_O32:
-                    reg1 &= 0x1f;
-                    reg0 = (reg0 >>> reg1) | (reg0 << (32 - reg1));
-                    break;
-
-                case RCL_O8:
-                    reg1 &= 0x1f;
-                    reg1 %= 9;
-                    reg0 |= (cpu.getCarryFlag() ? 0x100 : 0);
-                    reg0 = (reg0 << reg1) | (reg0 >>> (9 - reg1));
-                    break;
-                case RCL_O16:
-                    reg1 &= 0x1f;
-                    reg1 %= 17;
-                    reg0 |= (cpu.getCarryFlag() ? 0x10000 : 0);
-                    reg0 = (reg0 << reg1) | (reg0 >>> (17 - reg1));
-                    break;
-                case RCL_O32:
-                    reg1 &= 0x1f;
-                    reg0l = (0xffffffffl & reg0)
-                            | (cpu.getCarryFlag() ? 0x100000000l : 0);
-                    reg0 = (int) (reg0l = (reg0l << reg1)
-                            | (reg0l >>> (33 - reg1)));
-                    break;
-
-                case RCR_O8:
-                    reg1 &= 0x1f;
-                    reg1 %= 9;
-                    reg0 |= (cpu.getCarryFlag() ? 0x100 : 0);
-                    reg0 = (reg0 >>> reg1) | (reg0 << (9 - reg1));
-                    break;
-                case RCR_O16:
-                    reg1 &= 0x1f;
-                    reg1 %= 17;
-                    reg0 |= (cpu.getCarryFlag() ? 0x10000 : 0);
-                    reg0 = (reg0 >>> reg1) | (reg0 << (17 - reg1));
-                    break;
-                case RCR_O32:
-                    reg1 &= 0x1f;
-                    reg0l = (0xffffffffl & reg0)
-                            | (cpu.getCarryFlag() ? 0x100000000l : 0);
-                    reg0 = (int) (reg0l = (reg0l >>> reg1)
-                            | (reg0l << (33 - reg1)));
-                    break;
-
-                case SHL:
-                    reg2 = reg0;
-                    reg0 <<= reg1;
-                    break;
-                case SHR:
-                    reg2 = reg0;
-                    reg0 >>>= reg1;
-                    break;
-                case SAR_O8:
-                    reg2 = reg0;
-                    reg0 = ((byte) reg0) >> reg1;
-                    break;
-                case SAR_O16:
-                    reg2 = reg0;
-                    reg0 = ((short) reg0) >> reg1;
-                    break;
-                case SAR_O32:
-                    reg2 = reg0;
-                    reg0 >>= reg1;
-                    break;
-
-                case SHLD_O16: {
-                    int i = reg0;
-                    reg2 &= 0x1f;
-                    reg0 = (reg0 << reg2) | (reg1 >>> (16 - reg2));
-                    reg1 = reg2;
-                    reg2 = i;
-                }
-                    break;
-                case SHLD_O32: {
-                    int i = reg0;
-                    reg2 &= 0x1f;
-                    if (reg2 != 0)
-                        reg0 = (reg0 << reg2) | (reg1 >>> (32 - reg2));
-                    reg1 = reg2;
-                    reg2 = i;
-                }
-                    break;
-
-                case SHRD_O16: {
-                    int i = reg0;
-                    reg2 &= 0x1f;
-                    reg0 = (reg0 >>> reg2) | (reg1 << (16 - reg2));
-                    reg1 = reg2;
-                    reg2 = i;
-                }
-                    break;
-                case SHRD_O32: {
-                    int i = reg0;
-                    reg2 &= 0x1f;
-                    if (reg2 != 0)
-                        reg0 = (reg0 >>> reg2) | (reg1 << (32 - reg2));
-                    reg1 = reg2;
-                    reg2 = i;
-                }
-                    break;
-
-                case CWD:
-                    if ((cpu.eax & 0x8000) == 0)
-                        cpu.edx &= 0xffff0000;
-                    else
-                        cpu.edx |= 0x0000ffff;
-                    break;
-                case CDQ:
-                    if ((cpu.eax & 0x80000000) == 0)
-                        cpu.edx = 0;
-                    else
-                        cpu.edx = -1;
-                    break;
-
-                case AAA:
-                    aaa();
-                    break;
-                case AAD:
-                    aad(reg0);
-                    break;
-                case AAM:
-                    aam(reg0);
-                    break;
-                case AAS:
-                    aas();
-                    break;
-
-                case DAA:
-                    daa();
-                    break;
-                case DAS:
-                    das();
-                    break;
-
-                case LAHF:
-                    lahf();
-                    break;
-                case SAHF:
-                    sahf();
-                    break;
-
-                case CLC:
-                    cpu.setCarryFlag(false);
-                    break;
-                case STC:
-                    cpu.setCarryFlag(true);
-                    break;
-                case CLI:
-                    cpu.eflagsInterruptEnable = cpu.eflagsInterruptEnableSoon = false;
-                    break;
-                case STI:
-                    cpu.eflagsInterruptEnable = cpu.eflagsInterruptEnableSoon = true;
-                    break;
-                case CLD:
-                    cpu.eflagsDirection = false;
-                    break;
-                case STD:
-                    cpu.eflagsDirection = true;
-                    break;
-                case CMC:
-                    cpu.setCarryFlag(cpu.getCarryFlag() ^ true);
-                    break;
-
-                case SIGN_EXTEND_8_16:
-                    reg0 = 0xffff & ((byte) reg0);
-                    break;
-                case SIGN_EXTEND_8_32:
-                    reg0 = (byte) reg0;
-                    break;
-                case SIGN_EXTEND_16_32:
-                    reg0 = (short) reg0;
-                    break;
-
-                case INC:
-                    reg0++;
-                    break;
-                case DEC:
-                    reg0--;
-                    break;
-
-                case FWAIT:
-                    fpu.checkExceptions();
-                    break;
-                case HALT:
-                    halt();
-                    break;
-
-                case JO_O8:
-                    jo_o8((byte) reg0);
-                    break;
-                case JNO_O8:
-                    jno_o8((byte) reg0);
-                    break;
-                case JC_O8:
-                    jc_o8((byte) reg0);
-                    break;
-                case JNC_O8:
-                    jnc_o8((byte) reg0);
-                    break;
-                case JZ_O8:
-                    jz_o8((byte) reg0);
-                    break;
-                case JNZ_O8:
-                    jnz_o8((byte) reg0);
-                    break;
-                case JNA_O8:
-                    jna_o8((byte) reg0);
-                    break;
-                case JA_O8:
-                    ja_o8((byte) reg0);
-                    break;
-                case JS_O8:
-                    js_o8((byte) reg0);
-                    break;
-                case JNS_O8:
-                    jns_o8((byte) reg0);
-                    break;
-                case JP_O8:
-                    jp_o8((byte) reg0);
-                    break;
-                case JNP_O8:
-                    jnp_o8((byte) reg0);
-                    break;
-                case JL_O8:
-                    jl_o8((byte) reg0);
-                    break;
-                case JNL_O8:
-                    jnl_o8((byte) reg0);
-                    break;
-                case JNG_O8:
-                    jng_o8((byte) reg0);
-                    break;
-                case JG_O8:
-                    jg_o8((byte) reg0);
-                    break;
-
-                case JO_O16:
-                    jo_o16((short) reg0);
-                    break;
-                case JNO_O16:
-                    jno_o16((short) reg0);
-                    break;
-                case JC_O16:
-                    jc_o16((short) reg0);
-                    break;
-                case JNC_O16:
-                    jnc_o16((short) reg0);
-                    break;
-                case JZ_O16:
-                    jz_o16((short) reg0);
-                    break;
-                case JNZ_O16:
-                    jnz_o16((short) reg0);
-                    break;
-                case JNA_O16:
-                    jna_o16((short) reg0);
-                    break;
-                case JA_O16:
-                    ja_o16((short) reg0);
-                    break;
-                case JS_O16:
-                    js_o16((short) reg0);
-                    break;
-                case JNS_O16:
-                    jns_o16((short) reg0);
-                    break;
-                case JP_O16:
-                    jp_o16((short) reg0);
-                    break;
-                case JNP_O16:
-                    jnp_o16((short) reg0);
-                    break;
-                case JL_O16:
-                    jl_o16((short) reg0);
-                    break;
-                case JNL_O16:
-                    jnl_o16((short) reg0);
-                    break;
-                case JNG_O16:
-                    jng_o16((short) reg0);
-                    break;
-                case JG_O16:
-                    jg_o16((short) reg0);
-                    break;
-
-                case JO_O32:
-                    jo_o32(reg0);
-                    break;
-                case JNO_O32:
-                    jno_o32(reg0);
-                    break;
-                case JC_O32:
-                    jc_o32(reg0);
-                    break;
-                case JNC_O32:
-                    jnc_o32(reg0);
-                    break;
-                case JZ_O32:
-                    jz_o32(reg0);
-                    break;
-                case JNZ_O32:
-                    jnz_o32(reg0);
-                    break;
-                case JNA_O32:
-                    jna_o32(reg0);
-                    break;
-                case JA_O32:
-                    ja_o32(reg0);
-                    break;
-                case JS_O32:
-                    js_o32(reg0);
-                    break;
-                case JNS_O32:
-                    jns_o32(reg0);
-                    break;
-                case JP_O32:
-                    jp_o32(reg0);
-                    break;
-                case JNP_O32:
-                    jnp_o32(reg0);
-                    break;
-                case JL_O32:
-                    jl_o32(reg0);
-                    break;
-                case JNL_O32:
-                    jnl_o32(reg0);
-                    break;
-                case JNG_O32:
-                    jng_o32(reg0);
-                    break;
-                case JG_O32:
-                    jg_o32(reg0);
-                    break;
-
-                case JCXZ:
-                    jcxz((byte) reg0);
-                    break;
-                case JECXZ:
-                    jecxz((byte) reg0);
-                    break;
-
-                case LOOP_CX:
-                    loop_cx((byte) reg0);
-                    break;
-                case LOOP_ECX:
-                    loop_ecx((byte) reg0);
-                    break;
-                case LOOPZ_ECX:
-                    loopz_ecx((byte) reg0);
-                    break;
-                case LOOPNZ_CX:
-                    loopnz_cx((byte) reg0);
-                    break;
-                case LOOPNZ_ECX:
-                    loopnz_ecx((byte) reg0);
-                    break;
-
-                case JUMP_O8:
-                    jump_o8((byte) reg0);
-                    break;
-                case JUMP_O16:
-                    jump_o16((short) reg0);
-                    break;
-                case JUMP_O32:
-                    jump_o32(reg0);
-                    break;
-
-                case JUMP_ABS_O16:
-                    jump_abs(reg0);
-                    break;
-                case JUMP_ABS_O32:
-                    jump_abs(reg0);
-                    break;
-
-                case JUMP_FAR_O16:
-                    jump_far(reg0, reg1);
-                    break;
-                case JUMP_FAR_O32:
-                    jump_far(reg0, reg1);
-                    break;
-
-                case CALL_O16_A16:
-                case CALL_O16_A32:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_o16_a32(reg0);
-                    else
-                        call_o16_a16(reg0);
-                    break;
-
-                case CALL_O32_A32:
-                case CALL_O32_A16:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_o32_a32(reg0);
-                    else
-                        call_o32_a32(reg0);
-                    break;
-
-                case CALL_ABS_O16_A32:
-                case CALL_ABS_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_abs_o16_a32(reg0);
-                    else
-                        call_abs_o16_a16(reg0);
-                }
-                    break;
-
-                case CALL_ABS_O32_A32:
-                case CALL_ABS_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_abs_o32_a32(reg0);
-                    else
-                        call_abs_o32_a16(reg0);
-                }
-                    break;
-
-                case CALL_FAR_O16_A32:
-                case CALL_FAR_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_far_o16_a32(reg0, reg1);
-                    else
-                        call_far_o16_a16(reg0, reg1);
-                }
-                    break;
-
-                case CALL_FAR_O32_A32:
-                case CALL_FAR_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        call_far_o32_a32(reg0, reg1);
-                    else
-                        call_far_o32_a16(reg0, reg1);
-                }
-                    break;
-
-                case RET_O16_A32:
-                case RET_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_o16_a32();
-                    else
-                        ret_o16_a16();
-                }
-                    break;
-
-                case RET_O32_A32:
-                case RET_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_o32_a32();
-                    else
-                        ret_o32_a16();
-                }
-                    break;
-
-                case RET_IW_O16_A32:
-                case RET_IW_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_iw_o16_a32((short) reg0);
-                    else
-                        ret_iw_o16_a16((short) reg0);
-                }
-                    break;
-
-                case RET_IW_O32_A32:
-                case RET_IW_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_iw_o32_a32((short) reg0);
-                    else
-                        ret_iw_o32_a16((short) reg0);
-                }
-                    break;
-
-                case RET_FAR_O16_A32:
-                case RET_FAR_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_far_o16_a32(0);
-                    else
-                        ret_far_o16_a16(0);
-
-                }
-                    break;
-
-                case RET_FAR_O32_A32:
-                case RET_FAR_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_far_o32_a32(0);
-                    else
-                        ret_far_o32_a16(0);
-                }
-                    break;
-
-                case RET_FAR_IW_O16_A32:
-                case RET_FAR_IW_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_far_o16_a32((short) reg0);
-                    else
-                        ret_far_o16_a16((short) reg0);
-
-                }
-                    break;
-
-                case RET_FAR_IW_O32_A32:
-                case RET_FAR_IW_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        ret_far_o32_a32((short) reg0);
-                    else
-                        ret_far_o32_a16((short) reg0);
-                }
-                    break;
-
-                case INT_O16_A32:
-                case INT_O16_A16: {
-                    cpu.handleSoftProtectedModeInterrupt(reg0);
-                }
-                    break;
-
-                case INT_O32_A32:
-                case INT_O32_A16: {
-                    cpu.handleSoftProtectedModeInterrupt(reg0);
-                }
-                    break;
-
-                case IRET_O32_A32:
-                case IRET_O32_A16:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        reg0 = iret_o32_a32();
-                    else
-                        reg0 = iret_o32_a16();
-                    break;
-
-                case IRET_O16_A32:
-                case IRET_O16_A16:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        reg0 = iret_o16_a32();
-                    else
-                        reg0 = iret_o16_a16();
-                    break;
-
-                case SYSENTER:
-                    sysenter();
-                    break;
-                case SYSEXIT:
-                    sysexit(reg0, reg1);
-                    break;
-
-                case IN_O8:
-                    reg0 = in_o8(reg0);
-                    break;
-                case IN_O16:
-                    reg0 = in_o16(reg0);
-                    break;
-                case IN_O32:
-                    reg0 = in_o32(reg0);
-                    break;
-
-                case OUT_O8:
-                    out_o8(reg0, reg1);
-                    break;
-                case OUT_O16:
-                    out_o16(reg0, reg1);
-                    break;
-                case OUT_O32:
-                    out_o32(reg0, reg1);
-                    break;
-
-                case CMOVO:
-                    if (cpu.getOverflowFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNO:
-                    if (!cpu.getOverflowFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVC:
-                    if (cpu.getCarryFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNC:
-                    if (!cpu.getCarryFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVZ:
-                    if (cpu.getZeroFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNZ:
-                    if (!cpu.getZeroFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNA:
-                    if (cpu.getCarryFlag() || cpu.getZeroFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVA:
-                    if ((!cpu.getCarryFlag()) && (!cpu.getZeroFlag()))
-                        reg0 = reg1;
-                    break;
-                case CMOVS:
-                    if (cpu.getSignFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNS:
-                    if (!cpu.getSignFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVP:
-                    if (cpu.getParityFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNP:
-                    if (!cpu.getParityFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVL:
-                    if (cpu.getSignFlag() != cpu.getOverflowFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNL:
-                    if (cpu.getSignFlag() == cpu.getOverflowFlag())
-                        reg0 = reg1;
-                    break;
-                case CMOVNG:
-                    if (cpu.getZeroFlag()
-                            || (cpu.getSignFlag() != cpu.getOverflowFlag()))
-                        reg0 = reg1;
-                    break;
-                case CMOVG:
-                    if ((!cpu.getZeroFlag())
-                            && (cpu.getSignFlag() == cpu.getOverflowFlag()))
-                        reg0 = reg1;
-                    break;
-
-                case SETO:
-                    reg0 = cpu.getOverflowFlag() ? 1 : 0;
-                    break;
-                case SETNO:
-                    reg0 = cpu.getOverflowFlag() ? 0 : 1;
-                    break;
-                case SETC:
-                    reg0 = cpu.getCarryFlag() ? 1 : 0;
-                    break;
-                case SETNC:
-                    reg0 = cpu.getCarryFlag() ? 0 : 1;
-                    break;
-                case SETZ:
-                    reg0 = cpu.getZeroFlag() ? 1 : 0;
-                    break;
-                case SETNZ:
-                    reg0 = cpu.getZeroFlag() ? 0 : 1;
-                    break;
-                case SETNA:
-                    reg0 = cpu.getCarryFlag() || cpu.getZeroFlag() ? 1 : 0;
-                    break;
-                case SETA:
-                    reg0 = cpu.getCarryFlag() || cpu.getZeroFlag() ? 0 : 1;
-                    break;
-                case SETS:
-                    reg0 = cpu.getSignFlag() ? 1 : 0;
-                    break;
-                case SETNS:
-                    reg0 = cpu.getSignFlag() ? 0 : 1;
-                    break;
-                case SETP:
-                    reg0 = cpu.getParityFlag() ? 1 : 0;
-                    break;
-                case SETNP:
-                    reg0 = cpu.getParityFlag() ? 0 : 1;
-                    break;
-                case SETL:
-                    reg0 = cpu.getSignFlag() != cpu.getOverflowFlag() ? 1 : 0;
-                    break;
-                case SETNL:
-                    reg0 = cpu.getSignFlag() != cpu.getOverflowFlag() ? 0 : 1;
-                    break;
-                case SETNG:
-                    reg0 = cpu.getZeroFlag()
-                            || (cpu.getSignFlag() != cpu.getOverflowFlag()) ? 1
-                            : 0;
-                    break;
-                case SETG:
-                    reg0 = cpu.getZeroFlag()
-                            || (cpu.getSignFlag() != cpu.getOverflowFlag()) ? 0
-                            : 1;
-                    break;
-
-                case SMSW:
-                    reg0 = cpu.getCR0() & 0xffff;
-                    break;
-                case LMSW:
-                    if (cpu.getCPL() != 0)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.setCR0((cpu.getCR0() & ~0xe) | (reg0 & 0xe));
-                    break;
-
-                case CMPXCHG:
-                    if (reg2 == reg0) {
-                        reg0 = reg1;
+                    case STORE0_DS:
+                        cpu.ds = loadSegment(reg0);
+                        break;
+                    case STORE0_FS:
+                        cpu.fs = loadSegment(reg0);
+                        break;
+                    case STORE0_GS:
+                        cpu.gs = loadSegment(reg0);
+                        break;
+
+                    case STORE1_ES:
+                        cpu.es = loadSegment(reg1);
+                        break;
+                    // case STORE1_CS:
+                    case STORE1_SS: {
+                        Segment temp = loadSegment(reg1);
+                        if (temp == SegmentFactory.NULL_SEGMENT)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.ss = temp;
+                        cpu.eflagsInterruptEnable = false;
+                    }
+                    break;
+                    case STORE1_DS:
+                        cpu.ds = loadSegment(reg1);
+                        break;
+                    case STORE1_FS:
+                        cpu.fs = loadSegment(reg1);
+                        break;
+                    case STORE1_GS:
+                        cpu.gs = loadSegment(reg1);
+                        break;
+
+                    case STORE0_FLAGS:
+                        cpu
+                                .setEFlags((cpu.getEFlags() & ~0xffff)
+                                        | (reg0 & 0xffff));
+                        break;
+                    case STORE0_EFLAGS:
+                        cpu.setEFlags(reg0);
+                        break;
+
+                    case LOAD0_FLAGS:
+                        reg0 = 0xffff & cpu.getEFlags();
+                        break;
+                    case LOAD0_EFLAGS:
+                        reg0 = cpu.getEFlags();
+                        break;
+
+                    case LOAD0_IB:
+                        reg0 = microcodes[position++] & 0xff;
+                        break;
+                    case LOAD0_IW:
+                        reg0 = microcodes[position++] & 0xffff;
+                        break;
+                    case LOAD0_ID:
+                        reg0 = microcodes[position++];
+                        break;
+
+                    case LOAD1_IB:
+                        reg1 = microcodes[position++] & 0xff;
+                        break;
+                    case LOAD1_IW:
+                        reg1 = microcodes[position++] & 0xffff;
+                        break;
+                    case LOAD1_ID:
+                        reg1 = microcodes[position++];
+                        break;
+
+                    case LOAD2_EAX:
+                        reg2 = cpu.eax;
+                        break;
+                    case LOAD2_AX:
+                        reg2 = cpu.eax & 0xffff;
+                        break;
+                    case LOAD2_AL:
+                        reg2 = cpu.eax & 0xff;
+                        break;
+                    case LOAD2_CL:
+                        reg2 = cpu.ecx & 0xffff;
+                        break;
+                    case LOAD2_IB:
+                        reg2 = microcodes[position++] & 0xff;
+                        break;
+
+                    case LOAD_SEG_ES:
+                        seg0 = cpu.es;
+                        break;
+                    case LOAD_SEG_CS:
+                        seg0 = cpu.cs;
+                        break;
+                    case LOAD_SEG_SS:
+                        seg0 = cpu.ss;
+                        break;
+                    case LOAD_SEG_DS:
+                        seg0 = cpu.ds;
+                        break;
+                    case LOAD_SEG_FS:
+                        seg0 = cpu.fs;
+                        break;
+                    case LOAD_SEG_GS:
+                        seg0 = cpu.gs;
+                        break;
+
+                    case ADDR_REG1:
+                        addr0 += reg1;
+                        break;
+                    case ADDR_2REG1:
+                        addr0 += (reg1 << 1);
+                        break;
+                    case ADDR_4REG1:
+                        addr0 += (reg1 << 2);
+                        break;
+                    case ADDR_8REG1:
+                        addr0 += (reg1 << 3);
+                        break;
+
+                    case ADDR_EAX:
+                        addr0 += cpu.eax;
+                        break;
+                    case ADDR_ECX:
+                        addr0 += cpu.ecx;
+                        break;
+                    case ADDR_EDX:
+                        addr0 += cpu.edx;
+                        break;
+                    case ADDR_EBX:
+                        addr0 += cpu.ebx;
+                        break;
+                    case ADDR_ESP:
+                        addr0 += cpu.esp;
+                        break;
+                    case ADDR_EBP:
+                        addr0 += cpu.ebp;
+                        break;
+                    case ADDR_ESI:
+                        addr0 += cpu.esi;
+                        break;
+                    case ADDR_EDI:
+                        addr0 += cpu.edi;
+                        break;
+
+                    case ADDR_AX:
+                        addr0 += ((short) cpu.eax);
+                        break;
+                    case ADDR_CX:
+                        addr0 += ((short) cpu.ecx);
+                        break;
+                    case ADDR_DX:
+                        addr0 += ((short) cpu.edx);
+                        break;
+                    case ADDR_BX:
+                        addr0 += ((short) cpu.ebx);
+                        break;
+                    case ADDR_SP:
+                        addr0 += ((short) cpu.esp);
+                        break;
+                    case ADDR_BP:
+                        addr0 += ((short) cpu.ebp);
+                        break;
+                    case ADDR_SI:
+                        addr0 += ((short) cpu.esi);
+                        break;
+                    case ADDR_DI:
+                        addr0 += ((short) cpu.edi);
+                        break;
+
+                    case ADDR_2EAX:
+                        addr0 += (cpu.eax << 1);
+                        break;
+                    case ADDR_2ECX:
+                        addr0 += (cpu.ecx << 1);
+                        break;
+                    case ADDR_2EDX:
+                        addr0 += (cpu.edx << 1);
+                        break;
+                    case ADDR_2EBX:
+                        addr0 += (cpu.ebx << 1);
+                        break;
+                    case ADDR_2ESP:
+                        addr0 += (cpu.esp << 1);
+                        break;
+                    case ADDR_2EBP:
+                        addr0 += (cpu.ebp << 1);
+                        break;
+                    case ADDR_2ESI:
+                        addr0 += (cpu.esi << 1);
+                        break;
+                    case ADDR_2EDI:
+                        addr0 += (cpu.edi << 1);
+                        break;
+
+                    case ADDR_4EAX:
+                        addr0 += (cpu.eax << 2);
+                        break;
+                    case ADDR_4ECX:
+                        addr0 += (cpu.ecx << 2);
+                        break;
+                    case ADDR_4EDX:
+                        addr0 += (cpu.edx << 2);
+                        break;
+                    case ADDR_4EBX:
+                        addr0 += (cpu.ebx << 2);
+                        break;
+                    case ADDR_4ESP:
+                        addr0 += (cpu.esp << 2);
+                        break;
+                    case ADDR_4EBP:
+                        addr0 += (cpu.ebp << 2);
+                        break;
+                    case ADDR_4ESI:
+                        addr0 += (cpu.esi << 2);
+                        break;
+                    case ADDR_4EDI:
+                        addr0 += (cpu.edi << 2);
+                        break;
+
+                    case ADDR_8EAX:
+                        addr0 += (cpu.eax << 3);
+                        break;
+                    case ADDR_8ECX:
+                        addr0 += (cpu.ecx << 3);
+                        break;
+                    case ADDR_8EDX:
+                        addr0 += (cpu.edx << 3);
+                        break;
+                    case ADDR_8EBX:
+                        addr0 += (cpu.ebx << 3);
+                        break;
+                    case ADDR_8ESP:
+                        addr0 += (cpu.esp << 3);
+                        break;
+                    case ADDR_8EBP:
+                        addr0 += (cpu.ebp << 3);
+                        break;
+                    case ADDR_8ESI:
+                        addr0 += (cpu.esi << 3);
+                        break;
+                    case ADDR_8EDI:
+                        addr0 += (cpu.edi << 3);
+                        break;
+
+                    case ADDR_IB:
+                        addr0 += ((byte) microcodes[position++]);
+                        break;
+                    case ADDR_IW:
+                        addr0 += ((short) microcodes[position++]);
+                        break;
+                    case ADDR_ID:
+                        addr0 += microcodes[position++];
+                        break;
+
+                    case ADDR_MASK16:
+                        addr0 &= 0xffff;
+                        break;
+
+                    case ADDR_uAL:
+                        addr0 += 0xff & cpu.eax;
+                        break;
+
+                    case LOAD0_ADDR:
+                        reg0 = addr0;
+                        break;
+
+                    case LOAD0_MEM_BYTE:
+                        reg0 = 0xff & seg0.getByte(addr0);
+                        break;
+                    case LOAD0_MEM_WORD:
+                        reg0 = 0xffff & seg0.getWord(addr0);
+                        break;
+                    case LOAD0_MEM_DWORD:
+                        reg0 = seg0.getDoubleWord(addr0);
+                        break;
+                    case LOAD0_MEM_QWORD:
+                        reg0l = seg0.getQuadWord(addr0);
+                        break;
+
+                    case LOAD1_MEM_BYTE:
+                        reg1 = 0xff & seg0.getByte(addr0);
+                        break;
+                    case LOAD1_MEM_WORD:
+                        reg1 = 0xffff & seg0.getWord(addr0);
+                        break;
+                    case LOAD1_MEM_DWORD:
+                        reg1 = seg0.getDoubleWord(addr0);
+                        break;
+
+                    case STORE0_MEM_BYTE:
+                        seg0.setByte(addr0, (byte) reg0);
+                        break;
+                    case STORE0_MEM_WORD:
+                        seg0.setWord(addr0, (short) reg0);
+                        break;
+                    case STORE0_MEM_DWORD:
+                        seg0.setDoubleWord(addr0, reg0);
+                        break;
+                    case STORE0_MEM_QWORD:
+                        seg0.setQuadWord(addr0, reg0l);
+                        break;
+
+                    case STORE1_MEM_BYTE:
+                        seg0.setByte(addr0, (byte) reg1);
+                        break;
+                    case STORE1_MEM_WORD:
+                        seg0.setWord(addr0, (short) reg1);
+                        break;
+                    case STORE1_MEM_DWORD:
+                        seg0.setDoubleWord(addr0, reg1);
+                        break;
+
+                    case XOR:
+                        reg0 ^= reg1;
+                        break;
+                    case AND:
+                        reg0 &= reg1;
+                        break;
+                    case OR:
+                        reg0 |= reg1;
+                        break;
+                    case NOT:
+                        reg0 = ~reg0;
+                        break;
+
+                    case SUB:
+                        reg2 = reg0;
+                        reg0 = reg2 - reg1;
+                        break;
+                    case SBB:
+                        reg2 = reg0;
+                        reg0 = reg2 - (reg1 + (cpu.getCarryFlag() ? 1 : 0));
+                        break;
+                    case ADD:
+                        reg2 = reg0;
+                        reg0 = reg2 + reg1;
+                        break;
+                    case ADC:
+                        reg2 = reg0;
+                        reg0 = reg2 + reg1 + (cpu.getCarryFlag() ? 1 : 0);
+                        break;
+                    case NEG:
+                        reg0 = -reg0;
+                        break;
+
+                    case MUL_O8:
+                        mul_o8(reg0);
+                        break;
+                    case MUL_O16:
+                        mul_o16(reg0);
+                        break;
+                    case MUL_O32:
+                        mul_o32(reg0);
+                        break;
+
+                    case IMULA_O8:
+                        imula_o8((byte) reg0);
+                        break;
+                    case IMULA_O16:
+                        imula_o16((short) reg0);
+                        break;
+                    case IMULA_O32:
+                        imula_o32(reg0);
+                        break;
+
+                    case IMUL_O16:
+                        reg0 = imul_o16((short) reg0, (short) reg1);
+                        break;
+                    case IMUL_O32:
+                        reg0 = imul_o32(reg0, reg1);
+                        break;
+
+                    case DIV_O8:
+                        div_o8(reg0);
+                        break;
+                    case DIV_O16:
+                        div_o16(reg0);
+                        break;
+                    case DIV_O32:
+                        div_o32(reg0);
+                        break;
+
+                    case IDIV_O8:
+                        idiv_o8((byte) reg0);
+                        break;
+                    case IDIV_O16:
+                        idiv_o16((short) reg0);
+                        break;
+                    case IDIV_O32:
+                        idiv_o32(reg0);
+                        break;
+
+                    case BSF:
+                        reg0 = bsf(reg1, reg0);
+                        break;
+                    case BSR:
+                        reg0 = bsr(reg1, reg0);
+                        break;
+
+                    case BT_MEM:
+                        bt_mem(reg1, seg0, addr0);
+                        break;
+                    case BTS_MEM:
+                        bts_mem(reg1, seg0, addr0);
+                        break;
+                    case BTR_MEM:
+                        btr_mem(reg1, seg0, addr0);
+                        break;
+                    case BTC_MEM:
+                        btc_mem(reg1, seg0, addr0);
+                        break;
+
+                    case BT_O32:
+                        reg1 &= 0x1f;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        break;
+                    case BT_O16:
+                        reg1 &= 0xf;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        break;
+                    case BTS_O32:
+                        reg1 &= 0x1f;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 |= (1 << reg1);
+                        break;
+                    case BTS_O16:
+                        reg1 &= 0xf;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 |= (1 << reg1);
+                        break;
+                    case BTR_O32:
+                        reg1 &= 0x1f;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 &= ~(1 << reg1);
+                        break;
+                    case BTR_O16:
+                        reg1 &= 0xf;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 &= ~(1 << reg1);
+                        break;
+                    case BTC_O32:
+                        reg1 &= 0x1f;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 ^= (1 << reg1);
+                        break;
+                    case BTC_O16:
+                        reg1 &= 0xf;
+                        cpu.setCarryFlag(reg0, reg1, Processor.CY_NTH_BIT_SET);
+                        reg0 ^= (1 << reg1);
+                        break;
+
+                    case ROL_O8:
+                        reg1 &= 0x7;
+                        reg0 = (reg0 << reg1) | (reg0 >>> (8 - reg1));
+                        break;
+                    case ROL_O16:
+                        reg1 &= 0xf;
+                        reg0 = (reg0 << reg1) | (reg0 >>> (16 - reg1));
+                        break;
+                    case ROL_O32:
+                        reg1 &= 0x1f;
+                        reg0 = (reg0 << reg1) | (reg0 >>> (32 - reg1));
+                        break;
+
+                    case ROR_O8:
+                        reg1 &= 0x7;
+                        reg0 = (reg0 >>> reg1) | (reg0 << (8 - reg1));
+                        break;
+                    case ROR_O16:
+                        reg1 &= 0xf;
+                        reg0 = (reg0 >>> reg1) | (reg0 << (16 - reg1));
+                        break;
+                    case ROR_O32:
+                        reg1 &= 0x1f;
+                        reg0 = (reg0 >>> reg1) | (reg0 << (32 - reg1));
+                        break;
+
+                    case RCL_O8:
+                        reg1 &= 0x1f;
+                        reg1 %= 9;
+                        reg0 |= (cpu.getCarryFlag() ? 0x100 : 0);
+                        reg0 = (reg0 << reg1) | (reg0 >>> (9 - reg1));
+                        break;
+                    case RCL_O16:
+                        reg1 &= 0x1f;
+                        reg1 %= 17;
+                        reg0 |= (cpu.getCarryFlag() ? 0x10000 : 0);
+                        reg0 = (reg0 << reg1) | (reg0 >>> (17 - reg1));
+                        break;
+                    case RCL_O32:
+                        reg1 &= 0x1f;
+                        reg0l = (0xffffffffl & reg0)
+                                | (cpu.getCarryFlag() ? 0x100000000l : 0);
+                        reg0 = (int) (reg0l = (reg0l << reg1)
+                                | (reg0l >>> (33 - reg1)));
+                        break;
+
+                    case RCR_O8:
+                        reg1 &= 0x1f;
+                        reg1 %= 9;
+                        reg0 |= (cpu.getCarryFlag() ? 0x100 : 0);
+                        reg0 = (reg0 >>> reg1) | (reg0 << (9 - reg1));
+                        break;
+                    case RCR_O16:
+                        reg1 &= 0x1f;
+                        reg1 %= 17;
+                        reg0 |= (cpu.getCarryFlag() ? 0x10000 : 0);
+                        reg0 = (reg0 >>> reg1) | (reg0 << (17 - reg1));
+                        break;
+                    case RCR_O32:
+                        reg1 &= 0x1f;
+                        reg0l = (0xffffffffl & reg0)
+                                | (cpu.getCarryFlag() ? 0x100000000l : 0);
+                        reg0 = (int) (reg0l = (reg0l >>> reg1)
+                                | (reg0l << (33 - reg1)));
+                        break;
+
+                    case SHL:
+                        reg2 = reg0;
+                        reg0 <<= reg1;
+                        break;
+                    case SHR:
+                        reg2 = reg0;
+                        reg0 >>>= reg1;
+                        break;
+                    case SAR_O8:
+                        reg2 = reg0;
+                        reg0 = ((byte) reg0) >> reg1;
+                        break;
+                    case SAR_O16:
+                        reg2 = reg0;
+                        reg0 = ((short) reg0) >> reg1;
+                        break;
+                    case SAR_O32:
+                        reg2 = reg0;
+                        reg0 >>= reg1;
+                        break;
+
+                    case SHLD_O16: {
+                        int i = reg0;
+                        reg2 &= 0x1f;
+                        reg0 = (reg0 << reg2) | (reg1 >>> (16 - reg2));
                         reg1 = reg2;
-                    } else
-                        reg1 = reg0;
-                    break;
-
-                case CMPXCHG8B: {
-                    long edxeax = ((cpu.edx & 0xffffffffL) << 32)
-                            | (cpu.eax & 0xffffffffL);
-                    if (edxeax == reg0l) {
-                        cpu.eflagsZero = true;
-                        reg0l = ((cpu.ecx & 0xffffffffL) << 32)
-                                | (cpu.ebx & 0xffffffffL);
-                    } else {
-                        cpu.eflagsZero = false;
-                        cpu.edx = (int) (reg0l >> 32);
-                        cpu.eax = (int) reg0l;
+                        reg2 = i;
                     }
-                }
                     break;
-
-                case BSWAP:
-                    reg0 = reverseBytes(reg0);
-                    break;
-
-                case ENTER_O32_A32:
-                case ENTER_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        enter_o32_a32(reg0, reg1);
-                    else
-                        throw new IllegalStateException("need enter_o32_a16");
-                }
-                    break;
-
-                case ENTER_O16_A32:
-                case ENTER_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        enter_o16_a32(reg0, reg1);
-                    else
-                        enter_o16_a16(reg0, reg1);
-                }
-                    break;
-
-                case LEAVE_O32_A32:
-                case LEAVE_O32_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        leave_o32_a32();
-                    else
-                        leave_o32_a16();
-                }
-                    break;
-
-                case LEAVE_O16_A32:
-                case LEAVE_O16_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        leave_o16_a32();
-                    else
-                        leave_o16_a16();
-                }
-                    break;
-
-                case PUSH_O32_A16:
-                case PUSH_O32_A32: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        push_o32_a32(reg0);
-                    else
-                        push_o32_a16(reg0);
-                }
-                    break;
-
-                case PUSH_O16_A16:
-                case PUSH_O16_A32: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        push_o16_a32((short) reg0);
-                    else
-                        push_o16_a16((short) reg0);
-                }
-                    break;
-
-                case PUSHF_O32_A16:
-                case PUSHF_O32_A32: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        push_o32_a32(~0x30000 & reg0);
-                    else
-                        push_o32_a16(~0x30000 & reg0);
-                }
-                    break;
-
-                case PUSHF_O16_A16:
-                case PUSHF_O16_A32: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        push_o16_a32((short) reg0);
-                    else
-                        push_o16_a16((short) reg0);
-                }
-                    break;
-
-                case POP_O32_A16:
-                case POP_O32_A32: {
-                    if (cpu.ss.getDefaultSizeFlag()) {
-                        reg1 = cpu.esp + 4;
-                        if (microcodes[position] == STORE0_SS)
-                            cpu.eflagsInterruptEnable = false;
-                        reg0 = cpu.ss.getDoubleWord(cpu.esp);
-                    } else {
-                        reg1 = (cpu.esp & ~0xffff) | ((cpu.esp + 4) & 0xffff);
-                        if (microcodes[position] == STORE0_SS)
-                            cpu.eflagsInterruptEnable = false;
-                        reg0 = cpu.ss.getDoubleWord(0xffff & cpu.esp);
+                    case SHLD_O32: {
+                        int i = reg0;
+                        reg2 &= 0x1f;
+                        if (reg2 != 0)
+                            reg0 = (reg0 << reg2) | (reg1 >>> (32 - reg2));
+                        reg1 = reg2;
+                        reg2 = i;
                     }
-                }
                     break;
 
-                case POP_O16_A16:
-                case POP_O16_A32: {
-                    if (cpu.ss.getDefaultSizeFlag()) {
-                        reg1 = cpu.esp + 2;
-                        if (microcodes[position] == STORE0_SS)
-                            cpu.eflagsInterruptEnable = false;
-                        reg0 = 0xffff & cpu.ss.getWord(cpu.esp);
-                    } else {
-                        reg1 = (cpu.esp & ~0xffff) | ((cpu.esp + 2) & 0xffff);
-                        if (microcodes[position] == STORE0_SS)
-                            cpu.eflagsInterruptEnable = false;
-                        reg0 = 0xffff & cpu.ss.getWord(0xffff & cpu.esp);
+                    case SHRD_O16: {
+                        int i = reg0;
+                        reg2 &= 0x1f;
+                        reg0 = (reg0 >>> reg2) | (reg1 << (16 - reg2));
+                        reg1 = reg2;
+                        reg2 = i;
                     }
-                }
+                    break;
+                    case SHRD_O32: {
+                        int i = reg0;
+                        reg2 &= 0x1f;
+                        if (reg2 != 0)
+                            reg0 = (reg0 >>> reg2) | (reg1 << (32 - reg2));
+                        reg1 = reg2;
+                        reg2 = i;
+                    }
                     break;
 
-                case POPF_O32_A16:
-                case POPF_O32_A32: {
-                    if (cpu.ss.getDefaultSizeFlag()) {
-                        reg0 = cpu.ss.getDoubleWord(cpu.esp);
-                        cpu.esp += 4;
-                    } else {
-                        reg0 = cpu.ss.getDoubleWord(0xffff & cpu.esp);
-                        cpu.esp = (cpu.esp & ~0xffff)
-                                | ((cpu.esp + 4) & 0xffff);
-                    }
-                    if (cpu.getCPL() == 0)
-                        reg0 = ((cpu.getEFlags() & 0x20000) | (reg0 & ~(0x20000 | 0x180000)));
-                    else {
-                        if (cpu.getCPL() > cpu.eflagsIOPrivilegeLevel)
-                            reg0 = ((cpu.getEFlags() & 0x23200) | (reg0 & ~(0x23200 | 0x180000)));
+                    case CWD:
+                        if ((cpu.eax & 0x8000) == 0)
+                            cpu.edx &= 0xffff0000;
                         else
-                            reg0 = ((cpu.getEFlags() & 0x23000) | (reg0 & ~(0x23000 | 0x180000)));
-                    }
-                }
-                    break;
-
-                case POPF_O16_A16:
-                case POPF_O16_A32: {
-                    if (cpu.ss.getDefaultSizeFlag()) {
-                        reg0 = 0xffff & cpu.ss.getWord(cpu.esp);
-                        cpu.esp += 2;
-                    } else {
-                        reg0 = 0xffff & cpu.ss.getWord(0xffff & cpu.esp);
-                        cpu.esp = (cpu.esp & ~0xffff)
-                                | ((cpu.esp + 2) & 0xffff);
-                    }
-                    if (cpu.getCPL() != 0)
-                        if (cpu.getCPL() > cpu.eflagsIOPrivilegeLevel)
-                            reg0 = ((cpu.getEFlags() & 0x3200) | (reg0 & ~0x3200));
+                            cpu.edx |= 0x0000ffff;
+                        break;
+                    case CDQ:
+                        if ((cpu.eax & 0x80000000) == 0)
+                            cpu.edx = 0;
                         else
-                            reg0 = ((cpu.getEFlags() & 0x3000) | (reg0 & ~0x3000));
-                }
+                            cpu.edx = -1;
+                        break;
+
+                    case AAA:
+                        aaa();
+                        break;
+                    case AAD:
+                        aad(reg0);
+                        break;
+                    case AAM:
+                        aam(reg0);
+                        break;
+                    case AAS:
+                        aas();
+                        break;
+
+                    case DAA:
+                        daa();
+                        break;
+                    case DAS:
+                        das();
+                        break;
+
+                    case LAHF:
+                        lahf();
+                        break;
+                    case SAHF:
+                        sahf();
+                        break;
+
+                    case CLC:
+                        cpu.setCarryFlag(false);
+                        break;
+                    case STC:
+                        cpu.setCarryFlag(true);
+                        break;
+                    case CLI:
+                        cpu.eflagsInterruptEnable = cpu.eflagsInterruptEnableSoon = false;
+                        break;
+                    case STI:
+                        cpu.eflagsInterruptEnable = cpu.eflagsInterruptEnableSoon = true;
+                        break;
+                    case CLD:
+                        cpu.eflagsDirection = false;
+                        break;
+                    case STD:
+                        cpu.eflagsDirection = true;
+                        break;
+                    case CMC:
+                        cpu.setCarryFlag(cpu.getCarryFlag() ^ true);
+                        break;
+
+                    case SIGN_EXTEND_8_16:
+                        reg0 = 0xffff & ((byte) reg0);
+                        break;
+                    case SIGN_EXTEND_8_32:
+                        reg0 = (byte) reg0;
+                        break;
+                    case SIGN_EXTEND_16_32:
+                        reg0 = (short) reg0;
+                        break;
+
+                    case INC:
+                        reg0++;
+                        break;
+                    case DEC:
+                        reg0--;
+                        break;
+
+                    case FWAIT:
+                        fpu.checkExceptions();
+                        break;
+                    case HALT:
+                        halt();
+                        break;
+
+                    case JO_O8:
+                        jo_o8((byte) reg0);
+                        break;
+                    case JNO_O8:
+                        jno_o8((byte) reg0);
+                        break;
+                    case JC_O8:
+                        jc_o8((byte) reg0);
+                        break;
+                    case JNC_O8:
+                        jnc_o8((byte) reg0);
+                        break;
+                    case JZ_O8:
+                        jz_o8((byte) reg0);
+                        break;
+                    case JNZ_O8:
+                        jnz_o8((byte) reg0);
+                        break;
+                    case JNA_O8:
+                        jna_o8((byte) reg0);
+                        break;
+                    case JA_O8:
+                        ja_o8((byte) reg0);
+                        break;
+                    case JS_O8:
+                        js_o8((byte) reg0);
+                        break;
+                    case JNS_O8:
+                        jns_o8((byte) reg0);
+                        break;
+                    case JP_O8:
+                        jp_o8((byte) reg0);
+                        break;
+                    case JNP_O8:
+                        jnp_o8((byte) reg0);
+                        break;
+                    case JL_O8:
+                        jl_o8((byte) reg0);
+                        break;
+                    case JNL_O8:
+                        jnl_o8((byte) reg0);
+                        break;
+                    case JNG_O8:
+                        jng_o8((byte) reg0);
+                        break;
+                    case JG_O8:
+                        jg_o8((byte) reg0);
+                        break;
+
+                    case JO_O16:
+                        jo_o16((short) reg0);
+                        break;
+                    case JNO_O16:
+                        jno_o16((short) reg0);
+                        break;
+                    case JC_O16:
+                        jc_o16((short) reg0);
+                        break;
+                    case JNC_O16:
+                        jnc_o16((short) reg0);
+                        break;
+                    case JZ_O16:
+                        jz_o16((short) reg0);
+                        break;
+                    case JNZ_O16:
+                        jnz_o16((short) reg0);
+                        break;
+                    case JNA_O16:
+                        jna_o16((short) reg0);
+                        break;
+                    case JA_O16:
+                        ja_o16((short) reg0);
+                        break;
+                    case JS_O16:
+                        js_o16((short) reg0);
+                        break;
+                    case JNS_O16:
+                        jns_o16((short) reg0);
+                        break;
+                    case JP_O16:
+                        jp_o16((short) reg0);
+                        break;
+                    case JNP_O16:
+                        jnp_o16((short) reg0);
+                        break;
+                    case JL_O16:
+                        jl_o16((short) reg0);
+                        break;
+                    case JNL_O16:
+                        jnl_o16((short) reg0);
+                        break;
+                    case JNG_O16:
+                        jng_o16((short) reg0);
+                        break;
+                    case JG_O16:
+                        jg_o16((short) reg0);
+                        break;
+
+                    case JO_O32:
+                        jo_o32(reg0);
+                        break;
+                    case JNO_O32:
+                        jno_o32(reg0);
+                        break;
+                    case JC_O32:
+                        jc_o32(reg0);
+                        break;
+                    case JNC_O32:
+                        jnc_o32(reg0);
+                        break;
+                    case JZ_O32:
+                        jz_o32(reg0);
+                        break;
+                    case JNZ_O32:
+                        jnz_o32(reg0);
+                        break;
+                    case JNA_O32:
+                        jna_o32(reg0);
+                        break;
+                    case JA_O32:
+                        ja_o32(reg0);
+                        break;
+                    case JS_O32:
+                        js_o32(reg0);
+                        break;
+                    case JNS_O32:
+                        jns_o32(reg0);
+                        break;
+                    case JP_O32:
+                        jp_o32(reg0);
+                        break;
+                    case JNP_O32:
+                        jnp_o32(reg0);
+                        break;
+                    case JL_O32:
+                        jl_o32(reg0);
+                        break;
+                    case JNL_O32:
+                        jnl_o32(reg0);
+                        break;
+                    case JNG_O32:
+                        jng_o32(reg0);
+                        break;
+                    case JG_O32:
+                        jg_o32(reg0);
+                        break;
+
+                    case JCXZ:
+                        jcxz((byte) reg0);
+                        break;
+                    case JECXZ:
+                        jecxz((byte) reg0);
+                        break;
+
+                    case LOOP_CX:
+                        loop_cx((byte) reg0);
+                        break;
+                    case LOOP_ECX:
+                        loop_ecx((byte) reg0);
+                        break;
+                    case LOOPZ_ECX:
+                        loopz_ecx((byte) reg0);
+                        break;
+                    case LOOPNZ_CX:
+                        loopnz_cx((byte) reg0);
+                        break;
+                    case LOOPNZ_ECX:
+                        loopnz_ecx((byte) reg0);
+                        break;
+
+                    case JUMP_O8:
+                        jump_o8((byte) reg0);
+                        break;
+                    case JUMP_O16:
+                        jump_o16((short) reg0);
+                        break;
+                    case JUMP_O32:
+                        jump_o32(reg0);
+                        break;
+
+                    case JUMP_ABS_O16:
+                        jump_abs(reg0);
+                        break;
+                    case JUMP_ABS_O32:
+                        jump_abs(reg0);
+                        break;
+
+                    case JUMP_FAR_O16:
+                        jump_far(reg0, reg1);
+                        break;
+                    case JUMP_FAR_O32:
+                        jump_far(reg0, reg1);
+                        break;
+
+                    case CALL_O16_A16:
+                    case CALL_O16_A32:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_o16_a32(reg0);
+                        else
+                            call_o16_a16(reg0);
+                        break;
+
+                    case CALL_O32_A32:
+                    case CALL_O32_A16:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_o32_a32(reg0);
+                        else
+                            call_o32_a32(reg0);
+                        break;
+
+                    case CALL_ABS_O16_A32:
+                    case CALL_ABS_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_abs_o16_a32(reg0);
+                        else
+                            call_abs_o16_a16(reg0);
+                    }
                     break;
 
-                case PUSHAD_A32:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        pushad_a32();
-                    else
-                        pushad_a16();
+                    case CALL_ABS_O32_A32:
+                    case CALL_ABS_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_abs_o32_a32(reg0);
+                        else
+                            call_abs_o32_a16(reg0);
+                    }
                     break;
 
-                case PUSHAD_A16:
-                    if (cpu.ss.getDefaultSizeFlag())
-                        pusha_a32();
-                    else
-                        pusha_a16();
+                    case CALL_FAR_O16_A32:
+                    case CALL_FAR_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_far_o16_a32(reg0, reg1);
+                        else
+                            call_far_o16_a16(reg0, reg1);
+                    }
                     break;
 
-                case POPA_A32:
-                case POPA_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        throw new IllegalStateException("need popa_a32");
-                    else
-                        popa_a16();
-                }
+                    case CALL_FAR_O32_A32:
+                    case CALL_FAR_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            call_far_o32_a32(reg0, reg1);
+                        else
+                            call_far_o32_a16(reg0, reg1);
+                    }
                     break;
 
-                case POPAD_A32:
-                case POPAD_A16: {
-                    if (cpu.ss.getDefaultSizeFlag())
-                        popad_a32();
-                    else
-                        popad_a16();
-                }
+                    case RET_O16_A32:
+                    case RET_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_o16_a32();
+                        else
+                            ret_o16_a16();
+                    }
                     break;
 
-                case CMPSB_A32:
-                    cmpsb_a32(seg0);
-                    break;
-                case CMPSW_A32:
-                    cmpsw_a32(seg0);
-                    break;
-                case CMPSD_A32:
-                    cmpsd_a32(seg0);
-                    break;
-                case REPE_CMPSB_A16:
-                    repe_cmpsb_a16(seg0);
-                    break;
-                case REPE_CMPSB_A32:
-                    repe_cmpsb_a32(seg0);
-                    break;
-                case REPE_CMPSW_A32:
-                    repe_cmpsw_a32(seg0);
-                    break;
-                case REPE_CMPSD_A32:
-                    repe_cmpsd_a32(seg0);
-                    break;
-                case REPNE_CMPSB_A32:
-                    repne_cmpsb_a32(seg0);
-                    break;
-                case REPNE_CMPSW_A32:
-                    repne_cmpsw_a32(seg0);
-                    break;
-                case REPNE_CMPSD_A32:
-                    repne_cmpsd_a32(seg0);
+                    case RET_O32_A32:
+                    case RET_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_o32_a32();
+                        else
+                            ret_o32_a16();
+                    }
                     break;
 
-                case INSB_A32:
-                    insb_a32(reg0);
-                    break;
-                case INSW_A32:
-                    insw_a32(reg0);
-                    break;
-                case INSD_A32:
-                    insd_a32(reg0);
-                    break;
-                case REP_INSB_A32:
-                    rep_insb_a32(reg0);
-                    break;
-                case REP_INSW_A32:
-                    rep_insw_a32(reg0);
-                    break;
-                case REP_INSD_A32:
-                    rep_insd_a32(reg0);
+                    case RET_IW_O16_A32:
+                    case RET_IW_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_iw_o16_a32((short) reg0);
+                        else
+                            ret_iw_o16_a16((short) reg0);
+                    }
                     break;
 
-                case LODSB_A16:
-                    lodsb_a16(seg0);
-                    break;
-                case LODSB_A32:
-                    lodsb_a32(seg0);
-                    break;
-                case LODSW_A16:
-                    lodsw_a16(seg0);
-                    break;
-                case LODSW_A32:
-                    lodsw_a32(seg0);
-                    break;
-                case LODSD_A32:
-                    lodsd_a32(seg0);
-                    break;
-                case REP_LODSB_A32:
-                    rep_lodsb_a32(seg0);
-                    break;
-                case REP_LODSW_A32:
-                    rep_lodsw_a32(seg0);
-                    break;
-                case REP_LODSD_A32:
-                    rep_lodsd_a32(seg0);
+                    case RET_IW_O32_A32:
+                    case RET_IW_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_iw_o32_a32((short) reg0);
+                        else
+                            ret_iw_o32_a16((short) reg0);
+                    }
                     break;
 
-                case MOVSB_A16:
-                    movsb_a16(seg0);
-                    break;
-                case MOVSW_A16:
-                    movsw_a16(seg0);
-                    break;
-                case MOVSD_A16:
-                    movsd_a16(seg0);
-                    break;
-                case REP_MOVSB_A16:
-                    rep_movsb_a16(seg0);
-                    break;
-                case REP_MOVSW_A16:
-                    rep_movsw_a16(seg0);
-                    break;
-                case REP_MOVSD_A16:
-                    rep_movsd_a16(seg0);
-                    break;
-                case MOVSB_A32:
-                    movsb_a32(seg0);
-                    break;
-                case MOVSW_A32:
-                    movsw_a32(seg0);
-                    break;
-                case MOVSD_A32:
-                    movsd_a32(seg0);
-                    break;
-                case REP_MOVSB_A32:
-                    rep_movsb_a32(seg0);
-                    break;
-                case REP_MOVSW_A32:
-                    rep_movsw_a32(seg0);
-                    break;
-                case REP_MOVSD_A32:
-                    rep_movsd_a32(seg0);
+                    case RET_FAR_O16_A32:
+                    case RET_FAR_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_far_o16_a32(0);
+                        else
+                            ret_far_o16_a16(0);
+
+                    }
                     break;
 
-                case OUTSB_A16:
-                    outsb_a16(reg0, seg0);
-                    break;
-                case OUTSW_A16:
-                    outsw_a16(reg0, seg0);
-                    break;
-                case OUTSD_A16:
-                    outsd_a16(reg0, seg0);
-                    break;
-                case REP_OUTSB_A16:
-                    rep_outsb_a16(reg0, seg0);
-                    break;
-                case REP_OUTSW_A16:
-                    rep_outsw_a16(reg0, seg0);
-                    break;
-                case REP_OUTSD_A16:
-                    rep_outsd_a16(reg0, seg0);
-                    break;
-                case OUTSB_A32:
-                    outsb_a32(reg0, seg0);
-                    break;
-                case OUTSW_A32:
-                    outsw_a32(reg0, seg0);
-                    break;
-                case OUTSD_A32:
-                    outsd_a32(reg0, seg0);
-                    break;
-                case REP_OUTSB_A32:
-                    rep_outsb_a32(reg0, seg0);
-                    break;
-                case REP_OUTSW_A32:
-                    rep_outsw_a32(reg0, seg0);
-                    break;
-                case REP_OUTSD_A32:
-                    rep_outsd_a32(reg0, seg0);
+                    case RET_FAR_O32_A32:
+                    case RET_FAR_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_far_o32_a32(0);
+                        else
+                            ret_far_o32_a16(0);
+                    }
                     break;
 
-                case SCASB_A16:
-                    scasb_a16(reg0);
-                    break;
-                case SCASB_A32:
-                    scasb_a32(reg0);
-                    break;
-                case SCASW_A32:
-                    scasw_a32(reg0);
-                    break;
-                case SCASD_A32:
-                    scasd_a32(reg0);
-                    break;
-                case REPE_SCASB_A32:
-                    repe_scasb_a32(reg0);
-                    break;
-                case REPE_SCASW_A32:
-                    repe_scasw_a32(reg0);
-                    break;
-                case REPE_SCASD_A32:
-                    repe_scasd_a32(reg0);
-                    break;
-                case REPNE_SCASB_A16:
-                    repne_scasb_a16(reg0);
-                    break;
-                case REPNE_SCASB_A32:
-                    repne_scasb_a32(reg0);
-                    break;
-                case REPNE_SCASW_A32:
-                    repne_scasw_a32(reg0);
-                    break;
-                case REPNE_SCASD_A32:
-                    repne_scasd_a32(reg0);
+                    case RET_FAR_IW_O16_A32:
+                    case RET_FAR_IW_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_far_o16_a32((short) reg0);
+                        else
+                            ret_far_o16_a16((short) reg0);
+
+                    }
                     break;
 
-                case STOSB_A16:
-                    stosb_a16(reg0);
-                    break;
-                case STOSB_A32:
-                    stosb_a32(reg0);
-                    break;
-                case STOSW_A16:
-                    stosw_a16(reg0);
-                    break;
-                case STOSW_A32:
-                    stosw_a32(reg0);
-                    break;
-                case STOSD_A32:
-                    stosd_a32(reg0);
-                    break;
-                case REP_STOSB_A16:
-                    rep_stosb_a16(reg0);
-                    break;
-                case REP_STOSB_A32:
-                    rep_stosb_a32(reg0);
-                    break;
-                case REP_STOSW_A16:
-                    rep_stosw_a16(reg0);
-                    break;
-                case REP_STOSW_A32:
-                    rep_stosw_a32(reg0);
-                    break;
-                case REP_STOSD_A32:
-                    rep_stosd_a32(reg0);
+                    case RET_FAR_IW_O32_A32:
+                    case RET_FAR_IW_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            ret_far_o32_a32((short) reg0);
+                        else
+                            ret_far_o32_a16((short) reg0);
+                    }
                     break;
 
-                case LGDT_O16:
-                    cpu.gdtr = cpu.createDescriptorTableSegment(
-                            reg1 & 0x00ffffff, reg0);
-                    break;
-                case LGDT_O32:
-                    cpu.gdtr = cpu.createDescriptorTableSegment(reg1, reg0);
-                    break;
-                case SGDT_O16:
-                    reg1 = cpu.gdtr.getBase() & 0x00ffffff;
-                    reg0 = cpu.gdtr.getLimit();
-                    break;
-                case SGDT_O32:
-                    reg1 = cpu.gdtr.getBase();
-                    reg0 = cpu.gdtr.getLimit();
+                    case INT_O16_A32:
+                    case INT_O16_A16: {
+                        cpu.handleSoftProtectedModeInterrupt(reg0);
+                    }
                     break;
 
-                case LIDT_O16:
-                    cpu.idtr = cpu.createDescriptorTableSegment(
-                            reg1 & 0x00ffffff, reg0);
-                    break;
-                case LIDT_O32:
-                    cpu.idtr = cpu.createDescriptorTableSegment(reg1, reg0);
-                    break;
-                case SIDT_O16:
-                    reg1 = cpu.idtr.getBase() & 0x00ffffff;
-                    reg0 = cpu.idtr.getLimit();
-                    break;
-                case SIDT_O32:
-                    reg1 = cpu.idtr.getBase();
-                    reg0 = cpu.idtr.getLimit();
+                    case INT_O32_A32:
+                    case INT_O32_A16: {
+                        cpu.handleSoftProtectedModeInterrupt(reg0);
+                    }
                     break;
 
-                case LLDT:
-                    cpu.ldtr = lldt(reg0);
-                    break;
-                case SLDT:
-                    reg0 = 0xffff & cpu.ldtr.getSelector();
-                    break;
+                    case IRET_O32_A32:
+                    case IRET_O32_A16:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            reg0 = iret_o32_a32();
+                        else
+                            reg0 = iret_o32_a16();
+                        break;
 
-                case LTR:
-                    cpu.tss = ltr(reg0);
-                    break;
-                case STR:
-                    reg0 = 0xffff & cpu.tss.getSelector();
-                    break;
+                    case IRET_O16_A32:
+                    case IRET_O16_A16:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            reg0 = iret_o16_a32();
+                        else
+                            reg0 = iret_o16_a16();
+                        break;
 
-                case VERR:
-                    try {
-                        Segment test = cpu.getSegment(reg0 & 0xffff);
-                        int type = test.getType();
-                        if (((type & SegmentFactory.DESCRIPTOR_TYPE_CODE_DATA) == 0)
-                                || (((type & SegmentFactory.TYPE_CODE_CONFORMING) == 0) && ((cpu
-                                        .getCPL() > test.getDPL()) || (test
-                                        .getRPL() > test.getDPL()))))
+                    case SYSENTER:
+                        sysenter();
+                        break;
+                    case SYSEXIT:
+                        sysexit(reg0, reg1);
+                        break;
+
+                    case IN_O8:
+                        reg0 = in_o8(reg0);
+                        break;
+                    case IN_O16:
+                        reg0 = in_o16(reg0);
+                        break;
+                    case IN_O32:
+                        reg0 = in_o32(reg0);
+                        break;
+
+                    case OUT_O8:
+                        out_o8(reg0, reg1);
+                        break;
+                    case OUT_O16:
+                        out_o16(reg0, reg1);
+                        break;
+                    case OUT_O32:
+                        out_o32(reg0, reg1);
+                        break;
+
+                    case CMOVO:
+                        if (cpu.getOverflowFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNO:
+                        if (!cpu.getOverflowFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVC:
+                        if (cpu.getCarryFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNC:
+                        if (!cpu.getCarryFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVZ:
+                        if (cpu.getZeroFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNZ:
+                        if (!cpu.getZeroFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNA:
+                        if (cpu.getCarryFlag() || cpu.getZeroFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVA:
+                        if ((!cpu.getCarryFlag()) && (!cpu.getZeroFlag()))
+                            reg0 = reg1;
+                        break;
+                    case CMOVS:
+                        if (cpu.getSignFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNS:
+                        if (!cpu.getSignFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVP:
+                        if (cpu.getParityFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNP:
+                        if (!cpu.getParityFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVL:
+                        if (cpu.getSignFlag() != cpu.getOverflowFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNL:
+                        if (cpu.getSignFlag() == cpu.getOverflowFlag())
+                            reg0 = reg1;
+                        break;
+                    case CMOVNG:
+                        if (cpu.getZeroFlag()
+                                || (cpu.getSignFlag() != cpu.getOverflowFlag()))
+                            reg0 = reg1;
+                        break;
+                    case CMOVG:
+                        if ((!cpu.getZeroFlag())
+                                && (cpu.getSignFlag() == cpu.getOverflowFlag()))
+                            reg0 = reg1;
+                        break;
+
+                    case SETO:
+                        reg0 = cpu.getOverflowFlag() ? 1 : 0;
+                        break;
+                    case SETNO:
+                        reg0 = cpu.getOverflowFlag() ? 0 : 1;
+                        break;
+                    case SETC:
+                        reg0 = cpu.getCarryFlag() ? 1 : 0;
+                        break;
+                    case SETNC:
+                        reg0 = cpu.getCarryFlag() ? 0 : 1;
+                        break;
+                    case SETZ:
+                        reg0 = cpu.getZeroFlag() ? 1 : 0;
+                        break;
+                    case SETNZ:
+                        reg0 = cpu.getZeroFlag() ? 0 : 1;
+                        break;
+                    case SETNA:
+                        reg0 = cpu.getCarryFlag() || cpu.getZeroFlag() ? 1 : 0;
+                        break;
+                    case SETA:
+                        reg0 = cpu.getCarryFlag() || cpu.getZeroFlag() ? 0 : 1;
+                        break;
+                    case SETS:
+                        reg0 = cpu.getSignFlag() ? 1 : 0;
+                        break;
+                    case SETNS:
+                        reg0 = cpu.getSignFlag() ? 0 : 1;
+                        break;
+                    case SETP:
+                        reg0 = cpu.getParityFlag() ? 1 : 0;
+                        break;
+                    case SETNP:
+                        reg0 = cpu.getParityFlag() ? 0 : 1;
+                        break;
+                    case SETL:
+                        reg0 = cpu.getSignFlag() != cpu.getOverflowFlag() ? 1 : 0;
+                        break;
+                    case SETNL:
+                        reg0 = cpu.getSignFlag() != cpu.getOverflowFlag() ? 0 : 1;
+                        break;
+                    case SETNG:
+                        reg0 = cpu.getZeroFlag()
+                                || (cpu.getSignFlag() != cpu.getOverflowFlag()) ? 1
+                                : 0;
+                        break;
+                    case SETG:
+                        reg0 = cpu.getZeroFlag()
+                                || (cpu.getSignFlag() != cpu.getOverflowFlag()) ? 0
+                                : 1;
+                        break;
+
+                    case SMSW:
+                        reg0 = cpu.getCR0() & 0xffff;
+                        break;
+                    case LMSW:
+                        if (cpu.getCPL() != 0)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.setCR0((cpu.getCR0() & ~0xe) | (reg0 & 0xe));
+                        break;
+
+                    case CMPXCHG:
+                        if (reg2 == reg0) {
+                            reg0 = reg1;
+                            reg1 = reg2;
+                        } else
+                            reg1 = reg0;
+                        break;
+
+                    case CMPXCHG8B: {
+                        long edxeax = ((cpu.edx & 0xffffffffL) << 32)
+                                | (cpu.eax & 0xffffffffL);
+                        if (edxeax == reg0l) {
+                            cpu.eflagsZero = true;
+                            reg0l = ((cpu.ecx & 0xffffffffL) << 32)
+                                    | (cpu.ebx & 0xffffffffL);
+                        } else {
                             cpu.eflagsZero = false;
-                        else
-                            cpu.eflagsZero = ((type & SegmentFactory.TYPE_CODE) == 0)
-                                    || ((type & SegmentFactory.TYPE_CODE_READABLE) != 0);
-                    } catch (ProcessorException e) {
-                        cpu.eflagsZero = false;
+                            cpu.edx = (int) (reg0l >> 32);
+                            cpu.eax = (int) reg0l;
+                        }
                     }
                     break;
 
-                case VERW:
-                    try {
-                        Segment test = cpu.getSegment(reg0 & 0xffff);
-                        int type = test.getType();
-                        if (((type & SegmentFactory.DESCRIPTOR_TYPE_CODE_DATA) == 0)
-                                || (((type & SegmentFactory.TYPE_CODE_CONFORMING) == 0) && ((cpu
-                                        .getCPL() > test.getDPL()) || (test
-                                        .getRPL() > test.getDPL()))))
+                    case BSWAP:
+                        reg0 = reverseBytes(reg0);
+                        break;
+
+                    case ENTER_O32_A32:
+                    case ENTER_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            enter_o32_a32(reg0, reg1);
+                        else
+                            throw new IllegalStateException("need enter_o32_a16");
+                    }
+                    break;
+
+                    case ENTER_O16_A32:
+                    case ENTER_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            enter_o16_a32(reg0, reg1);
+                        else
+                            enter_o16_a16(reg0, reg1);
+                    }
+                    break;
+
+                    case LEAVE_O32_A32:
+                    case LEAVE_O32_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            leave_o32_a32();
+                        else
+                            leave_o32_a16();
+                    }
+                    break;
+
+                    case LEAVE_O16_A32:
+                    case LEAVE_O16_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            leave_o16_a32();
+                        else
+                            leave_o16_a16();
+                    }
+                    break;
+
+                    case PUSH_O32_A16:
+                    case PUSH_O32_A32: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            push_o32_a32(reg0);
+                        else
+                            push_o32_a16(reg0);
+                    }
+                    break;
+
+                    case PUSH_O16_A16:
+                    case PUSH_O16_A32: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            push_o16_a32((short) reg0);
+                        else
+                            push_o16_a16((short) reg0);
+                    }
+                    break;
+
+                    case PUSHF_O32_A16:
+                    case PUSHF_O32_A32: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            push_o32_a32(~0x30000 & reg0);
+                        else
+                            push_o32_a16(~0x30000 & reg0);
+                    }
+                    break;
+
+                    case PUSHF_O16_A16:
+                    case PUSHF_O16_A32: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            push_o16_a32((short) reg0);
+                        else
+                            push_o16_a16((short) reg0);
+                    }
+                    break;
+
+                    case POP_O32_A16:
+                    case POP_O32_A32: {
+                        if (cpu.ss.getDefaultSizeFlag()) {
+                            reg1 = cpu.esp + 4;
+                            if (microcodes[position] == STORE0_SS)
+                                cpu.eflagsInterruptEnable = false;
+                            reg0 = cpu.ss.getDoubleWord(cpu.esp);
+                        } else {
+                            reg1 = (cpu.esp & ~0xffff) | ((cpu.esp + 4) & 0xffff);
+                            if (microcodes[position] == STORE0_SS)
+                                cpu.eflagsInterruptEnable = false;
+                            reg0 = cpu.ss.getDoubleWord(0xffff & cpu.esp);
+                        }
+                    }
+                    break;
+
+                    case POP_O16_A16:
+                    case POP_O16_A32: {
+                        if (cpu.ss.getDefaultSizeFlag()) {
+                            reg1 = cpu.esp + 2;
+                            if (microcodes[position] == STORE0_SS)
+                                cpu.eflagsInterruptEnable = false;
+                            reg0 = 0xffff & cpu.ss.getWord(cpu.esp);
+                        } else {
+                            reg1 = (cpu.esp & ~0xffff) | ((cpu.esp + 2) & 0xffff);
+                            if (microcodes[position] == STORE0_SS)
+                                cpu.eflagsInterruptEnable = false;
+                            reg0 = 0xffff & cpu.ss.getWord(0xffff & cpu.esp);
+                        }
+                    }
+                    break;
+
+                    case POPF_O32_A16:
+                    case POPF_O32_A32: {
+                        if (cpu.ss.getDefaultSizeFlag()) {
+                            reg0 = cpu.ss.getDoubleWord(cpu.esp);
+                            cpu.esp += 4;
+                        } else {
+                            reg0 = cpu.ss.getDoubleWord(0xffff & cpu.esp);
+                            cpu.esp = (cpu.esp & ~0xffff)
+                                    | ((cpu.esp + 4) & 0xffff);
+                        }
+                        if (cpu.getCPL() == 0)
+                            reg0 = ((cpu.getEFlags() & 0x20000) | (reg0 & ~(0x20000 | 0x180000)));
+                        else {
+                            if (cpu.getCPL() > cpu.eflagsIOPrivilegeLevel)
+                                reg0 = ((cpu.getEFlags() & 0x23200) | (reg0 & ~(0x23200 | 0x180000)));
+                            else
+                                reg0 = ((cpu.getEFlags() & 0x23000) | (reg0 & ~(0x23000 | 0x180000)));
+                        }
+                    }
+                    break;
+
+                    case POPF_O16_A16:
+                    case POPF_O16_A32: {
+                        if (cpu.ss.getDefaultSizeFlag()) {
+                            reg0 = 0xffff & cpu.ss.getWord(cpu.esp);
+                            cpu.esp += 2;
+                        } else {
+                            reg0 = 0xffff & cpu.ss.getWord(0xffff & cpu.esp);
+                            cpu.esp = (cpu.esp & ~0xffff)
+                                    | ((cpu.esp + 2) & 0xffff);
+                        }
+                        if (cpu.getCPL() != 0)
+                            if (cpu.getCPL() > cpu.eflagsIOPrivilegeLevel)
+                                reg0 = ((cpu.getEFlags() & 0x3200) | (reg0 & ~0x3200));
+                            else
+                                reg0 = ((cpu.getEFlags() & 0x3000) | (reg0 & ~0x3000));
+                    }
+                    break;
+
+                    case PUSHAD_A32:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            pushad_a32();
+                        else
+                            pushad_a16();
+                        break;
+
+                    case PUSHAD_A16:
+                        if (cpu.ss.getDefaultSizeFlag())
+                            pusha_a32();
+                        else
+                            pusha_a16();
+                        break;
+
+                    case POPA_A32:
+                    case POPA_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            throw new IllegalStateException("need popa_a32");
+                        else
+                            popa_a16();
+                    }
+                    break;
+
+                    case POPAD_A32:
+                    case POPAD_A16: {
+                        if (cpu.ss.getDefaultSizeFlag())
+                            popad_a32();
+                        else
+                            popad_a16();
+                    }
+                    break;
+
+                    case CMPSB_A32:
+                        cmpsb_a32(seg0);
+                        break;
+                    case CMPSW_A32:
+                        cmpsw_a32(seg0);
+                        break;
+                    case CMPSD_A32:
+                        cmpsd_a32(seg0);
+                        break;
+                    case REPE_CMPSB_A16:
+                        repe_cmpsb_a16(seg0);
+                        break;
+                    case REPE_CMPSB_A32:
+                        repe_cmpsb_a32(seg0);
+                        break;
+                    case REPE_CMPSW_A32:
+                        repe_cmpsw_a32(seg0);
+                        break;
+                    case REPE_CMPSD_A32:
+                        repe_cmpsd_a32(seg0);
+                        break;
+                    case REPNE_CMPSB_A32:
+                        repne_cmpsb_a32(seg0);
+                        break;
+                    case REPNE_CMPSW_A32:
+                        repne_cmpsw_a32(seg0);
+                        break;
+                    case REPNE_CMPSD_A32:
+                        repne_cmpsd_a32(seg0);
+                        break;
+
+                    case INSB_A32:
+                        insb_a32(reg0);
+                        break;
+                    case INSW_A32:
+                        insw_a32(reg0);
+                        break;
+                    case INSD_A32:
+                        insd_a32(reg0);
+                        break;
+                    case REP_INSB_A32:
+                        rep_insb_a32(reg0);
+                        break;
+                    case REP_INSW_A32:
+                        rep_insw_a32(reg0);
+                        break;
+                    case REP_INSD_A32:
+                        rep_insd_a32(reg0);
+                        break;
+
+                    case LODSB_A16:
+                        lodsb_a16(seg0);
+                        break;
+                    case LODSB_A32:
+                        lodsb_a32(seg0);
+                        break;
+                    case LODSW_A16:
+                        lodsw_a16(seg0);
+                        break;
+                    case LODSW_A32:
+                        lodsw_a32(seg0);
+                        break;
+                    case LODSD_A32:
+                        lodsd_a32(seg0);
+                        break;
+                    case REP_LODSB_A32:
+                        rep_lodsb_a32(seg0);
+                        break;
+                    case REP_LODSW_A32:
+                        rep_lodsw_a32(seg0);
+                        break;
+                    case REP_LODSD_A32:
+                        rep_lodsd_a32(seg0);
+                        break;
+
+                    case MOVSB_A16:
+                        movsb_a16(seg0);
+                        break;
+                    case MOVSW_A16:
+                        movsw_a16(seg0);
+                        break;
+                    case MOVSD_A16:
+                        movsd_a16(seg0);
+                        break;
+                    case REP_MOVSB_A16:
+                        rep_movsb_a16(seg0);
+                        break;
+                    case REP_MOVSW_A16:
+                        rep_movsw_a16(seg0);
+                        break;
+                    case REP_MOVSD_A16:
+                        rep_movsd_a16(seg0);
+                        break;
+                    case MOVSB_A32:
+                        movsb_a32(seg0);
+                        break;
+                    case MOVSW_A32:
+                        movsw_a32(seg0);
+                        break;
+                    case MOVSD_A32:
+                        movsd_a32(seg0);
+                        break;
+                    case REP_MOVSB_A32:
+                        rep_movsb_a32(seg0);
+                        break;
+                    case REP_MOVSW_A32:
+                        rep_movsw_a32(seg0);
+                        break;
+                    case REP_MOVSD_A32:
+                        rep_movsd_a32(seg0);
+                        break;
+
+                    case OUTSB_A16:
+                        outsb_a16(reg0, seg0);
+                        break;
+                    case OUTSW_A16:
+                        outsw_a16(reg0, seg0);
+                        break;
+                    case OUTSD_A16:
+                        outsd_a16(reg0, seg0);
+                        break;
+                    case REP_OUTSB_A16:
+                        rep_outsb_a16(reg0, seg0);
+                        break;
+                    case REP_OUTSW_A16:
+                        rep_outsw_a16(reg0, seg0);
+                        break;
+                    case REP_OUTSD_A16:
+                        rep_outsd_a16(reg0, seg0);
+                        break;
+                    case OUTSB_A32:
+                        outsb_a32(reg0, seg0);
+                        break;
+                    case OUTSW_A32:
+                        outsw_a32(reg0, seg0);
+                        break;
+                    case OUTSD_A32:
+                        outsd_a32(reg0, seg0);
+                        break;
+                    case REP_OUTSB_A32:
+                        rep_outsb_a32(reg0, seg0);
+                        break;
+                    case REP_OUTSW_A32:
+                        rep_outsw_a32(reg0, seg0);
+                        break;
+                    case REP_OUTSD_A32:
+                        rep_outsd_a32(reg0, seg0);
+                        break;
+
+                    case SCASB_A16:
+                        scasb_a16(reg0);
+                        break;
+                    case SCASB_A32:
+                        scasb_a32(reg0);
+                        break;
+                    case SCASW_A32:
+                        scasw_a32(reg0);
+                        break;
+                    case SCASD_A32:
+                        scasd_a32(reg0);
+                        break;
+                    case REPE_SCASB_A32:
+                        repe_scasb_a32(reg0);
+                        break;
+                    case REPE_SCASW_A32:
+                        repe_scasw_a32(reg0);
+                        break;
+                    case REPE_SCASD_A32:
+                        repe_scasd_a32(reg0);
+                        break;
+                    case REPNE_SCASB_A16:
+                        repne_scasb_a16(reg0);
+                        break;
+                    case REPNE_SCASB_A32:
+                        repne_scasb_a32(reg0);
+                        break;
+                    case REPNE_SCASW_A32:
+                        repne_scasw_a32(reg0);
+                        break;
+                    case REPNE_SCASD_A32:
+                        repne_scasd_a32(reg0);
+                        break;
+
+                    case STOSB_A16:
+                        stosb_a16(reg0);
+                        break;
+                    case STOSB_A32:
+                        stosb_a32(reg0);
+                        break;
+                    case STOSW_A16:
+                        stosw_a16(reg0);
+                        break;
+                    case STOSW_A32:
+                        stosw_a32(reg0);
+                        break;
+                    case STOSD_A32:
+                        stosd_a32(reg0);
+                        break;
+                    case REP_STOSB_A16:
+                        rep_stosb_a16(reg0);
+                        break;
+                    case REP_STOSB_A32:
+                        rep_stosb_a32(reg0);
+                        break;
+                    case REP_STOSW_A16:
+                        rep_stosw_a16(reg0);
+                        break;
+                    case REP_STOSW_A32:
+                        rep_stosw_a32(reg0);
+                        break;
+                    case REP_STOSD_A32:
+                        rep_stosd_a32(reg0);
+                        break;
+
+                    case LGDT_O16:
+                        cpu.gdtr = cpu.createDescriptorTableSegment(
+                                reg1 & 0x00ffffff, reg0);
+                        break;
+                    case LGDT_O32:
+                        cpu.gdtr = cpu.createDescriptorTableSegment(reg1, reg0);
+                        break;
+                    case SGDT_O16:
+                        reg1 = cpu.gdtr.getBase() & 0x00ffffff;
+                        reg0 = cpu.gdtr.getLimit();
+                        break;
+                    case SGDT_O32:
+                        reg1 = cpu.gdtr.getBase();
+                        reg0 = cpu.gdtr.getLimit();
+                        break;
+
+                    case LIDT_O16:
+                        cpu.idtr = cpu.createDescriptorTableSegment(
+                                reg1 & 0x00ffffff, reg0);
+                        break;
+                    case LIDT_O32:
+                        cpu.idtr = cpu.createDescriptorTableSegment(reg1, reg0);
+                        break;
+                    case SIDT_O16:
+                        reg1 = cpu.idtr.getBase() & 0x00ffffff;
+                        reg0 = cpu.idtr.getLimit();
+                        break;
+                    case SIDT_O32:
+                        reg1 = cpu.idtr.getBase();
+                        reg0 = cpu.idtr.getLimit();
+                        break;
+
+                    case LLDT:
+                        cpu.ldtr = lldt(reg0);
+                        break;
+                    case SLDT:
+                        reg0 = 0xffff & cpu.ldtr.getSelector();
+                        break;
+
+                    case LTR:
+                        cpu.tss = ltr(reg0);
+                        break;
+                    case STR:
+                        reg0 = 0xffff & cpu.tss.getSelector();
+                        break;
+
+                    case VERR:
+                        try {
+                            Segment test = cpu.getSegment(reg0 & 0xffff);
+                            int type = test.getType();
+                            if (((type & SegmentFactory.DESCRIPTOR_TYPE_CODE_DATA) == 0)
+                                    || (((type & SegmentFactory.TYPE_CODE_CONFORMING) == 0) && ((cpu
+                                    .getCPL() > test.getDPL()) || (test
+                                    .getRPL() > test.getDPL()))))
+                                cpu.eflagsZero = false;
+                            else
+                                cpu.eflagsZero = ((type & SegmentFactory.TYPE_CODE) == 0)
+                                        || ((type & SegmentFactory.TYPE_CODE_READABLE) != 0);
+                        } catch (ProcessorException e) {
                             cpu.eflagsZero = false;
-                        else
-                            cpu.eflagsZero = ((type & SegmentFactory.TYPE_CODE) == 0)
-                                    && ((type & SegmentFactory.TYPE_DATA_WRITABLE) != 0);
-                    } catch (ProcessorException e) {
-                        cpu.eflagsZero = false;
+                        }
+                        break;
+
+                    case VERW:
+                        try {
+                            Segment test = cpu.getSegment(reg0 & 0xffff);
+                            int type = test.getType();
+                            if (((type & SegmentFactory.DESCRIPTOR_TYPE_CODE_DATA) == 0)
+                                    || (((type & SegmentFactory.TYPE_CODE_CONFORMING) == 0) && ((cpu
+                                    .getCPL() > test.getDPL()) || (test
+                                    .getRPL() > test.getDPL()))))
+                                cpu.eflagsZero = false;
+                            else
+                                cpu.eflagsZero = ((type & SegmentFactory.TYPE_CODE) == 0)
+                                        && ((type & SegmentFactory.TYPE_DATA_WRITABLE) != 0);
+                        } catch (ProcessorException e) {
+                            cpu.eflagsZero = false;
+                        }
+                        break;
+
+                    case CLTS:
+                        if (cpu.getCPL() != 0)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.setCR3(cpu.getCR3() & ~0x4);
+                        break;
+
+                    case INVLPG:
+                        if (cpu.getCPL() != 0)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.linearMemory.invalidateTLBEntry(seg0
+                                .translateAddressRead(addr0));
+                        break;
+
+                    case CPUID:
+                        cpuid();
+                        break;
+
+                    case LAR_O16:
+                        reg0 = Lar(reg0, false);
+                        break;
+                    case LAR_O32:
+                        reg0 = Lar(reg0, true);
+                        break;
+
+                    case LSL_O16:
+                        reg0 = Lsl(reg0, false);
+                        break;
+                    case LSL_O32:
+                        reg0 = Lsl(reg0, true);
+                        break;
+
+                    case WRMSR:
+                        if (cpu.getCPL() != 0)
+                            throw (ProcessorException) exceptionGP;
+                        cpu.setMSR(reg0, (reg2 & 0xffffffffl)
+                                | ((reg1 & 0xffffffffl) << 32));
+                        break;
+                    case RDMSR:
+                        if (cpu.getCPL() != 0)
+                            throw (ProcessorException) exceptionGP;
+                        long msr = cpu.getMSR(reg0);
+                        reg0 = (int) msr;
+                        reg1 = (int) (msr >>> 32);
+                        break;
+
+                    case RDTSC:
+                        long tsc = rdtsc();
+                        reg0 = (int) tsc;
+                        reg1 = (int) (tsc >>> 32);
+                        break;
+
+                    case CMPXCHG_O8_FLAGS:
+                        sub_o8_flags(reg2 - reg1, reg2, reg1);
+                        break;
+                    case CMPXCHG_O16_FLAGS:
+                        sub_o16_flags(reg2 - reg1, reg2, reg1);
+                        break;
+                    case CMPXCHG_O32_FLAGS:
+                        sub_o32_flags((0xffffffffl & reg2) - (0xffffffffl & reg1),
+                                reg2, reg1);
+                        break;
+
+                    case BITWISE_FLAGS_O8:
+                        bitwise_flags((byte) reg0);
+                        break;
+                    case BITWISE_FLAGS_O16:
+                        bitwise_flags((short) reg0);
+                        break;
+                    case BITWISE_FLAGS_O32:
+                        bitwise_flags(reg0);
+                        break;
+
+                    case SUB_O8_FLAGS:
+                        sub_o8_flags(reg0, reg2, reg1);
+                        break;
+                    case SUB_O16_FLAGS:
+                        sub_o16_flags(reg0, reg2, reg1);
+                        break;
+                    case SUB_O32_FLAGS:
+                        sub_o32_flags(reg0l, reg2, reg1);
+                        break;
+
+                    case ADD_O8_FLAGS:
+                        add_o8_flags(reg0, reg2, reg1);
+                        break;
+                    case ADD_O16_FLAGS:
+                        add_o16_flags(reg0, reg2, reg1);
+                        break;
+                    case ADD_O32_FLAGS:
+                        add_o32_flags(reg0l, reg2, reg1);
+                        break;
+
+                    case ADC_O8_FLAGS:
+                        adc_o8_flags(reg0, reg2, reg1);
+                        break;
+                    case ADC_O16_FLAGS:
+                        adc_o16_flags(reg0, reg2, reg1);
+                        break;
+                    case ADC_O32_FLAGS:
+                        adc_o32_flags(reg0l, reg2, reg1);
+                        break;
+
+                    case SBB_O8_FLAGS:
+                        sbb_o8_flags(reg0, reg2, reg1);
+                        break;
+                    case SBB_O16_FLAGS:
+                        sbb_o16_flags(reg0, reg2, reg1);
+                        break;
+                    case SBB_O32_FLAGS:
+                        sbb_o32_flags(reg0l, reg2, reg1);
+                        break;
+
+                    case INC_O8_FLAGS:
+                        inc_flags((byte) reg0);
+                        break;
+                    case INC_O16_FLAGS:
+                        inc_flags((short) reg0);
+                        break;
+                    case INC_O32_FLAGS:
+                        inc_flags(reg0);
+                        break;
+
+                    case DEC_O8_FLAGS:
+                        dec_flags((byte) reg0);
+                        break;
+                    case DEC_O16_FLAGS:
+                        dec_flags((short) reg0);
+                        break;
+                    case DEC_O32_FLAGS:
+                        dec_flags(reg0);
+                        break;
+
+                    case SHL_O8_FLAGS:
+                        shl_flags((byte) reg0, (byte) reg2, reg1);
+                        break;
+                    case SHL_O16_FLAGS:
+                        shl_flags((short) reg0, (short) reg2, reg1);
+                        break;
+                    case SHL_O32_FLAGS:
+                        shl_flags(reg0, reg2, reg1);
+                        break;
+
+                    case SHR_O8_FLAGS:
+                        shr_flags((byte) reg0, reg2, reg1);
+                        break;
+                    case SHR_O16_FLAGS:
+                        shr_flags((short) reg0, reg2, reg1);
+                        break;
+                    case SHR_O32_FLAGS:
+                        shr_flags(reg0, reg2, reg1);
+                        break;
+
+                    case SAR_O8_FLAGS:
+                        sar_flags((byte) reg0, (byte) reg2, reg1);
+                        break;
+                    case SAR_O16_FLAGS:
+                        sar_flags((short) reg0, (short) reg2, reg1);
+                        break;
+                    case SAR_O32_FLAGS:
+                        sar_flags(reg0, reg2, reg1);
+                        break;
+
+                    case RCL_O8_FLAGS:
+                        rcl_o8_flags(reg0, reg1);
+                        break;
+                    case RCL_O16_FLAGS:
+                        rcl_o16_flags(reg0, reg1);
+                        break;
+                    case RCL_O32_FLAGS:
+                        rcl_o32_flags(reg0l, reg1);
+                        break;
+
+                    case RCR_O8_FLAGS:
+                        rcr_o8_flags(reg0, reg1);
+                        break;
+                    case RCR_O16_FLAGS:
+                        rcr_o16_flags(reg0, reg1);
+                        break;
+                    case RCR_O32_FLAGS:
+                        rcr_o32_flags(reg0l, reg1);
+                        break;
+
+                    case ROL_O8_FLAGS:
+                        rol_flags((byte) reg0, reg1);
+                        break;
+                    case ROL_O16_FLAGS:
+                        rol_flags((short) reg0, reg1);
+                        break;
+                    case ROL_O32_FLAGS:
+                        rol_flags(reg0, reg1);
+                        break;
+
+                    case ROR_O8_FLAGS:
+                        ror_flags((byte) reg0, reg1);
+                        break;
+                    case ROR_O16_FLAGS:
+                        ror_flags((short) reg0, reg1);
+                        break;
+                    case ROR_O32_FLAGS:
+                        ror_flags(reg0, reg1);
+                        break;
+
+                    case NEG_O8_FLAGS:
+                        neg_flags((byte) reg0);
+                        break;
+                    case NEG_O16_FLAGS:
+                        neg_flags((short) reg0);
+                        break;
+                    case NEG_O32_FLAGS:
+                        neg_flags(reg0);
+                        break;
+
+                    case FLOAD0_ST0:
+                        freg0 = fpu.ST(0);
+                        validateOperand(freg0);
+                        break;
+                    case FLOAD0_STN:
+                        freg0 = fpu.ST(microcodes[position++]);
+                        validateOperand(freg0);
+                        break;
+                    case FLOAD0_MEM_SINGLE: {
+                        // 0x7f800001 thru 0x7fbfffff // SNaN Singalling
+                        // 0x7fc00000 thru 0x7fffffff // QNaN Quiet
+                        // 0xff800001 thru 0xffbfffff // SNaN Signalling
+                        // 0xffc00000 thru 0xffffffff // QNaN Quiet
+                        int n = seg0.getDoubleWord(addr0);
+                        freg0 = Float.intBitsToFloat(n);
+                        if ((Double.isNaN(freg0)) && ((n & (1 << 22)) == 0))
+                            fpu.setInvalidOperation();
+                        validateOperand(freg0);
+                    }
+                    break;
+                    case FLOAD0_MEM_DOUBLE: {
+                        long n = seg0.getQuadWord(addr0);
+                        freg0 = Double.longBitsToDouble(n);
+                        if ((Double.isNaN(freg0)) && ((n & (0x01l << 51)) == 0))
+                            fpu.setInvalidOperation();
+                        validateOperand(freg0);
+                    }
+                    break;
+                    case FLOAD0_REG0:
+                        freg0 = (double) reg0;
+                        validateOperand(freg0);
+                        break;
+                    case FLOAD0_REG0L:
+                        freg0 = (double) reg0l;
+                        validateOperand(freg0);
+                        break;
+                    case FLOAD0_1:
+                        freg0 = 1.0;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_L2TEN:
+                        freg0 = L2TEN;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_L2E:
+                        freg0 = L2E;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_PI:
+                        freg0 = Math.PI;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_LOG2:
+                        freg0 = LOG2;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_LN2:
+                        freg0 = LN2;
+                        // validateOperand(freg0);
+                        break;
+                    case FLOAD0_POS0:
+                        freg0 = POS0;
+                        // validateOperand(freg0);
+                        break;
+
+                    case FLOAD1_ST0:
+                        freg1 = fpu.ST(0);
+                        validateOperand(freg1);
+                        break;
+                    case FLOAD1_STN:
+                        freg1 = fpu.ST(microcodes[position++]);
+                        validateOperand(freg1);
+                        break;
+                    case FLOAD1_MEM_SINGLE: {
+                        int n = seg0.getDoubleWord(addr0);
+                        freg1 = Float.intBitsToFloat(n);
+                        if ((Double.isNaN(freg1)) && ((n & (1 << 22)) == 0))
+                            fpu.setInvalidOperation();
+                        validateOperand(freg1);
+                    }
+                    break;
+                    case FLOAD1_MEM_DOUBLE: {
+                        long n = seg0.getQuadWord(addr0);
+                        freg1 = Double.longBitsToDouble(n);
+                        if ((Double.isNaN(freg1)) && ((n & (0x01l << 51)) == 0))
+                            fpu.setInvalidOperation();
+                        validateOperand(freg1);
+                    }
+                    break;
+                    case FLOAD1_REG0:
+                        freg1 = (double) reg0;
+                        validateOperand(freg1);
+                        break;
+                    case FLOAD1_REG0L:
+                        freg1 = (double) reg0l;
+                        validateOperand(freg1);
+                        break;
+
+                    case FSTORE0_ST0:
+                        fpu.setST(0, freg0);
+                        break;
+                    case FSTORE0_STN:
+                        fpu.setST(microcodes[position++], freg0);
+                        break;
+                    case FSTORE0_MEM_SINGLE: {
+                        int n = Float.floatToRawIntBits((float) freg0);
+                        seg0.setDoubleWord(addr0, n);
+                    }
+                    break;
+                    case FSTORE0_MEM_DOUBLE: {
+                        long n = Double.doubleToRawLongBits(freg0);
+                        seg0.setQuadWord(addr0, n);
+                    }
+                    break;
+                    case FSTORE0_REG0:
+                        reg0 = (int) freg0;
+                        break;
+
+                    case FSTORE1_ST0:
+                        fpu.setST(0, freg1);
+                        break;
+                    case FSTORE1_STN:
+                        fpu.setST(microcodes[position++], freg1);
+                        break;
+                    case FSTORE1_MEM_SINGLE: {
+                        int n = Float.floatToRawIntBits((float) freg1);
+                        seg0.setDoubleWord(addr0, n);
+                    }
+                    break;
+                    case FSTORE1_MEM_DOUBLE: {
+                        long n = Double.doubleToRawLongBits(freg1);
+                        seg0.setQuadWord(addr0, n);
+                    }
+                    break;
+                    case FSTORE1_REG0:
+                        reg0 = (int) freg1;
+                        break;
+
+                    case STORE0_FPUCW:
+                        fpu.setControl(reg0);
+                        break;
+                    case LOAD0_FPUCW:
+                        reg0 = fpu.getControl();
+                        break;
+
+                    case STORE0_FPUSW:
+                        fpu.setStatus(reg0);
+                        break;
+                    case LOAD0_FPUSW:
+                        reg0 = fpu.getStatus();
+                        break;
+
+                    case FCOM: {
+                        int newcode = 0xd;
+                        if (Double.isNaN(freg0) || Double.isNaN(freg1))
+                            fpu.setInvalidOperation();
+                        else {
+                            if (freg0 > freg1)
+                                newcode = 0;
+                            else if (freg0 < freg1)
+                                newcode = 1;
+                            else
+                                newcode = 8;
+                        }
+                        fpu.conditionCode &= 2;
+                        fpu.conditionCode |= newcode;
+                    }
+                    break;
+                    case FUCOM: {
+                        int newcode = 0xd;
+                        if (!(Double.isNaN(freg0) || Double.isNaN(freg1))) {
+                            if (freg0 > freg1)
+                                newcode = 0;
+                            else if (freg0 < freg1)
+                                newcode = 1;
+                            else
+                                newcode = 8;
+                        }
+                        fpu.conditionCode &= 2;
+                        fpu.conditionCode |= newcode;
                     }
                     break;
 
-                case CLTS:
-                    if (cpu.getCPL() != 0)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.setCR3(cpu.getCR3() & ~0x4);
-                    break;
+                    case FPOP:
+                        fpu.pop();
+                        break;
+                    case FPUSH:
+                        fpu.push(freg0);
+                        break;
 
-                case INVLPG:
-                    if (cpu.getCPL() != 0)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.linearMemory.invalidateTLBEntry(seg0
-                            .translateAddressRead(addr0));
-                    break;
+                    case FCHS:
+                        freg0 = -freg0;
+                        break;
+                    case FABS:
+                        freg0 = Math.abs(freg0);
+                        break;
 
-                case CPUID:
-                    cpuid();
-                    break;
-
-                case LAR_O16:
-                    reg0 = Lar(reg0, false);
-                    break;
-                case LAR_O32:
-                    reg0 = Lar(reg0, true);
-                    break;
-
-                case LSL_O16:
-                    reg0 = Lsl(reg0, false);
-                    break;
-                case LSL_O32:
-                    reg0 = Lsl(reg0, true);
-                    break;
-
-                case WRMSR:
-                    if (cpu.getCPL() != 0)
-                        throw (ProcessorException) exceptionGP;
-                    cpu.setMSR(reg0, (reg2 & 0xffffffffl)
-                            | ((reg1 & 0xffffffffl) << 32));
-                    break;
-                case RDMSR:
-                    if (cpu.getCPL() != 0)
-                        throw (ProcessorException) exceptionGP;
-                    long msr = cpu.getMSR(reg0);
-                    reg0 = (int) msr;
-                    reg1 = (int) (msr >>> 32);
-                    break;
-
-                case RDTSC:
-                    long tsc = rdtsc();
-                    reg0 = (int) tsc;
-                    reg1 = (int) (tsc >>> 32);
-                    break;
-
-                case CMPXCHG_O8_FLAGS:
-                    sub_o8_flags(reg2 - reg1, reg2, reg1);
-                    break;
-                case CMPXCHG_O16_FLAGS:
-                    sub_o16_flags(reg2 - reg1, reg2, reg1);
-                    break;
-                case CMPXCHG_O32_FLAGS:
-                    sub_o32_flags((0xffffffffl & reg2) - (0xffffffffl & reg1),
-                            reg2, reg1);
-                    break;
-
-                case BITWISE_FLAGS_O8:
-                    bitwise_flags((byte) reg0);
-                    break;
-                case BITWISE_FLAGS_O16:
-                    bitwise_flags((short) reg0);
-                    break;
-                case BITWISE_FLAGS_O32:
-                    bitwise_flags(reg0);
-                    break;
-
-                case SUB_O8_FLAGS:
-                    sub_o8_flags(reg0, reg2, reg1);
-                    break;
-                case SUB_O16_FLAGS:
-                    sub_o16_flags(reg0, reg2, reg1);
-                    break;
-                case SUB_O32_FLAGS:
-                    sub_o32_flags(reg0l, reg2, reg1);
-                    break;
-
-                case ADD_O8_FLAGS:
-                    add_o8_flags(reg0, reg2, reg1);
-                    break;
-                case ADD_O16_FLAGS:
-                    add_o16_flags(reg0, reg2, reg1);
-                    break;
-                case ADD_O32_FLAGS:
-                    add_o32_flags(reg0l, reg2, reg1);
-                    break;
-
-                case ADC_O8_FLAGS:
-                    adc_o8_flags(reg0, reg2, reg1);
-                    break;
-                case ADC_O16_FLAGS:
-                    adc_o16_flags(reg0, reg2, reg1);
-                    break;
-                case ADC_O32_FLAGS:
-                    adc_o32_flags(reg0l, reg2, reg1);
-                    break;
-
-                case SBB_O8_FLAGS:
-                    sbb_o8_flags(reg0, reg2, reg1);
-                    break;
-                case SBB_O16_FLAGS:
-                    sbb_o16_flags(reg0, reg2, reg1);
-                    break;
-                case SBB_O32_FLAGS:
-                    sbb_o32_flags(reg0l, reg2, reg1);
-                    break;
-
-                case INC_O8_FLAGS:
-                    inc_flags((byte) reg0);
-                    break;
-                case INC_O16_FLAGS:
-                    inc_flags((short) reg0);
-                    break;
-                case INC_O32_FLAGS:
-                    inc_flags(reg0);
-                    break;
-
-                case DEC_O8_FLAGS:
-                    dec_flags((byte) reg0);
-                    break;
-                case DEC_O16_FLAGS:
-                    dec_flags((short) reg0);
-                    break;
-                case DEC_O32_FLAGS:
-                    dec_flags(reg0);
-                    break;
-
-                case SHL_O8_FLAGS:
-                    shl_flags((byte) reg0, (byte) reg2, reg1);
-                    break;
-                case SHL_O16_FLAGS:
-                    shl_flags((short) reg0, (short) reg2, reg1);
-                    break;
-                case SHL_O32_FLAGS:
-                    shl_flags(reg0, reg2, reg1);
-                    break;
-
-                case SHR_O8_FLAGS:
-                    shr_flags((byte) reg0, reg2, reg1);
-                    break;
-                case SHR_O16_FLAGS:
-                    shr_flags((short) reg0, reg2, reg1);
-                    break;
-                case SHR_O32_FLAGS:
-                    shr_flags(reg0, reg2, reg1);
-                    break;
-
-                case SAR_O8_FLAGS:
-                    sar_flags((byte) reg0, (byte) reg2, reg1);
-                    break;
-                case SAR_O16_FLAGS:
-                    sar_flags((short) reg0, (short) reg2, reg1);
-                    break;
-                case SAR_O32_FLAGS:
-                    sar_flags(reg0, reg2, reg1);
-                    break;
-
-                case RCL_O8_FLAGS:
-                    rcl_o8_flags(reg0, reg1);
-                    break;
-                case RCL_O16_FLAGS:
-                    rcl_o16_flags(reg0, reg1);
-                    break;
-                case RCL_O32_FLAGS:
-                    rcl_o32_flags(reg0l, reg1);
-                    break;
-
-                case RCR_O8_FLAGS:
-                    rcr_o8_flags(reg0, reg1);
-                    break;
-                case RCR_O16_FLAGS:
-                    rcr_o16_flags(reg0, reg1);
-                    break;
-                case RCR_O32_FLAGS:
-                    rcr_o32_flags(reg0l, reg1);
-                    break;
-
-                case ROL_O8_FLAGS:
-                    rol_flags((byte) reg0, reg1);
-                    break;
-                case ROL_O16_FLAGS:
-                    rol_flags((short) reg0, reg1);
-                    break;
-                case ROL_O32_FLAGS:
-                    rol_flags(reg0, reg1);
-                    break;
-
-                case ROR_O8_FLAGS:
-                    ror_flags((byte) reg0, reg1);
-                    break;
-                case ROR_O16_FLAGS:
-                    ror_flags((short) reg0, reg1);
-                    break;
-                case ROR_O32_FLAGS:
-                    ror_flags(reg0, reg1);
-                    break;
-
-                case NEG_O8_FLAGS:
-                    neg_flags((byte) reg0);
-                    break;
-                case NEG_O16_FLAGS:
-                    neg_flags((short) reg0);
-                    break;
-                case NEG_O32_FLAGS:
-                    neg_flags(reg0);
-                    break;
-
-                case FLOAD0_ST0:
-                    freg0 = fpu.ST(0);
-                    validateOperand(freg0);
-                    break;
-                case FLOAD0_STN:
-                    freg0 = fpu.ST(microcodes[position++]);
-                    validateOperand(freg0);
-                    break;
-                case FLOAD0_MEM_SINGLE: {
-                    // 0x7f800001 thru 0x7fbfffff // SNaN Singalling
-                    // 0x7fc00000 thru 0x7fffffff // QNaN Quiet
-                    // 0xff800001 thru 0xffbfffff // SNaN Signalling
-                    // 0xffc00000 thru 0xffffffff // QNaN Quiet
-                    int n = seg0.getDoubleWord(addr0);
-                    freg0 = Float.intBitsToFloat(n);
-                    if ((Double.isNaN(freg0)) && ((n & (1 << 22)) == 0))
-                        fpu.setInvalidOperation();
-                    validateOperand(freg0);
-                }
-                    break;
-                case FLOAD0_MEM_DOUBLE: {
-                    long n = seg0.getQuadWord(addr0);
-                    freg0 = Double.longBitsToDouble(n);
-                    if ((Double.isNaN(freg0)) && ((n & (0x01l << 51)) == 0))
-                        fpu.setInvalidOperation();
-                    validateOperand(freg0);
-                }
-                    break;
-                case FLOAD0_REG0:
-                    freg0 = (double) reg0;
-                    validateOperand(freg0);
-                    break;
-                case FLOAD0_REG0L:
-                    freg0 = (double) reg0l;
-                    validateOperand(freg0);
-                    break;
-                case FLOAD0_1:
-                    freg0 = 1.0;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_L2TEN:
-                    freg0 = L2TEN;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_L2E:
-                    freg0 = L2E;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_PI:
-                    freg0 = Math.PI;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_LOG2:
-                    freg0 = LOG2;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_LN2:
-                    freg0 = LN2;
-                    // validateOperand(freg0);
-                    break;
-                case FLOAD0_POS0:
-                    freg0 = POS0;
-                    // validateOperand(freg0);
-                    break;
-
-                case FLOAD1_ST0:
-                    freg1 = fpu.ST(0);
-                    validateOperand(freg1);
-                    break;
-                case FLOAD1_STN:
-                    freg1 = fpu.ST(microcodes[position++]);
-                    validateOperand(freg1);
-                    break;
-                case FLOAD1_MEM_SINGLE: {
-                    int n = seg0.getDoubleWord(addr0);
-                    freg1 = Float.intBitsToFloat(n);
-                    if ((Double.isNaN(freg1)) && ((n & (1 << 22)) == 0))
-                        fpu.setInvalidOperation();
-                    validateOperand(freg1);
-                }
-                    break;
-                case FLOAD1_MEM_DOUBLE: {
-                    long n = seg0.getQuadWord(addr0);
-                    freg1 = Double.longBitsToDouble(n);
-                    if ((Double.isNaN(freg1)) && ((n & (0x01l << 51)) == 0))
-                        fpu.setInvalidOperation();
-                    validateOperand(freg1);
-                }
-                    break;
-                case FLOAD1_REG0:
-                    freg1 = (double) reg0;
-                    validateOperand(freg1);
-                    break;
-                case FLOAD1_REG0L:
-                    freg1 = (double) reg0l;
-                    validateOperand(freg1);
-                    break;
-
-                case FSTORE0_ST0:
-                    fpu.setST(0, freg0);
-                    break;
-                case FSTORE0_STN:
-                    fpu.setST(microcodes[position++], freg0);
-                    break;
-                case FSTORE0_MEM_SINGLE: {
-                    int n = Float.floatToRawIntBits((float) freg0);
-                    seg0.setDoubleWord(addr0, n);
-                }
-                    break;
-                case FSTORE0_MEM_DOUBLE: {
-                    long n = Double.doubleToRawLongBits(freg0);
-                    seg0.setQuadWord(addr0, n);
-                }
-                    break;
-                case FSTORE0_REG0:
-                    reg0 = (int) freg0;
-                    break;
-
-                case FSTORE1_ST0:
-                    fpu.setST(0, freg1);
-                    break;
-                case FSTORE1_STN:
-                    fpu.setST(microcodes[position++], freg1);
-                    break;
-                case FSTORE1_MEM_SINGLE: {
-                    int n = Float.floatToRawIntBits((float) freg1);
-                    seg0.setDoubleWord(addr0, n);
-                }
-                    break;
-                case FSTORE1_MEM_DOUBLE: {
-                    long n = Double.doubleToRawLongBits(freg1);
-                    seg0.setQuadWord(addr0, n);
-                }
-                    break;
-                case FSTORE1_REG0:
-                    reg0 = (int) freg1;
-                    break;
-
-                case STORE0_FPUCW:
-                    fpu.setControl(reg0);
-                    break;
-                case LOAD0_FPUCW:
-                    reg0 = fpu.getControl();
-                    break;
-
-                case STORE0_FPUSW:
-                    fpu.setStatus(reg0);
-                    break;
-                case LOAD0_FPUSW:
-                    reg0 = fpu.getStatus();
-                    break;
-
-                case FCOM: {
-                    int newcode = 0xd;
-                    if (Double.isNaN(freg0) || Double.isNaN(freg1))
-                        fpu.setInvalidOperation();
-                    else {
-                        if (freg0 > freg1)
-                            newcode = 0;
-                        else if (freg0 < freg1)
-                            newcode = 1;
-                        else
-                            newcode = 8;
+                    case FADD: {
+                        if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY)
+                                || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY))
+                            fpu.setInvalidOperation();
+                        freg0 = freg0 + freg1;
                     }
-                    fpu.conditionCode &= 2;
-                    fpu.conditionCode |= newcode;
-                }
                     break;
-                case FUCOM: {
-                    int newcode = 0xd;
-                    if (!(Double.isNaN(freg0) || Double.isNaN(freg1))) {
-                        if (freg0 > freg1)
-                            newcode = 0;
-                        else if (freg0 < freg1)
-                            newcode = 1;
-                        else
-                            newcode = 8;
+
+                    case FMUL: {
+                        if ((Double.isInfinite(freg0) && (freg1 == 0.0))
+                                || (Double.isInfinite(freg1) && (freg0 == 0.0)))
+                            fpu.setInvalidOperation();
+                        freg0 = freg0 * freg1;
                     }
-                    fpu.conditionCode &= 2;
-                    fpu.conditionCode |= newcode;
-                }
                     break;
-
-                case FPOP:
-                    fpu.pop();
-                    break;
-                case FPUSH:
-                    fpu.push(freg0);
-                    break;
-
-                case FCHS:
-                    freg0 = -freg0;
-                    break;
-                case FABS:
-                    freg0 = Math.abs(freg0);
-                    break;
-
-                case FADD: {
-                    if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY)
-                            || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY))
-                        fpu.setInvalidOperation();
-                    freg0 = freg0 + freg1;
-                }
-                    break;
-
-                case FMUL: {
-                    if ((Double.isInfinite(freg0) && (freg1 == 0.0))
-                            || (Double.isInfinite(freg1) && (freg0 == 0.0)))
-                        fpu.setInvalidOperation();
-                    freg0 = freg0 * freg1;
-                }
-                    break;
-                case FSUB: {
-                    if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY)
-                            || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY))
-                        fpu.setInvalidOperation();
-                    freg0 = freg0 - freg1;
-                }
-                    break;
-                case FDIV: {
-                    if (((freg0 == 0.0) && (freg1 == 0.0))
-                            || (Double.isInfinite(freg0) && Double
-                                    .isInfinite(freg1)))
-                        fpu.setInvalidOperation();
-                    if ((freg1 == 0.0) && !Double.isNaN(freg0)
-                            && !Double.isInfinite(freg0))
-                        fpu.setZeroDivide();
-                    freg0 = freg0 / freg1;
-                }
-                    break;
-
-                case FSQRT: {
-                    if (freg0 < 0)
-                        fpu.setInvalidOperation();
-                    freg0 = Math.sqrt(freg0);
-                }
-                    break;
-
-                case FSIN: {
-                    if (Double.isInfinite(freg0))
-                        fpu.setInvalidOperation();
-                    if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
-                        fpu.conditionCode |= 4; // set C2
-                    else
-                        freg0 = Math.sin(freg0);
-                }
-                    break;
-
-                case FCOS: {
-                    if (Double.isInfinite(freg0))
-                        fpu.setInvalidOperation();
-                    if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
-                        fpu.conditionCode |= 4; // set C2
-                    else
-                        freg0 = Math.cos(freg0);
-                }
-                    break;
-
-                case FBCD2F: {
-                    long n = 0;
-                    long decade = 1;
-                    for (int i = 0; i < 9; i++) {
-                        byte b = seg0.getByte(addr0 + i);
-                        n += (b & 0xf) * decade;
-                        decade *= 10;
-                        n += ((b >> 4) & 0xf) * decade;
-                        decade *= 10;
+                    case FSUB: {
+                        if ((freg0 == Double.NEGATIVE_INFINITY && freg1 == Double.NEGATIVE_INFINITY)
+                                || (freg0 == Double.POSITIVE_INFINITY && freg1 == Double.POSITIVE_INFINITY))
+                            fpu.setInvalidOperation();
+                        freg0 = freg0 - freg1;
                     }
-                    byte sign = seg0.getByte(addr0 + 9);
-                    double m = (double) n;
-                    if (sign < 0)
-                        m *= -1.0;
-                    freg0 = m;
-                }
+                    break;
+                    case FDIV: {
+                        if (((freg0 == 0.0) && (freg1 == 0.0))
+                                || (Double.isInfinite(freg0) && Double
+                                .isInfinite(freg1)))
+                            fpu.setInvalidOperation();
+                        if ((freg1 == 0.0) && !Double.isNaN(freg0)
+                                && !Double.isInfinite(freg0))
+                            fpu.setZeroDivide();
+                        freg0 = freg0 / freg1;
+                    }
                     break;
 
-                case FF2BCD: {
-                    long n = (long) Math.abs(freg0);
-                    long decade = 1;
-                    for (int i = 0; i < 9; i++) {
-                        int val = (int) ((n % (decade * 10)) / decade);
-                        byte b = (byte) val;
-                        decade *= 10;
-                        val = (int) ((n % (decade * 10)) / decade);
-                        b |= (val << 4);
-                        seg0.setByte(addr0 + i, b);
+                    case FSQRT: {
+                        if (freg0 < 0)
+                            fpu.setInvalidOperation();
+                        freg0 = Math.sqrt(freg0);
                     }
-                    seg0.setByte(addr0 + 9, (freg0 < 0) ? (byte) 0x80
-                            : (byte) 0x00);
-                }
                     break;
 
-                case FPATAN:
-                    freg0 = Math.atan2(freg1, freg0);
-                    break;
-                case FPREM: {
-                    int d = dioscuri.module.cpu.Util.getExponent(freg0)
-                            - dioscuri.module.cpu.Util.getExponent(freg1);
-                    if (d < 64) {
-                        // full remainder
-                        fpu.conditionCode &= ~4; // clear C2
-                        freg0 = freg0 % freg1;
-                        // compute least significant bits -> C0 C3 C1
-                        long i = (long) Math.rint(freg0 / freg1);
-                        fpu.conditionCode &= 4;
-                        if ((i & 1) != 0)
-                            fpu.conditionCode |= 2;
-                        if ((i & 2) != 0)
-                            fpu.conditionCode |= 8;
-                        if ((i & 4) != 0)
-                            fpu.conditionCode |= 1;
-                    } else {
-                        // partial remainder
-                        fpu.conditionCode |= 4; // set C2
-                        int n = 63; // implementation dependent in manual
-                        double f = Math.pow(2.0, (double) (d - n));
-                        double z = (freg0 / freg1) / f;
-                        double qq = (z < 0) ? Math.ceil(z) : Math.floor(z);
-                        freg0 = freg0 - (freg1 * qq * f);
-                    }
-                }
-                    break;
-                case FPREM1: {
-                    int d = dioscuri.module.cpu.Util.getExponent(freg0)
-                            - dioscuri.module.cpu.Util.getExponent(freg1);
-                    if (d < 64) {
-                        // full remainder
-                        fpu.conditionCode &= ~4; // clear C2
-                        double z = Math.IEEEremainder(freg0, freg1);
-                        // compute least significant bits -> C0 C3 C1
-                        long i = (long) Math.rint(freg0 / freg1);
-                        fpu.conditionCode &= 4;
-                        if ((i & 1) != 0)
-                            fpu.conditionCode |= 2;
-                        if ((i & 2) != 0)
-                            fpu.conditionCode |= 8;
-                        if ((i & 4) != 0)
-                            fpu.conditionCode |= 1;
-                        fpu.setST(0, z);
-                    } else {
-                        // partial remainder
-                        fpu.conditionCode |= 4; // set C2
-                        int n = 63; // implementation dependent in manual
-                        double f = Math.pow(2.0, (double) (d - n));
-                        double z = (freg0 / freg1) / f;
-                        double qq = (z < 0) ? Math.ceil(z) : Math.floor(z);
-                        freg0 = freg0 - (freg1 * qq * f);
-                    }
-                }
-                    break;
-
-                case FPTAN: {
-                    if ((freg0 > Math.pow(2.0, 63.0))
-                            || (freg0 < -1.0 * Math.pow(2.0, 63.0))) {
+                    case FSIN: {
                         if (Double.isInfinite(freg0))
                             fpu.setInvalidOperation();
-                        fpu.conditionCode |= 4;
-                    } else {
-                        fpu.conditionCode &= ~4;
-                        freg0 = Math.tan(freg0);
+                        if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
+                            fpu.conditionCode |= 4; // set C2
+                        else
+                            freg0 = Math.sin(freg0);
                     }
-                }
                     break;
-                case FSCALE:
-                    freg0 = dioscuri.module.cpu.Util.scalb(freg0, (int) freg1);
-                    break;
-                // case FSINCOS: {
-                // freg1 = sin(freg0);
-                // freg0 = cos(freg0);
-                // } break;
-                case FXTRACT: {
-                    int e = dioscuri.module.cpu.Util.getExponent(freg0);
-                    freg1 = (double) e;
-                    freg0 = dioscuri.module.cpu.Util.scalb(freg0, -e);
-                }
-                    break;
-                // case FYL2X: {
-                // freg0 = freg1 * log2(freg0);
-                // } break;
-                // case FYL2XP1: {
-                // freg0 = freg1 * log2(freg0 + 1.0);
-                // } break;
 
-                case FRNDINT: {
-                    if (Double.isInfinite(freg0))
-                        break; // preserve infinities
+                    case FCOS: {
+                        if (Double.isInfinite(freg0))
+                            fpu.setInvalidOperation();
+                        if ((freg0 > Long.MAX_VALUE) || (freg0 < Long.MIN_VALUE))
+                            fpu.conditionCode |= 4; // set C2
+                        else
+                            freg0 = Math.cos(freg0);
+                    }
+                    break;
 
-                    switch (fpu.getRoundingControl()) {
-                    case FpuState.FPU_ROUNDING_CONTROL_EVEN:
-                        freg0 = Math.rint(freg0);
+                    case FBCD2F: {
+                        long n = 0;
+                        long decade = 1;
+                        for (int i = 0; i < 9; i++) {
+                            byte b = seg0.getByte(addr0 + i);
+                            n += (b & 0xf) * decade;
+                            decade *= 10;
+                            n += ((b >> 4) & 0xf) * decade;
+                            decade *= 10;
+                        }
+                        byte sign = seg0.getByte(addr0 + 9);
+                        double m = (double) n;
+                        if (sign < 0)
+                            m *= -1.0;
+                        freg0 = m;
+                    }
+                    break;
+
+                    case FF2BCD: {
+                        long n = (long) Math.abs(freg0);
+                        long decade = 1;
+                        for (int i = 0; i < 9; i++) {
+                            int val = (int) ((n % (decade * 10)) / decade);
+                            byte b = (byte) val;
+                            decade *= 10;
+                            val = (int) ((n % (decade * 10)) / decade);
+                            b |= (val << 4);
+                            seg0.setByte(addr0 + i, b);
+                        }
+                        seg0.setByte(addr0 + 9, (freg0 < 0) ? (byte) 0x80
+                                : (byte) 0x00);
+                    }
+                    break;
+
+                    case FPATAN:
+                        freg0 = Math.atan2(freg1, freg0);
                         break;
-                    case FpuState.FPU_ROUNDING_CONTROL_DOWN:
-                        freg0 = Math.floor(freg0);
+                    case FPREM: {
+                        int d = dioscuri.module.cpu.Util.getExponent(freg0)
+                                - dioscuri.module.cpu.Util.getExponent(freg1);
+                        if (d < 64) {
+                            // full remainder
+                            fpu.conditionCode &= ~4; // clear C2
+                            freg0 = freg0 % freg1;
+                            // compute least significant bits -> C0 C3 C1
+                            long i = (long) Math.rint(freg0 / freg1);
+                            fpu.conditionCode &= 4;
+                            if ((i & 1) != 0)
+                                fpu.conditionCode |= 2;
+                            if ((i & 2) != 0)
+                                fpu.conditionCode |= 8;
+                            if ((i & 4) != 0)
+                                fpu.conditionCode |= 1;
+                        } else {
+                            // partial remainder
+                            fpu.conditionCode |= 4; // set C2
+                            int n = 63; // implementation dependent in manual
+                            double f = Math.pow(2.0, (double) (d - n));
+                            double z = (freg0 / freg1) / f;
+                            double qq = (z < 0) ? Math.ceil(z) : Math.floor(z);
+                            freg0 = freg0 - (freg1 * qq * f);
+                        }
+                    }
+                    break;
+                    case FPREM1: {
+                        int d = dioscuri.module.cpu.Util.getExponent(freg0)
+                                - dioscuri.module.cpu.Util.getExponent(freg1);
+                        if (d < 64) {
+                            // full remainder
+                            fpu.conditionCode &= ~4; // clear C2
+                            double z = Math.IEEEremainder(freg0, freg1);
+                            // compute least significant bits -> C0 C3 C1
+                            long i = (long) Math.rint(freg0 / freg1);
+                            fpu.conditionCode &= 4;
+                            if ((i & 1) != 0)
+                                fpu.conditionCode |= 2;
+                            if ((i & 2) != 0)
+                                fpu.conditionCode |= 8;
+                            if ((i & 4) != 0)
+                                fpu.conditionCode |= 1;
+                            fpu.setST(0, z);
+                        } else {
+                            // partial remainder
+                            fpu.conditionCode |= 4; // set C2
+                            int n = 63; // implementation dependent in manual
+                            double f = Math.pow(2.0, (double) (d - n));
+                            double z = (freg0 / freg1) / f;
+                            double qq = (z < 0) ? Math.ceil(z) : Math.floor(z);
+                            freg0 = freg0 - (freg1 * qq * f);
+                        }
+                    }
+                    break;
+
+                    case FPTAN: {
+                        if ((freg0 > Math.pow(2.0, 63.0))
+                                || (freg0 < -1.0 * Math.pow(2.0, 63.0))) {
+                            if (Double.isInfinite(freg0))
+                                fpu.setInvalidOperation();
+                            fpu.conditionCode |= 4;
+                        } else {
+                            fpu.conditionCode &= ~4;
+                            freg0 = Math.tan(freg0);
+                        }
+                    }
+                    break;
+                    case FSCALE:
+                        freg0 = dioscuri.module.cpu.Util.scalb(freg0, (int) freg1);
                         break;
-                    case FpuState.FPU_ROUNDING_CONTROL_UP:
-                        freg0 = Math.ceil(freg0);
+                    // case FSINCOS: {
+                    // freg1 = sin(freg0);
+                    // freg0 = cos(freg0);
+                    // } break;
+                    case FXTRACT: {
+                        int e = dioscuri.module.cpu.Util.getExponent(freg0);
+                        freg1 = (double) e;
+                        freg0 = dioscuri.module.cpu.Util.scalb(freg0, -e);
+                    }
+                    break;
+                    // case FYL2X: {
+                    // freg0 = freg1 * log2(freg0);
+                    // } break;
+                    // case FYL2XP1: {
+                    // freg0 = freg1 * log2(freg0 + 1.0);
+                    // } break;
+
+                    case FRNDINT: {
+                        if (Double.isInfinite(freg0))
+                            break; // preserve infinities
+
+                        switch (fpu.getRoundingControl()) {
+                            case FpuState.FPU_ROUNDING_CONTROL_EVEN:
+                                freg0 = Math.rint(freg0);
+                                break;
+                            case FpuState.FPU_ROUNDING_CONTROL_DOWN:
+                                freg0 = Math.floor(freg0);
+                                break;
+                            case FpuState.FPU_ROUNDING_CONTROL_UP:
+                                freg0 = Math.ceil(freg0);
+                                break;
+                            case FpuState.FPU_ROUNDING_CONTROL_TRUNCATE:
+                                freg0 = Math.signum(freg0)
+                                        * Math.floor(Math.abs(freg0));
+                                break;
+                            default:
+                                throw new IllegalStateException(
+                                        "Invalid rounding control value");
+                        }
+                        reg0 = (int) freg0;
+                        reg0l = (long) freg0;
+                    }
+                    break;
+
+                    case FCHECK0:
+                        checkResult(freg0);
                         break;
-                    case FpuState.FPU_ROUNDING_CONTROL_TRUNCATE:
-                        freg0 = Math.signum(freg0)
-                                * Math.floor(Math.abs(freg0));
+                    case FCHECK1:
+                        checkResult(freg1);
                         break;
+
+                    case FINIT:
+                        fpu.init();
+                        break;
+
+                    // case FSAVE_108: {
+                    // seg0.setDoubleWord(addr0, fpu.getControl() & 0xffff);
+                    // seg0.setDoubleWord(addr0 + 4, fpu.getStatus() & 0xffff);
+                    // seg0.setDoubleWord(addr0 + 8, fpu.getTagWord() & 0xffff);
+                    // seg0.setDoubleWord(addr0 + 12, 0 /* fpu.getIP() */);
+                    // seg0.setDoubleWord(addr0 + 16, 0 /* opcode + selector*/);
+                    // seg0.setDoubleWord(addr0 + 20, 0 /* operand pntr */);
+                    // seg0.setDoubleWord(addr0 + 24, 0 /* more operand pntr */);
+
+                    // for (int i = 0; i < 8; i++) {
+                    // byte[] extended = FpuState64.doubleToExtended(fpu.ST(i),
+                    // false /* this is WRONG!!!!!!! */);
+                    // for (int j = 0; j < 10; j++)
+                    // seg0.setByte(addr0 + 28 + j + (10 * i), extended[j]);
+                    // }
+                    // fpu.init();
+                    // } break;
+
                     default:
-                        throw new IllegalStateException(
-                                "Invalid rounding control value");
-                    }
-                    reg0 = (int) freg0;
-                    reg0l = (long) freg0;
-                }
-                    break;
-
-                case FCHECK0:
-                    checkResult(freg0);
-                    break;
-                case FCHECK1:
-                    checkResult(freg1);
-                    break;
-
-                case FINIT:
-                    fpu.init();
-                    break;
-
-                // case FSAVE_108: {
-                // seg0.setDoubleWord(addr0, fpu.getControl() & 0xffff);
-                // seg0.setDoubleWord(addr0 + 4, fpu.getStatus() & 0xffff);
-                // seg0.setDoubleWord(addr0 + 8, fpu.getTagWord() & 0xffff);
-                // seg0.setDoubleWord(addr0 + 12, 0 /* fpu.getIP() */);
-                // seg0.setDoubleWord(addr0 + 16, 0 /* opcode + selector*/);
-                // seg0.setDoubleWord(addr0 + 20, 0 /* operand pntr */);
-                // seg0.setDoubleWord(addr0 + 24, 0 /* more operand pntr */);
-
-                // for (int i = 0; i < 8; i++) {
-                // byte[] extended = FpuState64.doubleToExtended(fpu.ST(i),
-                // false /* this is WRONG!!!!!!! */);
-                // for (int j = 0; j < 10; j++)
-                // seg0.setByte(addr0 + 28 + j + (10 * i), extended[j]);
-                // }
-                // fpu.init();
-                // } break;
-
-                default:
-                    throw new IllegalStateException("Unknown uCode "
-                            + microcodes[position - 1]);
+                        throw new IllegalStateException("Unknown uCode "
+                                + microcodes[position - 1]);
                 }
             }
         } catch (ProcessorException e) {
@@ -2914,11 +2917,11 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 throw new IllegalStateException("Execute Failed");
 
             int nextPosition = position - 1; // this makes position point at the
-                                             // microcode that just barfed
+            // microcode that just barfed
 
             if (eipUpdated)
                 cpu.eip -= cumulativeX86Length[nextPosition]; // undo the
-                                                              // eipUpdate
+            // eipUpdate
 
             if (!e.pointsToSelf()) {
                 cpu.eip += cumulativeX86Length[nextPosition];
@@ -2934,7 +2937,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
             if (e.getVector() != Processor.PROC_EXCEPTION_PF) {
                 System.err.println("@ 0x"
                         + Integer.toHexString(cpu.cs
-                                .translateAddressRead(cpu.eip)));
+                        .translateAddressRead(cpu.eip)));
                 e.printStackTrace();
             }
 
@@ -2948,7 +2951,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return Math.max(executeCount, 0);
     }
 
-    private final void cmpsb_a32(Segment seg0) {
+    private final void cmpsb_a32(Segment seg0)
+    {
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
 
@@ -2968,7 +2972,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o8_flags(dataOne - dataTwo, dataOne, dataTwo);
     }
 
-    private final void cmpsw_a32(Segment seg0) {
+    private final void cmpsw_a32(Segment seg0)
+    {
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
 
@@ -2988,7 +2993,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o16_flags(dataOne - dataTwo, dataOne, dataTwo);
     }
 
-    private final void cmpsd_a32(Segment seg0) {
+    private final void cmpsd_a32(Segment seg0)
+    {
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
 
@@ -3009,7 +3015,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 dataOne, dataTwo);
     }
 
-    private final void repe_cmpsb_a16(Segment seg0) {
+    private final void repe_cmpsb_a16(Segment seg0)
+    {
         int count = 0xFFFF & cpu.ecx;
         int addrOne = 0xFFFF & cpu.esi;
         int addrTwo = 0xFFFF & cpu.edi;
@@ -3052,7 +3059,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repe_cmpsb_a32(Segment seg0) {
+    private final void repe_cmpsb_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3095,7 +3103,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repe_cmpsw_a32(Segment seg0) {
+    private final void repe_cmpsw_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3138,7 +3147,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repe_cmpsd_a32(Segment seg0) {
+    private final void repe_cmpsd_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3183,7 +3193,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_cmpsb_a32(Segment seg0) {
+    private final void repne_cmpsb_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3226,7 +3237,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_cmpsw_a32(Segment seg0) {
+    private final void repne_cmpsw_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3269,7 +3281,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_cmpsd_a32(Segment seg0) {
+    private final void repne_cmpsd_a32(Segment seg0)
+    {
         int count = cpu.ecx;
         int addrOne = cpu.esi;
         int addrTwo = cpu.edi;
@@ -3314,7 +3327,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void insb_a32(int port) throws ModuleException {
+    private final void insb_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("INSB_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3332,7 +3346,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void insw_a32(int port) throws ModuleException {
+    private final void insw_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("INSW_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3350,7 +3365,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void insd_a32(int port) throws ModuleException {
+    private final void insd_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsInt(port)) {
             System.err.println("INSD_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3368,7 +3384,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void rep_insb_a32(int port) throws ModuleException {
+    private final void rep_insb_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("REP_INSB_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + "]");
@@ -3403,7 +3420,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_insw_a32(int port) throws ModuleException {
+    private final void rep_insw_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("REP_INSW_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + "]");
@@ -3438,7 +3456,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_insd_a32(int port) throws ModuleException {
+    private final void rep_insd_a32(int port) throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("REP_INSD_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + "]");
@@ -3475,7 +3494,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void lodsb_a16(Segment dataSegment) {
+    private final void lodsb_a16(Segment dataSegment)
+    {
         int addr = 0xFFFF & cpu.esi;
         cpu.eax = (cpu.eax & ~0xff) | (0xff & dataSegment.getByte(addr));
 
@@ -3487,7 +3507,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = (cpu.esi & ~0xffff) | (0xffff & addr);
     }
 
-    private final void lodsb_a32(Segment dataSegment) {
+    private final void lodsb_a32(Segment dataSegment)
+    {
         int addr = cpu.esi;
         cpu.eax = (cpu.eax & ~0xff) | (0xff & dataSegment.getByte(addr));
 
@@ -3499,7 +3520,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = addr;
     }
 
-    private final void lodsw_a16(Segment dataSegment) {
+    private final void lodsw_a16(Segment dataSegment)
+    {
         int addr = cpu.esi & 0xFFFF;
         cpu.eax = (cpu.eax & ~0xffff) | (0xffff & dataSegment.getWord(addr));
 
@@ -3511,7 +3533,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = (cpu.esi & ~0xffff) | (0xffff & addr);
     }
 
-    private final void lodsw_a32(Segment dataSegment) {
+    private final void lodsw_a32(Segment dataSegment)
+    {
         int addr = cpu.esi;
         cpu.eax = (cpu.eax & ~0xffff) | (0xffff & dataSegment.getWord(addr));
 
@@ -3523,7 +3546,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = addr;
     }
 
-    private final void lodsd_a32(Segment dataSegment) {
+    private final void lodsd_a32(Segment dataSegment)
+    {
         int addr = cpu.esi;
         cpu.eax = dataSegment.getDoubleWord(addr);
 
@@ -3535,7 +3559,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = addr;
     }
 
-    private final void rep_lodsb_a32(Segment dataSegment) {
+    private final void rep_lodsb_a32(Segment dataSegment)
+    {
         int count = cpu.ecx;
         int addr = cpu.esi;
         int data = cpu.eax & 0xff;
@@ -3564,7 +3589,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_lodsw_a32(Segment dataSegment) {
+    private final void rep_lodsw_a32(Segment dataSegment)
+    {
         int count = cpu.ecx;
         int addr = cpu.esi;
         int data = cpu.eax & 0xffff;
@@ -3593,7 +3619,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_lodsd_a32(Segment dataSegment) {
+    private final void rep_lodsd_a32(Segment dataSegment)
+    {
         int count = cpu.ecx;
         int addr = cpu.esi;
         int data = cpu.eax;
@@ -3622,7 +3649,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void movsb_a16(Segment outSegment) {
+    private final void movsb_a16(Segment outSegment)
+    {
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
 
@@ -3639,7 +3667,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = (cpu.esi & ~0xffff) | (outAddr & 0xffff);
     }
 
-    private final void movsw_a16(Segment outSegment) {
+    private final void movsw_a16(Segment outSegment)
+    {
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
 
@@ -3656,7 +3685,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = (cpu.esi & ~0xffff) | (outAddr & 0xffff);
     }
 
-    private final void movsd_a16(Segment outSegment) {
+    private final void movsd_a16(Segment outSegment)
+    {
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
 
@@ -3673,7 +3703,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = (cpu.esi & ~0xffff) | (outAddr & 0xffff);
     }
 
-    private final void rep_movsb_a16(Segment outSegment) {
+    private final void rep_movsb_a16(Segment outSegment)
+    {
         int count = cpu.ecx & 0xffff;
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
@@ -3706,7 +3737,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_movsw_a16(Segment outSegment) {
+    private final void rep_movsw_a16(Segment outSegment)
+    {
         int count = cpu.ecx & 0xffff;
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
@@ -3739,7 +3771,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_movsd_a16(Segment outSegment) {
+    private final void rep_movsd_a16(Segment outSegment)
+    {
         int count = cpu.ecx & 0xffff;
         int inAddr = cpu.edi & 0xffff;
         int outAddr = cpu.esi & 0xffff;
@@ -3772,7 +3805,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void movsb_a32(Segment outSegment) {
+    private final void movsb_a32(Segment outSegment)
+    {
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
 
@@ -3789,7 +3823,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = outAddr;
     }
 
-    private final void movsw_a32(Segment outSegment) {
+    private final void movsw_a32(Segment outSegment)
+    {
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
 
@@ -3806,7 +3841,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = outAddr;
     }
 
-    private final void movsd_a32(Segment outSegment) {
+    private final void movsd_a32(Segment outSegment)
+    {
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
 
@@ -3823,7 +3859,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esi = outAddr;
     }
 
-    private final void rep_movsb_a32(Segment outSegment) {
+    private final void rep_movsb_a32(Segment outSegment)
+    {
         int count = cpu.ecx;
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
@@ -3854,7 +3891,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_movsw_a32(Segment outSegment) {
+    private final void rep_movsw_a32(Segment outSegment)
+    {
         int count = cpu.ecx;
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
@@ -3885,7 +3923,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_movsd_a32(Segment outSegment) {
+    private final void rep_movsd_a32(Segment outSegment)
+    {
         int count = cpu.ecx;
         int inAddr = cpu.edi;
         int outAddr = cpu.esi;
@@ -3919,7 +3958,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsb_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("OUTSB_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3939,7 +3979,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsw_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("OUTSW_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3959,7 +4000,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsd_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsInt(port)) {
             System.err.println("OUTSD_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -3979,7 +4021,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsb_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("REP_OUTSB_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4015,7 +4058,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsw_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("REP_OUTSW_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4051,7 +4095,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsd_a16(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsInt(port)) {
             System.err.println("OUTSD_A16: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4087,7 +4132,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsb_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("OUTSB_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4107,7 +4153,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsw_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("OUTSW_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4127,7 +4174,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void outsd_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsInt(port)) {
             System.err.println("OUTSB_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4147,7 +4195,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsb_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsByte(port)) {
             System.err.println("REP_OUTSB_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4183,7 +4232,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsw_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsShort(port)) {
             System.err.println("REP_OUTSW_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4219,7 +4269,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void rep_outsd_a32(int port, Segment storeSegment)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (!checkIOPermissionsInt(port)) {
             System.err.println("OUTSD_A32: Denied IO Port Access [port:0x"
                     + Integer.toHexString(port) + " cpl:" + cpu.getCPL() + "]");
@@ -4254,7 +4305,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void scasb_a16(int data) {
+    private final void scasb_a16(int data)
+    {
         int addr = 0xFFFF & cpu.edi;
         int input = 0xff & cpu.es.getByte(addr);
 
@@ -4267,7 +4319,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o8_flags(data - input, data, input);
     }
 
-    private final void scasb_a32(int data) {
+    private final void scasb_a32(int data)
+    {
         int addr = cpu.edi;
         int input = 0xff & cpu.es.getByte(addr);
 
@@ -4280,7 +4333,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o8_flags(data - input, data, input);
     }
 
-    private final void scasw_a32(int data) {
+    private final void scasw_a32(int data)
+    {
         int addr = cpu.edi;
         int input = 0xffff & cpu.es.getWord(addr);
 
@@ -4293,7 +4347,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o16_flags(data - input, data, input);
     }
 
-    private final void scasd_a32(int data) {
+    private final void scasd_a32(int data)
+    {
         int addr = cpu.edi;
         int input = cpu.es.getDoubleWord(addr);
 
@@ -4306,7 +4361,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         sub_o32_flags((0xffffffffl & data) - (0xffffffffl & input), data, input);
     }
 
-    private final void repe_scasb_a32(int data) {
+    private final void repe_scasb_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4339,7 +4395,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repe_scasw_a32(int data) {
+    private final void repe_scasw_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4372,7 +4429,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repe_scasd_a32(int data) {
+    private final void repe_scasd_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4407,7 +4465,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_scasb_a16(int data) {
+    private final void repne_scasb_a16(int data)
+    {
         int count = 0xFFFF & cpu.ecx;
         int addr = 0xFFFF & cpu.edi;
         boolean used = count != 0;
@@ -4440,7 +4499,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_scasb_a32(int data) {
+    private final void repne_scasb_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4473,7 +4533,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_scasw_a32(int data) {
+    private final void repne_scasw_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4506,7 +4567,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void repne_scasd_a32(int data) {
+    private final void repne_scasd_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         boolean used = count != 0;
@@ -4541,7 +4603,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void stosb_a16(int data) {
+    private final void stosb_a16(int data)
+    {
         int addr = 0xFFFF & cpu.edi;
         cpu.es.setByte(addr, (byte) data);
 
@@ -4553,7 +4616,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = (cpu.edi & ~0xFFFF) | (0xFFFF & addr);
     }
 
-    private final void stosb_a32(int data) {
+    private final void stosb_a32(int data)
+    {
         int addr = cpu.edi;
         cpu.es.setByte(addr, (byte) data);
 
@@ -4565,7 +4629,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void stosw_a16(int data) {
+    private final void stosw_a16(int data)
+    {
         int addr = 0xFFFF & cpu.edi;
         cpu.es.setWord(addr, (short) data);
 
@@ -4577,7 +4642,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = (cpu.edi & ~0xffff) | (0xFFFF & addr);
     }
 
-    private final void stosw_a32(int data) {
+    private final void stosw_a32(int data)
+    {
         int addr = cpu.edi;
         cpu.es.setWord(addr, (short) data);
 
@@ -4589,7 +4655,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void stosd_a32(int data) {
+    private final void stosd_a32(int data)
+    {
         int addr = cpu.edi;
         cpu.es.setDoubleWord(addr, data);
 
@@ -4601,7 +4668,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edi = addr;
     }
 
-    private final void rep_stosb_a16(int data) {
+    private final void rep_stosb_a16(int data)
+    {
         short count = (short) cpu.ecx;
         short addr = (short) (0xFFFF & cpu.edi);
         executeCount += count;
@@ -4628,7 +4696,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_stosb_a32(int data) {
+    private final void rep_stosb_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         executeCount += count;
@@ -4655,7 +4724,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_stosw_a16(int data) {
+    private final void rep_stosw_a16(int data)
+    {
         int count = 0xFFFF & cpu.ecx;
         int addr = 0xFFFF & cpu.edi;
         executeCount += count;
@@ -4682,7 +4752,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_stosw_a32(int data) {
+    private final void rep_stosw_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         executeCount += count;
@@ -4709,7 +4780,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rep_stosd_a32(int data) {
+    private final void rep_stosd_a32(int data)
+    {
         int count = cpu.ecx;
         int addr = cpu.edi;
         executeCount += count;
@@ -4736,7 +4808,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void mul_o8(int data) {
+    private final void mul_o8(int data)
+    {
         int x = cpu.eax & 0xff;
 
         int result = x * data;
@@ -4747,7 +4820,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_HIGH_BYTE_NZ);
     }
 
-    private final void mul_o16(int data) {
+    private final void mul_o16(int data)
+    {
         int x = cpu.eax & 0xffff;
 
         int result = x * data;
@@ -4759,7 +4833,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_NZ);
     }
 
-    private final void mul_o32(int data) {
+    private final void mul_o32(int data)
+    {
         long x = cpu.eax & 0xffffffffl;
         long y = 0xffffffffl & data;
 
@@ -4772,7 +4847,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_NZ);
     }
 
-    private final void imula_o8(byte data) {
+    private final void imula_o8(byte data)
+    {
         byte al = (byte) cpu.eax;
         int result = al * data;
 
@@ -4782,7 +4858,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_NOT_BYTE);
     }
 
-    private final void imula_o16(short data) {
+    private final void imula_o16(short data)
+    {
         short ax = (short) cpu.eax;
         int result = ax * data;
 
@@ -4794,7 +4871,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_NOT_SHORT);
     }
 
-    private final void imula_o32(int data) {
+    private final void imula_o32(int data)
+    {
         long eax = (long) cpu.eax;
         long y = (long) data;
         long result = eax * y;
@@ -4807,14 +4885,16 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(result, Processor.CY_NOT_INT);
     }
 
-    private final int imul_o16(short data0, short data1) {
+    private final int imul_o16(short data0, short data1)
+    {
         int result = data0 * data1;
         cpu.setOverflowFlag(result, Processor.OF_NOT_SHORT);
         cpu.setCarryFlag(result, Processor.CY_NOT_SHORT);
         return result;
     }
 
-    private final int imul_o32(int data0, int data1) {
+    private final int imul_o32(int data0, int data1)
+    {
         long x = (long) data0;
         long y = (long) data1;
 
@@ -4824,7 +4904,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return (int) result;
     }
 
-    private final void div_o8(int data) {
+    private final void div_o8(int data)
+    {
         if (data == 0)
             throw exceptionDE;
 
@@ -4838,7 +4919,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eax = (cpu.eax & ~0xffff) | (0xff & result) | (0xff00 & remainder);
     }
 
-    private final void div_o16(int data) {
+    private final void div_o16(int data)
+    {
         if (data == 0)
             throw exceptionDE;
 
@@ -4855,7 +4937,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edx = (cpu.edx & ~0xffff) | (int) (remainder & 0xffff);
     }
 
-    private final void div_o32(int data) {
+    private final void div_o32(int data)
+    {
         long d = 0xffffffffl & data;
 
         if (d == 0)
@@ -4883,7 +4966,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edx = (int) r;
     }
 
-    private final void idiv_o8(byte data) {
+    private final void idiv_o8(byte data)
+    {
         if (data == 0)
             throw exceptionDE;
 
@@ -4897,7 +4981,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 | ((0xff & remainder) << 8); // AH is remainder
     }
 
-    private final void idiv_o16(short data) {
+    private final void idiv_o16(short data)
+    {
         if (data == 0) {
             throw exceptionDE;
         }
@@ -4912,7 +4997,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.edx = (cpu.edx & ~0xffff) | (0xffff & remainder); // DX is remainder
     }
 
-    private final void idiv_o32(int data) {
+    private final void idiv_o32(int data)
+    {
         if (data == 0)
             throw exceptionDE;
 
@@ -4929,7 +5015,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void btc_mem(int offset, Segment segment, int address)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         address += (offset >>> 3);
         offset &= 0x7;
 
@@ -4939,7 +5026,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void bts_mem(int offset, Segment segment, int address)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         address += (offset >>> 3);
         offset &= 0x7;
 
@@ -4949,7 +5037,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void btr_mem(int offset, Segment segment, int address)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         address += (offset >>> 3);
         offset &= 0x7;
 
@@ -4959,14 +5048,16 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void bt_mem(int offset, Segment segment, int address)
-            throws ProcessorException {
+            throws ProcessorException
+    {
         address += (offset >>> 3);
         offset &= 0x7;
         cpu.setCarryFlag(segment.getByte(address), offset,
                 Processor.CY_NTH_BIT_SET);
     }
 
-    private final int bsf(int source, int initial) throws ProcessorException {
+    private final int bsf(int source, int initial) throws ProcessorException
+    {
         if (source == 0) {
             cpu.setZeroFlag(true);
             return initial;
@@ -4976,7 +5067,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int bsr(int source, int initial) throws ProcessorException {
+    private final int bsr(int source, int initial) throws ProcessorException
+    {
         if (source == 0) {
             cpu.setZeroFlag(true);
             return initial;
@@ -4986,7 +5078,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void aaa() {
+    private final void aaa()
+    {
         if (((cpu.eax & 0xf) > 0x9) || cpu.getAuxiliaryCarryFlag()) {
             int alCarry = ((cpu.eax & 0xff) > 0xf9) ? 0x100 : 0x000;
             cpu.eax = (0xffff0000 & cpu.eax) | (0x0f & (cpu.eax + 6))
@@ -5000,7 +5093,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void aad(int base) throws ProcessorException {
+    private final void aad(int base) throws ProcessorException
+    {
         int tl = (cpu.eax & 0xff);
         int th = ((cpu.eax >> 8) & 0xff);
 
@@ -5016,7 +5110,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setOverflowFlag(ax2, tl, Processor.OF_BIT7_DIFFERENT);
     }
 
-    private final void aam(int base) throws ProcessorException {
+    private final void aam(int base) throws ProcessorException
+    {
         int tl = 0xff & cpu.eax;
         if (base == 0)
             throw exceptionDE;
@@ -5029,7 +5124,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         bitwise_flags((byte) al);
     }
 
-    private final void aas() {
+    private final void aas()
+    {
         if (((cpu.eax & 0xf) > 0x9) || cpu.getAuxiliaryCarryFlag()) {
             int alBorrow = (cpu.eax & 0xff) < 6 ? 0x100 : 0x000;
             cpu.eax = (0xffff0000 & cpu.eax) | (0x0f & (cpu.eax - 6))
@@ -5043,7 +5139,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void daa() {
+    private final void daa()
+    {
         int al = cpu.eax & 0xff;
         boolean newCF;
         if (((cpu.eax & 0xf) > 0x9) || cpu.getAuxiliaryCarryFlag()) {
@@ -5063,7 +5160,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(newCF);
     }
 
-    private final void das() {
+    private final void das()
+    {
         boolean tempCF = false;
         int tempAL = 0xff & cpu.eax;
         if (((tempAL & 0xf) > 0x9) || cpu.getAuxiliaryCarryFlag()) {
@@ -5081,7 +5179,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setCarryFlag(tempCF);
     }
 
-    private final void lahf() {
+    private final void lahf()
+    {
         int result = 0x0200;
         if (cpu.getSignFlag())
             result |= 0x8000;
@@ -5097,7 +5196,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eax |= result;
     }
 
-    private final void sahf() {
+    private final void sahf()
+    {
         int ah = (cpu.eax & 0xff00);
         cpu.setCarryFlag(0 != (ah & 0x0100));
         cpu.setParityFlag(0 != (ah & 0x0400));
@@ -5106,7 +5206,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(0 != (ah & 0x8000));
     }
 
-    private final void halt() {
+    private final void halt()
+    {
         while (true) {
             if (cpu.waitForInterrupt(50))
                 return;
@@ -5114,471 +5215,532 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void jo_o8(byte offset) {
+    private final void jo_o8(byte offset)
+    {
         if (cpu.getOverflowFlag())
             jump_o8(offset);
     }
 
-    private final void jno_o8(byte offset) {
+    private final void jno_o8(byte offset)
+    {
         if (!cpu.getOverflowFlag())
             jump_o8(offset);
     }
 
-    private final void jc_o8(byte offset) {
+    private final void jc_o8(byte offset)
+    {
         if (cpu.getCarryFlag())
             jump_o8(offset);
     }
 
-    private final void jnc_o8(byte offset) {
+    private final void jnc_o8(byte offset)
+    {
         if (!cpu.getCarryFlag())
             jump_o8(offset);
     }
 
-    private final void jz_o8(byte offset) {
+    private final void jz_o8(byte offset)
+    {
         if (cpu.getZeroFlag())
             jump_o8(offset);
     }
 
-    private final void jnz_o8(byte offset) {
+    private final void jnz_o8(byte offset)
+    {
         if (!cpu.getZeroFlag())
             jump_o8(offset);
     }
 
-    private final void jna_o8(byte offset) {
+    private final void jna_o8(byte offset)
+    {
         if (cpu.getCarryFlag() || cpu.getZeroFlag())
             jump_o8(offset);
     }
 
-    private final void ja_o8(byte offset) {
+    private final void ja_o8(byte offset)
+    {
         if ((!cpu.getCarryFlag()) && (!cpu.getZeroFlag()))
             jump_o8(offset);
     }
 
-    private final void js_o8(byte offset) {
+    private final void js_o8(byte offset)
+    {
         if (cpu.getSignFlag())
             jump_o8(offset);
     }
 
-    private final void jns_o8(byte offset) {
+    private final void jns_o8(byte offset)
+    {
         if (!cpu.getSignFlag())
             jump_o8(offset);
     }
 
-    private final void jp_o8(byte offset) {
+    private final void jp_o8(byte offset)
+    {
         if (cpu.getParityFlag())
             jump_o8(offset);
     }
 
-    private final void jnp_o8(byte offset) {
+    private final void jnp_o8(byte offset)
+    {
         if (!cpu.getParityFlag())
             jump_o8(offset);
     }
 
-    private final void jl_o8(byte offset) {
+    private final void jl_o8(byte offset)
+    {
         if (cpu.getSignFlag() != cpu.getOverflowFlag())
             jump_o8(offset);
     }
 
-    private final void jnl_o8(byte offset) {
+    private final void jnl_o8(byte offset)
+    {
         if (cpu.getSignFlag() == cpu.getOverflowFlag())
             jump_o8(offset);
     }
 
-    private final void jng_o8(byte offset) {
+    private final void jng_o8(byte offset)
+    {
         if (cpu.getZeroFlag() || (cpu.getSignFlag() != cpu.getOverflowFlag()))
             jump_o8(offset);
     }
 
-    private final void jg_o8(byte offset) {
+    private final void jg_o8(byte offset)
+    {
         if ((!cpu.getZeroFlag())
                 && (cpu.getSignFlag() == cpu.getOverflowFlag()))
             jump_o8(offset);
     }
 
-    private final void jo_o16(short offset) {
+    private final void jo_o16(short offset)
+    {
         if (cpu.getOverflowFlag())
             jump_o16(offset);
     }
 
-    private final void jno_o16(short offset) {
+    private final void jno_o16(short offset)
+    {
         if (!cpu.getOverflowFlag())
             jump_o16(offset);
     }
 
-    private final void jc_o16(short offset) {
+    private final void jc_o16(short offset)
+    {
         if (cpu.getCarryFlag())
             jump_o16(offset);
     }
 
-    private final void jnc_o16(short offset) {
+    private final void jnc_o16(short offset)
+    {
         if (!cpu.getCarryFlag())
             jump_o16(offset);
     }
 
-    private final void jz_o16(short offset) {
+    private final void jz_o16(short offset)
+    {
         if (cpu.getZeroFlag())
             jump_o16(offset);
     }
 
-    private final void jnz_o16(short offset) {
+    private final void jnz_o16(short offset)
+    {
         if (!cpu.getZeroFlag())
             jump_o16(offset);
     }
 
-    private final void jna_o16(short offset) {
+    private final void jna_o16(short offset)
+    {
         if (cpu.getCarryFlag() || cpu.getZeroFlag())
             jump_o16(offset);
     }
 
-    private final void ja_o16(short offset) {
+    private final void ja_o16(short offset)
+    {
         if ((!cpu.getCarryFlag()) && (!cpu.getZeroFlag()))
             jump_o16(offset);
     }
 
-    private final void js_o16(short offset) {
+    private final void js_o16(short offset)
+    {
         if (cpu.getSignFlag())
             jump_o16(offset);
     }
 
-    private final void jns_o16(short offset) {
+    private final void jns_o16(short offset)
+    {
         if (!cpu.getSignFlag())
             jump_o16(offset);
     }
 
-    private final void jp_o16(short offset) {
+    private final void jp_o16(short offset)
+    {
         if (cpu.getParityFlag())
             jump_o16(offset);
     }
 
-    private final void jnp_o16(short offset) {
+    private final void jnp_o16(short offset)
+    {
         if (!cpu.getParityFlag())
             jump_o16(offset);
     }
 
-    private final void jl_o16(short offset) {
+    private final void jl_o16(short offset)
+    {
         if (cpu.getSignFlag() != cpu.getOverflowFlag())
             jump_o16(offset);
     }
 
-    private final void jnl_o16(short offset) {
+    private final void jnl_o16(short offset)
+    {
         if (cpu.getSignFlag() == cpu.getOverflowFlag())
             jump_o16(offset);
     }
 
-    private final void jng_o16(short offset) {
+    private final void jng_o16(short offset)
+    {
         if (cpu.getZeroFlag() || (cpu.getSignFlag() != cpu.getOverflowFlag()))
             jump_o16(offset);
     }
 
-    private final void jg_o16(short offset) {
+    private final void jg_o16(short offset)
+    {
         if ((!cpu.getZeroFlag())
                 && (cpu.getSignFlag() == cpu.getOverflowFlag()))
             jump_o16(offset);
     }
 
-    private final void jo_o32(int offset) {
+    private final void jo_o32(int offset)
+    {
         if (cpu.getOverflowFlag())
             jump_o32(offset);
     }
 
-    private final void jno_o32(int offset) {
+    private final void jno_o32(int offset)
+    {
         if (!cpu.getOverflowFlag())
             jump_o32(offset);
     }
 
-    private final void jc_o32(int offset) {
+    private final void jc_o32(int offset)
+    {
         if (cpu.getCarryFlag())
             jump_o32(offset);
     }
 
-    private final void jnc_o32(int offset) {
+    private final void jnc_o32(int offset)
+    {
         if (!cpu.getCarryFlag())
             jump_o32(offset);
     }
 
-    private final void jz_o32(int offset) {
+    private final void jz_o32(int offset)
+    {
         if (cpu.getZeroFlag())
             jump_o32(offset);
     }
 
-    private final void jnz_o32(int offset) {
+    private final void jnz_o32(int offset)
+    {
         if (!cpu.getZeroFlag())
             jump_o32(offset);
     }
 
-    private final void jna_o32(int offset) {
+    private final void jna_o32(int offset)
+    {
         if (cpu.getCarryFlag() || cpu.getZeroFlag())
             jump_o32(offset);
     }
 
-    private final void ja_o32(int offset) {
+    private final void ja_o32(int offset)
+    {
         if ((!cpu.getCarryFlag()) && (!cpu.getZeroFlag()))
             jump_o32(offset);
     }
 
-    private final void js_o32(int offset) {
+    private final void js_o32(int offset)
+    {
         if (cpu.getSignFlag())
             jump_o32(offset);
     }
 
-    private final void jns_o32(int offset) {
+    private final void jns_o32(int offset)
+    {
         if (!cpu.getSignFlag())
             jump_o32(offset);
     }
 
-    private final void jp_o32(int offset) {
+    private final void jp_o32(int offset)
+    {
         if (cpu.getParityFlag())
             jump_o32(offset);
     }
 
-    private final void jnp_o32(int offset) {
+    private final void jnp_o32(int offset)
+    {
         if (!cpu.getParityFlag())
             jump_o32(offset);
     }
 
-    private final void jl_o32(int offset) {
+    private final void jl_o32(int offset)
+    {
         if (cpu.getSignFlag() != cpu.getOverflowFlag())
             jump_o32(offset);
     }
 
-    private final void jnl_o32(int offset) {
+    private final void jnl_o32(int offset)
+    {
         if (cpu.getSignFlag() == cpu.getOverflowFlag())
             jump_o32(offset);
     }
 
-    private final void jng_o32(int offset) {
+    private final void jng_o32(int offset)
+    {
         if (cpu.getZeroFlag() || (cpu.getSignFlag() != cpu.getOverflowFlag()))
             jump_o32(offset);
     }
 
-    private final void jg_o32(int offset) {
+    private final void jg_o32(int offset)
+    {
         if ((!cpu.getZeroFlag())
                 && (cpu.getSignFlag() == cpu.getOverflowFlag()))
             jump_o32(offset);
     }
 
-    private final void jcxz(byte offset) {
+    private final void jcxz(byte offset)
+    {
         if ((cpu.ecx & 0xffff) == 0)
             jump_o8(offset);
     }
 
-    private final void jecxz(byte offset) {
+    private final void jecxz(byte offset)
+    {
         if (cpu.ecx == 0)
             jump_o8(offset);
     }
 
-    private final void loop_cx(byte offset) {
+    private final void loop_cx(byte offset)
+    {
         cpu.ecx = (cpu.ecx & ~0xFFFF) | (((0xFFFF & cpu.ecx) - 1) & 0xFFFF);
         if ((cpu.ecx & 0xFFFF) != 0)
             jump_o8(offset);
     }
 
-    private final void loop_ecx(byte offset) {
+    private final void loop_ecx(byte offset)
+    {
         cpu.ecx--;
         if (cpu.ecx != 0)
             jump_o8(offset);
     }
 
-    private final void loopz_ecx(byte offset) {
+    private final void loopz_ecx(byte offset)
+    {
         cpu.ecx--;
         if (cpu.getZeroFlag() && (cpu.ecx != 0))
             jump_o8(offset);
     }
 
-    private final void loopnz_cx(byte offset) {
+    private final void loopnz_cx(byte offset)
+    {
         cpu.ecx = (cpu.ecx & ~0xFFFF) | ((cpu.ecx - 1) & 0xFFFF);
         if (!cpu.getZeroFlag() && ((cpu.ecx & 0xFFFF) != 0))
             jump_o8(offset);
     }
 
-    private final void loopnz_ecx(byte offset) {
+    private final void loopnz_ecx(byte offset)
+    {
         cpu.ecx--;
         if (!cpu.getZeroFlag() && (cpu.ecx != 0))
             jump_o8(offset);
     }
 
-    private final void jump_o8(byte offset) {
+    private final void jump_o8(byte offset)
+    {
         if (offset == 0)
             return; // first protected mode throws on a jump 0 (some segment
-                    // problem?)
+        // problem?)
 
         int tempEIP = cpu.eip + offset;
         cpu.cs.checkAddress(tempEIP);// check whether eip is outside cs limit
         cpu.eip = tempEIP;
     }
 
-    private final void jump_o16(short offset) {
+    private final void jump_o16(short offset)
+    {
         int tempEIP = (cpu.eip + offset) & 0xffff;
         cpu.cs.checkAddress(tempEIP);// check whether eip is outside cs limit
         cpu.eip = tempEIP;
     }
 
-    private final void jump_o32(int offset) {
+    private final void jump_o32(int offset)
+    {
         int tempEIP = cpu.eip + offset;
         cpu.cs.checkAddress(tempEIP);// check whether eip is outside cs limit
         cpu.eip = tempEIP;
     }
 
-    private final void jump_abs(int offset) {
+    private final void jump_abs(int offset)
+    {
         cpu.cs.checkAddress(offset);// check whether eip is outside cs limit
         cpu.eip = offset;
     }
 
-    private final void jump_far(int targetEIP, int targetSelector) {
+    private final void jump_far(int targetEIP, int targetSelector)
+    {
         Segment newSegment = cpu.getSegment(targetSelector);
         if (newSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (newSegment.getType()) { // segment type
-        default: // not a valid segment descriptor for a jump
-            System.err.println("JMP -> Invalid Segment Type");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                    targetSelector, true);
-        case 0x05: // Task Gate
-            System.err.println("JMP -> Task Gate");
-            throw new ProcessorException(-1, true);
-        case 0x0b: // TSS (Busy)
-        case 0x09: // TSS (Not Busy)
-
-            if ((newSegment.getDPL() < cpu.getCPL())
-                    || (newSegment.getDPL() < newSegment.getRPL()))
+            default: // not a valid segment descriptor for a jump
+                System.err.println("JMP -> Invalid Segment Type");
                 throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
                         targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
-            if (newSegment.getLimit() < 0x67) // large enough to read ?
-                throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
-                        targetSelector, true);
-            if ((newSegment.getType() & 0x2) != 0) // busy ? if yes,error
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        targetSelector, true);
+            case 0x05: // Task Gate
+                System.err.println("JMP -> Task Gate");
+                throw new ProcessorException(-1, true);
+            case 0x0b: // TSS (Busy)
+            case 0x09: // TSS (Not Busy)
 
-            newSegment.getByte(0); // new TSS paged into memory ?
-            cpu.tss.getByte(0);// old TSS paged into memory ?
+                if ((newSegment.getDPL() < cpu.getCPL())
+                        || (newSegment.getDPL() < newSegment.getRPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
+                if (newSegment.getLimit() < 0x67) // large enough to read ?
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
+                            targetSelector, true);
+                if ((newSegment.getType() & 0x2) != 0) // busy ? if yes,error
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
 
-            int esSelector = 0xFFFF & newSegment.getWord(72); // read new
-                                                              // registers
-            int csSelector = 0xFFFF & newSegment.getWord(76);
-            int ssSelector = 0xFFFF & newSegment.getWord(80);
-            int dsSelector = 0xFFFF & newSegment.getWord(84);
-            int fsSelector = 0xFFFF & newSegment.getWord(88);
-            int gsSelector = 0xFFFF & newSegment.getWord(92);
-            int ldtSelector = 0xFFFF & newSegment.getWord(96);
+                newSegment.getByte(0); // new TSS paged into memory ?
+                cpu.tss.getByte(0);// old TSS paged into memory ?
 
-            if ((ldtSelector & 0x4) != 0) // not in gdt
-                throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
-                        ldtSelector, true);
-            cpu.gdtr.checkAddress((ldtSelector & ~0x7) + 7);// check ldtr is
-                                                            // valid
-            if ((cpu.gdtr.getByte((ldtSelector & ~0x7) + 5) & 0xF) != 2) // not
-                                                                         // a
-                                                                         // ldt
-                                                                         // entry
-                throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
-                        ldtSelector, true);
+                int esSelector = 0xFFFF & newSegment.getWord(72); // read new
+                // registers
+                int csSelector = 0xFFFF & newSegment.getWord(76);
+                int ssSelector = 0xFFFF & newSegment.getWord(80);
+                int dsSelector = 0xFFFF & newSegment.getWord(84);
+                int fsSelector = 0xFFFF & newSegment.getWord(88);
+                int gsSelector = 0xFFFF & newSegment.getWord(92);
+                int ldtSelector = 0xFFFF & newSegment.getWord(96);
 
-            Segment newLdtr = cpu.getSegment(ldtSelector); // get new ldt
+                if ((ldtSelector & 0x4) != 0) // not in gdt
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
+                            ldtSelector, true);
+                cpu.gdtr.checkAddress((ldtSelector & ~0x7) + 7);// check ldtr is
+                // valid
+                if ((cpu.gdtr.getByte((ldtSelector & ~0x7) + 5) & 0xF) != 2) // not
+                    // a
+                    // ldt
+                    // entry
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_TS,
+                            ldtSelector, true);
 
-            if ((esSelector & 0x4) != 0) // check es descriptor is in memory
-                newLdtr.checkAddress((esSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((esSelector & ~0x7) + 7);
+                Segment newLdtr = cpu.getSegment(ldtSelector); // get new ldt
 
-            if ((csSelector & 0x4) != 0) // check cs descriptor is in memory
-                newLdtr.checkAddress((csSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((csSelector & ~0x7) + 7);
+                if ((esSelector & 0x4) != 0) // check es descriptor is in memory
+                    newLdtr.checkAddress((esSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((esSelector & ~0x7) + 7);
 
-            if ((ssSelector & 0x4) != 0) // check ss descriptor is in memory
-                newLdtr.checkAddress((ssSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((ssSelector & ~0x7) + 7);
+                if ((csSelector & 0x4) != 0) // check cs descriptor is in memory
+                    newLdtr.checkAddress((csSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((csSelector & ~0x7) + 7);
 
-            if ((dsSelector & 0x4) != 0) // check ds descriptor is in memory
-                newLdtr.checkAddress((dsSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((dsSelector & ~0x7) + 7);
+                if ((ssSelector & 0x4) != 0) // check ss descriptor is in memory
+                    newLdtr.checkAddress((ssSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((ssSelector & ~0x7) + 7);
 
-            if ((fsSelector & 0x4) != 0) // check fs descriptor is in memory
-                newLdtr.checkAddress((fsSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((fsSelector & ~0x7) + 7);
+                if ((dsSelector & 0x4) != 0) // check ds descriptor is in memory
+                    newLdtr.checkAddress((dsSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((dsSelector & ~0x7) + 7);
 
-            if ((gsSelector & 0x4) != 0) // check gs descriptor is in memory
-                newLdtr.checkAddress((gsSelector & ~0x7) + 7);
-            else
-                cpu.gdtr.checkAddress((gsSelector & ~0x7) + 7);
+                if ((fsSelector & 0x4) != 0) // check fs descriptor is in memory
+                    newLdtr.checkAddress((fsSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((fsSelector & ~0x7) + 7);
 
-            cpu.gdtr.setDoubleWord((cpu.tss.getSelector() & ~0x7) + 4, ~0x200
-                    & cpu.gdtr
-                            .getDoubleWord((cpu.tss.getSelector() & ~0x7) + 4)); // clear
-                                                                                 // busy
-                                                                                 // bit
-                                                                                 // of
-                                                                                 // current
-                                                                                 // tss
-            ((SegmentFactory.AbstractTSS) cpu.tss).saveCPUState(cpu);
+                if ((gsSelector & 0x4) != 0) // check gs descriptor is in memory
+                    newLdtr.checkAddress((gsSelector & ~0x7) + 7);
+                else
+                    cpu.gdtr.checkAddress((gsSelector & ~0x7) + 7);
 
-            cpu.gdtr
-                    .setDoubleWord((targetSelector & ~0x7) + 4,
-                            0x200 | cpu.gdtr
-                                    .getDoubleWord((targetSelector & ~0x7) + 4)); // set
-                                                                                  // busy
-                                                                                  // bit
-                                                                                  // of
-                                                                                  // new
-                                                                                  // tss
+                cpu.gdtr.setDoubleWord((cpu.tss.getSelector() & ~0x7) + 4, ~0x200
+                        & cpu.gdtr
+                        .getDoubleWord((cpu.tss.getSelector() & ~0x7) + 4)); // clear
+                // busy
+                // bit
+                // of
+                // current
+                // tss
+                ((SegmentFactory.AbstractTSS) cpu.tss).saveCPUState(cpu);
 
-            cpu.setCR0(cpu.getCR0() | 0x8); // set TS flag in CR0;
-            cpu.tss = newSegment;
-            ((SegmentFactory.AbstractTSS) cpu.tss).restoreCPUState(cpu);
-            cpu.cs.checkAddress(cpu.eip);
+                cpu.gdtr
+                        .setDoubleWord((targetSelector & ~0x7) + 4,
+                                0x200 | cpu.gdtr
+                                        .getDoubleWord((targetSelector & ~0x7) + 4)); // set
+                // busy
+                // bit
+                // of
+                // new
+                // tss
 
-            return;
+                cpu.setCR0(cpu.getCR0() | 0x8); // set TS flag in CR0;
+                cpu.tss = newSegment;
+                ((SegmentFactory.AbstractTSS) cpu.tss).restoreCPUState(cpu);
+                cpu.cs.checkAddress(cpu.eip);
 
-        case 0x0c: // Call Gate
-            System.err.println("JMP -> Call Gate");
-            throw new ProcessorException(-1, true);
-        case 0x18: // Non-conforming Code Segment
-        case 0x19: // Non-conforming Code Segment
-        case 0x1a: // Non-conforming Code Segment
-        case 0x1b: { // Non-conforming Code Segment
-            if ((newSegment.getRPL() != cpu.getCPL())
-                    || (newSegment.getDPL() > cpu.getCPL()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+                return;
 
-            newSegment.checkAddress(targetEIP);
-            newSegment.setRPL(cpu.getCPL());
-            cpu.cs = newSegment;
-            cpu.eip = targetEIP;
-            return;
-        }
-        case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
-        case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
-        case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
-        case 0x1f: { // Conforming Code Segment (Readable & Accessed)
-            if (newSegment.getDPL() > cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+            case 0x0c: // Call Gate
+                System.err.println("JMP -> Call Gate");
+                throw new ProcessorException(-1, true);
+            case 0x18: // Non-conforming Code Segment
+            case 0x19: // Non-conforming Code Segment
+            case 0x1a: // Non-conforming Code Segment
+            case 0x1b: { // Non-conforming Code Segment
+                if ((newSegment.getRPL() != cpu.getCPL())
+                        || (newSegment.getDPL() > cpu.getCPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
 
-            newSegment.checkAddress(targetEIP);
-            newSegment.setRPL(cpu.getCPL());
-            cpu.cs = newSegment;
-            cpu.eip = targetEIP;
-            return;
-        }
+                newSegment.checkAddress(targetEIP);
+                newSegment.setRPL(cpu.getCPL());
+                cpu.cs = newSegment;
+                cpu.eip = targetEIP;
+                return;
+            }
+            case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
+            case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
+            case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
+            case 0x1f: { // Conforming Code Segment (Readable & Accessed)
+                if (newSegment.getDPL() > cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
+
+                newSegment.checkAddress(targetEIP);
+                newSegment.setRPL(cpu.getCPL());
+                cpu.cs = newSegment;
+                cpu.eip = targetEIP;
+                return;
+            }
         }
     }
 
-    private final void call_o32_a32(int target) {
+    private final void call_o32_a32(int target)
+    {
         int tempEIP = cpu.eip + target;
 
         cpu.cs.checkAddress(tempEIP);
@@ -5592,7 +5754,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = tempEIP;
     }
 
-    private final void call_o16_a16(int target) {
+    private final void call_o16_a16(int target)
+    {
         int tempEIP = 0xFFFF & (cpu.eip + target);
 
         cpu.cs.checkAddress(tempEIP);
@@ -5606,7 +5769,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = tempEIP;
     }
 
-    private final void call_o16_a32(int target) {
+    private final void call_o16_a32(int target)
+    {
         int tempEIP = 0xFFFF & (cpu.eip + target);
 
         cpu.cs.checkAddress(tempEIP);
@@ -5621,7 +5785,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     @SuppressWarnings("unused")
-    private final void call_o32_a16(int target) {
+    private final void call_o32_a16(int target)
+    {
         int tempEIP = cpu.eip + target;
 
         cpu.cs.checkAddress(tempEIP);
@@ -5635,7 +5800,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = tempEIP;
     }
 
-    private final void call_abs_o16_a16(int target) {
+    private final void call_abs_o16_a16(int target)
+    {
         cpu.cs.checkAddress(target & 0xFFFF);
 
         if ((cpu.esp & 0xffff) < 2)
@@ -5647,7 +5813,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = target & 0xFFFF;
     }
 
-    private final void call_abs_o16_a32(int target) {
+    private final void call_abs_o16_a32(int target)
+    {
         cpu.cs.checkAddress(target & 0xFFFF);
 
         if ((cpu.esp < 2) && (cpu.esp > 0))
@@ -5659,7 +5826,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = target & 0xFFFF;
     }
 
-    private final void call_abs_o32_a32(int target) {
+    private final void call_abs_o32_a32(int target)
+    {
         cpu.cs.checkAddress(target);
 
         if ((cpu.esp < 4) && (cpu.esp > 0))
@@ -5671,7 +5839,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = target;
     }
 
-    private final void call_abs_o32_a16(int target) {
+    private final void call_abs_o32_a16(int target)
+    {
         cpu.cs.checkAddress(target);
 
         if ((cpu.esp & 0xffff) < 4)
@@ -5683,284 +5852,297 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = target;
     }
 
-    private final void call_far_o16_a32(int targetEIP, int targetSelector) {
+    private final void call_far_o16_a32(int targetEIP, int targetSelector)
+    {
         Segment newSegment = cpu.getSegment(targetSelector);
         if (newSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (newSegment.getType()) { // segment type
-        default: // not a valid segment descriptor for a jump
-            System.err.println("CALL -> Invalid Segment Type");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                    targetSelector, true);
-        case 0x05: // Task Gate
-            System.err.println("CALL -> Task Gate");
-            throw new ProcessorException(-1, true);
-        case 0x09: // TSS (Not Busy)
-        case 0x0b: // TSS (Busy)
-            System.err.println("CALL -> TSS (Task-State Segment)");
-            throw new ProcessorException(-1, true);
-        case 0x0c: // Call Gate
-            System.err.println("CALL -> Call Gate");
-            throw new ProcessorException(-1, true);
-        case 0x18: // Non-conforming Code Segment
-        case 0x19: // Non-conforming Code Segment
-        case 0x1a: // Non-conforming Code Segment
-        case 0x1b: // Non-conforming Code Segment
-        {
-            if ((newSegment.getRPL() > cpu.getCPL())
-                    || (newSegment.getDPL() != cpu.getCPL()))
+            default: // not a valid segment descriptor for a jump
+                System.err.println("CALL -> Invalid Segment Type");
                 throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
                         targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+            case 0x05: // Task Gate
+                System.err.println("CALL -> Task Gate");
+                throw new ProcessorException(-1, true);
+            case 0x09: // TSS (Not Busy)
+            case 0x0b: // TSS (Busy)
+                System.err.println("CALL -> TSS (Task-State Segment)");
+                throw new ProcessorException(-1, true);
+            case 0x0c: // Call Gate
+                System.err.println("CALL -> Call Gate");
+                throw new ProcessorException(-1, true);
+            case 0x18: // Non-conforming Code Segment
+            case 0x19: // Non-conforming Code Segment
+            case 0x1a: // Non-conforming Code Segment
+            case 0x1b: // Non-conforming Code Segment
+            {
+                if ((newSegment.getRPL() > cpu.getCPL())
+                        || (newSegment.getDPL() != cpu.getCPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
 
-            if ((cpu.esp < 4) && (cpu.esp > 0))
-                throw exceptionSS;
+                if ((cpu.esp < 4) && (cpu.esp > 0))
+                    throw exceptionSS;
 
-            newSegment.checkAddress(targetEIP & 0xFFFF);
+                newSegment.checkAddress(targetEIP & 0xFFFF);
 
-            cpu.ss
-                    .setWord(cpu.esp - 2, (short) (0xFFFF & cpu.cs
-                            .getSelector()));
-            cpu.ss.setWord(cpu.esp - 4, (short) (0xFFFF & cpu.eip));
-            cpu.esp -= 4;
+                cpu.ss
+                        .setWord(cpu.esp - 2, (short) (0xFFFF & cpu.cs
+                                .getSelector()));
+                cpu.ss.setWord(cpu.esp - 4, (short) (0xFFFF & cpu.eip));
+                cpu.esp -= 4;
 
-            cpu.cs = newSegment;
-            cpu.cs.setRPL(cpu.getCPL());
-            cpu.eip = targetEIP & 0xFFFF;
-            return;
-        }
-        case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
-        case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
-        case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
-        case 0x1f: // Conforming Code Segment (Readable & Accessed)
-            System.err.println("CALL -> Conforming Code Segment");
-            throw new ProcessorException(-1, true);
+                cpu.cs = newSegment;
+                cpu.cs.setRPL(cpu.getCPL());
+                cpu.eip = targetEIP & 0xFFFF;
+                return;
+            }
+            case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
+            case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
+            case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
+            case 0x1f: // Conforming Code Segment (Readable & Accessed)
+                System.err.println("CALL -> Conforming Code Segment");
+                throw new ProcessorException(-1, true);
         }
     }
 
-    private final void call_far_o16_a16(int targetEIP, int targetSelector) {
+    private final void call_far_o16_a16(int targetEIP, int targetSelector)
+    {
         Segment newSegment = cpu.getSegment(targetSelector);
         if (newSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (newSegment.getType()) { // segment type
-        default: // not a valid segment descriptor for a jump
-            System.err.println("CALL -> Invalid Segment Type");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                    targetSelector, true);
-        case 0x05: // Task Gate
-            System.err.println("CALL -> Task Gate");
-            throw new ProcessorException(-1, true);
-        case 0x09: // TSS (Not Busy)
-        case 0x0b: // TSS (Busy)
-            System.err.println("CALL -> TSS (Task-State Segment)");
-            throw new ProcessorException(-1, true);
-        case 0x0c: // Call Gate
-            System.err.println("CALL -> Call Gate");
-            throw new ProcessorException(-1, true);
-        case 0x18: // Non-conforming Code Segment
-        case 0x19: // Non-conforming Code Segment
-        case 0x1a: // Non-conforming Code Segment
-        case 0x1b: // Non-conforming Code Segment
-        {
-            if ((newSegment.getRPL() > cpu.getCPL())
-                    || (newSegment.getDPL() != cpu.getCPL()))
+            default: // not a valid segment descriptor for a jump
+                System.err.println("CALL -> Invalid Segment Type");
                 throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
                         targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+            case 0x05: // Task Gate
+                System.err.println("CALL -> Task Gate");
+                throw new ProcessorException(-1, true);
+            case 0x09: // TSS (Not Busy)
+            case 0x0b: // TSS (Busy)
+                System.err.println("CALL -> TSS (Task-State Segment)");
+                throw new ProcessorException(-1, true);
+            case 0x0c: // Call Gate
+                System.err.println("CALL -> Call Gate");
+                throw new ProcessorException(-1, true);
+            case 0x18: // Non-conforming Code Segment
+            case 0x19: // Non-conforming Code Segment
+            case 0x1a: // Non-conforming Code Segment
+            case 0x1b: // Non-conforming Code Segment
+            {
+                if ((newSegment.getRPL() > cpu.getCPL())
+                        || (newSegment.getDPL() != cpu.getCPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
 
-            if ((cpu.esp < 4) && (cpu.esp > 0))
-                throw exceptionSS;
+                if ((cpu.esp < 4) && (cpu.esp > 0))
+                    throw exceptionSS;
 
-            newSegment.checkAddress(targetEIP & 0xFFFF);
+                newSegment.checkAddress(targetEIP & 0xFFFF);
 
-            cpu.ss.setWord((cpu.esp - 2) & 0xFFFF, (short) (0xFFFF & cpu.cs
-                    .getSelector()));
-            cpu.ss.setWord((cpu.esp - 4) & 0xFFFF, (short) (0xFFFF & cpu.eip));
-            cpu.esp = (cpu.esp & ~0xFFFF) | ((cpu.esp - 4) & 0xFFFF);
+                cpu.ss.setWord((cpu.esp - 2) & 0xFFFF, (short) (0xFFFF & cpu.cs
+                        .getSelector()));
+                cpu.ss.setWord((cpu.esp - 4) & 0xFFFF, (short) (0xFFFF & cpu.eip));
+                cpu.esp = (cpu.esp & ~0xFFFF) | ((cpu.esp - 4) & 0xFFFF);
 
-            cpu.cs = newSegment;
-            cpu.cs.setRPL(cpu.getCPL());
-            cpu.eip = targetEIP & 0xFFFF;
-            return;
-        }
-        case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
-        case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
-        case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
-        case 0x1f: // Conforming Code Segment (Readable & Accessed)
-            System.err.println("CALL -> Conforming Code Segment");
-            throw new ProcessorException(-1, true);
+                cpu.cs = newSegment;
+                cpu.cs.setRPL(cpu.getCPL());
+                cpu.eip = targetEIP & 0xFFFF;
+                return;
+            }
+            case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
+            case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
+            case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
+            case 0x1f: // Conforming Code Segment (Readable & Accessed)
+                System.err.println("CALL -> Conforming Code Segment");
+                throw new ProcessorException(-1, true);
         }
     }
 
-    private final void call_far_o32_a32(int targetEIP, int targetSelector) {
+    private final void call_far_o32_a32(int targetEIP, int targetSelector)
+    {
         Segment newSegment = cpu.getSegment(targetSelector);
         if (newSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (newSegment.getType()) { // segment type
-        default: // not a valid segment descriptor for a jump
-            System.err.println("CALL -> Invalid Segment Type");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                    targetSelector, true);
-        case 0x05: // Task Gate
-            System.err.println("CALL -> Task Gate");
-            throw new ProcessorException(-1, true);
-        case 0x09: // TSS (Not Busy)
-        case 0x0b: // TSS (Busy)
-            System.err.println("CALL -> TSS (Task-State Segment)");
-            throw new ProcessorException(-1, true);
-        case 0x0c: // Call Gate
-            System.err.println("CALL -> Call Gate");
-            throw new ProcessorException(-1, true);
-        case 0x18: // Non-conforming Code Segment
-        case 0x19: // Non-conforming Code Segment
-        case 0x1a: // Non-conforming Code Segment
-        case 0x1b: // Non-conforming Code Segment
-        {
-            if ((newSegment.getRPL() > cpu.getCPL())
-                    || (newSegment.getDPL() != cpu.getCPL()))
+            default: // not a valid segment descriptor for a jump
+                System.err.println("CALL -> Invalid Segment Type");
                 throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
                         targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+            case 0x05: // Task Gate
+                System.err.println("CALL -> Task Gate");
+                throw new ProcessorException(-1, true);
+            case 0x09: // TSS (Not Busy)
+            case 0x0b: // TSS (Busy)
+                System.err.println("CALL -> TSS (Task-State Segment)");
+                throw new ProcessorException(-1, true);
+            case 0x0c: // Call Gate
+                System.err.println("CALL -> Call Gate");
+                throw new ProcessorException(-1, true);
+            case 0x18: // Non-conforming Code Segment
+            case 0x19: // Non-conforming Code Segment
+            case 0x1a: // Non-conforming Code Segment
+            case 0x1b: // Non-conforming Code Segment
+            {
+                if ((newSegment.getRPL() > cpu.getCPL())
+                        || (newSegment.getDPL() != cpu.getCPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
 
-            if ((cpu.esp < 8) && (cpu.esp > 0))
-                throw exceptionSS;
+                if ((cpu.esp < 8) && (cpu.esp > 0))
+                    throw exceptionSS;
 
-            newSegment.checkAddress(targetEIP);
+                newSegment.checkAddress(targetEIP);
 
-            cpu.ss.setDoubleWord(cpu.esp - 4, cpu.cs.getSelector());
-            cpu.ss.setDoubleWord(cpu.esp - 8, cpu.eip);
-            cpu.esp -= 8;
+                cpu.ss.setDoubleWord(cpu.esp - 4, cpu.cs.getSelector());
+                cpu.ss.setDoubleWord(cpu.esp - 8, cpu.eip);
+                cpu.esp -= 8;
 
-            cpu.cs = newSegment;
-            cpu.cs.setRPL(cpu.getCPL());
-            cpu.eip = targetEIP;
-            return;
-        }
-        case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
-        case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
-        case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
-        case 0x1f: // Conforming Code Segment (Readable & Accessed)
-            System.err.println("CALL -> Conforming Code Segment");
-            throw new ProcessorException(-1, true);
+                cpu.cs = newSegment;
+                cpu.cs.setRPL(cpu.getCPL());
+                cpu.eip = targetEIP;
+                return;
+            }
+            case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
+            case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
+            case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
+            case 0x1f: // Conforming Code Segment (Readable & Accessed)
+                System.err.println("CALL -> Conforming Code Segment");
+                throw new ProcessorException(-1, true);
         }
     }
 
-    private final void call_far_o32_a16(int targetEIP, int targetSelector) {
+    private final void call_far_o32_a16(int targetEIP, int targetSelector)
+    {
         Segment newSegment = cpu.getSegment(targetSelector);
         if (newSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (newSegment.getType()) { // segment type
-        default: // not a valid segment descriptor for a jump
-            System.err.println("CALL -> Invalid Segment Type");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                    targetSelector, true);
-        case 0x05: // Task Gate
-            System.err.println("CALL -> Task Gate");
-            throw new ProcessorException(-1, true);
-        case 0x09: // TSS (Not Busy)
-        case 0x0b: // TSS (Busy)
-            System.err.println("CALL -> TSS (Task-State Segment)");
-            throw new ProcessorException(-1, true);
-        case 0x0c: // Call Gate
-            System.err.println("CALL -> Call Gate");
-            throw new ProcessorException(-1, true);
-        case 0x18: // Non-conforming Code Segment
-        case 0x19: // Non-conforming Code Segment
-        case 0x1a: // Non-conforming Code Segment
-        case 0x1b: // Non-conforming Code Segment
-        {
-            if ((newSegment.getRPL() > cpu.getCPL())
-                    || (newSegment.getDPL() != cpu.getCPL()))
+            default: // not a valid segment descriptor for a jump
+                System.err.println("CALL -> Invalid Segment Type");
                 throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
                         targetSelector, true);
-            if (!newSegment.isPresent())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        targetSelector, true);
+            case 0x05: // Task Gate
+                System.err.println("CALL -> Task Gate");
+                throw new ProcessorException(-1, true);
+            case 0x09: // TSS (Not Busy)
+            case 0x0b: // TSS (Busy)
+                System.err.println("CALL -> TSS (Task-State Segment)");
+                throw new ProcessorException(-1, true);
+            case 0x0c: // Call Gate
+                System.err.println("CALL -> Call Gate");
+                throw new ProcessorException(-1, true);
+            case 0x18: // Non-conforming Code Segment
+            case 0x19: // Non-conforming Code Segment
+            case 0x1a: // Non-conforming Code Segment
+            case 0x1b: // Non-conforming Code Segment
+            {
+                if ((newSegment.getRPL() > cpu.getCPL())
+                        || (newSegment.getDPL() != cpu.getCPL()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            targetSelector, true);
+                if (!newSegment.isPresent())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            targetSelector, true);
 
-            if ((cpu.esp & 0xffff) < 8)
-                throw exceptionSS;
+                if ((cpu.esp & 0xffff) < 8)
+                    throw exceptionSS;
 
-            newSegment.checkAddress(targetEIP);
+                newSegment.checkAddress(targetEIP);
 
-            cpu.ss.setDoubleWord((cpu.esp - 4) & 0xffff, cpu.cs.getSelector());
-            cpu.ss.setDoubleWord((cpu.esp - 8) & 0xffff, cpu.eip);
-            cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp - 8) & 0xffff);
+                cpu.ss.setDoubleWord((cpu.esp - 4) & 0xffff, cpu.cs.getSelector());
+                cpu.ss.setDoubleWord((cpu.esp - 8) & 0xffff, cpu.eip);
+                cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp - 8) & 0xffff);
 
-            cpu.cs = newSegment;
-            cpu.cs.setRPL(cpu.getCPL());
-            cpu.eip = targetEIP;
-            return;
-        }
-        case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
-        case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
-        case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
-        case 0x1f: // Conforming Code Segment (Readable & Accessed)
-            System.err.println("CALL -> Conforming Code Segment");
-            throw new ProcessorException(-1, true);
+                cpu.cs = newSegment;
+                cpu.cs.setRPL(cpu.getCPL());
+                cpu.eip = targetEIP;
+                return;
+            }
+            case 0x1c: // Conforming Code Segment (Not Readable & Not Accessed)
+            case 0x1d: // Conforming Code Segment (Not Readable & Accessed)
+            case 0x1e: // Conforming Code Segment (Readable & Not Accessed)
+            case 0x1f: // Conforming Code Segment (Readable & Accessed)
+                System.err.println("CALL -> Conforming Code Segment");
+                throw new ProcessorException(-1, true);
         }
     }
 
-    private final void ret_o16_a32() {
+    private final void ret_o16_a32()
+    {
         // TODO: supposed to throw SS exception
         // "if top 6 bytes of stack not within stack limits"
         cpu.eip = cpu.ss.getWord(cpu.esp) & 0xffff;
         cpu.esp = cpu.esp + 2;
     }
 
-    private final void ret_o16_a16() {
+    private final void ret_o16_a16()
+    {
         // TODO: supposed to throw SS exception
         // "if top 6 bytes of stack not within stack limits"
         cpu.eip = cpu.ss.getWord(cpu.esp & 0xffff) & 0xffff;
         cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp + 2) & 0xffff);
     }
 
-    private final void ret_o32_a32() {
+    private final void ret_o32_a32()
+    {
         // TODO: supposed to throw SS exception
         // "if top 6 bytes of stack not within stack limits"
         cpu.eip = cpu.ss.getDoubleWord(cpu.esp);
         cpu.esp = cpu.esp + 4;
     }
 
-    private final void ret_o32_a16() {
+    private final void ret_o32_a16()
+    {
         // TODO: supposed to throw SS exception
         // "if top 6 bytes of stack not within stack limits"
         cpu.eip = cpu.ss.getDoubleWord(0xffff & cpu.esp);
         cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp + 4) & 0xffff);
     }
 
-    private final void ret_iw_o16_a32(short offset) {
+    private final void ret_iw_o16_a32(short offset)
+    {
         ret_o16_a32();
         cpu.esp += offset;
     }
 
-    private final void ret_iw_o16_a16(short offset) {
+    private final void ret_iw_o16_a16(short offset)
+    {
         ret_o16_a16();
         cpu.esp = (cpu.esp & ~0xffff)
                 | (((cpu.esp & 0xFFFF) + offset) & 0xffff);
     }
 
-    private final void ret_iw_o32_a32(short offset) {
+    private final void ret_iw_o32_a32(short offset)
+    {
         ret_o32_a32();
         cpu.esp += offset;
     }
 
-    private final void ret_iw_o32_a16(short offset) {
+    private final void ret_iw_o32_a16(short offset)
+    {
         ret_o32_a16();
         cpu.esp = (cpu.esp & ~0xffff)
                 | (((cpu.esp & 0xFFFF) + offset) & 0xffff);
     }
 
-    private final void ret_far_o16_a16(int stackdelta) {
+    private final void ret_far_o16_a16(int stackdelta)
+    {
         try {
             cpu.ss.checkAddress((cpu.esp + 3) & 0xFFFF);
         } catch (ProcessorException e) {
@@ -5976,75 +6158,76 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
-                    true);
+            default:
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp = (cpu.esp & ~0xFFFF)
-                        | ((cpu.esp + 4 + stackdelta) & 0xFFFF);
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp = (cpu.esp & ~0xFFFF)
+                            | ((cpu.esp + 4 + stackdelta) & 0xFFFF);
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
             break;
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp = (cpu.esp & ~0xFFFF)
-                        | ((cpu.esp + 4 + stackdelta) & 0xFFFF);
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp = (cpu.esp & ~0xFFFF)
+                            | ((cpu.esp + 4 + stackdelta) & 0xFFFF);
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
         }
     }
 
-    private final void ret_far_o16_a32(int stackdelta) {
+    private final void ret_far_o16_a32(int stackdelta)
+    {
         try {
             cpu.ss.checkAddress(cpu.esp + 3);
         } catch (ProcessorException e) {
@@ -6060,73 +6243,74 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
-                    true);
+            default:
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp = cpu.esp + 4 + stackdelta;
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp = cpu.esp + 4 + stackdelta;
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
             break;
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP & 0xFFFF);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP & 0xFFFF);
 
-                cpu.esp = cpu.esp + 4 + stackdelta;
-                cpu.eip = (0xFFFF & tempEIP);
-                cpu.cs = returnSegment;
+                    cpu.esp = cpu.esp + 4 + stackdelta;
+                    cpu.eip = (0xFFFF & tempEIP);
+                    cpu.cs = returnSegment;
+                }
             }
-        }
         }
     }
 
-    private final void ret_far_o32_a16(int stackdelta) {
+    private final void ret_far_o32_a16(int stackdelta)
+    {
         try {
             cpu.ss.checkAddress((cpu.esp + 7) & 0xFFFF);
         } catch (ProcessorException e) {
@@ -6142,75 +6326,76 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
-                    true);
+            default:
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Non-Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp = (cpu.esp & ~0xFFFF)
-                        | ((cpu.esp + 8 + stackdelta) & 0xFFFF);
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp = (cpu.esp & ~0xFFFF)
+                            | ((cpu.esp + 8 + stackdelta) & 0xFFFF);
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
             break;
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp = (cpu.esp & ~0xFFFF)
-                        | ((cpu.esp + 8 + stackdelta) & 0xFFFF);
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp = (cpu.esp & ~0xFFFF)
+                            | ((cpu.esp + 8 + stackdelta) & 0xFFFF);
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
         }
     }
 
-    private final void ret_far_o32_a32(int stackdelta) {
+    private final void ret_far_o32_a32(int stackdelta)
+    {
         try {
             cpu.ss.checkAddress(cpu.esp + 7);
         } catch (ProcessorException e) {
@@ -6226,104 +6411,105 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
-                    true);
+            default:
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, tempCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                try {
-                    cpu.ss.checkAddress(cpu.esp + 15);
-                } catch (ProcessorException e) {
-                    throw exceptionSS;
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    try {
+                        cpu.ss.checkAddress(cpu.esp + 15);
+                    } catch (ProcessorException e) {
+                        throw exceptionSS;
+                    }
+
+                    int returnESP = cpu.ss.getDoubleWord(cpu.esp + 8 + stackdelta);
+                    int tempSS = 0xffff & cpu.ss.getDoubleWord(cpu.esp + 12
+                            + stackdelta);
+
+                    Segment returnStackSegment = cpu.getSegment(tempSS);
+
+                    if ((returnStackSegment.getRPL() != returnSegment.getRPL())
+                            || ((returnStackSegment.getType() & 0x12) != 0x12)
+                            || (returnStackSegment.getDPL() != returnSegment
+                            .getRPL()))
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    if (!returnStackSegment.isPresent())
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    returnSegment.checkAddress(tempEIP);
+
+                    // cpu.esp += 20; //includes the 12 from earlier
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+
+                    cpu.ss = returnStackSegment;
+                    cpu.esp = returnESP;
+
+                    cpu.setCPL(cpu.cs.getRPL());
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
+
+                    cpu.esp += 8 + stackdelta;
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
                 }
-
-                int returnESP = cpu.ss.getDoubleWord(cpu.esp + 8 + stackdelta);
-                int tempSS = 0xffff & cpu.ss.getDoubleWord(cpu.esp + 12
-                        + stackdelta);
-
-                Segment returnStackSegment = cpu.getSegment(tempSS);
-
-                if ((returnStackSegment.getRPL() != returnSegment.getRPL())
-                        || ((returnStackSegment.getType() & 0x12) != 0x12)
-                        || (returnStackSegment.getDPL() != returnSegment
-                                .getRPL()))
-                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
-
-                if (!returnStackSegment.isPresent())
-                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
-
-                returnSegment.checkAddress(tempEIP);
-
-                // cpu.esp += 20; //includes the 12 from earlier
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
-
-                cpu.ss = returnStackSegment;
-                cpu.esp = returnESP;
-
-                cpu.setCPL(cpu.cs.getRPL());
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
-
-                cpu.esp += 8 + stackdelta;
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
             }
-        }
             break;
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        tempCS, true);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            tempCS, true);
 
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        tempCS, true);
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            tempCS, true);
 
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                // cpu.esp += 8;
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(tempEIP);
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    // cpu.esp += 8;
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(tempEIP);
 
-                cpu.esp += 8;
-                cpu.eip = tempEIP;
-                cpu.cs = returnSegment;
+                    cpu.esp += 8;
+                    cpu.eip = tempEIP;
+                    cpu.cs = returnSegment;
+                }
             }
-        }
         }
     }
 
     private final int iretToVirtual8086Mode16BitAddressing(int newCS,
-            int newEIP, int newEFlags) {
+                                                           int newEIP, int newEFlags)
+    {
         try {
             cpu.ss.checkAddress((cpu.esp + 23) & 0xffff);
         } catch (ProcessorException e) {
@@ -6349,172 +6535,174 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final int iret32ProtectedMode16BitAddressing(int newCS, int newEIP,
-            int newEFlags) {
+                                                         int newEFlags)
+    {
         Segment returnSegment = cpu.getSegment(newCS);
 
         if (returnSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            System.err.println("Bad Segment Type For IRET");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
-                    true);
+            default:
+                System.err.println("Bad Segment Type For IRET");
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                try {
-                    cpu.ss.checkAddress((cpu.esp + 7) & 0xFFFF);
-                } catch (ProcessorException e) {
-                    throw exceptionSS;
-                }
-
-                int returnESP = cpu.ss.getDoubleWord((cpu.esp) & 0xFFFF);
-                int newSS = 0xffff & cpu.ss
-                        .getDoubleWord((cpu.esp + 4) & 0xFFFF);
-
-                Segment returnStackSegment = cpu.getSegment(newSS);
-
-                if ((returnStackSegment.getRPL() != returnSegment.getRPL())
-                        || ((returnStackSegment.getType() & 0x12) != 0x12)
-                        || (returnStackSegment.getDPL() != returnSegment
-                                .getRPL()))
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            newSS, true);
+                            newCS, true);
 
-                if (!returnStackSegment.isPresent())
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
+
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    try {
+                        cpu.ss.checkAddress((cpu.esp + 7) & 0xFFFF);
+                    } catch (ProcessorException e) {
+                        throw exceptionSS;
+                    }
+
+                    int returnESP = cpu.ss.getDoubleWord((cpu.esp) & 0xFFFF);
+                    int newSS = 0xffff & cpu.ss
+                            .getDoubleWord((cpu.esp + 4) & 0xFFFF);
+
+                    Segment returnStackSegment = cpu.getSegment(newSS);
+
+                    if ((returnStackSegment.getRPL() != returnSegment.getRPL())
+                            || ((returnStackSegment.getType() & 0x12) != 0x12)
+                            || (returnStackSegment.getDPL() != returnSegment
+                            .getRPL()))
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                newSS, true);
+
+                    if (!returnStackSegment.isPresent())
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                newSS, true);
+
+                    returnSegment.checkAddress(newEIP);
+
+                    // cpu.esp += 20; //includes the 12 from earlier
+                    cpu.eip = newEIP;
+                    cpu.cs = returnSegment;
+
+                    cpu.ss = returnStackSegment;
+                    cpu.esp = returnESP;
+
+                    int eflags = cpu.getEFlags();
+                    eflags &= ~0x254dd5;
+                    eflags |= (0x254dd5 & newEFlags);
+                    // overwrite: all; preserve: if, iopl, vm, vif, vip
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                        // overwrite: all; preserve: iopl, vm, vif, vip
+                    }
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x1a3000;
+                        eflags |= (0x1a3000 & newEFlags);
+                        // overwrite: all;
+                    }
+                    // cpu.setEFlags(eflags);
+
+                    cpu.setCPL(cpu.cs.getRPL());
+
+                    try {
+                        if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.es.getDPL()))
+                            cpu.es = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.ds.getDPL()))
+                            cpu.ds = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.fs.getDPL()))
+                            cpu.fs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.gs.getDPL()))
+                            cpu.gs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    return eflags;
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(newEIP);
+
+                    // cpu.esp = (cpu.esp & ~0xFFFF) | ((cpu.esp+12)&0xFFFF);
+                    cpu.cs = returnSegment;
+                    cpu.eip = newEIP;
+
+                    // Set EFlags
+                    int eflags = cpu.getEFlags();
+
+                    eflags &= ~0x254dd5;
+                    eflags |= (0x254dd5 & newEFlags);
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                    }
+
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x1a3000;
+                        eflags |= (0x1a3000 & newEFlags);
+
+                    }
+                    // cpu.setEFlags(eflags);
+                    return eflags;
+                }
+            }
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            newSS, true);
+                            newCS, true);
 
-                returnSegment.checkAddress(newEIP);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            newCS, true);
 
-                // cpu.esp += 20; //includes the 12 from earlier
-                cpu.eip = newEIP;
-                cpu.cs = returnSegment;
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
 
-                cpu.ss = returnStackSegment;
-                cpu.esp = returnESP;
-
-                int eflags = cpu.getEFlags();
-                eflags &= ~0x254dd5;
-                eflags |= (0x254dd5 & newEFlags);
-                // overwrite: all; preserve: if, iopl, vm, vif, vip
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                    // overwrite: all; preserve: iopl, vm, vif, vip
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
                 }
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x1a3000;
-                    eflags |= (0x1a3000 & newEFlags);
-                    // overwrite: all;
-                }
-                // cpu.setEFlags(eflags);
-
-                cpu.setCPL(cpu.cs.getRPL());
-
-                try {
-                    if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.es.getDPL()))
-                        cpu.es = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.ds.getDPL()))
-                        cpu.ds = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.fs.getDPL()))
-                        cpu.fs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.gs.getDPL()))
-                        cpu.gs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                return eflags;
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(newEIP);
-
-                // cpu.esp = (cpu.esp & ~0xFFFF) | ((cpu.esp+12)&0xFFFF);
-                cpu.cs = returnSegment;
-                cpu.eip = newEIP;
-
-                // Set EFlags
-                int eflags = cpu.getEFlags();
-
-                eflags &= ~0x254dd5;
-                eflags |= (0x254dd5 & newEFlags);
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                }
-
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x1a3000;
-                    eflags |= (0x1a3000 & newEFlags);
-
-                }
-                // cpu.setEFlags(eflags);
-                return eflags;
             }
-        }
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            }
-        }
         }
     }
 
-    private final int iret_o32_a16() {
+    private final int iret_o32_a16()
+    {
         if (cpu.eflagsNestedTask)
             return iretFromTask();
         else {
@@ -6538,13 +6726,15 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int iretFromTask() {
+    private final int iretFromTask()
+    {
         System.err.println("IRET: Task Return");
         throw new ProcessorException(-1, true);
     }
 
     private final int iretToVirtual8086Mode32BitAddressing(int newCS,
-            int newEIP, int newEFlags) {
+                                                           int newEIP, int newEFlags)
+    {
         try {
             cpu.ss.checkAddress(cpu.esp + 23);
         } catch (ProcessorException e) {
@@ -6573,167 +6763,169 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final int iret32ProtectedMode32BitAddressing(int newCS, int newEIP,
-            int newEFlags) {
+                                                         int newEFlags)
+    {
         Segment returnSegment = cpu.getSegment(newCS);
 
         if (returnSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            System.err.println("Bad Segment Type For IRET");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
-                    true);
+            default:
+                System.err.println("Bad Segment Type For IRET");
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: { // Code, Execute/Read, Accessed
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                try {
-                    cpu.ss.checkAddress(cpu.esp + 7);
-                } catch (ProcessorException e) {
-                    throw exceptionSS;
-                }
-
-                int returnESP = cpu.ss.getDoubleWord(cpu.esp);
-                int tempSS = 0xffff & cpu.ss.getDoubleWord(cpu.esp + 4);
-
-                Segment returnStackSegment = cpu.getSegment(tempSS);
-
-                if ((returnStackSegment.getRPL() != returnSegment.getRPL())
-                        || ((returnStackSegment.getType() & 0x12) != 0x12)
-                        || (returnStackSegment.getDPL() != returnSegment
-                                .getRPL()))
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: { // Code, Execute/Read, Accessed
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
+                            newCS, true);
 
-                if (!returnStackSegment.isPresent())
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
+
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    try {
+                        cpu.ss.checkAddress(cpu.esp + 7);
+                    } catch (ProcessorException e) {
+                        throw exceptionSS;
+                    }
+
+                    int returnESP = cpu.ss.getDoubleWord(cpu.esp);
+                    int tempSS = 0xffff & cpu.ss.getDoubleWord(cpu.esp + 4);
+
+                    Segment returnStackSegment = cpu.getSegment(tempSS);
+
+                    if ((returnStackSegment.getRPL() != returnSegment.getRPL())
+                            || ((returnStackSegment.getType() & 0x12) != 0x12)
+                            || (returnStackSegment.getDPL() != returnSegment
+                            .getRPL()))
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    if (!returnStackSegment.isPresent())
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    returnSegment.checkAddress(newEIP);
+
+                    // cpu.esp += 20; //includes the 12 from earlier
+                    cpu.eip = newEIP;
+                    cpu.cs = returnSegment;
+
+                    cpu.ss = returnStackSegment;
+                    cpu.esp = returnESP;
+
+                    int eflags = cpu.getEFlags();
+                    eflags &= ~0x254dd5;
+                    eflags |= (0x254dd5 & newEFlags);
+                    // overwrite: all; preserve: if, iopl, vm, vif, vip
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                        // overwrite: all; preserve: iopl, vm, vif, vip
+                    }
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x1a3000;
+                        eflags |= (0x1a3000 & newEFlags);
+                        // overwrite: all;
+                    }
+                    // cpu.setEFlags(eflags);
+
+                    cpu.setCPL(cpu.cs.getRPL());
+
+                    try {
+                        if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.es.getDPL()))
+                            cpu.es = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.ds.getDPL()))
+                            cpu.ds = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.fs.getDPL()))
+                            cpu.fs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.gs.getDPL()))
+                            cpu.gs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    return eflags;
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(newEIP);
+
+                    cpu.cs = returnSegment;
+                    cpu.eip = newEIP;
+
+                    // Set EFlags
+                    int eflags = cpu.getEFlags();
+
+                    eflags &= ~0x254dd5;
+                    eflags |= (0x254dd5 & newEFlags);
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                    }
+
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x1a3000;
+                        eflags |= (0x1a3000 & newEFlags);
+                    }
+                    // cpu.setEFlags(eflags);
+                    return eflags;
+                }
+            }
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: { // Code: Execute/Read, Conforming, Accessed
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
+                            newCS, true);
 
-                returnSegment.checkAddress(newEIP);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            newCS, true);
 
-                // cpu.esp += 20; //includes the 12 from earlier
-                cpu.eip = newEIP;
-                cpu.cs = returnSegment;
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
 
-                cpu.ss = returnStackSegment;
-                cpu.esp = returnESP;
-
-                int eflags = cpu.getEFlags();
-                eflags &= ~0x254dd5;
-                eflags |= (0x254dd5 & newEFlags);
-                // overwrite: all; preserve: if, iopl, vm, vif, vip
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                    // overwrite: all; preserve: iopl, vm, vif, vip
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
                 }
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x1a3000;
-                    eflags |= (0x1a3000 & newEFlags);
-                    // overwrite: all;
-                }
-                // cpu.setEFlags(eflags);
-
-                cpu.setCPL(cpu.cs.getRPL());
-
-                try {
-                    if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.es.getDPL()))
-                        cpu.es = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.ds.getDPL()))
-                        cpu.ds = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.fs.getDPL()))
-                        cpu.fs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.gs.getDPL()))
-                        cpu.gs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                return eflags;
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(newEIP);
-
-                cpu.cs = returnSegment;
-                cpu.eip = newEIP;
-
-                // Set EFlags
-                int eflags = cpu.getEFlags();
-
-                eflags &= ~0x254dd5;
-                eflags |= (0x254dd5 & newEFlags);
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                }
-
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x1a3000;
-                    eflags |= (0x1a3000 & newEFlags);
-                }
-                // cpu.setEFlags(eflags);
-                return eflags;
             }
-        }
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: { // Code: Execute/Read, Conforming, Accessed
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            }
-        }
         }
     }
 
-    private final int iret_o32_a32() {
+    private final int iret_o32_a32()
+    {
         if (cpu.eflagsNestedTask)
             return iretFromTask();
         else {
@@ -6757,7 +6949,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int iret_o16_a16() {
+    private final int iret_o16_a16()
+    {
         if (cpu.eflagsNestedTask)
             return iretFromTask();
         else {
@@ -6776,7 +6969,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int iret_o16_a32() {
+    private final int iret_o16_a32()
+    {
         if (cpu.eflagsNestedTask)
             return iretFromTask();
         else {
@@ -6796,331 +6990,334 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final int iret16ProtectedMode16BitAddressing(int newCS, int newEIP,
-            int newEFlags) {
+                                                         int newEFlags)
+    {
         Segment returnSegment = cpu.getSegment(newCS);
 
         if (returnSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            System.err.println("Bad Segment Type For IRET");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
-                    true);
+            default:
+                System.err.println("Bad Segment Type For IRET");
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: // Code, Execute/Read, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                try {
-                    cpu.ss.checkAddress((cpu.esp + 3) & 0xFFFF);
-                } catch (ProcessorException e) {
-                    throw exceptionSS;
-                }
-
-                int returnESP = 0xffff & cpu.ss.getWord(cpu.esp & 0xFFFF);
-                int newSS = 0xffff & cpu.ss.getWord((cpu.esp + 2) & 0xFFFF);
-
-                Segment returnStackSegment = cpu.getSegment(newSS);
-
-                if ((returnStackSegment.getRPL() != returnSegment.getRPL())
-                        || ((returnStackSegment.getType() & 0x12) != 0x12)
-                        || (returnStackSegment.getDPL() != returnSegment
-                                .getRPL()))
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: // Code, Execute/Read, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            newSS, true);
+                            newCS, true);
 
-                if (!returnStackSegment.isPresent())
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
+
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    try {
+                        cpu.ss.checkAddress((cpu.esp + 3) & 0xFFFF);
+                    } catch (ProcessorException e) {
+                        throw exceptionSS;
+                    }
+
+                    int returnESP = 0xffff & cpu.ss.getWord(cpu.esp & 0xFFFF);
+                    int newSS = 0xffff & cpu.ss.getWord((cpu.esp + 2) & 0xFFFF);
+
+                    Segment returnStackSegment = cpu.getSegment(newSS);
+
+                    if ((returnStackSegment.getRPL() != returnSegment.getRPL())
+                            || ((returnStackSegment.getType() & 0x12) != 0x12)
+                            || (returnStackSegment.getDPL() != returnSegment
+                            .getRPL()))
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                newSS, true);
+
+                    if (!returnStackSegment.isPresent())
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                newSS, true);
+
+                    returnSegment.checkAddress(newEIP);
+
+                    // cpu.esp += 20; //includes the 12 from earlier
+                    cpu.eip = newEIP;
+                    cpu.cs = returnSegment;
+
+                    cpu.ss = returnStackSegment;
+                    cpu.esp = returnESP;
+
+                    int eflags = cpu.getEFlags();
+                    eflags &= ~0x4dd5;
+                    eflags |= (0x4dd5 & newEFlags);
+                    // overwrite: all; preserve: if, iopl, vm, vif, vip
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                        // overwrite: all; preserve: iopl, vm, vif, vip
+                    }
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x3000;
+                        eflags |= (0x3000 & newEFlags);
+                        // overwrite: all;
+                    }
+                    // cpu.setEFlags(eflags);
+
+                    cpu.setCPL(cpu.cs.getRPL());
+
+                    try {
+                        if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.es.getDPL()))
+                            cpu.es = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.ds.getDPL()))
+                            cpu.ds = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.fs.getDPL()))
+                            cpu.fs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.gs.getDPL()))
+                            cpu.gs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    return eflags;
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(newEIP);
+
+                    cpu.cs = returnSegment;
+                    cpu.eip = newEIP;
+
+                    // Set EFlags
+                    int eflags = cpu.getEFlags();
+
+                    eflags &= ~0x4dd5;
+                    eflags |= (0x4dd5 & newEFlags);
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                    }
+
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x3000;
+                        eflags |= (0x3000 & newEFlags);
+
+                    }
+                    // cpu.setEFlags(eflags);
+                    return eflags;
+                }
+            }
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: // Code: Execute/Read, Conforming, Accessed
+            {
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            newSS, true);
+                            newCS, true);
 
-                returnSegment.checkAddress(newEIP);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            newCS, true);
 
-                // cpu.esp += 20; //includes the 12 from earlier
-                cpu.eip = newEIP;
-                cpu.cs = returnSegment;
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
 
-                cpu.ss = returnStackSegment;
-                cpu.esp = returnESP;
-
-                int eflags = cpu.getEFlags();
-                eflags &= ~0x4dd5;
-                eflags |= (0x4dd5 & newEFlags);
-                // overwrite: all; preserve: if, iopl, vm, vif, vip
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                    // overwrite: all; preserve: iopl, vm, vif, vip
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
                 }
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x3000;
-                    eflags |= (0x3000 & newEFlags);
-                    // overwrite: all;
-                }
-                // cpu.setEFlags(eflags);
-
-                cpu.setCPL(cpu.cs.getRPL());
-
-                try {
-                    if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.es.getDPL()))
-                        cpu.es = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.ds.getDPL()))
-                        cpu.ds = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.fs.getDPL()))
-                        cpu.fs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.gs.getDPL()))
-                        cpu.gs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                return eflags;
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(newEIP);
-
-                cpu.cs = returnSegment;
-                cpu.eip = newEIP;
-
-                // Set EFlags
-                int eflags = cpu.getEFlags();
-
-                eflags &= ~0x4dd5;
-                eflags |= (0x4dd5 & newEFlags);
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                }
-
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x3000;
-                    eflags |= (0x3000 & newEFlags);
-
-                }
-                // cpu.setEFlags(eflags);
-                return eflags;
             }
-        }
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: // Code: Execute/Read, Conforming, Accessed
-        {
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            }
-        }
         }
     }
 
     private final int iret16ProtectedMode32BitAddressing(int newCS, int newEIP,
-            int newEFlags) {
+                                                         int newEFlags)
+    {
         Segment returnSegment = cpu.getSegment(newCS);
 
         if (returnSegment == SegmentFactory.NULL_SEGMENT)
             throw (ProcessorException) exceptionGP;
 
         switch (returnSegment.getType()) {
-        default:
-            System.err.println("Bad Segment Type For IRET");
-            throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
-                    true);
+            default:
+                System.err.println("Bad Segment Type For IRET");
+                throw new ProcessorException(Processor.PROC_EXCEPTION_GP, newCS,
+                        true);
 
-        case 0x18: // Code, Execute-Only
-        case 0x19: // Code, Execute-Only, Accessed
-        case 0x1a: // Code, Execute/Read
-        case 0x1b: { // Code, Execute/Read, Accessed
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                try {
-                    cpu.ss.checkAddress(cpu.esp + 3);
-                } catch (ProcessorException e) {
-                    throw exceptionSS;
-                }
-
-                int returnESP = 0xffff & cpu.ss.getWord(cpu.esp);
-                int tempSS = 0xffff & cpu.ss.getWord(cpu.esp + 2);
-
-                Segment returnStackSegment = cpu.getSegment(tempSS);
-
-                if ((returnStackSegment.getRPL() != returnSegment.getRPL())
-                        || ((returnStackSegment.getType() & 0x12) != 0x12)
-                        || (returnStackSegment.getDPL() != returnSegment
-                                .getRPL()))
+            case 0x18: // Code, Execute-Only
+            case 0x19: // Code, Execute-Only, Accessed
+            case 0x1a: // Code, Execute/Read
+            case 0x1b: { // Code, Execute/Read, Accessed
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
+                            newCS, true);
 
-                if (!returnStackSegment.isPresent())
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
+
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    try {
+                        cpu.ss.checkAddress(cpu.esp + 3);
+                    } catch (ProcessorException e) {
+                        throw exceptionSS;
+                    }
+
+                    int returnESP = 0xffff & cpu.ss.getWord(cpu.esp);
+                    int tempSS = 0xffff & cpu.ss.getWord(cpu.esp + 2);
+
+                    Segment returnStackSegment = cpu.getSegment(tempSS);
+
+                    if ((returnStackSegment.getRPL() != returnSegment.getRPL())
+                            || ((returnStackSegment.getType() & 0x12) != 0x12)
+                            || (returnStackSegment.getDPL() != returnSegment
+                            .getRPL()))
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    if (!returnStackSegment.isPresent())
+                        throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                                tempSS, true);
+
+                    returnSegment.checkAddress(newEIP);
+
+                    // cpu.esp += 20; //includes the 12 from earlier
+                    cpu.eip = newEIP;
+                    cpu.cs = returnSegment;
+
+                    cpu.ss = returnStackSegment;
+                    cpu.esp = returnESP;
+
+                    int eflags = cpu.getEFlags();
+                    eflags &= ~0x4dd5;
+                    eflags |= (0x4dd5 & newEFlags);
+                    // overwrite: all; preserve: if, iopl, vm, vif, vip
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                        // overwrite: all; preserve: iopl, vm, vif, vip
+                    }
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x3000;
+                        eflags |= (0x3000 & newEFlags);
+                        // overwrite: all;
+                    }
+                    // cpu.setEFlags(eflags);
+
+                    cpu.setCPL(cpu.cs.getRPL());
+
+                    try {
+                        if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.es.getDPL()))
+                            cpu.es = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.ds.getDPL()))
+                            cpu.ds = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.fs.getDPL()))
+                            cpu.fs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    try {
+                        if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
+                                && (cpu.getCPL() > cpu.gs.getDPL()))
+                            cpu.gs = SegmentFactory.NULL_SEGMENT;
+                    } catch (ProcessorException e) {
+                    }
+
+                    return eflags;
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    returnSegment.checkAddress(newEIP);
+
+                    cpu.cs = returnSegment;
+                    cpu.eip = newEIP;
+
+                    // Set EFlags
+                    int eflags = cpu.getEFlags();
+
+                    eflags &= ~0x4dd5;
+                    eflags |= (0x4dd5 & newEFlags);
+
+                    if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
+                        eflags &= ~0x200;
+                        eflags |= (0x200 & newEFlags);
+                    }
+
+                    if (cpu.getCPL() == 0) {
+                        eflags &= ~0x3000;
+                        eflags |= (0x3000 & newEFlags);
+                    }
+                    // cpu.setEFlags(eflags);
+                    return eflags;
+                }
+            }
+            case 0x1c: // Code: Execute-Only, Conforming
+            case 0x1d: // Code: Execute-Only, Conforming, Accessed
+            case 0x1e: // Code: Execute/Read, Conforming
+            case 0x1f: { // Code: Execute/Read, Conforming, Accessed
+                if (returnSegment.getRPL() < cpu.getCPL())
                     throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                            tempSS, true);
+                            newCS, true);
 
-                returnSegment.checkAddress(newEIP);
+                if (returnSegment.getDPL() > returnSegment.getRPL())
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
+                            newCS, true);
 
-                // cpu.esp += 20; //includes the 12 from earlier
-                cpu.eip = newEIP;
-                cpu.cs = returnSegment;
+                if (!(returnSegment.isPresent()))
+                    throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
+                            newCS, true);
 
-                cpu.ss = returnStackSegment;
-                cpu.esp = returnESP;
-
-                int eflags = cpu.getEFlags();
-                eflags &= ~0x4dd5;
-                eflags |= (0x4dd5 & newEFlags);
-                // overwrite: all; preserve: if, iopl, vm, vif, vip
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                    // overwrite: all; preserve: iopl, vm, vif, vip
+                if (returnSegment.getRPL() > cpu.getCPL()) {
+                    // OUTER PRIVILEGE-LEVEL
+                    System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
+                } else {
+                    // SAME PRIVILEGE-LEVEL
+                    System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
+                    throw new ProcessorException(-1, true);
                 }
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x3000;
-                    eflags |= (0x3000 & newEFlags);
-                    // overwrite: all;
-                }
-                // cpu.setEFlags(eflags);
-
-                cpu.setCPL(cpu.cs.getRPL());
-
-                try {
-                    if ((((cpu.es.getType() & 0x10) != 0) || ((cpu.es.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.es.getDPL()))
-                        cpu.es = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.ds.getType() & 0x10) != 0) || ((cpu.ds.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.ds.getDPL()))
-                        cpu.ds = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.fs.getType() & 0x10) != 0) || ((cpu.fs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.fs.getDPL()))
-                        cpu.fs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                try {
-                    if ((((cpu.gs.getType() & 0x10) != 0) || ((cpu.gs.getType() & 0x1c) == 0x18))
-                            && (cpu.getCPL() > cpu.gs.getDPL()))
-                        cpu.gs = SegmentFactory.NULL_SEGMENT;
-                } catch (ProcessorException e) {
-                }
-
-                return eflags;
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                returnSegment.checkAddress(newEIP);
-
-                cpu.cs = returnSegment;
-                cpu.eip = newEIP;
-
-                // Set EFlags
-                int eflags = cpu.getEFlags();
-
-                eflags &= ~0x4dd5;
-                eflags |= (0x4dd5 & newEFlags);
-
-                if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel) {
-                    eflags &= ~0x200;
-                    eflags |= (0x200 & newEFlags);
-                }
-
-                if (cpu.getCPL() == 0) {
-                    eflags &= ~0x3000;
-                    eflags |= (0x3000 & newEFlags);
-                }
-                // cpu.setEFlags(eflags);
-                return eflags;
             }
-        }
-        case 0x1c: // Code: Execute-Only, Conforming
-        case 0x1d: // Code: Execute-Only, Conforming, Accessed
-        case 0x1e: // Code: Execute/Read, Conforming
-        case 0x1f: { // Code: Execute/Read, Conforming, Accessed
-            if (returnSegment.getRPL() < cpu.getCPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (returnSegment.getDPL() > returnSegment.getRPL())
-                throw new ProcessorException(Processor.PROC_EXCEPTION_GP,
-                        newCS, true);
-
-            if (!(returnSegment.isPresent()))
-                throw new ProcessorException(Processor.PROC_EXCEPTION_NP,
-                        newCS, true);
-
-            if (returnSegment.getRPL() > cpu.getCPL()) {
-                // OUTER PRIVILEGE-LEVEL
-                System.err.println("Conforming: OUTER PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            } else {
-                // SAME PRIVILEGE-LEVEL
-                System.err.println("Conforming: SAME PRIVILEGE-LEVEL");
-                throw new ProcessorException(-1, true);
-            }
-        }
         }
     }
 
-    private final void sysenter() {
+    private final void sysenter()
+    {
         int csSelector = (int) cpu.getMSR(Processor.SYSENTER_CS_MSR);
         if (csSelector == 0)
             throw (ProcessorException) exceptionGP;
@@ -7137,7 +7334,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = (int) cpu.getMSR(Processor.SYSENTER_EIP_MSR);
     }
 
-    private final void sysexit(int esp, int eip) {
+    private final void sysexit(int esp, int eip)
+    {
         int csSelector = (int) cpu.getMSR(Processor.SYSENTER_CS_MSR);
         if (csSelector == 0)
             throw (ProcessorException) exceptionGP;
@@ -7155,7 +7353,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.eip = eip;
     }
 
-    private final int in_o8(int ioport) throws ModuleException {
+    private final int in_o8(int ioport) throws ModuleException
+    {
         if (checkIOPermissionsByte(ioport))
             return 0xff & cpu.ioports.ioPortReadByte(ioport);
         else {
@@ -7166,7 +7365,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int in_o16(int ioport) throws ModuleException {
+    private final int in_o16(int ioport) throws ModuleException
+    {
         if (checkIOPermissionsShort(ioport))
             return 0xffff & cpu.ioports.ioPortReadWord(ioport);
         else {
@@ -7177,7 +7377,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int in_o32(int ioport) throws ModuleException {
+    private final int in_o32(int ioport) throws ModuleException
+    {
         if (checkIOPermissionsInt(ioport))
             return cpu.ioports.ioPortReadLong(ioport);
         else {
@@ -7188,7 +7389,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void out_o8(int ioport, int data) throws ModuleException {
+    private final void out_o8(int ioport, int data) throws ModuleException
+    {
         if (checkIOPermissionsByte(ioport))
             cpu.ioports.ioPortWriteByte(ioport, 0xff & data);
         else {
@@ -7199,7 +7401,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void out_o16(int ioport, int data) throws ModuleException {
+    private final void out_o16(int ioport, int data) throws ModuleException
+    {
         if (checkIOPermissionsShort(ioport))
             cpu.ioports.ioPortWriteWord(ioport, 0xffff & data);
         else {
@@ -7210,7 +7413,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void out_o32(int ioport, int data) throws ModuleException {
+    private final void out_o32(int ioport, int data) throws ModuleException
+    {
         if (checkIOPermissionsInt(ioport))
             cpu.ioports.ioPortWriteLong(ioport, data);
         else {
@@ -7221,7 +7425,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void enter_o16_a16(int frameSize, int nestingLevel) {
+    private final void enter_o16_a16(int frameSize, int nestingLevel)
+    {
         nestingLevel %= 32;
 
         int tempESP = 0xFFFF & cpu.esp;
@@ -7256,7 +7461,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xFFFF) | (0xFFFF & (frameTemp - frameSize));
     }
 
-    private final void enter_o16_a32(int frameSize, int nestingLevel) {
+    private final void enter_o16_a32(int frameSize, int nestingLevel)
+    {
         nestingLevel %= 32;
 
         int tempESP = cpu.esp;
@@ -7290,7 +7496,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = frameTemp - frameSize;
     }
 
-    private final void enter_o32_a32(int frameSize, int nestingLevel) {
+    private final void enter_o32_a32(int frameSize, int nestingLevel)
+    {
         nestingLevel %= 32;
 
         int tempESP = cpu.esp;
@@ -7323,7 +7530,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = frameTemp - frameSize;
     }
 
-    private final void leave_o32_a16() {
+    private final void leave_o32_a16()
+    {
         cpu.ss.checkAddress(cpu.ebp);
         int tempESP = cpu.ebp;
         int tempEBP = cpu.ss.getDoubleWord(tempESP & 0xffff);
@@ -7331,7 +7539,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.ebp = tempEBP;
     }
 
-    private final void leave_o32_a32() {
+    private final void leave_o32_a32()
+    {
         cpu.ss.checkAddress(cpu.ebp);
         int tempESP = cpu.ebp;
         int tempEBP = cpu.ss.getDoubleWord(tempESP);
@@ -7339,7 +7548,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.ebp = tempEBP;
     }
 
-    private final void leave_o16_a16() {
+    private final void leave_o16_a16()
+    {
         cpu.ss.checkAddress(cpu.ebp);
         int tempESP = cpu.ebp;
         int tempEBP = 0xffff & cpu.ss.getWord(tempESP & 0xffff);
@@ -7347,7 +7557,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.ebp = (cpu.ebp & ~0xffff) | tempEBP;
     }
 
-    private final void leave_o16_a32() {
+    private final void leave_o16_a32()
+    {
         cpu.ss.checkAddress(cpu.ebp);
         int tempESP = cpu.ebp;
         int tempEBP = 0xffff & cpu.ss.getWord(tempESP);
@@ -7355,7 +7566,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.ebp = (cpu.ebp & ~0xffff) | tempEBP;
     }
 
-    private final void push_o32_a32(int value) {
+    private final void push_o32_a32(int value)
+    {
         if ((cpu.esp < 4) && (cpu.esp > 0))
             throw exceptionSS;
 
@@ -7363,7 +7575,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp -= 4;
     }
 
-    private final void push_o32_a16(int value) {
+    private final void push_o32_a16(int value)
+    {
         if (((0xffff & cpu.esp) < 4) && ((0xffff & cpu.esp) > 0))
             throw exceptionSS;
 
@@ -7371,7 +7584,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp - 4) & 0xffff);
     }
 
-    private final void push_o16_a32(short value) {
+    private final void push_o16_a32(short value)
+    {
         if ((cpu.esp < 2) && (cpu.esp > 0))
             throw exceptionSS;
 
@@ -7379,7 +7593,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp -= 2;
     }
 
-    private final void push_o16_a16(short value) {
+    private final void push_o16_a16(short value)
+    {
         if (((0xffff & cpu.esp) < 2) && ((0xffff & cpu.esp) > 0))
             throw exceptionSS;
 
@@ -7387,7 +7602,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | ((cpu.esp - 2) & 0xffff);
     }
 
-    private final void pushad_a32() {
+    private final void pushad_a32()
+    {
         int offset = cpu.esp;
         int temp = cpu.esp;
         if ((offset < 32) && (offset > 0))
@@ -7413,7 +7629,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = offset;
     }
 
-    private final void pushad_a16() {
+    private final void pushad_a16()
+    {
         int offset = 0xFFFF & cpu.esp;
         int temp = 0xFFFF & cpu.esp;
         if ((offset < 32) && (offset > 0))
@@ -7439,7 +7656,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xFFFF) | (0xFFFF & offset);
     }
 
-    private final void pusha_a32() {
+    private final void pusha_a32()
+    {
         int offset = cpu.esp;
         int temp = cpu.esp;
         if ((offset < 16) && (offset > 0))
@@ -7465,7 +7683,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | (offset & 0xffff);
     }
 
-    private final void pusha_a16() {
+    private final void pusha_a16()
+    {
         int offset = 0xFFFF & cpu.esp;
         int temp = 0xFFFF & cpu.esp;
         if ((offset < 16) && (offset > 0))
@@ -7491,7 +7710,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | (0xFFFF & offset);
     }
 
-    private final void popa_a16() {
+    private final void popa_a16()
+    {
         int offset = 0xFFFF & cpu.esp;
 
         // Bochs claims no checking need on POPs
@@ -7525,7 +7745,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | (offset & 0xffff);
     }
 
-    private final void popad_a16() {
+    private final void popad_a16()
+    {
         int offset = 0xFFFF & cpu.esp;
 
         // Bochs claims no checking need on POPs
@@ -7559,7 +7780,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = (cpu.esp & ~0xffff) | (offset & 0xffff);
     }
 
-    private final void popad_a32() {
+    private final void popad_a32()
+    {
         int offset = cpu.esp;
 
         // Bochs claims no checking need on POPs
@@ -7593,24 +7815,25 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.esp = offset;
     }
 
-    private final int Lar(int select, boolean size) {
+    private final int Lar(int select, boolean size)
+    {
         int selector = (select & 0xffff) << 3;
 
-        final boolean valid[] = { false, true, true, true, true, true, false,
-                false, false, true, false, true, true, false, false, false };
+        final boolean valid[] = {false, true, true, true, true, true, false,
+                false, false, true, false, true, true, false, false, false};
 
         int segmentDescriptor;
         if ((select & 0x4) != 0) { // ldtr
             if (selector == 0 || (selector + 8) > cpu.ldtr.getLimit()) { // inside
-                                                                         // limit
-                                                                         // of
-                                                                         // table
+                // limit
+                // of
+                // table
                 cpu.setZeroFlag(false);
                 return select;
             }
             segmentDescriptor = cpu.ldtr.getDoubleWord(selector + 4);// get high
-                                                                     // double
-                                                                     // word
+            // double
+            // word
         } else {
             if (selector == 0 || (selector + 8) > cpu.gdtr.getLimit()) { // 
                 cpu.setZeroFlag(false);
@@ -7624,7 +7847,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
         if (((type & 0x04) != 0)
                 && (cpu.getCPL() > DPL || (select & 0x7) > DPL) // conforming
-                                                                // code only,
+                // code only,
                 // select&0x7 = RPL
                 || valid[type] != true) {
             cpu.setZeroFlag(false);
@@ -7637,11 +7860,12 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final int Lsl(int select, boolean operand) {
+    private final int Lsl(int select, boolean operand)
+    {
         int selector = (select & 0xffff) << 3;
 
-        final boolean valid[] = { false, true, true, true, false, false, false,
-                false, false, true, false, true, false, false, false, false };
+        final boolean valid[] = {false, true, true, true, false, false, false,
+                false, false, true, false, true, false, false, false, false};
 
         int segmentDescriptor;
         if ((select & 0x4) != 0) {
@@ -7664,7 +7888,7 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
 
         if (((type & 0x04) != 0)
                 && (cpu.getCPL() > DPL || (select & 0x7) > DPL) // conforming
-                                                                // segment only
+                // segment only
                 || valid[type] != true) {
             cpu.setZeroFlag(false);
             return select;
@@ -7675,9 +7899,9 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 highsize = (segmentDescriptor & 0xf0000);
             } else {
                 lowsize = cpu.gdtr.getWord(selector); // lower word from
-                                                      // selector
+                // selector
                 highsize = (segmentDescriptor & 0xf0000); // high nibble from
-                                                          // size
+                // size
             }
             int size = highsize | (lowsize & 0xFFFF);
 
@@ -7690,7 +7914,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final Segment lldt(int selector) {
+    private final Segment lldt(int selector)
+    {
         selector &= 0xffff;
 
         if (selector == 0)
@@ -7709,7 +7934,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return newSegment;
     }
 
-    private final Segment ltr(int selector) {
+    private final Segment ltr(int selector)
+    {
         if ((selector & 0x4) != 0) // must be gdtr table
             throw new ProcessorException(Processor.PROC_EXCEPTION_GP, selector,
                     true);
@@ -7732,53 +7958,56 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return cpu.getSegment(selector);
     }
 
-    private final void cpuid() {
+    private final void cpuid()
+    {
         switch (cpu.eax) {
-        case 0x00:
-            cpu.eax = 0x02;
-            cpu.ebx = 0x756e6547; /* "Genu", with G in the low nibble of BL */
-            cpu.edx = 0x49656e69; /* "ineI", with i in the low nibble of DL */
-            cpu.ecx = 0x6c65746e; /* "ntel", with n in the low nibble of CL */
-            return;
-        case 0x01:
-            cpu.eax = 0x00000633; // Pentium II Model 8 Stepping 3
-            cpu.ebx = 8 << 8; // not implemented (should be brand index)
-            cpu.ecx = 0;
+            case 0x00:
+                cpu.eax = 0x02;
+                cpu.ebx = 0x756e6547; /* "Genu", with G in the low nibble of BL */
+                cpu.edx = 0x49656e69; /* "ineI", with i in the low nibble of DL */
+                cpu.ecx = 0x6c65746e; /* "ntel", with n in the low nibble of CL */
+                return;
+            case 0x01:
+                cpu.eax = 0x00000633; // Pentium II Model 8 Stepping 3
+                cpu.ebx = 8 << 8; // not implemented (should be brand index)
+                cpu.ecx = 0;
 
-            int features = 0;
-            features |= 0x01; // Have an FPU;
-            features |= (1 << 8); // Support CMPXCHG8B instruction
-            features |= (1 << 4); // implement TSC
-            features |= (1 << 5); // support RDMSR/WRMSR
-            // features |= (1<<23); // support MMX
-            // features |= (1<<24); // Implement FSAVE/FXRSTOR instructions.
-            features |= (1 << 15); // Implement CMOV instructions.
-            // features |= (1<< 9); // APIC on chip
-            // features |= (1<<25); // support SSE
-            features |= (1 << 3); // Support Page-Size Extension (4M pages)
-            features |= (1 << 13); // Support Global pages.
-            // features |= (1<< 6); // Support PAE.
-            features |= (1 << 11); // SYSENTER/SYSEXIT
-            cpu.edx = features;
-            return;
-        default:
-        case 0x02:
-            cpu.eax = 0x410601;
-            cpu.ebx = 0;
-            cpu.ecx = 0;
-            cpu.edx = 0;
-            return;
+                int features = 0;
+                features |= 0x01; // Have an FPU;
+                features |= (1 << 8); // Support CMPXCHG8B instruction
+                features |= (1 << 4); // implement TSC
+                features |= (1 << 5); // support RDMSR/WRMSR
+                // features |= (1<<23); // support MMX
+                // features |= (1<<24); // Implement FSAVE/FXRSTOR instructions.
+                features |= (1 << 15); // Implement CMOV instructions.
+                // features |= (1<< 9); // APIC on chip
+                // features |= (1<<25); // support SSE
+                features |= (1 << 3); // Support Page-Size Extension (4M pages)
+                features |= (1 << 13); // Support Global pages.
+                // features |= (1<< 6); // Support PAE.
+                features |= (1 << 11); // SYSENTER/SYSEXIT
+                cpu.edx = features;
+                return;
+            default:
+            case 0x02:
+                cpu.eax = 0x410601;
+                cpu.ebx = 0;
+                cpu.ecx = 0;
+                cpu.edx = 0;
+                return;
         }
     }
 
-    private final long rdtsc() {
+    private final long rdtsc()
+    {
         if ((cpu.getCPL() == 0) || ((cpu.getCR4() & 0x4) == 0)) {
             return cpu.getClockCount();
         } else
             throw (ProcessorException) exceptionGP;
     }
 
-    private final void bitwise_flags(byte result) {
+    private final void bitwise_flags(byte result)
+    {
         cpu.setOverflowFlag(false);
         cpu.setCarryFlag(false);
         cpu.setZeroFlag(result);
@@ -7786,7 +8015,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(result);
     }
 
-    private final void bitwise_flags(short result) {
+    private final void bitwise_flags(short result)
+    {
         cpu.setOverflowFlag(false);
         cpu.setCarryFlag(false);
         cpu.setZeroFlag(result);
@@ -7794,7 +8024,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(result);
     }
 
-    private final void bitwise_flags(int result) {
+    private final void bitwise_flags(int result)
+    {
         cpu.setOverflowFlag(false);
         cpu.setCarryFlag(false);
         cpu.setZeroFlag(result);
@@ -7803,7 +8034,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void arithmetic_flags_o8(int result, int operand1,
-            int operand2) {
+                                           int operand2)
+    {
         cpu.setZeroFlag((byte) result);
         cpu.setParityFlag(result);
         cpu.setSignFlag((byte) result);
@@ -7813,7 +8045,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void arithmetic_flags_o16(int result, int operand1,
-            int operand2) {
+                                            int operand2)
+    {
         cpu.setZeroFlag((short) result);
         cpu.setParityFlag(result);
         cpu.setSignFlag((short) result);
@@ -7823,7 +8056,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     private final void arithmetic_flags_o32(long result, int operand1,
-            int operand2) {
+                                            int operand2)
+    {
         cpu.setZeroFlag((int) result);
         cpu.setParityFlag((int) result);
         cpu.setSignFlag((int) result);
@@ -7833,7 +8067,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 Processor.AC_XOR);
     }
 
-    private final void add_o32_flags(long result, int operand1, int operand2) {
+    private final void add_o32_flags(long result, int operand1, int operand2)
+    {
         result = (0xffffffffl & operand1) + (0xffffffffl & operand2);
 
         arithmetic_flags_o32(result, operand1, operand2);
@@ -7841,17 +8076,20 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 Processor.OF_ADD_INT);
     }
 
-    private final void add_o16_flags(int result, int operand1, int operand2) {
+    private final void add_o16_flags(int result, int operand1, int operand2)
+    {
         arithmetic_flags_o16(result, operand1, operand2);
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_ADD_SHORT);
     }
 
-    private final void add_o8_flags(int result, int operand1, int operand2) {
+    private final void add_o8_flags(int result, int operand1, int operand2)
+    {
         arithmetic_flags_o8(result, operand1, operand2);
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_ADD_BYTE);
     }
 
-    private final void adc_o32_flags(long result, int operand1, int operand2) {
+    private final void adc_o32_flags(long result, int operand1, int operand2)
+    {
         int carry = (cpu.getCarryFlag() ? 1 : 0);
         result = (0xffffffffl & operand1) + (0xffffffffl & operand2) + carry;
 
@@ -7866,7 +8104,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void adc_o16_flags(int result, int operand1, int operand2) {
+    private final void adc_o16_flags(int result, int operand1, int operand2)
+    {
         if (cpu.getCarryFlag() && (operand2 == 0xffff)) {
             arithmetic_flags_o16(result, operand1, operand2);
             cpu.setOverflowFlag(false);
@@ -7878,7 +8117,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void adc_o8_flags(int result, int operand1, int operand2) {
+    private final void adc_o8_flags(int result, int operand1, int operand2)
+    {
         if (cpu.getCarryFlag() && (operand2 == 0xff)) {
             arithmetic_flags_o8(result, operand1, operand2);
             cpu.setOverflowFlag(false);
@@ -7890,7 +8130,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void sub_o32_flags(long result, int operand1, int operand2) {
+    private final void sub_o32_flags(long result, int operand1, int operand2)
+    {
         result = (0xffffffffl & operand1) - (0xffffffffl & operand2);
 
         arithmetic_flags_o32(result, operand1, operand2);
@@ -7898,17 +8139,20 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
                 Processor.OF_SUB_INT);
     }
 
-    private final void sub_o16_flags(int result, int operand1, int operand2) {
+    private final void sub_o16_flags(int result, int operand1, int operand2)
+    {
         arithmetic_flags_o16(result, operand1, operand2);
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_SUB_SHORT);
     }
 
-    private final void sub_o8_flags(int result, int operand1, int operand2) {
+    private final void sub_o8_flags(int result, int operand1, int operand2)
+    {
         arithmetic_flags_o8(result, operand1, operand2);
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_SUB_BYTE);
     }
 
-    private final void sbb_o32_flags(long result, int operand1, int operand2) {
+    private final void sbb_o32_flags(long result, int operand1, int operand2)
+    {
         int carry = (cpu.getCarryFlag() ? 1 : 0);
         result = (0xffffffffl & operand1) - ((0xffffffffl & operand2) + carry);
 
@@ -7917,17 +8161,20 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         arithmetic_flags_o32(result, operand1, operand2);
     }
 
-    private final void sbb_o16_flags(int result, int operand1, int operand2) {
+    private final void sbb_o16_flags(int result, int operand1, int operand2)
+    {
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_SUB_SHORT);
         arithmetic_flags_o16(result, operand1, operand2);
     }
 
-    private final void sbb_o8_flags(int result, int operand1, int operand2) {
+    private final void sbb_o8_flags(int result, int operand1, int operand2)
+    {
         cpu.setOverflowFlag(result, operand1, operand2, Processor.OF_SUB_BYTE);
         arithmetic_flags_o8(result, operand1, operand2);
     }
 
-    private final void dec_flags(int result) {
+    private final void dec_flags(int result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7935,7 +8182,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_MAX);
     }
 
-    private final void dec_flags(short result) {
+    private final void dec_flags(short result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7943,7 +8191,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_MAX);
     }
 
-    private final void dec_flags(byte result) {
+    private final void dec_flags(byte result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7951,7 +8200,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_MAX);
     }
 
-    private final void inc_flags(int result) {
+    private final void inc_flags(int result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7959,7 +8209,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_ZERO);
     }
 
-    private final void inc_flags(short result) {
+    private final void inc_flags(short result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7967,7 +8218,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_ZERO);
     }
 
-    private final void inc_flags(byte result) {
+    private final void inc_flags(byte result)
+    {
         cpu.setZeroFlag(result);
         cpu.setParityFlag(result);
         cpu.setSignFlag(result);
@@ -7975,7 +8227,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setAuxiliaryCarryFlag(result, Processor.AC_LNIBBLE_ZERO);
     }
 
-    private final void shl_flags(byte result, byte initial, int count) {
+    private final void shl_flags(byte result, byte initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHL_OUTBIT_BYTE);
 
@@ -7988,7 +8241,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void shl_flags(short result, short initial, int count) {
+    private final void shl_flags(short result, short initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHL_OUTBIT_SHORT);
 
@@ -8001,7 +8255,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void shl_flags(int result, int initial, int count) {
+    private final void shl_flags(int result, int initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHL_OUTBIT_INT);
 
@@ -8014,7 +8269,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void shr_flags(byte result, int initial, int count) {
+    private final void shr_flags(byte result, int initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
 
@@ -8028,7 +8284,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void shr_flags(short result, int initial, int count) {
+    private final void shr_flags(short result, int initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
 
@@ -8042,7 +8299,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void shr_flags(int result, int initial, int count) {
+    private final void shr_flags(int result, int initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
 
@@ -8056,7 +8314,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void sar_flags(byte result, byte initial, int count) {
+    private final void sar_flags(byte result, byte initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
             if (count == 1)
@@ -8068,7 +8327,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void sar_flags(short result, short initial, int count) {
+    private final void sar_flags(short result, short initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
             if (count == 1)
@@ -8080,7 +8340,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void sar_flags(int result, int initial, int count) {
+    private final void sar_flags(int result, int initial, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(initial, count, Processor.CY_SHR_OUTBIT);
             if (count == 1)
@@ -8092,7 +8353,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rol_flags(byte result, int count) {
+    private final void rol_flags(byte result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_LOWBIT);
             if (count == 1)
@@ -8100,7 +8362,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rol_flags(short result, int count) {
+    private final void rol_flags(short result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_LOWBIT);
             if (count == 1)
@@ -8108,7 +8371,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rol_flags(int result, int count) {
+    private final void rol_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_LOWBIT);
             if (count == 1)
@@ -8116,7 +8380,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void ror_flags(byte result, int count) {
+    private final void ror_flags(byte result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_HIGHBIT_BYTE);
             if (count == 1)
@@ -8124,7 +8389,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void ror_flags(short result, int count) {
+    private final void ror_flags(short result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_HIGHBIT_SHORT);
             if (count == 1)
@@ -8132,7 +8398,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void ror_flags(int result, int count) {
+    private final void ror_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_HIGHBIT_INT);
             if (count == 1)
@@ -8140,7 +8407,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcl_o8_flags(int result, int count) {
+    private final void rcl_o8_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_BYTE);
             if (count == 1)
@@ -8148,7 +8416,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcl_o16_flags(int result, int count) {
+    private final void rcl_o16_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_SHORT);
             if (count == 1)
@@ -8156,7 +8425,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcl_o32_flags(long result, int count) {
+    private final void rcl_o32_flags(long result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_INT);
             if (count == 1)
@@ -8164,7 +8434,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcr_o8_flags(int result, int count) {
+    private final void rcr_o8_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_BYTE);
             if (count == 1)
@@ -8172,7 +8443,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcr_o16_flags(int result, int count) {
+    private final void rcr_o16_flags(int result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_SHORT);
             if (count == 1)
@@ -8180,7 +8452,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void rcr_o32_flags(long result, int count) {
+    private final void rcr_o32_flags(long result, int count)
+    {
         if (count > 0) {
             cpu.setCarryFlag(result, Processor.CY_OFFENDBIT_INT);
             if (count == 1)
@@ -8188,7 +8461,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final void neg_flags(byte result) {
+    private final void neg_flags(byte result)
+    {
         cpu.setCarryFlag(result, Processor.CY_NZ);
         cpu.setOverflowFlag(result, Processor.OF_MIN_BYTE);
 
@@ -8198,7 +8472,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(result);
     }
 
-    private final void neg_flags(short result) {
+    private final void neg_flags(short result)
+    {
         cpu.setCarryFlag(result, Processor.CY_NZ);
         cpu.setOverflowFlag(result, Processor.OF_MIN_SHORT);
 
@@ -8208,7 +8483,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(result);
     }
 
-    private final void neg_flags(int result) {
+    private final void neg_flags(int result)
+    {
         cpu.setCarryFlag(result, Processor.CY_NZ);
         cpu.setOverflowFlag(result, Processor.OF_MIN_INT);
 
@@ -8218,7 +8494,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         cpu.setSignFlag(result);
     }
 
-    private final Segment loadSegment(int selector) {
+    private final Segment loadSegment(int selector)
+    {
         selector &= 0xffff;
         if (selector < 0x4)
             return SegmentFactory.NULL_SEGMENT;
@@ -8230,7 +8507,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final boolean checkIOPermissionsByte(int ioportAddress) {
+    private final boolean checkIOPermissionsByte(int ioportAddress)
+    {
         if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel)
             return true;
 
@@ -8247,7 +8525,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final boolean checkIOPermissionsShort(int ioportAddress) {
+    private final boolean checkIOPermissionsShort(int ioportAddress)
+    {
         if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel)
             return true;
 
@@ -8264,7 +8543,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private final boolean checkIOPermissionsInt(int ioportAddress) {
+    private final boolean checkIOPermissionsInt(int ioportAddress)
+    {
         if (cpu.getCPL() <= cpu.eflagsIOPrivilegeLevel)
             return true;
 
@@ -8281,7 +8561,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         }
     }
 
-    private void checkResult(double x) throws ProcessorException {
+    private void checkResult(double x) throws ProcessorException
+    {
         // 1. check for numeric overflow or underflow.
         if (Double.isInfinite(x)) {
             // overflow
@@ -8303,7 +8584,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         // 2. check for inexact result exceptions.
     }
 
-    private void validateOperand(double x) throws ProcessorException {
+    private void validateOperand(double x) throws ProcessorException
+    {
         // 1. check for SNaN. set IE, throw if not masked.
         // (actually, this check is already done with the operand
         // get() method---and SNaN isn't transmitted in the
@@ -8316,7 +8598,9 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
     }
 
     // borrowed from the j2se api as not in midp
-    private static int numberOfTrailingZeros(int i) {
+
+    private static int numberOfTrailingZeros(int i)
+    {
         // HD, Figure 5-14
         int y;
         if (i == 0)
@@ -8345,7 +8629,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return n - ((i << 1) >>> 31);
     }
 
-    private static int numberOfLeadingZeros(int i) {
+    private static int numberOfLeadingZeros(int i)
+    {
         // HD, Figure 5-6
         if (i == 0)
             return 32;
@@ -8370,7 +8655,8 @@ public class ProtectedModeUBlock implements ProtectedModeCodeBlock,
         return n;
     }
 
-    private static int reverseBytes(int i) {
+    private static int reverseBytes(int i)
+    {
         return ((i >>> 24)) | ((i >> 8) & 0xFF00) | ((i << 8) & 0xFF0000)
                 | ((i << 24));
     }

@@ -55,10 +55,12 @@ public class Instruction_SBB_AXIv implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SBB_AXIv() {
+    public Instruction_SBB_AXIv()
+    {
         immediateWord = new byte[2];
         oldDest = new byte[2];
         iCarryFlag = 0;
@@ -68,11 +70,11 @@ public class Instruction_SBB_AXIv implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SBB_AXIv(CPU processor) {
+    public Instruction_SBB_AXIv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -84,7 +86,8 @@ public class Instruction_SBB_AXIv implements Instruction {
     /**
      * Subtract (immediate word + CF) from AX
      */
-    public void execute() {
+    public void execute()
+    {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

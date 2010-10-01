@@ -39,16 +39,11 @@
 
 package dioscuri.datatransfer;
 
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.ClipboardOwner;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.Toolkit;
-import java.io.*;
-
 import dioscuri.GUI;
+
+import java.awt.*;
+import java.awt.datatransfer.*;
+import java.io.IOException;
 
 /**
  * This class allows data transfer via the clipboard to and from the emulator
@@ -59,30 +54,36 @@ public final class TextTransfer implements ClipboardOwner {
     GUI gui;
 
     // Constructor
+
     /**
-     * 
      * @param parent
      */
-    public TextTransfer(GUI parent) {
+    public TextTransfer(GUI parent)
+    {
         gui = parent;
     }
 
     // Methods
+
     /**
      * Empty implementation of the ClipboardOwner interface.
+     *
      * @param aClipboard
      * @param aContents
      */
-    public void lostOwnership(Clipboard aClipboard, Transferable aContents) {
+    public void lostOwnership(Clipboard aClipboard, Transferable aContents)
+    {
         // do nothing
     }
 
     /**
      * Set String on clipboard, and make this class the owner of the Clipboard's
      * contents.
+     *
      * @param text
      */
-    public void setClipboardContents(String text) {
+    public void setClipboardContents(String text)
+    {
         // Wrap String
         StringSelection stringSelection = new StringSelection(text);
 
@@ -93,11 +94,12 @@ public final class TextTransfer implements ClipboardOwner {
 
     /**
      * Get String in clipboard.
-     * 
+     *
      * @return any text found on the Clipboard; if none found, return an empty
      *         String.
      */
-    public String getClipboardContents() {
+    public String getClipboardContents()
+    {
         String result = "";
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 

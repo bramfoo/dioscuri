@@ -45,7 +45,6 @@
 package dioscuri.module.ata;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -56,66 +55,66 @@ public class InterruptReason {
     private int tag = 5;
 
     /**
-     *
      * @return -
      */
-    public int getCd() {
+    public int getCd()
+    {
         return cd;
     }
 
     /**
-     *
      * @param cd
      */
-    public void setCd(int cd) {
+    public void setCd(int cd)
+    {
         this.cd = cd;
     }
 
     /**
-     *
      * @return -
      */
-    public int getIo() {
+    public int getIo()
+    {
         return io;
     }
 
     /**
-     *
      * @param io
      */
-    public void setIo(int io) {
+    public void setIo(int io)
+    {
         this.io = io;
     }
 
     /**
-     *
      * @return -
      */
-    public int getRel() {
+    public int getRel()
+    {
         return rel;
     }
 
     /**
-     *
      * @param rel
      */
-    public void setRel(int rel) {
+    public void setRel(int rel)
+    {
         this.rel = rel;
     }
 
     /**
-     *
      * @return -
      */
-    public int getTag() {
+    public int getTag()
+    {
         return tag;
     }
 
     /**
-     *
      * @param tag
      */
-    public void setTag(int tag) {
+    public void setTag(int tag)
+    {
         this.tag = tag;
     }
 

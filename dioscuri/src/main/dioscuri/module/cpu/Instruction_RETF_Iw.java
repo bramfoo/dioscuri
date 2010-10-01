@@ -54,20 +54,21 @@ public class Instruction_RETF_Iw implements Instruction {
     byte[] releaseStackBytes;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_RETF_Iw() {
+    public Instruction_RETF_Iw()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_RETF_Iw(CPU processor) {
+    public Instruction_RETF_Iw(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -80,7 +81,8 @@ public class Instruction_RETF_Iw implements Instruction {
      * Transfer control to return address located at top of stack; release
      * number of stack bytes
      */
-    public void execute() {
+    public void execute()
+    {
         releaseStackBytes = cpu.getWordFromCode();
 
         // Pop instruction pointer (offset) from top of stack into IP register

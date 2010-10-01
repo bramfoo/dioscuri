@@ -49,14 +49,13 @@ import java.util.Arrays;
 /**
  * CRT Controller Registers, Address (RW: 3x4h) and Data (RW: 3x5h), where x can
  * be B or D, set in colorEmulation
- * 
  */
 public class CRTControllerRegister {
     byte index; // Index into CRTC register for data write; set via Address
-                // register
+    // register
     boolean protectEnable; // Protect video timing registers from values
-                           // unsuitable for VGA timings; legacy programs
-                           // attempted this
+    // unsuitable for VGA timings; legacy programs
+    // attempted this
     // Writing to registers 00h-07h is disabled, except Line Compare of Overflow
     // register (0x07).
     byte[] regArray = new byte[0x19];// 0x00 - Horizontal Total Register
@@ -90,7 +89,8 @@ public class CRTControllerRegister {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         index = 0;
         protectEnable = false;
         Arrays.fill(regArray, (byte) 0);

@@ -26,33 +26,28 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface ByteSource {
     /**
-     *
      * @return -
      */
     public byte getByte();
 
     /**
-     *
      * @param count
      * @return -
      */
     public boolean skip(int count);
 
     /**
-     *
      * @param count
      * @return -
      */
     public boolean rewind(int count);
 
     /**
-     *
      * @return -
      */
     public boolean reset();

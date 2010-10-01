@@ -39,17 +39,9 @@
 
 package dioscuri.module.fdc;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -63,9 +55,9 @@ public class Floppy {
 
     /**
      * Class Constructor
-     * 
      */
-    public Floppy() {
+    public Floppy()
+    {
         // Initialise variables
         type = 0;
         bytes = null;
@@ -73,13 +65,13 @@ public class Floppy {
 
     /**
      * Constructor Floppy
-     * 
+     *
      * @param type
      * @param imageFile
-     * @throws IOException
-     *             if file cannot be read (or does not exist)
+     * @throws IOException if file cannot be read (or does not exist)
      */
-    public Floppy(byte type, File imageFile) throws IOException {
+    public Floppy(byte type, File imageFile) throws IOException
+    {
         this();
 
         // Set type of floppydisk
@@ -96,20 +88,21 @@ public class Floppy {
 
     /**
      * Get the size of floppy in bytes
-     * 
+     *
      * @return -
      */
-    protected int getSize() {
+    protected int getSize()
+    {
         return bytes.length;
     }
 
     /**
      * Load image from file
-     * 
-     * @throws IOException
-     *             if file cannot be read (or does not exist)
+     *
+     * @throws IOException if file cannot be read (or does not exist)
      */
-    private void loadImageFromFile() throws IOException {
+    private void loadImageFromFile() throws IOException
+    {
         // Fetch bytes from image file
         // open input stream
         BufferedInputStream bdis = new BufferedInputStream(new DataInputStream(
@@ -125,11 +118,11 @@ public class Floppy {
 
     /**
      * Store image to file
-     * 
-     * @throws IOException
-     *             if file cannot be written (or does not exist)
+     *
+     * @throws IOException if file cannot be written (or does not exist)
      */
-    protected void storeImageToFile() throws IOException {
+    protected void storeImageToFile() throws IOException
+    {
         // Store bytes to image file
         // Open output stream
         BufferedOutputStream bdos = new BufferedOutputStream(

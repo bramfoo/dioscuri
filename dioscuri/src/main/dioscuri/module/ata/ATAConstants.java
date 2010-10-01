@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * An class holding the constants associated with the ATA controller.
- * 
  */
 public class ATAConstants {
 
@@ -63,8 +62,8 @@ public class ATAConstants {
     public static final int PORT_IDE_STATUS_CMD = 0x01F7;
     public static final int PORT_IDE_ALT_STATUS_DEVICE = 0x03F6;
     public static final int PORT_IDE_DRIVE_ADDRESS = 0x03F7;
-    public static final int DEFAULT_IO_ADDR_1[] = { 0x1f0, 0x170, 0x1e8, 0x168 };
-    public static final int DEFAULT_IO_ADDR_2[] = { 0x3f0, 0x370, 0x3e0, 0x360 };
+    public static final int DEFAULT_IO_ADDR_1[] = {0x1f0, 0x170, 0x1e8, 0x168};
+    public static final int DEFAULT_IO_ADDR_2[] = {0x3f0, 0x370, 0x3e0, 0x360};
 
     // Other Constants
     public static final int IDE_DMA_CHANNEL = 3;
@@ -75,12 +74,12 @@ public class ATAConstants {
     public static final int MAX_NUMBER_IDE_CHANNELS = 4;
     public static final int MAX_NUMBER_DRIVES_PER_CHANNEL = 2;
     public static final boolean SUPPORT_REPEAT_SPEEDUPS = true; // TODO: what is
-                                                                // this?
+    // this?
     public static final boolean IS_LOW_LEVEL_CDROM = false;
     public static final boolean WITH_WIN32 = true;
     public static final String IDE_MODEL = "Generic 1234                            "; // 40
-                                                                                       // char's
-                                                                                       // long
+    // char's
+    // long
 
     // boot devices
     // (using the same values as the rombios)
@@ -89,9 +88,9 @@ public class ATAConstants {
     public static final int BOOT_DISKC = 2;
     public static final int BOOT_CDROM = 3;
     public static final boolean IS_CONNER_CFA540A_DEFINED = false; // not
-                                                                   // apparently
-                                                                   // defined in
-                                                                   // BOCHS
+    // apparently
+    // defined in
+    // BOCHS
     public static final boolean SUPPORTS_PCI = false;
     public static final int MAX_MULTIPLE_SECTORS = 16;
 }

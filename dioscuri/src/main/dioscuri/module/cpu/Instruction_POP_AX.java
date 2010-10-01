@@ -50,20 +50,21 @@ public class Instruction_POP_AX implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_POP_AX() {
+    public Instruction_POP_AX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_POP_AX(CPU processor) {
+    public Instruction_POP_AX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_POP_AX implements Instruction {
     /**
      * This pops the word at stack top SS:SP into AX
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word SS:SP and assign to AX
         cpu.ax = cpu.getWordFromStack();
 

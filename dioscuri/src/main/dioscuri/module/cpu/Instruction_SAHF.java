@@ -52,20 +52,21 @@ public class Instruction_SAHF implements Instruction {
     boolean[] tempFlags = new boolean[8];
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_SAHF() {
+    public Instruction_SAHF()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SAHF(CPU processor) {
+    public Instruction_SAHF(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -77,9 +78,10 @@ public class Instruction_SAHF implements Instruction {
     /**
      * Move AH register into low byte of FLAGS register.
      */
-    public void execute() {
+    public void execute()
+    {
         tempFlags = Util
-                .bytesToBooleans(new byte[] { cpu.ax[CPU.REGISTER_GENERAL_HIGH] });
+                .bytesToBooleans(new byte[]{cpu.ax[CPU.REGISTER_GENERAL_HIGH]});
         System.arraycopy(tempFlags, 0, cpu.flags, 0, tempFlags.length);
     }
 }

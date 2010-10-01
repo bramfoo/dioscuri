@@ -52,19 +52,21 @@ public class Instruction_TEST_AXIv implements Instruction {
     byte[] tempResult = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_TEST_AXIv() {
+    public Instruction_TEST_AXIv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_TEST_AXIv(CPU processor) {
+    public Instruction_TEST_AXIv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -79,7 +81,8 @@ public class Instruction_TEST_AXIv implements Instruction {
      * SF, ZF, and PF are set according to the result;<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Reset appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;

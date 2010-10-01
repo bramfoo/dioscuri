@@ -52,19 +52,21 @@ public class Instruction_JNO implements Instruction {
     byte displacement;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_JNO() {
+    public Instruction_JNO()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JNO(CPU processor) {
+    public Instruction_JNO(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -74,7 +76,8 @@ public class Instruction_JNO implements Instruction {
     /**
      * Execute conditional short jump not overflow
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic
@@ -86,8 +89,8 @@ public class Instruction_JNO implements Instruction {
         if (!cpu.flags[CPU.REGISTER_FLAGS_OF]) {
             // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
             // displacement is sign-extended and added.
-            cpu.ip = Util.addWords(cpu.ip, new byte[] {
-                    Util.signExtend(displacement), displacement }, 0);
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{
+                    Util.signExtend(displacement), displacement}, 0);
         }
     }
 }

@@ -53,9 +53,9 @@ import java.util.logging.Logger;
 
 /**
  * An implementation of a hardware visual screen module.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : screen general.name : Compatible CRT/LCD computer screen
  *      general.architecture : Von Neumann general.description : General
@@ -75,38 +75,38 @@ public class Screen extends ModuleScreen {
     // Data and color properties
     protected byte[] pixels = null; // Array of pixel data, used in databuffer
     protected DataBuffer dataBuffer = null; // Databuffer holding pixel data,
-                                            // used in raster
+    // used in raster
     protected SampleModel sampleModel = null; // Samplemodel holding pixel
-                                              // storage info, used in raster
+    // storage info, used in raster
     protected WritableRaster raster = null; // Raster containing image data,
-                                            // used in BufferedImage
+    // used in BufferedImage
     protected byte[][] palette = new byte[3][256]; // Array holding red, green,
-                                                   // blue values for ColorModel
+    // blue values for ColorModel
     protected ColorModel colourModel = null; // ColourModel used in
-                                             // BufferedImage
+    // BufferedImage
     protected BufferedImage image = null; // Image displayed on canvas
     protected int imageType; // Defines the type of the created image
 
     // Text font
     protected BufferedImage[] fontImages = new BufferedImage[256]; // Array
-                                                                   // containing
-                                                                   // font
-                                                                   // images
+    // containing
+    // font
+    // images
 
     // Graphics tile
     protected BufferedImage graphicTile; // Tile used for updating in graphics
-                                         // mode
+    // mode
 
     // Character set
     byte[] codePage = new byte[0x2000]; // Current character set; contains 16
-                                        // bytes for each character, that are
-                                        // interpreted as a 'bitmap'
+    // bytes for each character, that are
+    // interpreted as a 'bitmap'
     boolean codePageReqsUpdate; // Boolean to check if the character map has
-                                // been updated
+    // been updated
     boolean[] codePageUpdateIndex = new boolean[256]; // Array corresponding to
-                                                      // codePage (with
-                                                      // 2000h/100h=2^5
-                                                      // mapping),
+    // codePage (with
+    // 2000h/100h=2^5
+    // mapping),
     // determining what character has been changed
 
     // Text mode attributes
@@ -115,15 +115,15 @@ public class Screen extends ModuleScreen {
     private int fontWidth = 8; // Font width in pixels
     private int fontHeight = 16; // Font height in pixels
     private int screenWidth = textColumns * fontWidth; // Width of screen in
-                                                       // pixels
+    // pixels
     private int screenHeight = textRows * fontHeight; // Height of screen in
-                                                      // pixels
+    // pixels
     private byte horizPanning = 0; // 'Pixel shift count': number of pixels
-                                   // video data is shifted left
+    // video data is shifted left
     private byte vertPanning = 0; // 'Preset Row Scan': number of scanlines to
-                                  // scroll display up (0 - Maximum Scan Line)
+    // scroll display up (0 - Maximum Scan Line)
     private short lineCompare = 0x3FF; // Scan line where a horiz. division can
-                                       // occur; 0x3FF indicates no division
+    // occur; 0x3FF indicates no division
 
     // Last position of cursor (in rows & columns)
     private int cursorPosPrevX = 0;
@@ -144,9 +144,11 @@ public class Screen extends ModuleScreen {
 
     /**
      * Class constructor
+     *
      * @param owner
      */
-    public Screen(Emulator owner) {
+    public Screen(Emulator owner)
+    {
 
         // Create an initial (temporary) colourmodel, filled with black
         Arrays.fill(palette[RED], (byte) 0);
@@ -185,7 +187,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
@@ -199,7 +202,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
 
@@ -220,7 +224,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public JPanel getScreen() {
+    public JPanel getScreen()
+    {
         return screenPanel;
     }
 
@@ -230,7 +235,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenRows() {
+    public int getScreenRows()
+    {
         return textRows;
     }
 
@@ -240,7 +246,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenColumns() {
+    public int getScreenColumns()
+    {
         return textColumns;
     }
 
@@ -250,7 +257,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenWidth() {
+    public int getScreenWidth()
+    {
         return screenWidth;
     }
 
@@ -260,7 +268,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenHeight() {
+    public int getScreenHeight()
+    {
         return screenHeight;
     }
 
@@ -270,7 +279,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void setScreenSize(int width, int height) {
+    public void setScreenSize(int width, int height)
+    {
         // Update image size
         this.setImage(width, height);
 
@@ -291,7 +301,8 @@ public class Screen extends ModuleScreen {
      */
     @Override
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
-            int newFontHeight) {
+                                 int newFontHeight)
+    {
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " call to updateScreenSize() w/ fonts");
 
@@ -315,12 +326,14 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void clearScreen() {
+    public void clearScreen()
+    {
         // "I see a red door and I want it painted black; No colours anymore I want them to turn black"
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
         Arrays.fill(pixelArray, (byte) 0);
         // TODO should local DataBuffer be used here? Or was the global variable meant to be used
-        /*<DataBuffer>*/ dataBuffer = new DataBufferByte(pixelArray,
+        /*<DataBuffer>*/
+        dataBuffer = new DataBufferByte(pixelArray,
                 pixelArray.length);
         SampleModel model = new MultiPixelPackedSampleModel(
                 DataBuffer.TYPE_BYTE, image.getWidth(), image.getHeight(), 8);
@@ -335,7 +348,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public boolean setPaletteColour(byte index, int red, int green, int blue) {
+    public boolean setPaletteColour(byte index, int red, int green, int blue)
+    {
         // Assure byte is within array bounds
         int indx = index & 0xFF;
 
@@ -363,7 +377,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void setByteInCodePage(int index, byte data) {
+    public void setByteInCodePage(int index, byte data)
+    {
         // Set data
         codePage[index] = data;
 
@@ -381,10 +396,11 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void updateCodePage(int start) {
+    public void updateCodePage(int start)
+    {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
         System.arraycopy(codePage, 0, video.getVideoBuffer(), start, 0x2000);
 
         // Set codePage and and all codePage indices to require update
@@ -399,20 +415,21 @@ public class Screen extends ModuleScreen {
      */
     @Override
     public void updateText(int oldText, int newText, long cursorXPos,
-            long cursorYPos, short[] textModeAttribs, int numberRows) {
+                           long cursorYPos, short[] textModeAttribs, int numberRows)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
 
         logger.log(Level.INFO, String.format(
-                "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)", 
+                "call :: updateText(oldText=%d, newText=%d, cursorXPos=%d, cursorYPos=%d, textModeAttribs=%s, numberRows=%d)",
                 oldText, newText, cursorXPos, cursorYPos, Arrays.toString(textModeAttribs), numberRows));
         try {
             int oldLine, newLine, textBase;
             int currentChar; // 'Current character to display' index into font table
             int newForeground, newBackground; // Fore-/background colour attributes
-                                              // for cChar
+            // for cChar
             int oldCursorPos; // Previous cursor position calculated as number of
-                              // bytes in memory array
+            // bytes in memory array
 
             int charsPerRow; // Number of characters per row
             int numRows; // Number of rows in display
@@ -698,9 +715,9 @@ public class Screen extends ModuleScreen {
 
             // Refresh screen
             screenPanel.repaint();
-        } catch(RasterFormatException e) {
+        } catch (RasterFormatException e) {
             // TODO fix the RasterFormatException properly
-            logger.log(Level.INFO, "RasterFormatException details: "+e.getMessage());
+            logger.log(Level.INFO, "RasterFormatException details: " + e.getMessage());
         }
     }
 
@@ -710,7 +727,8 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void updateGraphicsTile(byte[] tile, int x0, int y0) {
+    public void updateGraphicsTile(byte[] tile, int x0, int y0)
+    {
 
         int x, y, y_size;
 
@@ -736,13 +754,12 @@ public class Screen extends ModuleScreen {
 
     /**
      * Set an image with data on screen
-     * 
-     * @param width
-     *            Width of the image in pixels
-     * @param height
-     *            Height of the image in pixels
+     *
+     * @param width  Width of the image in pixels
+     * @param height Height of the image in pixels
      */
-    private void setImage(int width, int height) {
+    private void setImage(int width, int height)
+    {
         // Create a data buffer using the byte buffer of pixel data.
         pixels = new byte[width * height];
         Arrays.fill(pixels, (byte) 0);
@@ -768,9 +785,9 @@ public class Screen extends ModuleScreen {
 
     /**
      * Refresh the on-screen image
-     * 
      */
-    private void updateImage() {
+    private void updateImage()
+    {
         image = new BufferedImage(colourModel, raster, false, null);
         screenPanel.setImage(image);
     }
@@ -778,9 +795,9 @@ public class Screen extends ModuleScreen {
     /**
      * Update the colourModel used in the image. Do this after the palette
      * values have been changed
-     * 
      */
-    private void updatePalette() {
+    private void updatePalette()
+    {
         colourModel = new IndexColorModel(8, 256, palette[RED], palette[GREEN],
                 palette[BLUE]);
         // This requires the image to be redrawn on the canvas to reflect
@@ -790,9 +807,9 @@ public class Screen extends ModuleScreen {
 
     /**
      * Create character images from code page 437 hex values
-     * 
      */
-    private void createCodePage437Images() {
+    private void createCodePage437Images()
+    {
         // Default code page 437 values
         int fntWidth = 8;
         int fntHeight = 16;
@@ -821,18 +838,15 @@ public class Screen extends ModuleScreen {
 
     /**
      * Replace a BufferedImage in the font table with new data
-     * 
-     * @param index
-     *            Index of the new character into the font table
-     * @param fontData
-     *            Array of hex values representing the character
-     * @param fontWidth
-     *            Width of the character in pixels
-     * @param fontHeight
-     *            Height of the character in pixels
+     *
+     * @param index      Index of the new character into the font table
+     * @param fontData   Array of hex values representing the character
+     * @param fontWidth  Width of the character in pixels
+     * @param fontHeight Height of the character in pixels
      */
     private void updateFontImage(int index, int[] fontData, int fontWidth,
-            int fontHeight) {
+                                 int fontHeight)
+    {
         int bits = 8;
         int[] pixelArray = new int[fontWidth * fontHeight * bits];
 

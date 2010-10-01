@@ -61,19 +61,21 @@ public class Instruction_MOVZX_GvEw implements Instruction {
     byte[] destinationRegister = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_MOVZX_GvEw() {
+    public Instruction_MOVZX_GvEw()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOVZX_GvEw(CPU processor) {
+    public Instruction_MOVZX_GvEw(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -87,7 +89,8 @@ public class Instruction_MOVZX_GvEw implements Instruction {
      * memory/register (source).<BR>
      * Flags modified: none
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

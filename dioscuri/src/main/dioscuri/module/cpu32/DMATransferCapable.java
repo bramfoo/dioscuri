@@ -26,13 +26,11 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface DMATransferCapable {
     /**
-     *
      * @param nchan
      * @param pos
      * @param size

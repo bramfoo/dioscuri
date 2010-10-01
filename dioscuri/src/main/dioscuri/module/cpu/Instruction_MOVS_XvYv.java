@@ -60,27 +60,29 @@ public class Instruction_MOVS_XvYv implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_MOVS_XvYv() {
+    public Instruction_MOVS_XvYv()
+    {
         operandWordSize = false;
 
         source1 = new byte[2];
         // Set transition that holds the amount si and di should be altered
         // (word = 2)
-        word0x0002 = new byte[] { 0x00, 0x02 };
-        word0x0004 = new byte[] { 0x00, 0x04 };
+        word0x0002 = new byte[]{0x00, 0x02};
+        word0x0004 = new byte[]{0x00, 0x04};
         temp = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOVS_XvYv(CPU processor) {
+    public Instruction_MOVS_XvYv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -94,7 +96,8 @@ public class Instruction_MOVS_XvYv implements Instruction {
      * increment/decrement both depending on DF flag.<BR>
      * Flags modified: none
      */
-    public void execute() {
+    public void execute()
+    {
         if (cpu.doubleWord) {
             // 32-bit
             // Move doubleword at DS:eSI to ES:eDI; DS segment override is
@@ -108,7 +111,7 @@ public class Instruction_MOVS_XvYv implements Instruction {
              * cpu.setWordToExtra(cpu.di, source1);
              * 
              * // Increment or decrement SI and DI depending on DF flag if
-             * (cpu.flags[CPU.REGISTER_FLAGS_DF] == true) { // Decrement
+             * (cpu.flags[CPU.REGISTER_FLAGS_DF]) { // Decrement
              * registers temp = Util.subtractWords(cpu.si, word0x0004, 0);
              * System.arraycopy(temp, 0, cpu.si, 0, temp.length); temp =
              * Util.subtractWords(cpu.di, word0x0004, 0); System.arraycopy(temp,
@@ -116,7 +119,8 @@ public class Instruction_MOVS_XvYv implements Instruction {
              * = Util.addWords(cpu.si, word0x0004, 0); System.arraycopy(temp, 0,
              * cpu.si, 0, temp.length); temp = Util.addWords(cpu.di, word0x0004,
              * 0); System.arraycopy(temp, 0, cpu.di, 0, temp.length); }
-             */} else {
+             */
+        } else {
             // 16-bit
             // Move word at DS:SI to ES:DI; DS segment override is allowed, ES
             // segment isn't.
@@ -128,7 +132,7 @@ public class Instruction_MOVS_XvYv implements Instruction {
             cpu.setWordToExtra(cpu.di, source1);
 
             // Increment or decrement SI and DI depending on DF flag
-            if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true) {
+            if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
                 // Decrement registers
                 temp = Util.subtractWords(cpu.si, word0x0002, 0);
                 System.arraycopy(temp, 0, cpu.si, 0, temp.length);

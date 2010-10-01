@@ -50,20 +50,21 @@ public class Instruction_PUSH_BX implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_PUSH_BX() {
+    public Instruction_PUSH_BX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_BX(CPU processor) {
+    public Instruction_PUSH_BX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_PUSH_BX implements Instruction {
     /**
      * This pushes the word in BX onto stack top SS:SP
      */
-    public void execute() {
+    public void execute()
+    {
         // Push extra register first, if 32 bit instruction
         // Double word will be stored as [bx[LSB][MSB] ebx[LSB][MSB]] because
         // stack is counting backwards in memory

@@ -48,21 +48,20 @@ package dioscuri.module.dma;
  * - flipflop (additional address bit)<BR>
  * - status register (status of terminal counts, DMA requests)<BR>
  * - command register (operation control)<BR>
- * 
  */
 public class DMAController {
     // Create channels 0..3 for each controller
-    DMAChannel[] channel = new DMAChannel[] { new DMAChannel(),
-            new DMAChannel(), new DMAChannel(), new DMAChannel() };
+    DMAChannel[] channel = new DMAChannel[]{new DMAChannel(),
+            new DMAChannel(), new DMAChannel(), new DMAChannel()};
 
     boolean DRQ[] = new boolean[4]; // DMA Request for channels 0 - 3
     boolean DACK[] = new boolean[4]; // DMA Acknowlege for channels 0 - 3
 
     byte mask[] = new byte[4]; // Mask for each channel; incoming DMA requests
-                               // are disabled if set
+    // are disabled if set
 
     boolean flipflop; // Generate additional bit of address, used to determine
-                      // upper/lower
+    // upper/lower
     // byte of 16-bit address and count registers
 
     byte statusRegister; // Status of terminal counts and DMA requests

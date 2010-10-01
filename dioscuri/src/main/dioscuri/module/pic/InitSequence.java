@@ -43,19 +43,19 @@ package dioscuri.module.pic;
  * Class representing the Initialisation Sequence of the PIC.<BR>
  * Takes the PIC through the initialisation mode and bring it to normal
  * operation.<BR>
- * 
  */
 public class InitSequence {
     boolean inInitSequence; // Indicates if the PIC is currently in the
-                            // initialisation sequence
+    // initialisation sequence
     byte numComWordsReq; // Indicates the number of Initialistion Command Words
-                         // (ICW) the PIC expects
+    // (ICW) the PIC expects
     int currentComWordExpected; // The number of the ICW expected
 
     /**
      * Resets all parameters to their default value
      */
-    public void reset() {
+    public void reset()
+    {
         inInitSequence = false;
         numComWordsReq = 0;
         currentComWordExpected = 0;

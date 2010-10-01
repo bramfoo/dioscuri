@@ -49,24 +49,26 @@ public class Instruction_LODS_AXXv implements Instruction {
     // Attributes
     private CPU cpu;
     byte[] source;
-    byte[] incrementSize = new byte[] { 0x00, 0x02 }; // Word size increment for
-                                                      // SI
+    byte[] incrementSize = new byte[]{0x00, 0x02}; // Word size increment for
+    // SI
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_LODS_AXXv() {
+    public Instruction_LODS_AXXv()
+    {
         source = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LODS_AXXv(CPU processor) {
+    public Instruction_LODS_AXXv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -78,7 +80,8 @@ public class Instruction_LODS_AXXv implements Instruction {
     /**
      * Load word from DS:SI into AX
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word at DS:SI and assign to AX; DS segment override is allowed
         if (cpu.segmentOverride) {
             source = cpu.getWordFromMemorySegment((byte) 0, cpu.si);

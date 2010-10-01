@@ -57,20 +57,21 @@ public class Instruction_POP_Ev implements Instruction {
     private byte[] offset;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_POP_Ev() {
+    public Instruction_POP_Ev()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_POP_Ev(CPU processor) {
+    public Instruction_POP_Ev(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -91,7 +92,8 @@ public class Instruction_POP_Ev implements Instruction {
      * POP instruction cannot pop a value into the CS register. To load the CS
      * register from the stack, use the RET instruction.
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word SS:SP and assign to DI
         if (cpu.doubleWord) {
             // 32-bit

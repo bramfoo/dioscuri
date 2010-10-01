@@ -62,19 +62,21 @@ public class Instruction_ADD_GbEb implements Instruction {
     byte registerHighLow = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ADD_GbEb() {
+    public Instruction_ADD_GbEb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ADD_GbEb(CPU processor) {
+    public Instruction_ADD_GbEb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -86,7 +88,8 @@ public class Instruction_ADD_GbEb implements Instruction {
     /**
      * Add byte in memory/register (source) to register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

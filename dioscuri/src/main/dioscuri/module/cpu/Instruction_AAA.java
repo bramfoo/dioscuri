@@ -52,20 +52,21 @@ public class Instruction_AAA implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_AAA() {
+    public Instruction_AAA()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_AAA(CPU processor) {
+    public Instruction_AAA(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,10 +77,11 @@ public class Instruction_AAA implements Instruction {
      * Adjust two unpacked BCD digits so a addition operation on result yields
      * correct unpacked BCD value.<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Check if AL > 9 or AF = 1, adjust AX and set flags
         if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9)
-                || cpu.flags[CPU.REGISTER_FLAGS_AF] == true) {
+                || cpu.flags[CPU.REGISTER_FLAGS_AF]) {
             // Adjust AL and AH
             cpu.ax[CPU.REGISTER_GENERAL_LOW] += 6;
             cpu.ax[CPU.REGISTER_GENERAL_HIGH]++;

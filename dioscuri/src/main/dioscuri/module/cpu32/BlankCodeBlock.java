@@ -29,7 +29,6 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -40,55 +39,57 @@ public class BlankCodeBlock implements RealModeCodeBlock,
     private static final RuntimeException executeException = new NullPointerException();
 
     /**
-     *
      * @param x86Count
      * @param x86Length
      */
-    public BlankCodeBlock(int x86Count, int x86Length) {
+    public BlankCodeBlock(int x86Count, int x86Length)
+    {
         this.x86Count = x86Count;
         this.x86Length = x86Length;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Length() {
+    public int getX86Length()
+    {
         return x86Length;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Count() {
+    public int getX86Count()
+    {
         return x86Count;
     }
 
-    public int execute(Processor cpu) {
+    public int execute(Processor cpu)
+    {
         throw executeException;
     }
 
     /**
-     *
      * @param startAddress
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
+    {
         return false;
     }
 
     /**
-     *
      * @return -
      */
-    public String getDisplayString() {
+    public String getDisplayString()
+    {
         return "\n\n<<Blank Block>>\n\n";
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return " -- Blank --\n";
     }
 }

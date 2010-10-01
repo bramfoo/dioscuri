@@ -40,7 +40,6 @@
 package dioscuri.exception;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -48,10 +47,10 @@ package dioscuri.exception;
 public class CommandException extends Exception {
 
     /**
-     *
      * @param message
      */
-    public CommandException(String message) {
+    public CommandException(String message)
+    {
         super(message);
     }
 

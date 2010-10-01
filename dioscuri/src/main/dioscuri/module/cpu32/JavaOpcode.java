@@ -26,7 +26,6 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -237,7 +236,7 @@ public class JavaOpcode {
     public static final int IMPDEP1 = 254;
     public static final int IMPDEP2 = 255;
 
-    private static final String[] opcodes = { "NOP", "ACONST_NULL",
+    private static final String[] opcodes = {"NOP", "ACONST_NULL",
             "ICONST_M1", "ICONST_0", "ICONST_1", "ICONST_2", "ICONST_3",
             "ICONST_4", "ICONST_5", "LCONST_0", "LCONST_1", "FCONST_0",
             "FCONST_1", "FCONST_2", "DCONST_0", "DCONST_1", "BIPUSH", "SIPUSH",
@@ -281,45 +280,45 @@ public class JavaOpcode {
             "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
             "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
             "RESERVED", "RESERVED", "RESERVED", "RESERVED", "RESERVED",
-            "RESERVED", "RESERVED", "IMPDEP1", "IMPDEP2" };
+            "RESERVED", "RESERVED", "IMPDEP1", "IMPDEP2"};
     public static final int CALC_FROM_CONST_POOL = 0xBEEF;
 
     /**
-     *
      * @param value
      * @return -
      */
-    public static String toString(int value) {
+    public static String toString(int value)
+    {
         return opcodes[value];
     }
 
     /**
-     *
      * @param code
      * @return -
      */
-    public static boolean isBranchInstruction(int code) {
+    public static boolean isBranchInstruction(int code)
+    {
         switch (code) {
-        case IFEQ:
-        case IFNE:
-        case IFLT:
-        case IFGE:
-        case IFGT:
-        case IFLE:
-        case IF_ICMPEQ:
-        case IF_ICMPNE:
-        case IF_ICMPLT:
-        case IF_ICMPGE:
-        case IF_ICMPGT:
-        case IF_ICMPLE:
-        case IF_ACMPEQ:
-        case IF_ACMPNE:
-        case IFNULL:
-        case IFNONNULL:
-            return true;
+            case IFEQ:
+            case IFNE:
+            case IFLT:
+            case IFGE:
+            case IFGT:
+            case IFLE:
+            case IF_ICMPEQ:
+            case IF_ICMPNE:
+            case IF_ICMPLT:
+            case IF_ICMPGE:
+            case IF_ICMPGT:
+            case IF_ICMPLE:
+            case IF_ACMPEQ:
+            case IF_ACMPNE:
+            case IFNULL:
+            case IFNONNULL:
+                return true;
 
-        default:
-            return false;
+            default:
+                return false;
             // case GOTO:
             // case JSR:
             // case RET:
@@ -329,867 +328,868 @@ public class JavaOpcode {
     }
 
     /**
-     *
      * @param code
      * @return -
      */
-    public static boolean isReturn(int code) {
+    public static boolean isReturn(int code)
+    {
         switch (code) {
-        case IRETURN:
-        case LRETURN:
-        case FRETURN:
-        case DRETURN:
-        case ARETURN:
-        case RETURN:
-        case ATHROW:
-            return true;
-        default:
-            return false;
+            case IRETURN:
+            case LRETURN:
+            case FRETURN:
+            case DRETURN:
+            case ARETURN:
+            case RETURN:
+            case ATHROW:
+                return true;
+            default:
+                return false;
         }
     }
 
     /**
-     *
      * @param code
      * @param i
      * @return -
      */
-    public static int getJumpOffset(int[] code, int i) {
+    public static int getJumpOffset(int[] code, int i)
+    {
         switch (code[i]) {
-        case IFEQ:
-        case IFNE:
-        case IFLT:
-        case IFGE:
-        case IFGT:
-        case IFLE:
-        case IF_ICMPEQ:
-        case IF_ICMPNE:
-        case IF_ICMPLT:
-        case IF_ICMPGE:
-        case IF_ICMPGT:
-        case IF_ICMPLE:
-        case IF_ACMPEQ:
-        case IF_ACMPNE:
-        case IFNULL:
-        case IFNONNULL:
-            return (short) ((code[i + 1] << 8) | code[i + 2]);
+            case IFEQ:
+            case IFNE:
+            case IFLT:
+            case IFGE:
+            case IFGT:
+            case IFLE:
+            case IF_ICMPEQ:
+            case IF_ICMPNE:
+            case IF_ICMPLT:
+            case IF_ICMPGE:
+            case IF_ICMPGT:
+            case IF_ICMPLE:
+            case IF_ACMPEQ:
+            case IF_ACMPNE:
+            case IFNULL:
+            case IFNONNULL:
+                return (short) ((code[i + 1] << 8) | code[i + 2]);
 
-        case GOTO:
-        case JSR:
-            return (short) ((code[i + 1] << 8) | code[i + 2]);
+            case GOTO:
+            case JSR:
+                return (short) ((code[i + 1] << 8) | code[i + 2]);
 
-        case GOTO_W:
-        case JSR_W:
-            return (code[i + 1] << 24) | (code[i + 2] << 16)
-                    | (code[i + 3] << 8) | code[i + 4];
+            case GOTO_W:
+            case JSR_W:
+                return (code[i + 1] << 24) | (code[i + 2] << 16)
+                        | (code[i + 3] << 8) | code[i + 4];
 
-        case RET:
-            throw new IllegalStateException(
-                    "Must fix stack delta measurement on methods with subroutines");
+            case RET:
+                throw new IllegalStateException(
+                        "Must fix stack delta measurement on methods with subroutines");
 
-        default:
-            return 0;
+            default:
+                return 0;
         }
     }
 
     /**
-     *
      * @param code
      * @param i
      * @return -
      */
-    public static int getStackDelta(int[] code, int i) {
+    public static int getStackDelta(int[] code, int i)
+    {
         switch (code[i]) {
-        case AALOAD:
-            return -1;
-        case AASTORE:
-            return -3;
-        case ACONST_NULL:
-            return +1;
-        case ALOAD:
-            return +1;
-        case ALOAD_0:
-            return +1;
-        case ALOAD_1:
-            return +1;
-        case ALOAD_2:
-            return +1;
-        case ALOAD_3:
-            return +1;
-        case ANEWARRAY:
-            return 0;
-        case ARRAYLENGTH:
-            return 0;
-        case ASTORE:
-            return -1;
-        case ASTORE_0:
-            return -1;
-        case ASTORE_1:
-            return -1;
-        case ASTORE_2:
-            return -1;
-        case ASTORE_3:
-            return -1;
-        case ATHROW:
-            // technically this isn't true, but I'm not sure what is...
-            return 0;
-        case BALOAD:
-            return -1;
-        case BASTORE:
-            return -3;
-        case BIPUSH:
-            return +1;
-        case CALOAD:
-            return -1;
-        case CASTORE:
-            return -3;
-        case CHECKCAST:
-            return 0;
-        case D2F:
-            return -1;
-        case D2I:
-            return -1;
-        case D2L:
-            return 0;
-        case DADD:
-            return -2;
-        case DALOAD:
-            return 0;
-        case DASTORE:
-            return -4;
-        case DCMPG:
-            return -3;
-        case DCMPL:
-            return -3;
-        case DCONST_0:
-            return +2;
-        case DCONST_1:
-            return +2;
-        case DDIV:
-            return -2;
-        case DLOAD:
-            return +2;
-        case DLOAD_0:
-            return +2;
-        case DLOAD_1:
-            return +2;
-        case DLOAD_2:
-            return +2;
-        case DLOAD_3:
-            return +2;
-        case DMUL:
-            return -2;
-        case DNEG:
-            return 0;
-        case DREM:
-            return -2;
-        case DSTORE:
-            return -2;
-        case DSTORE_0:
-            return -2;
-        case DSTORE_1:
-            return -2;
-        case DSTORE_2:
-            return -2;
-        case DSTORE_3:
-            return -2;
-        case DSUB:
-            return -2;
-        case DUP2:
-            return +2;
-        case DUP2_X1:
-            return +2;
-        case DUP2_X2:
-            return +2;
-        case DUP:
-            return +1;
-        case DUP_X1:
-            return +1;
-        case DUP_X2:
-            return +1;
-        case F2D:
-            return +1;
-        case F2I:
-            return 0;
-        case F2L:
-            return +1;
-        case FADD:
-            return -1;
-        case FALOAD:
-            return -1;
-        case FASTORE:
-            return -3;
-        case FCMPG:
-            return -1;
-        case FCMPL:
-            return -1;
-        case FCONST_0:
-            return +1;
-        case FCONST_1:
-            return +1;
-        case FCONST_2:
-            return +1;
-        case FDIV:
-            return -1;
-        case FLOAD:
-            return +1;
-        case FLOAD_0:
-            return +1;
-        case FLOAD_1:
-            return +1;
-        case FLOAD_2:
-            return +1;
-        case FLOAD_3:
-            return +1;
-        case FMUL:
-            return -1;
-        case FNEG:
-            return 0;
-        case FREM:
-            return -1;
-        case FSTORE:
-            return -1;
-        case FSTORE_0:
-            return -1;
-        case FSTORE_1:
-            return -1;
-        case FSTORE_2:
-            return -1;
-        case FSTORE_3:
-            return -1;
-        case FSUB:
-            return -1;
-        case GETFIELD:
-            return CALC_FROM_CONST_POOL;
-        case GETSTATIC:
-            return CALC_FROM_CONST_POOL;
-        case GOTO:
-            return 0;
-        case GOTO_W:
-            return 0;
-        case I2B:
-            return 0;
-        case I2C:
-            return 0;
-        case I2D:
-            return +1;
-        case I2F:
-            return 0;
-        case I2L:
-            return +1;
-        case I2S:
-            return 0;
-        case IADD:
-            return -1;
-        case IALOAD:
-            return -1;
-        case IAND:
-            return -1;
-        case IASTORE:
-            return -3;
-        case ICONST_0:
-            return +1;
-        case ICONST_1:
-            return +1;
-        case ICONST_2:
-            return +1;
-        case ICONST_3:
-            return +1;
-        case ICONST_4:
-            return +1;
-        case ICONST_5:
-            return +1;
-        case ICONST_M1:
-            return +1;
-        case IDIV:
-            return -1;
-        case IFEQ:
-            return -1;
-        case IFGE:
-            return -1;
-        case IFGT:
-            return -1;
-        case IFLE:
-            return -1;
-        case IFLT:
-            return -1;
-        case IFNE:
-            return -1;
-        case IFNONNULL:
-            return -1;
-        case IFNULL:
-            return -1;
-        case IF_ACMPEQ:
-            return -2;
-        case IF_ACMPNE:
-            return -2;
-        case IF_ICMPEQ:
-            return -2;
-        case IF_ICMPGE:
-            return -2;
-        case IF_ICMPGT:
-            return -2;
-        case IF_ICMPLE:
-            return -2;
-        case IF_ICMPLT:
-            return -2;
-        case IF_ICMPNE:
-            return -2;
-        case IINC:
-            return 0;
-        case ILOAD:
-            return +1;
-        case ILOAD_0:
-            return +1;
-        case ILOAD_1:
-            return +1;
-        case ILOAD_2:
-            return +1;
-        case ILOAD_3:
-            return +1;
-        case IMUL:
-            return -1;
-        case INEG:
-            return 0;
-        case INSTANCEOF:
-            return 0;
-        case INVOKEINTERFACE:
-            return CALC_FROM_CONST_POOL;
+            case AALOAD:
+                return -1;
+            case AASTORE:
+                return -3;
+            case ACONST_NULL:
+                return +1;
+            case ALOAD:
+                return +1;
+            case ALOAD_0:
+                return +1;
+            case ALOAD_1:
+                return +1;
+            case ALOAD_2:
+                return +1;
+            case ALOAD_3:
+                return +1;
+            case ANEWARRAY:
+                return 0;
+            case ARRAYLENGTH:
+                return 0;
+            case ASTORE:
+                return -1;
+            case ASTORE_0:
+                return -1;
+            case ASTORE_1:
+                return -1;
+            case ASTORE_2:
+                return -1;
+            case ASTORE_3:
+                return -1;
+            case ATHROW:
+                // technically this isn't true, but I'm not sure what is...
+                return 0;
+            case BALOAD:
+                return -1;
+            case BASTORE:
+                return -3;
+            case BIPUSH:
+                return +1;
+            case CALOAD:
+                return -1;
+            case CASTORE:
+                return -3;
+            case CHECKCAST:
+                return 0;
+            case D2F:
+                return -1;
+            case D2I:
+                return -1;
+            case D2L:
+                return 0;
+            case DADD:
+                return -2;
+            case DALOAD:
+                return 0;
+            case DASTORE:
+                return -4;
+            case DCMPG:
+                return -3;
+            case DCMPL:
+                return -3;
+            case DCONST_0:
+                return +2;
+            case DCONST_1:
+                return +2;
+            case DDIV:
+                return -2;
+            case DLOAD:
+                return +2;
+            case DLOAD_0:
+                return +2;
+            case DLOAD_1:
+                return +2;
+            case DLOAD_2:
+                return +2;
+            case DLOAD_3:
+                return +2;
+            case DMUL:
+                return -2;
+            case DNEG:
+                return 0;
+            case DREM:
+                return -2;
+            case DSTORE:
+                return -2;
+            case DSTORE_0:
+                return -2;
+            case DSTORE_1:
+                return -2;
+            case DSTORE_2:
+                return -2;
+            case DSTORE_3:
+                return -2;
+            case DSUB:
+                return -2;
+            case DUP2:
+                return +2;
+            case DUP2_X1:
+                return +2;
+            case DUP2_X2:
+                return +2;
+            case DUP:
+                return +1;
+            case DUP_X1:
+                return +1;
+            case DUP_X2:
+                return +1;
+            case F2D:
+                return +1;
+            case F2I:
+                return 0;
+            case F2L:
+                return +1;
+            case FADD:
+                return -1;
+            case FALOAD:
+                return -1;
+            case FASTORE:
+                return -3;
+            case FCMPG:
+                return -1;
+            case FCMPL:
+                return -1;
+            case FCONST_0:
+                return +1;
+            case FCONST_1:
+                return +1;
+            case FCONST_2:
+                return +1;
+            case FDIV:
+                return -1;
+            case FLOAD:
+                return +1;
+            case FLOAD_0:
+                return +1;
+            case FLOAD_1:
+                return +1;
+            case FLOAD_2:
+                return +1;
+            case FLOAD_3:
+                return +1;
+            case FMUL:
+                return -1;
+            case FNEG:
+                return 0;
+            case FREM:
+                return -1;
+            case FSTORE:
+                return -1;
+            case FSTORE_0:
+                return -1;
+            case FSTORE_1:
+                return -1;
+            case FSTORE_2:
+                return -1;
+            case FSTORE_3:
+                return -1;
+            case FSUB:
+                return -1;
+            case GETFIELD:
+                return CALC_FROM_CONST_POOL;
+            case GETSTATIC:
+                return CALC_FROM_CONST_POOL;
+            case GOTO:
+                return 0;
+            case GOTO_W:
+                return 0;
+            case I2B:
+                return 0;
+            case I2C:
+                return 0;
+            case I2D:
+                return +1;
+            case I2F:
+                return 0;
+            case I2L:
+                return +1;
+            case I2S:
+                return 0;
+            case IADD:
+                return -1;
+            case IALOAD:
+                return -1;
+            case IAND:
+                return -1;
+            case IASTORE:
+                return -3;
+            case ICONST_0:
+                return +1;
+            case ICONST_1:
+                return +1;
+            case ICONST_2:
+                return +1;
+            case ICONST_3:
+                return +1;
+            case ICONST_4:
+                return +1;
+            case ICONST_5:
+                return +1;
+            case ICONST_M1:
+                return +1;
+            case IDIV:
+                return -1;
+            case IFEQ:
+                return -1;
+            case IFGE:
+                return -1;
+            case IFGT:
+                return -1;
+            case IFLE:
+                return -1;
+            case IFLT:
+                return -1;
+            case IFNE:
+                return -1;
+            case IFNONNULL:
+                return -1;
+            case IFNULL:
+                return -1;
+            case IF_ACMPEQ:
+                return -2;
+            case IF_ACMPNE:
+                return -2;
+            case IF_ICMPEQ:
+                return -2;
+            case IF_ICMPGE:
+                return -2;
+            case IF_ICMPGT:
+                return -2;
+            case IF_ICMPLE:
+                return -2;
+            case IF_ICMPLT:
+                return -2;
+            case IF_ICMPNE:
+                return -2;
+            case IINC:
+                return 0;
+            case ILOAD:
+                return +1;
+            case ILOAD_0:
+                return +1;
+            case ILOAD_1:
+                return +1;
+            case ILOAD_2:
+                return +1;
+            case ILOAD_3:
+                return +1;
+            case IMUL:
+                return -1;
+            case INEG:
+                return 0;
+            case INSTANCEOF:
+                return 0;
+            case INVOKEINTERFACE:
+                return CALC_FROM_CONST_POOL;
             // case INVOKEINTERFACE:
             // return -(code[i+3] + 1);
-        case INVOKESPECIAL:
-            return CALC_FROM_CONST_POOL;
-        case INVOKESTATIC:
-            return CALC_FROM_CONST_POOL;
-        case INVOKEVIRTUAL:
-            return CALC_FROM_CONST_POOL;
-        case IOR:
-            return -1;
-        case IREM:
-            return -1;
-        case ISHL:
-            return -1;
-        case ISHR:
-            return -1;
-        case ISTORE:
-            return -1;
-        case ISTORE_0:
-            return -1;
-        case ISTORE_1:
-            return -1;
-        case ISTORE_2:
-            return -1;
-        case ISTORE_3:
-            return -1;
-        case ISUB:
-            return -1;
-        case IUSHR:
-            return -1;
-        case IXOR:
-            return -1;
-        case JSR:
-            return +1;
-        case JSR_W:
-            return +1;
-        case L2D:
-            return 0;
-        case L2F:
-            return -1;
-        case L2I:
-            return -1;
-        case LADD:
-            return -2;
-        case LALOAD:
-            return 0;
-        case LAND:
-            return -2;
-        case LASTORE:
-            return -4;
-        case LCMP:
-            return -3;
-        case LCONST_0:
-            return +2;
-        case LCONST_1:
-            return +2;
-        case LDC2_W:
-            return +2;
-        case LDC:
-            return +1;
-        case LDC_W:
-            return +1;
-        case LDIV:
-            return -2;
-        case LLOAD:
-            return +2;
-        case LLOAD_0:
-            return +2;
-        case LLOAD_1:
-            return +2;
-        case LLOAD_2:
-            return +2;
-        case LLOAD_3:
-            return +2;
-        case LMUL:
-            return -2;
-        case LNEG:
-            return 0;
-        case LOOKUPSWITCH:
-            return -1;
-        case LOR:
-            return -2;
-        case LREM:
-            return -2;
-        case LSHL:
-            return -1;
-        case LSHR:
-            return -1;
-        case LSTORE:
-            return -2;
-        case LSTORE_0:
-            return -2;
-        case LSTORE_1:
-            return -2;
-        case LSTORE_2:
-            return -2;
-        case LSTORE_3:
-            return -2;
-        case LSUB:
-            return -2;
-        case LUSHR:
-            return -1;
-        case LXOR:
-            return -2;
-        case MONITORENTER:
-            return -1;
-        case MONITOREXIT:
-            return -1;
-        case MULTIANEWARRAY:
-            return 1 - code[i + 3];
-        case NEW:
-            return +1;
-        case NEWARRAY:
-            return 0;
-        case NOP:
-            return 0;
-        case POP2:
-            return -2;
-        case POP:
-            return -1;
-        case PUTFIELD:
-            return CALC_FROM_CONST_POOL;
-        case PUTSTATIC:
-            return CALC_FROM_CONST_POOL;
-        case RET:
-            return 0;
-        case SALOAD:
-            return -1;
-        case SASTORE:
-            return -3;
-        case SIPUSH:
-            return +1;
-        case SWAP:
-            return 0;
-        case TABLESWITCH:
-            return -1;
-        case WIDE:
-            return getStackDelta(code, i + 1);
+            case INVOKESPECIAL:
+                return CALC_FROM_CONST_POOL;
+            case INVOKESTATIC:
+                return CALC_FROM_CONST_POOL;
+            case INVOKEVIRTUAL:
+                return CALC_FROM_CONST_POOL;
+            case IOR:
+                return -1;
+            case IREM:
+                return -1;
+            case ISHL:
+                return -1;
+            case ISHR:
+                return -1;
+            case ISTORE:
+                return -1;
+            case ISTORE_0:
+                return -1;
+            case ISTORE_1:
+                return -1;
+            case ISTORE_2:
+                return -1;
+            case ISTORE_3:
+                return -1;
+            case ISUB:
+                return -1;
+            case IUSHR:
+                return -1;
+            case IXOR:
+                return -1;
+            case JSR:
+                return +1;
+            case JSR_W:
+                return +1;
+            case L2D:
+                return 0;
+            case L2F:
+                return -1;
+            case L2I:
+                return -1;
+            case LADD:
+                return -2;
+            case LALOAD:
+                return 0;
+            case LAND:
+                return -2;
+            case LASTORE:
+                return -4;
+            case LCMP:
+                return -3;
+            case LCONST_0:
+                return +2;
+            case LCONST_1:
+                return +2;
+            case LDC2_W:
+                return +2;
+            case LDC:
+                return +1;
+            case LDC_W:
+                return +1;
+            case LDIV:
+                return -2;
+            case LLOAD:
+                return +2;
+            case LLOAD_0:
+                return +2;
+            case LLOAD_1:
+                return +2;
+            case LLOAD_2:
+                return +2;
+            case LLOAD_3:
+                return +2;
+            case LMUL:
+                return -2;
+            case LNEG:
+                return 0;
+            case LOOKUPSWITCH:
+                return -1;
+            case LOR:
+                return -2;
+            case LREM:
+                return -2;
+            case LSHL:
+                return -1;
+            case LSHR:
+                return -1;
+            case LSTORE:
+                return -2;
+            case LSTORE_0:
+                return -2;
+            case LSTORE_1:
+                return -2;
+            case LSTORE_2:
+                return -2;
+            case LSTORE_3:
+                return -2;
+            case LSUB:
+                return -2;
+            case LUSHR:
+                return -1;
+            case LXOR:
+                return -2;
+            case MONITORENTER:
+                return -1;
+            case MONITOREXIT:
+                return -1;
+            case MULTIANEWARRAY:
+                return 1 - code[i + 3];
+            case NEW:
+                return +1;
+            case NEWARRAY:
+                return 0;
+            case NOP:
+                return 0;
+            case POP2:
+                return -2;
+            case POP:
+                return -1;
+            case PUTFIELD:
+                return CALC_FROM_CONST_POOL;
+            case PUTSTATIC:
+                return CALC_FROM_CONST_POOL;
+            case RET:
+                return 0;
+            case SALOAD:
+                return -1;
+            case SASTORE:
+                return -3;
+            case SIPUSH:
+                return +1;
+            case SWAP:
+                return 0;
+            case TABLESWITCH:
+                return -1;
+            case WIDE:
+                return getStackDelta(code, i + 1);
             // all returns actually flatten the stack completely....
-        case ARETURN:
-        case FRETURN:
-        case IRETURN:
-            return -1;
-        case DRETURN:
-        case LRETURN:
-            return -2;
-        case RETURN:
-            return 0;
-        case BREAKPOINT:
-        case IMPDEP1:
-        case IMPDEP2:
-        case XXXUNUSEDXXX:
-        default:
-            throw new IllegalStateException(
-                    "JavaOpcode - getStackDelta - reserved instrution!");
+            case ARETURN:
+            case FRETURN:
+            case IRETURN:
+                return -1;
+            case DRETURN:
+            case LRETURN:
+                return -2;
+            case RETURN:
+                return 0;
+            case BREAKPOINT:
+            case IMPDEP1:
+            case IMPDEP2:
+            case XXXUNUSEDXXX:
+            default:
+                throw new IllegalStateException(
+                        "JavaOpcode - getStackDelta - reserved instrution!");
         }
     }
 
     /**
-     *
      * @param code
      * @param i
      * @return -
      */
-    public static int getLocalVariableAccess(int[] code, int i) {
+    public static int getLocalVariableAccess(int[] code, int i)
+    {
         switch (code[i]) {
-        case ALOAD:
-            return code[i + 1];
-        case ALOAD_0:
-            return 0;
-        case ALOAD_1:
-            return 1;
-        case ALOAD_2:
-            return 2;
-        case ALOAD_3:
-            return 3;
-        case ASTORE:
-            return code[i + 1];
-        case ASTORE_0:
-            return 0;
-        case ASTORE_1:
-            return 1;
-        case ASTORE_2:
-            return 2;
-        case ASTORE_3:
-            return 3;
-        case DLOAD:
-            return code[i + 1] + 1;
-        case DLOAD_0:
-            return 1;
-        case DLOAD_1:
-            return 2;
-        case DLOAD_2:
-            return 3;
-        case DLOAD_3:
-            return 4;
-        case DSTORE:
-            return code[i + 1] + 1;
-        case DSTORE_0:
-            return 1;
-        case DSTORE_1:
-            return 2;
-        case DSTORE_2:
-            return 3;
-        case DSTORE_3:
-            return 4;
-        case FLOAD:
-            return code[i + 1];
-        case FLOAD_0:
-            return 0;
-        case FLOAD_1:
-            return 1;
-        case FLOAD_2:
-            return 2;
-        case FLOAD_3:
-            return 3;
-        case FSTORE:
-            return code[i + 1];
-        case FSTORE_0:
-            return 0;
-        case FSTORE_1:
-            return 1;
-        case FSTORE_2:
-            return 2;
-        case FSTORE_3:
-            return 3;
-        case ILOAD:
-            return code[i + 1];
-        case ILOAD_0:
-            return 0;
-        case ILOAD_1:
-            return 1;
-        case ILOAD_2:
-            return 2;
-        case ILOAD_3:
-            return 3;
-        case ISTORE:
-            return code[i + 1];
-        case ISTORE_0:
-            return 0;
-        case ISTORE_1:
-            return 1;
-        case ISTORE_2:
-            return 2;
-        case ISTORE_3:
-            return 3;
-        case LLOAD:
-            return code[i + 1] + 1;
-        case LLOAD_0:
-            return 1;
-        case LLOAD_1:
-            return 2;
-        case LLOAD_2:
-            return 3;
-        case LLOAD_3:
-            return 4;
-        case LSTORE:
-            return code[i + 1] + 1;
-        case LSTORE_0:
-            return 1;
-        case LSTORE_1:
-            return 2;
-        case LSTORE_2:
-            return 3;
-        case LSTORE_3:
-            return 4;
-        case IINC:
-            return code[i + 1];
-        case RET:
-            return code[i + 1];
-        default:
-            return 0;
+            case ALOAD:
+                return code[i + 1];
+            case ALOAD_0:
+                return 0;
+            case ALOAD_1:
+                return 1;
+            case ALOAD_2:
+                return 2;
+            case ALOAD_3:
+                return 3;
+            case ASTORE:
+                return code[i + 1];
+            case ASTORE_0:
+                return 0;
+            case ASTORE_1:
+                return 1;
+            case ASTORE_2:
+                return 2;
+            case ASTORE_3:
+                return 3;
+            case DLOAD:
+                return code[i + 1] + 1;
+            case DLOAD_0:
+                return 1;
+            case DLOAD_1:
+                return 2;
+            case DLOAD_2:
+                return 3;
+            case DLOAD_3:
+                return 4;
+            case DSTORE:
+                return code[i + 1] + 1;
+            case DSTORE_0:
+                return 1;
+            case DSTORE_1:
+                return 2;
+            case DSTORE_2:
+                return 3;
+            case DSTORE_3:
+                return 4;
+            case FLOAD:
+                return code[i + 1];
+            case FLOAD_0:
+                return 0;
+            case FLOAD_1:
+                return 1;
+            case FLOAD_2:
+                return 2;
+            case FLOAD_3:
+                return 3;
+            case FSTORE:
+                return code[i + 1];
+            case FSTORE_0:
+                return 0;
+            case FSTORE_1:
+                return 1;
+            case FSTORE_2:
+                return 2;
+            case FSTORE_3:
+                return 3;
+            case ILOAD:
+                return code[i + 1];
+            case ILOAD_0:
+                return 0;
+            case ILOAD_1:
+                return 1;
+            case ILOAD_2:
+                return 2;
+            case ILOAD_3:
+                return 3;
+            case ISTORE:
+                return code[i + 1];
+            case ISTORE_0:
+                return 0;
+            case ISTORE_1:
+                return 1;
+            case ISTORE_2:
+                return 2;
+            case ISTORE_3:
+                return 3;
+            case LLOAD:
+                return code[i + 1] + 1;
+            case LLOAD_0:
+                return 1;
+            case LLOAD_1:
+                return 2;
+            case LLOAD_2:
+                return 3;
+            case LLOAD_3:
+                return 4;
+            case LSTORE:
+                return code[i + 1] + 1;
+            case LSTORE_0:
+                return 1;
+            case LSTORE_1:
+                return 2;
+            case LSTORE_2:
+                return 3;
+            case LSTORE_3:
+                return 4;
+            case IINC:
+                return code[i + 1];
+            case RET:
+                return code[i + 1];
+            default:
+                return 0;
         }
     }
 
     /**
-     *
      * @param code
      * @return -
      */
-    public static int getConstantPoolIndexSize(int code) {
+    public static int getConstantPoolIndexSize(int code)
+    {
         switch (code) {
-        case LDC:
-            return 1;
+            case LDC:
+                return 1;
 
-        case ANEWARRAY:
-        case CHECKCAST:
-        case GETFIELD:
-        case GETSTATIC:
-        case INSTANCEOF:
-        case INVOKEINTERFACE:
-        case INVOKESPECIAL:
-        case INVOKESTATIC:
-        case INVOKEVIRTUAL:
-        case LDC2_W:
-        case LDC_W:
-        case MULTIANEWARRAY:
-        case NEW:
-        case PUTFIELD:
-        case PUTSTATIC:
-            return 2;
+            case ANEWARRAY:
+            case CHECKCAST:
+            case GETFIELD:
+            case GETSTATIC:
+            case INSTANCEOF:
+            case INVOKEINTERFACE:
+            case INVOKESPECIAL:
+            case INVOKESTATIC:
+            case INVOKEVIRTUAL:
+            case LDC2_W:
+            case LDC_W:
+            case MULTIANEWARRAY:
+            case NEW:
+            case PUTFIELD:
+            case PUTSTATIC:
+                return 2;
 
-        default:
-            throw new IllegalStateException();
+            default:
+                throw new IllegalStateException();
         }
     }
 
     /**
-     *
      * @param code
      * @param i
      * @return -
      */
-    public static int getOpcodeLength(int[] code, int i) {
+    public static int getOpcodeLength(int[] code, int i)
+    {
         switch (code[i]) {
-        case AALOAD:
-        case AASTORE:
-        case ACONST_NULL:
-        case ALOAD_0:
-        case ALOAD_1:
-        case ALOAD_2:
-        case ALOAD_3:
-        case ARETURN:
-        case ARRAYLENGTH:
-        case ASTORE_0:
-        case ASTORE_1:
-        case ASTORE_2:
-        case ASTORE_3:
-        case ATHROW:
-        case BALOAD:
-        case BASTORE:
-        case CALOAD:
-        case CASTORE:
-        case D2F:
-        case D2I:
-        case D2L:
-        case DADD:
-        case DALOAD:
-        case DASTORE:
-        case DCMPG:
-        case DCMPL:
-        case DCONST_0:
-        case DCONST_1:
-        case DDIV:
-        case DLOAD_0:
-        case DLOAD_1:
-        case DLOAD_2:
-        case DLOAD_3:
-        case DMUL:
-        case DNEG:
-        case DREM:
-        case DRETURN:
-        case DSTORE_0:
-        case DSTORE_1:
-        case DSTORE_2:
-        case DSTORE_3:
-        case DSUB:
-        case DUP2:
-        case DUP2_X1:
-        case DUP2_X2:
-        case DUP:
-        case DUP_X1:
-        case DUP_X2:
-        case F2D:
-        case F2I:
-        case F2L:
-        case FADD:
-        case FALOAD:
-        case FASTORE:
-        case FCMPG:
-        case FCMPL:
-        case FCONST_0:
-        case FCONST_1:
-        case FCONST_2:
-        case FDIV:
-        case FLOAD_0:
-        case FLOAD_1:
-        case FLOAD_2:
-        case FLOAD_3:
-        case FMUL:
-        case FNEG:
-        case FREM:
-        case FRETURN:
-        case FSTORE_0:
-        case FSTORE_1:
-        case FSTORE_2:
-        case FSTORE_3:
-        case FSUB:
-        case I2B:
-        case I2C:
-        case I2D:
-        case I2F:
-        case I2L:
-        case I2S:
-        case IADD:
-        case IALOAD:
-        case IAND:
-        case IASTORE:
-        case ICONST_0:
-        case ICONST_1:
-        case ICONST_2:
-        case ICONST_3:
-        case ICONST_4:
-        case ICONST_5:
-        case ICONST_M1:
-        case IDIV:
-        case ILOAD_0:
-        case ILOAD_1:
-        case ILOAD_2:
-        case ILOAD_3:
-        case IMUL:
-        case INEG:
-        case IOR:
-        case IREM:
-        case IRETURN:
-        case ISHL:
-        case ISHR:
-        case ISTORE_0:
-        case ISTORE_1:
-        case ISTORE_2:
-        case ISTORE_3:
-        case ISUB:
-        case IUSHR:
-        case IXOR:
-        case L2D:
-        case L2F:
-        case L2I:
-        case LADD:
-        case LALOAD:
-        case LAND:
-        case LASTORE:
-        case LCMP:
-        case LCONST_0:
-        case LCONST_1:
-        case LDIV:
-        case LLOAD_0:
-        case LLOAD_1:
-        case LLOAD_2:
-        case LLOAD_3:
-        case LMUL:
-        case LNEG:
-        case LOR:
-        case LREM:
-        case LRETURN:
-        case LSHL:
-        case LSHR:
-        case LSTORE_0:
-        case LSTORE_1:
-        case LSTORE_2:
-        case LSTORE_3:
-        case LSUB:
-        case LUSHR:
-        case LXOR:
-        case MONITORENTER:
-        case MONITOREXIT:
-        case NOP:
-        case POP2:
-        case POP:
-        case RETURN:
-        case SALOAD:
-        case SASTORE:
-        case SWAP:
-            return 1;
-        case ALOAD:
-        case ASTORE:
-        case BIPUSH:
-        case DLOAD:
-        case DSTORE:
-        case FLOAD:
-        case FSTORE:
-        case ILOAD:
-        case ISTORE:
-        case LDC:
-        case LLOAD:
-        case LSTORE:
-        case NEWARRAY:
-        case RET:
-            return 2;
-        case ANEWARRAY:
-        case CHECKCAST:
-        case GETFIELD:
-        case GETSTATIC:
-        case GOTO:
-        case IFEQ:
-        case IFGE:
-        case IFGT:
-        case IFLE:
-        case IFLT:
-        case IFNE:
-        case IFNONNULL:
-        case IFNULL:
-        case IF_ACMPEQ:
-        case IF_ACMPNE:
-        case IF_ICMPEQ:
-        case IF_ICMPGE:
-        case IF_ICMPGT:
-        case IF_ICMPLE:
-        case IF_ICMPLT:
-        case IF_ICMPNE:
-        case IINC:
-        case INSTANCEOF:
-        case INVOKESPECIAL:
-        case INVOKESTATIC:
-        case INVOKEVIRTUAL:
-        case JSR:
-        case LDC2_W:
-        case LDC_W:
-        case NEW:
-        case PUTFIELD:
-        case PUTSTATIC:
-        case SIPUSH:
-            return 3;
-        case MULTIANEWARRAY:
-            return 4;
-        case GOTO_W:
-        case INVOKEINTERFACE:
-        case JSR_W:
-            return 5;
-        case LOOKUPSWITCH:
-            return getLookupSwitchLength(code, i);
-        case TABLESWITCH:
-            return getTableSwitchLength(code, i);
-        case WIDE:
-            if (code[i + 1] == IINC)
-                return 6;
-            return 4;
-        default:
-            // reserved instrs -- shouldn't really be here....
-            System.err
-                    .println("Java Opcode - getOpcodeLength - reserved instrution!");
-            return 1;
+            case AALOAD:
+            case AASTORE:
+            case ACONST_NULL:
+            case ALOAD_0:
+            case ALOAD_1:
+            case ALOAD_2:
+            case ALOAD_3:
+            case ARETURN:
+            case ARRAYLENGTH:
+            case ASTORE_0:
+            case ASTORE_1:
+            case ASTORE_2:
+            case ASTORE_3:
+            case ATHROW:
+            case BALOAD:
+            case BASTORE:
+            case CALOAD:
+            case CASTORE:
+            case D2F:
+            case D2I:
+            case D2L:
+            case DADD:
+            case DALOAD:
+            case DASTORE:
+            case DCMPG:
+            case DCMPL:
+            case DCONST_0:
+            case DCONST_1:
+            case DDIV:
+            case DLOAD_0:
+            case DLOAD_1:
+            case DLOAD_2:
+            case DLOAD_3:
+            case DMUL:
+            case DNEG:
+            case DREM:
+            case DRETURN:
+            case DSTORE_0:
+            case DSTORE_1:
+            case DSTORE_2:
+            case DSTORE_3:
+            case DSUB:
+            case DUP2:
+            case DUP2_X1:
+            case DUP2_X2:
+            case DUP:
+            case DUP_X1:
+            case DUP_X2:
+            case F2D:
+            case F2I:
+            case F2L:
+            case FADD:
+            case FALOAD:
+            case FASTORE:
+            case FCMPG:
+            case FCMPL:
+            case FCONST_0:
+            case FCONST_1:
+            case FCONST_2:
+            case FDIV:
+            case FLOAD_0:
+            case FLOAD_1:
+            case FLOAD_2:
+            case FLOAD_3:
+            case FMUL:
+            case FNEG:
+            case FREM:
+            case FRETURN:
+            case FSTORE_0:
+            case FSTORE_1:
+            case FSTORE_2:
+            case FSTORE_3:
+            case FSUB:
+            case I2B:
+            case I2C:
+            case I2D:
+            case I2F:
+            case I2L:
+            case I2S:
+            case IADD:
+            case IALOAD:
+            case IAND:
+            case IASTORE:
+            case ICONST_0:
+            case ICONST_1:
+            case ICONST_2:
+            case ICONST_3:
+            case ICONST_4:
+            case ICONST_5:
+            case ICONST_M1:
+            case IDIV:
+            case ILOAD_0:
+            case ILOAD_1:
+            case ILOAD_2:
+            case ILOAD_3:
+            case IMUL:
+            case INEG:
+            case IOR:
+            case IREM:
+            case IRETURN:
+            case ISHL:
+            case ISHR:
+            case ISTORE_0:
+            case ISTORE_1:
+            case ISTORE_2:
+            case ISTORE_3:
+            case ISUB:
+            case IUSHR:
+            case IXOR:
+            case L2D:
+            case L2F:
+            case L2I:
+            case LADD:
+            case LALOAD:
+            case LAND:
+            case LASTORE:
+            case LCMP:
+            case LCONST_0:
+            case LCONST_1:
+            case LDIV:
+            case LLOAD_0:
+            case LLOAD_1:
+            case LLOAD_2:
+            case LLOAD_3:
+            case LMUL:
+            case LNEG:
+            case LOR:
+            case LREM:
+            case LRETURN:
+            case LSHL:
+            case LSHR:
+            case LSTORE_0:
+            case LSTORE_1:
+            case LSTORE_2:
+            case LSTORE_3:
+            case LSUB:
+            case LUSHR:
+            case LXOR:
+            case MONITORENTER:
+            case MONITOREXIT:
+            case NOP:
+            case POP2:
+            case POP:
+            case RETURN:
+            case SALOAD:
+            case SASTORE:
+            case SWAP:
+                return 1;
+            case ALOAD:
+            case ASTORE:
+            case BIPUSH:
+            case DLOAD:
+            case DSTORE:
+            case FLOAD:
+            case FSTORE:
+            case ILOAD:
+            case ISTORE:
+            case LDC:
+            case LLOAD:
+            case LSTORE:
+            case NEWARRAY:
+            case RET:
+                return 2;
+            case ANEWARRAY:
+            case CHECKCAST:
+            case GETFIELD:
+            case GETSTATIC:
+            case GOTO:
+            case IFEQ:
+            case IFGE:
+            case IFGT:
+            case IFLE:
+            case IFLT:
+            case IFNE:
+            case IFNONNULL:
+            case IFNULL:
+            case IF_ACMPEQ:
+            case IF_ACMPNE:
+            case IF_ICMPEQ:
+            case IF_ICMPGE:
+            case IF_ICMPGT:
+            case IF_ICMPLE:
+            case IF_ICMPLT:
+            case IF_ICMPNE:
+            case IINC:
+            case INSTANCEOF:
+            case INVOKESPECIAL:
+            case INVOKESTATIC:
+            case INVOKEVIRTUAL:
+            case JSR:
+            case LDC2_W:
+            case LDC_W:
+            case NEW:
+            case PUTFIELD:
+            case PUTSTATIC:
+            case SIPUSH:
+                return 3;
+            case MULTIANEWARRAY:
+                return 4;
+            case GOTO_W:
+            case INVOKEINTERFACE:
+            case JSR_W:
+                return 5;
+            case LOOKUPSWITCH:
+                return getLookupSwitchLength(code, i);
+            case TABLESWITCH:
+                return getTableSwitchLength(code, i);
+            case WIDE:
+                if (code[i + 1] == IINC)
+                    return 6;
+                return 4;
+            default:
+                // reserved instrs -- shouldn't really be here....
+                System.err
+                        .println("Java Opcode - getOpcodeLength - reserved instrution!");
+                return 1;
         }
     }
 
-    private static int getLookupSwitchLength(int[] code, int i) {
+    private static int getLookupSwitchLength(int[] code, int i)
+    {
         int initPosition = i;
         // skip the zeros
         for (i = (initPosition + 1); i < (initPosition + 5); i++)
@@ -1207,7 +1207,8 @@ public class JavaOpcode {
         return i - initPosition;
     }
 
-    private static int getTableSwitchLength(int[] code, int i) {
+    private static int getTableSwitchLength(int[] code, int i)
+    {
         int initPosition = i;
         // skip the zeros
         for (i = (initPosition + 1); i < (initPosition + 4); i++)

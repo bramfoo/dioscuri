@@ -53,21 +53,23 @@ public class Instruction_LEAVE implements Instruction {
     byte[] destDoubleWord;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_LEAVE() {
+    public Instruction_LEAVE()
+    {
         destWord = new byte[2];
         destDoubleWord = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LEAVE(CPU processor) {
+    public Instruction_LEAVE(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -79,7 +81,8 @@ public class Instruction_LEAVE implements Instruction {
     /**
      * LEAVE - High Level Procudure Exit.<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         System.out.println("CPU -> instruction LEAVE");
 
         // Check if stacksize is 32 or 16 bit

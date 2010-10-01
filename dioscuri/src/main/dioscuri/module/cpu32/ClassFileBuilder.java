@@ -26,7 +26,7 @@
 package dioscuri.module.cpu32;
 
 import java.io.*;
-import java.util.*;
+import java.util.Hashtable;
 
 //import org.jpc.emulator.memory.codeblock.*;
 //import org.jpc.classfile.*;
@@ -35,7 +35,6 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.prot.ProtectedModeSkeletonBlock;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -52,7 +51,8 @@ public class ClassFileBuilder {
         newClassLoader();
     }
 
-    private static InputStream loadSkeletonClass(Class<?> clz) {
+    private static InputStream loadSkeletonClass(Class<?> clz)
+    {
         byte[] classBytes = null;
         String classRes = clz.getName().replace('.', '/') + ".class";
         try {
@@ -80,14 +80,15 @@ public class ClassFileBuilder {
         return new ByteArrayInputStream(classBytes);
     }
 
-    private ClassFileBuilder() {
+    private ClassFileBuilder()
+    {
     }
 
     /**
-     *
      * @return -
      */
-    public static ClassFile createNewRealModeSkeletonClass() {
+    public static ClassFile createNewRealModeSkeletonClass()
+    {
         ClassFile cf = new ClassFile();
 
         try {
@@ -102,10 +103,10 @@ public class ClassFileBuilder {
     }
 
     /**
-     *
      * @return -
      */
-    public static ClassFile createNewProtectedModeSkeletonClass() {
+    public static ClassFile createNewProtectedModeSkeletonClass()
+    {
         ClassFile cf = new ClassFile();
 
         try {
@@ -120,11 +121,11 @@ public class ClassFileBuilder {
     }
 
     /**
-     *
      * @param cf
      * @return -
      */
-    public static CodeBlock instantiateClass(ClassFile cf) {
+    public static CodeBlock instantiateClass(ClassFile cf)
+    {
         cf.update();
         String className = cf.getClassName();
 
@@ -154,7 +155,8 @@ public class ClassFileBuilder {
         return compiledBlock;
     }
 
-    private static void newClassLoader() {
+    private static void newClassLoader()
+    {
         currentClassLoader = new CustomClassLoader();
     }
 
@@ -162,12 +164,14 @@ public class ClassFileBuilder {
         private Hashtable<String, Class<?>> classes;
         private int classesCount;
 
-        public CustomClassLoader() {
+        public CustomClassLoader()
+        {
             super(ClassFileBuilder.class.getClassLoader());
             classes = new Hashtable<String, Class<?>>();
         }
 
-        public Class<?> createClass(String name, byte[] b, int off, int len) {
+        public Class<?> createClass(String name, byte[] b, int off, int len)
+        {
             if (++classesCount == CLASSES_PER_LOADER)
                 newClassLoader();
 
@@ -179,7 +183,8 @@ public class ClassFileBuilder {
         }
 
         @Override
-        public Class<?> findClass(String name) throws ClassNotFoundException {
+        public Class<?> findClass(String name) throws ClassNotFoundException
+        {
             Class<?> myClass = (Class<?>) classes.get(name);
             if (myClass != null)
                 return myClass;

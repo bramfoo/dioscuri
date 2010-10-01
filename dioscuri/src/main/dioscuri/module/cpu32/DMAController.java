@@ -26,10 +26,6 @@
 
 package dioscuri.module.cpu32;
 
-import java.io.DataInput;
-import java.io.DataOutput;
-import java.io.IOException;
-
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
 import dioscuri.exception.WriteOnlyPortException;
@@ -37,19 +33,22 @@ import dioscuri.interfaces.Addressable;
 import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
 
+import java.io.DataInput;
+import java.io.DataOutput;
+import java.io.IOException;
+
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class DMAController extends AbstractModule implements IOPortCapable, Addressable, HardwareComponent {
-    
+
     private static final int pagePortList0 = 0x1;
     private static final int pagePortList1 = 0x2;
     private static final int pagePortList2 = 0x3;
     private static final int pagePortList3 = 0x7;
-    private static final int[] pagePortList = new int[] { pagePortList0,
-            pagePortList1, pagePortList2, pagePortList3 };
+    private static final int[] pagePortList = new int[]{pagePortList0,
+            pagePortList1, pagePortList2, pagePortList3};
     private static final int CMD_MEMORY_TO_MEMORY = 0x01;
     private static final int CMD_FIXED_ADDRESS = 0x02;
     private static final int CMD_BLOCK_CONTROLLER = 0x04;
@@ -88,10 +87,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         public byte page, pageh, dack, eop;
         public DMATransferCapable transferDevice;
 
-        public DMARegister() {
+        public DMARegister()
+        {
         }
 
-        public void dumpState(DataOutput output) throws IOException {
+        public void dumpState(DataOutput output) throws IOException
+        {
             output.writeInt(nowAddress);
             output.writeInt(nowCount);
             output.writeShort(baseAddress);
@@ -105,7 +106,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
 
         }
 
-        public void loadState(DataInput input) throws IOException {
+        public void loadState(DataInput input) throws IOException
+        {
             nowAddress = input.readInt();
             nowCount = input.readInt();
             baseAddress = input.readShort();
@@ -119,7 +121,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
 
         }
 
-        public void reset() {
+        public void reset()
+        {
             transferDevice = null;
             nowAddress = nowCount = mode = 0;
             baseAddress = baseCount = 0;
@@ -130,11 +133,11 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     private DMARegister[] dmaRegs;
 
     /**
-     *
      * @param highPageEnable
      * @param zeroth
      */
-    public DMAController(boolean highPageEnable, boolean zeroth) {
+    public DMAController(boolean highPageEnable, boolean zeroth)
+    {
         super(Module.Type.DMACONTROLLER);
         ioportRegistered = false;
         this.dShift = zeroth ? 0 : 1;
@@ -152,11 +155,11 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param output
      * @throws IOException
      */
-    public void dumpState(DataOutput output) throws IOException {
+    public void dumpState(DataOutput output) throws IOException
+    {
         output.writeInt(status);
         output.writeInt(command);
         output.writeInt(mask);
@@ -172,11 +175,11 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param input
      * @throws IOException
      */
-    public void loadState(DataInput input) throws IOException {
+    public void loadState(DataInput input) throws IOException
+    {
         ioportRegistered = false;
         status = input.readInt();
         command = input.readInt();
@@ -196,10 +199,10 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @return -
      */
-    public boolean isFirst() {
+    public boolean isFirst()
+    {
         return (this.dShift == 0);
     }
 
@@ -209,7 +212,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         for (int i = 0; i < dmaRegs.length; i++)
             dmaRegs[i].reset();
 
@@ -220,7 +224,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return true;
     }
 
-    private void writeChannel(int portNumber, int data) {
+    private void writeChannel(int portNumber, int data)
+    {
         int port = (portNumber >>> dShift) & 0x0f;
         int channelNumber = port >>> 1;
         DMARegister r = dmaRegs[channelNumber];
@@ -238,62 +243,64 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         }
     }
 
-    private void writeController(int portNumber, int data) {
+    private void writeController(int portNumber, int data)
+    {
         int port = (portNumber >>> this.dShift) & 0x0f;
         switch (port) {
-        case 0x08: /* command */
-            if ((data != 0) && ((data & CMD_NOT_SUPPORTED) != 0))
+            case 0x08: /* command */
+                if ((data != 0) && ((data & CMD_NOT_SUPPORTED) != 0))
+                    break;
+                command = data;
                 break;
-            command = data;
-            break;
-        case 0x09:
-            int channelNumber = data & 3;
-            if ((data & 4) != 0) {
-                status |= 1 << (channelNumber + 4);
-            } else {
-                status &= ~(1 << (channelNumber + 4));
-            }
-            status &= ~(1 << channelNumber);
-            runTransfers();
-            break;
-        case 0x0a: /* single mask */
-            if ((data & 0x4) != 0) {
-                mask |= 1 << (data & 3);
-            } else {
-                mask &= ~(1 << (data & 3));
+            case 0x09:
+                int channelNumber = data & 3;
+                if ((data & 4) != 0) {
+                    status |= 1 << (channelNumber + 4);
+                } else {
+                    status &= ~(1 << (channelNumber + 4));
+                }
+                status &= ~(1 << channelNumber);
                 runTransfers();
-            }
-            break;
-        case 0x0b: /* mode */
-            channelNumber = data & 3;
-            dmaRegs[channelNumber].mode = data;
-            break;
-        case 0x0c: /* clear flipFlop */
-            flipFlop = false;
-            break;
-        case 0x0d: /* reset */
-            flipFlop = false;
-            mask = ~0;
-            status = 0;
-            command = 0;
-            break;
-        case 0x0e: /* clear mask for all channels */
-            mask = 0;
-            runTransfers();
-            break;
-        case 0x0f: /* write mask for all channels */
-            mask = data;
-            runTransfers();
-            break;
-        default:
-            break;
+                break;
+            case 0x0a: /* single mask */
+                if ((data & 0x4) != 0) {
+                    mask |= 1 << (data & 3);
+                } else {
+                    mask &= ~(1 << (data & 3));
+                    runTransfers();
+                }
+                break;
+            case 0x0b: /* mode */
+                channelNumber = data & 3;
+                dmaRegs[channelNumber].mode = data;
+                break;
+            case 0x0c: /* clear flipFlop */
+                flipFlop = false;
+                break;
+            case 0x0d: /* reset */
+                flipFlop = false;
+                mask = ~0;
+                status = 0;
+                command = 0;
+                break;
+            case 0x0e: /* clear mask for all channels */
+                mask = 0;
+                runTransfers();
+                break;
+            case 0x0f: /* write mask for all channels */
+                mask = data;
+                runTransfers();
+                break;
+            default:
+                break;
         }
     }
 
-    private static final int[] channels = new int[] { -1, 2, 3, 1, -1, -1, -1,
-            0 };
+    private static final int[] channels = new int[]{-1, 2, 3, 1, -1, -1, -1,
+            0};
 
-    private void writePage(int portNumber, int data) {
+    private void writePage(int portNumber, int data)
+    {
         int channelNumber = channels[portNumber & 7];
         if (-1 == channelNumber) {
             return;
@@ -301,7 +308,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         dmaRegs[channelNumber].page = (byte) data;
     }
 
-    private void writePageH(int portNumber, int data) {
+    private void writePageH(int portNumber, int data)
+    {
         int channelNumber = channels[portNumber & 7];
         if (-1 == channelNumber) {
             return;
@@ -309,7 +317,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         dmaRegs[channelNumber].pageh = (byte) data;
     }
 
-    private int readChannel(int portNumber) {
+    private int readChannel(int portNumber)
+    {
         int port = (portNumber >>> dShift) & 0x0f;
         int channelNumber = port >>> 1;
         int registerNumber = port & 1;
@@ -327,25 +336,27 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return (val >>> (dShift + (flipflop ? 0x8 : 0x0))) & 0xff;
     }
 
-    private int readController(int portNumber) {
+    private int readController(int portNumber)
+    {
         int val;
         int port = (portNumber >>> dShift) & 0x0f;
         switch (port) {
-        case 0x08:
-            val = status;
-            status &= 0xf0;
-            break;
-        case 0x0f:
-            val = mask;
-            break;
-        default:
-            val = 0;
-            break;
+            case 0x08:
+                val = status;
+                status &= 0xf0;
+                break;
+            case 0x0f:
+                val = mask;
+                break;
+            default:
+                val = 0;
+                break;
         }
         return val;
     }
 
-    private int readPage(int portNumber) {
+    private int readPage(int portNumber)
+    {
         int channelNumber = channels[portNumber & 7];
         if (-1 == channelNumber) {
             return 0;
@@ -353,7 +364,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return 0xff & dmaRegs[channelNumber].page;
     }
 
-    private int readPageH(int portNumber) {
+    private int readPageH(int portNumber)
+    {
         int channelNumber = channels[portNumber & 7];
         if (-1 == channelNumber) {
             return 0;
@@ -362,153 +374,153 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteByte(int address, int data) {
+    public void ioPortWriteByte(int address, int data)
+    {
         switch ((address - iobase) >>> dShift) {
-        case 0x0:
-        case 0x1:
-        case 0x2:
-        case 0x3:
-        case 0x4:
-        case 0x5:
-        case 0x6:
-        case 0x7:
-            writeChannel(address, data);
-            return;
-        case 0x8:
-        case 0x9:
-        case 0xa:
-        case 0xb:
-        case 0xc:
-        case 0xd:
-        case 0xe:
-        case 0xf:
-            writeController(address, data);
-            return;
-        default:
-            break;
+            case 0x0:
+            case 0x1:
+            case 0x2:
+            case 0x3:
+            case 0x4:
+            case 0x5:
+            case 0x6:
+            case 0x7:
+                writeChannel(address, data);
+                return;
+            case 0x8:
+            case 0x9:
+            case 0xa:
+            case 0xb:
+            case 0xc:
+            case 0xd:
+            case 0xe:
+            case 0xf:
+                writeController(address, data);
+                return;
+            default:
+                break;
         }
 
         switch (address - pageBase) {
-        case pagePortList0:
-        case pagePortList1:
-        case pagePortList2:
-        case pagePortList3:
-            writePage(address, data);
-            return;
-        default:
-            break;
+            case pagePortList0:
+            case pagePortList1:
+            case pagePortList2:
+            case pagePortList3:
+                writePage(address, data);
+                return;
+            default:
+                break;
         }
         switch (address - pageHBase) {
-        case pagePortList0:
-        case pagePortList1:
-        case pagePortList2:
-        case pagePortList3:
-            writePageH(address, data);
-            return;
-        default:
-            break;
+            case pagePortList0:
+            case pagePortList1:
+            case pagePortList2:
+            case pagePortList3:
+                writePageH(address, data);
+                return;
+            default:
+                break;
         }
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteWord(int address, int data) {
+    public void ioPortWriteWord(int address, int data)
+    {
         this.ioPortWriteByte(address, data);
         this.ioPortWriteByte(address + 1, data >>> 8);
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteLong(int address, int data) {
+    public void ioPortWriteLong(int address, int data)
+    {
         this.ioPortWriteWord(address, data);
         this.ioPortWriteWord(address + 2, data >>> 16);
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadByte(int address) {
+    public int ioPortReadByte(int address)
+    {
         switch ((address - iobase) >>> dShift) {
-        case 0x0:
-        case 0x1:
-        case 0x2:
-        case 0x3:
-        case 0x4:
-        case 0x5:
-        case 0x6:
-        case 0x7:
-            return readChannel(address);
-        case 0x8:
-        case 0x9:
-        case 0xa:
-        case 0xb:
-        case 0xc:
-        case 0xd:
-        case 0xe:
-        case 0xf:
-            return readController(address);
-        default:
-            break;
+            case 0x0:
+            case 0x1:
+            case 0x2:
+            case 0x3:
+            case 0x4:
+            case 0x5:
+            case 0x6:
+            case 0x7:
+                return readChannel(address);
+            case 0x8:
+            case 0x9:
+            case 0xa:
+            case 0xb:
+            case 0xc:
+            case 0xd:
+            case 0xe:
+            case 0xf:
+                return readController(address);
+            default:
+                break;
         }
 
         switch (address - pageBase) {
-        case pagePortList0:
-        case pagePortList1:
-        case pagePortList2:
-        case pagePortList3:
-            return readPage(address);
-        default:
-            break;
+            case pagePortList0:
+            case pagePortList1:
+            case pagePortList2:
+            case pagePortList3:
+                return readPage(address);
+            default:
+                break;
         }
         switch (address - pageHBase) {
-        case pagePortList0:
-        case pagePortList1:
-        case pagePortList2:
-        case pagePortList3:
-            return readPageH(address);
-        default:
-            break;
+            case pagePortList0:
+            case pagePortList1:
+            case pagePortList2:
+            case pagePortList3:
+                return readPageH(address);
+            default:
+                break;
         }
         return 0xff;
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadWord(int address) {
+    public int ioPortReadWord(int address)
+    {
         return (0xff & this.ioPortReadByte(address))
                 | ((this.ioPortReadByte(address) << 8) & 0xff);
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadLong(int address) {
+    public int ioPortReadLong(int address)
+    {
         return (0xffff & this.ioPortReadByte(address))
                 | ((this.ioPortReadByte(address) << 16) & 0xffff);
     }
 
     /**
-     *
      * @return -
      */
-    public int[] ioPortsRequested() {
+    public int[] ioPortsRequested()
+    {
         int[] temp;
         if (pageHBase >= 0) {
             temp = new int[16 + (2 * pagePortList.length)];
@@ -532,18 +544,22 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         return temp;
     }
 
-    private boolean getFlipFlop() {
+    private boolean getFlipFlop()
+    {
         boolean ff = flipFlop;
         flipFlop = !ff;
         return ff;
     }
 
-    private void initChannel(int channelNumber) {
+    private void initChannel(int channelNumber)
+    {
         DMARegister r = dmaRegs[channelNumber];
         r.nowAddress = (0xffff & r.baseAddress) << dShift;
         r.nowCount = 0;
     }
-    public void runTransfers() {
+
+    public void runTransfers()
+    {
         int value = ~mask & (status >>> 4) & 0xf;
         if (value == 0)
             return;
@@ -564,7 +580,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
         // }
     }
 
-    private void runChannel(int channelNumber) {
+    private void runChannel(int channelNumber)
+    {
         DMARegister r = dmaRegs[channelNumber];
         int n = r.transferDevice.transferHandler(channelNumber
                 + (controllerNumber << 2), r.nowCount,
@@ -573,42 +590,41 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param channelNumber
      * @return -
      */
-    public int getChannelMode(int channelNumber) {
+    public int getChannelMode(int channelNumber)
+    {
         return dmaRegs[channelNumber].mode;
     }
 
     /**
-     *
      * @param channelNumber
      */
-    public void holdDREQ(int channelNumber) {
+    public void holdDREQ(int channelNumber)
+    {
         status |= 1 << (channelNumber + 4);
         runTransfers();
     }
 
     /**
-     *
      * @param channelNumber
      */
-    public void releaseDREQ(int channelNumber) {
+    public void releaseDREQ(int channelNumber)
+    {
         status &= ~(1 << (channelNumber + 4));
     }
 
     /**
-     *
      * @param channelNumber
      * @param device
      */
-    public void registerChannel(int channelNumber, DMATransferCapable device) {
+    public void registerChannel(int channelNumber, DMATransferCapable device)
+    {
         dmaRegs[channelNumber].transferDevice = device;
     }
 
     /**
-     *
      * @param channelNumber
      * @param buffer
      * @param bufferOffset
@@ -617,7 +633,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      * @return -
      */
     public int readMemory(int channelNumber, byte[] buffer, int bufferOffset,
-            int position, int length) {
+                          int position, int length)
+    {
         DMARegister r = dmaRegs[channelNumber];
 
         long address = ((r.pageh & 0x7fl) << 24) | ((0xffl & r.page) << 16)
@@ -644,7 +661,6 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param channelNumber
      * @param buffer
      * @param bufferOffset
@@ -653,7 +669,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      * @return -
      */
     public int writeMemory(int channelNumber, byte[] buffer, int bufferOffset,
-            int position, int length) {
+                           int position, int length)
+    {
         DMARegister r = dmaRegs[channelNumber];
         long address = ((0x7fl & r.pageh) << 24) | ((0xffl & r.page) << 16)
                 | (0xffffffffl & r.nowAddress);
@@ -680,26 +697,26 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     private boolean ioportRegistered;
 
     /**
-     *
      * @return -
      */
-    public boolean initialised() {
+    public boolean initialised()
+    {
         return ((memory != null) && ioportRegistered);
     }
 
     /**
-     *
      * @return -
      */
-    public boolean updated() {
+    public boolean updated()
+    {
         return memory.updated() && ioportRegistered;
     }
 
     /**
-     *
      * @param component
      */
-    public void acceptComponent(HardwareComponent component) {
+    public void acceptComponent(HardwareComponent component)
+    {
         if (component instanceof PhysicalAddressSpace)
             this.memory = (PhysicalAddressSpace) component;
         if (component instanceof IOPortHandler) {
@@ -709,20 +726,23 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
     }
 
     /**
-     *
      * @param component
      */
-    public void updateComponent(HardwareComponent component) {
+    public void updateComponent(HardwareComponent component)
+    {
         if (component instanceof IOPortHandler) {
             ((IOPortHandler) component).registerIOPortCapable(this);
             ioportRegistered = true;
         }
     }
-    public void timerCallback() {
+
+    public void timerCallback()
+    {
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "DMA Controller [element " + dShift + "]";
     }
 
@@ -733,7 +753,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         // Redirect to native handler
         int result = ioPortReadByte(portAddress);
         return (byte) result;
@@ -746,11 +767,12 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         // Redirect to native handler
         int result = ioPortReadWord(portAddress);
-        return new byte[] { ((byte) ((result >> 8) & 0xFF)),
-                ((byte) (result & 0xFF)) };
+        return new byte[]{((byte) ((result >> 8) & 0xFF)),
+                ((byte) (result & 0xFF))};
     }
 
     /**
@@ -760,12 +782,13 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         // Redirect to native handler
         int result = ioPortReadLong(portAddress);
-        return new byte[] { ((byte) ((result >> 24) & 0xFF)),
+        return new byte[]{((byte) ((result >> 24) & 0xFF)),
                 ((byte) ((result >> 16) & 0xFF)),
-                ((byte) ((result >> 8) & 0xFF)), ((byte) (result & 0xFF)) };
+                ((byte) ((result >> 8) & 0xFF)), ((byte) (result & 0xFF))};
     }
 
     /**
@@ -775,7 +798,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         // Redirect to native handler
         ioPortWriteByte(portAddress, data);
     }
@@ -787,7 +811,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataWord[0]) & 0xFF) << 8)
                 + (((int) dataWord[1]) & 0xFF));
@@ -801,7 +826,8 @@ public class DMAController extends AbstractModule implements IOPortCapable, Addr
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         // Redirect to native handler
         ioPortWriteLong(portAddress, ((((int) dataDoubleWord[3]) & 0xFF) << 24)
                 + ((((int) dataDoubleWord[2]) & 0xFF) << 16)

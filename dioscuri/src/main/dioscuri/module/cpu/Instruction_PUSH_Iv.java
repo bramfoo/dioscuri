@@ -58,20 +58,21 @@ public class Instruction_PUSH_Iv implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_PUSH_Iv.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_PUSH_Iv() {
+    public Instruction_PUSH_Iv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_Iv(CPU processor) {
+    public Instruction_PUSH_Iv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -83,10 +84,10 @@ public class Instruction_PUSH_Iv implements Instruction {
     // Methods
 
     /**
-     * 
      * Pushes the immediate word onto stack top SS:SP
      */
-    public void execute() {
+    public void execute()
+    {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord) {
             // 32-bit: note that lower and higher words need to be interchanged!

@@ -43,8 +43,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Keyboard state information
+
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -69,7 +69,8 @@ public class TheKeyboard {
      * @return the keyboard controller queue, contains data intended for
      *         keyboard (command bytes).
      */
-    public synchronized List<Byte> getControllerQueue() {
+    public synchronized List<Byte> getControllerQueue()
+    {
         return this.controllerQueue;
     }
 }

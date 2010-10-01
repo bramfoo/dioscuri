@@ -51,20 +51,21 @@ public class Instruction_XCHG_BPAX implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_XCHG_BPAX() {
+    public Instruction_XCHG_BPAX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_XCHG_BPAX(CPU processor) {
+    public Instruction_XCHG_BPAX(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -77,7 +78,8 @@ public class Instruction_XCHG_BPAX implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute() {
+    public void execute()
+    {
         // Swap registers, using temp as a go-between
         System.arraycopy(cpu.bp, 0, temp, 0, cpu.bp.length);
         System.arraycopy(cpu.ax, 0, cpu.bp, 0, cpu.ax.length);

@@ -39,14 +39,13 @@
 
 package dioscuri.module.fdc;
 
+import dioscuri.exception.StorageDeviceException;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-import dioscuri.exception.StorageDeviceException;
-
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -57,7 +56,7 @@ public class Drive {
     private int driveType; // Type of drive this is
     private boolean motorRunning; // Denotes if motor of drive is on or off
     protected int eot; // End of track, contains the number of the final sector
-                       // of a cylinder
+    // of a cylinder
     protected int hds; // Current head (Head Select)
     protected int cylinder; // Current cylinder
     protected int sector; // Current sector
@@ -68,13 +67,13 @@ public class Drive {
     protected int tracks; // Total number of tracks on floppy
     protected int heads; // Total number of heads on floppy
     protected int cylinders; // Total number of cylinders on floppy (identical
-                             // to tracks for floppies)
+    // to tracks for floppies)
     protected int sectorsPerTrack; // Total number of sectors per track
     protected int sectors; // Total number of sectors on a disk
     protected boolean writeProtected; // Indicates if the floppy is write
-                                      // protected
+    // protected
     protected boolean multiTrack; // The floppy has two sides, a cylinder under
-                                  // both HD0 and HD1 will be accessed
+    // both HD0 and HD1 will be accessed
 
     // DIGITAL INPUT REGISTER (DIR)
     // Note: several schemes exist, but this implementation only considers bit 7
@@ -98,7 +97,7 @@ public class Drive {
     // bit 0 datarate select0
     // bit 0 FIXED DISK drive 0 select (conflicting!)
     protected byte dir;
-    
+
     private static enum FloppyType {
         TYPE_NONE((byte) 0x00, 0, 0, 0, 0, 0x00),
         TYPE_360K((byte) 0x01, 40, 2, 9, 720, 0x05),
@@ -109,15 +108,16 @@ public class Drive {
         TYPE_160K((byte) 0x06, 40, 1, 8, 320, 0x05),
         TYPE_180K((byte) 0x07, 40, 1, 9, 360, 0x05),
         TYPE_320K((byte) 0x08, 40, 2, 8, 640, 0x05);
-        
+
         private final byte id;
         private final int tracks;
         private final int heads;
         private final int sectorsPerTrack;
         private final int sectors;
         private final int value; // TODO find what that value represents + add a getter when found
-        
-        private FloppyType(byte id, int tracks, int heads, int sectorsPerTrack, int sectors, int value) {
+
+        private FloppyType(byte id, int tracks, int heads, int sectorsPerTrack, int sectors, int value)
+        {
             this.id = id;
             this.tracks = tracks;
             this.heads = heads;
@@ -125,27 +125,38 @@ public class Drive {
             this.sectors = sectors;
             this.value = value;
         }
-        public byte getId() {
+
+        public byte getId()
+        {
             return id;
         }
-        public int getTracks() {
+
+        public int getTracks()
+        {
             return tracks;
         }
-        public int getHeads() {
+
+        public int getHeads()
+        {
             return heads;
         }
-        public int getSectorsPerTrack() {
+
+        public int getSectorsPerTrack()
+        {
             return sectorsPerTrack;
         }
-        public int getSectors() {
+
+        public int getSectors()
+        {
             return sectors;
         }
-        
+
         /**
          * @param floppyType
          * @return -
          */
-        public static FloppyType fromId(byte id) {
+        public static FloppyType fromId(byte id)
+        {
             FloppyType result = TYPE_NONE; // default to none
             for (FloppyType type : values()) {
                 if (type.getId() == id) {
@@ -155,15 +166,17 @@ public class Drive {
             }
             return result;
         }
-    };
-    
+    }
+
+    ;
+
     // Constructor
 
     /**
      * Drive
-     * 
      */
-    public Drive() {
+    public Drive()
+    {
         // Initialise drive parameters
         driveType = 0;
         eot = 0;
@@ -190,10 +203,11 @@ public class Drive {
 
     /**
      * Reset drive All geometry parameters for sector selection are reset.
-     * 
+     *
      * @return -
      */
-    protected boolean reset() {
+    protected boolean reset()
+    {
         // Reset registers
         dir |= 0x80;
 
@@ -207,65 +221,72 @@ public class Drive {
 
     /**
      * Checks the existence of a floppy disk in drive
-     * 
+     *
      * @return boolean true if drive contains a floppy, false otherwise
      */
-    protected boolean containsFloppy() {
+    protected boolean containsFloppy()
+    {
         return (floppy != null);
     }
 
     /**
      * Get type of drive
-     * 
+     *
      * @return int drive type
      */
-    protected int getDriveType() {
+    protected int getDriveType()
+    {
         return driveType;
     }
 
     /**
      * Set type of drive
-     * 
+     *
      * @param type
      */
-    protected void setDriveType(byte type) {
+    protected void setDriveType(byte type)
+    {
         driveType = type;
     }
 
     /**
      * Set motor status
-     * 
+     *
      * @param state
      */
-    protected void setMotor(boolean state) {
+    protected void setMotor(boolean state)
+    {
         motorRunning = state;
     }
 
     /**
      * Returns the state of the drive motor
-     * 
+     *
      * @return boolean true if motor is running, false otherwise
      */
-    protected boolean isMotorRunning() {
+    protected boolean isMotorRunning()
+    {
         return motorRunning;
     }
 
     /**
      * Get type of floppy inserted
-     * 
+     *
      * @return int type of floppy
      */
-    protected int getFloppyType() {
+    protected int getFloppyType()
+    {
         return floppyType;
     }
 
     /**
      * Get size in bytes of floppy Returns -1 if drive is empty.
-     * 
+     *
      * @return int size of floppy, or -1 if no floppy available
      */
-    protected int getFloppySize() {
-        if (this.containsFloppy() == true) {
+    protected int getFloppySize()
+    {
+        if (this.containsFloppy()) {
             return floppy.getSize();
         }
         return -1;
@@ -273,14 +294,15 @@ public class Drive {
 
     /**
      * Inserts a floppy into the drive
-     * 
+     *
      * @param floppyType
      * @param imageFile
      * @param writeProtected
      * @throws StorageDeviceException
      */
     protected void insertFloppy(byte floppyType, File imageFile,
-            boolean writeProtected) throws StorageDeviceException {
+                                boolean writeProtected) throws StorageDeviceException
+    {
         try {
             // Create new virtual floppy
             floppy = new Floppy(floppyType, imageFile);
@@ -325,10 +347,11 @@ public class Drive {
 
     /**
      * Ejects a floppy from the drive
-     * 
+     *
      * @throws StorageDeviceException
      */
-    protected void ejectFloppy() throws StorageDeviceException {
+    protected void ejectFloppy() throws StorageDeviceException
+    {
         try {
             // Store all data from floppy to image
             floppy.storeImageToFile();
@@ -352,14 +375,15 @@ public class Drive {
 
     /**
      * Read data from floppy into buffer
-     * 
+     *
      * @param offset
      * @param totalBytes
      * @param floppyBuffer
      * @throws StorageDeviceException
      */
     protected void readData(int offset, int totalBytes, byte[] floppyBuffer)
-            throws StorageDeviceException {
+            throws StorageDeviceException
+    {
         // Copy bytes from floppy to buffer
         if (this.containsFloppy()) {
             // Check if full amount of bytes can be read
@@ -399,16 +423,17 @@ public class Drive {
 
     /**
      * Write data to floppy from buffer
-     * 
+     *
      * @param offset
      * @param totalBytes
      * @param floppyBuffer
      * @throws StorageDeviceException
      */
     protected void writeData(int offset, int totalBytes, byte[] floppyBuffer)
-            throws StorageDeviceException {
+            throws StorageDeviceException
+    {
         // Copy bytes from buffer to floppy
-        if (this.containsFloppy() && writeProtected == false) {
+        if (this.containsFloppy() && !writeProtected) {
             System.arraycopy(floppyBuffer, 0, floppy.bytes, offset, totalBytes);
 
             // TODO: Increment sector can also taken care of here instead of in
@@ -422,15 +447,15 @@ public class Drive {
     /**
      * Increment current sector Note: also takes care of multitrack disks and
      * cylinder position
-     * 
      */
-    protected void incrementSector() {
+    protected void incrementSector()
+    {
         // Sector will be updated after data transfer is ready
         sector++;
         if ((sector > eot) || (sector > sectorsPerTrack)) {
             // Reset sector and go to next cylinder/track
             sector = 1;
-            if (multiTrack == true) {
+            if (multiTrack) {
                 // Double sided
                 hds++;
 
@@ -456,9 +481,9 @@ public class Drive {
 
     /**
      * Reset change line Updates DIR on bit 7
-     * 
      */
-    protected void resetChangeline() {
+    protected void resetChangeline()
+    {
         if (this.containsFloppy()) {
             // Swap b7 of DIR value:
             // b7: 0=diskette is present and has not been changed
@@ -469,10 +494,10 @@ public class Drive {
 
     /**
      * Get String representation of this class
-     * 
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         String driveInfo, floppyInfo, ret, tab;
 
         ret = "\r\n";
@@ -485,7 +510,7 @@ public class Drive {
 
         // Dump floppy info
         floppyInfo = "floppy=";
-        if (this.containsFloppy() == true) {
+        if (this.containsFloppy()) {
             floppyInfo += "inserted" + ", floppytype=" + floppyType
                     + ", floppysize=" + floppy.getSize() + ", tracks=" + tracks
                     + ", heads=" + heads + ", cylinders=" + cylinders

@@ -60,12 +60,11 @@ import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
- * 
  * Graphical User Interface for emulator.
  */
 @SuppressWarnings("serial")
 public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyListener {
-    
+
     // Attributes
     private Emulator emu;
     private TextTransfer textTransfer;
@@ -134,17 +133,20 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     CommandLineInterface cli;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public DioscuriFrame() {
+    public DioscuriFrame()
+    {
         // Create graphical user interface
 
         // Add handlers and listeners
         // Window closing listener
         this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent event) {
+            public void windowClosing(WindowEvent event)
+            {
                 exitDioscuri();
             }
         });
@@ -173,9 +175,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Set dimensions
         int guiWidth = screenPane.getWidth() + 10;
-                                               // value
+        // value
         int guiHeight = screenPane.getHeight() + (2 * 38) + 5;
-                                                     // & statusbar height
+        // & statusbar height
 
         // Actions
         // Key handler to the GUI, disabling focus traversal so Tab events are
@@ -185,7 +187,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         // Build frame
         this.setLocation(GUI_X_LOCATION, GUI_Y_LOCATION);
-        this.setSize(guiWidth, guiHeight+10);
+        this.setSize(guiWidth, guiHeight + 10);
         this.setTitle(this.getEmulatorName());
         this.setResizable(false);
         this.updateGUI(GUI_RESET);
@@ -201,17 +203,17 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     }
 
     /**
-     *
      * @param arguments
-     * @throws Exception 
+     * @throws Exception
      */
-    public DioscuriFrame(String[] arguments) {
+    public DioscuriFrame(String[] arguments)
+    {
         // Define GUI
         this();
 
         try {
             cli = new CommandLineInterface(arguments);
-        } catch(Exception e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Error while paring the command line parameters:");
             e.printStackTrace();
         }
@@ -223,7 +225,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         logger.log(Level.INFO, cli.visible ? "[gui] GUI is visible and has focus" : "[gui] GUI is hidden");
 
-        if(cli.autorun) {
+        if (cli.autorun) {
             emu = new Emulator(this);
             new Thread(emu).start();
             this.updateGUI(EMU_PROCESS_START);
@@ -235,7 +237,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Initialise menu bar
      */
-    private void initMenuBar() {
+    private void initMenuBar()
+    {
         // Create a menubar
         menuBar = new JMenuBar();
 
@@ -315,7 +318,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Initialise status bar
      */
-    private void initStatusBar() {
+    private void initStatusBar()
+    {
         Border blackline;
         blackline = BorderFactory.createLineBorder(Color.black);
 
@@ -384,37 +388,41 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Returns the name of emulator
-     * 
+     *
      * @return String containing name
      */
-    public String getEmulatorName() {
+    public String getEmulatorName()
+    {
         return Constants.EMULATOR_NAME;
     }
 
     /**
      * Returns the version stamp of emulator
-     * 
+     *
      * @return String containing version
      */
-    public String getEmulatorVersion() {
+    public String getEmulatorVersion()
+    {
         return Constants.EMULATOR_VERSION;
     }
 
     /**
      * Returns the date stamp of emulator
-     * 
+     *
      * @return String containing date
      */
-    public String getEmulatorDate() {
+    public String getEmulatorDate()
+    {
         return Constants.EMULATOR_DATE;
     }
 
     /**
      * Returns the startup screen for GUI
-     * 
+     *
      * @return Canvas startup screen
      */
-    private JPanel getStartupScreen() {
+    private JPanel getStartupScreen()
+    {
         // Create startup screen
         StartupPanel startup = new StartupPanel();
         startup.setSize(710, 401);
@@ -427,10 +435,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Set given screen to existing screen of GUI
-     * 
+     *
      * @param screen containing a reference to canvas of module screen
      */
-    public void setScreen(JPanel screen) {
+    public void setScreen(JPanel screen)
+    {
         // Replace current canvas with new one
         screenPane.removeAll();
         screenPane.add(screen);
@@ -444,10 +453,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Enable mouse support in GUI
-     * 
+     *
      * @return true if mouse enabled, false otherwise
      */
-    public boolean setMouseEnabled() {
+    public boolean setMouseEnabled()
+    {
 
         // Mouse handler to the GUI
         mouseHandler = new MouseHandler();
@@ -460,10 +470,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Disable mouse support in GUI
-     * 
+     *
      * @return true if mouse enabled, false otherwise
      */
-    public boolean setMouseDisabled() {
+    public boolean setMouseDisabled()
+    {
         // Mouse handler to the GUI
         if (mouseHandler != null) {
             screen.removeMouseListener(mouseHandler);
@@ -482,11 +493,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Returns a buffered image loaded from specified location
-     * 
+     *
      * @param path location where image resides
-     * 
      */
-    private BufferedImage getImageFromFile(URL path) {
+    private BufferedImage getImageFromFile(URL path)
+    {
         BufferedImage image = null;
         try {
             image = ImageIO.read(path);
@@ -499,9 +510,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Update the screen panel on screen frame.
-     * 
      */
-    protected void updateScreenPanel() {
+    protected void updateScreenPanel()
+    {
         // Repaint canvas
         screenPane.setSize(screen.getWidth(), screen.getHeight());
         // FIXME: notice when canvas of screen has changed (different size) and
@@ -516,187 +527,189 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Updates the status panel on screen frame.
-     * 
      */
-    protected void updateStatusPanel() {
+    protected void updateStatusPanel()
+    {
         // TODO: implement
         statusPanel.repaint();
     }
 
     /**
      * Update the GUI, including menu and statusbar.
-     * 
+     *
      * @param activity defining the kind of update is required
      */
-    public void updateGUI(int activity) {
+    public void updateGUI(int activity)
+    {
         switch (activity) {
-        case EMU_PROCESS_START:
+            case EMU_PROCESS_START:
 
-            // Redefine menu options
-            miEmulatorStart.setEnabled(false);
-            miEmulatorStop.setEnabled(true);
-            miEmulatorReset.setEnabled(true);
-            miEditScreenShot.setEnabled(true);
-            miEditConfig.setEnabled(false);
-            miEditCopyText.setEnabled(true);
-            break;
+                // Redefine menu options
+                miEmulatorStart.setEnabled(false);
+                miEmulatorStop.setEnabled(true);
+                miEmulatorReset.setEnabled(true);
+                miEditScreenShot.setEnabled(true);
+                miEditConfig.setEnabled(false);
+                miEditCopyText.setEnabled(true);
+                break;
 
-        case EMU_PROCESS_STOP:
+            case EMU_PROCESS_STOP:
 
-            // Redefine menu options
-            miEmulatorStart.setEnabled(true);
-            miEmulatorStop.setEnabled(false);
-            miEmulatorReset.setEnabled(false);
-            miMediaEjectA.setEnabled(false);
-            miMediaInsertA.setEnabled(false);
-            miEditCopyText.setEnabled(false);
-            miDevicesMouseEnabled.setEnabled(false);
-            miDevicesMouseDisabled.setEnabled(false);
+                // Redefine menu options
+                miEmulatorStart.setEnabled(true);
+                miEmulatorStop.setEnabled(false);
+                miEmulatorReset.setEnabled(false);
+                miMediaEjectA.setEnabled(false);
+                miMediaInsertA.setEnabled(false);
+                miEditCopyText.setEnabled(false);
+                miDevicesMouseEnabled.setEnabled(false);
+                miDevicesMouseDisabled.setEnabled(false);
 
-            // Redefine statusbar
-            floppyAPanel.setVisible(false);
-            hd1Panel.setVisible(false);
-            hd2Panel.setVisible(false);
-            miEditConfig.setEnabled(true);
-            cpuTypeLabel.setText("");
-            break;
+                // Redefine statusbar
+                floppyAPanel.setVisible(false);
+                hd1Panel.setVisible(false);
+                hd2Panel.setVisible(false);
+                miEditConfig.setEnabled(true);
+                cpuTypeLabel.setText("");
+                break;
 
-        case EMU_PROCESS_RESET:
+            case EMU_PROCESS_RESET:
 
-            // Redefine menu options
-            miEmulatorStart.setEnabled(false);
-            miEmulatorStop.setEnabled(true);
-            miEmulatorReset.setEnabled(true);
+                // Redefine menu options
+                miEmulatorStart.setEnabled(false);
+                miEmulatorStop.setEnabled(true);
+                miEmulatorReset.setEnabled(true);
 
-            miEditConfig.setEnabled(false);
+                miEditConfig.setEnabled(false);
 
-            break;
+                break;
 
-        case EMU_FLOPPYA_INSERT:
+            case EMU_FLOPPYA_INSERT:
 
-            // Redefine menu options
-            miMediaEjectA.setEnabled(true);
-            miMediaInsertA.setEnabled(false);
-            // Show A: in statusbar
-            floppyAPanel.setVisible(true);
+                // Redefine menu options
+                miMediaEjectA.setEnabled(true);
+                miMediaInsertA.setEnabled(false);
+                // Show A: in statusbar
+                floppyAPanel.setVisible(true);
 
-            break;
+                break;
 
-        case EMU_FLOPPYA_EJECT:
-            // Redefine menu options
-            miMediaEjectA.setEnabled(false);
-            miMediaInsertA.setEnabled(true);
-            // Hide A: in statusbar
-            floppyAPanel.setVisible(false);
-            break;
+            case EMU_FLOPPYA_EJECT:
+                // Redefine menu options
+                miMediaEjectA.setEnabled(false);
+                miMediaInsertA.setEnabled(true);
+                // Hide A: in statusbar
+                floppyAPanel.setVisible(false);
+                break;
 
-        case EMU_FLOPPYA_TRANSFER_START:
-            // Highlight A: in statusbar
-            // NOTE: Used to use floppyAPanel.getComponent(0) to retrieve comp,
-            // but as it is not part of layout anymore it is not necesarry
-            floppyAPanel.setBackground(Color.GREEN);
-            break;
+            case EMU_FLOPPYA_TRANSFER_START:
+                // Highlight A: in statusbar
+                // NOTE: Used to use floppyAPanel.getComponent(0) to retrieve comp,
+                // but as it is not part of layout anymore it is not necesarry
+                floppyAPanel.setBackground(Color.GREEN);
+                break;
 
-        case EMU_FLOPPYA_TRANSFER_STOP:
-            // Shadow A: in statusbar
-            floppyAPanel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_FLOPPYA_TRANSFER_STOP:
+                // Shadow A: in statusbar
+                floppyAPanel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_HD1_INSERT:
-            hd1Panel.setVisible(true);
-            break;
+            case EMU_HD1_INSERT:
+                hd1Panel.setVisible(true);
+                break;
 
-        case EMU_HD2_INSERT:
-            hd2Panel.setVisible(true);
-            break;
+            case EMU_HD2_INSERT:
+                hd2Panel.setVisible(true);
+                break;
 
-        case EMU_HD1_EJECT:
-            hd1Panel.setVisible(false);
-            break;
+            case EMU_HD1_EJECT:
+                hd1Panel.setVisible(false);
+                break;
 
-        case EMU_HD2_EJECT:
-            hd2Panel.setVisible(false);
-            break;
+            case EMU_HD2_EJECT:
+                hd2Panel.setVisible(false);
+                break;
 
-        case EMU_HD1_TRANSFER_START:
-            hd1Panel.setBackground(Color.GREEN);
-            break;
+            case EMU_HD1_TRANSFER_START:
+                hd1Panel.setBackground(Color.GREEN);
+                break;
 
-        case EMU_HD2_TRANSFER_START:
-            hd2Panel.setBackground(Color.GREEN);
-            break;
+            case EMU_HD2_TRANSFER_START:
+                hd2Panel.setBackground(Color.GREEN);
+                break;
 
-        case EMU_HD1_TRANSFER_STOP:
-            hd1Panel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_HD1_TRANSFER_STOP:
+                hd1Panel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_HD2_TRANSFER_STOP:
-            hd2Panel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_HD2_TRANSFER_STOP:
+                hd2Panel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_KEYBOARD_NUMLOCK_ON:
-            numlockPanel.setBackground(Color.YELLOW);
-            break;
+            case EMU_KEYBOARD_NUMLOCK_ON:
+                numlockPanel.setBackground(Color.YELLOW);
+                break;
 
-        case EMU_KEYBOARD_NUMLOCK_OFF:
-            numlockPanel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_KEYBOARD_NUMLOCK_OFF:
+                numlockPanel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_KEYBOARD_CAPSLOCK_ON:
-            capslockPanel.setBackground(Color.YELLOW);
-            break;
+            case EMU_KEYBOARD_CAPSLOCK_ON:
+                capslockPanel.setBackground(Color.YELLOW);
+                break;
 
-        case EMU_KEYBOARD_CAPSLOCK_OFF:
-            capslockPanel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_KEYBOARD_CAPSLOCK_OFF:
+                capslockPanel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_KEYBOARD_SCROLLLOCK_ON:
-            scrolllockPanel.setBackground(Color.YELLOW);
-            break;
+            case EMU_KEYBOARD_SCROLLLOCK_ON:
+                scrolllockPanel.setBackground(Color.YELLOW);
+                break;
 
-        case EMU_KEYBOARD_SCROLLLOCK_OFF:
-            scrolllockPanel.setBackground(Color.LIGHT_GRAY);
-            break;
+            case EMU_KEYBOARD_SCROLLLOCK_OFF:
+                scrolllockPanel.setBackground(Color.LIGHT_GRAY);
+                break;
 
-        case EMU_DEVICES_MOUSE_ENABLED:
-            miDevicesMouseEnabled.setEnabled(false);
-            miDevicesMouseDisabled.setEnabled(true);
-            break;
+            case EMU_DEVICES_MOUSE_ENABLED:
+                miDevicesMouseEnabled.setEnabled(false);
+                miDevicesMouseDisabled.setEnabled(true);
+                break;
 
-        case EMU_DEVICES_MOUSE_DISABLED:
-            miDevicesMouseEnabled.setEnabled(true);
-            miDevicesMouseDisabled.setEnabled(false);
-            break;
+            case EMU_DEVICES_MOUSE_DISABLED:
+                miDevicesMouseEnabled.setEnabled(true);
+                miDevicesMouseDisabled.setEnabled(false);
+                break;
 
-        case GUI_RESET:
-            // Enable/disable menu items
-            miEmulatorStop.setEnabled(false);
-            miEmulatorReset.setEnabled(false);
-            miEditCopyText.setEnabled(false);
-            miEditScreenShot.setEnabled(false);
-            miMediaInsertA.setEnabled(false);
-            miMediaEjectA.setEnabled(false);
-            miDevicesMouseEnabled.setEnabled(false);
-            miDevicesMouseDisabled.setEnabled(false);
+            case GUI_RESET:
+                // Enable/disable menu items
+                miEmulatorStop.setEnabled(false);
+                miEmulatorReset.setEnabled(false);
+                miEditCopyText.setEnabled(false);
+                miEditScreenShot.setEnabled(false);
+                miMediaInsertA.setEnabled(false);
+                miMediaEjectA.setEnabled(false);
+                miDevicesMouseEnabled.setEnabled(false);
+                miDevicesMouseDisabled.setEnabled(false);
 
-            // Enable/disable status bar items
-            floppyAPanel.setVisible(false);
-            hd1Panel.setVisible(false);
-            hd2Panel.setVisible(false);
-            cpuTypeLabel.setText("");
-            break;
+                // Enable/disable status bar items
+                floppyAPanel.setVisible(false);
+                hd1Panel.setVisible(false);
+                hd2Panel.setVisible(false);
+                cpuTypeLabel.setText("");
+                break;
 
-        default:
-            logger.log(Level.WARNING, "No update on GUI could be performed.");
+            default:
+                logger.log(Level.WARNING, "No update on GUI could be performed.");
         }
     }
 
     /**
      * Implementation of the interface ActionListener. Takes care of events.
-     * 
+     *
      * @param e
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
         JComponent c = (JComponent) e.getSource();
         if (c == (JComponent) miEmulatorStart) {
             // Start emulation process
@@ -729,7 +742,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             }
         } else if (c == (JComponent) miMediaEjectA) {
             // Eject floppy in drive A
-            if (emu.ejectFloppy("A") == true) {
+            if (emu.ejectFloppy("A")) {
                 this.updateGUI(EMU_FLOPPYA_EJECT);
             }
         } else if (c == (JComponent) miMediaInsertA) {
@@ -741,8 +754,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
                 // Insert floppy
                 boolean writeProtected = false;
-                if (emu.insertFloppy("A", (byte) 0x04, imageFile,
-                        writeProtected) == true) {
+                if (emu.insertFloppy("A", (byte) 0x04, imageFile, writeProtected)) {
                     this.updateGUI(EMU_FLOPPYA_INSERT);
                 }
             } else if (retval == JFileChooser.ERROR_OPTION) {
@@ -771,8 +783,8 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             // Load edit screen or show warning config is read-only
             if (readOnlyConfig) {
                 JOptionPane.showMessageDialog(this,
-                                "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
-                                "Configuration", JOptionPane.WARNING_MESSAGE);
+                        "No editable configuration found.\nDefault configuration loaded from jar file and is read-only",
+                        "Configuration", JOptionPane.WARNING_MESSAGE);
             } else {
                 //new SelectionConfigDialog(this);
                 new ConfigDialog(this);
@@ -780,51 +792,53 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         } else if (c == (JComponent) miHelpAbout) {
             // Show About dialog
             JOptionPane.showMessageDialog(this,
-                            this.getEmulatorName()
-                                    + "\n"
-                                    + "Version "
-                                    + this.getEmulatorVersion()
-                                    + ", Copyright (C) "
-                                    + this.getEmulatorDate()
-                                    + " by "
-                                    + "\n\n"
-                                    + " Koninklijke Bibliotheek (KB, the national Library of the Netherlands)\n"
-                                    + " The Nationaal Archief of the Netherlands\n"
-                                    + " Planets project\n"
-                                    + " KEEP project\n"
-                                    + "\n"
-                                    + " This program is free software; you can redistribute it and/or\n"
-                                    + " modify it under the terms of the GNU General Public License\n"
-                                    + " as published by the Free Software Foundation; either version 2\n"
-                                    + " of the License, or (at your option) any later version.\n"
-                                    + "\n"
-                                    + " This program is distributed in the hope that it will be useful,\n"
-                                    + " but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
-                                    + " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
-                                    + " GNU General Public License for more details.\n\n\n"
-                                    + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven",
-                            "About", JOptionPane.INFORMATION_MESSAGE);
-        } else if(c == miEditScreenShot) {
-            String fileName = "Screenshot_"+System.currentTimeMillis()+".png";
+                    this.getEmulatorName()
+                            + "\n"
+                            + "Version "
+                            + this.getEmulatorVersion()
+                            + ", Copyright (C) "
+                            + this.getEmulatorDate()
+                            + " by "
+                            + "\n\n"
+                            + " Koninklijke Bibliotheek (KB, the national Library of the Netherlands)\n"
+                            + " The Nationaal Archief of the Netherlands\n"
+                            + " Planets project\n"
+                            + " KEEP project\n"
+                            + "\n"
+                            + " This program is free software; you can redistribute it and/or\n"
+                            + " modify it under the terms of the GNU General Public License\n"
+                            + " as published by the Free Software Foundation; either version 2\n"
+                            + " of the License, or (at your option) any later version.\n"
+                            + "\n"
+                            + " This program is distributed in the hope that it will be useful,\n"
+                            + " but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+                            + " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+                            + " GNU General Public License for more details.\n\n\n"
+                            + " Credits: Bram Lohman, Chris Rose, Bart Kiers, Jeffrey van der Hoeven",
+                    "About", JOptionPane.INFORMATION_MESSAGE);
+        } else if (c == miEditScreenShot) {
+            String fileName = "Screenshot_" + System.currentTimeMillis() + ".png";
             File file = new File(fileName);
             BufferedImage image = new BufferedImage(screen.getWidth(), screen.getHeight(), BufferedImage.TYPE_INT_RGB);
-		    screen.paint(image.createGraphics());
+            screen.paint(image.createGraphics());
             try {
                 ImageIO.write(image, "png", file);
-                JOptionPane.showMessageDialog(this, "An image was created and saved as:\n\n"+
+                JOptionPane.showMessageDialog(this, "An image was created and saved as:\n\n" +
                         file.getAbsolutePath());
             } catch (IOException e1) {
-                JOptionPane.showMessageDialog(this, "Could not create an image at:\n\n"+
-                        file.getAbsolutePath()+"\n\n"+e1.getMessage());
-            } 
+                JOptionPane.showMessageDialog(this, "Could not create an image at:\n\n" +
+                        file.getAbsolutePath() + "\n\n" + e1.getMessage());
+            }
         }
     }
 
     /**
      * Implement the KeyListener method keyTyped Empty method, not used
+     *
      * @param keyEvent
      */
-    public void keyTyped(KeyEvent keyEvent) {
+    public void keyTyped(KeyEvent keyEvent)
+    {
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY TYPED: "));
         // FIXME: handle key typed event emu.generateScancode(keyEvent ,
         // KEY_TYPED);
@@ -832,9 +846,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Implement the KeyListener method keyPressed Handles key press events
+     *
      * @param keyEvent
      */
-    public void keyPressed(KeyEvent keyEvent) {
+    public void keyPressed(KeyEvent keyEvent)
+    {
         // Pass keyPress on to keyboard to generate scancode from it
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY PRESSED: "));
         if (emu != null) {
@@ -844,9 +860,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Implement the KeyListener method keyReleased Handles key release events
+     *
      * @param keyEvent
      */
-    public void keyReleased(KeyEvent keyEvent) {
+    public void keyReleased(KeyEvent keyEvent)
+    {
         // Pass keyPress on to keyboard to generate scancode from it
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY RELEASED: "));
         if (emu != null) {
@@ -856,15 +874,13 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Creates a string containing keypress events
-     * 
-     * @param keyEvent
-     *            KeyEvent handled (either Pressed or Released)
-     * @param pressReleaseString
-     *            String passed from the KeyEvent, indicating a press or release
-     * 
+     *
+     * @param keyEvent           KeyEvent handled (either Pressed or Released)
+     * @param pressReleaseString String passed from the KeyEvent, indicating a press or release
      * @return String containing keypress events
      */
-    protected String displayInfo(KeyEvent keyEvent, String pressReleaseString) {
+    protected String displayInfo(KeyEvent keyEvent, String pressReleaseString)
+    {
         String output;
         String keyString, modString, tmpString, actionString, locationString;
         String newline = "\n";
@@ -905,27 +921,29 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         output = "[GUI] "
                 + (pressReleaseString + newline + "    " + keyString + newline
-                        + "    " + modString + newline + "    " + actionString
-                        + newline + "    " + locationString + newline);
+                + "    " + modString + newline + "    " + actionString
+                + newline + "    " + locationString + newline);
 
         return output;
     }
 
-    public dioscuri.config.Emulator getEmuConfig() {
+    public dioscuri.config.Emulator getEmuConfig()
+    {
         return emuConfig;
     }
 
     @Override
-    public String getConfigFilePath() {
+    public String getConfigFilePath()
+    {
         return this.configFilePath;
     }
 
     /**
-     *
      * @param emuObject
      * @return -
      */
-    public boolean saveXML(dioscuri.config.Emulator emuObject) {
+    public boolean saveXML(dioscuri.config.Emulator emuObject)
+    {
         try {
             ConfigController.saveToXML(emuObject, new File(this.configFilePath));
         } catch (Exception e) {
@@ -938,11 +956,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Notify GUI about status of emulation process and take appropriate GUI
      * action
-     * 
+     *
      * @param emulatorStatus indicates the state change of the emulator
-     * 
      */
-    public void notifyGUI(int emulatorStatus) {
+    public void notifyGUI(int emulatorStatus)
+    {
         // Check which kind of notification is given
         if (emulatorStatus == GUI.EMU_PROCESS_STOP) {
             if (cli.autoshutdown) {
@@ -961,9 +979,9 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Exit the GUI and stop the application
-     * 
      */
-    private void exitDioscuri() {
+    private void exitDioscuri()
+    {
         dispose();
         if (emu != null) {
             emu.setActive(false);
@@ -973,66 +991,74 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     /**
      * Versioning information
-     * 
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         String bar = "+-------------------------------------------------------------------------------------+";
         return
                 "\r\n" + bar +
-                String.format("%n| %1$-" + (bar.length()-4) + "s |%n", Constants.EMULATOR_NAME) +
-                String.format("| %1$-" + (bar.length()-4) + "s |%n", "Copyright (C) "+ Constants.EMULATOR_DATE) +
-                String.format("| %1$-" + (bar.length()-4) + "s |%n", Constants.EMULATOR_CREATOR) +
-                bar + "\r\n";
+                        String.format("%n| %1$-" + (bar.length() - 4) + "s |%n", Constants.EMULATOR_NAME) +
+                        String.format("| %1$-" + (bar.length() - 4) + "s |%n", "Copyright (C) " + Constants.EMULATOR_DATE) +
+                        String.format("| %1$-" + (bar.length() - 4) + "s |%n", Constants.EMULATOR_CREATOR) +
+                        bar + "\r\n";
     }
 
     /**
      * Inner class MouseHandler Takes care of any mouse action (motion,
      * clicking)
-     * 
      */
     private class MouseHandler implements MouseInputListener {
         // Attributes
         Cursor invisibleCursor;
 
-        public MouseHandler() {
+        public MouseHandler()
+        {
             // Make cursor invisible
             //this.setMouseCursorVisible(false);
         }
 
-        public void mouseClicked(MouseEvent mouseEvent) {
+        public void mouseClicked(MouseEvent mouseEvent)
+        {
         }
 
-        public void mousePressed(MouseEvent mouseEvent) {
+        public void mousePressed(MouseEvent mouseEvent)
+        {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void mouseReleased(MouseEvent mouseEvent) {
+        public void mouseReleased(MouseEvent mouseEvent)
+        {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void mouseEntered(MouseEvent mouseEvent) {
+        public void mouseEntered(MouseEvent mouseEvent)
+        {
             this.setMouseCursorVisibility(false);
         }
 
-        public void mouseExited(MouseEvent mouseEvent) {
+        public void mouseExited(MouseEvent mouseEvent)
+        {
         }
 
-        public void mouseDragged(MouseEvent mouseEvent) {
+        public void mouseDragged(MouseEvent mouseEvent)
+        {
         }
 
-        public void mouseMoved(MouseEvent mouseEvent) {
+        public void mouseMoved(MouseEvent mouseEvent)
+        {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void setMouseCursorVisibility(boolean visible) {
-            if (visible == false) {
+        public void setMouseCursorVisibility(boolean visible)
+        {
+            if (!visible) {
                 // Hide cursor
                 ImageIcon emptyIcon = new ImageIcon(new byte[0]);
                 invisibleCursor = getToolkit().createCustomCursor(
@@ -1046,25 +1072,29 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
         }
     }
-    
+
     //public String getConfigFilePath() {
     //    return configFilePath;
     //}
 
-    public JFrame asJFrame() {
+    public JFrame asJFrame()
+    {
         return this;
     }
 
     @Override
-    public void setCpuTypeLabel(String cpuType) {
+    public void setCpuTypeLabel(String cpuType)
+    {
         cpuTypeLabel.setText("  " + cpuType);
     }
 
     /**
      * Main entry point.
+     *
      * @param args containing command line arguments
-     */    
-    public static void main(final String[] args) {
+     */
+    public static void main(final String[] args)
+    {
         // Load logging.properties
         try {
             // Check for a local system logging.properties file
@@ -1081,13 +1111,14 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         }
 
         // Create GUI
-        SwingUtilities.invokeLater(new Runnable(){
+        SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run() {
+            public void run()
+            {
                 try {
                     new DioscuriFrame(args);
-                } catch(Exception e) {
-                    logger.log(Level.WARNING, "Wrong command line option(s): "+e.toString());
+                } catch (Exception e) {
+                    logger.log(Level.WARNING, "Wrong command line option(s): " + e.toString());
                 }
             }
         });

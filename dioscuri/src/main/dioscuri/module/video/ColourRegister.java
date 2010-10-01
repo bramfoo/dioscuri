@@ -43,7 +43,6 @@ package dioscuri.module.video;
  * Colour Register Selects the 256 colour palette from the maximum possible
  * colours.<BR>
  * Consists of 5 registers, which are addressed via I/O ports [0x3C7] - [0x3C9]
- * 
  */
 public class ColourRegister {
 
@@ -60,12 +59,12 @@ public class ColourRegister {
     byte dacReadAddress; // (W)[0x3C7] - DAC Address Read Mode register
     // Contains the value of the first DAC data entry to be read
     int dacReadCounter; // dacReadAddress counter indicating which colour (0, 1,
-                        // 2) is to be read
+    // 2) is to be read
 
     byte dacWriteAddress; // (RW)[0x3C8] - DAC Address Write Mode register
     // Contains the value of the first DAC data entry to be written
     int dacWriteCounter; // dacWriteAddress counter indicating which colour (0,
-                         // 1, 2) is to be written
+    // 1, 2) is to be written
 
     // (RW)[0x3C9] - DAC Data register
     // Reads/writes a colour value from the Pixel array at index specified by
@@ -76,7 +75,8 @@ public class ColourRegister {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         pixelMask = (byte) 0xFF;
         dacState = 0x01;
 

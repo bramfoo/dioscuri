@@ -73,10 +73,12 @@ public class Instruction_ENTER_IwIb implements Instruction {
     byte[] eTemp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ENTER_IwIb() {
+    public Instruction_ENTER_IwIb()
+    {
         operandWordSize = true;
 
         addressByte = 0;
@@ -85,9 +87,9 @@ public class Instruction_ENTER_IwIb implements Instruction {
         eFrameTemp = new byte[2];
         stackSizeWord = new byte[2];
 
-        word0x0001 = new byte[] { 0x00, 0x01 };
-        word0x0002 = new byte[] { 0x00, 0x02 };
-        word0x0004 = new byte[] { 0x00, 0x04 };
+        word0x0001 = new byte[]{0x00, 0x01};
+        word0x0002 = new byte[]{0x00, 0x02};
+        word0x0004 = new byte[]{0x00, 0x04};
 
         memoryReferenceLocation = new byte[2];
         memoryReferenceDisplacement = new byte[2];
@@ -103,11 +105,11 @@ public class Instruction_ENTER_IwIb implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ENTER_IwIb(CPU processor) {
+    public Instruction_ENTER_IwIb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -120,7 +122,8 @@ public class Instruction_ENTER_IwIb implements Instruction {
      * ENTER - Make Stack Frame for Procedure Parameters.<BR>
      * Takes care of nesting level (0, 1 or higher)
      */
-    public void execute() {
+    public void execute()
+    {
         System.out.println("CPU -> instruction ENTER");
 
         // Get stack-size operand
@@ -194,9 +197,9 @@ public class Instruction_ENTER_IwIb implements Instruction {
             System.arraycopy(eFrameTemp, 0, cpu.ebp, 0, eFrameTemp.length);
 
             // Decrement eBP with stacksize
-            stackSizeWord = new byte[] { 0x00, (byte) cpu.stackSize };
+            stackSizeWord = new byte[]{0x00, (byte) cpu.stackSize};
             temp = Util.subtractWords(cpu.bp, stackSizeWord, 0);
-            if (Util.test_CF_SUB(cpu.bp, stackSizeWord, 0) == true) {
+            if (Util.test_CF_SUB(cpu.bp, stackSizeWord, 0)) {
                 eTemp = Util.subtractWords(cpu.ebp, word0x0001, 0);
             } else {
                 eTemp = cpu.ebp;

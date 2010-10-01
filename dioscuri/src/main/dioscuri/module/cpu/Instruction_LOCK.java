@@ -50,20 +50,21 @@ public class Instruction_LOCK implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_LOCK() {
+    public Instruction_LOCK()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LOCK(CPU processor) {
+    public Instruction_LOCK(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_LOCK implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute() {
+    public void execute()
+    {
         // Dummy commands...
         // FIXME: still to implement
         System.out.println("LOCK instruction (0x40) not yet implemented!");

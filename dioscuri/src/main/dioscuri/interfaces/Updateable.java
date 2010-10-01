@@ -39,7 +39,7 @@
 package dioscuri.interfaces;
 
 /**
- * 
+ *
  */
 public interface Updateable extends Module {
 

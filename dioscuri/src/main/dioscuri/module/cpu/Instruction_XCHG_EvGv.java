@@ -63,19 +63,21 @@ public class Instruction_XCHG_EvGv implements Instruction {
     byte[] tempValue = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_XCHG_EvGv() {
+    public Instruction_XCHG_EvGv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_XCHG_EvGv(CPU processor) {
+    public Instruction_XCHG_EvGv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,7 +91,8 @@ public class Instruction_XCHG_EvGv implements Instruction {
      * (source).<BR>
      * Flags modified: none
      */
-    public void execute() {
+    public void execute()
+    {
         // Reset pointers
         sourceRegister = new byte[2];
         destinationRegister = new byte[2];

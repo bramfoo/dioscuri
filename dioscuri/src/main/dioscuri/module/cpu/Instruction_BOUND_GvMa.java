@@ -61,19 +61,21 @@ public class Instruction_BOUND_GvMa implements Instruction {
     int higherBoundary;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_BOUND_GvMa() {
+    public Instruction_BOUND_GvMa()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_BOUND_GvMa(CPU processor) {
+    public Instruction_BOUND_GvMa(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -85,7 +87,8 @@ public class Instruction_BOUND_GvMa implements Instruction {
     /**
      * Check array index against bounds.<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -111,7 +114,7 @@ public class Instruction_BOUND_GvMa implements Instruction {
 
         // Increment memory location with 2
         memoryReferenceLocation = Util.addWords(memoryReferenceLocation,
-                new byte[] { 0x00, 0x02 }, 0);
+                new byte[]{0x00, 0x02}, 0);
 
         // Get higher boundary (word from memory)
         sourceValue = cpu.getWordFromMemorySegment(addressByte,

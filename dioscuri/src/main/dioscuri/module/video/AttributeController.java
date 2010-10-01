@@ -55,7 +55,7 @@ import java.util.Arrays;
 public class AttributeController {
     int index; // Index used to address registers; set via I/O port 0x3C0
     int paletteAddressSource; // Disabled to load colour values in the internal
-                              // palette
+    // palette
     // 0 - Load colour values enabled
     // 1 - Normal operation (load disabled)
     boolean dataAddressFlipFlop; // true - Data write mode
@@ -63,15 +63,15 @@ public class AttributeController {
 
     // Registers
     byte[] paletteRegister = new byte[0x10]; // Registers 0x00 - 0x0F: Internal
-                                             // palette index (bits 0 - 6)
+    // palette index (bits 0 - 6)
     // Dynamic mapping between text attrib/graphic colours and on-screen display
     // 0 - Do not select colour
     // 1 - Select appropriate colour
     ModeControlRegister modeControlReg = new ModeControlRegister(); // Register
-                                                                    // 0x10:
-                                                                    // Mode
-                                                                    // Control
-                                                                    // register
+    // 0x10:
+    // Mode
+    // Control
+    // register
     byte overscanColour; // Register 0x11: Overscan color
     // Select border colour used in 80-column alphanumeric mode and all graphics
     // mode but 0x4, 0x5, 0xD
@@ -79,7 +79,7 @@ public class AttributeController {
     // 0 - disable display memory colour plane
     // 1 - enable display memory colour plane
     byte horizPixelPanning; // Register 0x13: Horizontal pixel panning (bits 0 -
-                            // 4)
+    // 4)
     // Number of pixels the video data is shifted left (alphanum / graphics
     // mode)
     byte colourSelect; // Register 0x14: Color select (bits 0 - 3)
@@ -91,7 +91,8 @@ public class AttributeController {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         index = 0;
         paletteAddressSource = 1;
         dataAddressFlipFlop = false;

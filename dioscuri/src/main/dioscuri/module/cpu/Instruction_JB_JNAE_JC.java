@@ -52,20 +52,21 @@ public class Instruction_JB_JNAE_JC implements Instruction {
     byte displacement;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_JB_JNAE_JC() {
+    public Instruction_JB_JNAE_JC()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JB_JNAE_JC(CPU processor) {
+    public Instruction_JB_JNAE_JC(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -77,7 +78,8 @@ public class Instruction_JB_JNAE_JC implements Instruction {
     /**
      * Execute conditional short jump on carry
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time the byte is
         // added to
@@ -89,8 +91,8 @@ public class Instruction_JB_JNAE_JC implements Instruction {
         if (cpu.flags[CPU.REGISTER_FLAGS_CF]) {
             // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
             // displacement is sign-extended and added.
-            cpu.ip = Util.addWords(cpu.ip, new byte[] {
-                    Util.signExtend(displacement), displacement }, 0);
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{
+                    Util.signExtend(displacement), displacement}, 0);
         }
     }
 }

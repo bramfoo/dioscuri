@@ -50,18 +50,21 @@ public class Instruction_SEG_DS implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Construct class
      */
-    public Instruction_SEG_DS() {
+    public Instruction_SEG_DS()
+    {
     }
 
     /**
      * Construct class
-     * 
+     *
      * @param processor
      */
-    public Instruction_SEG_DS(CPU processor) {
+    public Instruction_SEG_DS(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -73,7 +76,8 @@ public class Instruction_SEG_DS implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute() {
+    public void execute()
+    {
         // Let CPU know this is an instruction prefix
         cpu.prefixInstruction = 0x3E;
 

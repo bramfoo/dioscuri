@@ -50,20 +50,21 @@ public class Instruction_MOV_Imm_SP implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_MOV_Imm_SP() {
+    public Instruction_MOV_Imm_SP()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_SP(CPU processor) {
+    public Instruction_MOV_Imm_SP(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_MOV_Imm_SP implements Instruction {
     /**
      * Copy immediate word to register SP
      */
-    public void execute() {
+    public void execute()
+    {
         cpu.sp = cpu.getWordFromCode();
 
         if (cpu.doubleWord) {

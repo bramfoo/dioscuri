@@ -26,20 +26,17 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public interface CodeBlockCompiler {
     /**
-     *
      * @param source
      * @return -
      */
     public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source);
 
     /**
-     *
      * @param source
      * @return -
      */
@@ -47,7 +44,6 @@ public interface CodeBlockCompiler {
             InstructionSource source);
 
     /**
-     *
      * @param source
      * @return -
      */

@@ -67,19 +67,21 @@ public class Instruction_SUB_EvGv implements Instruction {
     byte[] temp = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SUB_EvGv() {
+    public Instruction_SUB_EvGv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SUB_EvGv(CPU processor) {
+    public Instruction_SUB_EvGv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -91,7 +93,8 @@ public class Instruction_SUB_EvGv implements Instruction {
     /**
      * Subtract word in register (source) from memory/register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

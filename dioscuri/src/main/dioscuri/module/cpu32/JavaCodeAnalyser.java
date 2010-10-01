@@ -28,19 +28,18 @@ package dioscuri.module.cpu32;
 //import org.jpc.classfile.JavaOpcode;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class JavaCodeAnalyser {
     /**
-     *
      * @param code
      * @param start
      * @param cf
      * @return -
      */
-    public static int getMaxStackDepth(int[] code, int start, ClassFile cf) {
+    public static int getMaxStackDepth(int[] code, int start, ClassFile cf)
+    {
         // Note this algorithm only works when jumps are forwards only!!
         int[] delta = new int[code.length];
         for (int i = 0; i < delta.length; i++)
@@ -126,11 +125,11 @@ public class JavaCodeAnalyser {
     }
 
     /**
-     *
      * @param code
      * @return -
      */
-    public static int getMaxLocalVariables(int[] code) {
+    public static int getMaxLocalVariables(int[] code)
+    {
         int currentMax = 0;
         int varAccess = 0;
 
@@ -147,46 +146,47 @@ public class JavaCodeAnalyser {
     }
 
     private static int calcStackDeltaFromConstPool(int[] code, int i,
-            ClassFile classFile) {
+                                                   ClassFile classFile)
+    {
         int opcode = code[i];
         int cpIndex = (code[i + 1] << 8) | (code[i + 2]);
 
         int length = 0;
         switch (opcode) {
-        case JavaOpcode.GETFIELD:
-        case JavaOpcode.GETSTATIC:
-        case JavaOpcode.PUTFIELD:
-        case JavaOpcode.PUTSTATIC:
-            String fieldDescriptor = classFile
-                    .getConstantPoolFieldDescriptor(cpIndex);
-            length = classFile.getFieldLength(fieldDescriptor);
-            break;
-        case JavaOpcode.INVOKESPECIAL:
-        case JavaOpcode.INVOKESTATIC:
-        case JavaOpcode.INVOKEVIRTUAL:
-        case JavaOpcode.INVOKEINTERFACE:
-            String methodDescriptor = classFile
-                    .getConstantPoolMethodDescriptor(cpIndex);
-            length = classFile.getMethodStackDelta(methodDescriptor);
-            break;
-        default:
-            throw new IllegalStateException();
+            case JavaOpcode.GETFIELD:
+            case JavaOpcode.GETSTATIC:
+            case JavaOpcode.PUTFIELD:
+            case JavaOpcode.PUTSTATIC:
+                String fieldDescriptor = classFile
+                        .getConstantPoolFieldDescriptor(cpIndex);
+                length = classFile.getFieldLength(fieldDescriptor);
+                break;
+            case JavaOpcode.INVOKESPECIAL:
+            case JavaOpcode.INVOKESTATIC:
+            case JavaOpcode.INVOKEVIRTUAL:
+            case JavaOpcode.INVOKEINTERFACE:
+                String methodDescriptor = classFile
+                        .getConstantPoolMethodDescriptor(cpIndex);
+                length = classFile.getMethodStackDelta(methodDescriptor);
+                break;
+            default:
+                throw new IllegalStateException();
         }
 
         switch (opcode) {
-        case JavaOpcode.GETFIELD:
-            return length - 1;
-        case JavaOpcode.GETSTATIC:
-            return length;
-        case JavaOpcode.INVOKESPECIAL:
-        case JavaOpcode.INVOKEVIRTUAL:
-        case JavaOpcode.INVOKEINTERFACE:
-            return -(length + 1);
-        case JavaOpcode.INVOKESTATIC:
-        case JavaOpcode.PUTSTATIC:
-            return -length;
-        case JavaOpcode.PUTFIELD:
-            return -(length + 1);
+            case JavaOpcode.GETFIELD:
+                return length - 1;
+            case JavaOpcode.GETSTATIC:
+                return length;
+            case JavaOpcode.INVOKESPECIAL:
+            case JavaOpcode.INVOKEVIRTUAL:
+            case JavaOpcode.INVOKEINTERFACE:
+                return -(length + 1);
+            case JavaOpcode.INVOKESTATIC:
+            case JavaOpcode.PUTSTATIC:
+                return -length;
+            case JavaOpcode.PUTFIELD:
+                return -(length + 1);
         }
 
         return 0;

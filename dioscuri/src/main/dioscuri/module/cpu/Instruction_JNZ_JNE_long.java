@@ -52,19 +52,21 @@ public class Instruction_JNZ_JNE_long implements Instruction {
     byte[] displacement;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_JNZ_JNE_long() {
+    public Instruction_JNZ_JNE_long()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JNZ_JNE_long(CPU processor) {
+    public Instruction_JNZ_JNE_long(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -74,7 +76,8 @@ public class Instruction_JNZ_JNE_long implements Instruction {
     /**
      * Execute conditional short jump not zero
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

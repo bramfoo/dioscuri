@@ -40,17 +40,16 @@
 package dioscuri.exception;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class ModuleException extends Exception {
 
     /**
-     *
      * @param message
      */
-    public ModuleException(String message) {
+    public ModuleException(String message)
+    {
         super(message);
     }
 }

@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * Stores attributes of the ATPI.
- * 
  */
 public class Atpi {
 
@@ -55,50 +54,50 @@ public class Atpi {
     int totalBytesRemaining;
 
     /**
-     *
      * @return -
      */
-    public int getCommand() {
+    public int getCommand()
+    {
         return command;
     }
 
     /**
-     *
      * @param command
      */
-    public void setCommand(int command) {
+    public void setCommand(int command)
+    {
         this.command = command;
     }
 
     /**
-     *
      * @return -
      */
-    public int getDrqBytes() {
+    public int getDrqBytes()
+    {
         return drqBytes;
     }
 
     /**
-     *
      * @param drqBytes
      */
-    public void setDrqBytes(int drqBytes) {
+    public void setDrqBytes(int drqBytes)
+    {
         this.drqBytes = drqBytes;
     }
 
     /**
-     *
      * @return -
      */
-    public int getTotalBytesRemaining() {
+    public int getTotalBytesRemaining()
+    {
         return totalBytesRemaining;
     }
 
     /**
-     *
      * @param totalBytesRemaining
      */
-    public void setTotalBytesRemaining(int totalBytesRemaining) {
+    public void setTotalBytesRemaining(int totalBytesRemaining)
+    {
         this.totalBytesRemaining = totalBytesRemaining;
     }
 

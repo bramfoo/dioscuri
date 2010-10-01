@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * Class to hold status flags of a ATA channel
- * 
  */
 public class ATAStatus {
 
@@ -63,7 +62,8 @@ public class ATAStatus {
     /**
      * Constructor.
      */
-    public ATAStatus() {
+    public ATAStatus()
+    {
         // Initialize controller state
         busy = 0;
         driveReady = 1;
@@ -77,152 +77,156 @@ public class ATAStatus {
     }
 
     /**
-     *
      * @return -
      */
-    public int getBusy() {
+    public int getBusy()
+    {
         return busy;
     }
 
     /**
-     *
      * @param busy
      */
-    public void setBusy(int busy) {
+    public void setBusy(int busy)
+    {
         this.busy = busy;
     }
 
     /**
-     *
      * @return -
      */
-    public int getDriveReady() {
+    public int getDriveReady()
+    {
         return driveReady;
     }
 
     /**
-     *
      * @param driveReady
      */
-    public void setDriveReady(int driveReady) {
+    public void setDriveReady(int driveReady)
+    {
         this.driveReady = driveReady;
     }
 
     /**
-     *
      * @return -
      */
-    public int getWriteFault() {
+    public int getWriteFault()
+    {
         return writeFault;
     }
 
     /**
-     *
      * @param writeFault
      */
-    public void setWriteFault(int writeFault) {
+    public void setWriteFault(int writeFault)
+    {
         this.writeFault = writeFault;
     }
 
     /**
-     *
      * @return -
      */
-    public int getSeekComplete() {
+    public int getSeekComplete()
+    {
         return seekComplete;
     }
 
     /**
-     *
      * @param seekComplete
      */
-    public void setSeekComplete(int seekComplete) {
+    public void setSeekComplete(int seekComplete)
+    {
         this.seekComplete = seekComplete;
     }
 
     /**
-     *
      * @return -
      */
-    public int getDrq() {
+    public int getDrq()
+    {
         return drq;
     }
 
     /**
-     *
      * @param drq
      */
-    public void setDrq(int drq) {
+    public void setDrq(int drq)
+    {
         this.drq = drq;
     }
 
     /**
-     *
      * @return -
      */
-    public int getCorrectedData() {
+    public int getCorrectedData()
+    {
         return correctedData;
     }
 
     /**
-     *
      * @param correctedData
      */
-    public void setCorrectedData(int correctedData) {
+    public void setCorrectedData(int correctedData)
+    {
         this.correctedData = correctedData;
     }
 
     /**
-     *
      * @return -
      */
-    public int getIndexPulse() {
+    public int getIndexPulse()
+    {
         return indexPulse;
     }
 
     /**
-     *
      * @param indexPulse
      */
-    public void setIndexPulse(int indexPulse) {
+    public void setIndexPulse(int indexPulse)
+    {
         this.indexPulse = indexPulse;
     }
 
     /**
-     *
      * @return -
      */
-    public int getIndexPulseCount() {
+    public int getIndexPulseCount()
+    {
         return indexPulseCount;
     }
-    public void decrementIndexPulseCount() {
+
+    public void decrementIndexPulseCount()
+    {
         indexPulseCount--;
     }
-    public void incrementIndexPulseCount() {
+
+    public void incrementIndexPulseCount()
+    {
         indexPulseCount++;
     }
 
     /**
-     *
      * @param indexPulseCount
      */
-    public void setIndexPulseCount(int indexPulseCount) {
+    public void setIndexPulseCount(int indexPulseCount)
+    {
         this.indexPulseCount = indexPulseCount;
     }
 
     /**
-     *
      * @return -
      */
-    public int getErr() {
+    public int getErr()
+    {
         return err;
     }
 
     /**
-     *
      * @param err
      */
-    public void setErr(int err) {
+    public void setErr(int err)
+    {
         this.err = err;
     }
 }

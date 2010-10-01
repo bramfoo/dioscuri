@@ -47,18 +47,18 @@ import dioscuri.interfaces.Updateable;
 /**
  * Abstract class representing a generic serial port module.
  */
-public abstract class ModuleSerialPort extends AbstractModule  implements Addressable, Updateable {
+public abstract class ModuleSerialPort extends AbstractModule implements Addressable, Updateable {
 
     /**
-     * 
+     *
      */
-    public ModuleSerialPort() {
+    public ModuleSerialPort()
+    {
         super(Module.Type.SERIALPORT,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }
 
     /**
-     *
      * @param device
      * @param comPort
      * @return -

@@ -39,32 +39,31 @@
 
 package dioscuri.module.screen;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Image;
-
-import javax.swing.JPanel;
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * Class ImageCanvas draws a buffered image on a canvas.
- * 
  */
 public class ScreenPanel extends JPanel {
-    
+
     // Attributes
     private Image image = null;
     private boolean paint = false;
 
     // Constructor
-    public ScreenPanel() {
+
+    public ScreenPanel()
+    {
     }
 
     // Methods
+
     /**
      * Clear the image on canvas
-     * 
      */
-    public void clearImage() {
+    public void clearImage()
+    {
         // Clear Image Area
         paint = false;
         this.repaint();
@@ -72,11 +71,10 @@ public class ScreenPanel extends JPanel {
 
     /**
      * Draw an image on the canvas This is a standard method used by Graphics
-     * 
-     * 
      */
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g)
+    {
         // Paint image on canvas
         if (paint) {
             g.drawImage(image, 0, 0, this);
@@ -90,19 +88,20 @@ public class ScreenPanel extends JPanel {
     /**
      * Update the canvas This method is called automatically when repaint() is
      * called. It is necesarry to doublebuffer the canvas.
-     * 
      */
     @Override
-    public void update(Graphics g) {
+    public void update(Graphics g)
+    {
         paint(g);
     }
 
     /**
      * Set the given image to current and redraw canvas
-     * 
+     *
      * @param i
      */
-    public void setImage(Image i) {
+    public void setImage(Image i)
+    {
         // Paint image object
         paint = true;
         image = i;

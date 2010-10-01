@@ -70,19 +70,21 @@ public class Instruction_ADD_EvGv implements Instruction {
     byte[] temp = new byte[2];
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ADD_EvGv() {
+    public Instruction_ADD_EvGv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ADD_EvGv(CPU processor) {
+    public Instruction_ADD_EvGv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -94,7 +96,8 @@ public class Instruction_ADD_EvGv implements Instruction {
     /**
      * Add word in register (source) to memory/register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -155,7 +158,7 @@ public class Instruction_ADD_EvGv implements Instruction {
 
                 // Increment memory location
                 memoryReferenceLocation = Util.addWords(
-                        memoryReferenceLocation, new byte[] { 0x00, 0x02 }, 0);
+                        memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
                 eDestinationRegister = cpu.getWordFromMemorySegment(
                         addressByte, memoryReferenceLocation);
 
@@ -175,7 +178,7 @@ public class Instruction_ADD_EvGv implements Instruction {
         {
             // For CF, check for overflow in high register which may be used
             // when 32-bit regs are used (see later)
-            internalCarry = Util.test_CF_ADD(oldDest, oldSource, 0) == true ? 1
+            internalCarry = Util.test_CF_ADD(oldDest, oldSource, 0) ? 1
                     : 0;
 
             // ADD double word
@@ -191,14 +194,13 @@ public class Instruction_ADD_EvGv implements Instruction {
                     eOldSource, eDestinationRegister, internalCarry);
             // Test SF on particular byte of destinationRegister (set when MSB
             // is 1, occurs when destReg >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
-                    : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0;
             // Test ZF on particular byte of destinationRegister
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
-                    && eDestinationRegister[CPU.REGISTER_GENERAL_LOW] == 0
-                    && destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
-                    && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true
-                    : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] =
+                    eDestinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
+                            && eDestinationRegister[CPU.REGISTER_GENERAL_LOW] == 0
+                            && destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
+                            && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0;
         } else // 16 bit registers
         {
             // Test CF
@@ -209,12 +211,11 @@ public class Instruction_ADD_EvGv implements Instruction {
                     oldSource, destinationRegister, 0);
             // Test SF on particular byte of destinationRegister (set when MSB
             // is 1, occurs when destReg >= 0x80)
-            cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0 ? true
-                    : false;
+            cpu.flags[CPU.REGISTER_FLAGS_SF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] < 0;
             // Test ZF on particular byte of destinationRegister
-            cpu.flags[CPU.REGISTER_FLAGS_ZF] = destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
-                    && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0 ? true
-                    : false;
+            cpu.flags[CPU.REGISTER_FLAGS_ZF] =
+                    destinationRegister[CPU.REGISTER_GENERAL_HIGH] == 0
+                            && destinationRegister[CPU.REGISTER_GENERAL_LOW] == 0;
         }
 
         // Test AF
@@ -234,7 +235,7 @@ public class Instruction_ADD_EvGv implements Instruction {
                         memoryReferenceLocation, eDestinationRegister);
                 // Decrement memlocation
                 memoryReferenceLocation = Util.subtractWords(
-                        memoryReferenceLocation, new byte[] { 0x00, 0x02 }, 0);
+                        memoryReferenceLocation, new byte[]{0x00, 0x02}, 0);
             }
             cpu.setWordInMemorySegment(addressByte, memoryReferenceLocation,
                     destinationRegister);

@@ -54,20 +54,21 @@ public class Instruction_RETF implements Instruction {
     // int overUnderFlowCheck;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_RETF() {
+    public Instruction_RETF()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_RETF(CPU processor) {
+    public Instruction_RETF(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -77,7 +78,8 @@ public class Instruction_RETF implements Instruction {
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute() {
+    public void execute()
+    {
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
 

@@ -11,12 +11,14 @@ public abstract class AbstractModulePanel extends JPanel {
     final GUI parent;
     final dioscuri.config.Emulator emuConfig;
 
-    AbstractModulePanel(GUI parent, dioscuri.config.Emulator emuConfig) {
+    AbstractModulePanel(GUI parent, dioscuri.config.Emulator emuConfig)
+    {
         this.parent = parent;
         this.emuConfig = emuConfig;
     }
 
-    File chooseFile() {
+    File chooseFile()
+    {
         File file = null;
         final JFileChooser fc = new JFileChooser();
         int returnVal = fc.showOpenDialog(this);
@@ -25,21 +27,23 @@ public abstract class AbstractModulePanel extends JPanel {
         }
         return file;
     }
-    
+
     abstract void save() throws Exception;
 
-    final void saveAndWrite() {
+    final void saveAndWrite()
+    {
         try {
             save();
             writeXML();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error saving parameter to configuration file.\n\n"+
+            JOptionPane.showMessageDialog(this, "Error saving parameter to configuration file.\n\n" +
                     e.getMessage(), "DIOSCURI",
                     JOptionPane.WARNING_MESSAGE);
         }
     }
 
-    void writeXML() {
+    void writeXML()
+    {
         if (!Utilities.saveXML(emuConfig, parent.getConfigFilePath())) {
             JOptionPane.showMessageDialog(this, "Error saving parameter to configuration file.",
                     "DIOSCURI", JOptionPane.WARNING_MESSAGE);

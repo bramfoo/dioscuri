@@ -45,13 +45,12 @@ import java.util.List;
 /**
  * Internal keyboard buffer Virtual buffer - located in the keyboard hardware
  * Contains data intended for controller (ACKS/NACKS, scancodes, etc.)
- * 
  */
 public class KeyboardInternalBuffer {
     protected final static int NUM_ELEMENTS = 16;
 
     private List<Byte> buffer = new ArrayList<Byte>(NUM_ELEMENTS);// List of data
-                                                          // elements
+    // elements
     byte expectingTypematic; // Keyboard repeat rate command issued
     byte expectingLEDWrite; // Keyboard LED change command issued
     byte expectingScancodeSet; // Alternate scancode set command issued
@@ -65,7 +64,8 @@ public class KeyboardInternalBuffer {
      *
      * @return a List of data elements (as bytes) of this internal buffer.
      */
-    public synchronized List<Byte> getBuffer() {
+    public synchronized List<Byte> getBuffer()
+    {
         return buffer;
     }
 }

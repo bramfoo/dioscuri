@@ -25,8 +25,8 @@
  */
 package dioscuri.module.cpu32;
 
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.util.Map;
 
 //import org.jpc.classfile.*;
 //import org.jpc.emulator.processor.*;
@@ -35,30 +35,29 @@ import java.util.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.CountingOutputStream;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
 public class RealModeExceptionHandler extends ExceptionHandler {
     /**
-     *
      * @param lastX86Position
      * @param initialNode
      * @param stateMap
      */
     public RealModeExceptionHandler(int lastX86Position,
-            RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
+                                    RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
+    {
         super(lastX86Position, initialNode, stateMap);
     }
 
     /**
-     *
      * @param byteCodes
      * @param cf
      * @throws IOException
      */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
-            ClassFile cf) throws IOException {
+                                       ClassFile cf) throws IOException
+    {
         byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
         try {
             int cpIndex = cf.addToConstantPool(ProcessorException.class
@@ -78,7 +77,7 @@ public class RealModeExceptionHandler extends ExceptionHandler {
         try {
             int cpIndex = cf.addToConstantPool(Processor.class
                     .getDeclaredMethod("handleRealModeException",
-                            new Class[] { Integer.TYPE }));
+                    new Class[]{Integer.TYPE}));
             if (cpIndex > 0xffff)
                 throw new IllegalStateException(
                         "Compilation ran out of constant pool slots");

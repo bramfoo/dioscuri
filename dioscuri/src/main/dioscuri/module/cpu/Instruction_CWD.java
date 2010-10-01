@@ -51,20 +51,21 @@ public class Instruction_CWD implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_CWD() {
+    public Instruction_CWD()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CWD(CPU processor) {
+    public Instruction_CWD(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -76,7 +77,8 @@ public class Instruction_CWD implements Instruction {
     /**
      * Copy the sign (bit 15) in AX into every bit of DX register
      */
-    public void execute() {
+    public void execute()
+    {
         // Change DX to 0x0000 if AH < 0x80, or 0xFFFF if AH >= 0x80
         cpu.dx[CPU.REGISTER_GENERAL_HIGH] = cpu.dx[CPU.REGISTER_GENERAL_LOW] = cpu.ax[CPU.REGISTER_GENERAL_HIGH] >= 0 ? (byte) 0x00
                 : (byte) 0xFF;

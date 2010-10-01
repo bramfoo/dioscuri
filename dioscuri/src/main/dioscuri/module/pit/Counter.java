@@ -44,13 +44,11 @@ import java.util.logging.Logger;
 
 /**
  * A single counter of the PIT based on the Intel 82C54 chipset.
- * 
+ * <p/>
  * This counter works following the convention rules of the PIT: 1. For each
  * counter, the control word must be written before the initial count is
  * written. 2. The initial count must follow the count format specified in the
  * Control Word (LSB, MSB, etc.)
- * 
- * 
  */
 @SuppressWarnings("unused")
 public class Counter {
@@ -66,30 +64,30 @@ public class Counter {
     // Mode settings
     protected int counterMode; // States the counter mode: 0,1,2,3,4,5
     protected int rwMode; // States the mode to R/W counter: 0 (latched), 1
-                          // (LSB), 2 (MSB), 3 (LSB -> MSB)
+    // (LSB), 2 (MSB), 3 (LSB -> MSB)
     protected boolean bcd; // false = Binary counter, true = Binary Code Decimal
-                           // counter
+    // counter
 
     // Registers
     protected byte[] ce; // Counting element, the actual counter
     protected byte[] cr; // Count Register, holding the count value to be loaded
-                         // in counter
+    // in counter
     protected byte[] ol; // Output Latch, holding a snapshot of the count of the
-                         // counter
+    // counter
 
     // Toggles
     private boolean isEnabled; // Denotes if this counter is enabled or not
     private boolean parity; // Denotes the parity of the count value: false=ODD,
-                            // true=EVEN
+    // true=EVEN
     private boolean lsbWritten;
     private boolean lsbRead;
     private boolean isLatched;
     private boolean newCount;
     private boolean isTriggered; // Defines if this counter has been triggered
-                                 // (used for modes 1 and 5)
+    // (used for modes 1 and 5)
     private boolean isGateRising; // Defines if GATE signal is on rising edge
     protected boolean readBackCmd; // Defines if this counter is in read-back
-                                   // mode
+    // mode
 
     // Logging
     private static final Logger logger = Logger.getLogger(Counter.class.getName());
@@ -111,20 +109,22 @@ public class Counter {
 
     private final static int COUNTERMODE_0 = 0; // Interrupt on terminal count
     private final static int COUNTERMODE_1 = 1; // Hardware retriggerable
-                                                // one-shot
+    // one-shot
     private final static int COUNTERMODE_2 = 2; // Period rate generator
     private final static int COUNTERMODE_3 = 3;
     private final static int COUNTERMODE_4 = 4;
     private final static int COUNTERMODE_5 = 5;
 
     // Constructor
+
     /**
      * Constructor of the counter class
-     * 
+     *
      * @param pit
-     * @param counterNumber 
+     * @param counterNumber
      */
-    public Counter(PIT pit, int counterNumber) {
+    public Counter(PIT pit, int counterNumber)
+    {
         // Initialise relations
         this.pit = pit;
         this.counterNumber = counterNumber;
@@ -140,9 +140,9 @@ public class Counter {
         bcd = BINARY;
 
         // Initialise internal registers
-        ce = new byte[] { 0x00, 0x00 };
-        cr = new byte[] { 0x00, 0x00 };
-        ol = new byte[] { 0x00, 0x00 };
+        ce = new byte[]{0x00, 0x00};
+        cr = new byte[]{0x00, 0x00};
+        ol = new byte[]{0x00, 0x00};
 
         // Initialise toggles
         isEnabled = false;
@@ -156,478 +156,479 @@ public class Counter {
     }
 
     // Methods
+
     /**
      * Performs counter action on one clockpulse. The action depends on the mode
      * the counter is set to, the GATE signal, R/W mode and BCD setting.
-     * 
      */
-    public void clockPulse() {
+    public void clockPulse()
+    {
         // Check if this counter is used
-        if (isEnabled == true) {
+        if (isEnabled) {
             // Check bcd setting
             if (bcd == BINARY) {
                 switch (counterMode) {
-                case COUNTERMODE_0:
-                    // Mode 0: Interrupt on terminal count
-                    // OUT: initially low, turns high when counter reaches zero.
-                    // Stays high until new count or CW is loaded.
-                    // GATE: initially high. When turning low, counting is
-                    // suspended.
+                    case COUNTERMODE_0:
+                        // Mode 0: Interrupt on terminal count
+                        // OUT: initially low, turns high when counter reaches zero.
+                        // Stays high until new count or CW is loaded.
+                        // GATE: initially high. When turning low, counting is
+                        // suspended.
 
-                    // FIXME: maybe rwmode check should be replaced by another
-                    // variable.
-                    // In case where Control Word is reset but counter
-                    // continues, current counter will be
-                    // influenced which is not correct!!!
+                        // FIXME: maybe rwmode check should be replaced by another
+                        // variable.
+                        // In case where Control Word is reset but counter
+                        // continues, current counter will be
+                        // influenced which is not correct!!!
 
-                    // Check if a new count value should be loaded
-                    if (newCount == true) {
-                        this.loadCounter();
-                        newCount = false;
+                        // Check if a new count value should be loaded
+                        if (newCount) {
+                            this.loadCounter();
+                            newCount = false;
 
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-                    } else if (signalGate == true) {
-                        // Perform counting
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+                        } else if (signalGate) {
+                            // Perform counting
 
-                        // Binary countdown
-                        ce[LSB]--;
-
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 0) {
-                                // Set OUT to high
-                                signalOut = true;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-                            }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode0 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -1) // comparing signed bytes,
-                                               // checking 0xFF
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 0 && ce[MSB] == 0) {
-                                // Set OUT to high
-                                signalOut = true;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-                            }
-                        }
-                    }
-                    break;
-
-                case COUNTERMODE_1:
-                    // Mode 1: Hardware retriggerable one-shot
-                    // OUT: initially high, turns low after trigger on
-                    // clockpulse. Stays low until count reaches zero and
-                    // remains high until next trigger.
-                    // GATE: initially low. When turning high (trigger), counter
-                    // starts counting from the start.
-
-                    // Check if a new count value should be loaded
-                    if (isGateRising == true) {
-                        // A trigger has been given
-                        this.loadCounter();
-                        newCount = false;
-                        isTriggered = true;
-                        signalOut = false;
-
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-                    } else if (isTriggered == true) {
-                        // Perform counting
-
-                        // Binary countdown
-                        ce[LSB]--;
-
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 0) {
-                                // Set OUT to high
-                                signalOut = true;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-                            }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode1 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -1) // comparing signed bytes,
-                                               // checking 0xFF
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 0 && ce[MSB] == 0) {
-                                // Set OUT to high
-                                signalOut = true;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-                            }
-                        }
-                    }
-                    break;
-
-                case COUNTERMODE_2:
-                    // Mode 2: Rate generator (periodic)
-                    // OUT: initially high, turns low for one clockcycle when
-                    // count has decremented to one and goes high again.
-                    // GATE: initially high. When turning low, counting is
-                    // suspended. If OUT is low as well, OUT is set to high
-                    // immediately
-
-                    // Reset OUT signal to make sure that when it's low, it will
-                    // return high again
-                    // Even when GATE is turned low, the OUT signal should
-                    // become high again!
-                    signalOut = true;
-
-                    // Check if a new count value should be loaded
-                    if (newCount == true) {
-                        this.loadCounter();
-                        newCount = false;
-
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-                    } else if (signalGate == true) {
-                        // Perform counting
-
-                        // Binary countdown
-                        ce[LSB]--;
-
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 1) {
-                                // Set OUT to low
-                                signalOut = false;
-
-                                logger.log(Level.CONFIG, "[" + pit.getType()
-                                        + "] counter " + counterNumber
-                                        + " countermode2 r/wmode1 expired.");
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-
-                                newCount = true;
-                            }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode2 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -1) // comparing signed bytes,
-                                               // checking 0xFF
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 1 && ce[MSB] == 0) {
-                                // Set OUT to low
-                                signalOut = false;
-
-                                logger.log(Level.CONFIG, "[" + pit.getType()
-                                        + "] counter " + counterNumber
-                                        + " countermode2 r/wmode3 expired.");
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-
-                                newCount = true;
-                            }
-                        }
-                    }
-                    break;
-
-                case COUNTERMODE_3:
-                    // Mode 3: Square wave mode (periodic)
-                    // OUT: initially high, turns low for when count has
-                    // decremented to half of its value. Goes high again after
-                    // half of the count.
-                    // GATE: initially high. When turning low, counting is
-                    // suspended. If OUT is low as well, OUT is set to high
-                    // immediately
-
-                    // Check if a new count value should be loaded
-                    if (newCount == true) {
-                        this.loadCounter();
-
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-
-                        // Check parity of count element
-                        if (parity == ODD) {
-                            // Subtract one more to become even
+                            // Binary countdown
                             ce[LSB]--;
 
-                            // Check if OUT signal is still high
-                            if (signalOut == true) {
-                                // OUT signal should be turned low one CLK
-                                // signal AFTER ce has become zero!!
-                                signalOut = false;
-                            }
-                        }
-                        newCount = false;
-                    } else if (signalGate == true) {
-                        // Perform counting
-
-                        // Binary countdown
-                        ce[LSB]--;
-                        ce[LSB]--;
-
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 0) {
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-
-                                // Check state of OUT signal
-                                if (signalOut == true && parity == EVEN) {
-                                    // Set OUT to low
-                                    signalOut = false;
-                                } else if (signalOut == false) // this behaves
-                                                               // the same for
-                                                               // ODD and EVEN
-                                {
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 0) {
                                     // Set OUT to high
                                     signalOut = true;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
                                 }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode0 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -1) // comparing signed bytes,
+                                // checking 0xFF
+                                {
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 0 && ce[MSB] == 0) {
+                                    // Set OUT to high
+                                    signalOut = true;
 
-                                // Indicate that counter must start counting
-                                // from the start again
-                                newCount = true;
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+                                }
                             }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode3 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -2) // comparing signed bytes,
-                                               // checking 0xFE
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 0 && ce[MSB] == 0) {
-                                logger.log(Level.CONFIG, "[" + pit.getType()
-                                        + "] counter " + counterNumber
-                                        + " countermode3 r/wmode3 expired.");
+                        }
+                        break;
 
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
+                    case COUNTERMODE_1:
+                        // Mode 1: Hardware retriggerable one-shot
+                        // OUT: initially high, turns low after trigger on
+                        // clockpulse. Stays low until count reaches zero and
+                        // remains high until next trigger.
+                        // GATE: initially low. When turning high (trigger), counter
+                        // starts counting from the start.
 
-                                if (parity == EVEN) {
+                        // Check if a new count value should be loaded
+                        if (isGateRising) {
+                            // A trigger has been given
+                            this.loadCounter();
+                            newCount = false;
+                            isTriggered = true;
+                            signalOut = false;
+
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+                        } else if (isTriggered) {
+                            // Perform counting
+
+                            // Binary countdown
+                            ce[LSB]--;
+
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 0) {
+                                    // Set OUT to high
+                                    signalOut = true;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+                                }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode1 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -1) // comparing signed bytes,
+                                // checking 0xFF
+                                {
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 0 && ce[MSB] == 0) {
+                                    // Set OUT to high
+                                    signalOut = true;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+                                }
+                            }
+                        }
+                        break;
+
+                    case COUNTERMODE_2:
+                        // Mode 2: Rate generator (periodic)
+                        // OUT: initially high, turns low for one clockcycle when
+                        // count has decremented to one and goes high again.
+                        // GATE: initially high. When turning low, counting is
+                        // suspended. If OUT is low as well, OUT is set to high
+                        // immediately
+
+                        // Reset OUT signal to make sure that when it's low, it will
+                        // return high again
+                        // Even when GATE is turned low, the OUT signal should
+                        // become high again!
+                        signalOut = true;
+
+                        // Check if a new count value should be loaded
+                        if (newCount) {
+                            this.loadCounter();
+                            newCount = false;
+
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+                        } else if (signalGate) {
+                            // Perform counting
+
+                            // Binary countdown
+                            ce[LSB]--;
+
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 1) {
+                                    // Set OUT to low
+                                    signalOut = false;
+
+                                    logger.log(Level.CONFIG, "[" + pit.getType()
+                                            + "] counter " + counterNumber
+                                            + " countermode2 r/wmode1 expired.");
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+
+                                    newCount = true;
+                                }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode2 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -1) // comparing signed bytes,
+                                // checking 0xFF
+                                {
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 1 && ce[MSB] == 0) {
+                                    // Set OUT to low
+                                    signalOut = false;
+
+                                    logger.log(Level.CONFIG, "[" + pit.getType()
+                                            + "] counter " + counterNumber
+                                            + " countermode2 r/wmode3 expired.");
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+
+                                    newCount = true;
+                                }
+                            }
+                        }
+                        break;
+
+                    case COUNTERMODE_3:
+                        // Mode 3: Square wave mode (periodic)
+                        // OUT: initially high, turns low for when count has
+                        // decremented to half of its value. Goes high again after
+                        // half of the count.
+                        // GATE: initially high. When turning low, counting is
+                        // suspended. If OUT is low as well, OUT is set to high
+                        // immediately
+
+                        // Check if a new count value should be loaded
+                        if (newCount) {
+                            this.loadCounter();
+
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+
+                            // Check parity of count element
+                            if (parity == ODD) {
+                                // Subtract one more to become even
+                                ce[LSB]--;
+
+                                // Check if OUT signal is still high
+                                if (signalOut) {
+                                    // OUT signal should be turned low one CLK
+                                    // signal AFTER ce has become zero!!
+                                    signalOut = false;
+                                }
+                            }
+                            newCount = false;
+                        } else if (signalGate) {
+                            // Perform counting
+
+                            // Binary countdown
+                            ce[LSB]--;
+                            ce[LSB]--;
+
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 0) {
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+
                                     // Check state of OUT signal
-                                    if (signalOut == true) {
+                                    if (signalOut && parity == EVEN) {
                                         // Set OUT to low
                                         signalOut = false;
+                                    } else if (!signalOut) // this behaves
+                                    // the same for
+                                    // ODD and EVEN
+                                    {
+                                        // Set OUT to high
+                                        signalOut = true;
+                                    }
 
-                                    } else if (signalOut == false) {
-                                        // Set OUT to high
-                                        signalOut = true;
-                                    }
-                                } else // Parity is ODD
+                                    // Indicate that counter must start counting
+                                    // from the start again
+                                    newCount = true;
+                                }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode3 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -2) // comparing signed bytes,
+                                // checking 0xFE
                                 {
-                                    // Signal OUT should become high again.
-                                    // Note: if signal OUT is high, it will be
-                                    // set low after the NEXT clock cycle.
-                                    if (signalOut == false) {
-                                        // Set OUT to high
-                                        signalOut = true;
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 0 && ce[MSB] == 0) {
+                                    logger.log(Level.CONFIG, "[" + pit.getType()
+                                            + "] counter " + counterNumber
+                                            + " countermode3 r/wmode3 expired.");
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+
+                                    if (parity == EVEN) {
+                                        // Check state of OUT signal
+                                        if (signalOut) {
+                                            // Set OUT to low
+                                            signalOut = false;
+
+                                        } else if (!signalOut) {
+                                            // Set OUT to high
+                                            signalOut = true;
+                                        }
+                                    } else // Parity is ODD
+                                    {
+                                        // Signal OUT should become high again.
+                                        // Note: if signal OUT is high, it will be
+                                        // set low after the NEXT clock cycle.
+                                        if (!signalOut) {
+                                            // Set OUT to high
+                                            signalOut = true;
+                                        }
                                     }
+
+                                    // Indicate that counter must start counting
+                                    // from the start again
+                                    newCount = true;
                                 }
 
-                                // Indicate that counter must start counting
-                                // from the start again
-                                newCount = true;
-                            }
-
-                        }
-                    }
-                    break;
-
-                case COUNTERMODE_4:
-                    // Mode 4: Software triggered strobe
-                    // OUT: initially high, turns low for one clockcycle when
-                    // count has decremented to zero and goes high again.
-                    // GATE: initially high. When turning low, counting is
-                    // suspended.
-
-                    // Reset OUT signal to make sure that when it's low, it will
-                    // return high again
-                    // Even when GATE is turned low, the OUT signal should
-                    // become high again!
-                    signalOut = true;
-
-                    // Check if a new count value should be loaded
-                    if (newCount == true) {
-                        this.loadCounter();
-                        newCount = false;
-
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-                    } else if (signalGate == true) {
-                        // Perform counting
-
-                        // Binary countdown
-                        ce[LSB]--;
-
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 0) {
-                                // Set OUT to low
-                                signalOut = false;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-
-                                newCount = true;
-                            }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode4 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -1) // comparing signed bytes,
-                                               // checking 0xFF
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 0 && ce[MSB] == 0) {
-                                // Set OUT to low
-                                signalOut = false;
-
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-
-                                newCount = true;
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                case COUNTERMODE_5:
-                    // Mode 5: Hardware triggered strobe (retriggerable)
-                    // OUT: initially high, turns low one clockcycle when
-                    // counting expires. Then turns high again.
-                    // GATE: initially low. When turning high (trigger), counter
-                    // starts counting from the start.
+                    case COUNTERMODE_4:
+                        // Mode 4: Software triggered strobe
+                        // OUT: initially high, turns low for one clockcycle when
+                        // count has decremented to zero and goes high again.
+                        // GATE: initially high. When turning low, counting is
+                        // suspended.
 
-                    // Reset OUT signal to make sure that when it's low, it will
-                    // return high again
-                    // Even when GATE is turned low, the OUT signal should
-                    // become high again!
-                    signalOut = true;
+                        // Reset OUT signal to make sure that when it's low, it will
+                        // return high again
+                        // Even when GATE is turned low, the OUT signal should
+                        // become high again!
+                        signalOut = true;
 
-                    // Check if a new count value should be loaded
-                    if (isGateRising == true) {
-                        // A trigger has been given
-                        this.loadCounter();
-                        newCount = false;
-                        isTriggered = true;
+                        // Check if a new count value should be loaded
+                        if (newCount) {
+                            this.loadCounter();
+                            newCount = false;
 
-                        // Lower interrupt
-                        pit.lowerIRQ(this);
-                    } else if (isTriggered == true) {
-                        // Perform counting
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+                        } else if (signalGate) {
+                            // Perform counting
 
-                        // Binary countdown
-                        ce[LSB]--;
+                            // Binary countdown
+                            ce[LSB]--;
 
-                        // Check R/W Mode
-                        if (rwMode == RWMODE_1) {
-                            // LSB only
-                            if (ce[LSB] == 0) {
-                                // Set OUT to high
-                                signalOut = false;
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 0) {
+                                    // Set OUT to low
+                                    signalOut = false;
 
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
-                            }
-                        } else if (rwMode == RWMODE_2) {
-                            // FIXME: not sure what to do
-                            logger
-                                    .log(
-                                            Level.WARNING,
-                                            "["
-                                                    + pit.getType()
-                                                    + "] counter "
-                                                    + counterNumber
-                                                    + " countermode5 r/wmode2 not implemented.");
-                        } else if (rwMode == RWMODE_3) {
-                            // LSB and MSB
-                            if (ce[LSB] == -1) // comparing signed bytes,
-                                               // checking 0xFF
-                            {
-                                // LSB passed by zero
-                                // MSB must be decremented
-                                ce[MSB]--;
-                            } else if (ce[LSB] == 0 && ce[MSB] == 0) {
-                                // Set OUT to high
-                                signalOut = false;
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
 
-                                // Raise interrupt
-                                pit.raiseIRQ(this);
+                                    newCount = true;
+                                }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode4 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -1) // comparing signed bytes,
+                                // checking 0xFF
+                                {
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 0 && ce[MSB] == 0) {
+                                    // Set OUT to low
+                                    signalOut = false;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+
+                                    newCount = true;
+                                }
                             }
                         }
-                    }
-                    break;
+                        break;
 
-                default:
-                    // FIXME: throw exception. No countermode match
-                    logger.log(Level.WARNING, "[" + pit.getType()
-                            + "] counter " + counterNumber
-                            + " no countermode match.");
+                    case COUNTERMODE_5:
+                        // Mode 5: Hardware triggered strobe (retriggerable)
+                        // OUT: initially high, turns low one clockcycle when
+                        // counting expires. Then turns high again.
+                        // GATE: initially low. When turning high (trigger), counter
+                        // starts counting from the start.
+
+                        // Reset OUT signal to make sure that when it's low, it will
+                        // return high again
+                        // Even when GATE is turned low, the OUT signal should
+                        // become high again!
+                        signalOut = true;
+
+                        // Check if a new count value should be loaded
+                        if (isGateRising) {
+                            // A trigger has been given
+                            this.loadCounter();
+                            newCount = false;
+                            isTriggered = true;
+
+                            // Lower interrupt
+                            pit.lowerIRQ(this);
+                        } else if (isTriggered) {
+                            // Perform counting
+
+                            // Binary countdown
+                            ce[LSB]--;
+
+                            // Check R/W Mode
+                            if (rwMode == RWMODE_1) {
+                                // LSB only
+                                if (ce[LSB] == 0) {
+                                    // Set OUT to high
+                                    signalOut = false;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+                                }
+                            } else if (rwMode == RWMODE_2) {
+                                // FIXME: not sure what to do
+                                logger
+                                        .log(
+                                                Level.WARNING,
+                                                "["
+                                                        + pit.getType()
+                                                        + "] counter "
+                                                        + counterNumber
+                                                        + " countermode5 r/wmode2 not implemented.");
+                            } else if (rwMode == RWMODE_3) {
+                                // LSB and MSB
+                                if (ce[LSB] == -1) // comparing signed bytes,
+                                // checking 0xFF
+                                {
+                                    // LSB passed by zero
+                                    // MSB must be decremented
+                                    ce[MSB]--;
+                                } else if (ce[LSB] == 0 && ce[MSB] == 0) {
+                                    // Set OUT to high
+                                    signalOut = false;
+
+                                    // Raise interrupt
+                                    pit.raiseIRQ(this);
+                                }
+                            }
+                        }
+                        break;
+
+                    default:
+                        // FIXME: throw exception. No countermode match
+                        logger.log(Level.WARNING, "[" + pit.getType()
+                                + "] counter " + counterNumber
+                                + " no countermode match.");
                 }
             } else {
                 // BCD countdown
@@ -643,10 +644,11 @@ public class Counter {
 
     /**
      * Retrieves the GATE signal
-     * 
+     *
      * @return boolean true if GATE is high, false if GATE is low
      */
-    protected boolean getGateSignal() {
+    protected boolean getGateSignal()
+    {
         // Returns the GATE signal
         return signalGate;
     }
@@ -656,15 +658,16 @@ public class Counter {
      * previous state. If GATE is rising (low -> high), variable isGateRising is
      * set to true If GATE is falling (high -> low), signal OUT is turned high
      * immediately for some counter modes
-     * 
+     *
      * @param status
      */
-    protected void setGateSignal(boolean status) {
+    protected void setGateSignal(boolean status)
+    {
         // FIXME: this method is never used!
         // Set the GATE to given status and determine if it is a rising or
         // falling signal
-        if (status == true) {
-            if (signalGate == false) {
+        if (status) {
+            if (!signalGate) {
                 // Signal is rising
                 isGateRising = true;
             } else {
@@ -672,14 +675,14 @@ public class Counter {
                 isGateRising = false;
             }
         } else {
-            // status == false
-            if (signalGate == false) {
+            // !status
+            if (!signalGate) {
                 // Do nothing -> GATE does not change
             } else {
                 // GATE signal is falling
                 // Higher OUT signal in particular counter modes
                 if ((counterMode == COUNTERMODE_2 || counterMode == COUNTERMODE_3)
-                        && signalOut == false) {
+                        && !signalOut) {
                     signalOut = true;
 
                     // Send notification to user
@@ -692,30 +695,32 @@ public class Counter {
 
     /**
      * Retrieves the OUT signal
-     * 
+     *
      * @return boolean true if OUT is high, false if OUT is low
      */
-    protected boolean getOutSignal() {
+    protected boolean getOutSignal()
+    {
         // Returns the OUT signal
         return signalOut;
     }
 
     /**
      * Returns the counter value depending on the R/W mode
-     * 
+     *
      * @return byte data containing the LSB/MSB from Counting Element (ce) or
      *         Output latch (ol)
      */
-    protected byte getCounterValue() {
+    protected byte getCounterValue()
+    {
         // Check if this counter is in read-back mode
-        if (readBackCmd == true) {
+        if (readBackCmd) {
             // FIXME: implement appropriate action for read-back command
             readBackCmd = false;
         } else {
             // Check the R/W mode
             if (rwMode == RWMODE_0) {
                 // Check if LSB is already read
-                if (lsbRead == true) {
+                if (lsbRead) {
                     // Return MSB, reset lsbRead and release latch
                     lsbRead = false;
                     isLatched = false;
@@ -734,7 +739,7 @@ public class Counter {
             } else if (rwMode == RWMODE_3) {
                 // Read operation: LSB first, then MSB
                 // Check if this is LSB or MSB byte (first or second byte)
-                if (lsbRead == true) {
+                if (lsbRead) {
                     // Return MSB and reset lsbRead
                     lsbRead = false;
                     return ce[MSB];
@@ -753,10 +758,11 @@ public class Counter {
     /**
      * Set counter value depending on the R/W mode Note: it is assumed that data
      * is always loaded in LSB, MSB order. So, first LSB then MSB.
-     * 
+     *
      * @param data
      */
-    protected void setCounterValue(byte data) {
+    protected void setCounterValue(byte data)
+    {
         // Check the R/W mode
         if (rwMode == RWMODE_0) {
             // Do nothing as data can not be written while in Counter Latch mode
@@ -791,7 +797,7 @@ public class Counter {
         } else if (rwMode == RWMODE_3) {
             // Write operation: LSB first, then MSB
             // Check if this is LSB or MSB byte (first or second byte)
-            if (lsbWritten == true) {
+            if (lsbWritten) {
                 // Store data in Count Register
                 cr[MSB] = data;
                 lsbWritten = false;
@@ -816,10 +822,11 @@ public class Counter {
 
     /**
      * Set counter mode
-     * 
+     *
      * @param mode
      */
-    protected void setCounterMode(int mode) {
+    protected void setCounterMode(int mode)
+    {
         counterMode = mode;
         // Check wildcards in counter mode settings for mode 2 and 3:
         if (counterMode == 6) {
@@ -861,9 +868,9 @@ public class Counter {
      * Latch this counter (read back current count value) Note: this function
      * only works if the counter is in latchmode. The latched value is stored in
      * register ol.
-     * 
      */
-    protected void latchCounter() {
+    protected void latchCounter()
+    {
         if (isLatched) {
             logger.log(Level.WARNING, "[" + pit.getType()
                     + "] Counter already latched, cannot latch");
@@ -877,9 +884,9 @@ public class Counter {
 
     /**
      * Load counter with new value Note: new value is stored in register cr.
-     * 
      */
-    private void loadCounter() {
+    private void loadCounter()
+    {
         // Cannot guarantee the following command since update to 32-bit:
         // logger.log(Level.CONFIG,
         // pit.motherboard.getCurrentInstructionNumber() + " " + "[" +
@@ -915,50 +922,55 @@ public class Counter {
 
     /**
      * Return the parity of the count value
-     * 
+     *
      * @return boolean true=EVEN, false=ODD
      */
-    protected boolean getParity() {
+    protected boolean getParity()
+    {
         // Returns the parity of counting element
         return parity;
     }
 
     /**
      * Return if this counter is in BCD mode
-     * 
+     *
      * @return boolean true=BCD, false=decimal
      */
-    protected boolean getBCD() {
+    protected boolean getBCD()
+    {
         // Returns the parity of counting element
         return bcd;
     }
 
     /**
      * Enable/disable the counter
-     * 
+     *
      * @param status
      */
-    protected void setEnabled(boolean status) {
+    protected void setEnabled(boolean status)
+    {
         // Set current counter in given state
         isEnabled = status;
     }
 
     /**
      * Return if this counter has been enabled
-     * 
+     *
      * @return true if enabled, false otherwise
      */
-    protected boolean isEnabled() {
+    protected boolean isEnabled()
+    {
         // Return status of this counter
         return isEnabled;
     }
 
     /**
      * Return the counter number (ID)
-     * 
+     *
      * @return int counternumber
      */
-    protected int getCounterNumber() {
+    protected int getCounterNumber()
+    {
         // Return the number of the counter
         return counterNumber;
     }

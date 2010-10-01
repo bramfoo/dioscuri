@@ -53,26 +53,28 @@ public class Instruction_INC_CX implements Instruction {
     private byte[] incWord;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_INC_CX() {
+    public Instruction_INC_CX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_INC_CX(CPU processor) {
+    public Instruction_INC_CX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
         cpu = processor;
         temp = new byte[2];
         oldDest = new byte[2];
-        incWord = new byte[] { 0x00, 0x01 };
+        incWord = new byte[]{0x00, 0x01};
     }
 
     // Methods
@@ -80,7 +82,8 @@ public class Instruction_INC_CX implements Instruction {
     /**
      * Increment general register CX
      */
-    public void execute() {
+    public void execute()
+    {
         // Make copy of old value
         System.arraycopy(cpu.cx, 0, oldDest, 0, cpu.cx.length);
 

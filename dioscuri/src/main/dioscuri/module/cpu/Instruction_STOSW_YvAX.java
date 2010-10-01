@@ -48,23 +48,24 @@ public class Instruction_STOSW_YvAX implements Instruction {
 
     // Attributes
     private CPU cpu;
-    byte[] transition = new byte[] { 0x00, 0x02 }; // Increment/decrement value
+    byte[] transition = new byte[]{0x00, 0x02}; // Increment/decrement value
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_STOSW_YvAX() {
+    public Instruction_STOSW_YvAX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_STOSW_YvAX(CPU processor) {
+    public Instruction_STOSW_YvAX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -77,7 +78,8 @@ public class Instruction_STOSW_YvAX implements Instruction {
      * Copy word from register AX to ES:DI; update DI register according to flag
      * DF
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word at AX and assign to ES:DI; ES segment override is not
         // allowed
         cpu.setWordToExtra(cpu.di, cpu.ax);

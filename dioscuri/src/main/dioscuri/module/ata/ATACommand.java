@@ -149,25 +149,24 @@ public enum ATACommand {
 
     /**
      * Class constructor, with the address and name specified.
-     * 
-     * @param theAddress
-     *            the address associated with the command
-     * @param theName
-     *            the name of the command
+     *
+     * @param theAddress the address associated with the command
+     * @param theName    the name of the command
      */
-    private ATACommand(byte theAddress, String theName) {
+    private ATACommand(byte theAddress, String theName)
+    {
         this.address = theAddress;
         this.name = theName;
     }
 
     /**
      * Get the command corresponding to the address
-     * 
-     * @param portAddress
-     *            the port address
+     *
+     * @param portAddress the port address
      * @return the command corresponding to the address
      */
-    public static ATACommand getCommand(int portAddress) {
+    public static ATACommand getCommand(int portAddress)
+    {
         ATACommand command = null;
 
         for (ATACommand cmd : values()) {
@@ -182,31 +181,34 @@ public enum ATACommand {
 
     /**
      * Gets the string name of the command.
-     * 
+     *
      * @return the string name of the command
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
 
         return this.name;
     }
 
     /**
      * Gets the name of the command.
-     * 
+     *
      * @return the name of the command
      */
-    public String getName() {
+    public String getName()
+    {
 
         return this.name;
     }
 
     /**
      * Get the address of the command.
-     * 
+     *
      * @return the address
      */
-    public int getAddress() {
+    public int getAddress()
+    {
         return this.address;
     }
 

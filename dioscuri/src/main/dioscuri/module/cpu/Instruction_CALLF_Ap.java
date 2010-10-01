@@ -55,19 +55,21 @@ public class Instruction_CALLF_Ap implements Instruction {
     byte[] newIP;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CALLF_Ap() {
+    public Instruction_CALLF_Ap()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CALLF_Ap(CPU processor) {
+    public Instruction_CALLF_Ap(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -80,7 +82,8 @@ public class Instruction_CALLF_Ap implements Instruction {
     /**
      * Execute call to procedure indicated by immediate signed words
      */
-    public void execute() {
+    public void execute()
+    {
         // Call far absolute address given in operand (IP:CS=r16:16 or r16:32)
 
         // Get new IP from code

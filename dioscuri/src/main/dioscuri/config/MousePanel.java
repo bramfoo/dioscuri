@@ -14,7 +14,8 @@ public class MousePanel extends AbstractModulePanel {
     final JCheckBox enabled = new JCheckBox();
     final JComboBox typeCombo = new JComboBox(typeChoices);
 
-    MousePanel(GUI parent, Emulator emuConfig) {
+    MousePanel(GUI parent, Emulator emuConfig)
+    {
         super(parent, emuConfig);
         this.mouse = emuConfig.getArchitecture().getModules().getMouse();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -32,7 +33,8 @@ public class MousePanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception {
+    void save() throws Exception
+    {
         mouse.setEnabled(enabled.isSelected());
         mouse.setMousetype(typeCombo.getSelectedItem().toString());
     }

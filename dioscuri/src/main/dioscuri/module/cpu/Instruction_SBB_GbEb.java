@@ -65,19 +65,21 @@ public class Instruction_SBB_GbEb implements Instruction {
     byte tempResult = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SBB_GbEb() {
+    public Instruction_SBB_GbEb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SBB_GbEb(CPU processor) {
+    public Instruction_SBB_GbEb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -90,7 +92,8 @@ public class Instruction_SBB_GbEb implements Instruction {
      * Subtract byte in memory/register (source) + CF from register
      * (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

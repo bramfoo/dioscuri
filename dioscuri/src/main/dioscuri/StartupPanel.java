@@ -39,15 +39,12 @@
 
 package dioscuri;
 
-import java.awt.Color;
-import java.awt.Graphics;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
-
-import javax.swing.JPanel;
 
 /**
  * Class StartupCanvas draws a buffered image on a canvas.
- * 
  */
 @SuppressWarnings("serial")
 public class StartupPanel extends JPanel {
@@ -56,15 +53,18 @@ public class StartupPanel extends JPanel {
     private boolean paint = false;
 
     // Constructor
-    public StartupPanel() {
+
+    public StartupPanel()
+    {
     }
 
     // Methods
+
     /**
      * Clear the image on canvas
-     * 
      */
-    public void clearImage() {
+    public void clearImage()
+    {
         // Clear Image Area
         paint = false;
         this.repaint();
@@ -72,11 +72,10 @@ public class StartupPanel extends JPanel {
 
     /**
      * Draw an image on the panel This is a standard method used by Graphics
-     * 
-     * 
      */
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(Graphics g)
+    {
         // Paint image on panel
         if (paint && image != null) {
             g.drawImage(image, 0, 0, this);
@@ -91,19 +90,20 @@ public class StartupPanel extends JPanel {
      * Update the panel This method is called automatically when repaint() is
      * called. It is necesarry to doublebuffer the panel (to prevent it from
      * blinking when updated).
-     * 
      */
     @Override
-    public void update(Graphics g) {
+    public void update(Graphics g)
+    {
         paint(g);
     }
 
     /**
      * Set the given image to current and redraw panel
-     * 
+     *
      * @param i
      */
-    public void setImage(BufferedImage i) {
+    public void setImage(BufferedImage i)
+    {
         // Paint image object
         paint = true;
         image = i;

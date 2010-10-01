@@ -50,18 +50,17 @@ package dioscuri.module.pic;
  * -Bram
  */
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.UnknownPortException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.*;
-import dioscuri.module.AbstractModule;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : pic general.name : Programmable Interrupt Controller
  *      (Intel 8259A compatible) general.architecture : Von Neumann
@@ -71,24 +70,23 @@ import dioscuri.module.AbstractModule;
  *      general.version : 1.0 general.keywords : PIC, controller, interrupt, IRQ
  *      general.relations : cpu, motherboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
- * 
+ *      <p/>
  *      Notes: - PIC is also an I/O device itself - All IRQ numbers are managed
  *      by PIC
- * 
  */
 public class PIC extends ModulePIC {
 
     // Instance (array of master and slave PIC)
-    TheProgrammableInterruptController[] thePIC = new TheProgrammableInterruptController[] {
+    TheProgrammableInterruptController[] thePIC = new TheProgrammableInterruptController[]{
             new TheProgrammableInterruptController(),
-            new TheProgrammableInterruptController() };
+            new TheProgrammableInterruptController()};
 
     // Logging
     private static final Logger logger = Logger.getLogger(PIC.class.getName());
 
     // IRQ list
     private AbstractModule[] irqList; // Contains references to modules that registered
-                              // an IRQ
+    // an IRQ
     private boolean[] irqEnabled; // Contains a list of set or cleared IRQs
 
     // Constants
@@ -110,18 +108,19 @@ public class PIC extends ModulePIC {
     private final static int PIC_IRQ_NUMBER_KEYBOARD = 1; // Keyboard
     private final static int PIC_IRQ_NUMBER_SERIALPORT = 4; // Serial port COM1
     private final static int PIC_IRQ_NUMBER_FDC = 6; // FDC = Floppy Disk
-                                                     // Controller
+    // Controller
     private final static int PIC_IRQ_NUMBER_RTC = 8; // RTC / CMOS
     private final static int PIC_IRQ_NUMBER_MOUSE = 12; // Mouse
 
-    private final static int[] PIC_IRQ_NUMBER_ATA = { 14, 15, 11, 9 }; // ATA controller
+    private final static int[] PIC_IRQ_NUMBER_ATA = {14, 15, 11, 9}; // ATA controller
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public PIC(Emulator owner) {
+    public PIC(Emulator owner)
+    {
 
         // Initialise IRQ list
         irqList = null;
@@ -137,9 +136,10 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Reset master and slave PICs
         thePIC[MASTER].reset();
@@ -173,7 +173,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         // Show some status information of this module
         String dump = "";
         String ret = "\r\n";
@@ -200,7 +201,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws UnknownPortException {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
 
@@ -210,7 +212,7 @@ public class PIC extends ModulePIC {
             thePIC[MASTER].isPolled = false;
             serviceMasterPIC();
             return thePIC[MASTER].currentIrqNumber; // Return the current irq
-                                                    // requested
+            // requested
         }
 
         if ((portAddress == 0xA0 || portAddress == 0xA1) && thePIC[SLAVE].isPolled) {
@@ -219,58 +221,58 @@ public class PIC extends ModulePIC {
             thePIC[SLAVE].isPolled = false;
             serviceSlavePIC();
             return thePIC[SLAVE].currentIrqNumber; // Return the current irq
-                                                   // requested
+            // requested
         }
 
         switch (portAddress) {
-        case 0x20:
-            if (thePIC[MASTER].readRegisterSelect != 0) {
-                // ISR
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " read master ISR = "
-                        + thePIC[MASTER].inServiceRegister);
-                return (thePIC[MASTER].inServiceRegister);
-            } else {
-                // IRR
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " read master IRR = "
-                        + thePIC[MASTER].interruptRequestRegister);
-                return (thePIC[MASTER].interruptRequestRegister);
-            }
+            case 0x20:
+                if (thePIC[MASTER].readRegisterSelect != 0) {
+                    // ISR
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + " read master ISR = "
+                            + thePIC[MASTER].inServiceRegister);
+                    return (thePIC[MASTER].inServiceRegister);
+                } else {
+                    // IRR
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + " read master IRR = "
+                            + thePIC[MASTER].interruptRequestRegister);
+                    return (thePIC[MASTER].interruptRequestRegister);
+                }
 
-        case 0x21:
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " read master IMR = "
-                    + thePIC[MASTER].interruptMaskRegister);
-            return (thePIC[MASTER].interruptMaskRegister);
-
-        case 0xA0:
-            if (thePIC[SLAVE].readRegisterSelect != 0) {
-                // ISR
+            case 0x21:
                 logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " read slave ISR = "
-                        + thePIC[SLAVE].inServiceRegister);
-                return (thePIC[SLAVE].inServiceRegister);
-            } else {
-                // IRR
+                        + " read master IMR = "
+                        + thePIC[MASTER].interruptMaskRegister);
+                return (thePIC[MASTER].interruptMaskRegister);
+
+            case 0xA0:
+                if (thePIC[SLAVE].readRegisterSelect != 0) {
+                    // ISR
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + " read slave ISR = "
+                            + thePIC[SLAVE].inServiceRegister);
+                    return (thePIC[SLAVE].inServiceRegister);
+                } else {
+                    // IRR
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + " read slave IRR = "
+                            + thePIC[SLAVE].interruptRequestRegister);
+                    return (thePIC[SLAVE].interruptRequestRegister);
+                }
+
+            case 0xA1:
                 logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " read slave IRR = "
-                        + thePIC[SLAVE].interruptRequestRegister);
-                return (thePIC[SLAVE].interruptRequestRegister);
-            }
+                        + " read slave IMR = "
+                        + thePIC[SLAVE].interruptMaskRegister);
+                return (thePIC[SLAVE].interruptMaskRegister);
 
-        case 0xA1:
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " read slave IMR = "
-                    + thePIC[SLAVE].interruptMaskRegister);
-            return (thePIC[SLAVE].interruptMaskRegister);
-
-        default:
-            logger.log(Level.WARNING, "[" + super.getType() + "]"
-                    + " Unknown I/O address " + portAddress);
-            throw new UnknownPortException("[" + super.getType() + "]"
-                    + " does not recognise port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase());
+            default:
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
+                        + " Unknown I/O address " + portAddress);
+                throw new UnknownPortException("[" + super.getType() + "]"
+                        + " does not recognise port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase());
 
         }
 
@@ -282,435 +284,436 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortByte(int portAddress, byte data) {
+    public void setIOPortByte(int portAddress, byte data)
+    {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
 
         switch (portAddress) {
-        case 0x20:
-            if ((data & 0x10) != 0) {
-                // initialization command 1: master
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + " master: init command 1 found");
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + "         requires 4 = " + (data & 0x01));
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + "         cascade mode: [0=cascade,1=single] "
-                        + ((data & 0x02) >> 1));
-                thePIC[MASTER].initSequence.inInitSequence = true;
-                thePIC[MASTER].initSequence.numComWordsReq = (byte) (data & 0x01);
-                thePIC[MASTER].initSequence.currentComWordExpected = 2; // operation
-                                                                        // command
-                                                                        // 2
-                thePIC[MASTER].interruptMaskRegister = 0x00; // clear the irq
-                                                             // mask register
-                thePIC[MASTER].inServiceRegister = 0x00; // no IRQ's in service
-                thePIC[MASTER].interruptRequestRegister = 0x00; // no IRQ's
-                                                                // requested
-                thePIC[MASTER].lowestPriorityIRQ = 7;
-                thePIC[MASTER].intRequestPin = false; // reprogramming clears
-                                                      // previous INTR request
-                thePIC[MASTER].autoEndOfInt = false;
-                thePIC[MASTER].rotateOnAutoEOI = false;
-                if ((data & 0x02) != 0)
-                    logger.log(Level.WARNING, "[" + super.getType() + "]"
-                            + " master: ICW1: single mode not supported");
-                if ((data & 0x08) != 0) {
-                    logger
-                            .log(
-                                    Level.WARNING,
-                                    "["
-                                            + super.getType()
-                                            + "]"
-                                            + " master: ICW1: level sensitive mode not supported");
-                } else {
+            case 0x20:
+                if ((data & 0x10) != 0) {
+                    // initialization command 1: master
                     logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                            + " master: ICW1: edge triggered mode selected");
-                }
-                cpu.interruptRequest(false);
-                return;
-            }
-
-            if ((data & 0x18) == 0x08) {
-                // OCW3
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + " master: OCW3; data: " + data);
-                int specialMask, poll, readOperation;
-
-                specialMask = ((((int) data) & 0xFF) & 0x60) >> 5;
-                poll = ((((int) data) & 0xFF) & 0x04) >> 2;
-                readOperation = ((((int) data) & 0xFF) & 0x03);
-                if (poll != 0) {
-                    thePIC[MASTER].isPolled = true;
+                            + " master: init command 1 found");
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + "         requires 4 = " + (data & 0x01));
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + "         cascade mode: [0=cascade,1=single] "
+                            + ((data & 0x02) >> 1));
+                    thePIC[MASTER].initSequence.inInitSequence = true;
+                    thePIC[MASTER].initSequence.numComWordsReq = (byte) (data & 0x01);
+                    thePIC[MASTER].initSequence.currentComWordExpected = 2; // operation
+                    // command
+                    // 2
+                    thePIC[MASTER].interruptMaskRegister = 0x00; // clear the irq
+                    // mask register
+                    thePIC[MASTER].inServiceRegister = 0x00; // no IRQ's in service
+                    thePIC[MASTER].interruptRequestRegister = 0x00; // no IRQ's
+                    // requested
+                    thePIC[MASTER].lowestPriorityIRQ = 7;
+                    thePIC[MASTER].intRequestPin = false; // reprogramming clears
+                    // previous INTR request
+                    thePIC[MASTER].autoEndOfInt = false;
+                    thePIC[MASTER].rotateOnAutoEOI = false;
+                    if ((data & 0x02) != 0)
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + " master: ICW1: single mode not supported");
+                    if ((data & 0x08) != 0) {
+                        logger
+                                .log(
+                                        Level.WARNING,
+                                        "["
+                                                + super.getType()
+                                                + "]"
+                                                + " master: ICW1: level sensitive mode not supported");
+                    } else {
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                                + " master: ICW1: edge triggered mode selected");
+                    }
+                    cpu.interruptRequest(false);
                     return;
                 }
-                if (readOperation == 0x02) // read IRR
-                    thePIC[MASTER].readRegisterSelect = 0;
-                else if (readOperation == 0x03) // read ISR
-                    thePIC[MASTER].readRegisterSelect = 1;
-                if (specialMask == 0x02) {
-                    // cancel special mask
-                    thePIC[MASTER].specialMask = false;
-                } else if (specialMask == 0x03) {
-                    // set specific mask
-                    thePIC[MASTER].specialMask = true;
-                    serviceMasterPIC();
+
+                if ((data & 0x18) == 0x08) {
+                    // OCW3
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + " master: OCW3; data: " + data);
+                    int specialMask, poll, readOperation;
+
+                    specialMask = ((((int) data) & 0xFF) & 0x60) >> 5;
+                    poll = ((((int) data) & 0xFF) & 0x04) >> 2;
+                    readOperation = ((((int) data) & 0xFF) & 0x03);
+                    if (poll != 0) {
+                        thePIC[MASTER].isPolled = true;
+                        return;
+                    }
+                    if (readOperation == 0x02) // read IRR
+                        thePIC[MASTER].readRegisterSelect = 0;
+                    else if (readOperation == 0x03) // read ISR
+                        thePIC[MASTER].readRegisterSelect = 1;
+                    if (specialMask == 0x02) {
+                        // cancel special mask
+                        thePIC[MASTER].specialMask = false;
+                    } else if (specialMask == 0x03) {
+                        // set specific mask
+                        thePIC[MASTER].specialMask = true;
+                        serviceMasterPIC();
+                    }
+                    return;
                 }
+
+                // OCW2
+                switch (data) {
+
+                    case 0x00: // Rotate in auto eoi mode clear
+                    case (byte) 0x80: // Rotate in auto eoi mode set
+                        thePIC[MASTER].rotateOnAutoEOI = (data != 0);
+                        break;
+
+                    case 0x0A: // select read interrupt request register
+                        thePIC[MASTER].readRegisterSelect = 0;
+                        break;
+
+                    case 0x0B: // select read interrupt in-service register
+                        thePIC[MASTER].readRegisterSelect = 1;
+                        break;
+
+                    case (byte) 0xA0: // Rotate on non-specific end of interrupt
+                    case 0x20: // end of interrupt command
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
+                                + " OCW2: Clear highest interrupt");
+                        this.clearHighestInterrupt(MASTER);
+
+                        if (data == 0xA0) {
+                            // Rotate in Auto-EOI mode
+                            thePIC[MASTER].lowestPriorityIRQ++;
+                            if (thePIC[MASTER].lowestPriorityIRQ > 7) {
+                                thePIC[MASTER].lowestPriorityIRQ = 0;
+                            }
+                        }
+
+                        this.serviceMasterPIC();
+                        break;
+
+                    case 0x40: // Intel PIC spec-sheet seems to indicate this should be
+                        // ignored
+                        logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
+                        break;
+
+                    case 0x60: // specific EOI 0
+                    case 0x61: // specific EOI 1
+                    case 0x62: // specific EOI 2
+                    case 0x63: // specific EOI 3
+                    case 0x64: // specific EOI 4
+                    case 0x65: // specific EOI 5
+                    case 0x66: // specific EOI 6
+                    case 0x67: // specific EOI 7
+                        thePIC[MASTER].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0x60));
+                        serviceMasterPIC();
+                        break;
+
+                    // IRQ lowest priority commands
+                    case (byte) 0xC0: // 0 7 6 5 4 3 2 1
+                    case (byte) 0xC1: // 1 0 7 6 5 4 3 2
+                    case (byte) 0xC2: // 2 1 0 7 6 5 4 3
+                    case (byte) 0xC3: // 3 2 1 0 7 6 5 4
+                    case (byte) 0xC4: // 4 3 2 1 0 7 6 5
+                    case (byte) 0xC5: // 5 4 3 2 1 0 7 6
+                    case (byte) 0xC6: // 6 5 4 3 2 1 0 7
+                    case (byte) 0xC7: // 7 6 5 4 3 2 1 0
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
+                                + " IRQ lowest command " + data);
+                        thePIC[MASTER].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
+                        break;
+
+                    case (byte) 0xE0: // specific EOI and rotate 0
+                    case (byte) 0xE1: // specific EOI and rotate 1
+                    case (byte) 0xE2: // specific EOI and rotate 2
+                    case (byte) 0xE3: // specific EOI and rotate 3
+                    case (byte) 0xE4: // specific EOI and rotate 4
+                    case (byte) 0xE5: // specific EOI and rotate 5
+                    case (byte) 0xE6: // specific EOI and rotate 6
+                    case (byte) 0xE7: // specific EOI and rotate 7
+                        thePIC[MASTER].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0xE0));
+                        thePIC[MASTER].lowestPriorityIRQ = ((((int) data) & 0xFF) - 0xE0);
+                        serviceMasterPIC();
+                        break;
+
+                    default:
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + " write to port 0x20 did not match");
+                        return;
+                } // switch
                 return;
-            }
 
-            // OCW2
-            switch (data) {
+            case 0x21:
+                // initialization mode operation
+                if (thePIC[MASTER].initSequence.inInitSequence) {
+                    switch (thePIC[MASTER].initSequence.currentComWordExpected) {
+                        case 2:
+                            thePIC[MASTER].interruptOffset = (((int) data) & 0xFF) & 0xF8;
+                            thePIC[MASTER].initSequence.currentComWordExpected = 3;
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " master: init command 2 = " + data);
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + "         offset = INT "
+                                    + thePIC[MASTER].interruptOffset);
+                            return;
 
-            case 0x00: // Rotate in auto eoi mode clear
-            case (byte) 0x80: // Rotate in auto eoi mode set
-                thePIC[MASTER].rotateOnAutoEOI = (data != 0);
-                break;
+                        case 3:
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " master: init command 3 = " + data);
+                            if (thePIC[MASTER].initSequence.numComWordsReq != 0) {
+                                thePIC[MASTER].initSequence.currentComWordExpected = 4;
+                            } else {
+                                thePIC[MASTER].initSequence.inInitSequence = false;
+                            }
+                            return;
 
-            case 0x0A: // select read interrupt request register
-                thePIC[MASTER].readRegisterSelect = 0;
-                break;
-
-            case 0x0B: // select read interrupt in-service register
-                thePIC[MASTER].readRegisterSelect = 1;
-                break;
-
-            case (byte) 0xA0: // Rotate on non-specific end of interrupt
-            case 0x20: // end of interrupt command
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " OCW2: Clear highest interrupt");
-                this.clearHighestInterrupt(MASTER);
-
-                if (data == 0xA0) {
-                    // Rotate in Auto-EOI mode
-                    thePIC[MASTER].lowestPriorityIRQ++;
-                    if (thePIC[MASTER].lowestPriorityIRQ > 7) {
-                        thePIC[MASTER].lowestPriorityIRQ = 0;
+                        case 4:
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " master: init command 4 = " + data);
+                            if ((data & 0x02) != 0) {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + "        auto EOI");
+                                thePIC[MASTER].autoEndOfInt = true;
+                            } else {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + " normal EOI interrupt");
+                                thePIC[MASTER].autoEndOfInt = false;
+                            }
+                            if ((data & 0x01) != 0) {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + "        80x86 mode");
+                            } else
+                                logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                        + "        not 80x86 mode");
+                            thePIC[MASTER].initSequence.inInitSequence = false;
+                            return;
+                        default:
+                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                    + " master expecting bad init command");
+                            return;
                     }
                 }
 
-                this.serviceMasterPIC();
-                break;
-
-            case 0x40: // Intel PIC spec-sheet seems to indicate this should be
-                       // ignored
-                logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
-                break;
-
-            case 0x60: // specific EOI 0
-            case 0x61: // specific EOI 1
-            case 0x62: // specific EOI 2
-            case 0x63: // specific EOI 3
-            case 0x64: // specific EOI 4
-            case 0x65: // specific EOI 5
-            case 0x66: // specific EOI 6
-            case 0x67: // specific EOI 7
-                thePIC[MASTER].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0x60));
-                serviceMasterPIC();
-                break;
-
-            // IRQ lowest priority commands
-            case (byte) 0xC0: // 0 7 6 5 4 3 2 1
-            case (byte) 0xC1: // 1 0 7 6 5 4 3 2
-            case (byte) 0xC2: // 2 1 0 7 6 5 4 3
-            case (byte) 0xC3: // 3 2 1 0 7 6 5 4
-            case (byte) 0xC4: // 4 3 2 1 0 7 6 5
-            case (byte) 0xC5: // 5 4 3 2 1 0 7 6
-            case (byte) 0xC6: // 6 5 4 3 2 1 0 7
-            case (byte) 0xC7: // 7 6 5 4 3 2 1 0
+                // normal operation
                 logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " IRQ lowest command " + data);
-                thePIC[MASTER].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
-                break;
-
-            case (byte) 0xE0: // specific EOI and rotate 0
-            case (byte) 0xE1: // specific EOI and rotate 1
-            case (byte) 0xE2: // specific EOI and rotate 2
-            case (byte) 0xE3: // specific EOI and rotate 3
-            case (byte) 0xE4: // specific EOI and rotate 4
-            case (byte) 0xE5: // specific EOI and rotate 5
-            case (byte) 0xE6: // specific EOI and rotate 6
-            case (byte) 0xE7: // specific EOI and rotate 7
-                thePIC[MASTER].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0xE0));
-                thePIC[MASTER].lowestPriorityIRQ = ((((int) data) & 0xFF) - 0xE0);
+                        + " setting master pic IMR to %02x", data);
+                thePIC[MASTER].interruptMaskRegister = data;
                 serviceMasterPIC();
-                break;
+                return;
+
+            case 0xA0:
+                if ((data & 0x10) != 0) {
+                    // initialization command 1: slave
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + " slave: init command 1 found");
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "        requires 4 = " + (data & 0x01));
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "        cascade mode: [0=cascade,1=single] "
+                            + ((data & 0x02) >> 1));
+                    thePIC[SLAVE].initSequence.inInitSequence = true;
+                    thePIC[SLAVE].initSequence.numComWordsReq = (byte) (data & 0x01);
+                    thePIC[SLAVE].initSequence.currentComWordExpected = 2; // operation
+                    // command
+                    // 2
+                    thePIC[SLAVE].interruptMaskRegister = 0x00; // clear irq mask
+                    thePIC[SLAVE].inServiceRegister = 0x00; // no IRQ's in service
+                    thePIC[SLAVE].interruptRequestRegister = 0x00; // no IRQ's
+                    // requested
+                    thePIC[SLAVE].lowestPriorityIRQ = 7;
+                    thePIC[SLAVE].intRequestPin = false; // reprogramming clears
+                    // previous INTR request
+                    thePIC[SLAVE].autoEndOfInt = false;
+                    thePIC[SLAVE].rotateOnAutoEOI = false;
+                    if ((data & 0x02) != 0)
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + " slave: ICW1: single mode not supported");
+                    if ((data & 0x08) != 0) {
+                        logger
+                                .log(
+                                        Level.WARNING,
+                                        "["
+                                                + super.getType()
+                                                + "]"
+                                                + " slave: ICW1: level sensitive mode not supported");
+                    } else {
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
+                                + " slave: ICW1: edge triggered mode selected");
+                    }
+                    return;
+                }
+
+                if ((data & 0x18) == 0x08) {
+                    // OCW3
+                    int specialMask, poll, readOperation;
+
+                    specialMask = ((((int) data) & 0xFF) & 0x60) >> 5;
+                    poll = ((((int) data) & 0xFF) & 0x04) >> 2;
+                    readOperation = ((((int) data) & 0xFF) & 0x03);
+                    if (poll != 0) {
+                        thePIC[SLAVE].isPolled = true;
+                        return;
+                    }
+                    if (readOperation == 0x02) // read IRR
+                        thePIC[SLAVE].readRegisterSelect = 0;
+                    else if (readOperation == 0x03) // read ISR
+                        thePIC[SLAVE].readRegisterSelect = 1;
+                    if (specialMask == 0x02) {
+                        // cancel special mask
+                        thePIC[SLAVE].specialMask = false;
+                    } else if (specialMask == 0x03) {
+                        // set specific mask
+                        thePIC[SLAVE].specialMask = true;
+                        serviceSlavePIC();
+                    }
+                    return;
+                }
+
+                switch (data) {
+                    case 0x00: // Rotate in auto eoi mode clear
+                    case (byte) 0x80: // Rotate in auto eoi mode set
+                        thePIC[SLAVE].rotateOnAutoEOI = (data != 0);
+                        break;
+
+                    case 0x0A: // select read interrupt request register
+                        thePIC[SLAVE].readRegisterSelect = 0;
+                        break;
+                    case 0x0B: // select read interrupt in-service register
+                        thePIC[SLAVE].readRegisterSelect = 1;
+                        break;
+
+                    case (byte) 0xA0: // Rotate on non-specific end of interrupt
+                    case 0x20: // end of interrupt command
+                        clearHighestInterrupt(SLAVE);
+
+                        if (data == 0xA0) {
+                            // Rotate in Auto-EOI mode
+                            thePIC[SLAVE].lowestPriorityIRQ++;
+                            if (thePIC[SLAVE].lowestPriorityIRQ > 7)
+                                thePIC[SLAVE].lowestPriorityIRQ = 0;
+                        }
+
+                        serviceSlavePIC();
+                        break;
+
+                    case 0x40: // Intel PIC spec-sheet seems to indicate this should be
+                        // ignored
+                        logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
+                        break;
+
+                    case 0x60: // specific EOI 0
+                    case 0x61: // specific EOI 1
+                    case 0x62: // specific EOI 2
+                    case 0x63: // specific EOI 3
+                    case 0x64: // specific EOI 4
+                    case 0x65: // specific EOI 5
+                    case 0x66: // specific EOI 6
+                    case 0x67: // specific EOI 7
+                        thePIC[SLAVE].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0x60));
+                        serviceSlavePIC();
+                        break;
+
+                    // IRQ lowest priority commands
+                    case (byte) 0xC0: // 0 7 6 5 4 3 2 1
+                    case (byte) 0xC1: // 1 0 7 6 5 4 3 2
+                    case (byte) 0xC2: // 2 1 0 7 6 5 4 3
+                    case (byte) 0xC3: // 3 2 1 0 7 6 5 4
+                    case (byte) 0xC4: // 4 3 2 1 0 7 6 5
+                    case (byte) 0xC5: // 5 4 3 2 1 0 7 6
+                    case (byte) 0xC6: // 6 5 4 3 2 1 0 7
+                    case (byte) 0xC7: // 7 6 5 4 3 2 1 0
+                        logger.log(Level.INFO, "[" + super.getType() + "]"
+                                + " IRQ lowest command " + data);
+                        thePIC[SLAVE].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
+                        break;
+
+                    case (byte) 0xE0: // specific EOI and rotate 0
+                    case (byte) 0xE1: // specific EOI and rotate 1
+                    case (byte) 0xE2: // specific EOI and rotate 2
+                    case (byte) 0xE3: // specific EOI and rotate 3
+                    case (byte) 0xE4: // specific EOI and rotate 4
+                    case (byte) 0xE5: // specific EOI and rotate 5
+                    case (byte) 0xE6: // specific EOI and rotate 6
+                    case (byte) 0xE7: // specific EOI and rotate 7
+                        thePIC[SLAVE].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0xE0));
+                        thePIC[SLAVE].lowestPriorityIRQ = ((((int) data) & 0xFF) - 0xE0);
+                        serviceSlavePIC();
+                        break;
+
+                    default:
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + " write to port 0xA0 did not match");
+                        return;
+                } // switch
+                return;
+
+            case 0xA1:
+                // initialization mode operation
+                if (thePIC[SLAVE].initSequence.inInitSequence) {
+                    switch (thePIC[SLAVE].initSequence.currentComWordExpected) {
+                        case 2:
+                            thePIC[SLAVE].interruptOffset = (((int) data) & 0xFF) & 0xF8;
+                            thePIC[SLAVE].initSequence.currentComWordExpected = 3;
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " slave: init command 2 = " + data);
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + "        offset = INT "
+                                    + thePIC[SLAVE].interruptOffset);
+                            return;
+
+                        case 3:
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " slave: init command 3 = " + data);
+                            if (thePIC[SLAVE].initSequence.numComWordsReq != 0) {
+                                thePIC[SLAVE].initSequence.currentComWordExpected = 4;
+                            } else {
+                                thePIC[SLAVE].initSequence.inInitSequence = false;
+                            }
+                            return;
+
+                        case 4:
+                            logger.log(Level.INFO, "[" + super.getType() + "]"
+                                    + " slave: init command 4 = " + data);
+                            if ((data & 0x02) != 0) {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + "        auto EOI");
+                                thePIC[SLAVE].autoEndOfInt = true;
+                            } else {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + " normal EOI interrupt");
+                                thePIC[SLAVE].autoEndOfInt = false;
+                            }
+                            if ((data & 0x01) != 0) {
+                                logger.log(Level.INFO, "[" + super.getType() + "]"
+                                        + "        80x86 mode");
+                            } else
+                                logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                        + "        not 80x86 mode");
+                            thePIC[SLAVE].initSequence.inInitSequence = false;
+                            return;
+
+                        default:
+                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                    + " slave: encountered bad init command");
+                            return;
+                    }
+                }
+                return;
 
             default:
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + " write to port 0x20 did not match");
-                return;
-            } // switch
-            return;
-
-        case 0x21:
-            // initialization mode operation
-            if (thePIC[MASTER].initSequence.inInitSequence) {
-                switch (thePIC[MASTER].initSequence.currentComWordExpected) {
-                case 2:
-                    thePIC[MASTER].interruptOffset = (((int) data) & 0xFF) & 0xF8;
-                    thePIC[MASTER].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " master: init command 2 = " + data);
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + "         offset = INT "
-                            + thePIC[MASTER].interruptOffset);
-                    return;
-
-                case 3:
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " master: init command 3 = " + data);
-                    if (thePIC[MASTER].initSequence.numComWordsReq != 0) {
-                        thePIC[MASTER].initSequence.currentComWordExpected = 4;
-                    } else {
-                        thePIC[MASTER].initSequence.inInitSequence = false;
-                    }
-                    return;
-
-                case 4:
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " master: init command 4 = " + data);
-                    if ((data & 0x02) != 0) {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + "        auto EOI");
-                        thePIC[MASTER].autoEndOfInt = true;
-                    } else {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + " normal EOI interrupt");
-                        thePIC[MASTER].autoEndOfInt = false;
-                    }
-                    if ((data & 0x01) != 0) {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + "        80x86 mode");
-                    } else
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "        not 80x86 mode");
-                    thePIC[MASTER].initSequence.inInitSequence = false;
-                    return;
-                default:
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + " master expecting bad init command");
-                    return;
-                }
-            }
-
-            // normal operation
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " setting master pic IMR to %02x", data);
-            thePIC[MASTER].interruptMaskRegister = data;
-            serviceMasterPIC();
-            return;
-
-        case 0xA0:
-            if ((data & 0x10) != 0) {
-                // initialization command 1: slave
+                // normal operation
                 logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " slave: init command 1 found");
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "        requires 4 = " + (data & 0x01));
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "        cascade mode: [0=cascade,1=single] "
-                        + ((data & 0x02) >> 1));
-                thePIC[SLAVE].initSequence.inInitSequence = true;
-                thePIC[SLAVE].initSequence.numComWordsReq = (byte) (data & 0x01);
-                thePIC[SLAVE].initSequence.currentComWordExpected = 2; // operation
-                                                                       // command
-                                                                       // 2
-                thePIC[SLAVE].interruptMaskRegister = 0x00; // clear irq mask
-                thePIC[SLAVE].inServiceRegister = 0x00; // no IRQ's in service
-                thePIC[SLAVE].interruptRequestRegister = 0x00; // no IRQ's
-                                                               // requested
-                thePIC[SLAVE].lowestPriorityIRQ = 7;
-                thePIC[SLAVE].intRequestPin = false; // reprogramming clears
-                                                     // previous INTR request
-                thePIC[SLAVE].autoEndOfInt = false;
-                thePIC[SLAVE].rotateOnAutoEOI = false;
-                if ((data & 0x02) != 0)
-                    logger.log(Level.WARNING, "[" + super.getType() + "]"
-                            + " slave: ICW1: single mode not supported");
-                if ((data & 0x08) != 0) {
-                    logger
-                            .log(
-                                    Level.WARNING,
-                                    "["
-                                            + super.getType()
-                                            + "]"
-                                            + " slave: ICW1: level sensitive mode not supported");
-                } else {
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " slave: ICW1: edge triggered mode selected");
-                }
-                return;
-            }
-
-            if ((data & 0x18) == 0x08) {
-                // OCW3
-                int specialMask, poll, readOperation;
-
-                specialMask = ((((int) data) & 0xFF) & 0x60) >> 5;
-                poll = ((((int) data) & 0xFF) & 0x04) >> 2;
-                readOperation = ((((int) data) & 0xFF) & 0x03);
-                if (poll != 0) {
-                    thePIC[SLAVE].isPolled = true;
-                    return;
-                }
-                if (readOperation == 0x02) // read IRR
-                    thePIC[SLAVE].readRegisterSelect = 0;
-                else if (readOperation == 0x03) // read ISR
-                    thePIC[SLAVE].readRegisterSelect = 1;
-                if (specialMask == 0x02) {
-                    // cancel special mask
-                    thePIC[SLAVE].specialMask = false;
-                } else if (specialMask == 0x03) {
-                    // set specific mask
-                    thePIC[SLAVE].specialMask = true;
-                    serviceSlavePIC();
-                }
-                return;
-            }
-
-            switch (data) {
-            case 0x00: // Rotate in auto eoi mode clear
-            case (byte) 0x80: // Rotate in auto eoi mode set
-                thePIC[SLAVE].rotateOnAutoEOI = (data != 0);
-                break;
-
-            case 0x0A: // select read interrupt request register
-                thePIC[SLAVE].readRegisterSelect = 0;
-                break;
-            case 0x0B: // select read interrupt in-service register
-                thePIC[SLAVE].readRegisterSelect = 1;
-                break;
-
-            case (byte) 0xA0: // Rotate on non-specific end of interrupt
-            case 0x20: // end of interrupt command
-                clearHighestInterrupt(SLAVE);
-
-                if (data == 0xA0) {
-                    // Rotate in Auto-EOI mode
-                    thePIC[SLAVE].lowestPriorityIRQ++;
-                    if (thePIC[SLAVE].lowestPriorityIRQ > 7)
-                        thePIC[SLAVE].lowestPriorityIRQ = 0;
-                }
-
+                        + " setting slave pic IMR to %02x", data);
+                thePIC[SLAVE].interruptMaskRegister = data;
                 serviceSlavePIC();
-                break;
-
-            case 0x40: // Intel PIC spec-sheet seems to indicate this should be
-                       // ignored
-                logger.log(Level.INFO, "[" + super.getType() + "]" + " IRQ no-op");
-                break;
-
-            case 0x60: // specific EOI 0
-            case 0x61: // specific EOI 1
-            case 0x62: // specific EOI 2
-            case 0x63: // specific EOI 3
-            case 0x64: // specific EOI 4
-            case 0x65: // specific EOI 5
-            case 0x66: // specific EOI 6
-            case 0x67: // specific EOI 7
-                thePIC[SLAVE].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0x60));
-                serviceSlavePIC();
-                break;
-
-            // IRQ lowest priority commands
-            case (byte) 0xC0: // 0 7 6 5 4 3 2 1
-            case (byte) 0xC1: // 1 0 7 6 5 4 3 2
-            case (byte) 0xC2: // 2 1 0 7 6 5 4 3
-            case (byte) 0xC3: // 3 2 1 0 7 6 5 4
-            case (byte) 0xC4: // 4 3 2 1 0 7 6 5
-            case (byte) 0xC5: // 5 4 3 2 1 0 7 6
-            case (byte) 0xC6: // 6 5 4 3 2 1 0 7
-            case (byte) 0xC7: // 7 6 5 4 3 2 1 0
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + " IRQ lowest command " + data);
-                thePIC[SLAVE].lowestPriorityIRQ = (((int) data) & 0xFF) - 0xC0;
-                break;
-
-            case (byte) 0xE0: // specific EOI and rotate 0
-            case (byte) 0xE1: // specific EOI and rotate 1
-            case (byte) 0xE2: // specific EOI and rotate 2
-            case (byte) 0xE3: // specific EOI and rotate 3
-            case (byte) 0xE4: // specific EOI and rotate 4
-            case (byte) 0xE5: // specific EOI and rotate 5
-            case (byte) 0xE6: // specific EOI and rotate 6
-            case (byte) 0xE7: // specific EOI and rotate 7
-                thePIC[SLAVE].inServiceRegister &= ~(1 << ((((int) data) & 0xFF) - 0xE0));
-                thePIC[SLAVE].lowestPriorityIRQ = ((((int) data) & 0xFF) - 0xE0);
-                serviceSlavePIC();
-                break;
-
-            default:
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + " write to port 0xA0 did not match");
-                return;
-            } // switch
-            return;
-
-        case 0xA1:
-            // initialization mode operation
-            if (thePIC[SLAVE].initSequence.inInitSequence) {
-                switch (thePIC[SLAVE].initSequence.currentComWordExpected) {
-                case 2:
-                    thePIC[SLAVE].interruptOffset = (((int) data) & 0xFF) & 0xF8;
-                    thePIC[SLAVE].initSequence.currentComWordExpected = 3;
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " slave: init command 2 = " + data);
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + "        offset = INT "
-                            + thePIC[SLAVE].interruptOffset);
-                    return;
-
-                case 3:
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " slave: init command 3 = " + data);
-                    if (thePIC[SLAVE].initSequence.numComWordsReq != 0) {
-                        thePIC[SLAVE].initSequence.currentComWordExpected = 4;
-                    } else {
-                        thePIC[SLAVE].initSequence.inInitSequence = false;
-                    }
-                    return;
-
-                case 4:
-                    logger.log(Level.INFO, "[" + super.getType() + "]"
-                            + " slave: init command 4 = " + data);
-                    if ((data & 0x02) != 0) {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + "        auto EOI");
-                        thePIC[SLAVE].autoEndOfInt = true;
-                    } else {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + " normal EOI interrupt");
-                        thePIC[SLAVE].autoEndOfInt = false;
-                    }
-                    if ((data & 0x01) != 0) {
-                        logger.log(Level.INFO, "[" + super.getType() + "]"
-                                + "        80x86 mode");
-                    } else
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "        not 80x86 mode");
-                    thePIC[SLAVE].initSequence.inInitSequence = false;
-                    return;
-
-                default:
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + " slave: encountered bad init command");
-                    return;
-                }
-            }
-            return;
-
-        default:
-            // normal operation
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " setting slave pic IMR to %02x", data);
-            thePIC[SLAVE].interruptMaskRegister = data;
-            serviceSlavePIC();
         }
     }
 
@@ -720,7 +723,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) {
+    public byte[] getIOPortWord(int portAddress)
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -728,7 +732,7 @@ public class PIC extends ModulePIC {
                 + " -> Returned default value 0xFFFF");
 
         // Return dummy value 0xFFFF
-        return new byte[] { (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF};
     }
 
     /**
@@ -737,7 +741,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortWord(int portAddress, byte[] dataWord) {
+    public void setIOPortWord(int portAddress, byte[] dataWord)
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -750,7 +755,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortDoubleWord(int portAddress) {
+    public byte[] getIOPortDoubleWord(int portAddress)
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -758,7 +764,7 @@ public class PIC extends ModulePIC {
                 + " -> Returned default value 0xFFFFFFFF");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
     }
 
     /**
@@ -767,20 +773,22 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) {
+    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
                 + " received. No action taken.");
     }
-    
+
     /**
      * {@inheritDoc}
      *
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public int requestIRQNumber(AbstractModule module) {
+    public int requestIRQNumber(AbstractModule module)
+    {
 
         int irqNumber = -1;
 
@@ -843,7 +851,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public void setIRQ(int irqNumber) {
+    public void setIRQ(int irqNumber)
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
 
@@ -872,7 +881,8 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public void clearIRQ(int irqNumber) {
+    public void clearIRQ(int irqNumber)
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " low");
 
@@ -897,10 +907,11 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public int interruptAcknowledge() {
+    public int interruptAcknowledge()
+    {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         int vector;
         int irq;
@@ -952,7 +963,8 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupts on the slave PIC
      */
-    private void serviceSlavePIC() {
+    private void serviceSlavePIC()
+    {
         int unmaskedRequests;
         int irq;
         int isr, maxIRQ;
@@ -1027,11 +1039,12 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupts on the master PIC
      */
-    private void serviceMasterPIC() {
+    private void serviceMasterPIC()
+    {
 
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
         //ModuleMotherboard motherboard = (ModuleMotherboard)super.getExpectedConnections(Type.MOTHERBOARD);
-        
+
         int unmaskedRequests;
         int irq;
         int isr, maxIRQ;
@@ -1102,10 +1115,11 @@ public class PIC extends ModulePIC {
 
     /**
      * Handle interrupt with highest priority
-     * 
+     *
      * @param masterSlave the source of the interrupt
      */
-    private void clearHighestInterrupt(int masterSlave) {
+    private void clearHighestInterrupt(int masterSlave)
+    {
         int irq;
         int lowestPriority;
         int highestPriority;

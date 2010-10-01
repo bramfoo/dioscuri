@@ -44,9 +44,6 @@ package dioscuri.module.parallelport;
  * - http://mudlist.eorbit.net/~adam/pickey/ports.html
  */
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
@@ -55,11 +52,14 @@ import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleParallelPort;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a parallel port module.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : parallelport general.name : General Parallel Port
  *      general.architecture : Von Neumann general.description : Models a 25-pin
@@ -68,8 +68,6 @@ import dioscuri.module.ModuleParallelPort;
  *      general.keywords : Parallel port, port, IEEE 1284, Centronics, LPT,
  *      printer general.relations : Motherboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
- * 
- * 
  */
 public class ParallelPort extends ModuleParallelPort {
 
@@ -90,10 +88,11 @@ public class ParallelPort extends ModuleParallelPort {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public ParallelPort(Emulator owner) {
+    public ParallelPort(Emulator owner)
+    {
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> AbstractModule created successfully.");
     }
@@ -104,10 +103,11 @@ public class ParallelPort extends ModuleParallelPort {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+
         // Register I/O ports 0x37[8-A], 0x27[8-A] in I/O address space
         motherboard.setIOPort(DATA_PORT, this);
         motherboard.setIOPort(STATUS_PORT, this);
@@ -130,42 +130,43 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
         switch (portAddress) {
-        // Return identical values to Bochs during BIOS boot:
-        case (DATA_PORT):
-            logger.log(Level.INFO, "[" + super.getType()
-                    + "] returning default value 'available'");
-            return (byte) 0xAA;
+            // Return identical values to Bochs during BIOS boot:
+            case (DATA_PORT):
+                logger.log(Level.INFO, "[" + super.getType()
+                        + "] returning default value 'available'");
+                return (byte) 0xAA;
 
-        case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + super.getType()
-                    + "] returning default value 'not available'");
-            return (byte) 0xFF;
+            case (DATA_PORT2):
+                logger.log(Level.INFO, "[" + super.getType()
+                        + "] returning default value 'not available'");
+                return (byte) 0xFF;
 
-        case (STATUS_PORT):
-        case (STATUS_PORT2):
-            logger.log(Level.INFO, "[" + super.getType()
-                    + "] returning default value 0x58");
-            return 0x58;
+            case (STATUS_PORT):
+            case (STATUS_PORT2):
+                logger.log(Level.INFO, "[" + super.getType()
+                        + "] returning default value 0x58");
+                return 0x58;
 
             // Return identical values to Bochs during BIOS boot:
-        case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + super.getType()
-                    + "] returning default value 'available'");
-            return (byte) 0x0C;
+            case (CONTROL_PORT):
+                logger.log(Level.INFO, "[" + super.getType()
+                        + "] returning default value 'available'");
+                return (byte) 0x0C;
 
-        case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + super.getType()
-                    + "] returning default value 'not available'");
-            return (byte) 0xFF;
+            case (CONTROL_PORT2):
+                logger.log(Level.INFO, "[" + super.getType()
+                        + "] returning default value 'not available'");
+                return (byte) 0xFF;
 
-        default:
-            throw new UnknownPortException("[" + super.getType()
-                    + "] Unknown I/O port requested");
+            default:
+                throw new UnknownPortException("[" + super.getType()
+                        + "] Unknown I/O port requested");
         }
     }
 
@@ -176,46 +177,47 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
         switch (portAddress) {
-        case (DATA_PORT):
-            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
-                    + Integer.toHexString(DATA_PORT).toUpperCase()
-                    + " received, not handled");
-            return;
+            case (DATA_PORT):
+                logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
+                        + Integer.toHexString(DATA_PORT).toUpperCase()
+                        + " received, not handled");
+                return;
 
-        case (DATA_PORT2):
-            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
-                    + Integer.toHexString(portAddress).toUpperCase()
-                    + " received, not handled");
-            return;
+            case (DATA_PORT2):
+                logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
+                        + Integer.toHexString(portAddress).toUpperCase()
+                        + " received, not handled");
+                return;
 
-        case (STATUS_PORT):
-        case (STATUS_PORT2):
-            // Do nothing
-            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
-                    + Integer.toHexString(portAddress).toUpperCase()
-                    + " received, not handled");
-            return;
+            case (STATUS_PORT):
+            case (STATUS_PORT2):
+                // Do nothing
+                logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
+                        + Integer.toHexString(portAddress).toUpperCase()
+                        + " received, not handled");
+                return;
 
-        case (CONTROL_PORT):
-            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
-                    + Integer.toHexString(CONTROL_PORT).toUpperCase()
-                    + " received, not handled");
-            return;
+            case (CONTROL_PORT):
+                logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
+                        + Integer.toHexString(CONTROL_PORT).toUpperCase()
+                        + " received, not handled");
+                return;
 
-        case (CONTROL_PORT2):
-            logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
-                    + Integer.toHexString(CONTROL_PORT2).toUpperCase()
-                    + " received, not handled");
-            return;
+            case (CONTROL_PORT2):
+                logger.log(Level.INFO, "[" + super.getType() + "] OUT on port "
+                        + Integer.toHexString(CONTROL_PORT2).toUpperCase()
+                        + " received, not handled");
+                return;
 
-        default:
-            throw new UnknownPortException("[" + super.getType()
-                    + "] Unknown I/O port requested");
+            default:
+                throw new UnknownPortException("[" + super.getType()
+                        + "] Unknown I/O port requested");
         }
     }
 
@@ -226,7 +228,8 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         return null;
     }
 
@@ -237,7 +240,8 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
     }
 
     /**
@@ -247,7 +251,8 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         return null;
     }
 
@@ -258,6 +263,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
     }
 }

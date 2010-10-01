@@ -25,14 +25,12 @@
  */
 package dioscuri.module.cpu32;
 
-import java.util.*;
-
 //import org.jpc.emulator.memory.codeblock.optimised.*;
 //import org.jpc.emulator.memory.codeblock.fastcompiler.*;
 //import org.jpc.emulator.memory.*;
 //import org.jpc.emulator.processor.*;
+
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -47,12 +45,12 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     private boolean running;
 
     /**
-     *
      * @param immediate
      * @param delayed
      */
     public BackgroundCompiler(CodeBlockCompiler immediate,
-            CodeBlockCompiler delayed) {
+                              CodeBlockCompiler delayed)
+    {
         this.immediate = immediate;
         this.delayed = delayed;
         compilerQueue = new CompilerQueue(COMPILER_QUEUE_SIZE);
@@ -60,12 +58,15 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         running = true;
         new CompilerThread();
     }
-    public void stop() {
+
+    public void stop()
+    {
         running = false;
     }
 
     class CompilerThread extends Thread {
-        CompilerThread() {
+        CompilerThread()
+        {
             super("Background CodeBlock Compiler Task");
             start();
             setPriority(Math.max(Thread.MIN_PRIORITY, Thread.currentThread()
@@ -73,7 +74,8 @@ public class BackgroundCompiler implements CodeBlockCompiler {
         }
 
         @Override
-        public void run() {
+        public void run()
+        {
             while (running) {
                 ExecuteCountingCodeBlockWrapper target = compilerQueue
                         .getBlock();
@@ -111,34 +113,34 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     }
 
     /**
-     *
      * @param source
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
+    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source)
+    {
         RealModeCodeBlock imm = immediate.getRealModeCodeBlock(source);
         return new RealModeCodeBlockWrapper(imm);
     }
 
     /**
-     *
      * @param source
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
-            InstructionSource source) {
+            InstructionSource source)
+    {
         ProtectedModeCodeBlock imm = immediate
                 .getProtectedModeCodeBlock(source);
         return new ProtectedModeCodeBlockWrapper(imm);
     }
 
     /**
-     *
      * @param source
      * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
-            InstructionSource source) {
+            InstructionSource source)
+    {
         // Virtual8086ModeCodeBlock imm =
         // immediate.getVirtual8086ModeCodeBlock(source);
         // return new Virtual8086ModeCodeBlockWrapper(imm);
@@ -153,12 +155,14 @@ public class BackgroundCompiler implements CodeBlockCompiler {
 
         int loadedExecuteCount;
 
-        public ExecuteCountingCodeBlockWrapper(CodeBlock block) {
+        public ExecuteCountingCodeBlockWrapper(CodeBlock block)
+        {
             super(block);
         }
 
         @Override
-        public int execute(Processor cpu) {
+        public int execute(Processor cpu)
+        {
             if ((++executeCount & COMPILE_REQUEST_THRESHOLD) == 0) {
                 loadedExecuteCount = executeCount;
                 compilerQueue.addBlock(this);
@@ -167,7 +171,8 @@ public class BackgroundCompiler implements CodeBlockCompiler {
             return super.execute(cpu);
         }
 
-        public int compareTo(ExecuteCountingCodeBlockWrapper o) {
+        public int compareTo(ExecuteCountingCodeBlockWrapper o)
+        {
 
             if (loadedExecuteCount > o.loadedExecuteCount)
                 return 1;
@@ -178,14 +183,16 @@ public class BackgroundCompiler implements CodeBlockCompiler {
 
     class RealModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper
             implements RealModeCodeBlock {
-        public RealModeCodeBlockWrapper(RealModeCodeBlock block) {
+        public RealModeCodeBlockWrapper(RealModeCodeBlock block)
+        {
             super(block);
         }
     }
 
     class ProtectedModeCodeBlockWrapper extends ExecuteCountingCodeBlockWrapper
             implements ProtectedModeCodeBlock {
-        public ProtectedModeCodeBlockWrapper(ProtectedModeCodeBlock block) {
+        public ProtectedModeCodeBlockWrapper(ProtectedModeCodeBlock block)
+        {
             super(block);
         }
     }
@@ -197,12 +204,14 @@ public class BackgroundCompiler implements CodeBlockCompiler {
 
         private final Object lock = new Object();
 
-        CompilerQueue(int size) {
+        CompilerQueue(int size)
+        {
             queue = new PriorityDeque(size);
             capacity = size;
         }
 
-        void addBlock(ExecuteCountingCodeBlockWrapper block) {
+        void addBlock(ExecuteCountingCodeBlockWrapper block)
+        {
             synchronized (lock) {
                 queue.remove(block);
                 queue.offer(block);
@@ -212,7 +221,8 @@ public class BackgroundCompiler implements CodeBlockCompiler {
             }
         }
 
-        ExecuteCountingCodeBlockWrapper getBlock() {
+        ExecuteCountingCodeBlockWrapper getBlock()
+        {
             synchronized (lock) {
                 return (ExecuteCountingCodeBlockWrapper) (queue.pollLast());
             }
@@ -220,7 +230,8 @@ public class BackgroundCompiler implements CodeBlockCompiler {
     }
 
     @Override
-    protected void finalize() {
+    protected void finalize()
+    {
         stop();
     }
 }

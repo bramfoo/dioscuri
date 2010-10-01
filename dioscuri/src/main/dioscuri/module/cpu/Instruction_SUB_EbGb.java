@@ -65,19 +65,21 @@ public class Instruction_SUB_EbGb implements Instruction {
     byte tempResult = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_SUB_EbGb() {
+    public Instruction_SUB_EbGb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_SUB_EbGb(CPU processor) {
+    public Instruction_SUB_EbGb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -89,7 +91,8 @@ public class Instruction_SUB_EbGb implements Instruction {
     /**
      * Subtract byte in register (source) from memory/register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

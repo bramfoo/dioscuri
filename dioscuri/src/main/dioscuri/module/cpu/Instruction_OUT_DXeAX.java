@@ -55,19 +55,21 @@ public class Instruction_OUT_DXeAX implements Instruction {
     int portAddress;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXeAX() {
+    public Instruction_OUT_DXeAX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_OUT_DXeAX(CPU processor) {
+    public Instruction_OUT_DXeAX(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -77,7 +79,8 @@ public class Instruction_OUT_DXeAX implements Instruction {
     /**
      * Output word/doubleword in eAX to I/O port address in DX
      */
-    public void execute() {
+    public void execute()
+    {
         try {
             // Convert value in DX to unsigned integer to prevent lookup table
             // out of bounds;
@@ -88,11 +91,11 @@ public class Instruction_OUT_DXeAX implements Instruction {
             if (cpu.doubleWord) {
                 // A double word should be written to I/O space
                 // Create double word from eAX and AX (in Big Endian order)
-                byte[] doubleWord = new byte[] {
+                byte[] doubleWord = new byte[]{
                         cpu.eax[CPU.REGISTER_GENERAL_HIGH],
                         cpu.eax[CPU.REGISTER_GENERAL_LOW],
                         cpu.ax[CPU.REGISTER_GENERAL_HIGH],
-                        cpu.ax[CPU.REGISTER_GENERAL_LOW] };
+                        cpu.ax[CPU.REGISTER_GENERAL_LOW]};
 
                 // Write double word to I/O space
                 cpu.setIOPortDoubleWord(portAddress, doubleWord);
@@ -100,8 +103,8 @@ public class Instruction_OUT_DXeAX implements Instruction {
             {
                 // A word should be written to I/O space
                 // Create word from AX (in Big Endian order)
-                byte[] word = new byte[] { cpu.ax[CPU.REGISTER_GENERAL_HIGH],
-                        cpu.ax[CPU.REGISTER_GENERAL_LOW] };
+                byte[] word = new byte[]{cpu.ax[CPU.REGISTER_GENERAL_HIGH],
+                        cpu.ax[CPU.REGISTER_GENERAL_LOW]};
 
                 // Write word to I/O space
                 cpu.setIOPortWord(portAddress, word);

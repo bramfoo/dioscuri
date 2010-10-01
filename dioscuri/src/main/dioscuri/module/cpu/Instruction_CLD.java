@@ -51,19 +51,21 @@ public class Instruction_CLD implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CLD() {
+    public Instruction_CLD()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CLD(CPU processor) {
+    public Instruction_CLD(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +77,8 @@ public class Instruction_CLD implements Instruction {
     /**
      * Set DF to 0
      */
-    public void execute() {
+    public void execute()
+    {
         // Clear direction flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_DF] = false;
     }

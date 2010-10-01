@@ -43,7 +43,7 @@ import dioscuri.interfaces.Updateable;
 
 /**
  * A single counter of the PIT based on the Intel 82C54 chipset.
- * 
+ * <p/>
  * This counter works following the convention rules of the PIT: 1. For each
  * counter, the control word must be written before the initial count is
  * written. 2. The initial count must follow the count format specified in the
@@ -59,12 +59,12 @@ public class Timer {
     protected boolean typeContinuous; // Timer type : continuous automatically resets and runs again
 
     /**
-     *
      * @param user
      * @param intervalLength
      * @param type
      */
-    public Timer(Updateable user, int intervalLength, boolean type) {
+    public Timer(Updateable user, int intervalLength, boolean type)
+    {
         this.user = user;
         this.intervalLength = intervalLength;
         this.currentCount = intervalLength;
@@ -73,7 +73,9 @@ public class Timer {
     }
 
     // Methods
-    public void reset() {
+
+    public void reset()
+    {
         // Reset countdown to initial update interval
         this.currentCount = intervalLength;
 
@@ -84,10 +86,10 @@ public class Timer {
     }
 
     /**
-     *
      * @param intervalLength
      */
-    protected void reset(int intervalLength) {
+    protected void reset(int intervalLength)
+    {
         // Reset update interval
         this.intervalLength = intervalLength;
         this.reset();

@@ -42,7 +42,6 @@ package dioscuri.module.keyboard;
 /**
  * Keyboard controller Virtual controller chip, located on motherboard Contains
  * data intended for/from, and about keyboard
- * 
  */
 public class KeyBoardController {
     // Status bits matching the status port
@@ -68,11 +67,11 @@ public class KeyBoardController {
     // 0: No translation; 1: Translate keyboard scancodes using translation
     // table
     byte auxClockEnabled; // Mouse clock enabled - 0: No; 1: Yes. This is the
-                          // negation of:
+    // negation of:
     // Command byte Bit 5: Mouse enable
     // 0: enable keyboard; 1: disable keyboard by driving clock line low
     byte kbdClockEnabled; // Keyboard clock enabled - 0: No; 1: Yes. This is the
-                          // negation of:
+    // negation of:
     // Command byte Bit 4: Keyboard enable
     // 0: enable keyboard; 1: disable keyboard by driving clock line low
     byte allowIRQ12; // Command byte Bit 1: Mouse Interrupt Enable
@@ -84,11 +83,11 @@ public class KeyBoardController {
     byte kbdOutputBuffer; // Current keyboard data in controller buffer
     byte auxOutputBuffer; // ? Output buffer Bit 2: Mouse data
     byte lastCommand; // Last command byte written to port 0x64 (needed to
-                      // process data byte that follows)
+    // process data byte that follows)
     byte expectingPort60h; // Data byte expected from last command (last_comm)
-                           // sent to 0x64
+    // sent to 0x64
     int timerPending; // timer is activated - essentially, data from keyboard is
-                      // waiting to be processed
+    // waiting to be processed
     byte irq1Requested; // Raise IRQ1 (keyboard) - if allowed by allow_irq1
     byte irq12Requested; // Raise IRQ12 (mouse) - if allowed by allow_irq12
     byte expectingMouseParameter; // 

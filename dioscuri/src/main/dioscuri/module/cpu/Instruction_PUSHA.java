@@ -58,21 +58,22 @@ public class Instruction_PUSHA implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_PUSHA.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_PUSHA() {
+    public Instruction_PUSHA()
+    {
         tempSP = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_PUSHA(CPU processor) {
+    public Instruction_PUSHA(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -85,7 +86,8 @@ public class Instruction_PUSHA implements Instruction {
      * Pushes the words in all general purpose registers onto stack top SS:SP
      * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI
      */
-    public void execute() {
+    public void execute()
+    {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord) {
             logger.log(Level.WARNING, "[" + cpu.getType()

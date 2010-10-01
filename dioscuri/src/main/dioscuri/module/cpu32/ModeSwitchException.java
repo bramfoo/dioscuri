@@ -28,7 +28,6 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -47,23 +46,24 @@ public class ModeSwitchException extends RuntimeException {
     private int mode;
 
     /**
-     *
      * @param mode
      */
-    public ModeSwitchException(int mode) {
+    public ModeSwitchException(int mode)
+    {
         this.mode = mode;
     }
 
     /**
-     *
      * @return -
      */
-    public int getNewMode() {
+    public int getNewMode()
+    {
         return mode;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         if (mode == REAL_MODE)
             return "Switched to REAL mode";
         if (mode == PROTECTED_MODE)

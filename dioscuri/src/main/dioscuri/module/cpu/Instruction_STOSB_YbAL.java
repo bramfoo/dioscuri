@@ -48,23 +48,24 @@ public class Instruction_STOSB_YbAL implements Instruction {
 
     // Attributes
     private CPU cpu;
-    byte[] transition = new byte[] { 0x00, 0x01 }; // Increment/decrement value
+    byte[] transition = new byte[]{0x00, 0x01}; // Increment/decrement value
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_STOSB_YbAL() {
+    public Instruction_STOSB_YbAL()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_STOSB_YbAL(CPU processor) {
+    public Instruction_STOSB_YbAL(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -77,7 +78,8 @@ public class Instruction_STOSB_YbAL implements Instruction {
      * Copy word from register AX to ES:DI; update DI register according to flag
      * DF
      */
-    public void execute() {
+    public void execute()
+    {
         // Get byte at AL and assign to ES:DI; ES segment override is not
         // allowed
         cpu.setByteToExtra(cpu.di, cpu.ax[CPU.REGISTER_GENERAL_LOW]);

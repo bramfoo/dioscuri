@@ -50,20 +50,21 @@ public class Instruction_POP_BX implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_POP_BX() {
+    public Instruction_POP_BX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_POP_BX(CPU processor) {
+    public Instruction_POP_BX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,7 +76,8 @@ public class Instruction_POP_BX implements Instruction {
     /**
      * This pops the word at stack top SS:SP into BX
      */
-    public void execute() {
+    public void execute()
+    {
         // Get word SS:SP and assign to BX
         cpu.bx = cpu.getWordFromStack();
 

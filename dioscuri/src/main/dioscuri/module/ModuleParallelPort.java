@@ -50,7 +50,8 @@ public abstract class ModuleParallelPort extends AbstractModule implements Addre
     /**
      *
      */
-    public ModuleParallelPort() {
+    public ModuleParallelPort()
+    {
         super(Module.Type.PARALLELPORT,
                 Module.Type.MOTHERBOARD);
     }

@@ -25,10 +25,10 @@
  */
 package dioscuri.module.cpu32;
 
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -36,10 +36,10 @@ public class ConstantPoolSymbol {
     private Object poolEntity;
 
     /**
-     *
      * @param o
      */
-    public ConstantPoolSymbol(Object o) {
+    public ConstantPoolSymbol(Object o)
+    {
         boolean ok = (o instanceof Class<?>) || (o instanceof Method)
                 || (o instanceof Field) || (o instanceof String)
                 || (o instanceof Integer) || (o instanceof Float)
@@ -52,15 +52,16 @@ public class ConstantPoolSymbol {
     }
 
     /**
-     *
      * @return -
      */
-    public Object poolEntity() {
+    public Object poolEntity()
+    {
         return poolEntity;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "ConstantPoolSymbol[" + poolEntity + "]";
     }
 }

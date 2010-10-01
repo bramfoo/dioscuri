@@ -43,7 +43,6 @@ import java.util.Iterator;
 import java.util.Queue;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  * @param <E>
@@ -51,88 +50,74 @@ import java.util.Queue;
 public interface Deque<E> extends Queue<E> {
 
     /**
-     *
      * @param e
      */
     void addFirst(E e);
 
     /**
-     *
      * @param e
      */
     void addLast(E e);
 
     /**
-     *
      * @param e
      * @return -
      */
     boolean offerFirst(E e);
 
     /**
-     *
      * @param e
      * @return -
      */
     boolean offerLast(E e);
 
     /**
-     *
      * @return -
      */
     E removeFirst();
 
     /**
-     *
      * @return -
      */
     E removeLast();
 
     /**
-     *
      * @return -
      */
     E pollFirst();
 
     /**
-     *
      * @return -
      */
     E pollLast();
 
     /**
-     *
      * @return -
      */
     E getFirst();
 
     /**
-     *
      * @return -
      */
     E getLast();
 
     /**
-     *
      * @return -
      */
     E peekFirst();
 
     /**
-     *
      * @return -
      */
     E peekLast();
 
     /**
-     *
      * @param o
      * @return -
      */
     boolean removeFirstOccurrence(Object o);
 
     /**
-     *
      * @param o
      * @return -
      */
@@ -151,13 +136,11 @@ public interface Deque<E> extends Queue<E> {
     E peek();
 
     /**
-     *
      * @param e
      */
     void push(E e);
 
     /**
-     *
      * @return -
      */
     E pop();
@@ -171,7 +154,6 @@ public interface Deque<E> extends Queue<E> {
     Iterator<E> iterator();
 
     /**
-     *
      * @return -
      */
     Iterator<E> descendingIterator();

@@ -49,22 +49,23 @@ import dioscuri.interfaces.Module;
 public abstract class ModuleBIOS extends AbstractModule {
 
     /**
-     * 
+     *
      */
-    public ModuleBIOS() {
-        super(Module.Type.BIOS /* no expected connections */ );
+    public ModuleBIOS()
+    {
+        super(Module.Type.BIOS /* no expected connections */);
     }
 
     /**
      * Returns the system BIOS code from ROM
-     * 
+     *
      * @return byte[] biosCode containing the binary code of System BIOS
      */
     public abstract byte[] getSystemBIOS();
 
     /**
      * Sets the system BIOS code in ROM
-     * 
+     *
      * @param biosCode
      * @return true if BIOS code is of specified SYSTEMBIOS_ROM_SIZE and store
      *         is successful, false otherwise
@@ -75,14 +76,14 @@ public abstract class ModuleBIOS extends AbstractModule {
 
     /**
      * Returns the Video BIOS code from ROM
-     * 
+     *
      * @return byte[] biosCode containing the binary code of Video BIOS
      */
     public abstract byte[] getVideoBIOS();
 
     /**
      * Sets the Video BIOS code in ROM
-     * 
+     *
      * @param biosCode
      * @return true if BIOS code is of specified VIDEOBIOS_ROM_SIZE and store is
      *         successful, false otherwise

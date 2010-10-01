@@ -61,15 +61,17 @@ public class Instruction_CMPS_XvYv implements Instruction {
     byte[] result;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_CMPS_XvYv() {
+    public Instruction_CMPS_XvYv()
+    {
         operandWordSize = true;
 
         // Set transition that holds the amount si and di should be altered
         // (word = 2)
-        transition = new byte[] { 0x00, 0x02 };
+        transition = new byte[]{0x00, 0x02};
         temp = new byte[2];
         source1 = new byte[2];
         source2 = new byte[2];
@@ -78,11 +80,11 @@ public class Instruction_CMPS_XvYv implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_CMPS_XvYv(CPU processor) {
+    public Instruction_CMPS_XvYv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -97,7 +99,8 @@ public class Instruction_CMPS_XvYv implements Instruction {
      * Increment/decrement both registers depending on DF flag.<BR>
      * Flags modified: CF, OF, SF, ZF, AF, and PF
      */
-    public void execute() {
+    public void execute()
+    {
         // Get values DS:(E)SI and ES:(E)DI; DS segment override is allowed, ES
         // segment isn't.
         if (cpu.segmentOverride) {
@@ -138,7 +141,7 @@ public class Instruction_CMPS_XvYv implements Instruction {
                 .checkParityOfByte(result[CPU.REGISTER_GENERAL_LOW]);
 
         // Increment or decrement SI and DI depending on DF flag
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true) {
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement registers
             temp = Util.subtractWords(cpu.si, transition, 0);
             System.arraycopy(temp, 0, cpu.si, 0, temp.length);

@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode 6E<BR>
@@ -69,26 +69,27 @@ public class Instruction_OUTS_DXXb implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_OUTS_DXXb.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_OUTS_DXXb() {
+    public Instruction_OUTS_DXXb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_OUTS_DXXb(CPU processor) {
+    public Instruction_OUTS_DXXb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
         cpu = processor;
         // Set transition that holds the amount SI should be altered (byte = 1)
-        transition = new byte[] { 0x00, 0x01 };
+        transition = new byte[]{0x00, 0x01};
 
     }
 
@@ -98,7 +99,8 @@ public class Instruction_OUTS_DXXb implements Instruction {
      * Output word from DS:SI to I/O port (specified in DX); update SI register
      * according to DF.
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;

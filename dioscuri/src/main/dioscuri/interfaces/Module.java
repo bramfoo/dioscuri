@@ -41,7 +41,7 @@ package dioscuri.interfaces;
 import java.util.Map;
 
 /**
- * 
+ *
  */
 public interface Module {
 
@@ -76,13 +76,14 @@ public interface Module {
          * Returns the Type based on a given String.
          *
          * @param strType the String representation of the Type to be fetched.
-         * @return        the Type based on a given String, 'strType', or null if
-         *                'strType' is not present in the set of enums.
+         * @return the Type based on a given String, 'strType', or null if
+         *         'strType' is not present in the set of enums.
          */
-        public static Type resolveType(String strType) {
+        public static Type resolveType(String strType)
+        {
             try {
                 return Type.valueOf(strType.toUpperCase());
-            } catch(Exception e) {
+            } catch (Exception e) {
                 return null;
             }
         }
@@ -92,7 +93,7 @@ public interface Module {
      * Returns the Module of a certain Type connected to this Module.
      *
      * @param type the Type of the Module to be fetched.
-     * @return     the Module of a certain Type connected to this Module. 
+     * @return the Module of a certain Type connected to this Module.
      */
     Module getConnection(Type type);
 
@@ -149,8 +150,8 @@ public interface Module {
      * Connect both Modules 'this' and 'module' to each other.
      *
      * @param module the other AbstractModule.
-     * @return       true iff both Modules 'this' and 'module' are
-     *               properly connected to each other.
+     * @return true iff both Modules 'this' and 'module' are
+     *         properly connected to each other.
      */
     boolean setConnection(Module module);
 

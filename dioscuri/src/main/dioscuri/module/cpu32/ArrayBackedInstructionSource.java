@@ -26,7 +26,6 @@
 package dioscuri.module.cpu32;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -44,11 +43,11 @@ public class ArrayBackedInstructionSource implements InstructionSource {
     private int x86End;
 
     /**
-     *
      * @param microcodes
      * @param positions
      */
-    public ArrayBackedInstructionSource(int[] microcodes, int[] positions) {
+    public ArrayBackedInstructionSource(int[] microcodes, int[] positions)
+    {
         this.microcodes = microcodes;
         this.positions = positions;
 
@@ -57,10 +56,10 @@ public class ArrayBackedInstructionSource implements InstructionSource {
     }
 
     /**
-     *
      * @return -
      */
-    public boolean getNext() {
+    public boolean getNext()
+    {
         if (operationEnd >= microcodes.length)
             return false;
 
@@ -78,10 +77,10 @@ public class ArrayBackedInstructionSource implements InstructionSource {
     }
 
     /**
-     *
      * @return -
      */
-    public int getMicrocode() {
+    public int getMicrocode()
+    {
         if (readOffset < operationEnd)
             return microcodes[readOffset++];
         else
@@ -89,18 +88,18 @@ public class ArrayBackedInstructionSource implements InstructionSource {
     }
 
     /**
-     *
      * @return -
      */
-    public int getLength() {
+    public int getLength()
+    {
         return operationEnd - operationStart;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Length() {
+    public int getX86Length()
+    {
         return x86End - x86Start;
     }
 }

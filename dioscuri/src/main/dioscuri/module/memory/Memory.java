@@ -39,10 +39,6 @@
 
 package dioscuri.module.memory;
 
-import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.interfaces.Module;
@@ -51,13 +47,17 @@ import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModuleVideo;
 
+import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a hardware memory module.
- *
+ * <p/>
  * Contains an array of 2^20 integers, offering 1MB of RAM.
  *
  * @see dioscuri.module.AbstractModule
- *
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : memory general.name : 1 Megabyte Random Access Memory
  *      general.architecture : Von Neumann general.description : General
@@ -67,9 +67,8 @@ import dioscuri.module.ModuleVideo;
  *      line general.relations : cpu, mainboard general.yearOfIntroduction :
  *      general.yearOfEnding : general.ancestor : general.successor :
  *      memory.size : 1 MB
- *
+ *      <p/>
  *      Notes: none
- *
  */
 public class Memory extends ModuleMemory {
 
@@ -79,13 +78,13 @@ public class Memory extends ModuleMemory {
     // Random Access Memory (RAM)
     public byte[] ram; // Using signed bytes as both signed/unsigned
     static protected long A20mask; // Mask used to set/clear 20th bit in memory
-                                   // addresses
+    // addresses
 
     // Constants
     private final static int BYTES_IN_MB = 1048576;
     // Memory size
     private int ramSize = 1 * BYTES_IN_MB; // initial value defined in bytes (1
-                                           // Megabyte, 2^20)
+    // Megabyte, 2^20)
 
     // debugging functionality
     private boolean watchValue;
@@ -98,7 +97,8 @@ public class Memory extends ModuleMemory {
      *
      * @param owner
      */
-    public Memory(Emulator owner) {
+    public Memory(Emulator owner)
+    {
 
         // Create new empty memory
         ram = new byte[this.ramSize];
@@ -117,7 +117,8 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Reset RAM: set all memory to zero
         Arrays.fill(ram, (byte) 0);
 
@@ -130,14 +131,15 @@ public class Memory extends ModuleMemory {
         logger.log(Level.INFO, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
     }
-    
+
     /**
      * {@inheritDoc}
      *
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -165,11 +167,12 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte getByte(int address) {
+    public byte getByte(int address)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -177,7 +180,7 @@ public class Memory extends ModuleMemory {
         // Check if address is in range
         try {
             // Watch certain memory address
-            if (watchValue == true && address == watchAddress) {
+            if (watchValue && address == watchAddress) {
                 logger
                         .log(Level.CONFIG, "["
                                 + super.getType()
@@ -189,7 +192,7 @@ public class Memory extends ModuleMemory {
                                 + watchAddress
                                 + " is read: ["
                                 + Integer.toHexString(ram[address])
-                                        .toUpperCase() + "]");
+                                .toUpperCase() + "]");
             }
 
             // video card memory range is hardcoded here:
@@ -213,18 +216,19 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setByte(int address, byte value) {
+    public void setByte(int address, byte value)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
 
         try {
             // Watch certain memory address
-            if (watchValue == true && address == watchAddress) {
+            if (watchValue && address == watchAddress) {
                 logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
                         + " Watched BYTE at address " + watchAddress
@@ -259,11 +263,12 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte[] getWord(int address) {
+    public byte[] getWord(int address)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
@@ -271,7 +276,7 @@ public class Memory extends ModuleMemory {
         // Check if address is in range
         try {
             // Watch certain memory address
-            if (watchValue == true
+            if (watchValue
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger
                         .log(Level.CONFIG, "["
@@ -284,26 +289,26 @@ public class Memory extends ModuleMemory {
                                 + watchAddress
                                 + " is read: ["
                                 + Integer.toHexString(ram[address + 1])
-                                        .toUpperCase()
+                                .toUpperCase()
                                 + "] ["
                                 + Integer.toHexString(ram[address])
-                                        .toUpperCase() + "]");
+                                .toUpperCase() + "]");
             }
 
             // video card memory range is hardcoded here:
             if (address >= 0xA0000 && address <= 0xBFFFF) {
                 // Honour little-endian, put MSB in array[0], LSB in array[1]
-                return new byte[] { video.readMode(address + 1),
-                        video.readMode(address) };
+                return new byte[]{video.readMode(address + 1),
+                        video.readMode(address)};
             } else {
                 // Honour little-endian, put MSB in array[0], LSB in array[1]
-                return new byte[] { ram[address + 1], ram[address] };
+                return new byte[]{ram[address + 1], ram[address]};
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             logger.log(Level.SEVERE, "[" + super.getType()
                     + "] Access outside memory bounds; returning 0xFFFF");
             // Out of range, return default value
-            return new byte[] { (byte) 0xFF, (byte) 0xFF };
+            return new byte[]{(byte) 0xFF, (byte) 0xFF};
         }
     }
 
@@ -313,18 +318,19 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWord(int address, byte[] value) {
+    public void setWord(int address, byte[] value)
+    {
 
-        ModuleVideo video = (ModuleVideo)super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Mask 20th address bit
         address &= A20mask;
 
         try {
             // Watch certain memory address
-            if (watchValue == true
+            if (watchValue
                     && (address == watchAddress || address + 1 == watchAddress)) {
                 logger.log(Level.CONFIG, "[" + super.getType() + "] "
                         + cpu.getRegisterHex(0) + ":" + cpu.getRegisterHex(1)
@@ -365,7 +371,8 @@ public class Memory extends ModuleMemory {
      */
     @Override
     public void setBytes(int address, byte[] binaryStream)
-            throws ModuleException {
+            throws ModuleException
+    {
         // Compute total length of stream
         int streamLength = binaryStream.length;
 
@@ -391,9 +398,10 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setA20AddressLine(boolean status) {
+    public void setA20AddressLine(boolean status)
+    {
         // Change the status of A20 address line check
-        if (status == true) {
+        if (status) {
             // Enable 0x100000 address bit (memory wrapping is turned off)
             A20mask = 0xFFFFFFFF;
         } else {
@@ -411,7 +419,8 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress) {
+    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress)
+    {
         this.watchValue = isWatchOn;
         this.watchAddress = watchAddress;
     }
@@ -422,7 +431,8 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setRamSizeInMB(int ramSizeMB) {
+    public void setRamSizeInMB(int ramSizeMB)
+    {
         this.ramSize = ramSizeMB * BYTES_IN_MB;
         // Create new empty memory
         ram = new byte[this.ramSize];
@@ -432,12 +442,11 @@ public class Memory extends ModuleMemory {
     /**
      * Converts a given string into a byte of one integer
      *
-     * @param strValue
-     *            value
-     *
+     * @param strValue value
      * @return int as byte
      */
-    private int convertStringToByte(String strValue) {
+    private int convertStringToByte(String strValue)
+    {
         // Parse from string to int (hex)
         try {
             int intRegVal = 0;

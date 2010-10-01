@@ -39,10 +39,6 @@
 
 package dioscuri.module.rtc;
 
-import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
@@ -52,12 +48,16 @@ import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleRTC;
 
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a Real Time module. This component takes care of
  * updating the date and time settings of the computer.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : rtc general.name : Real Time Clock (RTC)
  *      general.architecture : Von Neumann general.description : Implements an
@@ -68,7 +68,6 @@ import dioscuri.module.ModuleRTC;
  *      general.keywords : rtc, clock, date, time, cmos general.relations :
  *      motherboard, pit general.yearOfIntroduction : general.yearOfEnding :
  *      general.ancestor : general.successor : rtc.ramsize : 256 bytes
- * 
  */
 @SuppressWarnings("unused")
 public class RTC extends ModuleRTC {
@@ -77,19 +76,19 @@ public class RTC extends ModuleRTC {
     CMOS cmos;
 
     private boolean systemTime; // TRUE = real calender values from host
-                                // machine, FALSE = user-defined
+    // machine, FALSE = user-defined
 
     // Logging
     private static final Logger logger = Logger.getLogger(RTC.class.getName());
 
     // Register settings
     private boolean disableNMI; // Set by bit 7 of port data. Uses inverse
-                                // logic: enable (0) / disable (1)
+    // logic: enable (0) / disable (1)
 
     // IRQ number
     private int irqNumber;
     protected int lookupRegister; // Register set by OUT instruction for
-                                  // retrieval of data for next IN
+    // retrieval of data for next IN
 
     // Constants
     private final static int OUT_PORT = 0x70; // Write-only port
@@ -99,10 +98,11 @@ public class RTC extends ModuleRTC {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public RTC(Emulator owner) {
+    public RTC(Emulator owner)
+    {
 
         cmos = new CMOS();
 
@@ -125,10 +125,11 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
         // Set current system time in CMOS, stored in BCD format
         // Need to cast calender value to same hex digits (e.g. 48d -> 48h)
@@ -173,7 +174,8 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String cmos_Dump = "Dump of RTC/CMOS registers 0x00 - 0x2F and checksum regs:\n";
         cmos_Dump += "Reg\tVal(hex)\tVal(BCD)\n";
 
@@ -184,11 +186,11 @@ public class RTC extends ModuleRTC {
         for (int reg = 0; reg <= 0x2F; reg++) {
             cmos_Dump += "0x"
                     + Integer.toHexString(0x100 | reg & 0xFF).substring(1)
-                            .toUpperCase();
+                    .toUpperCase();
             cmos_Dump += "\t";
             cmos_Dump += "["
                     + Integer.toHexString(0x100 | cmos.ram[reg] & 0xFF)
-                            .substring(1).toUpperCase() + "]";
+                    .substring(1).toUpperCase() + "]";
             cmos_Dump += "\t";
             cmos_Dump += "[" + twoDigits.format(cmos.ram[reg]) + "]";
 
@@ -200,25 +202,26 @@ public class RTC extends ModuleRTC {
 
     /**
      * Retrieve the interval between subsequent updates
-     * 
+     *
      * @return int interval in microseconds
      */
-    public int getUpdateInterval() {
+    public int getUpdateInterval()
+    {
         return -1;
     }
 
     /**
      * Defines the interval between subsequent updates
-     * 
      */
-    public void setUpdateInterval(int interval) {
+    public void setUpdateInterval(int interval)
+    {
     }
 
     /**
      * Update device
-     * 
      */
-    public void update() {
+    public void update()
+    {
     }
 
     /**
@@ -228,44 +231,45 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
         switch (portAddress) {
-        case (OUT_PORT):
-            // Undefined
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " IN command (byte) from port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase()
-                    + "; Returned 0xFF");
-            // throw new WriteOnlyPortException(super.getType() + " -> port "
-            // + Integer.toHexString(portAddress).toUpperCase() +
-            // " is write-only and cannot be read");
-            return (byte) 0xFF;
+            case (OUT_PORT):
+                // Undefined
+                logger.log(Level.INFO, "[" + super.getType() + "]"
+                        + " IN command (byte) from port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase()
+                        + "; Returned 0xFF");
+                // throw new WriteOnlyPortException(super.getType() + " -> port "
+                // + Integer.toHexString(portAddress).toUpperCase() +
+                // " is write-only and cannot be read");
+                return (byte) 0xFF;
 
-        case (IN_PORT):
-            // Return data from previously indicated CMOS register
-            logger.log(Level.INFO, "["
-                    + super.getType()
-                    + "]"
-                    + " IN command (byte) from register 0x"
-                    + Integer.toHexString(lookupRegister).toUpperCase()
-                    + ": 0x"
-                    + Integer.toHexString(cmos.ram[lookupRegister])
-                            .toUpperCase());
+            case (IN_PORT):
+                // Return data from previously indicated CMOS register
+                logger.log(Level.INFO, "["
+                        + super.getType()
+                        + "]"
+                        + " IN command (byte) from register 0x"
+                        + Integer.toHexString(lookupRegister).toUpperCase()
+                        + ": 0x"
+                        + Integer.toHexString(cmos.ram[lookupRegister])
+                        .toUpperCase());
 
-            if (lookupRegister == CMOS.STATUS_REGISTER_C) {
-                // Clear register C if read occurs
-                cmos.ram[CMOS.STATUS_REGISTER_C] = 0x00;
-                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
-                pic.clearIRQ(irqNumber);
-            }
-            return cmos.ram[lookupRegister];
+                if (lookupRegister == CMOS.STATUS_REGISTER_C) {
+                    // Clear register C if read occurs
+                    cmos.ram[CMOS.STATUS_REGISTER_C] = 0x00;
+                    ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
+                    pic.clearIRQ(irqNumber);
+                }
+                return cmos.ram[lookupRegister];
 
-        default:
-            throw new UnknownPortException("[" + super.getType()
-                    + "] Unknown I/O port requested");
+            default:
+                throw new UnknownPortException("[" + super.getType()
+                        + "] Unknown I/O port requested");
         }
     }
 
@@ -276,7 +280,8 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException {
+            throws UnknownPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
@@ -284,34 +289,34 @@ public class RTC extends ModuleRTC {
         disableNMI = (data & 0x80) == 1 ? true : false;
 
         switch (portAddress) {
-        case (OUT_PORT):
-            // 'data' sets the register for the next port instruction;
-            // Limited range to 127 to fit within CMOS array size
-            lookupRegister = data & 0x7F;
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " OUT command (byte) to port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase()
-                    + ": lookup byte set to 0x"
-                    + Integer.toHexString(lookupRegister).toUpperCase());
-            return;
+            case (OUT_PORT):
+                // 'data' sets the register for the next port instruction;
+                // Limited range to 127 to fit within CMOS array size
+                lookupRegister = data & 0x7F;
+                logger.log(Level.INFO, "[" + super.getType() + "]"
+                        + " OUT command (byte) to port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase()
+                        + ": lookup byte set to 0x"
+                        + Integer.toHexString(lookupRegister).toUpperCase());
+                return;
 
-        case (IN_PORT):
-            // 'data' is to be written to a previously set register in CMOS
-            if (lookupRegister == 0x0C || lookupRegister == 0x0D) {
-                // These registers are read-only, so do not write data to them
-            } else {
-                cmos.ram[lookupRegister] = data;
-            }
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + " OUT command (byte) to port 0x"
-                    + Integer.toHexString(portAddress).toUpperCase() + " [0x"
-                    + Integer.toHexString(lookupRegister).toUpperCase()
-                    + "] set to: 0x" + Integer.toHexString(data).toUpperCase());
-            return;
+            case (IN_PORT):
+                // 'data' is to be written to a previously set register in CMOS
+                if (lookupRegister == 0x0C || lookupRegister == 0x0D) {
+                    // These registers are read-only, so do not write data to them
+                } else {
+                    cmos.ram[lookupRegister] = data;
+                }
+                logger.log(Level.INFO, "[" + super.getType() + "]"
+                        + " OUT command (byte) to port 0x"
+                        + Integer.toHexString(portAddress).toUpperCase() + " [0x"
+                        + Integer.toHexString(lookupRegister).toUpperCase()
+                        + "] set to: 0x" + Integer.toHexString(data).toUpperCase());
+                return;
 
-        default:
-            throw new UnknownPortException("[" + super.getType()
-                    + "] Unknown I/O port requested");
+            default:
+                throw new UnknownPortException("[" + super.getType()
+                        + "] Unknown I/O port requested");
         }
     }
 
@@ -322,7 +327,8 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -330,7 +336,7 @@ public class RTC extends ModuleRTC {
                 + "] Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF};
     }
 
     /**
@@ -340,7 +346,8 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -354,7 +361,8 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -362,8 +370,8 @@ public class RTC extends ModuleRTC {
                 + "] Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
-                (byte) 0x0FF };
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF,
+                (byte) 0x0FF};
     }
 
     /**
@@ -373,7 +381,8 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -386,7 +395,8 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public byte getCMOSRegister(int register) {
+    public byte getCMOSRegister(int register)
+    {
         logger.log(Level.CONFIG, "[" + super.getType()
                 + "] Returned CMOS register " + register + ": 0x"
                 + Integer.toHexString(cmos.ram[register]).toUpperCase());
@@ -401,7 +411,8 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public void setCMOSRegister(int register, byte value) {
+    public void setCMOSRegister(int register, byte value)
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "] Set CMOS register "
                 + register + ": 0x" + Integer.toHexString(value).toUpperCase());
 
@@ -415,7 +426,8 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public void updateClock() {
+    public void updateClock()
+    {
         // Update with one second
         cmos.setClockValue(1);
         logger.log(Level.INFO, "[" + super.getType() + "] CMOS clock updated: "

@@ -53,19 +53,21 @@ public class Instruction_ADC_ALIb implements Instruction {
     int iCarryFlag;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ADC_ALIb() {
+    public Instruction_ADC_ALIb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ADC_ALIb(CPU processor) {
+    public Instruction_ADC_ALIb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -77,7 +79,8 @@ public class Instruction_ADC_ALIb implements Instruction {
     /**
      * Add (immediate byte + CF) to AL
      */
-    public void execute() {
+    public void execute()
+    {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

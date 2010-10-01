@@ -39,25 +39,17 @@
 
 package dioscuri;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import dioscuri.exception.CommandException;
+
+import java.io.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.CommandException;
 
 /**
  * Interface for user to interact with emulator
  */
 public class IO {
-    
+
     private String[] cmd;
     private String[] prevCmd;
     private int cmdPointer;
@@ -72,7 +64,8 @@ public class IO {
     /**
      * Class constructor
      */
-    public IO() {
+    public IO()
+    {
         cmd = null;
         prevCmd = null;
         cmdPointer = 0;
@@ -84,12 +77,13 @@ public class IO {
 
     /**
      * Fetches data from input stream and returns it as a byte array.
-     * 
+     *
      * @param filename
      * @return byte[] byte array containing machinecode
      * @throws IOException
      */
-    public byte[] importBinaryStream(String filename) throws IOException {
+    public byte[] importBinaryStream(String filename) throws IOException
+    {
         // open input stream
         BufferedInputStream bdis = new BufferedInputStream(new DataInputStream(
                 new FileInputStream(new File(filename))));
@@ -106,13 +100,14 @@ public class IO {
 
     /**
      * Exports data from emulator to the file system in given filename.
-     * 
+     *
      * @param filename
      * @param data
      * @throws IOException
      */
     public void exportBinaryStream(String filename, String data)
-            throws IOException {
+            throws IOException
+    {
         // open output stream
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(
                 new File(filename)));
@@ -126,10 +121,11 @@ public class IO {
 
     /**
      * Gets input from standard input and returns it as string.
-     * 
+     *
      * @return string containing input line
      */
-    public String getInput() {
+    public String getInput()
+    {
         // Read input string, return array of words
         BufferedReader stdin = new BufferedReader(new InputStreamReader(
                 System.in));
@@ -144,20 +140,22 @@ public class IO {
 
     /**
      * Sets given string to standard output.
-     * 
+     *
      * @param string
      */
-    public void setOutput(String string) {
+    public void setOutput(String string)
+    {
         System.out.println(string);
     }
 
     /**
      * Parses an input string into commands along with their arguments, execute
      * a command if recognised, otherwise ignore.
-     * 
+     *
      * @return -
      */
-    public int getCommand() {
+    public int getCommand()
+    {
         // Declare returnCommand
         int returnCommand = -1;
         arguments = null;
@@ -209,9 +207,7 @@ public class IO {
                 // Copy current command into previous, empty queue
                 System.arraycopy(cmd, 0, prevCmd, 0, cmd.length);
                 cmd = null;
-            }
-
-            else if (cmd[cmdPointer].equals("s")) {
+            } else if (cmd[cmdPointer].equals("s")) {
                 // Step: s [<NUMBER>]
                 // Performs n steps in execution process, with n = 1 or n =
                 // <NUMBER>
@@ -227,7 +223,7 @@ public class IO {
                     // Argument is number of instructions to be run
                     try {
                         // Set number in arguments array
-                        arguments = new String[] { cmd[1] };
+                        arguments = new String[]{cmd[1]};
 
                         // Set emulator command
                         returnCommand = Emulator.CMD_DEBUG_STEP;
@@ -283,7 +279,7 @@ public class IO {
                             "Debug command d: wrong number of arguments supplied.\n Usage is: d <MODULE>.");
                 }
 
-                arguments = new String[] { cmd[1] };
+                arguments = new String[]{cmd[1]};
                 returnCommand = Emulator.CMD_DEBUG_DUMP;
 
                 // Copy current command into previous, empty queue
@@ -305,9 +301,9 @@ public class IO {
 
                 // Parse arguments supplied
                 if (cmd.length == 3) {
-                    arguments = new String[] { cmd[1], cmd[2] };
+                    arguments = new String[]{cmd[1], cmd[2]};
                 } else {
-                    arguments = new String[] { cmd[1] };
+                    arguments = new String[]{cmd[1]};
                 }
                 returnCommand = Emulator.CMD_DEBUG_MEM_DUMP;
 
@@ -339,28 +335,31 @@ public class IO {
 
     /**
      * Returns arguments which may have been set during getCommand
-     * 
+     *
      * @return string[] with arguments
      */
-    public String[] getArguments() {
+    public String[] getArguments()
+    {
         return arguments;
     }
 
     /**
      * Shows help information of emulator to output
      */
-    void showHelp() {
+    void showHelp()
+    {
         // Show helpfile
         logger.log(Level.SEVERE, this.toString());
     }
 
     /**
      * Returns a string representation of this class
-     * 
+     *
      * @return string with help information
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         // String of this class
         String info = "Emulator help" + "\r\n";
         info += "--------------------------------------------------------------------------------------------------"

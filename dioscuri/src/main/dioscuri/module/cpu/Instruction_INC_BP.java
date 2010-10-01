@@ -53,27 +53,28 @@ public class Instruction_INC_BP implements Instruction {
     private byte[] incWord;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_INC_BP() {
+    public Instruction_INC_BP()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_INC_BP(CPU processor) {
+    public Instruction_INC_BP(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
         cpu = processor;
         temp = new byte[2];
         oldDest = new byte[2];
-        incWord = new byte[] { 0x00, 0x01 };
+        incWord = new byte[]{0x00, 0x01};
     }
 
     // Methods
@@ -81,7 +82,8 @@ public class Instruction_INC_BP implements Instruction {
     /**
      * Increment general register BP
      */
-    public void execute() {
+    public void execute()
+    {
         // Make copy of old value
         System.arraycopy(cpu.bp, 0, oldDest, 0, cpu.bp.length);
 

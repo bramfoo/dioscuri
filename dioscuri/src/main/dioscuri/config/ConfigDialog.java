@@ -9,7 +9,8 @@ import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -19,7 +20,8 @@ public class ConfigDialog extends JDialog {
     private final GUI parent;
     private final Map<Module.Type, AbstractModulePanel> moduleMap;
 
-    public ConfigDialog(GUI parent) {
+    public ConfigDialog(GUI parent)
+    {
         super(parent.asJFrame());
         this.parent = parent;
         this.emuConfig = parent.getEmuConfig();
@@ -34,9 +36,10 @@ public class ConfigDialog extends JDialog {
         super.setVisible(true);
     }
 
-    private void loadPanel(JPanel attributesPanel, JList moduleList) {
+    private void loadPanel(JPanel attributesPanel, JList moduleList)
+    {
         attributesPanel.removeAll();
-        AbstractModulePanel p = moduleMap.get((Module.Type)moduleList.getSelectedValue());
+        AbstractModulePanel p = moduleMap.get((Module.Type) moduleList.getSelectedValue());
         attributesPanel.add(p, BorderLayout.NORTH);
         attributesPanel.validate();
         repaint();
@@ -66,7 +69,8 @@ public class ConfigDialog extends JDialog {
         | +----------------------------------------------------+ |
         +--------------------------------------------------------+      
      */
-    private void setupGUI() {
+    private void setupGUI()
+    {
         final JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         final JPanel attributesPanel = new JPanel(new BorderLayout(5, 5));
@@ -81,9 +85,10 @@ public class ConfigDialog extends JDialog {
         final JList moduleList = new JList(moduleMap.keySet().toArray(new Module.Type[moduleMap.keySet().size()]));
         moduleListPanel.add(new JScrollPane(moduleList));
         moduleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        moduleList.addListSelectionListener(new ListSelectionListener(){
+        moduleList.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e) {
+            public void valueChanged(ListSelectionEvent e)
+            {
                 loadPanel(attributesPanel, moduleList);
             }
         });
@@ -93,19 +98,21 @@ public class ConfigDialog extends JDialog {
         final JButton save = new JButton("save");
         buttonPanel.add(cancel);
         buttonPanel.add(save);
-        cancel.addActionListener(new ActionListener(){
+        cancel.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            public void actionPerformed(ActionEvent e)
+            {
                 ConfigDialog.this.dispose();
             }
         });
-        save.addActionListener(new ActionListener(){
+        save.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                for(AbstractModulePanel p : ConfigDialog.this.moduleMap.values()) {
+            public void actionPerformed(ActionEvent e)
+            {
+                for (AbstractModulePanel p : ConfigDialog.this.moduleMap.values()) {
                     try {
                         p.saveAndWrite();
-                    } catch(Exception ex) {
+                    } catch (Exception ex) {
                         ex.printStackTrace();
                     }
                 }
@@ -117,7 +124,8 @@ public class ConfigDialog extends JDialog {
         super.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void setupModuleMap() {
+    private void setupModuleMap()
+    {
         this.moduleMap.put(Module.Type.ATA, new AtaPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.BIOS, new BiosPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.BOOT, new BootPanel(parent, emuConfig));

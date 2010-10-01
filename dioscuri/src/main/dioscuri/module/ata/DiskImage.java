@@ -57,18 +57,19 @@ public class DiskImage {
 
     /**
      * Class constructor without disk image file.
-     * 
      */
-    public DiskImage() {
+    public DiskImage()
+    {
     }
 
     /**
      * Class constructor with disk image file.
-     * 
+     *
      * @param theImageFile
      * @throws IOException
      */
-    public DiskImage(File theImageFile) throws IOException {
+    public DiskImage(File theImageFile) throws IOException
+    {
 
         this.imageFile = theImageFile;
 
@@ -76,7 +77,7 @@ public class DiskImage {
 
     /**
      * Read data from image.
-     * 
+     *
      * @param theData
      * @param theOffset
      * @param theLength
@@ -84,7 +85,8 @@ public class DiskImage {
      * @throws IOException
      */
     public byte[] readFromImage(byte[] theData, int theOffset, int theLength)
-            throws IOException {
+            throws IOException
+    {
 
         RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile, "r");
 
@@ -101,14 +103,15 @@ public class DiskImage {
 
     /**
      * Write to image.
-     * 
+     *
      * @param theData
      * @param theOffset
      * @param theLength
      * @throws IOException
      */
     public void writeToImage(byte[] theData, int theOffset, int theLength)
-            throws IOException {
+            throws IOException
+    {
 
         RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile,
                 "rw");
@@ -117,7 +120,7 @@ public class DiskImage {
             if (theOffset > 0) {
                 randomAccessFile.seek(theOffset);
             }
-    
+
             randomAccessFile.write(theData, 0, theLength);
         } finally {
             randomAccessFile.close();
@@ -126,9 +129,11 @@ public class DiskImage {
 
     /**
      * Gets the size of the disk image in bytes.
+     *
      * @return the size of the disk image in bytes
      */
-    protected long getSize() {
+    protected long getSize()
+    {
 
         Long imageSize = imageFile.length();
         return imageSize;

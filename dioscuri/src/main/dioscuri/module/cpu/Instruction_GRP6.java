@@ -71,10 +71,12 @@ public class Instruction_GRP6 implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_GRP6() {
+    public Instruction_GRP6()
+    {
         operandWordSize = true;
 
         addressByte = 0;
@@ -94,11 +96,11 @@ public class Instruction_GRP6 implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_GRP6(CPU processor) {
+    public Instruction_GRP6(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -110,10 +112,11 @@ public class Instruction_GRP6 implements Instruction {
     /**
      * Execute any of the following Group 6 instructions: SLDT, STR, LLDT, LTR,
      * VERR, VERW.<BR>
-     * 
+     *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException {
+    public void execute() throws CPUInstructionException
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 
@@ -122,34 +125,34 @@ public class Instruction_GRP6 implements Instruction {
 
         // Execute instruction decoded from nnn (bits 5, 4, 3 in ModR/M byte)
         switch ((addressByte & 0x38) >> 3) {
-        case 0: // SLDT
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction SLDT not implemented.");
+            case 0: // SLDT
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction SLDT not implemented.");
 
-        case 1: // STR
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction STR not implemented.");
+            case 1: // STR
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction STR not implemented.");
 
-        case 2: // LLDT
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction LLDT not implemented.");
+            case 2: // LLDT
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction LLDT not implemented.");
 
-        case 3: // LTR
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction LTR not implemented.");
+            case 3: // LTR
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction LTR not implemented.");
 
-        case 4: // VERR
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction VERR not implemented.");
+            case 4: // VERR
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction VERR not implemented.");
 
-        case 5: // VERW
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction VERW not implemented.");
+            case 5: // VERW
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction VERW not implemented.");
 
-        default:
-            // TODO Throw exception for illegal nnn bits
-            throw new CPUInstructionException(
-                    "Group 6 (0x0F00) instruction no case match.");
+            default:
+                // TODO Throw exception for illegal nnn bits
+                throw new CPUInstructionException(
+                        "Group 6 (0x0F00) instruction no case match.");
         }
     }
 }

@@ -51,24 +51,25 @@ public class Instruction_MOV_OvAX implements Instruction {
     private CPU cpu;
     private byte[] displ = new byte[2];
     private byte[] tempWord = new byte[2];
-    private byte[] word0x02 = new byte[] { 0x00, 0x02 };
+    private byte[] word0x02 = new byte[]{0x00, 0x02};
     private byte dataSegmentAddressByte = 0;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_MOV_OvAX() {
+    public Instruction_MOV_OvAX()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOV_OvAX(CPU processor) {
+    public Instruction_MOV_OvAX(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -81,7 +82,8 @@ public class Instruction_MOV_OvAX implements Instruction {
      * Copy word from register AX to DS:DISPL (DISPL given by word following
      * opcode)
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement within segment
         displ = cpu.getWordFromCode();
 

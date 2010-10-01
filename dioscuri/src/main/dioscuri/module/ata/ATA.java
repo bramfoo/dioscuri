@@ -45,27 +45,27 @@
 
 package dioscuri.module.ata;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
+import dioscuri.exception.StorageDeviceException;
 import dioscuri.exception.UnknownPortException;
 import dioscuri.exception.WriteOnlyPortException;
-import dioscuri.exception.StorageDeviceException;
 import dioscuri.interfaces.Module;
 import dioscuri.module.ModuleATA;
 import dioscuri.module.ModuleMotherboard;
 import dioscuri.module.ModulePIC;
 import dioscuri.module.ModuleRTC;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a ATA controller module.
  *
  * @see dioscuri.module.AbstractModule
- *
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : ata general.name : ATA Controller / ATA-1 to ATAT-3
  *      general.architecture : Von Neumann general.description : Implements a
@@ -75,9 +75,8 @@ import dioscuri.module.ModuleRTC;
  *      general.keywords : IDE, ATA, storage, disk, controller general.relations
  *      : motherboard general.yearOfIntroduction : 1994 general.yearOfEnding :
  *      1999 general.ancestor : - general.successor : ATA-2 (EIDE)
- *
+ *      <p/>
  *      Notes: none
- *
  */
 public class ATA extends ModuleATA {
 
@@ -103,11 +102,13 @@ public class ATA extends ModuleATA {
 
     /**
      * Class constructor
+     *
      * @param owner
      */
-    public ATA(Emulator owner) {
+    public ATA(Emulator owner)
+    {
         emu = owner;
-        
+
         // Initialise timing
         updateInterval = -1;
 
@@ -132,12 +133,13 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         // Request a timer
-        if (motherboard.requestTimer(this, updateInterval, false) == true) {
+        if (motherboard.requestTimer(this, updateInterval, false)) {
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " Timer requested successfully.");
         } else {
@@ -164,7 +166,8 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         // Show some status information of this module
         String dump = "";
 
@@ -210,14 +213,15 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval) {
+    public void setUpdateInterval(int interval)
+    {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
         } else {
             updateInterval = 100000;
         }
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.resetTimer(this, updateInterval);
     }
 
@@ -227,9 +231,10 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void update() {
+    public void update()
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         for (int channelIndex = 0; channelIndex < ATAConstants.MAX_NUMBER_IDE_CHANNELS; channelIndex++) {
 
@@ -268,7 +273,8 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (byte) to port "
                 + Integer.toHexString(originalPortAddress).toUpperCase()
@@ -284,13 +290,14 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortByte(int originalAddress, byte data)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  OUT command (byte: "
                 + Integer.toHexString(data).toUpperCase() + ") to port "
                 + Integer.toHexString(originalAddress).toUpperCase()
                 + " received.");
-        byte[] dataArray = { data };
+        byte[] dataArray = {data};
 
         write(originalAddress, dataArray, 1);
     }
@@ -302,7 +309,8 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -317,7 +325,8 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (word) to port "
@@ -334,7 +343,8 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException {
+            UnknownPortException, WriteOnlyPortException
+    {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -349,7 +359,8 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (double word) to port "
@@ -366,9 +377,10 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void initConfig(int theIdeChannel, boolean isMaster,
-            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
-            int numHeads, int numSectorsPerTrack,
-            ATATranslationType translationType, String imageFilePath) {
+                           boolean isHardDisk, boolean isWriteProtected, int numCylinders,
+                           int numHeads, int numSectorsPerTrack,
+                           ATATranslationType translationType, String imageFilePath)
+    {
 
         // Initialise controller variables
 
@@ -379,8 +391,7 @@ public class ATA extends ModuleATA {
             drive = new ATADrive(ATADriveType.HARD_DISK, this, true);
             hdDriveCount++;
             drive.hdNumber = hdDriveCount;
-        }
-        else {
+        } else {
             drive = new ATADrive(ATADriveType.CDROM, this, true, cdromCount);
         }
 
@@ -435,9 +446,10 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.ModuleATA
      */
     @Override
-    public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
+    public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled)
+    {
 
-        ModuleRTC rtc = (ModuleRTC)super.getConnection(Module.Type.RTC);
+        ModuleRTC rtc = (ModuleRTC) super.getConnection(Module.Type.RTC);
 
         // generate CMOS values for hard drive
 
@@ -458,7 +470,7 @@ public class ATA extends ModuleATA {
         // 3-0 Second Hard Disk Drive Type
         // (same as first except extrnded type will be found in 1Ah).
         rtc.setCMOSRegister(0x12, (byte) (0x00)); // start out with: no drive 0,
-                                                  // no drive 1
+        // no drive 1
 
         int theChannel = 0;
 
@@ -493,7 +505,7 @@ public class ATA extends ModuleATA {
                     .getTotalNumHeads() > 8;
             int intCondition = 0;
 
-            if (condition == true) {
+            if (condition) {
                 intCondition = 1;
             }
             rtc.setCMOSRegister(0x20, (byte) (0xc0 | (intCondition << 3)));
@@ -665,7 +677,7 @@ public class ATA extends ModuleATA {
 
         // Set the signature check flag in cmos, inverted for compatibility
         int intFloppySigCheckDisabled = 0;
-        if (floppySigCheckDisabled == true) {
+        if (floppySigCheckDisabled) {
             intFloppySigCheckDisabled = 1;
         }
 
@@ -687,7 +699,8 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.ModuleATA
      */
     @Override
-    public int getCurrentChannelIndex() {
+    public int getCurrentChannelIndex()
+    {
         return this.curChannelIndex;
     }
 
@@ -696,7 +709,8 @@ public class ATA extends ModuleATA {
      *
      * @return the selected channel
      */
-    private ATAChannel getSelectedChannel() {
+    private ATAChannel getSelectedChannel()
+    {
         return channels[this.curChannelIndex];
     }
 
@@ -705,7 +719,8 @@ public class ATA extends ModuleATA {
      *
      * @return the selected IDE drive
      */
-    private ATADrive getSelectedDrive() {
+    private ATADrive getSelectedDrive()
+    {
         return getSelectedChannel().getSelectedDrive();
 
     }
@@ -715,18 +730,19 @@ public class ATA extends ModuleATA {
      *
      * @return the selected drive controller
      */
-    private ATADriveController getSelectedDriveController() {
+    private ATADriveController getSelectedDriveController()
+    {
         return getSelectedDrive().getControl();
     }
 
     /**
      * Load disk Image.
      *
-     * @param imageFilePath
-     *            the file path of the disk image
+     * @param imageFilePath the file path of the disk image
      * @return true if load successful
      */
-    private boolean loadDiskImage(String imageFilePath, ATADrive drive) {
+    private boolean loadDiskImage(String imageFilePath, ATADrive drive)
+    {
         try {
 
             File imageFile = new File(imageFilePath);
@@ -749,7 +765,8 @@ public class ATA extends ModuleATA {
      *
      * @return the number of drives
      */
-    private int getNumDrives() {
+    private int getNumDrives()
+    {
 
         int numDrives = 0;
 
@@ -769,16 +786,18 @@ public class ATA extends ModuleATA {
      * Return a byte from I/O address space at given port.
      *
      * @param originalPortAddress containing the address of the I/O port
-     * @param ioLength the length of the Io
+     * @param ioLength            the length of the Io
      * @return byte containing the data at given I/O address port
-     *
      * @throws ModuleException
      * @throws dioscuri.exception.UnknownPortException
+     *
      * @throws dioscuri.exception.WriteOnlyPortException
+     *
      */
     private byte[] read(int originalPortAddress, int ioLength)
             throws ModuleException, UnknownPortException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Read ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -818,7 +837,7 @@ public class ATA extends ModuleATA {
                         + "]"
                         + "  read: unable to find ATA channel, ioport=0x%04x "
                         + Integer.toHexString(originalPortAddress)
-                                .toUpperCase());
+                        .toUpperCase());
                 return value;
             } else {
                 channelIndex = 0;
@@ -829,184 +848,184 @@ public class ATA extends ModuleATA {
         this.curChannelIndex = channelIndex;
 
         switch (channelPort) {
-        case 0x00:
-            // PORT_IDE_DATA:
-            // hard disk data (16bit) 0x1f0
+            case 0x00:
+                // PORT_IDE_DATA:
+                // hard disk data (16bit) 0x1f0
 
-            value = this.executeGetCommand(originalPortAddress, ioLength);
-            break;
-        case 0x01:
-            // PORT_IDE_ERROR_WPC
-            // hard disk error register 0x1f1
+                value = this.executeGetCommand(originalPortAddress, ioLength);
+                break;
+            case 0x01:
+                // PORT_IDE_ERROR_WPC
+                // hard disk error register 0x1f1
 
-            channels[this.curChannelIndex].getSelectedController().getStatus()
-                    .setErr(0);
-            if (channels[this.curChannelIndex].isAnyDrivePresent()) {
-                value[0] = (byte) channels[this.curChannelIndex]
-                        .getSelectedController().getErrorRegister();
-            } else {
-                value[0] = 0;
-            }
-            break;
+                channels[this.curChannelIndex].getSelectedController().getStatus()
+                        .setErr(0);
+                if (channels[this.curChannelIndex].isAnyDrivePresent()) {
+                    value[0] = (byte) channels[this.curChannelIndex]
+                            .getSelectedController().getErrorRegister();
+                } else {
+                    value[0] = 0;
+                }
+                break;
 
-        case 0x02:
-            // PORT_IDE_SECTOR_COUNT
-            // hard disk sector count / interrupt reason 0x1f2
+            case 0x02:
+                // PORT_IDE_SECTOR_COUNT
+                // hard disk sector count / interrupt reason 0x1f2
 
-            if (channels[this.curChannelIndex].isAnyDrivePresent()) {
-                value[0] = (byte) channels[this.curChannelIndex]
-                        .getSelectedDrive().getSectorCount();
+                if (channels[this.curChannelIndex].isAnyDrivePresent()) {
+                    value[0] = (byte) channels[this.curChannelIndex]
+                            .getSelectedDrive().getSectorCount();
 
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + "  Read sector count returned value " + value[0]);
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + "  Read sector count returned value " + value[0]);
 
-            } else {
-                value[0] = (byte) 0;
-            }
-            break;
-        case 0x03:
-            // PORT_IDE_SECTOR_NUMBER
-            // sector number 0x1f3
+                } else {
+                    value[0] = (byte) 0;
+                }
+                break;
+            case 0x03:
+                // PORT_IDE_SECTOR_NUMBER
+                // sector number 0x1f3
 
-            if (channels[this.curChannelIndex].isAnyDrivePresent()) {
-                value[0] = (byte) channels[this.curChannelIndex]
-                        .getSelectedDrive().getCurrentSector();
-            } else {
-                value[0] = 0;
-            }
-            break;
+                if (channels[this.curChannelIndex].isAnyDrivePresent()) {
+                    value[0] = (byte) channels[this.curChannelIndex]
+                            .getSelectedDrive().getCurrentSector();
+                } else {
+                    value[0] = 0;
+                }
+                break;
 
-        case 0x04:
-            // PORT_IDE_CYLINDER_LOW
-            // cylinder low 0x1f4
-            // -- WARNING : On real hardware the controller registers are shared
-            // between drives.
-            // So we must respond even if the select device is not present. Some
-            // OS uses this fact
-            // to detect the disks.... minix2 for example
-            if (channels[this.curChannelIndex].isAnyDrivePresent()) {
-                value[0] = (byte) (channels[this.curChannelIndex]
-                        .getSelectedDrive().getCurrentCylinder() & 0x00ff);
-            } else {
-                value[0] = 0;
-            }
-            break;
+            case 0x04:
+                // PORT_IDE_CYLINDER_LOW
+                // cylinder low 0x1f4
+                // -- WARNING : On real hardware the controller registers are shared
+                // between drives.
+                // So we must respond even if the select device is not present. Some
+                // OS uses this fact
+                // to detect the disks.... minix2 for example
+                if (channels[this.curChannelIndex].isAnyDrivePresent()) {
+                    value[0] = (byte) (channels[this.curChannelIndex]
+                            .getSelectedDrive().getCurrentCylinder() & 0x00ff);
+                } else {
+                    value[0] = 0;
+                }
+                break;
 
-        case 0x05:
-            // PORT_IDE_CYLINDER_HIGH
-            // cylinder high 0x1f5
-            // -- WARNING : On real hardware the controller registers are shared
-            // between drives.
-            // So we must respond even if the select device is not present. Some
-            // OS uses this fact
-            // to detect the disks.... minix2 for example
-            if (channels[this.curChannelIndex].isAnyDrivePresent()) {
-                value[0] = (byte) (channels[this.curChannelIndex]
-                        .getSelectedDrive().getCurrentCylinder() >> 8);
+            case 0x05:
+                // PORT_IDE_CYLINDER_HIGH
+                // cylinder high 0x1f5
+                // -- WARNING : On real hardware the controller registers are shared
+                // between drives.
+                // So we must respond even if the select device is not present. Some
+                // OS uses this fact
+                // to detect the disks.... minix2 for example
+                if (channels[this.curChannelIndex].isAnyDrivePresent()) {
+                    value[0] = (byte) (channels[this.curChannelIndex]
+                            .getSelectedDrive().getCurrentCylinder() >> 8);
 
-            } else {
-                value[0] = 0;
-            }
-            break;
+                } else {
+                    value[0] = 0;
+                }
+                break;
 
-        case 0x06:
-            // PORT_IDE_DRIVE_HEAD
-            // hard disk drive and head register 0x1f6
-            // b7 Extended data field for ECC
-            // b6/b5: Used to be sector size. 00=256,01=512,10=1024,11=128
-            // Since 512 was always used, bit 6 was taken to mean LBA mode:
-            // b6 1=LBA mode, 0=CHS mode
-            // b5 1
-            // b4: DRV
-            // b3..0 HD3..HD0
+            case 0x06:
+                // PORT_IDE_DRIVE_HEAD
+                // hard disk drive and head register 0x1f6
+                // b7 Extended data field for ECC
+                // b6/b5: Used to be sector size. 00=256,01=512,10=1024,11=128
+                // Since 512 was always used, bit 6 was taken to mean LBA mode:
+                // b6 1=LBA mode, 0=CHS mode
+                // b5 1
+                // b4: DRV
+                // b3..0 HD3..HD0
 
-            int intlbaMode = 0;
-            if (channels[this.curChannelIndex].getSelectedController()
-                    .getLbaMode() > 0) {
-                intlbaMode = 1;
-            }
-
-            value[0] = (byte) ((1 << 7) | (intlbaMode << 6)
-                    | (1 << 5)
-                    | // 01b = 512 sector size
-                    (channels[this.curChannelIndex].getSelectedDriveIndex() << 4) | (channels[this.curChannelIndex]
-                    .getSelectedDrive().getCurrentHead() << 0));
-
-            break;
-
-        case 0x07:
-        case 0x16:
-            // PORT_IDE_STATUS_CMD
-            // Hard Disk Status 0x1f7
-            // PORT_IDE_ALT_STATUS_DEVICE
-            // Hard Disk Alternate Status 0x3f6
-
-            if (!channels[this.curChannelIndex].isSelectedDrivePresent()) {
-                // (mch) Just return zero for these registers
-                value[0] = 0;
-
-            } else {
-
-                value[0] = (byte) ((channels[this.curChannelIndex]
-                        .getSelectedController().getStatus().getBusy() << 7)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus()
-                                .getDriveReady() << 6)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus()
-                                .getWriteFault() << 5)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus()
-                                .getSeekComplete() << 4)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus().getDrq() << 3)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus()
-                                .getCorrectedData() << 2)
-                        | (channels[this.curChannelIndex]
-                                .getSelectedController().getStatus()
-                                .getIndexPulse() << 1) | (channels[this.curChannelIndex]
-                        .getSelectedController().getStatus().getErr()));
-
-                channels[this.curChannelIndex].getSelectedController()
-                        .getStatus().incrementIndexPulseCount();
-                channels[this.curChannelIndex].getSelectedController()
-                        .getStatus().setIndexPulse(0);
-
+                int intlbaMode = 0;
                 if (channels[this.curChannelIndex].getSelectedController()
-                        .getStatus().getIndexPulseCount() >= ATAConstants.INDEX_PULSE_CYCLE) {
-                    channels[this.curChannelIndex].getSelectedController()
-                            .getStatus().setIndexPulse(1);
-                    channels[this.curChannelIndex].getSelectedController()
-                            .getStatus().setIndexPulseCount(0);
+                        .getLbaMode() > 0) {
+                    intlbaMode = 1;
                 }
 
-            }
+                value[0] = (byte) ((1 << 7) | (intlbaMode << 6)
+                        | (1 << 5)
+                        | // 01b = 512 sector size
+                        (channels[this.curChannelIndex].getSelectedDriveIndex() << 4) | (channels[this.curChannelIndex]
+                        .getSelectedDrive().getCurrentHead() << 0));
 
-            if (channelPort == 0x07) {
-                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
-                pic.clearIRQ(getSelectedChannel().getIrqNumber());
-            }
+                break;
 
-            break;
+            case 0x07:
+            case 0x16:
+                // PORT_IDE_STATUS_CMD
+                // Hard Disk Status 0x1f7
+                // PORT_IDE_ALT_STATUS_DEVICE
+                // Hard Disk Alternate Status 0x3f6
 
-        case 0x17:
-            // PORT_IDE_DRIVE_ADDRESS
-            // Hard Disk Address Register 0x3f7
-            // Obsolete and unsupported register. Not driven by hard
-            // disk controller. Report all 1's. If floppy controller
-            // is handling this address, it will call this function
-            // set/clear D7 (the only bit it handles), then return
-            // the combined value
-            value[0] = (byte) 0xff;
+                if (!channels[this.curChannelIndex].isSelectedDrivePresent()) {
+                    // (mch) Just return zero for these registers
+                    value[0] = 0;
 
-            break;
-        default:
-            // Return dummy value 0xFF
-            logger.log(Level.WARNING, "[" + super.getType() + "]" + "  Port [0x"
-                    + Integer.toHexString(originalPortAddress).toUpperCase()
-                    + "] returned default value 0xFF");
-            return value;
+                } else {
+
+                    value[0] = (byte) ((channels[this.curChannelIndex]
+                            .getSelectedController().getStatus().getBusy() << 7)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus()
+                            .getDriveReady() << 6)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus()
+                            .getWriteFault() << 5)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus()
+                            .getSeekComplete() << 4)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus().getDrq() << 3)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus()
+                            .getCorrectedData() << 2)
+                            | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus()
+                            .getIndexPulse() << 1) | (channels[this.curChannelIndex]
+                            .getSelectedController().getStatus().getErr()));
+
+                    channels[this.curChannelIndex].getSelectedController()
+                            .getStatus().incrementIndexPulseCount();
+                    channels[this.curChannelIndex].getSelectedController()
+                            .getStatus().setIndexPulse(0);
+
+                    if (channels[this.curChannelIndex].getSelectedController()
+                            .getStatus().getIndexPulseCount() >= ATAConstants.INDEX_PULSE_CYCLE) {
+                        channels[this.curChannelIndex].getSelectedController()
+                                .getStatus().setIndexPulse(1);
+                        channels[this.curChannelIndex].getSelectedController()
+                                .getStatus().setIndexPulseCount(0);
+                    }
+
+                }
+
+                if (channelPort == 0x07) {
+                    ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
+                    pic.clearIRQ(getSelectedChannel().getIrqNumber());
+                }
+
+                break;
+
+            case 0x17:
+                // PORT_IDE_DRIVE_ADDRESS
+                // Hard Disk Address Register 0x3f7
+                // Obsolete and unsupported register. Not driven by hard
+                // disk controller. Report all 1's. If floppy controller
+                // is handling this address, it will call this function
+                // set/clear D7 (the only bit it handles), then return
+                // the combined value
+                value[0] = (byte) 0xff;
+
+                break;
+            default:
+                // Return dummy value 0xFF
+                logger.log(Level.WARNING, "[" + super.getType() + "]" + "  Port [0x"
+                        + Integer.toHexString(originalPortAddress).toUpperCase()
+                        + "] returned default value 0xFF");
+                return value;
         }
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -1026,7 +1045,8 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the data read.
      */
-    private byte[] readSectors(int originalAddress, int ioLength) {
+    private byte[] readSectors(int originalAddress, int ioLength)
+    {
         // Clear buffer
         byte[] value = new byte[ioLength];
         for (int i = 0; i < ioLength; i++) {
@@ -1112,7 +1132,7 @@ public class ATA extends ModuleATA {
                         + "]"
                         + "  IO read returns values for index "
                         + channels[this.curChannelIndex]
-                                .getSelectedController().getBufferIndex() + " "
+                        .getSelectedController().getBufferIndex() + " "
                         + value[0] + ", " + value[1] + ", " + value[2]
                         + " and " + value[3] + " = " + full32bitintvalue);
 
@@ -1191,9 +1211,11 @@ public class ATA extends ModuleATA {
      * @return true if successful / false if write failed
      * @throws ModuleException
      * @throws dioscuri.exception.UnknownPortException
+     *
      */
     private boolean write(int originalAddress, byte[] data, int ioLength)
-            throws ModuleException, UnknownPortException {
+            throws ModuleException, UnknownPortException
+    {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Write ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -1208,7 +1230,7 @@ public class ATA extends ModuleATA {
         }
 
         Integer logicalSector = new Integer(0); // Make Integer object so can
-                                                // pass by reference
+        // pass by reference
         int ret = 0;
         boolean prevControlReset = false;
 
@@ -1247,88 +1269,88 @@ public class ATA extends ModuleATA {
         this.curChannelIndex = channelIndex;
 
         switch (channelPort) {
-        // PORT_IDE_DATA
-        // hard disk data (16bit) 0x1f0 (original byte value 0x00)
-        case 0x00: // 0x1f0
+            // PORT_IDE_DATA
+            // hard disk data (16bit) 0x1f0 (original byte value 0x00)
+            case 0x00: // 0x1f0
 
-            this.executeSetCommand(originalAddress, intData, ioLength);
+                this.executeSetCommand(originalAddress, intData, ioLength);
+                break;
+
+            case 0x01: // hard disk write precompensation 0x1f1
+                // PORT_IDE_ERROR_WPC
+                // hard disk error register 0x1f1 (original byte value 0x01)
+                getSelectedChannel().getDrives()[0].setFeatures(intData[0]);
+                getSelectedChannel().getDrives()[1].setFeatures(intData[0]);
+                break;
+
+            case 0x02: // hard disk sector count 0x1f2
+                // PORT_IDE_SECTOR_COUNT
+                // hard disk sector count 0x1f2 (original byte value 0x03)
+                getSelectedChannel().getDrives()[0].setSectorCount(intData[0]);
+                getSelectedChannel().getDrives()[1].setSectorCount(intData[0]);
+                break;
+
+            case 0x03: // hard disk sector number 0x1f3
+                // PORT_IDE_SECTOR_NUMBER
+                // hard disk sector number 0x1f3 (original byte value 0x04)
+                getSelectedChannel().getDrives()[0].setCurrentSector(intData[0]);
+                getSelectedChannel().getDrives()[1].setCurrentSector(intData[0]);
+                break;
+
+            case 0x04: // hard disk cylinder low 0x1f4
+                // PORT_IDE_CYLINDER_LOW
+                // hard disk cylinder low 0x1f4 (original byte value 0x04)
+            {
+                int newValue0 = (int) ((getSelectedChannel().getDrives()[0]
+                        .getCurrentCylinder() & 0xff00) | intData[0]);
+                getSelectedChannel().getDrives()[0].setCurrentCylinder(newValue0);
+
+                int newValue1 = (int) ((getSelectedChannel().getDrives()[1]
+                        .getCurrentCylinder() & 0xff00) | intData[0]);
+                getSelectedChannel().getDrives()[1].setCurrentCylinder(newValue1);
+            }
             break;
 
-        case 0x01: // hard disk write precompensation 0x1f1
-            // PORT_IDE_ERROR_WPC
-            // hard disk error register 0x1f1 (original byte value 0x01)
-            getSelectedChannel().getDrives()[0].setFeatures(intData[0]);
-            getSelectedChannel().getDrives()[1].setFeatures(intData[0]);
+            case 0x05: // hard disk cylinder high 0x1f5
+                // PORT_IDE_CYLINDER_HIGH
+                // hard disk cylinder high 0x1f5 (original byte value 0x05)
+            {
+                int newValue0 = (int) ((intData[0] << 8) | (getSelectedChannel()
+                        .getDrives()[0].getCurrentCylinder() & 0xff));
+                getSelectedChannel().getDrives()[0].setCurrentCylinder(newValue0);
+
+                int newValue1 = (int) ((intData[0] << 8) | (getSelectedChannel()
+                        .getDrives()[1].getCurrentCylinder() & 0xff));
+                getSelectedChannel().getDrives()[1].setCurrentCylinder(newValue1);
+            }
             break;
 
-        case 0x02: // hard disk sector count 0x1f2
-            // PORT_IDE_SECTOR_COUNT
-            // hard disk sector count 0x1f2 (original byte value 0x03)
-            getSelectedChannel().getDrives()[0].setSectorCount(intData[0]);
-            getSelectedChannel().getDrives()[1].setSectorCount(intData[0]);
-            break;
+            case 0x06: // hard disk drive and head register 0x1f6
+                // PORT_IDE_DRIVE_HEAD
+                this.setPortIdeDriveHead(originalAddress, intData);
 
-        case 0x03: // hard disk sector number 0x1f3
-            // PORT_IDE_SECTOR_NUMBER
-            // hard disk sector number 0x1f3 (original byte value 0x04)
-            getSelectedChannel().getDrives()[0].setCurrentSector(intData[0]);
-            getSelectedChannel().getDrives()[1].setCurrentSector(intData[0]);
-            break;
+                break;
 
-        case 0x04: // hard disk cylinder low 0x1f4
-            // PORT_IDE_CYLINDER_LOW
-            // hard disk cylinder low 0x1f4 (original byte value 0x04)
-        {
-            int newValue0 = (int) ((getSelectedChannel().getDrives()[0]
-                    .getCurrentCylinder() & 0xff00) | intData[0]);
-            getSelectedChannel().getDrives()[0].setCurrentCylinder(newValue0);
+            case 0x07: // hard disk command 0x1f7
+                // (mch) Writes to the command register with drive_select != 0
+                // are ignored if no secondary device is present
+                // PORT_IDE_STATUS_CMD
+                // hard disk command 0x1f7 (original byte value 0x07)
+                this.setHardDiskCommand(originalAddress, intData, logicalSector,
+                        ret);
+                break;
 
-            int newValue1 = (int) ((getSelectedChannel().getDrives()[1]
-                    .getCurrentCylinder() & 0xff00) | intData[0]);
-            getSelectedChannel().getDrives()[1].setCurrentCylinder(newValue1);
-        }
-            break;
+            case 0x16: // 0x3f6
+                // PORT_IDE_ALT_STATUS_DEVICE
+                this.setPortIdeAltStatusDevice(originalAddress, prevControlReset,
+                        intData);
+                break;
 
-        case 0x05: // hard disk cylinder high 0x1f5
-            // PORT_IDE_CYLINDER_HIGH
-            // hard disk cylinder high 0x1f5 (original byte value 0x05)
-        {
-            int newValue0 = (int) ((intData[0] << 8) | (getSelectedChannel()
-                    .getDrives()[0].getCurrentCylinder() & 0xff));
-            getSelectedChannel().getDrives()[0].setCurrentCylinder(newValue0);
-
-            int newValue1 = (int) ((intData[0] << 8) | (getSelectedChannel()
-                    .getDrives()[1].getCurrentCylinder() & 0xff));
-            getSelectedChannel().getDrives()[1].setCurrentCylinder(newValue1);
-        }
-            break;
-
-        case 0x06: // hard disk drive and head register 0x1f6
-            // PORT_IDE_DRIVE_HEAD
-            this.setPortIdeDriveHead(originalAddress, intData);
-
-            break;
-
-        case 0x07: // hard disk command 0x1f7
-            // (mch) Writes to the command register with drive_select != 0
-            // are ignored if no secondary device is present
-            // PORT_IDE_STATUS_CMD
-            // hard disk command 0x1f7 (original byte value 0x07)
-            this.setHardDiskCommand(originalAddress, intData, logicalSector,
-                    ret);
-            break;
-
-        case 0x16: // 0x3f6
-            // PORT_IDE_ALT_STATUS_DEVICE
-            this.setPortIdeAltStatusDevice(originalAddress, prevControlReset,
-                    intData);
-            break;
-
-        default:
-            // Return dummy value 0xFF
-            logger.log(Level.WARNING, "[" + super.getType() + "]"
-                    + "  Returned default value 0xFF");
-            return false;
+            default:
+                // Return dummy value 0xFF
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
+                        + "  Returned default value 0xFF");
+                return false;
         }
 
         return true;
@@ -1343,7 +1365,8 @@ public class ATA extends ModuleATA {
      * @param ioLength
      */
     private void writeSectors(int originalAddress, int[] data, int channel,
-            int ioLength) {
+                              int ioLength)
+    {
 
         if (getSelectedDriveController().getBufferIndex() >= 512) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -1468,7 +1491,8 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the value got.
      */
-    private byte[] executeGetCommand(int originalAddress, int ioLength) {
+    private byte[] executeGetCommand(int originalAddress, int ioLength)
+    {
 
         byte[] value = new byte[ioLength];
         for (int i = 0; i < ioLength; i++) {
@@ -1507,24 +1531,24 @@ public class ATA extends ModuleATA {
             return value;
 
         } else if (command == ATACommand.READ_SECTORS_WITH_RETRY // case 0x20:
-                                                                 // // READ
-                                                                 // SECTORS,
-                                                                 // with retries
+                // // READ
+                // SECTORS,
+                // with retries
                 || command == ATACommand.READ_SECTORS_WITHOUT_RETRY // case
-                                                                    // 0x21: //
-                                                                    // READ
-                                                                    // SECTORS,
-                                                                    // without
-                                                                    // retries
+                // 0x21: //
+                // READ
+                // SECTORS,
+                // without
+                // retries
                 || command == ATACommand.READ_MULTIPLE) // case 0xC4: // READ
-                                                        // MULTIPLE SECTORS
+        // MULTIPLE SECTORS
         {
 
             value = this.readSectors(originalAddress, ioLength);
 
         } else if (command == ATACommand.IDENTIFY_DRIVE // TODO: this is the
-                                                        // code from bochs to
-                                                        // check
+                // code from bochs to
+                // check
                 || command == ATACommand.PACKET_A1) {
             // IDENTIFY DEVICE
             // case 0xa1:
@@ -1598,16 +1622,16 @@ public class ATA extends ModuleATA {
                 }
 
                 switch (getSelectedDrive().getAtpi().getCommand()) {
-                case 0x28: // read (10)
-                case 0xa8: // read (12)
-                case 0xbe: // read cd
+                    case 0x28: // read (10)
+                    case 0xa8: // read (12)
+                    case 0xbe: // read cd
 
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + "  Read with no LOWLEVEL_CDROM.");
-                    break;
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                + "  Read with no LOWLEVEL_CDROM.");
+                        break;
 
-                default: // no need to load a new block
-                    break;
+                    default: // no need to load a new block
+                        break;
                 }
             }
 
@@ -1650,7 +1674,7 @@ public class ATA extends ModuleATA {
                 int newTotalBytesRemaining = channels[this.curChannelIndex]
                         .getSelectedDrive().getAtpi().getTotalBytesRemaining()
                         - channels[this.curChannelIndex].getSelectedDrive()
-                                .getAtpi().getDrqBytes();
+                        .getAtpi().getDrqBytes();
 
                 channels[this.curChannelIndex].getSelectedDrive().getAtpi()
                         .setTotalBytesRemaining(newTotalBytesRemaining);
@@ -1722,12 +1746,11 @@ public class ATA extends ModuleATA {
     /**
      * Abort the current command.
      *
-     * @param channel
-     *            the current channel
-     * @param value
-     *            the current data value
+     * @param channel the current channel
+     * @param value   the current data value
      */
-    private void abortCommand(int channel, int value) {
+    private void abortCommand(int channel, int value)
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + "  aborting: channel " + channel + "data " + value + ".");
 
@@ -1747,10 +1770,10 @@ public class ATA extends ModuleATA {
     /**
      * Raise an Interrupt.
      *
-     * @param channel
-     *            the current channel
+     * @param channel the current channel
      */
-    private void raiseInterrupt(int channel) {
+    private void raiseInterrupt(int channel)
+    {
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  raise interrupt called, disable_irq = "
@@ -1777,7 +1800,7 @@ public class ATA extends ModuleATA {
                 // DEV_ide_bmdma_set_irq(channel); // TODO:
             }
 
-            ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+            ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
             pic.setIRQ(irq);
 
         } else {
@@ -1792,7 +1815,8 @@ public class ATA extends ModuleATA {
      * @param originalAddress
      * @param data
      */
-    private void setPortIdeDriveHead(int originalAddress, int[] data) {
+    private void setPortIdeDriveHead(int originalAddress, int[] data)
+    {
         // hard disk drive and head register 0x1f6 (original byte value 0x06)
         // b7 Extended data field for ECC
         // b6/b5: Used to be sector size. 00=256,01=512,10=1024,11=128
@@ -1846,7 +1870,8 @@ public class ATA extends ModuleATA {
      * @param data
      */
     private void setPortIdeAltStatusDevice(int originalAddress,
-            boolean prevControlReset, int[] data) {
+                                           boolean prevControlReset, int[] data)
+    {
         // hard disk adapter control 0x3f6 (original byte value 0x16)
         // (mch) Even if device 1 was selected, a write to this register
         // goes to device 0 (if device 1 is absent)
@@ -1923,7 +1948,7 @@ public class ATA extends ModuleATA {
                         .setDisableIrq(false);
 
                 // TODO as per BOCHS this code is inside a loop, but seems unnecessary
-                ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+                ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
                 pic.clearIRQ(getSelectedChannel().getIrqNumber());
             }
 
@@ -1957,7 +1982,8 @@ public class ATA extends ModuleATA {
      * @param data
      * @param ioLength
      */
-    private void executeSetCommand(int originalAddress, int[] data, int ioLength) {
+    private void executeSetCommand(int originalAddress, int[] data, int ioLength)
+    {
 
         int currentCommand = getSelectedDriveController().getCurrentCommand();
 
@@ -1970,9 +1996,7 @@ public class ATA extends ModuleATA {
                     + currentCommand + " not recognised");
 
             return;
-        }
-
-        else if (command == ATACommand.WRITE_SECTORS_WITH_RETRY
+        } else if (command == ATACommand.WRITE_SECTORS_WITH_RETRY
                 || command == ATACommand.WRITE_MULTIPLE) {
             writeSectors(originalAddress, data, curChannelIndex, ioLength);
 
@@ -1993,9 +2017,10 @@ public class ATA extends ModuleATA {
      * @param bufferSize
      * @return true if read successful / false if failed
      */
-    private boolean ideReadData(int channel, byte[] buffer, int bufferSize) {
+    private boolean ideReadData(int channel, byte[] buffer, int bufferSize)
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         int logicalSector = 0;
 
@@ -2022,8 +2047,8 @@ public class ATA extends ModuleATA {
             try {
                 int hdNum = getSelectedDrive().hdNumber;
 
-                if(hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_START);
-                if(hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_START);
+                if (hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_START);
+                if (hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_START);
 
                 byte[] theData = getSelectedDrive().readData(
                         getSelectedDriveController().getBuffer(),
@@ -2033,8 +2058,8 @@ public class ATA extends ModuleATA {
                     getSelectedDriveController().setBuffer(i, theData[i]);
                 }
 
-                if(hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_STOP);
-                if(hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_STOP);
+                if (hdNum == 1) emu.statusChanged(Emulator.MODULE_ATA_HD1_TRANSFER_STOP);
+                if (hdNum == 2) emu.statusChanged(Emulator.MODULE_ATA_HD2_TRANSFER_STOP);
 
             } catch (IOException e) {
                 logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -2061,9 +2086,10 @@ public class ATA extends ModuleATA {
      * @param bufferSize
      * @return true if read successful / false if failed
      */
-    private boolean ideWriteData(int channel, byte[] buffer, int bufferSize) {
+    private boolean ideWriteData(int channel, byte[] buffer, int bufferSize)
+    {
 
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
         int logicalSector = 0;
 
@@ -2133,7 +2159,8 @@ public class ATA extends ModuleATA {
      * @param ioLength
      */
     private void setPacketA0(int originalAddress, int channel, int[] data,
-            int ioLength) {
+                             int ioLength)
+    {
 
         if (getSelectedDriveController().getBufferIndex() >= ATAConstants.PACKET_SIZE) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -2173,966 +2200,966 @@ public class ATA extends ModuleATA {
             getSelectedDriveController().setBufferSize(2048);
 
             switch (atapiCommand) {
-            case (byte) 0x00: // test unit ready
+                case (byte) 0x00: // test unit ready
 
-                if (getSelectedDrive().getCdRom().isReady()) {
-                    atapiCmdNop(channel);
+                    if (getSelectedDrive().getCdRom().isReady()) {
+                        atapiCmdNop(channel);
 
-                } else {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, false);
-                }
-                raiseInterrupt(channel);
-
-                break;
-            case (byte) 0x03: // request sense
-            {
-
-                int allocLength = getSelectedDriveController().getBuffer()[4];
-
-                initSendAtapiCommand(channel, atapiCommand, 18, allocLength,
-                        false);
-
-                // sense data
-                getSelectedDriveController().setBuffer(0,
-                        (byte) (0x70 | (1 << 7)));
-                getSelectedDriveController().setBuffer(1, (byte) (0));
-                getSelectedDriveController().setBuffer(
-                        2,
-                        (byte) getSelectedDrive().getSenseInfo().getSenseKey()
-                                .getValue());
-                getSelectedDriveController().setBuffer(
-                        3,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getInformation()[0]);
-                getSelectedDriveController().setBuffer(
-                        4,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getInformation()[1]);
-                getSelectedDriveController().setBuffer(
-                        5,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getInformation()[2]);
-                getSelectedDriveController().setBuffer(
-                        6,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getInformation()[3]);
-                getSelectedDriveController().setBuffer(7, (byte) (17 - 7)); // TODO:
-                                                                            // 17
-                                                                            // -7
-                                                                            // ???
-                getSelectedDriveController().setBuffer(
-                        8,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getSpecificInf()[0]);
-                getSelectedDriveController().setBuffer(
-                        9,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getSpecificInf()[1]);
-                getSelectedDriveController().setBuffer(
-                        10,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getSpecificInf()[2]);
-                getSelectedDriveController().setBuffer(
-                        11,
-                        (byte) getSelectedDrive().getSenseInfo()
-                                .getSpecificInf()[3]);
-                getSelectedDriveController().setBuffer(
-                        12,
-                        (byte) getSelectedDrive().getSenseInfo().getAsc()
-                                .getValue());
-                getSelectedDriveController().setBuffer(13,
-                        (byte) getSelectedDrive().getSenseInfo().getAscq());
-                getSelectedDriveController().setBuffer(14,
-                        (byte) getSelectedDrive().getSenseInfo().getFruc());
-                getSelectedDriveController()
-                        .setBuffer(
-                                15,
-                                (byte) getSelectedDrive().getSenseInfo()
-                                        .getKeySpec()[0]);
-                getSelectedDriveController()
-                        .setBuffer(
-                                16,
-                                (byte) getSelectedDrive().getSenseInfo()
-                                        .getKeySpec()[1]);
-                getSelectedDriveController()
-                        .setBuffer(
-                                17,
-                                (byte) getSelectedDrive().getSenseInfo()
-                                        .getKeySpec()[2]);
-
-                readyToSendAtapi(channel);
-            }
-                break;
-
-            case (byte) 0x1b: // start stop unit
-            {
-                // bx_bool Immed = (BX_SELECTED_CONTROLLER(channel).buffer[1] >>
-                // 0) & 1; //BOCHS comment
-                int loEj = (getSelectedDriveController().getBuffer()[4] >> 1) & 1;
-                int start = (getSelectedDriveController().getBuffer()[4] >> 0) & 1;
-
-                if (!(loEj > 0) && !(start > 0)) { // stop the disc
-                    // FIXME: Stop disc not implemented
-
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + "  Stop disc not implemented.");
-
-                    atapiCmdNop(channel);
+                    } else {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, false);
+                    }
                     raiseInterrupt(channel);
 
-                } else if (!(loEj > 0) && (start > 0)) { // start (spin up) the
-                                                         // disc
+                    break;
+                case (byte) 0x03: // request sense
+                {
 
-                    if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-                        // TODO:
-                        // BX_SELECTED_DRIVE(channel).cdrom.cd->start_cdrom();
+                    int allocLength = getSelectedDriveController().getBuffer()[4];
+
+                    initSendAtapiCommand(channel, atapiCommand, 18, allocLength,
+                            false);
+
+                    // sense data
+                    getSelectedDriveController().setBuffer(0,
+                            (byte) (0x70 | (1 << 7)));
+                    getSelectedDriveController().setBuffer(1, (byte) (0));
+                    getSelectedDriveController().setBuffer(
+                            2,
+                            (byte) getSelectedDrive().getSenseInfo().getSenseKey()
+                                    .getValue());
+                    getSelectedDriveController().setBuffer(
+                            3,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getInformation()[0]);
+                    getSelectedDriveController().setBuffer(
+                            4,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getInformation()[1]);
+                    getSelectedDriveController().setBuffer(
+                            5,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getInformation()[2]);
+                    getSelectedDriveController().setBuffer(
+                            6,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getInformation()[3]);
+                    getSelectedDriveController().setBuffer(7, (byte) (17 - 7)); // TODO:
+                    // 17
+                    // -7
+                    // ???
+                    getSelectedDriveController().setBuffer(
+                            8,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getSpecificInf()[0]);
+                    getSelectedDriveController().setBuffer(
+                            9,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getSpecificInf()[1]);
+                    getSelectedDriveController().setBuffer(
+                            10,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getSpecificInf()[2]);
+                    getSelectedDriveController().setBuffer(
+                            11,
+                            (byte) getSelectedDrive().getSenseInfo()
+                                    .getSpecificInf()[3]);
+                    getSelectedDriveController().setBuffer(
+                            12,
+                            (byte) getSelectedDrive().getSenseInfo().getAsc()
+                                    .getValue());
+                    getSelectedDriveController().setBuffer(13,
+                            (byte) getSelectedDrive().getSenseInfo().getAscq());
+                    getSelectedDriveController().setBuffer(14,
+                            (byte) getSelectedDrive().getSenseInfo().getFruc());
+                    getSelectedDriveController()
+                            .setBuffer(
+                                    15,
+                                    (byte) getSelectedDrive().getSenseInfo()
+                                            .getKeySpec()[0]);
+                    getSelectedDriveController()
+                            .setBuffer(
+                                    16,
+                                    (byte) getSelectedDrive().getSenseInfo()
+                                            .getKeySpec()[1]);
+                    getSelectedDriveController()
+                            .setBuffer(
+                                    17,
+                                    (byte) getSelectedDrive().getSenseInfo()
+                                            .getKeySpec()[2]);
+
+                    readyToSendAtapi(channel);
+                }
+                break;
+
+                case (byte) 0x1b: // start stop unit
+                {
+                    // bx_bool Immed = (BX_SELECTED_CONTROLLER(channel).buffer[1] >>
+                    // 0) & 1; //BOCHS comment
+                    int loEj = (getSelectedDriveController().getBuffer()[4] >> 1) & 1;
+                    int start = (getSelectedDriveController().getBuffer()[4] >> 0) & 1;
+
+                    if (!(loEj > 0) && !(start > 0)) { // stop the disc
+                        // FIXME: Stop disc not implemented
+
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                + "  Stop disc not implemented.");
+
+                        atapiCmdNop(channel);
+                        raiseInterrupt(channel);
+
+                    } else if (!(loEj > 0) && (start > 0)) { // start (spin up) the
+                        // disc
+
+                        if (ATAConstants.IS_LOW_LEVEL_CDROM) {
+                            // TODO:
+                            // BX_SELECTED_DRIVE(channel).cdrom.cd->start_cdrom();
+                        }
+
+                        // TODO: ATAPI start disc not reading TOC
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                + "  ATAPI start disc not reading TOC.");
+                        atapiCmdNop(channel);
+                        raiseInterrupt(channel);
+
+                    } else if ((loEj > 0) && !(start > 0)) { // Eject the disc
+
+                        atapiCmdNop(channel);
+
+                        if (getSelectedDrive().getCdRom().isReady()) {
+                            if (ATAConstants.IS_LOW_LEVEL_CDROM) {
+                                // BX_SELECTED_DRIVE(channel).cdrom.cd->eject_cdrom();
+                            }
+
+                            getSelectedDrive().getCdRom().setReady(false);
+                            // TODO: If you want to update GUI for CD-ROM, then put it in here!
+                        }
+                        raiseInterrupt(channel);
+                    } else { // Load the disc
+                        // My guess is that this command only closes the tray,
+                        // that's a no-op for us
+                        atapiCmdNop(channel);
+                        raiseInterrupt(channel);
+                    }
+                }
+                break;
+                case (byte) 0xbd: // mechanism status
+                {
+
+                    int allocLength = 0;
+                    // allocLength =
+                    // read_16bit(BgetSelectedDriveController().getBuffer() + 8);
+                    // TODO:check 8 is the offset
+                    allocLength = read16bit(getSelectedDriveController().getBuffer(), 8);
+
+                    if (allocLength == 0) {
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]" +
+                                "  Not implemented: Zero allocation length to MECHANISM STATUS.");
+                        return;
                     }
 
-                    // TODO: ATAPI start disc not reading TOC
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + "  ATAPI start disc not reading TOC.");
-                    atapiCmdNop(channel);
-                    raiseInterrupt(channel);
+                    initSendAtapiCommand(channel, atapiCommand, 8, allocLength,
+                            false);
 
-                } else if ((loEj > 0) && !(start > 0)) { // Eject the disc
+                    getSelectedDriveController().setBuffer(0, (byte) 0); // reserved
+                    // for non
+                    // changers
+                    getSelectedDriveController().setBuffer(1, (byte) 0); // reserved
+                    // for non
+                    // changers
 
-                    atapiCmdNop(channel);
+                    // TODO: seems to be set on dummy values
+                    getSelectedDriveController().setBuffer(2, (byte) 0); // Current
+                    // LBA
+                    getSelectedDriveController().setBuffer(3, (byte) 0); // Current
+                    // LBA
+                    getSelectedDriveController().setBuffer(4, (byte) 0); // Current
+                    // LBA
+
+                    getSelectedDriveController().setBuffer(5, (byte) 1); // one slot
+
+                    getSelectedDriveController().setBuffer(6, (byte) 0); // slot
+                    // table
+                    // length
+                    getSelectedDriveController().setBuffer(7, (byte) 0); // slot
+                    // table
+                    // length
+
+                    readyToSendAtapi(channel);
+                }
+                break;
+
+                case (byte) 0x5a: // mode sense
+                {
+
+                    int allocLength = 0;
+
+                    // int allocLength =
+                    // read_16bit(getSelectedDriveController().getBuffer() + 7);
+                    // TODO: check the offset 7
+                    allocLength = read16bit(getSelectedDriveController()
+                            .getBuffer(), 7);
+
+                    int pc = getSelectedDriveController().getBuffer()[2] >> 6;
+                    int pageCode = getSelectedDriveController().getBuffer()[2] & 0x3f;
+
+                    switch (pc) {
+                        case 0x0: // current values
+                            switch (pageCode) {
+                                case 0x01: // error recovery
+
+                                    initSendAtapiCommand(channel, atapiCommand,
+                                            (getSelectedDrive().getCdRom()
+                                                    .getErrorRecovery().length + 8),
+                                            allocLength, false);
+
+                                    // TODO: error recove is by ref
+                                    // initModeSenseSingle(channel,
+                                    // &BX_SELECTED_DRIVE(channel).cdrom.current.error_recovery,
+                                    // sizeof(error_recovery_t));
+
+                                    // Object[] array =
+                                    // getSelectedDrive().getCdRom().getErrorRecovery();
+                                    // TODO:
+                                    // initModeSenseSingle(channel,
+                                    // getSelectedDrive().getCdRom().getErrorRecovery(),
+                                    // getSelectedDrive().getCdRom().getErrorRecovery().length);
+
+                                    readyToSendAtapi(channel);
+                                    break;
+
+                                case 0x2a: // CD-ROM capabilities & mech. status
+
+                                    initSendAtapiCommand(channel, atapiCommand, 28,
+                                            allocLength, false);
+
+                                    // TODO: check this
+                                    Object[] dataAsArray = {getSelectedDriveController()
+                                            .getBuffer()[8]};
+
+                                    // TODO buffer 8 is by ref
+                                    initModeSenseSingle(channel, dataAsArray, 28);
+
+                                    getSelectedDriveController().setBuffer(8, (byte) 0x2a);
+                                    getSelectedDriveController().setBuffer(9, (byte) 0x12);
+                                    getSelectedDriveController().setBuffer(10, (byte) 0x00);
+                                    getSelectedDriveController().setBuffer(11, (byte) 0x00);
+                                    // Multisession, Mode 2 Form 2, Mode 2 Form 1
+                                    getSelectedDriveController().setBuffer(12, (byte) 0x70);
+                                    getSelectedDriveController().setBuffer(13,
+                                            (byte) (3 << 5));
+                                    getSelectedDriveController().setBuffer(
+                                            14,
+                                            (byte) (1
+                                                    | // TODO: previously char
+                                                    (getSelectedDrive().getCdRom()
+                                                            .isLocked() ? (1 << 1) : 0)
+                                                    | (1 << 3) | (1 << 5)));
+                                    getSelectedDriveController().setBuffer(15, (byte) 0x00);
+                                    getSelectedDriveController().setBuffer(16,
+                                            (byte) ((706 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(17,
+                                            (byte) (706 & 0xff));
+                                    getSelectedDriveController().setBuffer(18, (byte) 0);
+                                    getSelectedDriveController().setBuffer(19, (byte) 2);
+                                    getSelectedDriveController().setBuffer(20,
+                                            (byte) ((512 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(21,
+                                            (byte) (512 & 0xff));
+                                    getSelectedDriveController().setBuffer(22,
+                                            (byte) ((706 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(23,
+                                            (byte) (706 & 0xff));
+                                    getSelectedDriveController().setBuffer(24, (byte) 0);
+                                    getSelectedDriveController().setBuffer(25, (byte) 0);
+                                    getSelectedDriveController().setBuffer(26, (byte) 0);
+                                    getSelectedDriveController().setBuffer(27, (byte) 0);
+                                    readyToSendAtapi(channel);
+                                    break;
+
+                                case 0x0d: // CD-ROM
+                                case 0x0e: // CD-ROM audio control
+                                case 0x3f: // all
+                                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE (curr), page code "
+                                            + pageCode + ", not implemented yet.");
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+
+                                default:
+                                    // not implemeted by this device
+                                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE pc " + pc
+                                            + ", page code, " + pageCode
+                                            + ", not implemented by device.");
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+                            }
+                            break;
+
+                        case 0x1: // changeable values
+                            switch (pageCode) {
+                                case 0x01: // error recovery
+                                case 0x0d: // CD-ROM
+                                case 0x0e: // CD-ROM audio control
+                                case 0x2a: // CD-ROM capabilities & mech. status
+                                case 0x3f: // all
+
+                                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE (chg), page code "
+                                            + pageCode + ", not implemented yet.");
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+
+                                default:
+                                    // not implemeted by this device
+
+                                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE PC " + pc
+                                            + ", page code " + pageCode
+                                            + ", not implemented by device.");
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+                            }
+                            break;
+
+                        case 0x2: // default values
+                            switch (pageCode) {
+                                case 0x2a: // CD-ROM capabilities & mech. status, copied
+                                    // from current values
+                                    initSendAtapiCommand(channel, atapiCommand, 28,
+                                            allocLength, false);
+
+                                    // initModeSenseSingle(channel,
+                                    // &BX_SELECTED_CONTROLLER(channel).buffer[8], 28);
+                                    // TODO: by ref input
+
+                                    Object[] dummy = {getSelectedDriveController()
+                                            .getBuffer()[8]};
+                                    initModeSenseSingle(channel, dummy, 28);
+
+                                    getSelectedDriveController()
+                                            .setBuffer(8, (byte) (0x2a));
+                                    getSelectedDriveController()
+                                            .setBuffer(9, (byte) (0x12));
+                                    getSelectedDriveController().setBuffer(10,
+                                            (byte) (0x00));
+                                    getSelectedDriveController().setBuffer(11,
+                                            (byte) (0x00));
+                                    // Multisession, Mode 2 Form 2, Mode 2 Form 1
+                                    getSelectedDriveController().setBuffer(12,
+                                            (byte) (0x70));
+                                    getSelectedDriveController().setBuffer(13,
+                                            (byte) (3 << 5));
+
+                                    // getSelectedDriveController().setBuffer(14, (unsigned
+                                    // char) (1 | //TODO: check use char
+                                    getSelectedDriveController().setBuffer(
+                                            14,
+                                            (byte) (1
+                                                    | (getSelectedDrive().getCdRom()
+                                                    .isLocked() ? (1 << 1) : 0)
+                                                    | (1 << 3) | (1 << 5)));
+
+                                    getSelectedDriveController().setBuffer(15,
+                                            (byte) (0x00));
+                                    getSelectedDriveController().setBuffer(16,
+                                            (byte) ((706 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(17,
+                                            (byte) (706 & 0xff));
+                                    getSelectedDriveController().setBuffer(18, (byte) 0);
+                                    getSelectedDriveController().setBuffer(19, (byte) 2);
+                                    getSelectedDriveController().setBuffer(20,
+                                            (byte) ((512 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(21,
+                                            (byte) (512 & 0xff));
+                                    getSelectedDriveController().setBuffer(22,
+                                            (byte) ((706 >> 8) & 0xff));
+                                    getSelectedDriveController().setBuffer(23,
+                                            (byte) (706 & 0xff));
+                                    getSelectedDriveController().setBuffer(24, (byte) 0);
+                                    getSelectedDriveController().setBuffer(25, (byte) 0);
+                                    getSelectedDriveController().setBuffer(26, (byte) 0);
+                                    getSelectedDriveController().setBuffer(27, (byte) 0);
+
+                                    readyToSendAtapi(channel);
+                                    break;
+
+                                case 0x01: // error recovery
+                                case 0x0d: // CD-ROM
+                                case 0x0e: // CD-ROM audio control
+                                case 0x3f: // all
+
+                                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE (dflt), page code "
+                                            + pageCode + ", not implemented.");
+
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+
+                                default:
+                                    // not implemeted by this device
+                                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                                            + "  cdrom: MODE SENSE PC " + pc
+                                            + ", page code " + pageCode
+                                            + ", not implemented by device.");
+
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+                            }
+                            break;
+
+                        case 0x3: // saved values not implemented
+                            atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                    AscType.SAVING_PARAMETERS_NOT_SUPPORTED, true);
+                            raiseInterrupt(channel);
+                            break;
+
+                        default:
+                            logger
+                                    .log(
+                                            Level.SEVERE,
+                                            "["
+                                                    + super.getType()
+                                                    + "]"
+                                                    + "  IO Write setPacketA0 pc value not recognised.");
+
+                            break;
+                    }
+                }
+                break;
+
+                case (byte) 0x12: // inquiry
+                {
+                    int allocLength = getSelectedDriveController().getBuffer()[4];
+
+                    initSendAtapiCommand(channel, atapiCommand, 36, allocLength,
+                            false);
+
+                    getSelectedDriveController().setBuffer(0, (byte) 0x05); // CD-ROM
+                    getSelectedDriveController().setBuffer(1, (byte) 0x80); // Removable
+                    getSelectedDriveController().setBuffer(2, (byte) 0x00); // ISO,
+                    // ECMA,
+                    // ANSI
+                    // version
+                    getSelectedDriveController().setBuffer(3, (byte) 0x21); // ATAPI-2,
+                    // as
+                    // specified
+                    getSelectedDriveController().setBuffer(4, (byte) 31); // additional
+                    // length
+                    // (total
+                    // 36)
+                    // TODO:
+                    // 0x is
+                    // missing
+                    // in
+                    // BOCHS?
+                    getSelectedDriveController().setBuffer(5, (byte) 0x00); // reserved
+                    getSelectedDriveController().setBuffer(6, (byte) 0x00); // reserved
+                    getSelectedDriveController().setBuffer(7, (byte) 0x00); // reserved
+
+                    // Vendor ID
+                    String tempVendorId = "Undefined   ";
+                    char[] vendorId = tempVendorId.toCharArray();
+
+                    for (int i = 0; i < 8; i++) {
+                        getSelectedDriveController().setBuffer(8 + i,
+                                (byte) vendorId[i]);
+                    }
+
+                    // Product ID
+                    String tempProductId = "Compatible CD-ROM    ";
+                    char[] productId = tempProductId.toCharArray();
+
+                    for (int i = 0; i < 16; i++) {
+                        getSelectedDriveController().setBuffer(16 + i,
+                                (byte) productId[i]);
+                    }
+
+                    // Product Revision level
+                    String tempRevLevel = "1.0 ";
+                    char[] revLevel = tempRevLevel.toCharArray();
+
+                    for (int i = 0; i < 4; i++) {
+                        getSelectedDriveController().setBuffer(32 + i,
+                                (byte) revLevel[i]);
+                    }
+
+                    readyToSendAtapi(channel);
+                }
+                break;
+                case (byte) 0x25: // read cd-rom capacity
+                {
+                    // no allocation length???
+                    initSendAtapiCommand(channel, atapiCommand, 8, 8, false);
+
+                    if (getSelectedDrive().getCdRom().isReady()) {
+                        int capacity = getSelectedDrive().getCdRom().getCapacity() - 1;
+                        getSelectedDriveController().setBuffer(0,
+                                (byte) ((capacity >> 24) & 0xff));
+                        getSelectedDriveController().setBuffer(1,
+                                (byte) ((capacity >> 16) & 0xff));
+                        getSelectedDriveController().setBuffer(2,
+                                (byte) ((capacity >> 8) & 0xff));
+                        getSelectedDriveController().setBuffer(3,
+                                (byte) ((capacity >> 0) & 0xff));
+                        getSelectedDriveController().setBuffer(4,
+                                (byte) ((2048 >> 24) & 0xff));
+                        getSelectedDriveController().setBuffer(5,
+                                (byte) ((2048 >> 16) & 0xff));
+                        getSelectedDriveController().setBuffer(6,
+                                (byte) ((2048 >> 8) & 0xff));
+                        getSelectedDriveController().setBuffer(7,
+                                (byte) ((2048 >> 0) & 0xff));
+
+                        readyToSendAtapi(channel);
+
+                    } else {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
+                    }
+                }
+                break;
+                case (byte) 0xbe: // read cd
+                {
+                    if (getSelectedDrive().getCdRom().isReady()) {
+                        int lba = 0;
+                        // TODO int lba =
+                        // read_32bit(getSelectedDriveController().getBuffer() + 2);
+                        lba = read32bit(getSelectedDriveController().getBuffer(), 2);
+
+                        int transferLength = getSelectedDriveController()
+                                .getBuffer()[8]
+                                | (getSelectedDriveController().getBuffer()[7] << 8)
+                                | (getSelectedDriveController().getBuffer()[6] << 16);
+
+                        int transferReq = getSelectedDriveController().getBuffer()[9];
+                        if (transferLength == 0) {
+                            atapiCmdNop(channel);
+                            raiseInterrupt(channel);
+                            break;
+                        }
+                        switch (transferReq & 0xf8) {
+                            case 0x00:
+                                atapiCmdNop(channel);
+                                raiseInterrupt(channel);
+                                break;
+
+                            case 0xf8:
+                                getSelectedDriveController().setBufferSize(2352);
+                                // TODO: No break here in BOCHS
+
+                            case 0x10:
+
+                                initSendAtapiCommand(channel, atapiCommand,
+                                        transferLength
+                                                * getSelectedDriveController()
+                                                .getBufferSize(),
+                                        transferLength
+                                                * getSelectedDriveController()
+                                                .getBufferSize(), true);
+
+                                getSelectedDrive().getCdRom().setRemainingBlocks(
+                                        transferLength);
+                                getSelectedDrive().getCdRom().setNextLba(lba);
+
+                                if (getSelectedDriveController().getPacketDma() == 0) {
+                                    readyToSendAtapi(channel);
+                                }
+                                break;
+
+                            default:
+                                logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                        + "  Read CD: unknown format.");
+
+                                atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                        AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                raiseInterrupt(channel);
+                        }
+                    } else {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
+                    }
+                }
+                break;
+
+                case (byte) 0x43: // read toc
+                {
+                    int msf = 0;
 
                     if (getSelectedDrive().getCdRom().isReady()) {
                         if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-                            // BX_SELECTED_DRIVE(channel).cdrom.cd->eject_cdrom();
+                            msf = (getSelectedDriveController().getBuffer()[1] >> 1) & 1;
+                            int startingTrack = getSelectedDriveController()
+                                    .getBuffer()[6];
+                            int toc_length;
                         }
 
-                        getSelectedDrive().getCdRom().setReady(false);
-                        // TODO: If you want to update GUI for CD-ROM, then put it in here!
+                        @SuppressWarnings("unused")
+                        int allocLength = 0;
+                        // int allocLength =
+                        // read_16bit(getSelectedDriveController().getBuffer() + 7);
+                        // TODO: 7 - offset?
+                        allocLength = read16bit(getSelectedDriveController()
+                                .getBuffer(), 7);
+
+                        int format = (getSelectedDriveController().getBuffer()[9] >> 6);
+
+                        // Win32: I just read the TOC using Win32's IOCTRL functions
+                        // (Ben)
+                        if (ATAConstants.WITH_WIN32) {
+
+                            if (ATAConstants.IS_LOW_LEVEL_CDROM) {
+
+                                switch (format) {
+                                    case 2:
+                                    case 3:
+                                    case 4:
+                                        if (msf != 1) {
+                                            logger
+                                                    .log(
+                                                            Level.SEVERE,
+                                                            "["
+                                                                    + super.getType()
+                                                                    + "]"
+                                                                    + "  READ_TOC_EX: msf not set for format "
+                                                                    + format + ".");
+                                        }
+                                    case 0:
+                                    case 1:
+                                    case 5:
+                                        // TODO:
+                                        // if
+                                        // (!(BX_SELECTED_DRIVE(channel).cdrom.cd->read_toc(BX_SELECTED_CONTROLLER(channel).buffer,
+                                        // &toc_length, msf, starting_track, format)))
+                                        // {
+                                        //
+                                        // atapiCmdError(channel,
+                                        // SenseType.ILLEGAL_REQUEST,
+                                        // AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                        // raiseInterrupt(channel);
+                                        // } else
+                                        // {
+                                        // initSendAtapiCommand(channel, atapi_command,
+                                        // toc_length, alloc_length);
+                                        // readyToSendAtapi(channel);
+                                        // }
+                                        break;
+                                    default:
+                                        logger.log(Level.SEVERE, "[" + super.getType()
+                                                + "]" + "  READ TOC format " + format
+                                                + " not supported.");
+                                        atapiCmdError(channel,
+                                                SenseType.ILLEGAL_REQUEST,
+                                                AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                        raiseInterrupt(channel);
+                                }
+                            } else {
+                                logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                        + "  LOWLEVEL_CDROM not defined.");
+                            }
+
+                        } else { // WIN32
+
+                            switch (format) {
+                                case 0:
+                                case 1:
+                                case 2:
+                                    if (ATAConstants.IS_LOW_LEVEL_CDROM) {
+                                        // TODO:
+                                        /*
+                                        * if
+                                        * (!(BX_SELECTED_DRIVE(channel).cdrom.cd->read_toc
+                                        * (BX_SELECTED_CONTROLLER(channel).buffer,
+                                        * &tocLength, msf, startingTrack, format))) {
+                                        * atapiCmdError(channel,
+                                        * SenseType.ILLEGAL_REQUEST,
+                                        * AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                        * raiseInterrupt(channel); } else {
+                                        * initSendAtapiCommand(channel, atapi_command,
+                                        * toc_length, alloc_length);
+                                        * readyToSendAtapi(channel); }
+                                        */
+                                    } else {
+                                        logger
+                                                .log(
+                                                        Level.SEVERE,
+                                                        "["
+                                                                + super.getType()
+                                                                + "]"
+                                                                + "  LOWLEVEL_CDROM not defined.");
+                                    }
+                                    break;
+
+                                default:
+                                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                            + "  READ TOC format " + format
+                                            + " not supported.");
+                                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                    raiseInterrupt(channel);
+                                    break;
+                            }
+                        } // WIN32
+
+                    } else {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
                     }
-                    raiseInterrupt(channel);
-                } else { // Load the disc
-                    // My guess is that this command only closes the tray,
-                    // that's a no-op for us
+                }
+                break;
+
+                case (byte) 0x28: // read (10)
+                case (byte) 0xa8: // read (12)
+                {
+                    int transferLength = 0;
+
+                    if (atapiCommand == 0x28) {
+                        // transfer_length =
+                        // read_16bit(getSelectedDriveController().getBuffer() + 7);
+                        // TODO: 7 - offset?
+                        transferLength = read16bit(getSelectedDriveController()
+                                .getBuffer(), 7);
+
+                    } else {
+                        // transfer_length =
+                        // read_32bit(getSelectedDriveController().getBuffer() + 6);
+                        // TODO: 6 - offset?
+                        transferLength = read32bit(getSelectedDriveController()
+                                .getBuffer(), 6);
+                    }
+
+                    int lba = 0;
+
+                    // int lba = read_32bit(getSelectedDriveController().getBuffer()
+                    // + 2);
+                    // TODO: 2 - offset?
+                    lba = read32bit(getSelectedDriveController().getBuffer(), 2);
+
+                    if (!getSelectedDrive().getCdRom().isReady()) {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
+
+                        break;
+                    }
+
+                    // Ben: see comment below
+                    if (lba + transferLength > getSelectedDrive().getCdRom()
+                            .getCapacity()) {
+                        transferLength = (getSelectedDrive().getCdRom()
+                                .getCapacity() - lba);
+                    }
+
+                    // if (transferLength == 0) { //BOCHS Comment
+                    if (transferLength <= 0) {
+                        atapiCmdNop(channel);
+                        raiseInterrupt(channel);
+                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                                + "  Read with transfer length <= 0, ok ("
+                                + transferLength + ")");
+                        break;
+                    }
+
+                    /*
+                    * Ben: I commented this out and added the three lines above. I
+                    * am not sure this is the correct thing to do, but it seems to
+                    * work. FIXME: I think that if the transfer_length is more than
+                    * we can transfer, we should return some sort of
+                    * flag/error/bitrep stating so. I haven't read the atapi specs
+                    * enough to know what needs to be done though. if (lba +
+                    * transfer_length > BX_SELECTED_DRIVE(channel).cdrom.capacity)
+                    * { atapi_cmd_error(channel, SENSE_ILLEGAL_REQUEST,
+                    * ASC_LOGICAL_BLOCK_OOR, 1); raise_interrupt(channel); break; }
+                    */
+                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
+                            + "  cdrom: READ LBA " + lba + ", length "
+                            + transferLength + ".");
+
+                    // handle command
+                    initSendAtapiCommand(channel, atapiCommand,
+                            transferLength * 2048, transferLength * 2048, true);
+
+                    getSelectedDrive().getCdRom()
+                            .setRemainingBlocks(transferLength);
+                    getSelectedDrive().getCdRom().setNextLba(lba);
+
+                    // TODO: deal with packet DMA
+                    if (getSelectedDriveController().getPacketDma() == 0) {
+                        readyToSendAtapi(channel);
+                    }
+                }
+                break;
+
+                case (byte) 0x2b: // seek
+                {
+
+                    int lba = 0;
+                    // lba = read_32bit(BX_SELECTED_CONTROLLER(channel).buffer + 2);
+                    // TODO: offset - 2?
+                    lba = read32bit(getSelectedDriveController().getBuffer(), 2);
+
+                    if (!getSelectedDrive().getCdRom().isReady()) {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
+                        break;
+                    }
+
+                    if (lba > getSelectedDrive().getCdRom().getCapacity()) {
+                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                AscType.LOGICAL_BLOCK_OOR, true);
+                        raiseInterrupt(channel);
+                        break;
+
+                    }
+                    if (ATAConstants.IS_LOW_LEVEL_CDROM) {
+                        // BX_SELECTED_DRIVE(channel).cdrom.cd->seek(lba); //TODO:
+
+                    } else {
+                        // BX_PANIC(("Seek with no LOWLEVEL_CDROM"));
+
+                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                                + "  Seek with no LOWLEVEL_CDROM.");
+
+                    }
+
                     atapiCmdNop(channel);
                     raiseInterrupt(channel);
                 }
-            }
                 break;
-            case (byte) 0xbd: // mechanism status
-            {
+                case (byte) 0x1e: // prevent/allow medium removal
+                {
 
-                int allocLength = 0;
-                // allocLength =
-                // read_16bit(BgetSelectedDriveController().getBuffer() + 8);
-                // TODO:check 8 is the offset
-                allocLength = read16bit(getSelectedDriveController().getBuffer(), 8);
+                    if (getSelectedDrive().getCdRom().isReady()) {
 
-                if (allocLength == 0) {
-                    logger.log(Level.SEVERE, "[" + super.getType() + "]" +
-                            "  Not implemented: Zero allocation length to MECHANISM STATUS.");
-                    return;
+                        boolean newIsLocked = (getSelectedDriveController()
+                                .getBuffer()[4] & 1) > 0;
+                        getSelectedDrive().getCdRom().setLocked(newIsLocked);
+                        atapiCmdNop(channel);
+
+                    } else {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                    }
+                    raiseInterrupt(channel);
                 }
-
-                initSendAtapiCommand(channel, atapiCommand, 8, allocLength,
-                        false);
-
-                getSelectedDriveController().setBuffer(0, (byte) 0); // reserved
-                                                                     // for non
-                                                                     // changers
-                getSelectedDriveController().setBuffer(1, (byte) 0); // reserved
-                                                                     // for non
-                                                                     // changers
-
-                // TODO: seems to be set on dummy values
-                getSelectedDriveController().setBuffer(2, (byte) 0); // Current
-                                                                     // LBA
-                getSelectedDriveController().setBuffer(3, (byte) 0); // Current
-                                                                     // LBA
-                getSelectedDriveController().setBuffer(4, (byte) 0); // Current
-                                                                     // LBA
-
-                getSelectedDriveController().setBuffer(5, (byte) 1); // one slot
-
-                getSelectedDriveController().setBuffer(6, (byte) 0); // slot
-                                                                     // table
-                                                                     // length
-                getSelectedDriveController().setBuffer(7, (byte) 0); // slot
-                                                                     // table
-                                                                     // length
-
-                readyToSendAtapi(channel);
-            }
                 break;
 
-            case (byte) 0x5a: // mode sense
-            {
+                case (byte) 0x42: // read sub-channel
+                {
+                    @SuppressWarnings("unused")
+                    int msf = getPacketField(channel, 1, 1, 1);
+                    int subQ = getPacketField(channel, 2, 6, 1);
 
-                int allocLength = 0;
+                    int dataFormat = getPacketByte(channel, 3);
+                    @SuppressWarnings("unused")
+                    int trackNumber = getPacketByte(channel, 6);
+                    int allocLength = getPacketWord(channel, 7);
 
-                // int allocLength =
-                // read_16bit(getSelectedDriveController().getBuffer() + 7);
-                // TODO: check the offset 7
-                allocLength = read16bit(getSelectedDriveController()
-                        .getBuffer(), 7);
+                    int retLength = 4; // header size
 
-                int pc = getSelectedDriveController().getBuffer()[2] >> 6;
-                int pageCode = getSelectedDriveController().getBuffer()[2] & 0x3f;
+                    if (!getSelectedDrive().getCdRom().isReady()) {
+                        atapiCmdError(channel, SenseType.NOT_READY,
+                                AscType.MEDIUM_NOT_PRESENT, true);
+                        raiseInterrupt(channel);
 
-                switch (pc) {
-                case 0x0: // current values
-                    switch (pageCode) {
-                    case 0x01: // error recovery
+                    } else {
 
-                        initSendAtapiCommand(channel, atapiCommand,
-                                (getSelectedDrive().getCdRom()
-                                        .getErrorRecovery().length + 8),
+                        getSelectedDriveController().setBuffer(0, (byte) 0);
+                        getSelectedDriveController().setBuffer(1, (byte) 0); // audio
+                        // not
+                        // supported
+                        getSelectedDriveController().setBuffer(2, (byte) 0);
+                        getSelectedDriveController().setBuffer(3, (byte) 0);
+
+                        if (subQ > 0) { // !sub_q == header only
+                            if ((dataFormat == 2) || (dataFormat == 3)) { // UPC or
+                                // ISRC
+                                retLength = 24;
+                                getSelectedDriveController().setBuffer(4,
+                                        (byte) dataFormat);
+
+                                if (dataFormat == 3) {
+                                    getSelectedDriveController().setBuffer(5,
+                                            (byte) 0x14);
+                                    getSelectedDriveController().setBuffer(6,
+                                            (byte) 1);
+                                }
+
+                                getSelectedDriveController().setBuffer(8, (byte) 0); // no
+                                // UPC,
+                                // no
+                                // ISRC
+
+                            } else {
+                                atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                                        AscType.INV_FIELD_IN_CMD_PACKET, true);
+                                raiseInterrupt(channel);
+                                break;
+                            }
+                        }
+                        initSendAtapiCommand(channel, atapiCommand, retLength,
                                 allocLength, false);
-
-                        // TODO: error recove is by ref
-                        // initModeSenseSingle(channel,
-                        // &BX_SELECTED_DRIVE(channel).cdrom.current.error_recovery,
-                        // sizeof(error_recovery_t));
-
-                        // Object[] array =
-                        // getSelectedDrive().getCdRom().getErrorRecovery();
-                        // TODO:
-                        // initModeSenseSingle(channel,
-                        // getSelectedDrive().getCdRom().getErrorRecovery(),
-                        // getSelectedDrive().getCdRom().getErrorRecovery().length);
-
                         readyToSendAtapi(channel);
-                        break;
-
-                    case 0x2a: // CD-ROM capabilities & mech. status
-
-                        initSendAtapiCommand(channel, atapiCommand, 28,
-                                allocLength, false);
-
-                        // TODO: check this
-                        Object[] dataAsArray = { getSelectedDriveController()
-                                .getBuffer()[8] };
-
-                        // TODO buffer 8 is by ref
-                        initModeSenseSingle(channel, dataAsArray, 28);
-
-                        getSelectedDriveController().setBuffer(8, (byte) 0x2a);
-                        getSelectedDriveController().setBuffer(9, (byte) 0x12);
-                        getSelectedDriveController().setBuffer(10, (byte) 0x00);
-                        getSelectedDriveController().setBuffer(11, (byte) 0x00);
-                        // Multisession, Mode 2 Form 2, Mode 2 Form 1
-                        getSelectedDriveController().setBuffer(12, (byte) 0x70);
-                        getSelectedDriveController().setBuffer(13,
-                                (byte) (3 << 5));
-                        getSelectedDriveController().setBuffer(
-                                14,
-                                (byte) (1
-                                        | // TODO: previously char
-                                        (getSelectedDrive().getCdRom()
-                                                .isLocked() ? (1 << 1) : 0)
-                                        | (1 << 3) | (1 << 5)));
-                        getSelectedDriveController().setBuffer(15, (byte) 0x00);
-                        getSelectedDriveController().setBuffer(16,
-                                (byte) ((706 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(17,
-                                (byte) (706 & 0xff));
-                        getSelectedDriveController().setBuffer(18, (byte) 0);
-                        getSelectedDriveController().setBuffer(19, (byte) 2);
-                        getSelectedDriveController().setBuffer(20,
-                                (byte) ((512 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(21,
-                                (byte) (512 & 0xff));
-                        getSelectedDriveController().setBuffer(22,
-                                (byte) ((706 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(23,
-                                (byte) (706 & 0xff));
-                        getSelectedDriveController().setBuffer(24, (byte) 0);
-                        getSelectedDriveController().setBuffer(25, (byte) 0);
-                        getSelectedDriveController().setBuffer(26, (byte) 0);
-                        getSelectedDriveController().setBuffer(27, (byte) 0);
-                        readyToSendAtapi(channel);
-                        break;
-
-                    case 0x0d: // CD-ROM
-                    case 0x0e: // CD-ROM audio control
-                    case 0x3f: // all
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE (curr), page code "
-                                + pageCode + ", not implemented yet.");
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
-
-                    default:
-                        // not implemeted by this device
-                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE pc " + pc
-                                + ", page code, " + pageCode
-                                + ", not implemented by device.");
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
                     }
-                    break;
+                }
+                break;
 
-                case 0x1: // changeable values
-                    switch (pageCode) {
-                    case 0x01: // error recovery
-                    case 0x0d: // CD-ROM
-                    case 0x0e: // CD-ROM audio control
-                    case 0x2a: // CD-ROM capabilities & mech. status
-                    case 0x3f: // all
-
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE (chg), page code "
-                                + pageCode + ", not implemented yet.");
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
-
-                    default:
-                        // not implemeted by this device
-
-                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE PC " + pc
-                                + ", page code " + pageCode
-                                + ", not implemented by device.");
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
-                    }
-                    break;
-
-                case 0x2: // default values
-                    switch (pageCode) {
-                    case 0x2a: // CD-ROM capabilities & mech. status, copied
-                               // from current values
-                        initSendAtapiCommand(channel, atapiCommand, 28,
-                                allocLength, false);
-
-                        // initModeSenseSingle(channel,
-                        // &BX_SELECTED_CONTROLLER(channel).buffer[8], 28);
-                        // TODO: by ref input
-
-                        Object[] dummy = { getSelectedDriveController()
-                                .getBuffer()[8] };
-                        initModeSenseSingle(channel, dummy, 28);
-
-                        getSelectedDriveController()
-                                .setBuffer(8, (byte) (0x2a));
-                        getSelectedDriveController()
-                                .setBuffer(9, (byte) (0x12));
-                        getSelectedDriveController().setBuffer(10,
-                                (byte) (0x00));
-                        getSelectedDriveController().setBuffer(11,
-                                (byte) (0x00));
-                        // Multisession, Mode 2 Form 2, Mode 2 Form 1
-                        getSelectedDriveController().setBuffer(12,
-                                (byte) (0x70));
-                        getSelectedDriveController().setBuffer(13,
-                                (byte) (3 << 5));
-
-                        // getSelectedDriveController().setBuffer(14, (unsigned
-                        // char) (1 | //TODO: check use char
-                        getSelectedDriveController().setBuffer(
-                                14,
-                                (byte) (1
-                                        | (getSelectedDrive().getCdRom()
-                                                .isLocked() ? (1 << 1) : 0)
-                                        | (1 << 3) | (1 << 5)));
-
-                        getSelectedDriveController().setBuffer(15,
-                                (byte) (0x00));
-                        getSelectedDriveController().setBuffer(16,
-                                (byte) ((706 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(17,
-                                (byte) (706 & 0xff));
-                        getSelectedDriveController().setBuffer(18, (byte) 0);
-                        getSelectedDriveController().setBuffer(19, (byte) 2);
-                        getSelectedDriveController().setBuffer(20,
-                                (byte) ((512 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(21,
-                                (byte) (512 & 0xff));
-                        getSelectedDriveController().setBuffer(22,
-                                (byte) ((706 >> 8) & 0xff));
-                        getSelectedDriveController().setBuffer(23,
-                                (byte) (706 & 0xff));
-                        getSelectedDriveController().setBuffer(24, (byte) 0);
-                        getSelectedDriveController().setBuffer(25, (byte) 0);
-                        getSelectedDriveController().setBuffer(26, (byte) 0);
-                        getSelectedDriveController().setBuffer(27, (byte) 0);
-
-                        readyToSendAtapi(channel);
-                        break;
-
-                    case 0x01: // error recovery
-                    case 0x0d: // CD-ROM
-                    case 0x0e: // CD-ROM audio control
-                    case 0x3f: // all
-
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE (dflt), page code "
-                                + pageCode + ", not implemented.");
-
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
-
-                    default:
-                        // not implemeted by this device
-                        logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                                + "  cdrom: MODE SENSE PC " + pc
-                                + ", page code " + pageCode
-                                + ", not implemented by device.");
-
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                        break;
-                    }
-                    break;
-
-                case 0x3: // saved values not implemented
+                case (byte) 0x51: // read disc info
+                {
+                    // no-op to keep the Linux CD-ROM driver happy
                     atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                            AscType.SAVING_PARAMETERS_NOT_SUPPORTED, true);
+                            AscType.INV_FIELD_IN_CMD_PACKET, true);
+                    raiseInterrupt(channel);
+                }
+                break;
+
+                case (byte) 0x55: // mode select
+                case (byte) 0xa6: // load/unload cd
+                case (byte) 0x4b: // pause/resume
+                case (byte) 0x45: // play audio
+                case (byte) 0x47: // play audio msf
+                case (byte) 0xbc: // play cd
+                case (byte) 0xb9: // read cd msf
+                case (byte) 0x44: // read header
+                case (byte) 0xba: // scan
+                case (byte) 0xbb: // set cd speed
+                case (byte) 0x4e: // stop play/scan
+                case (byte) 0x46: // ???
+                case (byte) 0x4a: // ???
+                    logger.log(Level.SEVERE, "[" + super.getType() + "]"
+                            + "  ATAPI command " + atapiCommand
+                            + " not implemented yet.");
+
+                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                            AscType.ILLEGAL_OPCODE, true);
                     raiseInterrupt(channel);
                     break;
 
                 default:
-                    logger
-                            .log(
-                                    Level.SEVERE,
-                                    "["
-                                            + super.getType()
-                                            + "]"
-                                            + "  IO Write setPacketA0 pc value not recognised.");
-
-                    break;
-                }
-            }
-                break;
-
-            case (byte) 0x12: // inquiry
-            {
-                int allocLength = getSelectedDriveController().getBuffer()[4];
-
-                initSendAtapiCommand(channel, atapiCommand, 36, allocLength,
-                        false);
-
-                getSelectedDriveController().setBuffer(0, (byte) 0x05); // CD-ROM
-                getSelectedDriveController().setBuffer(1, (byte) 0x80); // Removable
-                getSelectedDriveController().setBuffer(2, (byte) 0x00); // ISO,
-                                                                        // ECMA,
-                                                                        // ANSI
-                                                                        // version
-                getSelectedDriveController().setBuffer(3, (byte) 0x21); // ATAPI-2,
-                                                                        // as
-                                                                        // specified
-                getSelectedDriveController().setBuffer(4, (byte) 31); // additional
-                                                                      // length
-                                                                      // (total
-                                                                      // 36)
-                                                                      // TODO:
-                                                                      // 0x is
-                                                                      // missing
-                                                                      // in
-                                                                      // BOCHS?
-                getSelectedDriveController().setBuffer(5, (byte) 0x00); // reserved
-                getSelectedDriveController().setBuffer(6, (byte) 0x00); // reserved
-                getSelectedDriveController().setBuffer(7, (byte) 0x00); // reserved
-
-                // Vendor ID
-                String tempVendorId = "Undefined   ";
-                char[] vendorId = tempVendorId.toCharArray();
-
-                for (int i = 0; i < 8; i++) {
-                    getSelectedDriveController().setBuffer(8 + i,
-                            (byte) vendorId[i]);
-                }
-
-                // Product ID
-                String tempProductId = "Compatible CD-ROM    ";
-                char[] productId = tempProductId.toCharArray();
-
-                for (int i = 0; i < 16; i++) {
-                    getSelectedDriveController().setBuffer(16 + i,
-                            (byte) productId[i]);
-                }
-
-                // Product Revision level
-                String tempRevLevel = "1.0 ";
-                char[] revLevel = tempRevLevel.toCharArray();
-
-                for (int i = 0; i < 4; i++) {
-                    getSelectedDriveController().setBuffer(32 + i,
-                            (byte) revLevel[i]);
-                }
-
-                readyToSendAtapi(channel);
-            }
-                break;
-            case (byte) 0x25: // read cd-rom capacity
-            {
-                // no allocation length???
-                initSendAtapiCommand(channel, atapiCommand, 8, 8, false);
-
-                if (getSelectedDrive().getCdRom().isReady()) {
-                    int capacity = getSelectedDrive().getCdRom().getCapacity() - 1;
-                    getSelectedDriveController().setBuffer(0,
-                            (byte) ((capacity >> 24) & 0xff));
-                    getSelectedDriveController().setBuffer(1,
-                            (byte) ((capacity >> 16) & 0xff));
-                    getSelectedDriveController().setBuffer(2,
-                            (byte) ((capacity >> 8) & 0xff));
-                    getSelectedDriveController().setBuffer(3,
-                            (byte) ((capacity >> 0) & 0xff));
-                    getSelectedDriveController().setBuffer(4,
-                            (byte) ((2048 >> 24) & 0xff));
-                    getSelectedDriveController().setBuffer(5,
-                            (byte) ((2048 >> 16) & 0xff));
-                    getSelectedDriveController().setBuffer(6,
-                            (byte) ((2048 >> 8) & 0xff));
-                    getSelectedDriveController().setBuffer(7,
-                            (byte) ((2048 >> 0) & 0xff));
-
-                    readyToSendAtapi(channel);
-
-                } else {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                    raiseInterrupt(channel);
-                }
-            }
-                break;
-            case (byte) 0xbe: // read cd
-            {
-                if (getSelectedDrive().getCdRom().isReady()) {
-                    int lba = 0;
-                    // TODO int lba =
-                    // read_32bit(getSelectedDriveController().getBuffer() + 2);
-                    lba = read32bit(getSelectedDriveController().getBuffer(), 2);
-
-                    int transferLength = getSelectedDriveController()
-                            .getBuffer()[8]
-                            | (getSelectedDriveController().getBuffer()[7] << 8)
-                            | (getSelectedDriveController().getBuffer()[6] << 16);
-
-                    int transferReq = getSelectedDriveController().getBuffer()[9];
-                    if (transferLength == 0) {
-                        atapiCmdNop(channel);
-                        raiseInterrupt(channel);
-                        break;
-                    }
-                    switch (transferReq & 0xf8) {
-                    case 0x00:
-                        atapiCmdNop(channel);
-                        raiseInterrupt(channel);
-                        break;
-
-                    case 0xf8:
-                        getSelectedDriveController().setBufferSize(2352);
-                        // TODO: No break here in BOCHS
-
-                    case 0x10:
-
-                        initSendAtapiCommand(channel, atapiCommand,
-                                transferLength
-                                        * getSelectedDriveController()
-                                                .getBufferSize(),
-                                transferLength
-                                        * getSelectedDriveController()
-                                                .getBufferSize(), true);
-
-                        getSelectedDrive().getCdRom().setRemainingBlocks(
-                                transferLength);
-                        getSelectedDrive().getCdRom().setNextLba(lba);
-
-                        if (getSelectedDriveController().getPacketDma() == 0) {
-                            readyToSendAtapi(channel);
-                        }
-                        break;
-
-                    default:
-                        logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                + "  Read CD: unknown format.");
-
-                        atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                AscType.INV_FIELD_IN_CMD_PACKET, true);
-                        raiseInterrupt(channel);
-                    }
-                } else {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                    raiseInterrupt(channel);
-                }
-            }
-                break;
-
-            case (byte) 0x43: // read toc
-            {
-                int msf = 0;
-
-                if (getSelectedDrive().getCdRom().isReady()) {
-                    if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-                        msf = (getSelectedDriveController().getBuffer()[1] >> 1) & 1;
-                        int startingTrack = getSelectedDriveController()
-                                .getBuffer()[6];
-                        int toc_length;
-                    }
-
-                    @SuppressWarnings("unused")
-                    int allocLength = 0;
-                    // int allocLength =
-                    // read_16bit(getSelectedDriveController().getBuffer() + 7);
-                    // TODO: 7 - offset?
-                    allocLength = read16bit(getSelectedDriveController()
-                            .getBuffer(), 7);
-
-                    int format = (getSelectedDriveController().getBuffer()[9] >> 6);
-
-                    // Win32: I just read the TOC using Win32's IOCTRL functions
-                    // (Ben)
-                    if (ATAConstants.WITH_WIN32) {
-
-                        if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-
-                            switch (format) {
-                            case 2:
-                            case 3:
-                            case 4:
-                                if (msf != 1) {
-                                    logger
-                                            .log(
-                                                    Level.SEVERE,
-                                                    "["
-                                                            + super.getType()
-                                                            + "]"
-                                                            + "  READ_TOC_EX: msf not set for format "
-                                                            + format + ".");
-                                }
-                            case 0:
-                            case 1:
-                            case 5:
-                                // TODO:
-                                // if
-                                // (!(BX_SELECTED_DRIVE(channel).cdrom.cd->read_toc(BX_SELECTED_CONTROLLER(channel).buffer,
-                                // &toc_length, msf, starting_track, format)))
-                                // {
-                                //
-                                // atapiCmdError(channel,
-                                // SenseType.ILLEGAL_REQUEST,
-                                // AscType.INV_FIELD_IN_CMD_PACKET, true);
-                                // raiseInterrupt(channel);
-                                // } else
-                                // {
-                                // initSendAtapiCommand(channel, atapi_command,
-                                // toc_length, alloc_length);
-                                // readyToSendAtapi(channel);
-                                // }
-                                break;
-                            default:
-                                logger.log(Level.SEVERE, "[" + super.getType()
-                                        + "]" + "  READ TOC format " + format
-                                        + " not supported.");
-                                atapiCmdError(channel,
-                                        SenseType.ILLEGAL_REQUEST,
-                                        AscType.INV_FIELD_IN_CMD_PACKET, true);
-                                raiseInterrupt(channel);
-                            }
-                        } else {
-                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                    + "  LOWLEVEL_CDROM not defined.");
-                        }
-
-                    } else { // WIN32
-
-                        switch (format) {
-                        case 0:
-                        case 1:
-                        case 2:
-                            if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-                                // TODO:
-                                /*
-                                 * if
-                                 * (!(BX_SELECTED_DRIVE(channel).cdrom.cd->read_toc
-                                 * (BX_SELECTED_CONTROLLER(channel).buffer,
-                                 * &tocLength, msf, startingTrack, format))) {
-                                 * atapiCmdError(channel,
-                                 * SenseType.ILLEGAL_REQUEST,
-                                 * AscType.INV_FIELD_IN_CMD_PACKET, true);
-                                 * raiseInterrupt(channel); } else {
-                                 * initSendAtapiCommand(channel, atapi_command,
-                                 * toc_length, alloc_length);
-                                 * readyToSendAtapi(channel); }
-                                 */
-                            } else {
-                                logger
-                                        .log(
-                                                Level.SEVERE,
-                                                "["
-                                                        + super.getType()
-                                                        + "]"
-                                                        + "  LOWLEVEL_CDROM not defined.");
-                            }
-                            break;
-
-                        default:
-                            logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                                    + "  READ TOC format " + format
-                                    + " not supported.");
-                            atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                    AscType.INV_FIELD_IN_CMD_PACKET, true);
-                            raiseInterrupt(channel);
-                            break;
-                        }
-                    } // WIN32
-
-                } else {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                    raiseInterrupt(channel);
-                }
-            }
-                break;
-
-            case (byte) 0x28: // read (10)
-            case (byte) 0xa8: // read (12)
-            {
-                int transferLength = 0;
-
-                if (atapiCommand == 0x28) {
-                    // transfer_length =
-                    // read_16bit(getSelectedDriveController().getBuffer() + 7);
-                    // TODO: 7 - offset?
-                    transferLength = read16bit(getSelectedDriveController()
-                            .getBuffer(), 7);
-
-                } else {
-                    // transfer_length =
-                    // read_32bit(getSelectedDriveController().getBuffer() + 6);
-                    // TODO: 6 - offset?
-                    transferLength = read32bit(getSelectedDriveController()
-                            .getBuffer(), 6);
-                }
-
-                int lba = 0;
-
-                // int lba = read_32bit(getSelectedDriveController().getBuffer()
-                // + 2);
-                // TODO: 2 - offset?
-                lba = read32bit(getSelectedDriveController().getBuffer(), 2);
-
-                if (!getSelectedDrive().getCdRom().isReady()) {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                    raiseInterrupt(channel);
-
-                    break;
-                }
-
-                // Ben: see comment below
-                if (lba + transferLength > getSelectedDrive().getCdRom()
-                        .getCapacity()) {
-                    transferLength = (getSelectedDrive().getCdRom()
-                            .getCapacity() - lba);
-                }
-
-                // if (transferLength == 0) { //BOCHS Comment
-                if (transferLength <= 0) {
-                    atapiCmdNop(channel);
-                    raiseInterrupt(channel);
-                    logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                            + "  Read with transfer length <= 0, ok ("
-                            + transferLength + ")");
-                    break;
-                }
-
-                /*
-                 * Ben: I commented this out and added the three lines above. I
-                 * am not sure this is the correct thing to do, but it seems to
-                 * work. FIXME: I think that if the transfer_length is more than
-                 * we can transfer, we should return some sort of
-                 * flag/error/bitrep stating so. I haven't read the atapi specs
-                 * enough to know what needs to be done though. if (lba +
-                 * transfer_length > BX_SELECTED_DRIVE(channel).cdrom.capacity)
-                 * { atapi_cmd_error(channel, SENSE_ILLEGAL_REQUEST,
-                 * ASC_LOGICAL_BLOCK_OOR, 1); raise_interrupt(channel); break; }
-                 */
-                logger.log(Level.CONFIG, "[" + super.getType() + "]"
-                        + "  cdrom: READ LBA " + lba + ", length "
-                        + transferLength + ".");
-
-                // handle command
-                initSendAtapiCommand(channel, atapiCommand,
-                        transferLength * 2048, transferLength * 2048, true);
-
-                getSelectedDrive().getCdRom()
-                        .setRemainingBlocks(transferLength);
-                getSelectedDrive().getCdRom().setNextLba(lba);
-
-                // TODO: deal with packet DMA
-                if (getSelectedDriveController().getPacketDma() == 0) {
-                    readyToSendAtapi(channel);
-                }
-            }
-                break;
-
-            case (byte) 0x2b: // seek
-            {
-
-                int lba = 0;
-                // lba = read_32bit(BX_SELECTED_CONTROLLER(channel).buffer + 2);
-                // TODO: offset - 2?
-                lba = read32bit(getSelectedDriveController().getBuffer(), 2);
-
-                if (!getSelectedDrive().getCdRom().isReady()) {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                    raiseInterrupt(channel);
-                    break;
-                }
-
-                if (lba > getSelectedDrive().getCdRom().getCapacity()) {
-                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                            AscType.LOGICAL_BLOCK_OOR, true);
-                    raiseInterrupt(channel);
-                    break;
-
-                }
-                if (ATAConstants.IS_LOW_LEVEL_CDROM) {
-                    // BX_SELECTED_DRIVE(channel).cdrom.cd->seek(lba); //TODO:
-
-                } else {
-                    // BX_PANIC(("Seek with no LOWLEVEL_CDROM"));
-
                     logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                            + "  Seek with no LOWLEVEL_CDROM.");
+                            + "  Unknown ATAPI command " + atapiCommand + ".");
+                    atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
+                            AscType.ILLEGAL_OPCODE, true);
 
-                }
-
-                atapiCmdNop(channel);
-                raiseInterrupt(channel);
-            }
-                break;
-            case (byte) 0x1e: // prevent/allow medium removal
-            {
-
-                if (getSelectedDrive().getCdRom().isReady()) {
-
-                    boolean newIsLocked = (getSelectedDriveController()
-                            .getBuffer()[4] & 1) > 0;
-                    getSelectedDrive().getCdRom().setLocked(newIsLocked);
-                    atapiCmdNop(channel);
-
-                } else {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
-                }
-                raiseInterrupt(channel);
-            }
-                break;
-
-            case (byte) 0x42: // read sub-channel
-            {
-                @SuppressWarnings("unused")
-                int msf = getPacketField(channel, 1, 1, 1);
-                int subQ = getPacketField(channel, 2, 6, 1);
-
-                int dataFormat = getPacketByte(channel, 3);
-                @SuppressWarnings("unused")
-                int trackNumber = getPacketByte(channel, 6);
-                int allocLength = getPacketWord(channel, 7);
-
-                int retLength = 4; // header size
-
-                if (!getSelectedDrive().getCdRom().isReady()) {
-                    atapiCmdError(channel, SenseType.NOT_READY,
-                            AscType.MEDIUM_NOT_PRESENT, true);
                     raiseInterrupt(channel);
-
-                } else {
-
-                    getSelectedDriveController().setBuffer(0, (byte) 0);
-                    getSelectedDriveController().setBuffer(1, (byte) 0); // audio
-                                                                         // not
-                                                                         // supported
-                    getSelectedDriveController().setBuffer(2, (byte) 0);
-                    getSelectedDriveController().setBuffer(3, (byte) 0);
-
-                    if (subQ > 0) { // !sub_q == header only
-                        if ((dataFormat == 2) || (dataFormat == 3)) { // UPC or
-                                                                      // ISRC
-                            retLength = 24;
-                            getSelectedDriveController().setBuffer(4,
-                                    (byte) dataFormat);
-
-                            if (dataFormat == 3) {
-                                getSelectedDriveController().setBuffer(5,
-                                        (byte) 0x14);
-                                getSelectedDriveController().setBuffer(6,
-                                        (byte) 1);
-                            }
-
-                            getSelectedDriveController().setBuffer(8, (byte) 0); // no
-                                                                                 // UPC,
-                                                                                 // no
-                                                                                 // ISRC
-
-                        } else {
-                            atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                                    AscType.INV_FIELD_IN_CMD_PACKET, true);
-                            raiseInterrupt(channel);
-                            break;
-                        }
-                    }
-                    initSendAtapiCommand(channel, atapiCommand, retLength,
-                            allocLength, false);
-                    readyToSendAtapi(channel);
-                }
-            }
-                break;
-
-            case (byte) 0x51: // read disc info
-            {
-                // no-op to keep the Linux CD-ROM driver happy
-                atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                        AscType.INV_FIELD_IN_CMD_PACKET, true);
-                raiseInterrupt(channel);
-            }
-                break;
-
-            case (byte) 0x55: // mode select
-            case (byte) 0xa6: // load/unload cd
-            case (byte) 0x4b: // pause/resume
-            case (byte) 0x45: // play audio
-            case (byte) 0x47: // play audio msf
-            case (byte) 0xbc: // play cd
-            case (byte) 0xb9: // read cd msf
-            case (byte) 0x44: // read header
-            case (byte) 0xba: // scan
-            case (byte) 0xbb: // set cd speed
-            case (byte) 0x4e: // stop play/scan
-            case (byte) 0x46: // ???
-            case (byte) 0x4a: // ???
-                logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                        + "  ATAPI command " + atapiCommand
-                        + " not implemented yet.");
-
-                atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                        AscType.ILLEGAL_OPCODE, true);
-                raiseInterrupt(channel);
-                break;
-
-            default:
-                logger.log(Level.SEVERE, "[" + super.getType() + "]"
-                        + "  Unknown ATAPI command " + atapiCommand + ".");
-                atapiCmdError(channel, SenseType.ILLEGAL_REQUEST,
-                        AscType.ILLEGAL_OPCODE, true);
-
-                raiseInterrupt(channel);
-                break;
+                    break;
             }
         }
 
@@ -3146,7 +3173,8 @@ public class ATA extends ModuleATA {
      * @param src
      * @param size
      */
-    private void initModeSenseSingle(int channel, Object[] src, int size) {
+    private void initModeSenseSingle(int channel, Object[] src, int size)
+    {
         // Header
         getSelectedDriveController().setBuffer(0, (byte) ((size + 6) >> 8));
         getSelectedDriveController().setBuffer(1, (byte) ((size + 6) & 0xff));
@@ -3160,7 +3188,7 @@ public class ATA extends ModuleATA {
         // } else
         // {
         getSelectedDriveController().setBuffer(2, (byte) 0x70); // no media
-                                                                // present
+        // present
         // }
         getSelectedDriveController().setBuffer(3, (byte) 0); // reserved
         getSelectedDriveController().setBuffer(4, (byte) 0); // reserved
@@ -3177,10 +3205,10 @@ public class ATA extends ModuleATA {
     /**
      * Execute atapi Cmd Nop.
      *
-     * @param channel
-     *            the currently selected channel.
+     * @param channel the currently selected channel.
      */
-    private void atapiCmdNop(int channel) {
+    private void atapiCmdNop(int channel)
+    {
 
         getSelectedDriveController().getInterruptReason().setIo(1);
         getSelectedDriveController().getInterruptReason().setCd(1);
@@ -3202,7 +3230,8 @@ public class ATA extends ModuleATA {
      * @return -
      */
     private int getPacketField(int channelIndex, int bufferIndex, int start,
-            int numBits) {
+                               int numBits)
+    {
 
         // #define EXTRACT_FIELD(arr,byte,start,num_bits) (((arr)[(byte)] >>
         // (start)) & ((1 << (num_bits)) - 1))
@@ -3215,12 +3244,12 @@ public class ATA extends ModuleATA {
                 .getBuffer();
 
         result = (((buffer)[bufferIndex] >> (start)) & ((1 << (numBits)) - 1)); // TODO:
-                                                                                // check
-                                                                                // this
-                                                                                // operation
-                                                                                // works
-                                                                                // with
-                                                                                // int's
+        // check
+        // this
+        // operation
+        // works
+        // with
+        // int's
 
         return result;
     }
@@ -3232,7 +3261,8 @@ public class ATA extends ModuleATA {
      * @param bufferIndex
      * @return the packet byte.
      */
-    private int getPacketByte(int channelIndex, int bufferIndex) {
+    private int getPacketByte(int channelIndex, int bufferIndex)
+    {
         // #define get_packet_byte(c,b)
         // (BX_SELECTED_CONTROLLER((c)).buffer[(b)])
         int result = channels[channelIndex].getSelectedController().getBuffer()[bufferIndex];
@@ -3247,7 +3277,8 @@ public class ATA extends ModuleATA {
      * @param bufferIndex
      * @return the packet word.
      */
-    private int getPacketWord(int channelIndex, int bufferIndex) {
+    private int getPacketWord(int channelIndex, int bufferIndex)
+    {
 
         // #define get_packet_word(c,b)
         // (((Bit16u)BX_SELECTED_CONTROLLER((c)).buffer[(b)] << 8)
@@ -3268,7 +3299,8 @@ public class ATA extends ModuleATA {
      * @param show
      */
     private void atapiCmdError(int channel, SenseType senseType,
-            AscType ascType, boolean show) {
+                               AscType ascType, boolean show)
+    {
         if (show) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  Atapi_cmd_error, for channel " + channel + ", key "
@@ -3308,7 +3340,8 @@ public class ATA extends ModuleATA {
      * @param lazy
      */
     private void initSendAtapiCommand(int channel, int command, int reqLength,
-            int allocLength, boolean lazy) {
+                                      int allocLength, boolean lazy)
+    {
         // TODO: code below commented out in BOCHS
         // BX_SELECTED_CONTROLLER(channel).byte_count is a union of
         // BX_SELECTED_CONTROLLER(channel).cylinder_no;
@@ -3346,10 +3379,10 @@ public class ATA extends ModuleATA {
         }
 
         getSelectedDriveController().getInterruptReason().setIo(1); // TOOD:
-                                                                    // check if
-                                                                    // order is
-                                                                    // important
-                                                                    // in IR
+        // check if
+        // order is
+        // important
+        // in IR
         getSelectedDriveController().getInterruptReason().setCd(0);
         getSelectedDriveController().getStatus().setBusy(0);
         getSelectedDriveController().getStatus().setDrq(1);
@@ -3394,10 +3427,10 @@ public class ATA extends ModuleATA {
     /**
      * Ready To Send Atapi.
      *
-     * @param channel
-     *            the current channel
+     * @param channel the current channel
      */
-    private void readyToSendAtapi(int channel) {
+    private void readyToSendAtapi(int channel)
+    {
         raiseInterrupt(channel);
     }
 
@@ -3411,9 +3444,10 @@ public class ATA extends ModuleATA {
      * @param ret
      */
     private void setHardDiskCommand(int originalAddress, int[] data,
-            Integer logicalSector, int ret) {
+                                    Integer logicalSector, int ret)
+    {
 
-        ModulePIC pic = (ModulePIC)super.getConnection(Module.Type.PIC);
+        ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
         if (getSelectedChannel().isSlaveSelected()
                 && !getSelectedChannel().isSlaveDrivePresent()) {
@@ -3434,718 +3468,718 @@ public class ATA extends ModuleATA {
 
         switch (data[0]) {
 
-        case 0x10: // CALIBRATE DRIVE
+            case 0x10: // CALIBRATE DRIVE
 
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  Calibrate drive for channel " + curChannelIndex
-                        + ", issued to non-disk, with index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-
-                getSelectedDriveController().setErrorRegister(0x02); // Track 0
-                                                                     // not
-                                                                     // found
-                getSelectedDriveController().getStatus().setBusy(0);
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setSeekComplete(0);
-                getSelectedDriveController().getStatus().setDrq(0);
-                getSelectedDriveController().getStatus().setErr(1);
-
-                raiseInterrupt(curChannelIndex);
-
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  Calibrate drive for channel " + curChannelIndex
-                        + ", not present, with index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-                break;
-            }
-
-            // Move head to cylinder 0, issue IRQ
-            getSelectedDriveController().setErrorRegister(0);
-            getSelectedDrive().setCurrentCylinder(0);
-            getSelectedDriveController().getStatus().setBusy(0);
-            getSelectedDriveController().getStatus().setDriveReady(1);
-            getSelectedDriveController().getStatus().setSeekComplete(1);
-            getSelectedDriveController().getStatus().setDrq(0);
-            getSelectedDriveController().getStatus().setErr(0);
-
-            raiseInterrupt(curChannelIndex);
-
-            break;
-
-        case 0x20: // READ SECTORS, with retries
-        case 0x21: // READ SECTORS, without retries
-        case 0xC4: // READ MULTIPLE SECTORS
-
-            /*
-             * update sector_no, always points to current sector after each
-             * sector is read to buffer, DRQ bit set and issue IRQ if interrupt
-             * handler transfers all data words into main memory, and more
-             * sectors to read, then set BSY bit again, clear DRQ and read next
-             * sector into buffer sector count of 0 means 256 sectors
-             */
-
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Read multiple for channel " + curChannelIndex
-                        + ", issued to non-disk, with index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            if (!(getSelectedDriveController().getLbaMode() > 0)
-                    && !(getSelectedDrive().getCurrentHead() > 0)
-                    && !(getSelectedDrive().getCurrentCylinder() > 0)
-                    && !(getSelectedDrive().getCurrentSector() > 0)) {
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  read from 0/0/0, for channel " + curChannelIndex
-                        + ", with device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + ", aborting command.");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            // update sector count, sector number, cylinder,
-            // drive, head, status
-            // if there are more sectors, read next one in...
-            if ((byte) channels[this.curChannelIndex].getSelectedController()
-                    .getCurrentCommand() == (byte) 0xC4) {
-                if (channels[this.curChannelIndex].getSelectedController()
-                        .getMultipleSectors() == 0) {
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  Calibrate drive for channel " + curChannelIndex
+                            + ", issued to non-disk, with index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
                     abortCommand(curChannelIndex, data[0]);
+
                     break;
                 }
 
-                if (channels[this.curChannelIndex].getSelectedDrive()
-                        .getSectorCount() > channels[this.curChannelIndex]
-                        .getSelectedController().getMultipleSectors()) {
-                    channels[this.curChannelIndex].getSelectedController()
-                            .setBufferSize(
-                                    channels[this.curChannelIndex]
-                                            .getSelectedController()
-                                            .getMultipleSectors() * 512);
-                } else {
-                    channels[this.curChannelIndex].getSelectedController()
-                            .setBufferSize(
-                                    channels[this.curChannelIndex]
-                                            .getSelectedDrive()
-                                            .getSectorCount() * 512);
-                }
-            } else {
-                channels[this.curChannelIndex].getSelectedController()
-                        .setBufferSize(512);
-            }
+                if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
 
-            getSelectedDriveController().setCurrentCommand(data[0]);
+                    getSelectedDriveController().setErrorRegister(0x02); // Track 0
+                    // not
+                    // found
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setSeekComplete(0);
+                    getSelectedDriveController().getStatus().setDrq(0);
+                    getSelectedDriveController().getStatus().setErr(1);
 
-            if (ideReadData(curChannelIndex, getSelectedDriveController()
-                    .getBuffer(), getSelectedDriveController().getBufferSize())) {
+                    raiseInterrupt(curChannelIndex);
 
-                getSelectedDriveController().setErrorRegister(0);
-                getSelectedDriveController().getStatus().setBusy(0);
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setSeekComplete(1);
-                getSelectedDriveController().getStatus().setDrq(1);
-                getSelectedDriveController().getStatus().setCorrectedData(0);
-                getSelectedDriveController().setBufferIndex(0);
-
-                raiseInterrupt(curChannelIndex);
-
-            }
-
-            break;
-
-        case 0x30: // WRITE SECTORS, with retries
-        case 0xC5: // WRITE MULTIPLE SECTORS
-            /*
-             * update sector_no, always points to current sector after each
-             * sector is read to buffer, DRQ bit set and issue IRQ if interrupt
-             * handler transfers all data words into main memory, and more
-             * sectors to read, then set BSY bit again, clear DRQ and read next
-             * sector into buffer sector count of 0 means 256 sectors
-             */
-
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  Write sectors, for channel " + curChannelIndex
-                        + ", issued to non-disk with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-                break;
-            }
-
-            if (data[0] == (byte) 0xC5) {
-
-                if (getSelectedDriveController().getMultipleSectors() == 0) {
-                    abortCommand(curChannelIndex, data[0]);
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  Calibrate drive for channel " + curChannelIndex
+                            + ", not present, with index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
                     break;
                 }
 
-                if (channels[this.curChannelIndex].getSelectedDrive()
-                        .getSectorCount() > channels[this.curChannelIndex]
-                        .getSelectedController().getMultipleSectors()) {
-                    channels[this.curChannelIndex].getSelectedController()
-                            .setBufferSize(
-                                    channels[this.curChannelIndex]
-                                            .getSelectedController()
-                                            .getMultipleSectors() * 512);
-
-                } else {
-                    channels[this.curChannelIndex].getSelectedController()
-                            .setBufferSize(
-                                    channels[this.curChannelIndex]
-                                            .getSelectedDrive()
-                                            .getSectorCount() * 512);
-                }
-
-            } else {
-                channels[this.curChannelIndex].getSelectedController()
-                        .setBufferSize(512);
-            }
-
-            getSelectedDriveController().setCurrentCommand(data[0]);
-
-            // implicit seek done :^)
-            getSelectedDriveController().setErrorRegister(0);
-            getSelectedDriveController().getStatus().setBusy(0);
-            // BX_SELECTED_CONTROLLER(channel).status.drive_ready = 1; //note:
-            // commented out in BOCHS code
-            getSelectedDriveController().getStatus().setSeekComplete(1);
-            getSelectedDriveController().getStatus().setDrq(1);
-            getSelectedDriveController().getStatus().setErr(0);
-            getSelectedDriveController().setBufferIndex(0);
-
-            break;
-
-        // TODO: check this code against BOCHS 2.3
-        case 0x90: // EXECUTE DEVICE DIAGNOSTIC
-
-            if (getSelectedDriveController().getStatus().getBusy() > 0) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Diagnostic command, for channel "
-                        + curChannelIndex
-                        + ", BSY bit set, for disk with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-            setSignature(curChannelIndex);
-
-            getSelectedDriveController().setErrorRegister(0x01);
-            getSelectedDriveController().getStatus().setDrq(0);
-            getSelectedDriveController().getStatus().setErr(0);
-
-            break;
-
-        // TODO: check this code against BOCHS 2.3
-        case 0x91: // INITIALIZE DRIVE PARAMETERS
-
-            if (getSelectedDriveController().getStatus().getBusy() > 0) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Init drive parameters command, for channel "
-                        + curChannelIndex
-                        + ", BSY bit set, for disk with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Initialize drive parameters, for channel "
-                        + curChannelIndex
-                        + ", issued to non-disk, with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            // sets logical geometry of specified drive
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + "  Initialize drive parameters, for channel "
-                    + curChannelIndex + ", issued to disk, with device index "
-                    + getSelectedChannel().getSelectedDrive()
-                    + ", sector count= " + getSelectedDrive().getSectorCount()
-                    + ", current head= " + getSelectedDrive().getCurrentHead()
-                    + ".");
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Initialize drive parameters, for channel "
-                        + curChannelIndex
-                        + ", disk not present, with device index "
-                        + getSelectedChannel().getSelectedDrive());
-
-                // BX_SELECTED_CONTROLLER(channel).error_register = 0x12;
-                // //commented out in BOCHS
-
-                getSelectedDriveController().getStatus().setBusy(0);
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setDrq(0);
-                raiseInterrupt(curChannelIndex);
-
-                break;
-            }
-
-            if (getSelectedDrive().getSectorCount() != getSelectedDrive()
-                    .getTotalNumSectors()) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Initialize drive parameters, for channel "
-                        + curChannelIndex + ", device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + " sector count doesn't match.");
-
-                getSelectedDrive().setSectorCount(
-                        getSelectedDrive().getTotalNumSectors());
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-            if (getSelectedDrive().getCurrentHead() != (getSelectedDrive()
-                    .getTotalNumHeads() - 1)) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Initialize drive parameters, for channel "
-                        + curChannelIndex + ", device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + " head number doesn't match.");
-
-                getSelectedDrive().setCurrentHead(
-                        (getSelectedDrive().getTotalNumHeads() - 1));
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            getSelectedDriveController().getStatus().setBusy(0);
-            getSelectedDriveController().getStatus().setDriveReady(1);
-            getSelectedDriveController().getStatus().setDrq(0);
-            getSelectedDriveController().getStatus().setErr(0);
-            raiseInterrupt(curChannelIndex);
-
-            break;
-
-        case 0xec: // IDENTIFY DEVICE
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Identify device, for channel " + curChannelIndex
-                        + ", disk not present, with device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + ", aborting.");
-
-                abortCommand(curChannelIndex, data[0]);
-                break;
-            }
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
-                setSignature(curChannelIndex);
-                abortCommand(curChannelIndex, 0xec);
-
-            } else {
-
-                getSelectedDriveController().setCurrentCommand(data[0]);
+                // Move head to cylinder 0, issue IRQ
                 getSelectedDriveController().setErrorRegister(0);
-
-                // See ATA/ATAPI-4, 8.12
-
+                getSelectedDrive().setCurrentCylinder(0);
                 getSelectedDriveController().getStatus().setBusy(0);
                 getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setWriteFault(0);
-                getSelectedDriveController().getStatus().setDrq(1);
-
                 getSelectedDriveController().getStatus().setSeekComplete(1);
-                getSelectedDriveController().getStatus().setCorrectedData(0);
-
-                getSelectedDriveController().setBufferIndex(0);
-
-                raiseInterrupt(curChannelIndex);
-                identifyDrive(curChannelIndex);
-
-            }
-
-            break;
-
-        case 0xef: // SET FEATURES
-
-            switch (getSelectedDrive().getFeatures()) {
-
-            case 0x03: // Set Transfer Mode
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Set transfer mode, for channel " + curChannelIndex
-                        + ", device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + ", not supported for subcommand "
-                        + getSelectedDrive().getFeatures()
-                        + ", but returning success.");
-
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setSeekComplete(1);
-
-                raiseInterrupt(curChannelIndex);
-
-                break;
-
-            case 0x02: // Enable and
-            case 0x82: // Disable write cache.
-            case 0xAA: // Enable and
-            case 0x55: // Disable look-ahead cache.
-            case 0xCC: // Enable and
-            case 0x66: // Disable reverting to power-on default
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  SET FEATURES, for channel " + curChannelIndex
-                        + ", device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + ", not supported for subcommand "
-                        + getSelectedDrive().getFeatures()
-                        + ", but returning success.");
-
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setSeekComplete(1);
-                raiseInterrupt(curChannelIndex);
-
-                break;
-
-            default:
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  SET FEATURES, for channel " + curChannelIndex
-                        + ", device index "
-                        + getSelectedChannel().getSelectedDrive()
-                        + ", with unknown subcommand "
-                        + getSelectedDrive().getFeatures() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-            }
-            break;
-
-        case 0x40: // READ VERIFY SECTORS
-
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  read verify, for channel " + curChannelIndex
-                        + ", issued to non-disk with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-                break;
-            }
-
-            logger.log(Level.INFO, "[" + super.getType() + "]"
-                    + "  verify command : 0x40, for channel " + curChannelIndex
-                    + ", issued to device with device index "
-                    + getSelectedChannel().getSelectedDrive() + ".");
-
-            getSelectedDriveController().getStatus().setBusy(0);
-            getSelectedDriveController().getStatus().setDriveReady(1);
-            getSelectedDriveController().getStatus().setDrq(0);
-            getSelectedDriveController().getStatus().setErr(0);
-
-            raiseInterrupt(curChannelIndex);
-
-            break;
-
-        case 0xc6: // SET MULTIPLE MODE
-
-            if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  Set multiple mode, for channel " + curChannelIndex
-                        + ", issued to non-hard disk, with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, data[0]);
-
-            } else if ((getSelectedDrive().getSectorCount() > ATAConstants.MAX_MULTIPLE_SECTORS)
-                    || ((getSelectedDrive().getSectorCount() & (getSelectedDrive()
-                            .getSectorCount() - 1)) != 0)
-                    || (getSelectedDrive().getSectorCount() == 0)) {
-                abortCommand(curChannelIndex, data[0]);
-            } else {
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  set multiple mode: sectors= "
-                        + getSelectedDrive().getSectorCount());
-
-                getSelectedDriveController().setMultipleSectors(
-                        getSelectedDrive().getSectorCount());
-                getSelectedDriveController().getStatus().setBusy(0);
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setWriteFault(0);
                 getSelectedDriveController().getStatus().setDrq(0);
+                getSelectedDriveController().getStatus().setErr(0);
 
                 raiseInterrupt(curChannelIndex);
 
-            }
+                break;
 
-            break;
+            case 0x20: // READ SECTORS, with retries
+            case 0x21: // READ SECTORS, without retries
+            case 0xC4: // READ MULTIPLE SECTORS
 
-        // ATAPI commands
-        case 0xa1: // IDENTIFY PACKET DEVICE
+                /*
+                * update sector_no, always points to current sector after each
+                * sector is read to buffer, DRQ bit set and issue IRQ if interrupt
+                * handler transfers all data words into main memory, and more
+                * sectors to read, then set BSY bit again, clear DRQ and read next
+                * sector into buffer sector count of 0 means 256 sectors
+                */
 
-            if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
-
-                getSelectedDriveController().setCurrentCommand(data[0]);
-                getSelectedDriveController().setErrorRegister(0);
-                getSelectedDriveController().getStatus().setBusy(0);
-                getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setWriteFault(0);
-                getSelectedDriveController().getStatus().setDrq(1);
-                getSelectedDriveController().getStatus().setErr(0);
-                getSelectedDriveController().getStatus().setSeekComplete(1);
-                getSelectedDriveController().getStatus().setCorrectedData(0);
-                getSelectedDriveController().setBufferIndex(0);
-
-                raiseInterrupt(curChannelIndex);
-                identifyAtapiDrive(curChannelIndex);
-
-            } else {
-                abortCommand(curChannelIndex, 0xa1);
-            }
-            break;
-
-        case 0x08: // DEVICE RESET (atapi)
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
-
-                setSignature(curChannelIndex);
-
-                getSelectedDriveController().getStatus().setBusy(1);
-
-                int newErrorReg = getSelectedDriveController()
-                        .getErrorRegister();
-                newErrorReg &= ~(1 << 7);
-                getSelectedDriveController().setErrorRegister(newErrorReg);
-                getSelectedDriveController().getStatus().setWriteFault(0);
-                getSelectedDriveController().getStatus().setDrq(0);
-                getSelectedDriveController().getStatus().setCorrectedData(0);
-                getSelectedDriveController().getStatus().setErr(0);
-                getSelectedDriveController().getStatus().setBusy(0);
-
-            } else {
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  ATAPI Device Reset, for channel "
-                        + curChannelIndex
-                        + ", issued to on non-cd device, with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, 0x08);
-            }
-
-            break;
-
-        case 0xa0: // SEND PACKET (atapi)
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
-                // PACKET
-                getSelectedDriveController().setPacketDma(
-                        getSelectedDrive().getFeatures() & 1);
-
-                if ((getSelectedDrive().getFeatures() & (1 << 1)) > 0) {
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
                     logger.log(Level.WARNING, "[" + super.getType() + "]"
-                            + "  PACKET-overlapped not supported, for channel "
+                            + "  Read multiple for channel " + curChannelIndex
+                            + ", issued to non-disk, with index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                if (!(getSelectedDriveController().getLbaMode() > 0)
+                        && !(getSelectedDrive().getCurrentHead() > 0)
+                        && !(getSelectedDrive().getCurrentCylinder() > 0)
+                        && !(getSelectedDrive().getCurrentSector() > 0)) {
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  read from 0/0/0, for channel " + curChannelIndex
+                            + ", with device index "
+                            + getSelectedChannel().getSelectedDrive()
+                            + ", aborting command.");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                // update sector count, sector number, cylinder,
+                // drive, head, status
+                // if there are more sectors, read next one in...
+                if ((byte) channels[this.curChannelIndex].getSelectedController()
+                        .getCurrentCommand() == (byte) 0xC4) {
+                    if (channels[this.curChannelIndex].getSelectedController()
+                            .getMultipleSectors() == 0) {
+                        abortCommand(curChannelIndex, data[0]);
+                        break;
+                    }
+
+                    if (channels[this.curChannelIndex].getSelectedDrive()
+                            .getSectorCount() > channels[this.curChannelIndex]
+                            .getSelectedController().getMultipleSectors()) {
+                        channels[this.curChannelIndex].getSelectedController()
+                                .setBufferSize(
+                                        channels[this.curChannelIndex]
+                                                .getSelectedController()
+                                                .getMultipleSectors() * 512);
+                    } else {
+                        channels[this.curChannelIndex].getSelectedController()
+                                .setBufferSize(
+                                        channels[this.curChannelIndex]
+                                                .getSelectedDrive()
+                                                .getSectorCount() * 512);
+                    }
+                } else {
+                    channels[this.curChannelIndex].getSelectedController()
+                            .setBufferSize(512);
+                }
+
+                getSelectedDriveController().setCurrentCommand(data[0]);
+
+                if (ideReadData(curChannelIndex, getSelectedDriveController()
+                        .getBuffer(), getSelectedDriveController().getBufferSize())) {
+
+                    getSelectedDriveController().setErrorRegister(0);
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setSeekComplete(1);
+                    getSelectedDriveController().getStatus().setDrq(1);
+                    getSelectedDriveController().getStatus().setCorrectedData(0);
+                    getSelectedDriveController().setBufferIndex(0);
+
+                    raiseInterrupt(curChannelIndex);
+
+                }
+
+                break;
+
+            case 0x30: // WRITE SECTORS, with retries
+            case 0xC5: // WRITE MULTIPLE SECTORS
+                /*
+                * update sector_no, always points to current sector after each
+                * sector is read to buffer, DRQ bit set and issue IRQ if interrupt
+                * handler transfers all data words into main memory, and more
+                * sectors to read, then set BSY bit again, clear DRQ and read next
+                * sector into buffer sector count of 0 means 256 sectors
+                */
+
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  Write sectors, for channel " + curChannelIndex
+                            + ", issued to non-disk with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+                    break;
+                }
+
+                if (data[0] == (byte) 0xC5) {
+
+                    if (getSelectedDriveController().getMultipleSectors() == 0) {
+                        abortCommand(curChannelIndex, data[0]);
+                        break;
+                    }
+
+                    if (channels[this.curChannelIndex].getSelectedDrive()
+                            .getSectorCount() > channels[this.curChannelIndex]
+                            .getSelectedController().getMultipleSectors()) {
+                        channels[this.curChannelIndex].getSelectedController()
+                                .setBufferSize(
+                                        channels[this.curChannelIndex]
+                                                .getSelectedController()
+                                                .getMultipleSectors() * 512);
+
+                    } else {
+                        channels[this.curChannelIndex].getSelectedController()
+                                .setBufferSize(
+                                        channels[this.curChannelIndex]
+                                                .getSelectedDrive()
+                                                .getSectorCount() * 512);
+                    }
+
+                } else {
+                    channels[this.curChannelIndex].getSelectedController()
+                            .setBufferSize(512);
+                }
+
+                getSelectedDriveController().setCurrentCommand(data[0]);
+
+                // implicit seek done :^)
+                getSelectedDriveController().setErrorRegister(0);
+                getSelectedDriveController().getStatus().setBusy(0);
+                // BX_SELECTED_CONTROLLER(channel).status.drive_ready = 1; //note:
+                // commented out in BOCHS code
+                getSelectedDriveController().getStatus().setSeekComplete(1);
+                getSelectedDriveController().getStatus().setDrq(1);
+                getSelectedDriveController().getStatus().setErr(0);
+                getSelectedDriveController().setBufferIndex(0);
+
+                break;
+
+            // TODO: check this code against BOCHS 2.3
+            case 0x90: // EXECUTE DEVICE DIAGNOSTIC
+
+                if (getSelectedDriveController().getStatus().getBusy() > 0) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Diagnostic command, for channel "
+                            + curChannelIndex
+                            + ", BSY bit set, for disk with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+                setSignature(curChannelIndex);
+
+                getSelectedDriveController().setErrorRegister(0x01);
+                getSelectedDriveController().getStatus().setDrq(0);
+                getSelectedDriveController().getStatus().setErr(0);
+
+                break;
+
+            // TODO: check this code against BOCHS 2.3
+            case 0x91: // INITIALIZE DRIVE PARAMETERS
+
+                if (getSelectedDriveController().getStatus().getBusy() > 0) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Init drive parameters command, for channel "
+                            + curChannelIndex
+                            + ", BSY bit set, for disk with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Initialize drive parameters, for channel "
+                            + curChannelIndex
+                            + ", issued to non-disk, with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                // sets logical geometry of specified drive
+                logger.log(Level.INFO, "[" + super.getType() + "]"
+                        + "  Initialize drive parameters, for channel "
+                        + curChannelIndex + ", issued to disk, with device index "
+                        + getSelectedChannel().getSelectedDrive()
+                        + ", sector count= " + getSelectedDrive().getSectorCount()
+                        + ", current head= " + getSelectedDrive().getCurrentHead()
+                        + ".");
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Initialize drive parameters, for channel "
+                            + curChannelIndex
+                            + ", disk not present, with device index "
+                            + getSelectedChannel().getSelectedDrive());
+
+                    // BX_SELECTED_CONTROLLER(channel).error_register = 0x12;
+                    // //commented out in BOCHS
+
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setDrq(0);
+                    raiseInterrupt(curChannelIndex);
+
+                    break;
+                }
+
+                if (getSelectedDrive().getSectorCount() != getSelectedDrive()
+                        .getTotalNumSectors()) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Initialize drive parameters, for channel "
+                            + curChannelIndex + ", device index "
+                            + getSelectedChannel().getSelectedDrive()
+                            + " sector count doesn't match.");
+
+                    getSelectedDrive().setSectorCount(
+                            getSelectedDrive().getTotalNumSectors());
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+                if (getSelectedDrive().getCurrentHead() != (getSelectedDrive()
+                        .getTotalNumHeads() - 1)) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Initialize drive parameters, for channel "
+                            + curChannelIndex + ", device index "
+                            + getSelectedChannel().getSelectedDrive()
+                            + " head number doesn't match.");
+
+                    getSelectedDrive().setCurrentHead(
+                            (getSelectedDrive().getTotalNumHeads() - 1));
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                getSelectedDriveController().getStatus().setBusy(0);
+                getSelectedDriveController().getStatus().setDriveReady(1);
+                getSelectedDriveController().getStatus().setDrq(0);
+                getSelectedDriveController().getStatus().setErr(0);
+                raiseInterrupt(curChannelIndex);
+
+                break;
+
+            case 0xec: // IDENTIFY DEVICE
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.NONE) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Identify device, for channel " + curChannelIndex
+                            + ", disk not present, with device index "
+                            + getSelectedChannel().getSelectedDrive()
+                            + ", aborting.");
+
+                    abortCommand(curChannelIndex, data[0]);
+                    break;
+                }
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
+                    setSignature(curChannelIndex);
+                    abortCommand(curChannelIndex, 0xec);
+
+                } else {
+
+                    getSelectedDriveController().setCurrentCommand(data[0]);
+                    getSelectedDriveController().setErrorRegister(0);
+
+                    // See ATA/ATAPI-4, 8.12
+
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setWriteFault(0);
+                    getSelectedDriveController().getStatus().setDrq(1);
+
+                    getSelectedDriveController().getStatus().setSeekComplete(1);
+                    getSelectedDriveController().getStatus().setCorrectedData(0);
+
+                    getSelectedDriveController().setBufferIndex(0);
+
+                    raiseInterrupt(curChannelIndex);
+                    identifyDrive(curChannelIndex);
+
+                }
+
+                break;
+
+            case 0xef: // SET FEATURES
+
+                switch (getSelectedDrive().getFeatures()) {
+
+                    case 0x03: // Set Transfer Mode
+
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + "  Set transfer mode, for channel " + curChannelIndex
+                                + ", device index "
+                                + getSelectedChannel().getSelectedDrive()
+                                + ", not supported for subcommand "
+                                + getSelectedDrive().getFeatures()
+                                + ", but returning success.");
+
+                        getSelectedDriveController().getStatus().setDriveReady(1);
+                        getSelectedDriveController().getStatus().setSeekComplete(1);
+
+                        raiseInterrupt(curChannelIndex);
+
+                        break;
+
+                    case 0x02: // Enable and
+                    case 0x82: // Disable write cache.
+                    case 0xAA: // Enable and
+                    case 0x55: // Disable look-ahead cache.
+                    case 0xCC: // Enable and
+                    case 0x66: // Disable reverting to power-on default
+
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + "  SET FEATURES, for channel " + curChannelIndex
+                                + ", device index "
+                                + getSelectedChannel().getSelectedDrive()
+                                + ", not supported for subcommand "
+                                + getSelectedDrive().getFeatures()
+                                + ", but returning success.");
+
+                        getSelectedDriveController().getStatus().setDriveReady(1);
+                        getSelectedDriveController().getStatus().setSeekComplete(1);
+                        raiseInterrupt(curChannelIndex);
+
+                        break;
+
+                    default:
+
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + "  SET FEATURES, for channel " + curChannelIndex
+                                + ", device index "
+                                + getSelectedChannel().getSelectedDrive()
+                                + ", with unknown subcommand "
+                                + getSelectedDrive().getFeatures() + ".");
+
+                        abortCommand(curChannelIndex, data[0]);
+                }
+                break;
+
+            case 0x40: // READ VERIFY SECTORS
+
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  read verify, for channel " + curChannelIndex
+                            + ", issued to non-disk with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                    break;
+                }
+
+                logger.log(Level.INFO, "[" + super.getType() + "]"
+                        + "  verify command : 0x40, for channel " + curChannelIndex
+                        + ", issued to device with device index "
+                        + getSelectedChannel().getSelectedDrive() + ".");
+
+                getSelectedDriveController().getStatus().setBusy(0);
+                getSelectedDriveController().getStatus().setDriveReady(1);
+                getSelectedDriveController().getStatus().setDrq(0);
+                getSelectedDriveController().getStatus().setErr(0);
+
+                raiseInterrupt(curChannelIndex);
+
+                break;
+
+            case 0xc6: // SET MULTIPLE MODE
+
+                if (getSelectedDrive().getDriveType() != ATADriveType.HARD_DISK) {
+
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  Set multiple mode, for channel " + curChannelIndex
+                            + ", issued to non-hard disk, with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, data[0]);
+
+                } else if ((getSelectedDrive().getSectorCount() > ATAConstants.MAX_MULTIPLE_SECTORS)
+                        || ((getSelectedDrive().getSectorCount() & (getSelectedDrive()
+                        .getSectorCount() - 1)) != 0)
+                        || (getSelectedDrive().getSectorCount() == 0)) {
+                    abortCommand(curChannelIndex, data[0]);
+                } else {
+
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  set multiple mode: sectors= "
+                            + getSelectedDrive().getSectorCount());
+
+                    getSelectedDriveController().setMultipleSectors(
+                            getSelectedDrive().getSectorCount());
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setWriteFault(0);
+                    getSelectedDriveController().getStatus().setDrq(0);
+
+                    raiseInterrupt(curChannelIndex);
+
+                }
+
+                break;
+
+            // ATAPI commands
+            case 0xa1: // IDENTIFY PACKET DEVICE
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
+
+                    getSelectedDriveController().setCurrentCommand(data[0]);
+                    getSelectedDriveController().setErrorRegister(0);
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setWriteFault(0);
+                    getSelectedDriveController().getStatus().setDrq(1);
+                    getSelectedDriveController().getStatus().setErr(0);
+                    getSelectedDriveController().getStatus().setSeekComplete(1);
+                    getSelectedDriveController().getStatus().setCorrectedData(0);
+                    getSelectedDriveController().setBufferIndex(0);
+
+                    raiseInterrupt(curChannelIndex);
+                    identifyAtapiDrive(curChannelIndex);
+
+                } else {
+                    abortCommand(curChannelIndex, 0xa1);
+                }
+                break;
+
+            case 0x08: // DEVICE RESET (atapi)
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
+
+                    setSignature(curChannelIndex);
+
+                    getSelectedDriveController().getStatus().setBusy(1);
+
+                    int newErrorReg = getSelectedDriveController()
+                            .getErrorRegister();
+                    newErrorReg &= ~(1 << 7);
+                    getSelectedDriveController().setErrorRegister(newErrorReg);
+                    getSelectedDriveController().getStatus().setWriteFault(0);
+                    getSelectedDriveController().getStatus().setDrq(0);
+                    getSelectedDriveController().getStatus().setCorrectedData(0);
+                    getSelectedDriveController().getStatus().setErr(0);
+                    getSelectedDriveController().getStatus().setBusy(0);
+
+                } else {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  ATAPI Device Reset, for channel "
+                            + curChannelIndex
+                            + ", issued to on non-cd device, with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, 0x08);
+                }
+
+                break;
+
+            case 0xa0: // SEND PACKET (atapi)
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
+                    // PACKET
+                    getSelectedDriveController().setPacketDma(
+                            getSelectedDrive().getFeatures() & 1);
+
+                    if ((getSelectedDrive().getFeatures() & (1 << 1)) > 0) {
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + "  PACKET-overlapped not supported, for channel "
+                                + curChannelIndex + ", issued to device index "
+                                + getSelectedChannel().getSelectedDrive() + ".");
+
+                        abortCommand(curChannelIndex, 0xa0);
+
+                    } else {
+                        // We're already ready!
+                        getSelectedDrive().setSectorCount(1);
+                        getSelectedDriveController().getStatus().setBusy(0);
+                        getSelectedDriveController().getStatus().setWriteFault(0);
+
+                        // serv bit??
+                        getSelectedDriveController().getStatus().setDrq(1);
+                        getSelectedDriveController().getStatus().setErr(0);
+
+                        // NOTE: no interrupt here
+                        getSelectedDriveController().setCurrentCommand(data[0]);
+                        getSelectedDriveController().setBufferIndex(0);
+
+                    }
+                } else {
+                    abortCommand(curChannelIndex, 0xa0);
+                }
+                break;
+
+            case 0xa2: // SERVICE (atapi), optional
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
+
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  ATAPI SERVICE not implemented, for channel "
                             + curChannelIndex + ", issued to device index "
                             + getSelectedChannel().getSelectedDrive() + ".");
 
-                    abortCommand(curChannelIndex, 0xa0);
+                    abortCommand(curChannelIndex, 0xa2);
 
                 } else {
-                    // We're already ready!
-                    getSelectedDrive().setSectorCount(1);
-                    getSelectedDriveController().getStatus().setBusy(0);
-                    getSelectedDriveController().getStatus().setWriteFault(0);
-
-                    // serv bit??
-                    getSelectedDriveController().getStatus().setDrq(1);
-                    getSelectedDriveController().getStatus().setErr(0);
-
-                    // NOTE: no interrupt here
-                    getSelectedDriveController().setCurrentCommand(data[0]);
-                    getSelectedDriveController().setBufferIndex(0);
-
+                    abortCommand(curChannelIndex, 0xa2);
                 }
-            } else {
-                abortCommand(curChannelIndex, 0xa0);
-            }
-            break;
+                break;
 
-        case 0xa2: // SERVICE (atapi), optional
+            // power management
+            case 0xe5: // CHECK POWER MODE
 
-            if (getSelectedDrive().getDriveType() == ATADriveType.CDROM) {
-
-                logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  ATAPI SERVICE not implemented, for channel "
-                        + curChannelIndex + ", issued to device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                abortCommand(curChannelIndex, 0xa2);
-
-            } else {
-                abortCommand(curChannelIndex, 0xa2);
-            }
-            break;
-
-        // power management
-        case 0xe5: // CHECK POWER MODE
-
-            getSelectedDriveController().getStatus().setBusy(0);
-            getSelectedDriveController().getStatus().setDriveReady(1);
-            getSelectedDriveController().getStatus().setWriteFault(0);
-            getSelectedDriveController().getStatus().setDrq(0);
-            getSelectedDriveController().getStatus().setErr(0);
-            getSelectedDrive().setSectorCount(0xff); // Active or Idle mode
-
-            raiseInterrupt(curChannelIndex);
-            break;
-
-        case 0x70: // SEEK (cgs)
-
-            if (getSelectedDrive().getDriveType() == ATADriveType.HARD_DISK) {
-
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  write cmd 0x70 (SEEK) executing, for channel "
-                        + curChannelIndex + ", issued to device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
-
-                if (!getSelectedDrive().calculateLogicalAddress(logicalSector)) {
-
-                    logger.log(Level.WARNING, "[" + super.getType() + "]"
-                            + "  seek, for channel " + curChannelIndex
-                            + ", issued to device index "
-                            + getSelectedChannel().getSelectedDrive()
-                            + "initial seek to sector " + logicalSector
-                            + "out of bounds, aborting.");
-
-                    abortCommand(curChannelIndex, data[0]);
-
-                    break;
-                }
-
-                logicalSector = getSelectedDrive().calculateLogicalAddress();
-
-                getSelectedDriveController().setErrorRegister(0);
                 getSelectedDriveController().getStatus().setBusy(0);
                 getSelectedDriveController().getStatus().setDriveReady(1);
-                getSelectedDriveController().getStatus().setSeekComplete(1);
+                getSelectedDriveController().getStatus().setWriteFault(0);
                 getSelectedDriveController().getStatus().setDrq(0);
-                getSelectedDriveController().getStatus().setCorrectedData(0);
                 getSelectedDriveController().getStatus().setErr(0);
-                getSelectedDriveController().setBufferIndex(0);
-
-                logger.log(Level.INFO, "["
-                        + super.getType()
-                        + "]"
-                        + "  SEEK disable ird set to "
-                        + getSelectedChannel().getDrives()[0].getControl()
-                                .isDisableIrq() + ", for channel "
-                        + curChannelIndex + ", with device index " + 0 + ".");
-
-                logger.log(Level.INFO, "["
-                        + super.getType()
-                        + "]"
-                        + "  SEEK disable ird set to "
-                        + getSelectedChannel().getDrives()[1].getControl()
-                                .isDisableIrq() + ", for channel "
-                        + curChannelIndex + ", with device index " + 1 + ".");
-
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  SEEK completed. error_register "
-                        + getSelectedDriveController().getErrorRegister()
-                        + ", for channel " + curChannelIndex
-                        + ", with device index "
-                        + getSelectedChannel().getSelectedDrive() + ".");
+                getSelectedDrive().setSectorCount(0xff); // Active or Idle mode
 
                 raiseInterrupt(curChannelIndex);
+                break;
 
-                logger.log(Level.INFO, "[" + super.getType() + "]"
-                        + "  SEEK interrupt completed, for channel "
-                        + curChannelIndex + ", issued to device index "
-                        + getSelectedChannel().getSelectedDrive());
-            } else {
+            case 0x70: // SEEK (cgs)
+
+                if (getSelectedDrive().getDriveType() == ATADriveType.HARD_DISK) {
+
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  write cmd 0x70 (SEEK) executing, for channel "
+                            + curChannelIndex + ", issued to device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    if (!getSelectedDrive().calculateLogicalAddress(logicalSector)) {
+
+                        logger.log(Level.WARNING, "[" + super.getType() + "]"
+                                + "  seek, for channel " + curChannelIndex
+                                + ", issued to device index "
+                                + getSelectedChannel().getSelectedDrive()
+                                + "initial seek to sector " + logicalSector
+                                + "out of bounds, aborting.");
+
+                        abortCommand(curChannelIndex, data[0]);
+
+                        break;
+                    }
+
+                    logicalSector = getSelectedDrive().calculateLogicalAddress();
+
+                    getSelectedDriveController().setErrorRegister(0);
+                    getSelectedDriveController().getStatus().setBusy(0);
+                    getSelectedDriveController().getStatus().setDriveReady(1);
+                    getSelectedDriveController().getStatus().setSeekComplete(1);
+                    getSelectedDriveController().getStatus().setDrq(0);
+                    getSelectedDriveController().getStatus().setCorrectedData(0);
+                    getSelectedDriveController().getStatus().setErr(0);
+                    getSelectedDriveController().setBufferIndex(0);
+
+                    logger.log(Level.INFO, "["
+                            + super.getType()
+                            + "]"
+                            + "  SEEK disable ird set to "
+                            + getSelectedChannel().getDrives()[0].getControl()
+                            .isDisableIrq() + ", for channel "
+                            + curChannelIndex + ", with device index " + 0 + ".");
+
+                    logger.log(Level.INFO, "["
+                            + super.getType()
+                            + "]"
+                            + "  SEEK disable ird set to "
+                            + getSelectedChannel().getDrives()[1].getControl()
+                            .isDisableIrq() + ", for channel "
+                            + curChannelIndex + ", with device index " + 1 + ".");
+
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  SEEK completed. error_register "
+                            + getSelectedDriveController().getErrorRegister()
+                            + ", for channel " + curChannelIndex
+                            + ", with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    raiseInterrupt(curChannelIndex);
+
+                    logger.log(Level.INFO, "[" + super.getType() + "]"
+                            + "  SEEK interrupt completed, for channel "
+                            + curChannelIndex + ", issued to device index "
+                            + getSelectedChannel().getSelectedDrive());
+                } else {
+                    logger.log(Level.WARNING, "[" + super.getType() + "]"
+                            + "  write cmd 0x70 (SEEK), for channel "
+                            + curChannelIndex
+                            + ", not supported for non-disk with device index "
+                            + getSelectedChannel().getSelectedDrive() + ".");
+
+                    abortCommand(curChannelIndex, 0x70);
+                }
+                break;
+
+            case 0xC8: // READ DMA
+
+                /*
+                * if (dma != null) {
+                * getSelectedDriveController().getStatus().setDriveReady(1);
+                * getSelectedDriveController().getStatus().setSeekComplete(1);
+                * getSelectedDriveController().getStatus().setDrq(1);
+                * getSelectedDriveController().setCurrentCommand(data[0]);
+                *
+                * } else {
+                */
                 logger.log(Level.WARNING, "[" + super.getType() + "]"
-                        + "  write cmd 0x70 (SEEK), for channel "
-                        + curChannelIndex
-                        + ", not supported for non-disk with device index "
+                        + "  write cmd 0xC8 (READ DMA) not supported, for channel "
+                        + curChannelIndex + ", device index "
                         + getSelectedChannel().getSelectedDrive() + ".");
 
-                abortCommand(curChannelIndex, 0x70);
-            }
-            break;
+                abortCommand(curChannelIndex, 0xC8);
+                // }
+                break;
 
-        case 0xC8: // READ DMA
+            case 0xCA: // WRITE DMA
 
-            /*
-             * if (dma != null) {
-             * getSelectedDriveController().getStatus().setDriveReady(1);
-             * getSelectedDriveController().getStatus().setSeekComplete(1);
-             * getSelectedDriveController().getStatus().setDrq(1);
-             * getSelectedDriveController().setCurrentCommand(data[0]);
-             *
-             * } else {
-             */
-            logger.log(Level.WARNING, "[" + super.getType() + "]"
-                    + "  write cmd 0xC8 (READ DMA) not supported, for channel "
-                    + curChannelIndex + ", device index "
-                    + getSelectedChannel().getSelectedDrive() + ".");
+                /*
+                * if (dma != null) {
+                * getSelectedDriveController().getStatus().setDriveReady(1);
+                * getSelectedDriveController().getStatus().setSeekComplete(1);
+                * getSelectedDriveController().getStatus().setDrq(1);
+                * getSelectedDriveController().setCurrentCommand(data[0]); } else {
+                */
+                logger
+                        .log(
+                                Level.WARNING,
+                                "["
+                                        + super.getType()
+                                        + "]"
+                                        + "  write cmd 0xCA (WRITE DMA) not supported, for channel "
+                                        + curChannelIndex + ", device index "
+                                        + getSelectedChannel().getSelectedDrive()
+                                        + ".");
 
-            abortCommand(curChannelIndex, 0xC8);
-            // }
-            break;
+                abortCommand(curChannelIndex, 0xCA);
+                // }
+                break;
 
-        case 0xCA: // WRITE DMA
-
-            /*
-             * if (dma != null) {
-             * getSelectedDriveController().getStatus().setDriveReady(1);
-             * getSelectedDriveController().getStatus().setSeekComplete(1);
-             * getSelectedDriveController().getStatus().setDrq(1);
-             * getSelectedDriveController().setCurrentCommand(data[0]); } else {
-             */
-            logger
-                    .log(
-                            Level.WARNING,
-                            "["
-                                    + super.getType()
-                                    + "]"
-                                    + "  write cmd 0xCA (WRITE DMA) not supported, for channel "
-                                    + curChannelIndex + ", device index "
-                                    + getSelectedChannel().getSelectedDrive()
-                                    + ".");
-
-            abortCommand(curChannelIndex, 0xCA);
-            // }
-            break;
-
-        default:
-            logger.log(Level.WARNING, "[" + super.getType() + "]"
-                    + "  IO write to " + originalAddress + ", unknown command "
-                    + data + " for channel " + curChannelIndex
-                    + ", device index "
-                    + getSelectedChannel().getSelectedDrive() + ".");
-            abortCommand(curChannelIndex, data[0]);
+            default:
+                logger.log(Level.WARNING, "[" + super.getType() + "]"
+                        + "  IO write to " + originalAddress + ", unknown command "
+                        + data + " for channel " + curChannelIndex
+                        + ", device index "
+                        + getSelectedChannel().getSelectedDrive() + ".");
+                abortCommand(curChannelIndex, data[0]);
         }
 
     }
@@ -4153,22 +4187,22 @@ public class ATA extends ModuleATA {
     /**
      * Identify the Atapi Drive.
      *
-     * @param channel
-     *            the channel
+     * @param channel the channel
      */
-    private void identifyAtapiDrive(int channel) {
+    private void identifyAtapiDrive(int channel)
+    {
 
         int i = 0;
         char[] serialNumber = new char[21];
 
         getSelectedDrive().setIdDrive(0,
                 ((2 << 14) | (5 << 8) | (1 << 7) | (2 << 5) | (0 << 0))); // Removable
-                                                                          // CDROM,
-                                                                          // 50us
-                                                                          // response,
-                                                                          // 12
-                                                                          // byte
-                                                                          // packets
+        // CDROM,
+        // 50us
+        // response,
+        // 12
+        // byte
+        // packets
 
         for (i = 1; i <= 9; i++) {
             getSelectedDrive().setIdDrive(i, 0);
@@ -4296,10 +4330,10 @@ public class ATA extends ModuleATA {
      * Identify the drive by setting the ID Drive params and writing the data to
      * the buffer.
      *
-     * @param channel
-     *            the channel
+     * @param channel the channel
      */
-    private void identifyDrive(int channel) {
+    private void identifyDrive(int channel)
+    {
 
         int i = 0;
 
@@ -4365,7 +4399,7 @@ public class ATA extends ModuleATA {
             }
 
             getSelectedDrive().setIdDrive(47, 0x8080); // multiple mode
-                                                       // identification
+            // identification
             getSelectedDrive().setIdDrive(48, 0);
             getSelectedDrive().setIdDrive(49, 0x0f01);
 
@@ -4745,10 +4779,10 @@ public class ATA extends ModuleATA {
     /**
      * Set the signiture.
      *
-     * @param channel
-     *            the ide channel
+     * @param channel the ide channel
      */
-    private void setSignature(int channel) {
+    private void setSignature(int channel)
+    {
         // Device signature
         getSelectedDrive().setCurrentHead(0);
         getSelectedDrive().setSectorCount(1);
@@ -4772,7 +4806,8 @@ public class ATA extends ModuleATA {
      * @param offset
      * @return the read value
      */
-    private int read16bit(byte[] buf, int offset) {
+    private int read16bit(byte[] buf, int offset)
+    {
         int returnValue = (buf[0 + offset] << 8) | buf[1 + offset];
 
         return returnValue;
@@ -4785,7 +4820,8 @@ public class ATA extends ModuleATA {
      * @param offset
      * @return the read value
      */
-    private int read32bit(byte[] buf, int offset) {
+    private int read32bit(byte[] buf, int offset)
+    {
 
         int returnValue = (buf[0 + offset] << 24) | (buf[1 + offset] << 16)
                 | (buf[2 + offset] << 8) | buf[3 + offset];
@@ -4799,7 +4835,8 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval() {
+    public int getUpdateInterval()
+    {
         return updateInterval;
     }
 

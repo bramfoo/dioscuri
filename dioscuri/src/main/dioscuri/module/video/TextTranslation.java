@@ -40,7 +40,6 @@
 package dioscuri.module.video;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -55,8 +54,8 @@ public class TextTranslation {
     // Behind some characters "Unicode difference" is written. These ASCII
     // characters have
     // different indices in unicode compared to ASCII.
-    protected String[] asciiToUnicode = new String[] {
-    // Regular ASCII set (0 -127), from 0 to 31 are also commands
+    protected String[] asciiToUnicode = new String[]{
+            // Regular ASCII set (0 -127), from 0 to 31 are also commands
             /* 000 */"", // Empty
             /* 001 */"?",
             /* 002 */"?",

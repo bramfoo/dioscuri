@@ -50,7 +50,8 @@ public abstract class ModuleMemory extends AbstractModule {
     /**
      *
      */
-    public ModuleMemory() {
+    public ModuleMemory()
+    {
         super(Module.Type.MEMORY,
                 Module.Type.VIDEO, Module.Type.CPU, Module.Type.MOTHERBOARD);
     }
@@ -79,12 +80,9 @@ public abstract class ModuleMemory extends AbstractModule {
      * word in Big Endian order (MSB, LSB) because this is the common way words
      * are used by instructions.
      *
-     * @param address
-     *            Flat-address where data can be found
-     *
+     * @param address Flat-address where data can be found
      * @return byte[] array [MSB, LSB] containing data, 0xFFFF if address
      *         outside RAM_SIZE range
-     *
      * @throws ModuleException
      */
     public abstract byte[] getWord(int address) throws ModuleException;
@@ -105,8 +103,7 @@ public abstract class ModuleMemory extends AbstractModule {
     /**
      * Stores an array of bytes in memory starting at a specific address
      *
-     * @param address
-     *            Flat-address where data is stored
+     * @param address      Flat-address where data is stored
      * @param binaryStream
      * @throws ModuleException
      */

@@ -51,14 +51,15 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     public int ioSpaceSize;
 
-    public ModuleMotherboard() {
+    public ModuleMotherboard()
+    {
         super(Module.Type.MOTHERBOARD,
                 Module.Type.CPU, Module.Type.MEMORY);
     }
 
     /**
      * Registers a clock to motherboard
-     * 
+     *
      * @param clock
      * @return boolean true if registration is successfully, false otherwise
      */
@@ -66,8 +67,8 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     /**
      * Requests a timer for given device at clock
-     * 
-     * @param device 
+     *
+     * @param device
      * @param continuous
      * @param updatePeriod
      * @return boolean true if registration is successfully, false otherwise
@@ -76,7 +77,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     /**
      * Set a timer to start/stop running
-     * 
+     *
      * @param device
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise
@@ -85,7 +86,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     /**
      * Resets the timer of device (if any)
-     * 
+     *
      * @param device
      * @param updateInterval
      * @return boolean true if reset is successfully, false otherwise
@@ -152,22 +153,21 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     /**
      * Get value of A20 address line
-     * 
+     *
      * @return true if set, false if not
      */
     public abstract boolean getA20();
 
     /**
      * Set value of A20 address line
-     * 
-     * @param a20
-     *            true to set, false to clear
+     *
+     * @param a20 true to set, false to clear
      */
     public abstract void setA20(boolean a20);
 
     /**
      * Retrieve current number of instruction (instructions executed so far)
-     * 
+     *
      * @return long containing number of instructions
      */
     public abstract long getCurrentInstructionNumber();

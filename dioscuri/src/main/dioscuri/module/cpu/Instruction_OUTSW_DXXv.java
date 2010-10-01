@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode 6F<BR>
@@ -70,26 +70,27 @@ public class Instruction_OUTSW_DXXv implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_OUTSW_DXXv.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_OUTSW_DXXv() {
+    public Instruction_OUTSW_DXXv()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_OUTSW_DXXv(CPU processor) {
+    public Instruction_OUTSW_DXXv(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
         cpu = processor;
         // Set transition that holds the amount SI should be altered (word = 2)
-        transition = new byte[] { 0x00, 0x02 };
+        transition = new byte[]{0x00, 0x02};
 
     }
 
@@ -99,7 +100,8 @@ public class Instruction_OUTSW_DXXv implements Instruction {
      * Output word from DS:(E)SI to I/O port (specified in DX); update SI
      * register according to DF.
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;
@@ -115,14 +117,14 @@ public class Instruction_OUTSW_DXXv implements Instruction {
                         cpu.si);
                 // Increment offset when getting the next word
                 memoryValue = cpu.getWordFromMemorySegment(defaultAddressByte,
-                        Util.addWords(cpu.si, new byte[] { 0x00, 0x02 }, 0));
+                        Util.addWords(cpu.si, new byte[]{0x00, 0x02}, 0));
 
                 // Write the doubleword to the I/O port
-                cpu.setIOPortDoubleWord(portAddress, new byte[] {
+                cpu.setIOPortDoubleWord(portAddress, new byte[]{
                         eMemoryValue[CPU.REGISTER_GENERAL_LOW],
                         eMemoryValue[CPU.REGISTER_GENERAL_HIGH],
                         memoryValue[CPU.REGISTER_GENERAL_LOW],
-                        memoryValue[CPU.REGISTER_GENERAL_HIGH] });
+                        memoryValue[CPU.REGISTER_GENERAL_HIGH]});
 
                 // Note: SI is updated by word-size here, the other word-size is
                 // done below

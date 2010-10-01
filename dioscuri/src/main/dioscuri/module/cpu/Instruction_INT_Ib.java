@@ -60,10 +60,12 @@ public class Instruction_INT_Ib implements Instruction {
     byte[] newIP;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_INT_Ib() {
+    public Instruction_INT_Ib()
+    {
         operandWordSize = true;
 
         index = 0;
@@ -75,11 +77,11 @@ public class Instruction_INT_Ib implements Instruction {
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_INT_Ib(CPU processor) {
+    public Instruction_INT_Ib(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -91,7 +93,8 @@ public class Instruction_INT_Ib implements Instruction {
     /**
      * Call the interrupt procedure based on the interrupt vector in the IDT.<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Retrieve immediate byte (index for IDT) from memory
         index = (((int) cpu.getByteFromCode()) & 0xFF);
 
@@ -112,20 +115,20 @@ public class Instruction_INT_Ib implements Instruction {
             // Retrieve the interrupt vector (IP:CS) from the IDT, based on the
             // index
             // Reset the CS and IP to interrupt vector in IDT
-            cpu.cs = new byte[] { 0x00, 0x00 }; // refer to beginning of code
-                                                // segment
+            cpu.cs = new byte[]{0x00, 0x00}; // refer to beginning of code
+            // segment
             offset = index * 4; // define offset from code segment (index * 4
-                                // bytes)
-            cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
-                    (byte) (offset & 0xFF) };
+            // bytes)
+            cpu.ip = new byte[]{(byte) ((offset >> 8) & 0xFF),
+                    (byte) (offset & 0xFF)};
 
             // Fetch IP value
             newIP = cpu.getWordFromCode();
 
             // Increment offset by 2 bytes and fetch CS
             offset += 2;
-            cpu.ip = new byte[] { (byte) ((offset >> 8) & 0xFF),
-                    (byte) (offset & 0xFF) };
+            cpu.ip = new byte[]{(byte) ((offset >> 8) & 0xFF),
+                    (byte) (offset & 0xFF)};
             newCS = cpu.getWordFromCode();
 
             // Assign new CS and IP to registers pointing to interrupt procedure

@@ -51,21 +51,23 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
     /**
      *
      */
-    public ModuleVideo() {
+    public ModuleVideo()
+    {
         super(Module.Type.VIDEO,
                 Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.SCREEN, Module.Type.RTC);
     }
 
     /**
      * Video read mode implementations
-     * @param address 
+     *
+     * @param address
      * @return -
      */
     public abstract byte readMode(int address);
 
     /**
      * Video write mode implementations
-     * 
+     *
      * @param address
      * @param data
      */
@@ -80,14 +82,14 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Returns a pointer to the whole video buffer
-     * 
+     *
      * @return byte[] containing the video buffer
      */
     public abstract byte[] getVideoBuffer();
 
     /**
      * Returns a byte from video buffer at position index
-     * 
+     *
      * @param index
      * @return byte from video buffer
      */
@@ -95,7 +97,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Stores a byte in video buffer at position index
-     * 
+     *
      * @param index
      * @param data
      */
@@ -103,7 +105,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Returns all characters (as Unicode) that are currently in buffer
-     * 
+     *
      * @return String containing all characters in the buffer or null when no
      *         characters exist
      */
@@ -111,7 +113,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Returns a byte from text snapshot at position index
-     * 
+     *
      * @param index
      * @return byte from textsnapshot
      */
@@ -119,7 +121,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Stores a byte in text snapshot at position index
-     * 
+     *
      * @param index
      * @param data
      */
@@ -127,7 +129,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
 
     /**
      * Returns a byte from attribute palette register at position index
-     * 
+     *
      * @param index
      * @return byte from register
      */

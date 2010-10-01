@@ -39,9 +39,6 @@
 
 package dioscuri.module.motherboard;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.WriteOnlyPortException;
@@ -50,16 +47,18 @@ import dioscuri.interfaces.Module;
 import dioscuri.module.AbstractModule;
 import dioscuri.module.ModuleMotherboard;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * This class is a dummy for a peripheral device.
- * 
+ * <p/>
  * Contains all standard methods for a device.
- * 
+ * <p/>
  * Note: init this module only after all other devices, because this class
  * claims all available I/O address space that is left
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
  */
 public class DeviceDummy extends AbstractModule implements Addressable {
 
@@ -68,10 +67,11 @@ public class DeviceDummy extends AbstractModule implements Addressable {
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public DeviceDummy(Emulator owner) {
+    public DeviceDummy(Emulator owner)
+    {
         super(Module.Type.DUMMY,
                 Module.Type.MOTHERBOARD);
     }
@@ -82,10 +82,11 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Register I/O ports in I/O address space
-        ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
-        
+        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+
         // Claim all other I/O space
         for (int port = 0x0000; port < motherboard.ioSpaceSize; port++) {
             motherboard.setIOPort(port, this);
@@ -100,9 +101,10 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleException {
+    public byte getIOPortByte(int portAddress) throws ModuleException
+    {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -130,9 +132,10 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (byte) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -155,17 +158,18 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " IN command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
                     + " received");
             logger.log(Level.INFO, "[" + super.getType() + "]"
                     + " Returned A20 value");
-            return (motherboard.getA20() ? new byte[] { 0x00, (byte) (1 << 1) }
-                    : new byte[] { 0x00, 0x00 });
+            return (motherboard.getA20() ? new byte[]{0x00, (byte) (1 << 1)}
+                    : new byte[]{0x00, 0x00});
         }
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port "
@@ -174,7 +178,7 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + " Returned default value 0xFFFF to AX");
 
         // Return dummy value 0xFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF };
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF};
     }
 
     /**
@@ -184,9 +188,10 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         if (portAddress == 0x92) {
-            ModuleMotherboard motherboard = (ModuleMotherboard)super.getConnection(Module.Type.MOTHERBOARD);
+            ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
             logger.log(Level.CONFIG, "[" + super.getType() + "]"
                     + " OUT command (word) to port "
                     + Integer.toHexString(portAddress).toUpperCase()
@@ -209,7 +214,8 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException {
+            WriteOnlyPortException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -217,7 +223,7 @@ public class DeviceDummy extends AbstractModule implements Addressable {
                 + " Returned default value 0xFFFFFFFF to eAX");
 
         // Return dummy value 0xFFFFFFFF
-        return new byte[] { (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF };
+        return new byte[]{(byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF, (byte) 0x0FF};
     }
 
     /**
@@ -227,7 +233,8 @@ public class DeviceDummy extends AbstractModule implements Addressable {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()

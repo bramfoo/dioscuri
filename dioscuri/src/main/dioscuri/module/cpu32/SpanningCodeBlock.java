@@ -29,7 +29,6 @@ package dioscuri.module.cpu32;
 //import org.jpc.emulator.memory.*;
 
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -37,18 +36,18 @@ public abstract class SpanningCodeBlock implements CodeBlock {
     private CodeBlock lastBlock;
 
     /**
-     *
      * @return -
      */
-    public int getX86Length() {
+    public int getX86Length()
+    {
         return 0;
     }
 
     /**
-     *
      * @return -
      */
-    public int getX86Count() {
+    public int getX86Count()
+    {
         try {
             return lastBlock.getX86Count();
         } catch (NullPointerException e) {
@@ -58,25 +57,26 @@ public abstract class SpanningCodeBlock implements CodeBlock {
 
     // Returns the number of equivalent x86 instructions executed. Negative
     // results indicate an error
-    public int execute(Processor cpu) {
+
+    public int execute(Processor cpu)
+    {
         lastBlock = decode(cpu);
         return lastBlock.execute(cpu);
     }
 
     /**
-     *
      * @param cpu
      * @return -
      */
     protected abstract CodeBlock decode(Processor cpu);
 
     /**
-     *
      * @param startAddress
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
+    {
         return true;
     }
 }

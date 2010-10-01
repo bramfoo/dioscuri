@@ -48,17 +48,18 @@ import dioscuri.interfaces.Updateable;
 public abstract class ModuleClock extends AbstractModule {
 
     /**
-     * 
+     *
      */
-    public ModuleClock() {
+    public ModuleClock()
+    {
         super(Module.Type.CLOCK,
                 Module.Type.MOTHERBOARD, Module.Type.CPU);
     }
 
     /**
      * Register a device to clock and assign a timer to it
-     * 
-     * @param device 
+     *
+     * @param device
      * @param intervalLength
      * @param continuousOneShot
      * @return boolean true if timer assigned successfully, false otherwise
@@ -68,7 +69,7 @@ public abstract class ModuleClock extends AbstractModule {
 
     /**
      * Reset the timer of given device (if any)
-     * 
+     *
      * @param device
      * @param intervalLength
      * @return boolean true if timer is reset successfully, false otherwise
@@ -77,7 +78,7 @@ public abstract class ModuleClock extends AbstractModule {
 
     /**
      * Set a timer to start/stop running
-     * 
+     *
      * @param device
      * @param runState
      * @return boolean true if timer is reset successfully, false otherwise

@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * An enumeration representing the translation types for a ATA drive.
- * 
  */
 public enum ATATranslationType {
     NONE("None"),
@@ -59,21 +58,22 @@ public enum ATATranslationType {
 
     /**
      * Class constructor.
-     * 
-     * @param theName
-     *            the name of the translation type
+     *
+     * @param theName the name of the translation type
      */
-    private ATATranslationType(String theName) {
+    private ATATranslationType(String theName)
+    {
         this.name = theName;
     }
 
     /**
      * get the name of the translation type.
-     * 
+     *
      * @return the name of the translation type
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
 
         return this.name;
     }

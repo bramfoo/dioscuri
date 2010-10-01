@@ -52,20 +52,21 @@ public class Instruction_JLE_JNG implements Instruction {
     byte displacement;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_JLE_JNG() {
+    public Instruction_JLE_JNG()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JLE_JNG(CPU processor) {
+    public Instruction_JLE_JNG(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -77,7 +78,8 @@ public class Instruction_JLE_JNG implements Instruction {
     /**
      * Execute conditional short jump if zero or sign != overflow
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement byte (immediate)
         // This byte is interpreted signed, so cast to Java byte
         // Jump is relative to _next_ instruction, but by the time we change
@@ -92,8 +94,8 @@ public class Instruction_JLE_JNG implements Instruction {
                 || (cpu.flags[CPU.REGISTER_FLAGS_SF] != cpu.flags[CPU.REGISTER_FLAGS_OF])) {
             // Although not explicitly stated, IA-SDM2 p. 3-332 8-byte
             // displacement is sign-extended and added.
-            cpu.ip = Util.addWords(cpu.ip, new byte[] {
-                    Util.signExtend(displacement), displacement }, 0);
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{
+                    Util.signExtend(displacement), displacement}, 0);
         }
     }
 }

@@ -46,7 +46,6 @@ package dioscuri.module.ata;
 
 /**
  * An enumeration representing the types of drives available for the ATA AbstractModule.
- * 
  */
 public enum ATADriveType {
     NONE("None"),
@@ -57,21 +56,22 @@ public enum ATADriveType {
 
     /**
      * Class constructor.
-     * 
-     * @param theName
-     *            the name of the drive type
+     *
+     * @param theName the name of the drive type
      */
-    private ATADriveType(String theName) {
+    private ATADriveType(String theName)
+    {
         this.name = theName;
     }
 
     /**
      * get the name of the drive type.
-     * 
+     *
      * @return the name of the drive type
      */
     @Override
-    public String toString() {
+    public String toString()
+    {
         return this.name;
     }
 

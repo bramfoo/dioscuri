@@ -1,17 +1,17 @@
 package dioscuri.module.mouse;
 
-import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.interfaces.Module;
 import dioscuri.interfaces.UART;
 import dioscuri.module.ModuleKeyboard;
 import dioscuri.module.ModuleMouse;
 import dioscuri.module.ModuleSerialPort;
+
+import java.awt.event.MouseEvent;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * An implementation of a mouse module.
@@ -66,7 +66,7 @@ public class Mouse extends ModuleMouse implements UART {
     private int delayed_dz = 0;
     private byte buttonStatus;
     private MouseEvent mouseEvent;
-    
+
     // Logging
     private static Logger logger = Logger.getLogger("dioscuri.module.mouse");
 
@@ -94,7 +94,8 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Class constructor
      */
-    public Mouse(Emulator owner) {
+    public Mouse(Emulator owner)
+    {
         // Create mouse buffer
         buffer = new LinkedList<Byte>();
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
@@ -107,7 +108,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // Reset variables
         // TODO: add all vars
         lastMouseCommand = 0;
@@ -126,7 +128,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String keyboardDump = "Mouse status:\n";
 
         return keyboardDump;
@@ -138,7 +141,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void setMouseEnabled(boolean status) {
+    public void setMouseEnabled(boolean status)
+    {
         mouseEnabled = status;
     }
 
@@ -148,9 +152,10 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void setMouseType(String type) {
+    public void setMouseType(String type)
+    {
 
-        ModuleSerialPort serialPort = (ModuleSerialPort)super.getConnection(Module.Type.SERIALPORT);
+        ModuleSerialPort serialPort = (ModuleSerialPort) super.getConnection(Module.Type.SERIALPORT);
 
         // Check the type of mouse by matching string
         if (type.equalsIgnoreCase("serial")) {
@@ -180,7 +185,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public boolean isBufferEmpty() {
+    public boolean isBufferEmpty()
+    {
         return buffer.isEmpty();
     }
 
@@ -195,11 +201,12 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void storeBufferData(boolean forceEnqueue) {
+    public void storeBufferData(boolean forceEnqueue)
+    {
 
-        byte b1 = (byte)0x87; // init b1 to: 1000_0111
-        byte b2 = (byte)((this.mouseEvent.getX() / scaleX) - (pointerWidth/2.0));
-        byte b3 = (byte)(-((this.mouseEvent.getY() / scaleY) - (pointerHeight/2.0)));
+        byte b1 = (byte) 0x87; // init b1 to: 1000_0111
+        byte b2 = (byte) ((this.mouseEvent.getX() / scaleX) - (pointerWidth / 2.0));
+        byte b3 = (byte) (-((this.mouseEvent.getY() / scaleY) - (pointerHeight / 2.0)));
 
         //if(b2 < -127) b2 = -127;
         //if(b2 > 127) b2 = 127;
@@ -207,23 +214,24 @@ public class Mouse extends ModuleMouse implements UART {
         //if(b3 < -pointerHeight) b3 = -((byte)pointerHeight);
         //if(b3 > 0) b3 = 0;
 
-        logger.log(Level.INFO, "[" + super.getType() + "] moved to ("+b2+","+b3+")"); 
+        logger.log(Level.INFO, "[" + super.getType() + "] moved to (" + b2 + "," + b3 + ")");
 
         // Only act on mouse-presses: ignore mouse releases
-        if(this.mouseEvent != null && this.mouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
-            if(this.mouseEvent.getButton() == MouseEvent.BUTTON1) b1 &= 0xFB; // AND b1 with 1111_1011
-            if(this.mouseEvent.getButton() == MouseEvent.BUTTON2) b1 &= 0xFD; // AND b1 with 1111_1101
-            if(this.mouseEvent.getButton() == MouseEvent.BUTTON3) b1 &= 0xFE; // AND b1 with 1111_1110
+        if (this.mouseEvent != null && this.mouseEvent.getID() == MouseEvent.MOUSE_PRESSED) {
+            if (this.mouseEvent.getButton() == MouseEvent.BUTTON1) b1 &= 0xFB; // AND b1 with 1111_1011
+            if (this.mouseEvent.getButton() == MouseEvent.BUTTON2) b1 &= 0xFD; // AND b1 with 1111_1101
+            if (this.mouseEvent.getButton() == MouseEvent.BUTTON3) b1 &= 0xFE; // AND b1 with 1111_1110
         }
 
-        if (this.enqueueData(b1, b2, b3, (byte)0, (byte)0)) {
+        if (this.enqueueData(b1, b2, b3, (byte) 0, (byte) 0)) {
             logger.log(Level.INFO, "[" + super.getType() + "] Mouse data stored in mouse buffer. Total bytes in buffer: " + buffer.size());
         } else {
             logger.log(Level.WARNING, "[" + super.getType() + "] Mouse data could not be stored in mouse buffer");
         }
     }
 
-    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4, byte b5) {
+    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4, byte b5)
+    {
         return buffer.offer(b1) && buffer.offer(b2) && buffer.offer(b3) && buffer.offer(b4) && buffer.offer(b5);
     }
 
@@ -233,7 +241,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public byte getDataFromBuffer() {
+    public byte getDataFromBuffer()
+    {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
 
@@ -243,9 +252,10 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void controlMouse(byte value) {
+    public void controlMouse(byte value)
+    {
 
-        ModuleKeyboard keyboard = (ModuleKeyboard)super.getConnection(Module.Type.KEYBOARD);
+        ModuleKeyboard keyboard = (ModuleKeyboard) super.getConnection(Module.Type.KEYBOARD);
 
         // FIXME: if we are not using a ps2 mouse, some of the following commands need to return different values
         boolean isMousePS2 = false;
@@ -259,7 +269,7 @@ public class Mouse extends ModuleMouse implements UART {
         // received from the system other than Set-Wrap-Mode & Resend-Command
 
         // Check if this is the second mouse command (expected)
-        if (expectingMouseParameter == true) {
+        if (expectingMouseParameter) {
             // Reset command parameter
             expectingMouseParameter = false;
 
@@ -406,7 +416,7 @@ public class Mouse extends ModuleMouse implements UART {
 
                 case (byte) 0xF2: // Read Device Type
                     keyboard.enqueueControllerBuffer(MOUSE_CMD_ACK, 1); // ACK
-                    if (imMode == true) {
+                    if (imMode) {
                         keyboard.enqueueControllerBuffer((byte) 0x03, 1); // Device ID (wheel z-mouse)
                     } else {
                         keyboard.enqueueControllerBuffer((byte) 0x00, 1); // Device ID (standard)
@@ -456,7 +466,7 @@ public class Mouse extends ModuleMouse implements UART {
                         scaling = 1; // 1:1 (default)
                         mouseEnabled = false;
                         mouseMode = MOUSE_MODE_RESET;
-                        if (imMode == true) {
+                        if (imMode) {
                             logger.log(Level.CONFIG, "[" + super.getType() + "] Wheel mouse mode disabled");
                         }
                         imMode = false;
@@ -513,7 +523,8 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void mouseMotion(MouseEvent event) {
+    public void mouseMotion(MouseEvent event)
+    {
 
         this.mouseEvent = event;
         // Check if this is the first mouse motion
@@ -524,14 +535,14 @@ public class Mouse extends ModuleMouse implements UART {
             return;
         }
         */
-        
+
         // Measure position change
         delayed_dx = event.getX();// - previousX;
         delayed_dy = event.getY();// - previousY;
         delayed_dz = event.getButton();
 
         //logger.log(Level.INFO, "[" + super.getType() + "] previous :: ("+previousX+","+previousY+"), delayed :: ("+delayed_dx+","+delayed_dy+")");
-        logger.log(Level.INFO, "[" + super.getType() + "] delayed :: ("+delayed_dx+","+delayed_dy+")");
+        logger.log(Level.INFO, "[" + super.getType() + "] delayed :: (" + delayed_dx + "," + delayed_dy + ")");
 
         //previousX += delayed_dx; // TODO BK try out
         //previousY += delayed_dy; // TODO BK try out   
@@ -552,7 +563,7 @@ public class Mouse extends ModuleMouse implements UART {
             if ((delta_y < -1) || (delta_y > 1))
                 delta_y /= 2;
 
-            if (imMode == false) {
+            if (!imMode) {
                 delta_z = 0;
             }
 
@@ -584,7 +595,8 @@ public class Mouse extends ModuleMouse implements UART {
         */
     }
 
-    private byte getStatusByte() {
+    private byte getStatusByte()
+    {
         // top bit is 0 , bit 6 is 1 if remote mode.
         byte status = (byte) ((mouseMode == MOUSE_MODE_REMOTE) ? 0x40 : 0);
         status |= ((mouseEnabled ? 1 : 0) << 5);
@@ -596,7 +608,8 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
 
-    private byte getResolutionByte() {
+    private byte getResolutionByte()
+    {
         byte resolution = 0;
 
         switch (resolutionCpmm) {
@@ -624,17 +637,20 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
     @Override
-    public synchronized boolean isDataAvailable() {
+    public synchronized boolean isDataAvailable()
+    {
         return !(buffer.isEmpty());
     }
 
     @Override
-    public synchronized byte getSerialData() {
+    public synchronized byte getSerialData()
+    {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
 
     @Override
-    public synchronized void setSerialData(byte data) {
+    public synchronized void setSerialData(byte data)
+    {
         buffer.offer(data);
     }
 }

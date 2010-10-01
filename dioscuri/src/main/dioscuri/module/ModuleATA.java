@@ -50,9 +50,10 @@ import dioscuri.module.ata.ATATranslationType;
 public abstract class ModuleATA extends AbstractModule implements Addressable, Updateable {
 
     /**
-     * 
+     *
      */
-    public ModuleATA() {
+    public ModuleATA()
+    {
         super(Module.Type.ATA,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC);
     }
@@ -71,9 +72,9 @@ public abstract class ModuleATA extends AbstractModule implements Addressable, U
      * @param imageFilePath
      */
     public abstract void initConfig(int theIdeChannel, boolean isMaster,
-            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
-            int numHeads, int numSectorsPerTrack,
-            ATATranslationType translationType, String imageFilePath);
+                                    boolean isHardDisk, boolean isWriteProtected, int numCylinders,
+                                    int numHeads, int numSectorsPerTrack,
+                                    ATATranslationType translationType, String imageFilePath);
 
     /**
      * Set CMOS values

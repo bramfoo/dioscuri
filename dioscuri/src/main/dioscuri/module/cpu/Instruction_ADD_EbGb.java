@@ -64,19 +64,21 @@ public class Instruction_ADD_EbGb implements Instruction {
     byte registerHighLow = 0;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_ADD_EbGb() {
+    public Instruction_ADD_EbGb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ADD_EbGb(CPU processor) {
+    public Instruction_ADD_EbGb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -88,7 +90,8 @@ public class Instruction_ADD_EbGb implements Instruction {
     /**
      * Add byte in register (source) to memory/register (destination).<BR>
      */
-    public void execute() {
+    public void execute()
+    {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

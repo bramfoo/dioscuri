@@ -49,9 +49,10 @@ import dioscuri.interfaces.Updateable;
 public abstract class ModulePIT extends AbstractModule implements Addressable, Updateable {
 
     /**
-     * 
+     *
      */
-    public ModulePIT() {
+    public ModulePIT()
+    {
         super(Module.Type.PIT,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }

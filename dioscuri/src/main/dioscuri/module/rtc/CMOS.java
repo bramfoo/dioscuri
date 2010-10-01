@@ -49,10 +49,9 @@ import java.util.Calendar;
 
 /**
  * Implementation of the CMOS memory
- * 
+ * <p/>
  * Notes: - register information is taken from CMOS Reference by Padgett
  * Peterson, 2001. See: http://moon.inf.uji.es/docs/interr/CMOS/CMOS.HTM
- * 
  */
 public class CMOS {
     // CMOS memory
@@ -64,7 +63,7 @@ public class CMOS {
     // Constants
     // CMOS size and I/O ports
     private final static int CMOS_SIZE = 128; // Upper limit of memory size
-                                              // (only bits 0-6 can be used)
+    // (only bits 0-6 can be used)
 
     // Variables and hex locations in CMOS memory
     protected final static int RTC_SECONDS = 0x00; // BCD/hex format
@@ -159,11 +158,11 @@ public class CMOS {
     // 05h 2.88 MB 3.5 drive
     // 06h-0Fh unused
     protected final static int FLOPPYDRIVE_TYPE = 0x10; // read/write : defines
-                                                        // the type of floppy
-                                                        // drives
+    // the type of floppy
+    // drives
     protected final static int IBM_PS2_HD1_DATA = 0x11; // read/write : defines
-                                                        // the type of first
-                                                        // PS/2 hard disk drive
+    // the type of first
+    // PS/2 hard disk drive
 
     // Bitfields for IBM hard disk data:
     // Bit(s) Description
@@ -175,10 +174,10 @@ public class CMOS {
     // 3-0 Second Hard Disk Drive Type
     // (same as first except extended type will be found in 1Ah).
     protected final static int IBM_HD_DATA = 0x12; // read/write : defines the
-                                                   // type of hard disk drives
+    // type of hard disk drives
     protected final static int IBM_PS2_HD2_DATA = 0x13; // read/write : defines
-                                                        // the type of second
-                                                        // PS/2 hard disk drive
+    // the type of second
+    // PS/2 hard disk drive
 
     // Bitfields for IBM equipment byte:
     // Bit(s) Description
@@ -197,49 +196,49 @@ public class CMOS {
     // 1 math coprocessor installed
     // 0 floppy drive installed (turned off for rackmount boot)
     protected final static int IBM_EQUIPMENT = 0x14; // read/write : unused,
-                                                     // defines number of floppy
-                                                     // drives, monitor type,
-                                                     // etc.
+    // defines number of floppy
+    // drives, monitor type,
+    // etc.
     protected final static int IBM_BASE_MEM_LOW = 0x15; // read/write : unused
     protected final static int IBM_BASE_MEM_HIGH = 0x16; // read/write : unused
     protected final static int IBM_EXTEND_MEM_LOW = 0x17; // read/write : unused
     protected final static int IBM_EXTEND_MEM_HIGH = 0x18; // read/write :
-                                                           // unused
+    // unused
     protected final static int IBM_EXTEND_HD1 = 0x19; // read/write : unused
     protected final static int IBM_EXTEND_HD2 = 0x1A; // read/write : unused
     // .. whole block of unused registers (0x1B - 0x2C)
     protected final static int AWARD_HD1_USERDEF = 0x2D; // read/write : defines
-                                                         // the boot order
-                                                         // (floppy,hd)
+    // the boot order
+    // (floppy,hd)
     protected final static int CHECKSUM_HIGH_BYTE = 0x2E; // read/write : unused
     protected final static int CHECKSUM_LOW_BYTE = 0x2F; // read/write : unused
     protected final static int IBM_EXTEND_MEM2_LOW = 0x30; // read/write :
     protected final static int IBM_EXTEND_MEM2_HIGH = 0x31; // read/write :
     protected final static int IBM_RTC_CENTURY = 0x32; // read/write : defines
-                                                       // the century in BCD
+    // the century in BCD
     protected final static int AMI_EXTEND_MEM_LOW = 0x34; // read/write :
     protected final static int AMI_EXTEND_MEM_HIGH = 0x35; // read/write :
     protected final static int IBM_PS2_RTC_CENTURY = 0x37; // read/write : copy
-                                                           // of 0x32, used for
-                                                           // Windows XP
+    // of 0x32, used for
+    // Windows XP
     protected final static int ELTORITO_BOOT = 0x38; // read/write : eltorito
-                                                     // boot sequence + boot
-                                                     // signature check
+    // boot sequence + boot
+    // signature check
     protected final static int ATA_POLICY_0_1 = 0x39; // read/write : ata
-                                                      // translation policy -
-                                                      // ata0 + ata1
+    // translation policy -
+    // ata0 + ata1
     protected final static int ATA_POLICY_2_3 = 0x3A; // read/write : ata
-                                                      // translation policy -
-                                                      // ata2 + ata3
+    // translation policy -
+    // ata2 + ata3
     protected final static int ELTORITO_BOOT2 = 0x3D; // read/write : eltorito
-                                                      // boot sequence 2 + boot
-                                                      // signature check
+    // boot sequence 2 + boot
+    // signature check
 
     /**
      * Class constructor
-     * 
      */
-    public CMOS() {
+    public CMOS()
+    {
         // Create RAM array
         ram = new byte[CMOS_SIZE];
 
@@ -282,10 +281,10 @@ public class CMOS {
     }
 
     /**
-     *
      * @param systemTime
      */
-    protected void reset(boolean systemTime) {
+    protected void reset(boolean systemTime)
+    {
         // Check if custom time should be used; system time has already been set
         // as default.
         if (!systemTime) {
@@ -325,7 +324,8 @@ public class CMOS {
      * Bytes 0x00-0x0F and 0x30-0x33 are omitted.<BR>
      * Stores the result in CHECKSUM_HIGH_BYTE and CHECKSUM_LOW_BYTE
      */
-    private void checksum() {
+    private void checksum()
+    {
         int checksum = 0;
         for (int reg = 0x10; reg <= 0x2D; reg++) {
             checksum += ram[reg];
@@ -340,32 +340,35 @@ public class CMOS {
      * Note: results only in a one-byte-value. Large unsigned integers (> 255)
      * will be cut off. Example of conversion: int 22 will result in 0x22 (or
      * 0010.0010).
-     * 
+     *
      * @param decimalValue
      * @return byte containing the BCD value of decimal
      */
-    protected byte decToBcd(int decimalValue) {
+    protected byte decToBcd(int decimalValue)
+    {
         return (byte) ((16 * ((decimalValue / 10) % 10)) + (decimalValue % 10));
     }
 
     /**
      * Performs a conversion of bcd value into decimal. Example of conversion:
      * 0x22 (or 0010.0010) will result in int 22.
-     * 
+     *
      * @param bcdValue
      * @return int containing the decimal value of bcd
      */
-    protected int bcdToDec(byte bcdValue) {
+    protected int bcdToDec(byte bcdValue)
+    {
         // Convert BCD-byte into decimal value
         return (((bcdValue >> 4) & 0x0F) * 10) + (bcdValue & 0x0F);
     }
 
     /**
      * Returns string of decimal representation of time and date
-     * 
+     *
      * @return String
      */
-    protected String getClockValue() {
+    protected String getClockValue()
+    {
         return "" + bcdToDec(ram[CMOS.RTC_HOURS]) + ":"
                 + bcdToDec(ram[CMOS.RTC_MINUTES]) + ":"
                 + bcdToDec(ram[CMOS.RTC_SECONDS]) + " "
@@ -376,10 +379,11 @@ public class CMOS {
 
     /**
      * Updates the clock values
-     * 
+     *
      * @param seconds Number of seconds to update the clock
      */
-    protected void setClockValue(int seconds) {
+    protected void setClockValue(int seconds)
+    {
         calendar.add(Calendar.SECOND, seconds);
 
         // Write values to RAM array

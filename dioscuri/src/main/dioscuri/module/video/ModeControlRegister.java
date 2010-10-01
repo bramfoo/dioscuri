@@ -43,7 +43,6 @@ package dioscuri.module.video;
  * Attribute Mode Control Register (index 10h) Controls the mode operations of
  * the Attribute Controller.<BR>
  * Consists of 7 bits (bit 4 empty)
- * 
  */
 public class ModeControlRegister {
     byte paletteBitsSelect; // Bit 7 - Palette bits 5-4 select
@@ -54,7 +53,7 @@ public class ModeControlRegister {
     // 1 - Video data sampled so 8 bits are available to set a color (in
     // 256-color mode only)
     byte pixelPanningMode; // Bit 5 - Allows upper screen half to pan
-                           // independently of lower half.
+    // independently of lower half.
     // 0 - Nothing happens
     // 1 - Upon successful line compare, bottom displayed as if pixelShiftCount
     // and bytePanning CRTC[0x08] are 0
@@ -64,11 +63,11 @@ public class ModeControlRegister {
     // background
     // 1 - Blinking enabled (not implemented)
     byte lineGraphicsEnable; // Bit 2 - Provides continuity in 9-bit char. modes
-                             // for horiz. line chars in range C0h-DFh
+    // for horiz. line chars in range C0h-DFh
     // 0 - 9th column replicated from 8th column of character
     // 1 - 9th column set to background
     byte monoColourEmu; // Bit 1 - Monochrome/color emulation (according to docs
-                        // does not work??)
+    // does not work??)
     // 0 - Color emulation
     // 1 - Monochrome emulation
     byte graphicsEnable; // Bit 0 - Enables graphics mode
@@ -79,7 +78,8 @@ public class ModeControlRegister {
     /**
      * Return variables to default values
      */
-    public void reset() {
+    public void reset()
+    {
         paletteBitsSelect = 0;
         colour8Bit = 0;
         pixelPanningMode = 0;

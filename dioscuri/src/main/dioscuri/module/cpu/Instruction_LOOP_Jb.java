@@ -51,23 +51,24 @@ public class Instruction_LOOP_Jb implements Instruction {
     // Attributes
     private CPU cpu;
     byte displacement;
-    byte[] decrement = new byte[] { 0x00, 0x01 }; // Decrement by one
+    byte[] decrement = new byte[]{0x00, 0x01}; // Decrement by one
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_LOOP_Jb() {
+    public Instruction_LOOP_Jb()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_LOOP_Jb(CPU processor) {
+    public Instruction_LOOP_Jb(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -78,7 +79,8 @@ public class Instruction_LOOP_Jb implements Instruction {
      * Loop while CX is not zero, performing short jump indicated by immediate
      * signed byte
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement byte (immediate)
         displacement = cpu.getByteFromCode();
 
@@ -91,8 +93,8 @@ public class Instruction_LOOP_Jb implements Instruction {
             // Jump is relative to _next_ instruction, but by the time we change
             // the IP, it has already been incremented twice, so no extra
             // arithmetic necessary
-            cpu.ip = Util.addWords(cpu.ip, new byte[] {
-                    Util.signExtend(displacement), displacement }, 0);
+            cpu.ip = Util.addWords(cpu.ip, new byte[]{
+                    Util.signExtend(displacement), displacement}, 0);
         }
     }
 }

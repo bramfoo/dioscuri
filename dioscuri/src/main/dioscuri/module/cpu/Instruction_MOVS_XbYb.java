@@ -59,26 +59,28 @@ public class Instruction_MOVS_XbYb implements Instruction {
     byte[] temp;
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_MOVS_XbYb() {
+    public Instruction_MOVS_XbYb()
+    {
         operandWordSize = false;
         source1 = 0;
 
         // Set transition that holds the amount si and di should be altered
         // (byte = 1)
-        transition = new byte[] { 0x00, 0x01 };
+        transition = new byte[]{0x00, 0x01};
         temp = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_MOVS_XbYb(CPU processor) {
+    public Instruction_MOVS_XbYb(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -92,7 +94,8 @@ public class Instruction_MOVS_XbYb implements Instruction {
      * both depending on DF flag.<BR>
      * Flags modified: none
      */
-    public void execute() {
+    public void execute()
+    {
         // Move byte at DS:SI to ES:DI; DS segment override is allowed, ES
         // segment isn't.
         if (cpu.segmentOverride) {
@@ -107,7 +110,7 @@ public class Instruction_MOVS_XbYb implements Instruction {
         cpu.setByteToExtra(cpu.di, source1);
 
         // Increment or decrement SI and DI depending on DF flag
-        if (cpu.flags[CPU.REGISTER_FLAGS_DF] == true) {
+        if (cpu.flags[CPU.REGISTER_FLAGS_DF]) {
             // Decrement registers
             temp = Util.subtractWords(cpu.si, transition, 0);
             System.arraycopy(temp, 0, cpu.si, 0, temp.length);

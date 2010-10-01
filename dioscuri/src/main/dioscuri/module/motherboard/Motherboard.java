@@ -39,9 +39,6 @@
 
 package dioscuri.module.motherboard;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import dioscuri.Emulator;
 import dioscuri.exception.ModuleException;
 import dioscuri.exception.UnknownPortException;
@@ -54,12 +51,15 @@ import dioscuri.module.ModuleClock;
 import dioscuri.module.ModuleMemory;
 import dioscuri.module.ModuleMotherboard;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  * An implementation of a motherboard module. This module is responsible for
  * allowing devices to communicate with the CPU and vice versa.
- * 
+ *
  * @see dioscuri.module.AbstractModule
- * 
+ *      <p/>
  *      Metadata module ********************************************
  *      general.type : motherboard general.name : General x86 motherboard
  *      general.architecture : Von Neumann general.description : imitates an x86
@@ -70,9 +70,8 @@ import dioscuri.module.ModuleMotherboard;
  *      general.yearOfIntroduction : general.yearOfEnding : general.ancestor :
  *      general.successor : motherboard.ioAddressSpaceSize : 65536 bytes
  *      motherboard.architecture : ISA, EISA, PCI
- * 
+ *      <p/>
  *      Rule: This module should always be initialised before I/O devices.
- * 
  */
 public class Motherboard extends ModuleMotherboard {
 
@@ -93,19 +92,20 @@ public class Motherboard extends ModuleMotherboard {
 
     // Memory size
     public final static int IOSPACE_ISA_SIZE = 1024; // ISA: 1024 (2^10) spaces,
-                                                     // 0x000 - 0x3FF
+    // 0x000 - 0x3FF
     public final static int IOSPACE_EISA_SIZE = 65536; // EISA: 65536 (2^16)
-                                                       // spaces, 0x0000 -
-                                                       // 0xFFFF
+    // spaces, 0x0000 -
+    // 0xFFFF
     public final static int SYSTEM_CONTROL_PORT_A = 0x92; // A20 port, amongst
-                                                          // others
+    // others
 
     /**
      * Class constructor
-     * 
+     *
      * @param owner
      */
-    public Motherboard(Emulator owner) {
+    public Motherboard(Emulator owner)
+    {
         emu = owner;
 
         // Initialise configuration parameters
@@ -124,7 +124,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         // FIXME: Reset I/O address space: set all ports to null
         // Doing this in 32-bit mode resets all ports _after_ they have been
         // set...
@@ -148,7 +149,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump() {
+    public String getDump()
+    {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -163,7 +165,7 @@ public class Motherboard extends ModuleMotherboard {
                     && ioAddressSpace[port].getType() != Module.Type.DUMMY) { //.equalsIgnoreCase("dummy"))) {
                 dump += "0x"
                         + Integer.toHexString(0x10000 | port & 0x0FFFF)
-                                .substring(1).toUpperCase() + tab + ": "
+                        .substring(1).toUpperCase() + tab + ": "
                         + ioAddressSpace[port].getType().toString() + " ("
                         + ioAddressSpace[port].getType() + ")" + ret;
             }
@@ -177,7 +179,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean registerClock(ModuleClock clock) {
+    public boolean registerClock(ModuleClock clock)
+    {
         super.setConnection(clock);
         return true;
     }
@@ -188,9 +191,10 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean requestTimer(Updateable device, int updateInterval, boolean continuous) {
+    public boolean requestTimer(Updateable device, int updateInterval, boolean continuous)
+    {
 
-        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
+        ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
         // Check if clock exists
         if (clock != null) {
@@ -206,9 +210,10 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean setTimerActiveState(Updateable device, boolean activeState) {
+    public boolean setTimerActiveState(Updateable device, boolean activeState)
+    {
         // Check if clock exists
-        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
+        ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
         if (clock != null) {
             // Set device's timer to requested state
@@ -223,9 +228,10 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean resetTimer(Updateable device, int updateInterval) {
+    public boolean resetTimer(Updateable device, int updateInterval)
+    {
         // Check if clock exists
-        ModuleClock clock = (ModuleClock)super.getConnection(Module.Type.CLOCK);
+        ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
         if (clock != null) {
             return clock.resetTimer(device, updateInterval);
@@ -239,7 +245,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean setIOPort(int portAddress, Addressable device) {
+    public boolean setIOPort(int portAddress, Addressable device)
+    {
         // check if port is already in use
         if (ioAddressSpace[portAddress] == null) {
             ioAddressSpace[portAddress] = device;
@@ -260,7 +267,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleException {
+    public byte getIOPortByte(int portAddress) throws ModuleException
+    {
         // check if port is available
         if (ioAddressSpace[portAddress] != null) {
             try {
@@ -274,7 +282,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (WriteOnlyPortException e2) {
@@ -300,7 +308,8 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortByte(int portAddress, byte dataByte)
-            throws ModuleException {
+            throws ModuleException
+    {
         // Check for Bochs BIOS ports first:
         if (portAddress == 0x400 || portAddress == 0x401) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -314,15 +323,15 @@ public class Motherboard extends ModuleMotherboard {
                                 + "]"
                                 + " I/O port (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase()
+                                .toUpperCase()
                                 + "): "
-                                + new String(new byte[] { (byte) dataByte },
-                                        "US-ASCII"));
+                                + new String(new byte[]{(byte) dataByte},
+                                "US-ASCII"));
             } catch (Exception e) {
                 logger.log(Level.WARNING, "[" + super.getType() + "]"
                         + " I/O port (0x"
                         + Integer.toHexString(portAddress).toUpperCase()
-                        + "): " + new String(new byte[] { (byte) dataByte }));
+                        + "): " + new String(new byte[]{(byte) dataByte}));
             }
             return;
         } else if (portAddress == 0x8900) {
@@ -348,7 +357,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
@@ -370,7 +379,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws ModuleException {
+    public byte[] getIOPortWord(int portAddress) throws ModuleException
+    {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null) {
@@ -385,7 +395,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + super.getType()
                                 + "] Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (WriteOnlyPortException e2) {
@@ -399,7 +409,7 @@ public class Motherboard extends ModuleMotherboard {
                 + " (getWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
         // is returned as default
-        return new byte[] { (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF};
         // throw new ModuleException("Requested I/O port range [" + portAddress
         // + "] (getWord) is not in use.");
     }
@@ -411,7 +421,8 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null) {
@@ -428,7 +439,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
@@ -446,7 +457,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException {
+    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException
+    {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
@@ -465,7 +477,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             } catch (WriteOnlyPortException e2) {
@@ -479,7 +491,7 @@ public class Motherboard extends ModuleMotherboard {
                 + " (getDoubleWord) is not in use.");
         // FIXME: Add proper error handling for unknown I/O ports, assuming 0xFF
         // is returned as default
-        return new byte[] { (byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF };
+        return new byte[]{(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF};
         // throw new ModuleException("Requested I/O port range [" + portAddress
         // + "] (getDoubleWord) is not available.");
     }
@@ -491,7 +503,8 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException {
+            throws ModuleException
+    {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
@@ -511,7 +524,7 @@ public class Motherboard extends ModuleMotherboard {
                                 + "]"
                                 + "  Unknown I/O port requested (0x"
                                 + Integer.toHexString(portAddress)
-                                        .toUpperCase() + ").");
+                                .toUpperCase() + ").");
                 throw new ModuleException("Unknown I/O port requested (0x"
                         + Integer.toHexString(portAddress).toUpperCase() + ").");
             }
@@ -530,7 +543,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean getA20() {
+    public boolean getA20()
+    {
         // Return status of A20 address line
         return A20Enabled;
     }
@@ -541,7 +555,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public void setA20(boolean a20) {
+    public void setA20(boolean a20)
+    {
         // Set status of A20 address line
         // False = memory wrapping turned off
         A20Enabled = a20;
@@ -553,9 +568,8 @@ public class Motherboard extends ModuleMotherboard {
                                     + super.getType()
                                     + "]"
                                     + " Attempting to set memory A20 line in 32-bit mode (unsupported)");
-        }
-        else {
-            ModuleMemory memory = (ModuleMemory)super.getConnection(Module.Type.MEMORY);
+        } else {
+            ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setA20AddressLine(a20);
         }
     }
@@ -566,7 +580,8 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public long getCurrentInstructionNumber() {
+    public long getCurrentInstructionNumber()
+    {
 
         if (emu.isCpu32bit()) {
             logger
@@ -577,9 +592,8 @@ public class Motherboard extends ModuleMotherboard {
                                     + "]"
                                     + "Attempting to get CPU instruction number in 32-bit mode (unsupported)");
             return 0x1;
-        }
-        else {
-            ModuleCPU cpu = (ModuleCPU)super.getConnection(Module.Type.CPU);
+        } else {
+            ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
             return cpu.getCurrentInstructionNumber();
         }
     }

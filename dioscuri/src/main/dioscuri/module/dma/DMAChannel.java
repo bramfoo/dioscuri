@@ -52,19 +52,19 @@ public class DMAChannel {
     DMAModeRegister mode = new DMAModeRegister();
 
     int currentAddress; // Value of address used during DMA transfers;
-                        // automatically inc/dec after each transfer
+    // automatically inc/dec after each transfer
     int currentCount; // Number of transfers to be performed; Actual transfers
-                      // is one more than currentCount
+    // is one more than currentCount
     // Count is decremented after each transfer. A TC is generated when value
     // rolls 0h to FFFFH.
 
     int baseAddress; // Original value of currentAddress; used in AutoInitialise
-                     // to restore current registers
+    // to restore current registers
     int baseCount; // Original value of currentCount; used in AutoInitialise to
-                   // restore current registers
+    // restore current registers
 
     byte pageRegister; // Specifies base address of page in memory where DMA
-                       // buffer resides
+    // buffer resides
     boolean channelUsed; // Signals channel is in use by device
 
 }

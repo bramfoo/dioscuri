@@ -52,21 +52,22 @@ public class Instruction_JNB_JAE_JNC_long implements Instruction {
     byte[] displacement;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_JNB_JAE_JNC_long() {
+    public Instruction_JNB_JAE_JNC_long()
+    {
         displacement = new byte[2];
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_JNB_JAE_JNC_long(CPU processor) {
+    public Instruction_JNB_JAE_JNC_long(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -78,7 +79,8 @@ public class Instruction_JNB_JAE_JNC_long implements Instruction {
     /**
      * Execute conditional long jump on carry
      */
-    public void execute() {
+    public void execute()
+    {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

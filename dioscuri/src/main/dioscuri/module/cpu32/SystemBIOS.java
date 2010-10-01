@@ -27,12 +27,12 @@ package dioscuri.module.cpu32;
 
 //import org.jpc.emulator.*;
 //import org.jpc.emulator.memory.*;
-import java.io.*;
 
 import dioscuri.module.clock.Clock;
 
+import java.io.*;
+
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -43,11 +43,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     private Clock clock;
 
     /**
-     *
      * @param image
      * @param clk
      */
-    public SystemBIOS(byte[] image, Clock clk) {
+    public SystemBIOS(byte[] image, Clock clk)
+    {
         loaded = false;
         ioportRegistered = false;
         this.clock = clk;
@@ -57,11 +57,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @param imagefile
      * @throws IOException
      */
-    public SystemBIOS(String imagefile) throws IOException {
+    public SystemBIOS(String imagefile) throws IOException
+    {
         InputStream in = null;
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -84,23 +84,23 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @param output
      * @throws IOException
      */
     @Override
-    public void dumpState(DataOutput output) throws IOException {
+    public void dumpState(DataOutput output) throws IOException
+    {
         output.writeInt(imageData.length);
         output.write(imageData);
     }
 
     /**
-     *
      * @param input
      * @throws IOException
      */
     @Override
-    public void loadState(DataInput input) throws IOException {
+    public void loadState(DataInput input) throws IOException
+    {
         loaded = false;
         ioportRegistered = false;
         int len = input.readInt();
@@ -109,92 +109,92 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @return -
      */
-    public int[] ioPortsRequested() {
-        return new int[] { 0x400, 0x401, 0x402, 0x403, 0x8900 };
+    public int[] ioPortsRequested()
+    {
+        return new int[]{0x400, 0x401, 0x402, 0x403, 0x8900};
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadByte(int address) {
+    public int ioPortReadByte(int address)
+    {
         return 0xff;
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadWord(int address) {
+    public int ioPortReadWord(int address)
+    {
         return 0xffff;
     }
 
     /**
-     *
      * @param address
      * @return -
      */
-    public int ioPortReadLong(int address) {
+    public int ioPortReadLong(int address)
+    {
         return (int) 0xffffffff;
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteByte(int address, int data) {
+    public void ioPortWriteByte(int address, int data)
+    {
         switch (address) {
-        /* Bochs BIOS Messages */
-        case 0x402:
-        case 0x403:
-            try {
-                System.out.print(new String(new byte[] { (byte) data },
-                        "US-ASCII"));
-            } catch (Exception e) {
-                System.out.print(new String(new byte[] { (byte) data }));
-            }
-            break;
-        case 0x8900:
-            System.err.println("Attempt to call Shutdown");
-            break;
-        default:
+            /* Bochs BIOS Messages */
+            case 0x402:
+            case 0x403:
+                try {
+                    System.out.print(new String(new byte[]{(byte) data},
+                            "US-ASCII"));
+                } catch (Exception e) {
+                    System.out.print(new String(new byte[]{(byte) data}));
+                }
+                break;
+            case 0x8900:
+                System.err.println("Attempt to call Shutdown");
+                break;
+            default:
         }
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteWord(int address, int data) {
+    public void ioPortWriteWord(int address, int data)
+    {
         switch (address) {
-        /* Bochs BIOS Messages */
-        case 0x400:
-        case 0x401:
-            System.err.println("BIOS panic at rombios.c, line " + data);
-        default:
+            /* Bochs BIOS Messages */
+            case 0x400:
+            case 0x401:
+                System.err.println("BIOS panic at rombios.c, line " + data);
+            default:
         }
     }
 
     /**
-     *
      * @param address
      * @param data
      */
-    public void ioPortWriteLong(int address, int data) {
+    public void ioPortWriteLong(int address, int data)
+    {
     }
 
     /**
-     *
      * @param physicalAddress
      */
-    public void load(PhysicalAddressSpace physicalAddress) {
+    public void load(PhysicalAddressSpace physicalAddress)
+    {
         int blockSize = AddressSpace.BLOCK_SIZE;
         int len = ((imageData.length - 1) / blockSize + 1) * blockSize;
         int fraction = len - imageData.length;
@@ -213,28 +213,28 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @return -
      */
-    public byte[] getImage() {
+    public byte[] getImage()
+    {
         return (byte[]) imageData.clone();
     }
 
     /**
-     *
      * @return -
      */
     @Override
-    public boolean updated() {
+    public boolean updated()
+    {
         return (loaded && ioportRegistered);
     }
 
     /**
-     *
      * @param component
      */
     @Override
-    public void updateComponent(HardwareComponent component) {
+    public void updateComponent(HardwareComponent component)
+    {
         if ((component instanceof PhysicalAddressSpace) && component.updated()) {
             this.load((PhysicalAddressSpace) component);
             loaded = true;
@@ -247,20 +247,20 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @return -
      */
     @Override
-    public boolean initialised() {
+    public boolean initialised()
+    {
         return (loaded && ioportRegistered);
     }
 
     /**
-     *
      * @param component
      */
     @Override
-    public void acceptComponent(HardwareComponent component) {
+    public void acceptComponent(HardwareComponent component)
+    {
         if ((component instanceof PhysicalAddressSpace)
                 && component.initialised()) {
             this.load((PhysicalAddressSpace) component);
@@ -274,11 +274,11 @@ public class SystemBIOS extends AbstractHardwareComponent implements
     }
 
     /**
-     *
      * @return -
      */
     @Override
-    public boolean reset() {
+    public boolean reset()
+    {
         loaded = false;
         ioportRegistered = false;
         return true;

@@ -53,20 +53,21 @@ public class Instruction_DAA implements Instruction {
     private byte oldByte;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_DAA() {
+    public Instruction_DAA()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_DAA(CPU processor) {
+    public Instruction_DAA(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
 
@@ -80,10 +81,11 @@ public class Instruction_DAA implements Instruction {
      * packed BCD result. The AL register is the implied source and destination
      * operand.
      */
-    public void execute() {
+    public void execute()
+    {
         // Check if AL > 0x09 or AF = 1, adjust AL and set flags
         if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9)
-                || cpu.flags[CPU.REGISTER_FLAGS_AF] == true) {
+                || cpu.flags[CPU.REGISTER_FLAGS_AF]) {
             // Adjust AL
             oldByte = cpu.ax[CPU.REGISTER_GENERAL_LOW];
             cpu.ax[CPU.REGISTER_GENERAL_LOW] += 6;
@@ -99,7 +101,7 @@ public class Instruction_DAA implements Instruction {
 
         // Check if AL > 0x90 or CF = 1
         if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0xF0) > 0x90)
-                || cpu.flags[CPU.REGISTER_FLAGS_CF] == true) {
+                || cpu.flags[CPU.REGISTER_FLAGS_CF]) {
             // Adjust AL
             cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) (cpu.ax[CPU.REGISTER_GENERAL_LOW] + 0x60);
 

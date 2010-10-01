@@ -19,7 +19,8 @@ public class AtaPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Ata ata;
     final java.util.List<HD> hdList;
 
-    AtaPanel(GUI parent, Emulator emuConfig) {
+    AtaPanel(GUI parent, Emulator emuConfig)
+    {
         super(parent, emuConfig);
         super.setLayout(new BorderLayout(5, 5));
 
@@ -43,9 +44,10 @@ public class AtaPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception {
+    void save() throws Exception
+    {
         ata.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
-        for(HD hd : hdList) {
+        for (HD hd : hdList) {
             hd.save();
         }
     }
@@ -64,10 +66,11 @@ public class AtaPanel extends AbstractModulePanel {
         final JTextField imageFile = new JTextField();
         final JButton browse = new JButton("browse");
 
-        HD(Emulator.Architecture.Modules.Ata.Harddiskdrive hd) {
+        HD(Emulator.Architecture.Modules.Ata.Harddiskdrive hd)
+        {
 
             this.hd = hd;
-            
+
             enabled.setSelected(hd.isEnabled());
             channelIndex.setText(hd.getChannelindex().toString());
             master.setSelected(hd.isMaster());
@@ -80,9 +83,10 @@ public class AtaPanel extends AbstractModulePanel {
 
             imageFile.setToolTipText(imageFile.getText());
 
-            imageFile.addFocusListener(new FocusAdapter(){
+            imageFile.addFocusListener(new FocusAdapter() {
                 @Override
-                public void focusGained(FocusEvent e) {
+                public void focusGained(FocusEvent e)
+                {
                     imageFile.setCaretPosition(imageFile.getText().length());
                 }
             });
@@ -121,11 +125,12 @@ public class AtaPanel extends AbstractModulePanel {
             super.add(imageFile);
             super.add(browse);
 
-            browse.addActionListener(new ActionListener(){
+            browse.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e) {
+                public void actionPerformed(ActionEvent e)
+                {
                     File file = AtaPanel.super.chooseFile();
-                    if(file != null) {
+                    if (file != null) {
                         imageFile.setText(file.getAbsolutePath());
                         imageFile.setToolTipText(imageFile.getText());
                     }
@@ -133,7 +138,8 @@ public class AtaPanel extends AbstractModulePanel {
             });
         }
 
-        void save() throws Exception {
+        void save() throws Exception
+        {
             hd.setEnabled(enabled.isSelected());
             hd.setChannelindex(new BigInteger(channelIndex.getText()));
             hd.setMaster(master.isSelected());

@@ -39,12 +39,11 @@
 
 package dioscuri.module.cpu;
 
-import java.util.logging.Logger;
-
 import dioscuri.exception.CPUInstructionException;
 
+import java.util.logging.Logger;
+
 /**
- *
  * @author Bram Lohman
  * @author Bart Kiers
  */
@@ -58,18 +57,21 @@ public class Instruction_NULL implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_NULL.class.getName());
 
     // Constructors
+
     /**
      * Construct class
      */
-    public Instruction_NULL() {
+    public Instruction_NULL()
+    {
     }
 
     /**
      * Construct class
-     * 
+     *
      * @param processor
      */
-    public Instruction_NULL(CPU processor) {
+    public Instruction_NULL(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -80,10 +82,11 @@ public class Instruction_NULL implements Instruction {
 
     /**
      * Execute instruction
-     * 
+     *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException {
+    public void execute() throws CPUInstructionException
+    {
         // Throw exception for illegal nnn bits
         // byte b1 = (byte) (cpu.getByteFromCode() & 0xFF); // Target
         // instruction

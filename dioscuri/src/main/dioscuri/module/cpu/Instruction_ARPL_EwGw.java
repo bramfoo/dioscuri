@@ -54,20 +54,21 @@ public class Instruction_ARPL_EwGw implements Instruction {
     byte addressByte;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_ARPL_EwGw() {
+    public Instruction_ARPL_EwGw()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_ARPL_EwGw(CPU processor) {
+    public Instruction_ARPL_EwGw(CPU processor)
+    {
         // this();
 
         // Create reference to cpu class
@@ -81,7 +82,8 @@ public class Instruction_ARPL_EwGw implements Instruction {
     /**
      * Adjust RPL Field of Segment Selector.
      */
-    public void execute() {
+    public void execute()
+    {
         // FIXME: this instruction is not implemented. Just a dummy!
         System.out
                 .println("["

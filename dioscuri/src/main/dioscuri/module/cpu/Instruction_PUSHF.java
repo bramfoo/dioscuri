@@ -50,20 +50,21 @@ public class Instruction_PUSHF implements Instruction {
     private CPU cpu;
 
     // Constructors
+
     /**
      * Class constructor
-     * 
      */
-    public Instruction_PUSHF() {
+    public Instruction_PUSHF()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_PUSHF(CPU processor) {
+    public Instruction_PUSHF(CPU processor)
+    {
         this();
 
         // Create reference to cpu class
@@ -75,12 +76,13 @@ public class Instruction_PUSHF implements Instruction {
     /**
      * Transfer FLAGS register onto stack top SS:SP
      */
-    public void execute() {
+    public void execute()
+    {
 
         // Push EFLAGS first, if 32 bit instruction
         if (cpu.doubleWord) {
             // Since we don't use EFLAGS, push 0x0000 onto stack
-            cpu.setWordToStack(new byte[] { 0x00, 0x00 });
+            cpu.setWordToStack(new byte[]{0x00, 0x00});
         }
 
         // Push flags register (16-bit) onto stack

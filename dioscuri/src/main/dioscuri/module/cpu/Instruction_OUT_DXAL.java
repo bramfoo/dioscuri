@@ -39,10 +39,10 @@
 
 package dioscuri.module.cpu;
 
+import dioscuri.exception.ModuleException;
+
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import dioscuri.exception.ModuleException;
 
 /**
  * Intel opcode EE<BR>
@@ -61,19 +61,21 @@ public class Instruction_OUT_DXAL implements Instruction {
     private static final Logger logger = Logger.getLogger(Instruction_OUT_DXAL.class.getName());
 
     // Constructors
+
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXAL() {
+    public Instruction_OUT_DXAL()
+    {
     }
 
     /**
      * Class constructor specifying processor reference
-     * 
-     * @param processor
-     *            Reference to CPU class
+     *
+     * @param processor Reference to CPU class
      */
-    public Instruction_OUT_DXAL(CPU processor) {
+    public Instruction_OUT_DXAL(CPU processor)
+    {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -83,7 +85,8 @@ public class Instruction_OUT_DXAL implements Instruction {
     /**
      * Output byte in AL to I/O port address in DX
      */
-    public void execute() {
+    public void execute()
+    {
         try {
             // Convert value in DX to unsigned integer to prevent lookup table
             // out of bounds;
