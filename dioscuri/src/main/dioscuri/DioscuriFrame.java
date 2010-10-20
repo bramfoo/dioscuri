@@ -1087,7 +1087,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                 try {
                     new DioscuriFrame(args);
                 } catch(Exception e) {
-                    logger.log(Level.WARNING, "Wrong command line option(s): "+e.toString());
+                    logger.log(Level.SEVERE, "Wrong command line option(s): "+e.toString());
                 }
             }
         });
