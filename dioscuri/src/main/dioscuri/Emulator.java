@@ -196,7 +196,7 @@ public class Emulator implements Runnable {
                     emuConfig = ConfigController.loadFromXML(configFile);
                 }
                 moduleConfig = emuConfig.getArchitecture().getModules();
-                logger.log(Level.INFO, "[emu] Config contents: " + moduleConfig.getFdc().getFloppy().get(0).getImagefilepath());
+                logger.log(Level.INFO, "[emu] Emulator started with " + moduleConfig.getFdc().getFloppy().size() + " floppy drives and " + moduleConfig.getAta().getHarddiskdrive().size() + " fixed disks");
             } catch (Exception ex) {
                 logger.log(Level.SEVERE, "[emu] Config file not readable: "
                         + ex.toString());
@@ -1259,12 +1259,11 @@ public class Emulator implements Runnable {
         // update interval
         ModuleFDC fdc = (ModuleFDC) modules.getModule(Module.Type.FDC);
 
-        // FIXME: This needs to be set depending on number of floppies defined
-        // in XML/HashMap (also see note on HashMaps)
-        fdc.setNumberOfDrives(1);
+        int numFloppyDrives = moduleConfig.getFdc().getFloppy().size();
+        logger.log(Level.INFO, "[emu] Configuring " + numFloppyDrives + " floppy drives");
+        fdc.setNumberOfDrives(numFloppyDrives);
 
-        // FIXME: loop on number of floppies defined
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < numFloppyDrives; i++) {
             Floppy floppyConfig = moduleConfig.getFdc().getFloppy().get(i);
             // boolean enabled = floppyConfig.isEnabled();
             boolean inserted = floppyConfig.isInserted();
@@ -1321,16 +1320,16 @@ public class Emulator implements Runnable {
     {
         // TODO: replace ATA reference by ModuleATA
 
-        // FIXME: This needs to be set depending on number of floppies defined
-        // in XML/HashMap (also see note on HashMaps)
         ModuleATA ata = (ATA) modules.getModule(Module.Type.ATA);
+
+        int numFixedDisks = moduleConfig.getAta().getHarddiskdrive().size();
+        logger.log(Level.INFO, "Configuring " + numFixedDisks + " fixed disks");
 
         if (moduleConfig.getAta().getHarddiskdrive().isEmpty()) {
             return false;
         }
-
-        // FIXME: loop on number of disks defined
-        for (int i = 0; i < 2; i++) {
+        
+        for (int i = 0; i < numFixedDisks; i++) {
             Harddiskdrive hddConfig = moduleConfig.getAta().getHarddiskdrive().get(i);
             boolean enabled = hddConfig.isEnabled();
             int ideChannelIndex = hddConfig.getChannelindex().intValue();
