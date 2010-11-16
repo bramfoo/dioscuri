@@ -325,7 +325,7 @@ public class Instruction_GRP7 implements Instruction {
 
                 // TODO: this check only exists to notify if FPU emulation is turned
                 // off
-                if (cpu.cr0[CPU.REGISTER_CR0_EM] == false) {
+                if (!cpu.cr0[CPU.REGISTER_CR0_EM]) {
                     logger.log(Level.WARNING, "[" + cpu.getType()
                             + "] FPU emulation is turned off.");
                 }

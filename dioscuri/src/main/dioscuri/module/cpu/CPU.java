@@ -409,7 +409,7 @@ public class CPU extends ModuleCPU {
                     // Check if operand size is 32 bit (based on prefix 0x66)
                     // and if instruction supports 32-bits
                     if (doubleWord) {
-                        if (this.isSingleByte32BitSupported() == false) {
+                        if (!this.isSingleByte32BitSupported()) {
                             logger.log(Level.SEVERE, "[" + super.getType()
                                     + "] Instruction problem (opcode "
                                     + Integer.toHexString(codeByte)
@@ -4294,7 +4294,7 @@ public class CPU extends ModuleCPU {
                             || codeByte == (0xAE & 0xFF)
                             || codeByte == (0xAF & 0xFF)) {
                         // Terminate condition 2: ZF is zero
-                        if (flags[CPU.REGISTER_FLAGS_ZF] == false) {
+                        if (!flags[CPU.REGISTER_FLAGS_ZF]) {
                             // ZF is zero, so terminate
                             return;
                         }

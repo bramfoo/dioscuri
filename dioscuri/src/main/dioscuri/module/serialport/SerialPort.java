@@ -220,7 +220,7 @@ public class SerialPort extends ModuleSerialPort {
         // Request a timer (one shot)
         updateInterval = 0;
 
-        if (motherboard.requestTimer(this, updateInterval, false) == false) {
+        if (!motherboard.requestTimer(this, updateInterval, false)) {
             return false;
         }
 

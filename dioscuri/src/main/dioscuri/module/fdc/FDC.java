@@ -577,7 +577,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
         for (int i = 0; i < drives.length; i++) {
             if (drives[i] != null && drives[i].containsFloppy()) {
                 // Eject floppy from drive and store data in disk image
-                if (this.ejectCarrier(i) == false) {
+                if (!this.ejectCarrier(i)) {
                     logger.log(Level.SEVERE, "[" + super.getType() + "] Drive " + i
                             + ": eject floppy failed.");
                 }
@@ -669,7 +669,7 @@ public class FDC extends ModuleFDC implements DMATransferCapable {
 
                     // Check if drive is set and motor running
                     if ((drives[drive].getDriveType() == FLOPPY_DRIVETYPE_NONE)
-                            || (drives[drive].isMotorRunning() == false)) {
+                            || !drives[drive].isMotorRunning()) {
                         // Command terminated abnormally
                         statusRegister0 |= 0x50;
                     }

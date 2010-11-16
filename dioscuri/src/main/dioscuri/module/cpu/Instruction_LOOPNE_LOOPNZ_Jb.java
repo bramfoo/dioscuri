@@ -56,13 +56,6 @@ public class Instruction_LOOPNE_LOOPNZ_Jb implements Instruction {
     // Constructors
 
     /**
-     * Class constructor
-     */
-    public Instruction_LOOPNE_LOOPNZ_Jb()
-    {
-    }
-
-    /**
      * Class constructor specifying processor reference
      *
      * @param processor Reference to CPU class
@@ -91,7 +84,7 @@ public class Instruction_LOOPNE_LOOPNZ_Jb implements Instruction {
         cpu.cx = Util.subtractWords(cpu.cx, decrement, 0);
 
         // Test LOOP condition, jump if CX is not zero and ZF == 0
-        if (cpu.flags[CPU.REGISTER_FLAGS_ZF] == false
+        if (!cpu.flags[CPU.REGISTER_FLAGS_ZF]
                 && (cpu.cx[CPU.REGISTER_GENERAL_LOW] != 0x00 || cpu.cx[CPU.REGISTER_GENERAL_HIGH] != 0x00)) {
             // Jump is relative to _next_ instruction, but by the time we change
             // the IP, it has already been incremented twice, so no extra

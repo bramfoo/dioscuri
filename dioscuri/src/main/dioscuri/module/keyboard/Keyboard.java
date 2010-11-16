@@ -210,7 +210,7 @@ public class Keyboard extends ModuleKeyboard {
         }
 
         // Request a timer
-        if (motherboard.requestTimer(this, updateInterval, true) == false) {
+        if (!motherboard.requestTimer(this, updateInterval, true)) {
             return false;
         }
         // Activate timer
@@ -1002,7 +1002,7 @@ public class Keyboard extends ModuleKeyboard {
 
         // Check if scancode is a number, if not key is not in scancode set and
         // will be discarded
-        if (scancode[0].equalsIgnoreCase("") == false) {
+        if (!scancode[0].equals("")) {
             // Distinguish between left and right Ctrl, Alt and Shift
             if (keyEvent.getKeyCode() == KeyEvent.VK_CONTROL
                     || keyEvent.getKeyCode() == KeyEvent.VK_ALT
