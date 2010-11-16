@@ -58,8 +58,7 @@ public class MethodInfo {
      * @throws IOException
      */
     public MethodInfo(DataInputStream in, ConstantPoolInfo[] pool)
-            throws IOException
-    {
+            throws IOException {
         accessFlags = in.readUnsignedShort();
         nameIndex = in.readUnsignedShort();
         descriptorIndex = in.readUnsignedShort();
@@ -74,8 +73,7 @@ public class MethodInfo {
      * @param out
      * @throws IOException
      */
-    public void write(DataOutputStream out) throws IOException
-    {
+    public void write(DataOutputStream out) throws IOException {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
         out.writeShort(descriptorIndex);
@@ -88,24 +86,21 @@ public class MethodInfo {
     /**
      * @return -
      */
-    public int getNameIndex()
-    {
+    public int getNameIndex() {
         return nameIndex;
     }
 
     /**
      * @return -
      */
-    public int getDescriptorIndex()
-    {
+    public int getDescriptorIndex() {
         return descriptorIndex;
     }
 
     /**
      * @return -
      */
-    public int getMaxStack()
-    {
+    public int getMaxStack() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
                 return ((AttributeInfo.CodeAttribute) attributes[i])
@@ -116,8 +111,7 @@ public class MethodInfo {
     /**
      * @return -
      */
-    public int getMaxLocals()
-    {
+    public int getMaxLocals() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
                 return ((AttributeInfo.CodeAttribute) attributes[i])
@@ -128,8 +122,7 @@ public class MethodInfo {
     /**
      * @return -
      */
-    public int[] getCode()
-    {
+    public int[] getCode() {
         for (int i = 0; (i < attributesCount); i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
                 return ((AttributeInfo.CodeAttribute) attributes[i]).getCode();
@@ -140,8 +133,7 @@ public class MethodInfo {
      * @param code
      * @param cf
      */
-    public void setCode(int[] code, ClassFile cf)
-    {
+    public void setCode(int[] code, ClassFile cf) {
         setCode(code, code.length, cf);
     }
 
@@ -150,8 +142,7 @@ public class MethodInfo {
      * @param codeLength
      * @param cf
      */
-    public void setCode(int[] code, int codeLength, ClassFile cf)
-    {
+    public void setCode(int[] code, int codeLength, ClassFile cf) {
         String descriptor = cf.getConstantPoolUtf8(this.getDescriptorIndex());
         int argLength = cf.getMethodArgLength(descriptor);
         for (int i = 0; (i < attributesCount); i++) {
@@ -166,8 +157,7 @@ public class MethodInfo {
     /**
      * @return -
      */
-    public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable()
-    {
+    public AttributeInfo.CodeAttribute.ExceptionEntry[] getExceptionTable() {
         for (int i = 0; i < attributesCount; i++)
             if (attributes[i] instanceof AttributeInfo.CodeAttribute)
                 return ((AttributeInfo.CodeAttribute) attributes[i])
@@ -181,8 +171,7 @@ public class MethodInfo {
      */
     public void setExceptionTable(
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
-            ClassFile cf)
-    {
+            ClassFile cf) {
         for (int i = 0; (i < attributesCount); i++) {
             if (attributes[i] instanceof AttributeInfo.CodeAttribute) {
                 ((AttributeInfo.CodeAttribute) attributes[i])
@@ -200,8 +189,7 @@ public class MethodInfo {
      */
     public void setExceptionTable(
             AttributeInfo.CodeAttribute.ExceptionEntry[] exceptionTable,
-            int exceptionTableLength, ClassFile cf)
-    {
+            int exceptionTableLength, ClassFile cf) {
         for (int i = 0; (i < attributesCount); i++) {
             if (attributes[i] instanceof AttributeInfo.CodeAttribute) {
                 ((AttributeInfo.CodeAttribute) attributes[i])

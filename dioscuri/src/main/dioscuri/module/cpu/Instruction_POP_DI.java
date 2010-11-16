@@ -54,8 +54,7 @@ public class Instruction_POP_DI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_POP_DI()
-    {
+    public Instruction_POP_DI() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_POP_DI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_POP_DI(CPU processor)
-    {
+    public Instruction_POP_DI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_POP_DI implements Instruction {
     /**
      * This pops the word at stack top SS:SP into DI
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get word SS:SP and assign to DI
         cpu.di = cpu.getWordFromStack();

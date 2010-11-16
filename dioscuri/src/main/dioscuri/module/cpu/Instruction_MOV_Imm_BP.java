@@ -54,8 +54,7 @@ public class Instruction_MOV_Imm_BP implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_BP()
-    {
+    public Instruction_MOV_Imm_BP() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_MOV_Imm_BP implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_BP(CPU processor)
-    {
+    public Instruction_MOV_Imm_BP(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_MOV_Imm_BP implements Instruction {
     /**
      * Copy immediate word to register BP
      */
-    public void execute()
-    {
+    public void execute() {
         cpu.bp = cpu.getWordFromCode();
 
         if (cpu.doubleWord) {

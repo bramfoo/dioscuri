@@ -97,8 +97,7 @@ public class Memory extends ModuleMemory {
      *
      * @param owner
      */
-    public Memory(Emulator owner)
-    {
+    public Memory(Emulator owner) {
 
         // Create new empty memory
         ram = new byte[this.ramSize];
@@ -117,8 +116,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // Reset RAM: set all memory to zero
         Arrays.fill(ram, (byte) 0);
 
@@ -138,8 +136,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -167,8 +164,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte getByte(int address)
-    {
+    public byte getByte(int address) {
 
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -216,8 +212,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setByte(int address, byte value)
-    {
+    public void setByte(int address, byte value) {
 
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -263,8 +258,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public byte[] getWord(int address)
-    {
+    public byte[] getWord(int address) {
 
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -318,8 +312,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWord(int address, byte[] value)
-    {
+    public void setWord(int address, byte[] value) {
 
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -371,8 +364,7 @@ public class Memory extends ModuleMemory {
      */
     @Override
     public void setBytes(int address, byte[] binaryStream)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Compute total length of stream
         int streamLength = binaryStream.length;
 
@@ -398,8 +390,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setA20AddressLine(boolean status)
-    {
+    public void setA20AddressLine(boolean status) {
         // Change the status of A20 address line check
         if (status) {
             // Enable 0x100000 address bit (memory wrapping is turned off)
@@ -419,8 +410,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress)
-    {
+    public void setWatchValueAndAddress(boolean isWatchOn, int watchAddress) {
         this.watchValue = isWatchOn;
         this.watchAddress = watchAddress;
     }
@@ -431,8 +421,7 @@ public class Memory extends ModuleMemory {
      * @see dioscuri.module.ModuleMemory
      */
     @Override
-    public void setRamSizeInMB(int ramSizeMB)
-    {
+    public void setRamSizeInMB(int ramSizeMB) {
         this.ramSize = ramSizeMB * BYTES_IN_MB;
         // Create new empty memory
         ram = new byte[this.ramSize];
@@ -445,8 +434,7 @@ public class Memory extends ModuleMemory {
      * @param strValue value
      * @return int as byte
      */
-    private int convertStringToByte(String strValue)
-    {
+    private int convertStringToByte(String strValue) {
         // Parse from string to int (hex)
         try {
             int intRegVal = 0;

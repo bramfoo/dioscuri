@@ -72,8 +72,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INCDEC_GRP4()
-    {
+    public Instruction_INCDEC_GRP4() {
         // Initialise variables
         operandWordSize = false;
         memoryReferenceLocation = new byte[2];
@@ -89,8 +88,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INCDEC_GRP4(CPU processor)
-    {
+    public Instruction_INCDEC_GRP4(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -102,8 +100,7 @@ public class Instruction_INCDEC_GRP4 implements Instruction {
     /**
      * Execute any of the following Immediate Group 4 instructions: INC, DEC.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

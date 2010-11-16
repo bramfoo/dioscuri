@@ -283,8 +283,7 @@ public class CPU extends ModuleCPU {
      *
      * @param owner
      */
-    public CPU(Emulator owner)
-    {
+    public CPU(Emulator owner) {
 
         debugMode = false;
         irqPending = false;
@@ -311,8 +310,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // Initialise toggles
         isRunning = true;
         irqPending = false;
@@ -347,8 +345,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public void start()
-    {
+    public void start() {
 
         ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -585,8 +582,7 @@ public class CPU extends ModuleCPU {
      * {@inheritDoc}
      */
     @Override
-    public void stop()
-    {
+    public void stop() {
         // Stop execution of instructions
         this.setRunning(false);
     }
@@ -597,8 +593,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
 
         ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -758,8 +753,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String dumpRegisters()
-    {
+    public String dumpRegisters() {
 
         ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -944,8 +938,7 @@ public class CPU extends ModuleCPU {
      * @param data
      * @return -
      */
-    public String dumpDebug(String data)
-    {
+    public String dumpDebug(String data) {
         String dump = data;
         String space = " ";
 
@@ -1023,8 +1016,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean isAbnormalTermination()
-    {
+    public boolean isAbnormalTermination() {
         return abnormalTermination;
     }
 
@@ -1034,8 +1026,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean isShutdown()
-    {
+    public boolean isShutdown() {
         return shutDown;
     }
 
@@ -1044,8 +1035,7 @@ public class CPU extends ModuleCPU {
      *
      * @param status true if emulator should shutdown, false otherwise
      */
-    protected void setShutdown(boolean status)
-    {
+    protected void setShutdown(boolean status) {
         shutDown = status;
     }
 
@@ -1055,8 +1045,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setHoldRequest(boolean value, Module originator)
-    {
+    public void setHoldRequest(boolean value, Module originator) {
         holdReQuest = value;
         hRQorigin = originator;
         if (value) {
@@ -1072,8 +1061,7 @@ public class CPU extends ModuleCPU {
      * @return True if event stops CPU start() loop<BR>
      *         False if CPU keeps running
      */
-    private boolean handleAsyncEvent()
-    {
+    private boolean handleAsyncEvent() {
 
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
@@ -1130,8 +1118,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public int getIPS()
-    {
+    public int getIPS() {
         return ips;
     }
 
@@ -1141,8 +1128,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setIPS(int ips)
-    {
+    public void setIPS(int ips) {
         this.ips = ips;
         ipus = this.ips / 1000000;
         logger.log(Level.INFO, "[" + super.getType() + "] IPS set to " + this.ips
@@ -1155,8 +1141,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setIPS(int ips, int lowestUpdatePeriod)
-    {
+    public void setIPS(int ips, int lowestUpdatePeriod) {
         this.ips = ips;
         this.lowestUpdatePeriod = lowestUpdatePeriod;
         ipus = this.ips / 1000000;
@@ -1170,8 +1155,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected boolean initRegisters()
-    {
+    protected boolean initRegisters() {
         // Initialise general purpose registers
         ax = new byte[REGISTER_SIZE_GENERAL / BYTE];
         ax[REGISTER_GENERAL_HIGH] = ax[REGISTER_GENERAL_LOW] = (byte) 0;
@@ -1289,8 +1273,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected boolean initInstructionTables()
-    {
+    protected boolean initInstructionTables() {
         // Initialise single-byte opcode lookup array with instruction functions
         singleByteInstructions = new Instruction[256];
         /* 00 */
@@ -3838,8 +3821,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected void setRunning(boolean status)
-    {
+    protected void setRunning(boolean status) {
         // Set the isRunning flag
         isRunning = status;
     }
@@ -3850,8 +3832,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public byte[] getRegisterValue(String registerName)
-    {
+    public byte[] getRegisterValue(String registerName) {
         byte[] register = this.convertStringToRegister(registerName);
         if (register != null) {
             return register;
@@ -3865,8 +3846,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean setRegisterValue(String registerName, byte[] value)
-    {
+    public boolean setRegisterValue(String registerName, byte[] value) {
         byte[] register = this.convertStringToRegister(registerName);
         if (register != null) {
             register[0] = value[0];
@@ -3884,8 +3864,7 @@ public class CPU extends ModuleCPU {
      * @param flagLetter First letter of flag name
      * @return value of flag
      */
-    public boolean getFlagValue(char flagLetter)
-    {
+    public boolean getFlagValue(char flagLetter) {
         switch (flagLetter) {
             case 'c':
             case 'C':
@@ -3927,8 +3906,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String getNextInstructionInfo()
-    {
+    public String getNextInstructionInfo() {
 
         ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -4005,8 +3983,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public long getCurrentInstructionNumber()
-    {
+    public long getCurrentInstructionNumber() {
         return instructionCounter;
     }
 
@@ -4016,8 +3993,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected void incrementInstructionCounter()
-    {
+    protected void incrementInstructionCounter() {
         // instructionCounter++;
     }
 
@@ -4027,8 +4003,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleException
-    {
+    public byte getIOPortByte(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         return motherboard.getIOPortByte(portAddress);
@@ -4041,8 +4016,7 @@ public class CPU extends ModuleCPU {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Set data in I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.setIOPortByte(portAddress, data);
@@ -4054,8 +4028,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws ModuleException
-    {
+    public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // Retrieve data from I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         return motherboard.getIOPortWord(portAddress);
@@ -4068,8 +4041,7 @@ public class CPU extends ModuleCPU {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] data)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Set data in I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.setIOPortWord(portAddress, data);
@@ -4082,8 +4054,7 @@ public class CPU extends ModuleCPU {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Retrieve data from I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         return motherboard.getIOPortDoubleWord(portAddress);
@@ -4096,8 +4067,7 @@ public class CPU extends ModuleCPU {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] data)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Set data in I/O address space at port address
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         motherboard.setIOPortDoubleWord(portAddress, data);
@@ -4109,8 +4079,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void interruptRequest(boolean value)
-    {
+    public void interruptRequest(boolean value) {
         irqPending = value;
         asyncEvent = true;
     }
@@ -4120,8 +4089,7 @@ public class CPU extends ModuleCPU {
      *
      * @return boolean true if codeByte is a prefix, false otherwise
      */
-    private boolean isPrefix()
-    {
+    private boolean isPrefix() {
         if (codeByte == 0xF2 || codeByte == 0xF3 || codeByte == 0x26
                 || codeByte == 0x2E || codeByte == 0x36 || codeByte == 0x3E
                 || codeByte == 0x66) {
@@ -4133,8 +4101,7 @@ public class CPU extends ModuleCPU {
     /**
      * Reset all prefixes
      */
-    protected void resetPrefixes()
-    {
+    protected void resetPrefixes() {
         segmentOverride = false;
         doubleWord = false;
         prefixRep = false;
@@ -4152,8 +4119,7 @@ public class CPU extends ModuleCPU {
      *
      * @return boolean true if 32 bit is supported, false otherwise
      */
-    private boolean isSingleByte32BitSupported()
-    {
+    private boolean isSingleByte32BitSupported() {
         // Current instructions that support 32 bit:
         switch (codeByte) {
             // Full 32-bit support
@@ -4233,8 +4199,7 @@ public class CPU extends ModuleCPU {
      *
      * @return boolean true if 32 bit is supported, false otherwise
      */
-    protected boolean isDoubleByte32BitSupported()
-    {
+    protected boolean isDoubleByte32BitSupported() {
         // Current instructions that support 32 bit:
         switch (codeByte2) {
             // Full 32-bit support
@@ -4263,8 +4228,7 @@ public class CPU extends ModuleCPU {
      *
      * @throws CPUInstructionException
      */
-    private void executeInstruction() throws CPUInstructionException
-    {
+    private void executeInstruction() throws CPUInstructionException {
         // Check prefix REP
         if (prefixRep) {
             // Check terminate condition 1: CX
@@ -4343,8 +4307,7 @@ public class CPU extends ModuleCPU {
      *
      * @return byte at memory address CS:IP
      */
-    protected byte getByteFromCode()
-    {
+    protected byte getByteFromCode() {
         // Get code memory address
         segmentedCodeAddress = this.getSegmentedCodeAddress();
 
@@ -4369,8 +4332,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current segment
      * @return byte at memory address CS:DISP
      */
-    protected byte getByteFromCode(byte[] displacement)
-    {
+    protected byte getByteFromCode(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getByte(this.getSegmentedCodeAddress(displacement));
@@ -4389,8 +4351,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current data segment
      * @return byte at memory address DS:DISP
      */
-    protected byte getByteFromData(byte[] displacement)
-    {
+    protected byte getByteFromData(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getByte(this.getSegmentedDataAddress(displacement));
@@ -4409,8 +4370,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current stack segment
      * @return byte at memory address SS:DISP
      */
-    protected byte getByteFromStack(byte[] displacement)
-    {
+    protected byte getByteFromStack(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getByte(this.getSegmentedStackAddress(displacement));
@@ -4429,8 +4389,7 @@ public class CPU extends ModuleCPU {
      * @param displacement
      * @return byte at memory address ES:DI
      */
-    protected byte getByteFromExtra(byte[] displacement)
-    {
+    protected byte getByteFromExtra(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getByte(this.getSegmentedExtraAddress(displacement));
@@ -4448,8 +4407,7 @@ public class CPU extends ModuleCPU {
      *
      * @return byte[] with word at memory address CS:IP
      */
-    protected byte[] getWordFromCode()
-    {
+    protected byte[] getWordFromCode() {
         // TODO: Check correct storage of bytes in array, [0][1] = [MSB][LSB]???
         segmentedCodeAddress = this.getSegmentedCodeAddress();
 
@@ -4473,8 +4431,7 @@ public class CPU extends ModuleCPU {
      * @param displacement
      * @return byte[] with word at memory address displacement
      */
-    protected byte[] getWordFromCode(byte[] displacement)
-    {
+    protected byte[] getWordFromCode(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getWord(this.getSegmentedCodeAddress(displacement));
@@ -4493,8 +4450,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current data segment
      * @return word at memory address DS:DISP
      */
-    protected byte[] getWordFromData(byte[] displacement)
-    {
+    protected byte[] getWordFromData(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getWord(this.getSegmentedDataAddress(displacement));
@@ -4512,8 +4468,7 @@ public class CPU extends ModuleCPU {
      *
      * @return word at memory address SS:SP
      */
-    protected byte[] getWordFromStack()
-    {
+    protected byte[] getWordFromStack() {
         // Need to retrieve data before incrementing SP
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
@@ -4537,8 +4492,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current stack segment
      * @return word at memory address SS:DISP
      */
-    protected byte[] getWordFromStack(byte[] displacement)
-    {
+    protected byte[] getWordFromStack(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getWord(this.getSegmentedStackAddress(displacement));
@@ -4557,8 +4511,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current data segment
      * @return word at memory address ES:DISP
      */
-    protected byte[] getWordFromExtra(byte[] displacement)
-    {
+    protected byte[] getWordFromExtra(byte[] displacement) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             return memory.getWord(this.getSegmentedExtraAddress(displacement));
@@ -4578,8 +4531,7 @@ public class CPU extends ModuleCPU {
      * @param offset      byte[] indicating displacement of word in segment
      * @return byte at memory address SS:disp or DS:disp
      */
-    protected byte getByteFromMemorySegment(byte addressByte, byte[] offset)
-    {
+    protected byte getByteFromMemorySegment(byte addressByte, byte[] offset) {
         // "Default segment register is SS for effective addresses containing a
         // BP index,
         // DS for other effective addresses" -Intel IA_SDM2, p. 2-5
@@ -4634,8 +4586,7 @@ public class CPU extends ModuleCPU {
      * @param offset      byte[] indicating offset of word in segment
      * @return word at memory address SS:disp or DS:disp
      */
-    protected byte[] getWordFromMemorySegment(byte addressByte, byte[] offset)
-    {
+    protected byte[] getWordFromMemorySegment(byte addressByte, byte[] offset) {
         // "Default segment register is SS for effective addresses containing a
         // BP index,
         // DS for other effective addresses" -Intel IA_SDM2, p. 2-5
@@ -4690,8 +4641,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current code segment
      * @param value        New value of the byte
      */
-    protected void setByteToCode(byte[] displacement, byte value)
-    {
+    protected void setByteToCode(byte[] displacement, byte value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setByte(this.getSegmentedCodeAddress(displacement), value);
@@ -4709,8 +4659,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current code segment
      * @param value        New value of the word
      */
-    protected void setWordToCode(byte[] displacement, byte[] value)
-    {
+    protected void setWordToCode(byte[] displacement, byte[] value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setWord(this.getSegmentedCodeAddress(displacement), value);
@@ -4728,8 +4677,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current data segment
      * @param value        New value of the byte
      */
-    protected void setByteToData(byte[] displacement, byte value)
-    {
+    protected void setByteToData(byte[] displacement, byte value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setByte(this.getSegmentedDataAddress(displacement), value);
@@ -4746,8 +4694,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Two byte offset in the current data segment
      * @param value        New value of the word
      */
-    protected void setWordToData(byte[] displacement, byte[] value)
-    {
+    protected void setWordToData(byte[] displacement, byte[] value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setWord(this.getSegmentedDataAddress(displacement), value);
@@ -4763,8 +4710,7 @@ public class CPU extends ModuleCPU {
      * @param displacement
      * @param value
      */
-    protected void setByteToExtra(byte[] displacement, byte value)
-    {
+    protected void setByteToExtra(byte[] displacement, byte value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setByte(this.getSegmentedExtraAddress(displacement), value);
@@ -4780,8 +4726,7 @@ public class CPU extends ModuleCPU {
      * @param displacement
      * @param word         Value of word to assign
      */
-    protected void setWordToExtra(byte[] displacement, byte[] word)
-    {
+    protected void setWordToExtra(byte[] displacement, byte[] word) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setWord(this.getSegmentedExtraAddress(displacement), word);
@@ -4797,8 +4742,7 @@ public class CPU extends ModuleCPU {
      *
      * @param value to be pushed on the stack
      */
-    protected void setByteToStack(byte value)
-    {
+    protected void setByteToStack(byte value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(), value);
@@ -4815,8 +4759,7 @@ public class CPU extends ModuleCPU {
      * @param displacement
      * @param value        to be pushed onto the stack
      */
-    protected void setByteToStack(byte[] displacement, byte value)
-    {
+    protected void setByteToStack(byte[] displacement, byte value) {
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
             memory.setByte(this.getSegmentedStackAddress(displacement), value);
@@ -4833,8 +4776,7 @@ public class CPU extends ModuleCPU {
      *
      * @param value word to be pushed on the stack
      */
-    protected void setWordToStack(byte[] value)
-    {
+    protected void setWordToStack(byte[] value) {
         // According to MS-DOS debug.exe, the stack pointer is decrement FIRST
         // before writing data. This behaviour is reproduced here.
 
@@ -4857,8 +4799,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Displacement within SS segment
      * @param value        word to be stored in SS
      */
-    protected void setWordToStack(byte[] displacement, byte[] value)
-    {
+    protected void setWordToStack(byte[] displacement, byte[] value) {
         // Write data to SS
         try {
             ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
@@ -4879,8 +4820,7 @@ public class CPU extends ModuleCPU {
      * @param value       byte containing value to write to segment:disp
      */
     protected void setByteInMemorySegment(byte addressByte, byte[] disp,
-                                          byte value)
-    {
+                                          byte value) {
         // "Default segment register is SS for effective addresses containing a
         // BP index,
         // DS for other effective addresses" -Intel IA_SDM2, p. 2-5
@@ -4942,8 +4882,7 @@ public class CPU extends ModuleCPU {
      * @param value       byte[] containing value to write to segment:disp
      */
     protected void setWordInMemorySegment(byte addressByte, byte[] disp,
-                                          byte[] value)
-    {
+                                          byte[] value) {
         // "Default segment register is SS for effective addresses containing a
         // BP index,
         // DS for other effective addresses" -Intel IA_SDM2, p. 2-5
@@ -5002,8 +4941,7 @@ public class CPU extends ModuleCPU {
      * @param addrByte addressbyte following opcode instruction
      * @return memory reference displacement indicated by extra bytes.
      */
-    protected byte[] decodeMM(int addrByte)
-    {
+    protected byte[] decodeMM(int addrByte) {
         // Determine sss specified by mm bits, by ANDing with 1100 0000 and
         // right-shifting 6
         switch ((addrByte >> 6) & 0x03) {
@@ -5044,8 +4982,7 @@ public class CPU extends ModuleCPU {
      * @param displacement memory reference displacement from extra bytes
      * @return memory location indication by sss and displacement
      */
-    protected byte[] decodeSSSMemDest(byte addrByte, byte[] displacement)
-    {
+    protected byte[] decodeSSSMemDest(byte addrByte, byte[] displacement) {
         // Determine memory specified by sss bits, by ANDing with 0000 0111
         switch (addrByte & 0x07) {
             case 0: // BX + SI
@@ -5091,8 +5028,7 @@ public class CPU extends ModuleCPU {
      * @param rrrsssBits  integer value (0 - 7) based on rrr/sss bits from addressbyte
      * @return register indicated by relevant bits from addressbyte
      */
-    protected byte[] decodeRegister(boolean operandWord, int rrrsssBits)
-    {
+    protected byte[] decodeRegister(boolean operandWord, int rrrsssBits) {
         // Check operand size first
         if (operandWord) {
             // Determine register specified by rrr/sss bits
@@ -5156,8 +5092,7 @@ public class CPU extends ModuleCPU {
      * @param rrrsssBits integer value (0 - 7) based on rrr/sss bits from addressbyte
      * @return register indicated by relevant bits from addressbyte
      */
-    protected byte[] decodeExtraRegister(int rrrsssBits)
-    {
+    protected byte[] decodeExtraRegister(int rrrsssBits) {
         // Determine register specified by rrr/sss bits
         switch (rrrsssBits) {
             case 0: // eAX
@@ -5191,8 +5126,7 @@ public class CPU extends ModuleCPU {
      * @param rrrsssBits integer value (0 - 7) based on rrr/sss bits from addressbyte
      * @return segment register indicated by relevant bits from addressbyte
      */
-    protected byte[] decodeSegmentRegister(int rrrsssBits)
-    {
+    protected byte[] decodeSegmentRegister(int rrrsssBits) {
         // Not dependant on operand size like decodeRegister, so check is
         // skipped
         // Determine register specified by rrr/sss bits
@@ -5226,8 +5160,7 @@ public class CPU extends ModuleCPU {
      *
      * @return flat-memory address of CS:IP
      */
-    private int getSegmentedCodeAddress()
-    {
+    private int getSegmentedCodeAddress() {
         // Return segmented memory address for code segment: 4x left-shift CS
         // register, add IP
         // 
@@ -5247,8 +5180,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Offset in current segment
      * @return flat-memory address of CS:displacement
      */
-    private int getSegmentedCodeAddress(byte[] displacement)
-    {
+    private int getSegmentedCodeAddress(byte[] displacement) {
         // Return segmented memory address for code segment: 4x left-shift
         // codesegment register, add offset
         return (((cs[REGISTER_SEGMENT_HIGH] & 0xFF) << 12)
@@ -5262,8 +5194,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Offset in current data segment
      * @return flat-memory address of DS:displacement
      */
-    private int getSegmentedDataAddress(byte[] displacement)
-    {
+    private int getSegmentedDataAddress(byte[] displacement) {
         // Return segmented memory address for data segment: 4x left-shift
         // datasegment register, add offset
         return (((ds[REGISTER_SEGMENT_HIGH] & 0xFF) << 12)
@@ -5276,8 +5207,7 @@ public class CPU extends ModuleCPU {
      *
      * @return flat-memory address of SS:SP
      */
-    private int getSegmentedStackAddress()
-    {
+    private int getSegmentedStackAddress() {
         // Return segmented memory address for stack segment: 4x left-shift
         // stacksegment register, add stackpointer
         return (((ss[REGISTER_SEGMENT_HIGH] & 0xFF) << 12)
@@ -5291,8 +5221,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Offset in current stack segment
      * @return flat-memory address of SS:displacement
      */
-    private int getSegmentedStackAddress(byte[] displacement)
-    {
+    private int getSegmentedStackAddress(byte[] displacement) {
         // Return segmented memory address for data segment: 4x left-shift
         // datasegment register, add offset
         return (((ss[REGISTER_SEGMENT_HIGH] & 0xFF) << 12)
@@ -5306,8 +5235,7 @@ public class CPU extends ModuleCPU {
      * @param displacement Offset in current data segment
      * @return flat-memory address of ES:displacement
      */
-    private int getSegmentedExtraAddress(byte[] displacement)
-    {
+    private int getSegmentedExtraAddress(byte[] displacement) {
         // Return segmented memory address for data segment: 4x left-shift
         // datasegment register, add offset
         return (((es[REGISTER_SEGMENT_HIGH] & 0xFF) << 12)
@@ -5321,8 +5249,7 @@ public class CPU extends ModuleCPU {
      *
      * @return byte[] containing the requested register
      */
-    private byte[] convertStringToRegister(String registerName)
-    {
+    private byte[] convertStringToRegister(String registerName) {
         if (registerName.equalsIgnoreCase("AX")) {
             return ax;
         } else if (registerName.equalsIgnoreCase("BX")) {
@@ -5356,8 +5283,7 @@ public class CPU extends ModuleCPU {
     /**
      * Handle interrupt Request (IRQ)
      */
-    private void handleIRQ(int vector)
-    {
+    private void handleIRQ(int vector) {
         int offset;
         byte[] tempCS, tempIP, newCS, newIP;
 
@@ -5424,8 +5350,7 @@ public class CPU extends ModuleCPU {
      * @param word
      * @return int
      */
-    private int convertWordToInt(byte[] word)
-    {
+    private int convertWordToInt(byte[] word) {
         int result;
 
         // Cast both bytes to integer, mask and add
@@ -5441,8 +5366,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String getRegisterHex(int register)
-    {
+    public String getRegisterHex(int register) {
         switch (register) {
             case 0: // CS
                 return Integer.toHexString(
@@ -5466,8 +5390,7 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean getCpuInstructionDebug()
-    {
+    public boolean getCpuInstructionDebug() {
         return this.cpuInstructionDebug;
     }
 
@@ -5477,16 +5400,14 @@ public class CPU extends ModuleCPU {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setCpuInstructionDebug(boolean cpuInstructionDebug)
-    {
+    public void setCpuInstructionDebug(boolean cpuInstructionDebug) {
         this.cpuInstructionDebug = cpuInstructionDebug;
     }
 
     /**
      * @return -
      */
-    public String startDebug()
-    {
+    public String startDebug() {
         StringBuilder b = new StringBuilder();
         b.append("***************************\nBEFORE\n").append(registerDump());
         this.start();
@@ -5497,8 +5418,7 @@ public class CPU extends ModuleCPU {
     /**
      * @return -
      */
-    public String registerDump()
-    {
+    public String registerDump() {
         StringBuilder b = new StringBuilder();
         b.append("ax=").append(toHexString(ax)).append('\n');
         b.append("eax=").append(toHexString(eax)).append('\n');
@@ -5534,8 +5454,7 @@ public class CPU extends ModuleCPU {
         return b.toString();
     }
 
-    private String toHexString(byte[] values)
-    {
+    private String toHexString(byte[] values) {
         if (values == null) return "<<NULL>>";
         if (values.length == 0) return "[]";
         StringBuilder b = new StringBuilder("[" + byteToHex(values[0]));
@@ -5545,8 +5464,7 @@ public class CPU extends ModuleCPU {
         return b.toString() + "]";
     }
 
-    private String toHexString(boolean[] values)
-    {
+    private String toHexString(boolean[] values) {
         if (values == null) return "<<NULL>>";
         if (values.length == 0) return "[]";
         StringBuilder b = new StringBuilder("[" + (values[0] ? "1" : "0"));
@@ -5556,8 +5474,7 @@ public class CPU extends ModuleCPU {
         return b.toString() + "]";
     }
 
-    private String byteToHex(byte b)
-    {
+    private String byteToHex(byte b) {
         String intHex = Integer.toHexString(b);
         if (intHex.length() == 1) {
             intHex = "0" + intHex;

@@ -70,8 +70,7 @@ public class Instruction_GRP11_MOV_EvIv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_GRP11_MOV_EvIv()
-    {
+    public Instruction_GRP11_MOV_EvIv() {
     }
 
     /**
@@ -79,8 +78,7 @@ public class Instruction_GRP11_MOV_EvIv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_GRP11_MOV_EvIv(CPU processor)
-    {
+    public Instruction_GRP11_MOV_EvIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -94,8 +92,7 @@ public class Instruction_GRP11_MOV_EvIv implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

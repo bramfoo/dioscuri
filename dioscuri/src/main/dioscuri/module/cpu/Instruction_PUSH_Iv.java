@@ -62,8 +62,7 @@ public class Instruction_PUSH_Iv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSH_Iv()
-    {
+    public Instruction_PUSH_Iv() {
     }
 
     /**
@@ -71,8 +70,7 @@ public class Instruction_PUSH_Iv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_Iv(CPU processor)
-    {
+    public Instruction_PUSH_Iv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -86,8 +84,7 @@ public class Instruction_PUSH_Iv implements Instruction {
     /**
      * Pushes the immediate word onto stack top SS:SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord) {
             // 32-bit: note that lower and higher words need to be interchanged!

@@ -57,8 +57,7 @@ public class Instruction_LODS_AXXv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LODS_AXXv()
-    {
+    public Instruction_LODS_AXXv() {
         source = new byte[2];
     }
 
@@ -67,8 +66,7 @@ public class Instruction_LODS_AXXv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LODS_AXXv(CPU processor)
-    {
+    public Instruction_LODS_AXXv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -80,8 +78,7 @@ public class Instruction_LODS_AXXv implements Instruction {
     /**
      * Load word from DS:SI into AX
      */
-    public void execute()
-    {
+    public void execute() {
         // Get word at DS:SI and assign to AX; DS segment override is allowed
         if (cpu.segmentOverride) {
             source = cpu.getWordFromMemorySegment((byte) 0, cpu.si);

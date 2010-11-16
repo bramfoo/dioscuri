@@ -310,16 +310,14 @@ public class BytecodeFragments implements MicrocodeSet {
                 JavaOpcode.POP)};
     }
 
-    protected BytecodeFragments()
-    {
+    protected BytecodeFragments() {
     }
 
     /**
      * @param element
      * @return -
      */
-    public static Object[] pushCode(int element)
-    {
+    public static Object[] pushCode(int element) {
         Object[] temp = pushCodeArray[element];
         if (temp == null)
             throw new IllegalStateException("Non existant CPU Element: "
@@ -331,8 +329,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param element
      * @return -
      */
-    public static Object[] popCode(int element)
-    {
+    public static Object[] popCode(int element) {
         Object[] temp = popCodeArray[element];
         if (temp == null)
             throw new IllegalStateException("Non existant CPU Element: "
@@ -344,8 +341,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @return -
      */
-    public static Object field(String name)
-    {
+    public static Object field(String name) {
         try {
             return new ConstantPoolSymbol(Processor.class
                     .getDeclaredField(name));
@@ -359,8 +355,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @return -
      */
-    public static Object field(Class cls, String name)
-    {
+    public static Object field(Class cls, String name) {
         try {
             return new ConstantPoolSymbol(cls.getDeclaredField(name));
         } catch (NoSuchFieldException e) {
@@ -372,8 +367,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @return -
      */
-    public static Object method(String name)
-    {
+    public static Object method(String name) {
         return method(name, new Class[0]);
     }
 
@@ -382,8 +376,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param arg
      * @return -
      */
-    public static Object method(String name, Class arg)
-    {
+    public static Object method(String name, Class arg) {
         return method(name, new Class[]{arg});
     }
 
@@ -393,8 +386,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param arg1
      * @return -
      */
-    public static Object method(String name, Class arg0, Class arg1)
-    {
+    public static Object method(String name, Class arg0, Class arg1) {
         return method(name, new Class[]{arg0, arg1});
     }
 
@@ -403,8 +395,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param args
      * @return -
      */
-    public static Object method(String name, Class[] args)
-    {
+    public static Object method(String name, Class[] args) {
         try {
             return new ConstantPoolSymbol(Processor.class.getDeclaredMethod(
                     name, args));
@@ -418,8 +409,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param name
      * @return -
      */
-    public static Object method(Class cls, String name)
-    {
+    public static Object method(Class cls, String name) {
         return method(cls, name, new Class[0]);
     }
 
@@ -429,8 +419,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param arg
      * @return -
      */
-    public static Object method(Class cls, String name, Class arg)
-    {
+    public static Object method(Class cls, String name, Class arg) {
         return method(cls, name, new Class[]{arg});
     }
 
@@ -441,8 +430,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param arg1
      * @return -
      */
-    public static Object method(Class cls, String name, Class arg0, Class arg1)
-    {
+    public static Object method(Class cls, String name, Class arg0, Class arg1) {
         return method(cls, name, new Class[]{arg0, arg1});
     }
 
@@ -455,8 +443,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @return -
      */
     public static Object method(Class cls, String name, Class arg0, Class arg1,
-                                Class arg2)
-    {
+                                Class arg2) {
         return method(cls, name, new Class[]{arg0, arg1, arg2});
     }
 
@@ -466,8 +453,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param args
      * @return -
      */
-    public static Object method(Class cls, String name, Class[] args)
-    {
+    public static Object method(Class cls, String name, Class[] args) {
         try {
             return new ConstantPoolSymbol(cls.getMethod(name, args));
         } catch (NoSuchMethodException e) {
@@ -479,8 +465,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param value
      * @return -
      */
-    public static Object integer(int value)
-    {
+    public static Object integer(int value) {
         return new ConstantPoolSymbol(new Integer(value));
     }
 
@@ -488,8 +473,7 @@ public class BytecodeFragments implements MicrocodeSet {
      * @param value
      * @return -
      */
-    public static Object longint(long value)
-    {
+    public static Object longint(long value) {
         return new ConstantPoolSymbol(new Long(value));
     }
 }

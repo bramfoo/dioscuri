@@ -39,8 +39,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
     private static boolean[][] externalEffectsArray = new boolean[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT];
     private static boolean[][] explicitThrowArray = new boolean[MICROCODE_LIMIT][FASTCompiler.ELEMENT_COUNT];
 
-    private ProtectedModeBytecodeFragments()
-    {
+    private ProtectedModeBytecodeFragments() {
     }
 
     static {
@@ -62,8 +61,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @return -
      */
     public static Object[] getOperation(int element, int microcode,
-                                        int x86Position)
-    {
+                                        int x86Position) {
         Object[] ops = operationArray[microcode][element];
         if (ops == null)
             return null;
@@ -87,8 +85,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @return -
      */
     public static Object[] getOperation(int element, int microcode,
-                                        int x86Position, int immediate)
-    {
+                                        int x86Position, int immediate) {
         Object[] temp = getOperation(element, microcode, x86Position);
         if (temp == null)
             return null;
@@ -105,8 +102,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @param microcode
      * @return -
      */
-    public static Object[] getTargetsOf(int microcode)
-    {
+    public static Object[] getTargetsOf(int microcode) {
         return operationArray[microcode];
     }
 
@@ -115,8 +111,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @param microcode
      * @return -
      */
-    public static int[] getOperands(int element, int microcode)
-    {
+    public static int[] getOperands(int element, int microcode) {
         return operandArray[microcode][element];
     }
 
@@ -125,8 +120,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @param microcode
      * @return -
      */
-    public static boolean hasExternalEffect(int element, int microcode)
-    {
+    public static boolean hasExternalEffect(int element, int microcode) {
         return externalEffectsArray[microcode][element];
     }
 
@@ -135,8 +129,7 @@ public class ProtectedModeBytecodeFragments extends BytecodeFragments {
      * @param microcode
      * @return -
      */
-    public static boolean hasExplicitThrow(int element, int microcode)
-    {
+    public static boolean hasExplicitThrow(int element, int microcode) {
         return explicitThrowArray[microcode][element];
     }
 }

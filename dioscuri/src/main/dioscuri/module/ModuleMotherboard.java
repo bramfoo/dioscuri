@@ -51,8 +51,7 @@ public abstract class ModuleMotherboard extends AbstractModule implements Addres
 
     public int ioSpaceSize;
 
-    public ModuleMotherboard()
-    {
+    public ModuleMotherboard() {
         super(Module.Type.MOTHERBOARD,
                 Module.Type.CPU, Module.Type.MEMORY);
     }

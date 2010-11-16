@@ -41,8 +41,7 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
     /**
      * @param factories
      */
-    public SpanningRealModeCodeBlock(CodeBlockFactory[] factories)
-    {
+    public SpanningRealModeCodeBlock(CodeBlockFactory[] factories) {
         this.factories = factories;
     }
 
@@ -50,8 +49,7 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
      * @param cpu
      * @return -
      */
-    protected CodeBlock decode(Processor cpu)
-    {
+    protected CodeBlock decode(Processor cpu) {
         RealModeCodeBlock block = null;
         AddressSpace memory = cpu.physicalMemory;
         int address = cpu.getInstructionPointer();
@@ -70,8 +68,7 @@ public class SpanningRealModeCodeBlock extends SpanningCodeBlock implements
     /**
      * @return -
      */
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return "Spanning Real Mode CodeBlock";
     }
 }

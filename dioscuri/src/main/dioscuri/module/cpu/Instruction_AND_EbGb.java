@@ -67,8 +67,7 @@ public class Instruction_AND_EbGb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_AND_EbGb()
-    {
+    public Instruction_AND_EbGb() {
     }
 
     /**
@@ -76,8 +75,7 @@ public class Instruction_AND_EbGb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_AND_EbGb(CPU processor)
-    {
+    public Instruction_AND_EbGb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -90,8 +88,7 @@ public class Instruction_AND_EbGb implements Instruction {
      * Logical AND of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

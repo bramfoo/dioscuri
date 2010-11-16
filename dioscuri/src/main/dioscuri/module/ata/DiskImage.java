@@ -58,8 +58,7 @@ public class DiskImage {
     /**
      * Class constructor without disk image file.
      */
-    public DiskImage()
-    {
+    public DiskImage() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class DiskImage {
      * @param theImageFile
      * @throws IOException
      */
-    public DiskImage(File theImageFile) throws IOException
-    {
+    public DiskImage(File theImageFile) throws IOException {
 
         this.imageFile = theImageFile;
 
@@ -85,8 +83,7 @@ public class DiskImage {
      * @throws IOException
      */
     public byte[] readFromImage(byte[] theData, int theOffset, int theLength)
-            throws IOException
-    {
+            throws IOException {
 
         RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile, "r");
 
@@ -110,8 +107,7 @@ public class DiskImage {
      * @throws IOException
      */
     public void writeToImage(byte[] theData, int theOffset, int theLength)
-            throws IOException
-    {
+            throws IOException {
 
         RandomAccessFile randomAccessFile = new RandomAccessFile(imageFile,
                 "rw");
@@ -132,8 +128,7 @@ public class DiskImage {
      *
      * @return the size of the disk image in bytes
      */
-    protected long getSize()
-    {
+    protected long getSize() {
 
         Long imageSize = imageFile.length();
         return imageSize;

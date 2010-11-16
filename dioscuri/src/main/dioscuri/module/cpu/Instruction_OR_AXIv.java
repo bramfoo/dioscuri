@@ -54,8 +54,7 @@ public class Instruction_OR_AXIv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OR_AXIv()
-    {
+    public Instruction_OR_AXIv() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_OR_AXIv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OR_AXIv(CPU processor)
-    {
+    public Instruction_OR_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +75,7 @@ public class Instruction_OR_AXIv implements Instruction {
      * Logical OR of immediate word and AL.<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Reset appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;

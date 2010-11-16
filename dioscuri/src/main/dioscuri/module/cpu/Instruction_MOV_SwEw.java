@@ -65,8 +65,7 @@ public class Instruction_MOV_SwEw implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_SwEw()
-    {
+    public Instruction_MOV_SwEw() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_MOV_SwEw implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_SwEw(CPU processor)
-    {
+    public Instruction_MOV_SwEw(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -89,8 +87,7 @@ public class Instruction_MOV_SwEw implements Instruction {
      * (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

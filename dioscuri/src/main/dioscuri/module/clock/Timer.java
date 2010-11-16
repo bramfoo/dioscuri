@@ -63,8 +63,7 @@ public class Timer {
      * @param intervalLength
      * @param type
      */
-    public Timer(Updateable user, int intervalLength, boolean type)
-    {
+    public Timer(Updateable user, int intervalLength, boolean type) {
         this.user = user;
         this.intervalLength = intervalLength;
         this.currentCount = intervalLength;
@@ -74,8 +73,7 @@ public class Timer {
 
     // Methods
 
-    public void reset()
-    {
+    public void reset() {
         // Reset countdown to initial update interval
         this.currentCount = intervalLength;
 
@@ -88,8 +86,7 @@ public class Timer {
     /**
      * @param intervalLength
      */
-    protected void reset(int intervalLength)
-    {
+    protected void reset(int intervalLength) {
         // Reset update interval
         this.intervalLength = intervalLength;
         this.reset();

@@ -65,8 +65,7 @@ public class Instruction_OUT_DXAL implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXAL()
-    {
+    public Instruction_OUT_DXAL() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_OUT_DXAL implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OUT_DXAL(CPU processor)
-    {
+    public Instruction_OUT_DXAL(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -85,8 +83,7 @@ public class Instruction_OUT_DXAL implements Instruction {
     /**
      * Output byte in AL to I/O port address in DX
      */
-    public void execute()
-    {
+    public void execute() {
         try {
             // Convert value in DX to unsigned integer to prevent lookup table
             // out of bounds;

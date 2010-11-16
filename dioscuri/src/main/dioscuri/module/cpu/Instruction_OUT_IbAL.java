@@ -59,8 +59,7 @@ public class Instruction_OUT_IbAL implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OUT_IbAL()
-    {
+    public Instruction_OUT_IbAL() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_OUT_IbAL implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OUT_IbAL(CPU processor)
-    {
+    public Instruction_OUT_IbAL(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -79,8 +77,7 @@ public class Instruction_OUT_IbAL implements Instruction {
     /**
      * Output byte in AL to I/O port address imm8
      */
-    public void execute()
-    {
+    public void execute() {
         try {
             // Fetch immediate byte from memory and convert to unsigned integer,
             // to prevent lookup table out of bounds

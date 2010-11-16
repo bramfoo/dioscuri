@@ -1017,8 +1017,7 @@ public class ScanCodeSets {
      *         within the bounds of the three dimensional class variable
      *         <code>String[][][]</code> {@link #scancodes}, else false.
      */
-    protected boolean keyIsPresent(int x, int y, int z)
-    {
+    protected boolean keyIsPresent(int x, int y, int z) {
         return (x >= 0 && x < scancodes.length)
                 &&
                 // 'y >= 3' because 'keyEvent.getKeyCode()-3' is used in

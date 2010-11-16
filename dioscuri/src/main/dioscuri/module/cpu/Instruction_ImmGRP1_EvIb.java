@@ -74,8 +74,7 @@ public class Instruction_ImmGRP1_EvIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ImmGRP1_EvIb()
-    {
+    public Instruction_ImmGRP1_EvIb() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -97,8 +96,7 @@ public class Instruction_ImmGRP1_EvIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ImmGRP1_EvIb(CPU processor)
-    {
+    public Instruction_ImmGRP1_EvIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -113,8 +111,7 @@ public class Instruction_ImmGRP1_EvIb implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

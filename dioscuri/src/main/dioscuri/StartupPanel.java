@@ -54,8 +54,7 @@ public class StartupPanel extends JPanel {
 
     // Constructor
 
-    public StartupPanel()
-    {
+    public StartupPanel() {
     }
 
     // Methods
@@ -63,8 +62,7 @@ public class StartupPanel extends JPanel {
     /**
      * Clear the image on canvas
      */
-    public void clearImage()
-    {
+    public void clearImage() {
         // Clear Image Area
         paint = false;
         this.repaint();
@@ -74,8 +72,7 @@ public class StartupPanel extends JPanel {
      * Draw an image on the panel This is a standard method used by Graphics
      */
     @Override
-    public void paintComponent(Graphics g)
-    {
+    public void paintComponent(Graphics g) {
         // Paint image on panel
         if (paint && image != null) {
             g.drawImage(image, 0, 0, this);
@@ -92,8 +89,7 @@ public class StartupPanel extends JPanel {
      * blinking when updated).
      */
     @Override
-    public void update(Graphics g)
-    {
+    public void update(Graphics g) {
         paint(g);
     }
 
@@ -102,8 +98,7 @@ public class StartupPanel extends JPanel {
      *
      * @param i
      */
-    public void setImage(BufferedImage i)
-    {
+    public void setImage(BufferedImage i) {
         // Paint image object
         paint = true;
         image = i;

@@ -50,8 +50,7 @@ public abstract class ModuleClock extends AbstractModule {
     /**
      *
      */
-    public ModuleClock()
-    {
+    public ModuleClock() {
         super(Module.Type.CLOCK,
                 Module.Type.MOTHERBOARD, Module.Type.CPU);
     }

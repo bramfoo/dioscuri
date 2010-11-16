@@ -8,13 +8,11 @@ import java.util.logging.Level;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_AND_EbGbTest() throws Exception {
@@ -24,6 +22,7 @@ public class Instruction_AND_EbGbTest extends AbstractInstructionTest {
     /*
      * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_EbGb.execute()'
      */
+
     /**
      *
      */

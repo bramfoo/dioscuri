@@ -50,6 +50,7 @@ import java.util.logging.Logger;
 
 /**
  * Unit tests for all command line options from CommandLineInterface
+ *
  * @author Bart Kiers
  */
 public class TestCommandLineInterface {
@@ -59,23 +60,25 @@ public class TestCommandLineInterface {
     /*
      * Create and return a temp file in the system's temp-folder. If this is not possible, return null.
      */
+
     private File createTempFile() {
-        File tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-dioscuri"+System.currentTimeMillis());
+        File tmp = new File(System.getProperty("java.io.tmpdir"), "tmp-dioscuri" + System.currentTimeMillis());
         try {
             tmp.createNewFile();
             tmp.deleteOnExit();
-        } catch(IOException e) {
+        } catch (IOException e) {
             tmp = null;
         }
-       return tmp;
+        return tmp;
     }
 
     /*
      * Create a CommandLineInterface with a custom config file
      */
+
     private CommandLineInterface parseCommandLineInterface(String... params) throws Exception {
-        logger.log(Level.INFO, " [test] trying to parse: "+ Arrays.toString(params));
-        String[] allParams = new String[params.length+2];
+        logger.log(Level.INFO, " [test] trying to parse: " + Arrays.toString(params));
+        String[] allParams = new String[params.length + 2];
         allParams[0] = "-c";
         allParams[1] = "C:\\BK\\IntelliJ\\dioscuri_043_paths\\config\\DioscuriConfig.xml";
         System.arraycopy(params, 0, allParams, 2, params.length);
@@ -86,19 +89,21 @@ public class TestCommandLineInterface {
     /*
      * Test some invalid command line parameters
      */
+
     private void testInValid(String... params) throws Exception {
         try {
             parseCommandLineInterface(params);
-        } catch(Exception e) {
+        } catch (Exception e) {
             // exception is expected
             return;
         }
-        throw new RuntimeException("exception expected for input: "+Arrays.toString(params));
+        throw new RuntimeException("exception expected for input: " + Arrays.toString(params));
     }
 
     /*
      * Test some valid command line parameters
      */
+
     private void testValid(String... params) throws Exception {
         parseCommandLineInterface(params);
     }
@@ -120,7 +125,8 @@ public class TestCommandLineInterface {
      *   -s,--autoshutdown                 emulator will shutdown automatically
      *                                     when emulation process is finished
      * </pre>
-     * @throws Exception  -
+     *
+     * @throws Exception -
      */
     @Test
     public void testAllValid() throws Exception {
@@ -130,11 +136,11 @@ public class TestCommandLineInterface {
         testValid("");
 
         // test all single options
-        for(Object o : options.getOptions()) {
-            Option op = (Option)o;
-            if(!op.hasArg()) {
-                testValid("-"+op.getOpt());
-                testValid("--"+op.getLongOpt());
+        for (Object o : options.getOptions()) {
+            Option op = (Option) o;
+            if (!op.hasArg()) {
+                testValid("-" + op.getOpt());
+                testValid("--" + op.getLongOpt());
             }
         }
         // test some multiple params
@@ -143,7 +149,7 @@ public class TestCommandLineInterface {
 
         // test the options that need a valid input as 2nd parameter
         File temp = createTempFile();
-        if(temp != null) {
+        if (temp != null) {
             // couldn't create a temp file, skip : -cfd
             testValid("-c", temp.getAbsolutePath());
             testValid("-f", temp.getAbsolutePath());
@@ -154,7 +160,7 @@ public class TestCommandLineInterface {
         testValid("-b", "HARDdisk"); // case insensitive
 
         testValid("-a", "16");
-        testValid("-a", "32");  
+        testValid("-a", "32");
     }
 
     /**
@@ -174,7 +180,8 @@ public class TestCommandLineInterface {
      *   -s,--autoshutdown                 emulator will shutdown automatically
      *                                     when emulation process is finished
      * </pre>
-     * @throws Exception  -
+     *
+     * @throws Exception -
      */
     @Test
     public void testAllInvalid() throws Exception {

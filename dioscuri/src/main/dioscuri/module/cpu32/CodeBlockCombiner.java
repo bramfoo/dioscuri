@@ -41,8 +41,7 @@ public class CodeBlockCombiner {
     /**
      * @param factory
      */
-    public CodeBlockCombiner(CodeBlockFactory factory)
-    {
+    public CodeBlockCombiner(CodeBlockFactory factory) {
         this.factory = factory;
     }
 
@@ -51,8 +50,7 @@ public class CodeBlockCombiner {
      * @param offset
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset)
-    {
+    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         source.set(memory, offset & AddressSpace.BLOCK_MASK);
         RealModeCodeBlock block = null;
 
@@ -67,8 +65,7 @@ public class CodeBlockCombiner {
         return block;
     }
 
-    private RealModeCodeBlock combineCodeBlocks(ByteSourceWrappedMemory source)
-    {
+    private RealModeCodeBlock combineCodeBlocks(ByteSourceWrappedMemory source) {
         int start = source.getOffset();
 
         // decode initial block
@@ -200,8 +197,7 @@ public class CodeBlockCombiner {
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(ByteSource source,
-                                                            boolean operandSize)
-    {
+                                                            boolean operandSize) {
         return factory.getProtectedModeCodeBlock(source, operandSize);
     }
 }

@@ -59,8 +59,7 @@ public class Instruction_OUT_DXeAX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OUT_DXeAX()
-    {
+    public Instruction_OUT_DXeAX() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_OUT_DXeAX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OUT_DXeAX(CPU processor)
-    {
+    public Instruction_OUT_DXeAX(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -79,8 +77,7 @@ public class Instruction_OUT_DXeAX implements Instruction {
     /**
      * Output word/doubleword in eAX to I/O port address in DX
      */
-    public void execute()
-    {
+    public void execute() {
         try {
             // Convert value in DX to unsigned integer to prevent lookup table
             // out of bounds;

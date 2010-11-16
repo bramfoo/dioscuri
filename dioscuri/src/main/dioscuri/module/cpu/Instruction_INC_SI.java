@@ -57,8 +57,7 @@ public class Instruction_INC_SI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_SI()
-    {
+    public Instruction_INC_SI() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_INC_SI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_SI(CPU processor)
-    {
+    public Instruction_INC_SI(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_INC_SI implements Instruction {
     /**
      * Increment general register SI
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.si, 0, oldDest, 0, cpu.si.length);
 

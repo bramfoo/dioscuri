@@ -52,8 +52,7 @@ public abstract class ModuleDMA extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModuleDMA()
-    {
+    public ModuleDMA() {
         super(Module.Type.DMA,
                 Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.MEMORY);
     }

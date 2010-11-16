@@ -68,8 +68,7 @@ public class Instruction_CMP_EvGv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMP_EvGv()
-    {
+    public Instruction_CMP_EvGv() {
     }
 
     /**
@@ -77,8 +76,7 @@ public class Instruction_CMP_EvGv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMP_EvGv(CPU processor)
-    {
+    public Instruction_CMP_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -91,8 +89,7 @@ public class Instruction_CMP_EvGv implements Instruction {
      * Word-sized comparison (SUB) of memory/register with register.<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

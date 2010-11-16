@@ -49,8 +49,7 @@ public class CPU_DE_Exception extends CPUInstructionException {
     /**
      * @param message
      */
-    public CPU_DE_Exception(String message)
-    {
+    public CPU_DE_Exception(String message) {
         super(message);
     }
 

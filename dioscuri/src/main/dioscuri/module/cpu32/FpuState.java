@@ -306,8 +306,7 @@ public abstract class FpuState implements Hibernatable {
     /**
      * @param copy
      */
-    public void copyStateInto(FpuState copy)
-    {
+    public void copyStateInto(FpuState copy) {
         copy.conditionCode = conditionCode;
         copy.top = top;
         copy.infinityControl = infinityControl;
@@ -317,8 +316,7 @@ public abstract class FpuState implements Hibernatable {
     }
 
     @Override
-    public boolean equals(Object another)
-    {
+    public boolean equals(Object another) {
         if (!(another instanceof FpuState))
             return false;
         FpuState s = (FpuState) another;
@@ -332,8 +330,7 @@ public abstract class FpuState implements Hibernatable {
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 3;
         hash = 79 * hash + this.conditionCode;
         hash = 79 * hash + this.top;

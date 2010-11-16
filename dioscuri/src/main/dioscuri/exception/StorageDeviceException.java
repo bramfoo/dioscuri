@@ -49,8 +49,7 @@ public class StorageDeviceException extends Exception {
     /**
      * @param message
      */
-    public StorageDeviceException(String message)
-    {
+    public StorageDeviceException(String message) {
         super(message);
     }
 

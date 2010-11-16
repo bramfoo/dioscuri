@@ -54,8 +54,7 @@ public class Instruction_MOV_Imm_AX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_AX()
-    {
+    public Instruction_MOV_Imm_AX() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_MOV_Imm_AX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_AX(CPU processor)
-    {
+    public Instruction_MOV_Imm_AX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_MOV_Imm_AX implements Instruction {
     /**
      * Copy immediate word to register AX
      */
-    public void execute()
-    {
+    public void execute() {
         cpu.ax = cpu.getWordFromCode();
 
         if (cpu.doubleWord) {

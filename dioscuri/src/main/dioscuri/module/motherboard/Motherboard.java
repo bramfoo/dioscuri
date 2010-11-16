@@ -104,8 +104,7 @@ public class Motherboard extends ModuleMotherboard {
      *
      * @param owner
      */
-    public Motherboard(Emulator owner)
-    {
+    public Motherboard(Emulator owner) {
         emu = owner;
 
         // Initialise configuration parameters
@@ -124,8 +123,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // FIXME: Reset I/O address space: set all ports to null
         // Doing this in 32-bit mode resets all ports _after_ they have been
         // set...
@@ -149,8 +147,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -179,8 +176,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean registerClock(ModuleClock clock)
-    {
+    public boolean registerClock(ModuleClock clock) {
         super.setConnection(clock);
         return true;
     }
@@ -191,8 +187,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean requestTimer(Updateable device, int updateInterval, boolean continuous)
-    {
+    public boolean requestTimer(Updateable device, int updateInterval, boolean continuous) {
 
         ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
@@ -210,8 +205,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean setTimerActiveState(Updateable device, boolean activeState)
-    {
+    public boolean setTimerActiveState(Updateable device, boolean activeState) {
         // Check if clock exists
         ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
@@ -228,8 +222,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean resetTimer(Updateable device, int updateInterval)
-    {
+    public boolean resetTimer(Updateable device, int updateInterval) {
         // Check if clock exists
         ModuleClock clock = (ModuleClock) super.getConnection(Module.Type.CLOCK);
 
@@ -245,8 +238,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean setIOPort(int portAddress, Addressable device)
-    {
+    public boolean setIOPort(int portAddress, Addressable device) {
         // check if port is already in use
         if (ioAddressSpace[portAddress] == null) {
             ioAddressSpace[portAddress] = device;
@@ -267,8 +259,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws ModuleException
-    {
+    public byte getIOPortByte(int portAddress) throws ModuleException {
         // check if port is available
         if (ioAddressSpace[portAddress] != null) {
             try {
@@ -308,8 +299,7 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortByte(int portAddress, byte dataByte)
-            throws ModuleException
-    {
+            throws ModuleException {
         // Check for Bochs BIOS ports first:
         if (portAddress == 0x400 || portAddress == 0x401) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -379,8 +369,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws ModuleException
-    {
+    public byte[] getIOPortWord(int portAddress) throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null) {
@@ -421,8 +410,7 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null) {
@@ -457,8 +445,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException
-    {
+    public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
@@ -503,8 +490,7 @@ public class Motherboard extends ModuleMotherboard {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         // check if port range is available
         if (ioAddressSpace[portAddress] != null
                 && ioAddressSpace[portAddress + 1] != null
@@ -543,8 +529,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public boolean getA20()
-    {
+    public boolean getA20() {
         // Return status of A20 address line
         return A20Enabled;
     }
@@ -555,8 +540,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public void setA20(boolean a20)
-    {
+    public void setA20(boolean a20) {
         // Set status of A20 address line
         // False = memory wrapping turned off
         A20Enabled = a20;
@@ -580,8 +564,7 @@ public class Motherboard extends ModuleMotherboard {
      * @see dioscuri.module.ModuleMotherboard
      */
     @Override
-    public long getCurrentInstructionNumber()
-    {
+    public long getCurrentInstructionNumber() {
 
         if (emu.isCpu32bit()) {
             logger

@@ -52,8 +52,7 @@ public abstract class ModuleATA extends AbstractModule implements Addressable, U
     /**
      *
      */
-    public ModuleATA()
-    {
+    public ModuleATA() {
         super(Module.Type.ATA,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC);
     }

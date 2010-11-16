@@ -53,8 +53,7 @@ public abstract class ModuleFDC extends AbstractModule implements Addressable, U
     /**
      *
      */
-    public ModuleFDC()
-    {
+    public ModuleFDC() {
         super(Module.Type.FDC,
                 Module.Type.MOTHERBOARD, Module.Type.RTC, Module.Type.PIC, Module.Type.ATA, Module.Type.DMA);
     }

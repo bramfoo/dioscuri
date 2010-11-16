@@ -50,8 +50,7 @@ public abstract class ModuleRTC extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModuleRTC()
-    {
+    public ModuleRTC() {
         super(Module.Type.RTC,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }

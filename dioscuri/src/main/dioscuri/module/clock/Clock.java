@@ -83,8 +83,7 @@ public class Clock extends ModuleClock implements Runnable {
      *
      * @param owner
      */
-    public Clock(Emulator owner)
-    {
+    public Clock(Emulator owner) {
         // Initialise array for all timers
         timers = new Timer[TIMER_ARRAY_SIZE];
         arrayIndex = 0;
@@ -104,8 +103,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -124,8 +122,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public void stop()
-    {
+    public void stop() {
         this.setKeepRunning(false);
     }
 
@@ -135,8 +132,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         // Show some status information of this module
         String dump = "";
 
@@ -160,8 +156,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.ModuleClock
      */
     @Override
-    public boolean registerDevice(Updateable device, int intervalLength, boolean continuous)
-    {
+    public boolean registerDevice(Updateable device, int intervalLength, boolean continuous) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -187,8 +182,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.ModuleClock
      */
     @Override
-    public boolean resetTimer(Updateable device, int updateInterval)
-    {
+    public boolean resetTimer(Updateable device, int updateInterval) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
@@ -214,8 +208,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.ModuleClock
      */
     @Override
-    public boolean setTimerActiveState(Updateable device, boolean runState)
-    {
+    public boolean setTimerActiveState(Updateable device, boolean runState) {
         // Check if timer exists for given device
         int t = 0;
         while (timers[t] != null) {
@@ -237,8 +230,7 @@ public class Clock extends ModuleClock implements Runnable {
      * @see dioscuri.module.ModuleClock
      */
     @Override
-    public void pulse()
-    {
+    public void pulse() {
         // Check all active timers
         int t = 0;
         while (timers[t] != null) {
@@ -257,8 +249,7 @@ public class Clock extends ModuleClock implements Runnable {
      * Implements the run method of Runnable
      */
     @Override
-    public void run()
-    {
+    public void run() {
         // Generate a clock pulse each n milliseconds while running
         while (keepRunning) {
             // Try to sleep for a while
@@ -277,8 +268,7 @@ public class Clock extends ModuleClock implements Runnable {
      *
      * @param status
      */
-    protected void setKeepRunning(boolean status)
-    {
+    protected void setKeepRunning(boolean status) {
         keepRunning = status;
     }
 }

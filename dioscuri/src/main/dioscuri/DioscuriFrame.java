@@ -137,16 +137,14 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Class constructor
      */
-    public DioscuriFrame()
-    {
+    public DioscuriFrame() {
         // Create graphical user interface
 
         // Add handlers and listeners
         // Window closing listener
         this.addWindowListener(new WindowAdapter() {
             @Override
-            public void windowClosing(WindowEvent event)
-            {
+            public void windowClosing(WindowEvent event) {
                 exitDioscuri();
             }
         });
@@ -206,8 +204,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @param arguments
      * @throws Exception
      */
-    public DioscuriFrame(String[] arguments)
-    {
+    public DioscuriFrame(String[] arguments) {
         // Define GUI
         this();
 
@@ -237,8 +234,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Initialise menu bar
      */
-    private void initMenuBar()
-    {
+    private void initMenuBar() {
         // Create a menubar
         menuBar = new JMenuBar();
 
@@ -318,8 +314,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Initialise status bar
      */
-    private void initStatusBar()
-    {
+    private void initStatusBar() {
         Border blackline;
         blackline = BorderFactory.createLineBorder(Color.black);
 
@@ -391,8 +386,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return String containing name
      */
-    public String getEmulatorName()
-    {
+    public String getEmulatorName() {
         return Constants.EMULATOR_NAME;
     }
 
@@ -401,8 +395,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return String containing version
      */
-    public String getEmulatorVersion()
-    {
+    public String getEmulatorVersion() {
         return Constants.EMULATOR_VERSION;
     }
 
@@ -411,8 +404,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return String containing date
      */
-    public String getEmulatorDate()
-    {
+    public String getEmulatorDate() {
         return Constants.EMULATOR_DATE;
     }
 
@@ -421,8 +413,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return Canvas startup screen
      */
-    private JPanel getStartupScreen()
-    {
+    private JPanel getStartupScreen() {
         // Create startup screen
         StartupPanel startup = new StartupPanel();
         startup.setSize(710, 401);
@@ -438,8 +429,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param screen containing a reference to canvas of module screen
      */
-    public void setScreen(JPanel screen)
-    {
+    public void setScreen(JPanel screen) {
         // Replace current canvas with new one
         screenPane.removeAll();
         screenPane.add(screen);
@@ -456,8 +446,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return true if mouse enabled, false otherwise
      */
-    public boolean setMouseEnabled()
-    {
+    public boolean setMouseEnabled() {
 
         // Mouse handler to the GUI
         mouseHandler = new MouseHandler();
@@ -473,8 +462,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @return true if mouse enabled, false otherwise
      */
-    public boolean setMouseDisabled()
-    {
+    public boolean setMouseDisabled() {
         // Mouse handler to the GUI
         if (mouseHandler != null) {
             screen.removeMouseListener(mouseHandler);
@@ -496,8 +484,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param path location where image resides
      */
-    private BufferedImage getImageFromFile(URL path)
-    {
+    private BufferedImage getImageFromFile(URL path) {
         BufferedImage image = null;
         try {
             image = ImageIO.read(path);
@@ -511,8 +498,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Update the screen panel on screen frame.
      */
-    protected void updateScreenPanel()
-    {
+    protected void updateScreenPanel() {
         // Repaint canvas
         screenPane.setSize(screen.getWidth(), screen.getHeight());
         // FIXME: notice when canvas of screen has changed (different size) and
@@ -528,8 +514,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Updates the status panel on screen frame.
      */
-    protected void updateStatusPanel()
-    {
+    protected void updateStatusPanel() {
         // TODO: implement
         statusPanel.repaint();
     }
@@ -539,8 +524,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param activity defining the kind of update is required
      */
-    public void updateGUI(int activity)
-    {
+    public void updateGUI(int activity) {
         switch (activity) {
             case EMU_PROCESS_START:
 
@@ -708,8 +692,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param e
      */
-    public void actionPerformed(ActionEvent e)
-    {
+    public void actionPerformed(ActionEvent e) {
         JComponent c = (JComponent) e.getSource();
         if (c == (JComponent) miEmulatorStart) {
             // Start emulation process
@@ -837,8 +820,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param keyEvent
      */
-    public void keyTyped(KeyEvent keyEvent)
-    {
+    public void keyTyped(KeyEvent keyEvent) {
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY TYPED: "));
         // FIXME: handle key typed event emu.generateScancode(keyEvent ,
         // KEY_TYPED);
@@ -849,8 +831,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param keyEvent
      */
-    public void keyPressed(KeyEvent keyEvent)
-    {
+    public void keyPressed(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY PRESSED: "));
         if (emu != null) {
@@ -863,8 +844,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param keyEvent
      */
-    public void keyReleased(KeyEvent keyEvent)
-    {
+    public void keyReleased(KeyEvent keyEvent) {
         // Pass keyPress on to keyboard to generate scancode from it
         logger.log(Level.INFO, displayInfo(keyEvent, "KEY RELEASED: "));
         if (emu != null) {
@@ -879,8 +859,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @param pressReleaseString String passed from the KeyEvent, indicating a press or release
      * @return String containing keypress events
      */
-    protected String displayInfo(KeyEvent keyEvent, String pressReleaseString)
-    {
+    protected String displayInfo(KeyEvent keyEvent, String pressReleaseString) {
         String output;
         String keyString, modString, tmpString, actionString, locationString;
         String newline = "\n";
@@ -927,14 +906,12 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         return output;
     }
 
-    public dioscuri.config.Emulator getEmuConfig()
-    {
+    public dioscuri.config.Emulator getEmuConfig() {
         return emuConfig;
     }
 
     @Override
-    public String getConfigFilePath()
-    {
+    public String getConfigFilePath() {
         return this.configFilePath;
     }
 
@@ -942,8 +919,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * @param emuObject
      * @return -
      */
-    public boolean saveXML(dioscuri.config.Emulator emuObject)
-    {
+    public boolean saveXML(dioscuri.config.Emulator emuObject) {
         try {
             ConfigController.saveToXML(emuObject, new File(this.configFilePath));
         } catch (Exception e) {
@@ -959,8 +935,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param emulatorStatus indicates the state change of the emulator
      */
-    public void notifyGUI(int emulatorStatus)
-    {
+    public void notifyGUI(int emulatorStatus) {
         // Check which kind of notification is given
         if (emulatorStatus == GUI.EMU_PROCESS_STOP) {
             if (cli.autoshutdown) {
@@ -980,8 +955,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     /**
      * Exit the GUI and stop the application
      */
-    private void exitDioscuri()
-    {
+    private void exitDioscuri() {
         dispose();
         if (emu != null) {
             emu.setActive(false);
@@ -993,8 +967,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      * Versioning information
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         String bar = "+-------------------------------------------------------------------------------------+";
         return
                 "\r\n" + bar +
@@ -1012,52 +985,43 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Attributes
         Cursor invisibleCursor;
 
-        public MouseHandler()
-        {
+        public MouseHandler() {
             // Make cursor invisible
             //this.setMouseCursorVisible(false);
         }
 
-        public void mouseClicked(MouseEvent mouseEvent)
-        {
+        public void mouseClicked(MouseEvent mouseEvent) {
         }
 
-        public void mousePressed(MouseEvent mouseEvent)
-        {
+        public void mousePressed(MouseEvent mouseEvent) {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void mouseReleased(MouseEvent mouseEvent)
-        {
+        public void mouseReleased(MouseEvent mouseEvent) {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void mouseEntered(MouseEvent mouseEvent)
-        {
+        public void mouseEntered(MouseEvent mouseEvent) {
             this.setMouseCursorVisibility(false);
         }
 
-        public void mouseExited(MouseEvent mouseEvent)
-        {
+        public void mouseExited(MouseEvent mouseEvent) {
         }
 
-        public void mouseDragged(MouseEvent mouseEvent)
-        {
+        public void mouseDragged(MouseEvent mouseEvent) {
         }
 
-        public void mouseMoved(MouseEvent mouseEvent)
-        {
+        public void mouseMoved(MouseEvent mouseEvent) {
             if (emu != null) {
                 emu.notifyMouse(mouseEvent);
             }
         }
 
-        public void setMouseCursorVisibility(boolean visible)
-        {
+        public void setMouseCursorVisibility(boolean visible) {
             if (!visible) {
                 // Hide cursor
                 ImageIcon emptyIcon = new ImageIcon(new byte[0]);
@@ -1077,14 +1041,12 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
     //    return configFilePath;
     //}
 
-    public JFrame asJFrame()
-    {
+    public JFrame asJFrame() {
         return this;
     }
 
     @Override
-    public void setCpuTypeLabel(String cpuType)
-    {
+    public void setCpuTypeLabel(String cpuType) {
         cpuTypeLabel.setText("  " + cpuType);
     }
 
@@ -1093,8 +1055,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param args containing command line arguments
      */
-    public static void main(final String[] args)
-    {
+    public static void main(final String[] args) {
         // Load logging.properties
         try {
             // Check for a local system logging.properties file
@@ -1113,8 +1074,7 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
         // Create GUI
         SwingUtilities.invokeLater(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 try {
                     new DioscuriFrame(args);
                 } catch (Exception e) {

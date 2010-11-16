@@ -51,16 +51,14 @@ public class Modules extends ArrayList<Module> {
 
     // Constructors
 
-    public Modules()
-    {
+    public Modules() {
         super();
     }
 
     /**
      * @param capacity
      */
-    public Modules(int capacity)
-    {
+    public Modules(int capacity) {
         super(capacity);
     }
 
@@ -68,13 +66,11 @@ public class Modules extends ArrayList<Module> {
      * @param module
      * @return -
      */
-    public boolean addModule(Module module)
-    {
+    public boolean addModule(Module module) {
         return super.add(module);
     }
 
-    public Module getModule(Module.Type type)
-    {
+    public Module getModule(Module.Type type) {
         if (type == null) {
             return null;
         }
@@ -90,8 +86,7 @@ public class Modules extends ArrayList<Module> {
      * @param index
      * @return -
      */
-    public Module getModule(int index)
-    {
+    public Module getModule(int index) {
         return super.get(index);
     }
 }

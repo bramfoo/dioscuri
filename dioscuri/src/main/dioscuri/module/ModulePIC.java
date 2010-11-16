@@ -50,8 +50,7 @@ public abstract class ModulePIC extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModulePIC()
-    {
+    public ModulePIC() {
         super(Module.Type.PIC,
                 Module.Type.CPU, Module.Type.MOTHERBOARD);
     }

@@ -57,8 +57,7 @@ public class Instruction_INC_BP implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_BP()
-    {
+    public Instruction_INC_BP() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_INC_BP implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_BP(CPU processor)
-    {
+    public Instruction_INC_BP(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_INC_BP implements Instruction {
     /**
      * Increment general register BP
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.bp, 0, oldDest, 0, cpu.bp.length);
 

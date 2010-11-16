@@ -36,16 +36,14 @@ public class RealModeRPNNode extends RPNNode {
      * @param id
      * @param parent
      */
-    public RealModeRPNNode(int id, MicrocodeNode parent)
-    {
+    public RealModeRPNNode(int id, MicrocodeNode parent) {
         super(id, parent);
     }
 
     /**
      * @return -
      */
-    protected Object[] getByteCodes()
-    {
+    protected Object[] getByteCodes() {
         if (getMicrocode() == -1)
             return RealModeBytecodeFragments.pushCode(getID());
 
@@ -60,8 +58,7 @@ public class RealModeRPNNode extends RPNNode {
     /**
      * @return -
      */
-    public boolean hasExternalEffect()
-    {
+    public boolean hasExternalEffect() {
         if (getMicrocode() == -1)
             return false;
 
@@ -72,8 +69,7 @@ public class RealModeRPNNode extends RPNNode {
     /**
      * @return -
      */
-    public boolean canThrowException()
-    {
+    public boolean canThrowException() {
         if (getMicrocode() == -1)
             return false;
 

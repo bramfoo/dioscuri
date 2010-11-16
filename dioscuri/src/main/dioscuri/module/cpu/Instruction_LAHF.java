@@ -57,8 +57,7 @@ public class Instruction_LAHF implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LAHF()
-    {
+    public Instruction_LAHF() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_LAHF implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LAHF(CPU processor)
-    {
+    public Instruction_LAHF(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -79,8 +77,7 @@ public class Instruction_LAHF implements Instruction {
     /**
      * Move low byte of FLAGS register into AH register.
      */
-    public void execute()
-    {
+    public void execute() {
         // Move LOW byte of flags into HIGH byte of AX
         cpu.ax[CPU.REGISTER_GENERAL_HIGH] = Util.booleansToBytes(cpu.flags)[CPU.REGISTER_GENERAL_LOW];
     }

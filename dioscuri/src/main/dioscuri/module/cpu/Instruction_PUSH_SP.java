@@ -54,8 +54,7 @@ public class Instruction_PUSH_SP implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSH_SP()
-    {
+    public Instruction_PUSH_SP() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_PUSH_SP implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_SP(CPU processor)
-    {
+    public Instruction_PUSH_SP(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_PUSH_SP implements Instruction {
     /**
      * This pushes the word in SP onto stack top SS:SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Push extra register first, if 32 bit instruction
         // Double word will be stored as [sp[LSB][MSB] esp[LSB][MSB]] because
         // stack is counting backwards in memory

@@ -57,8 +57,7 @@ public class Instruction_DEC_DI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_DEC_DI()
-    {
+    public Instruction_DEC_DI() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_DEC_DI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_DEC_DI(CPU processor)
-    {
+    public Instruction_DEC_DI(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_DEC_DI implements Instruction {
     /**
      * Decrement general register DI
      */
-    public void execute()
-    {
+    public void execute() {
         // Store old value
         System.arraycopy(cpu.di, 0, oldDest, 0, cpu.di.length);
 

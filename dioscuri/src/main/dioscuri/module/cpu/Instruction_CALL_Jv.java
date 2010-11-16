@@ -59,8 +59,7 @@ public class Instruction_CALL_Jv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CALL_Jv()
-    {
+    public Instruction_CALL_Jv() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_CALL_Jv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CALL_Jv(CPU processor)
-    {
+    public Instruction_CALL_Jv(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -81,8 +79,7 @@ public class Instruction_CALL_Jv implements Instruction {
     /**
      * Execute call to procedure indicated by immediate signed word
      */
-    public void execute()
-    {
+    public void execute() {
         // Call is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented thrice, so no extra
         // arithmetic necessary

@@ -6,13 +6,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_AND_ALIbTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_AND_ALIbTest() throws Exception {
@@ -22,6 +20,7 @@ public class Instruction_AND_ALIbTest extends AbstractInstructionTest {
     /*
      * Test method for 'com.tessella.emulator.module.cpu.Instruction_AND_ALIb.execute()'
      */
+
     /**
      *
      */

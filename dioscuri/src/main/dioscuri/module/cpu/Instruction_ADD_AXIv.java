@@ -58,8 +58,7 @@ public class Instruction_ADD_AXIv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADD_AXIv()
-    {
+    public Instruction_ADD_AXIv() {
         immediateWord = new byte[2];
         oldDest = new byte[2];
 
@@ -71,8 +70,7 @@ public class Instruction_ADD_AXIv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADD_AXIv(CPU processor)
-    {
+    public Instruction_ADD_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_ADD_AXIv implements Instruction {
     /**
      * Add immediate word to AX
      */
-    public void execute()
-    {
+    public void execute() {
         immediateWord = cpu.getWordFromCode();
 
         // Copy old value of AX

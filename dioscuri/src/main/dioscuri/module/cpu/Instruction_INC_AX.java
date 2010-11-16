@@ -58,8 +58,7 @@ public class Instruction_INC_AX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_AX()
-    {
+    public Instruction_INC_AX() {
     }
 
     /**
@@ -67,8 +66,7 @@ public class Instruction_INC_AX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_AX(CPU processor)
-    {
+    public Instruction_INC_AX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_INC_AX implements Instruction {
     /**
      * Increment general register AX
      */
-    public void execute()
-    {
+    public void execute() {
         if (cpu.doubleWord) {
             // 32-bit
             // Make copy of old value

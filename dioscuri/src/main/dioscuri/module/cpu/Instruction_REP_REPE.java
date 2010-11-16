@@ -60,8 +60,7 @@ public class Instruction_REP_REPE implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_REP_REPE()
-    {
+    public Instruction_REP_REPE() {
     }
 
     /**
@@ -69,8 +68,7 @@ public class Instruction_REP_REPE implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_REP_REPE(CPU processor)
-    {
+    public Instruction_REP_REPE(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -86,8 +84,7 @@ public class Instruction_REP_REPE implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Turn on prefix
         cpu.prefixRep = true;
         // Set type of prefix

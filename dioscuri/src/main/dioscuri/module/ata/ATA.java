@@ -105,8 +105,7 @@ public class ATA extends ModuleATA {
      *
      * @param owner
      */
-    public ATA(Emulator owner)
-    {
+    public ATA(Emulator owner) {
         emu = owner;
 
         // Initialise timing
@@ -133,8 +132,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -166,8 +164,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         // Show some status information of this module
         String dump = "";
 
@@ -213,8 +210,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval)
-    {
+    public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -231,8 +227,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void update()
-    {
+    public void update() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -273,8 +268,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte getIOPortByte(int originalPortAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (byte) to port "
                 + Integer.toHexString(originalPortAddress).toUpperCase()
@@ -290,8 +284,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortByte(int originalAddress, byte data)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  OUT command (byte: "
                 + Integer.toHexString(data).toUpperCase() + ") to port "
@@ -309,8 +302,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -325,8 +317,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (word) to port "
@@ -343,8 +334,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -359,8 +349,7 @@ public class ATA extends ModuleATA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
         logger
                 .log(Level.CONFIG, "[" + super.getType() + "]"
                         + "  OUT command (double word) to port "
@@ -379,8 +368,7 @@ public class ATA extends ModuleATA {
     public void initConfig(int theIdeChannel, boolean isMaster,
                            boolean isHardDisk, boolean isWriteProtected, int numCylinders,
                            int numHeads, int numSectorsPerTrack,
-                           ATATranslationType translationType, String imageFilePath)
-    {
+                           ATATranslationType translationType, String imageFilePath) {
 
         // Initialise controller variables
 
@@ -446,8 +434,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.ModuleATA
      */
     @Override
-    public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled)
-    {
+    public void setCmosSettings(int[] bootDrives, boolean floppySigCheckDisabled) {
 
         ModuleRTC rtc = (ModuleRTC) super.getConnection(Module.Type.RTC);
 
@@ -699,8 +686,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.module.ModuleATA
      */
     @Override
-    public int getCurrentChannelIndex()
-    {
+    public int getCurrentChannelIndex() {
         return this.curChannelIndex;
     }
 
@@ -709,8 +695,7 @@ public class ATA extends ModuleATA {
      *
      * @return the selected channel
      */
-    private ATAChannel getSelectedChannel()
-    {
+    private ATAChannel getSelectedChannel() {
         return channels[this.curChannelIndex];
     }
 
@@ -719,8 +704,7 @@ public class ATA extends ModuleATA {
      *
      * @return the selected IDE drive
      */
-    private ATADrive getSelectedDrive()
-    {
+    private ATADrive getSelectedDrive() {
         return getSelectedChannel().getSelectedDrive();
 
     }
@@ -730,8 +714,7 @@ public class ATA extends ModuleATA {
      *
      * @return the selected drive controller
      */
-    private ATADriveController getSelectedDriveController()
-    {
+    private ATADriveController getSelectedDriveController() {
         return getSelectedDrive().getControl();
     }
 
@@ -741,8 +724,7 @@ public class ATA extends ModuleATA {
      * @param imageFilePath the file path of the disk image
      * @return true if load successful
      */
-    private boolean loadDiskImage(String imageFilePath, ATADrive drive)
-    {
+    private boolean loadDiskImage(String imageFilePath, ATADrive drive) {
         try {
 
             File imageFile = new File(imageFilePath);
@@ -765,8 +747,7 @@ public class ATA extends ModuleATA {
      *
      * @return the number of drives
      */
-    private int getNumDrives()
-    {
+    private int getNumDrives() {
 
         int numDrives = 0;
 
@@ -796,8 +777,7 @@ public class ATA extends ModuleATA {
      */
     private byte[] read(int originalPortAddress, int ioLength)
             throws ModuleException, UnknownPortException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Read ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -1045,8 +1025,7 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the data read.
      */
-    private byte[] readSectors(int originalAddress, int ioLength)
-    {
+    private byte[] readSectors(int originalAddress, int ioLength) {
         // Clear buffer
         byte[] value = new byte[ioLength];
         for (int i = 0; i < ioLength; i++) {
@@ -1214,8 +1193,7 @@ public class ATA extends ModuleATA {
      *
      */
     private boolean write(int originalAddress, byte[] data, int ioLength)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
 
         // logger.log(Level.CONFIG, "[" + super.getType() + "]" +
         // "  Write ide at instruction " + cpu.getCurrentInstructionNumber());
@@ -1365,8 +1343,7 @@ public class ATA extends ModuleATA {
      * @param ioLength
      */
     private void writeSectors(int originalAddress, int[] data, int channel,
-                              int ioLength)
-    {
+                              int ioLength) {
 
         if (getSelectedDriveController().getBufferIndex() >= 512) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -1491,8 +1468,7 @@ public class ATA extends ModuleATA {
      * @param ioLength
      * @return the value got.
      */
-    private byte[] executeGetCommand(int originalAddress, int ioLength)
-    {
+    private byte[] executeGetCommand(int originalAddress, int ioLength) {
 
         byte[] value = new byte[ioLength];
         for (int i = 0; i < ioLength; i++) {
@@ -1749,8 +1725,7 @@ public class ATA extends ModuleATA {
      * @param channel the current channel
      * @param value   the current data value
      */
-    private void abortCommand(int channel, int value)
-    {
+    private void abortCommand(int channel, int value) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + "  aborting: channel " + channel + "data " + value + ".");
 
@@ -1772,8 +1747,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the current channel
      */
-    private void raiseInterrupt(int channel)
-    {
+    private void raiseInterrupt(int channel) {
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + "  raise interrupt called, disable_irq = "
@@ -1815,8 +1789,7 @@ public class ATA extends ModuleATA {
      * @param originalAddress
      * @param data
      */
-    private void setPortIdeDriveHead(int originalAddress, int[] data)
-    {
+    private void setPortIdeDriveHead(int originalAddress, int[] data) {
         // hard disk drive and head register 0x1f6 (original byte value 0x06)
         // b7 Extended data field for ECC
         // b6/b5: Used to be sector size. 00=256,01=512,10=1024,11=128
@@ -1870,8 +1843,7 @@ public class ATA extends ModuleATA {
      * @param data
      */
     private void setPortIdeAltStatusDevice(int originalAddress,
-                                           boolean prevControlReset, int[] data)
-    {
+                                           boolean prevControlReset, int[] data) {
         // hard disk adapter control 0x3f6 (original byte value 0x16)
         // (mch) Even if device 1 was selected, a write to this register
         // goes to device 0 (if device 1 is absent)
@@ -1982,8 +1954,7 @@ public class ATA extends ModuleATA {
      * @param data
      * @param ioLength
      */
-    private void executeSetCommand(int originalAddress, int[] data, int ioLength)
-    {
+    private void executeSetCommand(int originalAddress, int[] data, int ioLength) {
 
         int currentCommand = getSelectedDriveController().getCurrentCommand();
 
@@ -2017,8 +1988,7 @@ public class ATA extends ModuleATA {
      * @param bufferSize
      * @return true if read successful / false if failed
      */
-    private boolean ideReadData(int channel, byte[] buffer, int bufferSize)
-    {
+    private boolean ideReadData(int channel, byte[] buffer, int bufferSize) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -2086,8 +2056,7 @@ public class ATA extends ModuleATA {
      * @param bufferSize
      * @return true if read successful / false if failed
      */
-    private boolean ideWriteData(int channel, byte[] buffer, int bufferSize)
-    {
+    private boolean ideWriteData(int channel, byte[] buffer, int bufferSize) {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -2159,8 +2128,7 @@ public class ATA extends ModuleATA {
      * @param ioLength
      */
     private void setPacketA0(int originalAddress, int channel, int[] data,
-                             int ioLength)
-    {
+                             int ioLength) {
 
         if (getSelectedDriveController().getBufferIndex() >= ATAConstants.PACKET_SIZE) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
@@ -3173,8 +3141,7 @@ public class ATA extends ModuleATA {
      * @param src
      * @param size
      */
-    private void initModeSenseSingle(int channel, Object[] src, int size)
-    {
+    private void initModeSenseSingle(int channel, Object[] src, int size) {
         // Header
         getSelectedDriveController().setBuffer(0, (byte) ((size + 6) >> 8));
         getSelectedDriveController().setBuffer(1, (byte) ((size + 6) & 0xff));
@@ -3207,8 +3174,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the currently selected channel.
      */
-    private void atapiCmdNop(int channel)
-    {
+    private void atapiCmdNop(int channel) {
 
         getSelectedDriveController().getInterruptReason().setIo(1);
         getSelectedDriveController().getInterruptReason().setCd(1);
@@ -3230,8 +3196,7 @@ public class ATA extends ModuleATA {
      * @return -
      */
     private int getPacketField(int channelIndex, int bufferIndex, int start,
-                               int numBits)
-    {
+                               int numBits) {
 
         // #define EXTRACT_FIELD(arr,byte,start,num_bits) (((arr)[(byte)] >>
         // (start)) & ((1 << (num_bits)) - 1))
@@ -3261,8 +3226,7 @@ public class ATA extends ModuleATA {
      * @param bufferIndex
      * @return the packet byte.
      */
-    private int getPacketByte(int channelIndex, int bufferIndex)
-    {
+    private int getPacketByte(int channelIndex, int bufferIndex) {
         // #define get_packet_byte(c,b)
         // (BX_SELECTED_CONTROLLER((c)).buffer[(b)])
         int result = channels[channelIndex].getSelectedController().getBuffer()[bufferIndex];
@@ -3277,8 +3241,7 @@ public class ATA extends ModuleATA {
      * @param bufferIndex
      * @return the packet word.
      */
-    private int getPacketWord(int channelIndex, int bufferIndex)
-    {
+    private int getPacketWord(int channelIndex, int bufferIndex) {
 
         // #define get_packet_word(c,b)
         // (((Bit16u)BX_SELECTED_CONTROLLER((c)).buffer[(b)] << 8)
@@ -3299,8 +3262,7 @@ public class ATA extends ModuleATA {
      * @param show
      */
     private void atapiCmdError(int channel, SenseType senseType,
-                               AscType ascType, boolean show)
-    {
+                               AscType ascType, boolean show) {
         if (show) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + "  Atapi_cmd_error, for channel " + channel + ", key "
@@ -3340,8 +3302,7 @@ public class ATA extends ModuleATA {
      * @param lazy
      */
     private void initSendAtapiCommand(int channel, int command, int reqLength,
-                                      int allocLength, boolean lazy)
-    {
+                                      int allocLength, boolean lazy) {
         // TODO: code below commented out in BOCHS
         // BX_SELECTED_CONTROLLER(channel).byte_count is a union of
         // BX_SELECTED_CONTROLLER(channel).cylinder_no;
@@ -3429,8 +3390,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the current channel
      */
-    private void readyToSendAtapi(int channel)
-    {
+    private void readyToSendAtapi(int channel) {
         raiseInterrupt(channel);
     }
 
@@ -3444,8 +3404,7 @@ public class ATA extends ModuleATA {
      * @param ret
      */
     private void setHardDiskCommand(int originalAddress, int[] data,
-                                    Integer logicalSector, int ret)
-    {
+                                    Integer logicalSector, int ret) {
 
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
 
@@ -4189,8 +4148,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the channel
      */
-    private void identifyAtapiDrive(int channel)
-    {
+    private void identifyAtapiDrive(int channel) {
 
         int i = 0;
         char[] serialNumber = new char[21];
@@ -4332,8 +4290,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the channel
      */
-    private void identifyDrive(int channel)
-    {
+    private void identifyDrive(int channel) {
 
         int i = 0;
 
@@ -4781,8 +4738,7 @@ public class ATA extends ModuleATA {
      *
      * @param channel the ide channel
      */
-    private void setSignature(int channel)
-    {
+    private void setSignature(int channel) {
         // Device signature
         getSelectedDrive().setCurrentHead(0);
         getSelectedDrive().setSectorCount(1);
@@ -4806,8 +4762,7 @@ public class ATA extends ModuleATA {
      * @param offset
      * @return the read value
      */
-    private int read16bit(byte[] buf, int offset)
-    {
+    private int read16bit(byte[] buf, int offset) {
         int returnValue = (buf[0 + offset] << 8) | buf[1 + offset];
 
         return returnValue;
@@ -4820,8 +4775,7 @@ public class ATA extends ModuleATA {
      * @param offset
      * @return the read value
      */
-    private int read32bit(byte[] buf, int offset)
-    {
+    private int read32bit(byte[] buf, int offset) {
 
         int returnValue = (buf[0 + offset] << 24) | (buf[1 + offset] << 16)
                 | (buf[2 + offset] << 8) | buf[3 + offset];
@@ -4835,8 +4789,7 @@ public class ATA extends ModuleATA {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return updateInterval;
     }
 

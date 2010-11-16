@@ -89,8 +89,7 @@ public class CRTControllerRegister {
     /**
      * Return variables to default values
      */
-    public void reset()
-    {
+    public void reset() {
         index = 0;
         protectEnable = false;
         Arrays.fill(regArray, (byte) 0);

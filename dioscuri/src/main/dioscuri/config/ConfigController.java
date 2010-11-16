@@ -90,8 +90,7 @@ public class ConfigController {
      * @return A new unmarshaller
      * @throws JAXBException
      */
-    public static Unmarshaller getEmuUnmarshaller() throws JAXBException
-    {
+    public static Unmarshaller getEmuUnmarshaller() throws JAXBException {
         return jc.createUnmarshaller();
     }
 
@@ -101,8 +100,7 @@ public class ConfigController {
      * @return A new marshaller
      * @throws JAXBException
      */
-    public static Marshaller getEmuMarshaller() throws JAXBException
-    {
+    public static Marshaller getEmuMarshaller() throws JAXBException {
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
         return m;
@@ -116,8 +114,7 @@ public class ConfigController {
      * @throws Exception
      */
     public static void saveToXML(Emulator emuObject, File outputXMLFile)
-            throws Exception
-    {
+            throws Exception {
         FileOutputStream fos = new FileOutputStream(outputXMLFile);
         try {
             Marshaller marshaller = jc.createMarshaller();
@@ -136,8 +133,7 @@ public class ConfigController {
      * @return An Emulator object representing the whole Emulator file
      * @throws Exception
      */
-    public static Emulator loadFromXML(File inputEmuFile) throws Exception
-    {
+    public static Emulator loadFromXML(File inputEmuFile) throws Exception {
         FileInputStream fis = new FileInputStream(inputEmuFile);
         try {
             return (Emulator) jc.createUnmarshaller().unmarshal(fis);
@@ -151,8 +147,7 @@ public class ConfigController {
      * @return -
      * @throws Exception
      */
-    public static Emulator loadFromXML(InputStream is) throws Exception
-    {
+    public static Emulator loadFromXML(InputStream is) throws Exception {
         return (Emulator) jc.createUnmarshaller().unmarshal(is);
     }
 }

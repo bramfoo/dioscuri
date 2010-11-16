@@ -58,8 +58,7 @@ public class Instruction_AAM_Ib implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_AAM_Ib()
-    {
+    public Instruction_AAM_Ib() {
     }
 
     /**
@@ -67,8 +66,7 @@ public class Instruction_AAM_Ib implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_AAM_Ib(CPU processor)
-    {
+    public Instruction_AAM_Ib(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
 
@@ -85,8 +83,7 @@ public class Instruction_AAM_Ib implements Instruction {
      * The base is defined by imm8; for example, 08H for octal, 0AH for decimal,
      * or 0CH for base 12.
      */
-    public void execute()
-    {
+    public void execute() {
         // Get immediate byte for base
         base = cpu.getByteFromCode();
         tempResult = cpu.ax[CPU.REGISTER_GENERAL_LOW];

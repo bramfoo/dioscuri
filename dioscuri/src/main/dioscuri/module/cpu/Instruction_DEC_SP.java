@@ -57,8 +57,7 @@ public class Instruction_DEC_SP implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_DEC_SP()
-    {
+    public Instruction_DEC_SP() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_DEC_SP implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_DEC_SP(CPU processor)
-    {
+    public Instruction_DEC_SP(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_DEC_SP implements Instruction {
     /**
      * Decrement general register SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Store old value
         System.arraycopy(cpu.sp, 0, oldDest, 0, cpu.sp.length);
 

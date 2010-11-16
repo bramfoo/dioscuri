@@ -55,8 +55,7 @@ public class Instruction_STOSB_YbAL implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_STOSB_YbAL()
-    {
+    public Instruction_STOSB_YbAL() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_STOSB_YbAL implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_STOSB_YbAL(CPU processor)
-    {
+    public Instruction_STOSB_YbAL(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_STOSB_YbAL implements Instruction {
      * Copy word from register AX to ES:DI; update DI register according to flag
      * DF
      */
-    public void execute()
-    {
+    public void execute() {
         // Get byte at AL and assign to ES:DI; ES segment override is not
         // allowed
         cpu.setByteToExtra(cpu.di, cpu.ax[CPU.REGISTER_GENERAL_LOW]);

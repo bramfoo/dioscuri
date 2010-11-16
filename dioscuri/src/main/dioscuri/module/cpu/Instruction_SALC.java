@@ -55,8 +55,7 @@ public class Instruction_SALC implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SALC()
-    {
+    public Instruction_SALC() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_SALC implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SALC(CPU processor)
-    {
+    public Instruction_SALC(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_SALC implements Instruction {
      * Set or clear AL depending on carry flag status<BR>
      * Information taken from http://www.x86.org/secrets/opcodes/salc.htm
      */
-    public void execute()
-    {
+    public void execute() {
         if (cpu.flags[CPU.REGISTER_FLAGS_CF]) {
             cpu.ax[CPU.REGISTER_GENERAL_LOW] = (byte) 0xFF;
         } else {

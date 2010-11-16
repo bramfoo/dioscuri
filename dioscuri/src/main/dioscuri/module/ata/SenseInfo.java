@@ -52,8 +52,7 @@ public class SenseInfo {
     /**
      * Constructor.
      */
-    public SenseInfo()
-    {
+    public SenseInfo() {
         // TODO: init values
     }
 
@@ -70,56 +69,49 @@ public class SenseInfo {
     /**
      * @return -
      */
-    public byte getFruc()
-    {
+    public byte getFruc() {
         return fruc;
     }
 
     /**
      * @param fruc
      */
-    public void setFruc(byte fruc)
-    {
+    public void setFruc(byte fruc) {
         this.fruc = fruc;
     }
 
     /**
      * @return -
      */
-    public AscType getAsc()
-    {
+    public AscType getAsc() {
         return this.ascType;
     }
 
     /**
      * @param ascType
      */
-    public void setAsc(AscType ascType)
-    {
+    public void setAsc(AscType ascType) {
         this.ascType = ascType;
     }
 
     /**
      * @return -
      */
-    public byte getAscq()
-    {
+    public byte getAscq() {
         return this.ascq;
     }
 
     /**
      * @param ascq
      */
-    public void setAscq(byte ascq)
-    {
+    public void setAscq(byte ascq) {
         this.ascq = ascq;
     }
 
     /**
      * @return -
      */
-    public byte[] getInformation()
-    {
+    public byte[] getInformation() {
         return information;
     }
 
@@ -127,16 +119,14 @@ public class SenseInfo {
      * @param index
      * @param information
      */
-    public void setInformation(int index, byte information)
-    {
+    public void setInformation(int index, byte information) {
         this.information[index] = information;
     }
 
     /**
      * @return -
      */
-    public byte[] getSpecificInf()
-    {
+    public byte[] getSpecificInf() {
         return specificInf;
     }
 
@@ -144,16 +134,14 @@ public class SenseInfo {
      * @param index
      * @param specificInf
      */
-    public void setSpecificInf(int index, byte specificInf)
-    {
+    public void setSpecificInf(int index, byte specificInf) {
         this.specificInf[index] = specificInf;
     }
 
     /**
      * @return -
      */
-    public byte[] getKeySpec()
-    {
+    public byte[] getKeySpec() {
         return keySpec;
     }
 
@@ -161,24 +149,21 @@ public class SenseInfo {
      * @param index
      * @param keySpec
      */
-    public void setKeySpec(int index, byte keySpec)
-    {
+    public void setKeySpec(int index, byte keySpec) {
         this.keySpec[index] = keySpec;
     }
 
     /**
      * @return -
      */
-    public SenseType getSenseKey()
-    {
+    public SenseType getSenseKey() {
         return senseKey;
     }
 
     /**
      * @param senseKey
      */
-    public void setSenseKey(SenseType senseKey)
-    {
+    public void setSenseKey(SenseType senseKey) {
         this.senseKey = senseKey;
     }
 

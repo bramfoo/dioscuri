@@ -51,8 +51,7 @@ public abstract class ModuleVideo extends AbstractModule implements Addressable,
     /**
      *
      */
-    public ModuleVideo()
-    {
+    public ModuleVideo() {
         super(Module.Type.VIDEO,
                 Module.Type.MOTHERBOARD, Module.Type.CPU, Module.Type.SCREEN, Module.Type.RTC);
     }

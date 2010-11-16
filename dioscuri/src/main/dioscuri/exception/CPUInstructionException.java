@@ -49,8 +49,7 @@ public class CPUInstructionException extends Exception {
     /**
      * @param message
      */
-    public CPUInstructionException(String message)
-    {
+    public CPUInstructionException(String message) {
         super(message);
     }
 

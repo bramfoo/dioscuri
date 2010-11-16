@@ -82,8 +82,7 @@ public class ATAChannel {
      * @param defaultIoAddr1
      * @param defaultIoAddr2
      */
-    public ATAChannel(ATA parent, int defaultIoAddr1, int defaultIoAddr2)
-    {
+    public ATAChannel(ATA parent, int defaultIoAddr1, int defaultIoAddr2) {
 
         this.parent = parent;
 
@@ -110,8 +109,7 @@ public class ATAChannel {
      *
      * @return IDE Driver Controller
      */
-    public ATADriveController getSelectedController()
-    {
+    public ATADriveController getSelectedController() {
         ATADriveController curDriveController = this.getSelectedDrive()
                 .getControl();
 
@@ -123,8 +121,7 @@ public class ATAChannel {
      *
      * @return true if reset successful
      */
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModulePIC pic = (ModulePIC) parent.getConnection(Module.Type.PIC);
         ModuleMotherboard motherboard = (ModuleMotherboard) parent.getConnection(Module.Type.MOTHERBOARD);
@@ -180,8 +177,7 @@ public class ATAChannel {
     /**
      * @return -
      */
-    public boolean isSelectedDrivePresent()
-    {
+    public boolean isSelectedDrivePresent() {
         if (drives[selectedDriveIndex].getDriveType() == ATADriveType.NONE) {
             return false;
         } else {
@@ -194,14 +190,12 @@ public class ATAChannel {
      *
      * @param drive the drive object to set
      */
-    public void setDisk(ATADrive drive)
-    {
+    public void setDisk(ATADrive drive) {
         int driveIndex = this.getDriveIndex(drive);
         this.drives[driveIndex] = drive;
     }
 
-    private int getDriveIndex(ATADrive drive)
-    {
+    private int getDriveIndex(ATADrive drive) {
         int driveIndex;
         if (drive.isMaster) {
             driveIndex = 0;
@@ -217,8 +211,7 @@ public class ATAChannel {
      *
      * @return the drives
      */
-    public ATADrive[] getDrives()
-    {
+    public ATADrive[] getDrives() {
         return this.drives;
     }
 
@@ -227,8 +220,7 @@ public class ATAChannel {
      *
      * @return the IO address 1
      */
-    public int getIoAddress1()
-    {
+    public int getIoAddress1() {
         return this.ioAddress1;
     }
 
@@ -237,48 +229,42 @@ public class ATAChannel {
      *
      * @return the IO address 2
      */
-    public int getIoAddress2()
-    {
+    public int getIoAddress2() {
         return ioAddress2;
     }
 
     /**
      * @return -
      */
-    public int getIrqNumber()
-    {
+    public int getIrqNumber() {
         return this.irqNumber;
     }
 
     /**
      * @return -
      */
-    public ATADrive getSelectedDrive()
-    {
+    public ATADrive getSelectedDrive() {
         return this.drives[selectedDriveIndex];
     }
 
     /**
      * @return -
      */
-    public int getSelectedDriveIndex()
-    {
+    public int getSelectedDriveIndex() {
         return this.selectedDriveIndex;
     }
 
     /**
      * @param theSelectedDriveIndex
      */
-    public void setSelectedDriveIndex(int theSelectedDriveIndex)
-    {
+    public void setSelectedDriveIndex(int theSelectedDriveIndex) {
         this.selectedDriveIndex = theSelectedDriveIndex;
     }
 
     /**
      * @return -
      */
-    public boolean isMasterDrivePresent()
-    {
+    public boolean isMasterDrivePresent() {
         boolean isMasterPresent = false;
         if (getDrives()[IDE_MASTER_INDEX] != null
                 && getDrives()[IDE_MASTER_INDEX].getDriveType() != ATADriveType.NONE) {
@@ -291,8 +277,7 @@ public class ATAChannel {
     /**
      * @return -
      */
-    public boolean isSlaveDrivePresent()
-    {
+    public boolean isSlaveDrivePresent() {
         boolean isSlavePresent = false;
         if (getDrives()[IDE_SLAVE_INDEX] != null
                 && getDrives()[IDE_SLAVE_INDEX].getDriveType() != ATADriveType.NONE) {
@@ -305,8 +290,7 @@ public class ATAChannel {
     /**
      * @return -
      */
-    public boolean isAnyDrivePresent()
-    {
+    public boolean isAnyDrivePresent() {
 
         boolean isAnyDrivePresent = false;
 
@@ -320,16 +304,14 @@ public class ATAChannel {
     /**
      * @return -
      */
-    public boolean isSlaveSelected()
-    {
+    public boolean isSlaveSelected() {
         return selectedDriveIndex == IDE_SLAVE_INDEX;
     }
 
     /**
      * @return -
      */
-    public boolean isMasterSelected()
-    {
+    public boolean isMasterSelected() {
         return selectedDriveIndex == IDE_MASTER_INDEX;
     }
 }

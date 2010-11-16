@@ -123,8 +123,7 @@ public class Counter {
      * @param pit
      * @param counterNumber
      */
-    public Counter(PIT pit, int counterNumber)
-    {
+    public Counter(PIT pit, int counterNumber) {
         // Initialise relations
         this.pit = pit;
         this.counterNumber = counterNumber;
@@ -161,8 +160,7 @@ public class Counter {
      * Performs counter action on one clockpulse. The action depends on the mode
      * the counter is set to, the GATE signal, R/W mode and BCD setting.
      */
-    public void clockPulse()
-    {
+    public void clockPulse() {
         // Check if this counter is used
         if (isEnabled) {
             // Check bcd setting
@@ -647,8 +645,7 @@ public class Counter {
      *
      * @return boolean true if GATE is high, false if GATE is low
      */
-    protected boolean getGateSignal()
-    {
+    protected boolean getGateSignal() {
         // Returns the GATE signal
         return signalGate;
     }
@@ -661,8 +658,7 @@ public class Counter {
      *
      * @param status
      */
-    protected void setGateSignal(boolean status)
-    {
+    protected void setGateSignal(boolean status) {
         // FIXME: this method is never used!
         // Set the GATE to given status and determine if it is a rising or
         // falling signal
@@ -698,8 +694,7 @@ public class Counter {
      *
      * @return boolean true if OUT is high, false if OUT is low
      */
-    protected boolean getOutSignal()
-    {
+    protected boolean getOutSignal() {
         // Returns the OUT signal
         return signalOut;
     }
@@ -710,8 +705,7 @@ public class Counter {
      * @return byte data containing the LSB/MSB from Counting Element (ce) or
      *         Output latch (ol)
      */
-    protected byte getCounterValue()
-    {
+    protected byte getCounterValue() {
         // Check if this counter is in read-back mode
         if (readBackCmd) {
             // FIXME: implement appropriate action for read-back command
@@ -761,8 +755,7 @@ public class Counter {
      *
      * @param data
      */
-    protected void setCounterValue(byte data)
-    {
+    protected void setCounterValue(byte data) {
         // Check the R/W mode
         if (rwMode == RWMODE_0) {
             // Do nothing as data can not be written while in Counter Latch mode
@@ -825,8 +818,7 @@ public class Counter {
      *
      * @param mode
      */
-    protected void setCounterMode(int mode)
-    {
+    protected void setCounterMode(int mode) {
         counterMode = mode;
         // Check wildcards in counter mode settings for mode 2 and 3:
         if (counterMode == 6) {
@@ -869,8 +861,7 @@ public class Counter {
      * only works if the counter is in latchmode. The latched value is stored in
      * register ol.
      */
-    protected void latchCounter()
-    {
+    protected void latchCounter() {
         if (isLatched) {
             logger.log(Level.WARNING, "[" + pit.getType()
                     + "] Counter already latched, cannot latch");
@@ -885,8 +876,7 @@ public class Counter {
     /**
      * Load counter with new value Note: new value is stored in register cr.
      */
-    private void loadCounter()
-    {
+    private void loadCounter() {
         // Cannot guarantee the following command since update to 32-bit:
         // logger.log(Level.CONFIG,
         // pit.motherboard.getCurrentInstructionNumber() + " " + "[" +
@@ -925,8 +915,7 @@ public class Counter {
      *
      * @return boolean true=EVEN, false=ODD
      */
-    protected boolean getParity()
-    {
+    protected boolean getParity() {
         // Returns the parity of counting element
         return parity;
     }
@@ -936,8 +925,7 @@ public class Counter {
      *
      * @return boolean true=BCD, false=decimal
      */
-    protected boolean getBCD()
-    {
+    protected boolean getBCD() {
         // Returns the parity of counting element
         return bcd;
     }
@@ -947,8 +935,7 @@ public class Counter {
      *
      * @param status
      */
-    protected void setEnabled(boolean status)
-    {
+    protected void setEnabled(boolean status) {
         // Set current counter in given state
         isEnabled = status;
     }
@@ -958,8 +945,7 @@ public class Counter {
      *
      * @return true if enabled, false otherwise
      */
-    protected boolean isEnabled()
-    {
+    protected boolean isEnabled() {
         // Return status of this counter
         return isEnabled;
     }
@@ -969,8 +955,7 @@ public class Counter {
      *
      * @return int counternumber
      */
-    protected int getCounterNumber()
-    {
+    protected int getCounterNumber() {
         // Return the number of the counter
         return counterNumber;
     }

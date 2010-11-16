@@ -64,8 +64,7 @@ public class Instruction_INT_Ib implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INT_Ib()
-    {
+    public Instruction_INT_Ib() {
         operandWordSize = true;
 
         index = 0;
@@ -80,8 +79,7 @@ public class Instruction_INT_Ib implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INT_Ib(CPU processor)
-    {
+    public Instruction_INT_Ib(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -93,8 +91,7 @@ public class Instruction_INT_Ib implements Instruction {
     /**
      * Call the interrupt procedure based on the interrupt vector in the IDT.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Retrieve immediate byte (index for IDT) from memory
         index = (((int) cpu.getByteFromCode()) & 0xFF);
 

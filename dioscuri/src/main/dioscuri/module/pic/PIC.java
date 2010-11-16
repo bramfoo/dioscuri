@@ -119,8 +119,7 @@ public class PIC extends ModulePIC {
      *
      * @param owner
      */
-    public PIC(Emulator owner)
-    {
+    public PIC(Emulator owner) {
 
         // Initialise IRQ list
         irqList = null;
@@ -136,8 +135,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -173,8 +171,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         // Show some status information of this module
         String dump = "";
         String ret = "\r\n";
@@ -201,8 +198,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws UnknownPortException
-    {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from 0x"
                 + Integer.toHexString(portAddress));
 
@@ -284,8 +280,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortByte(int portAddress, byte data)
-    {
+    public void setIOPortByte(int portAddress, byte data) {
 
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -723,8 +718,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress)
-    {
+    public byte[] getIOPortWord(int portAddress) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -741,8 +735,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortWord(int portAddress, byte[] dataWord)
-    {
+    public void setIOPortWord(int portAddress, byte[] dataWord) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -755,8 +748,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortDoubleWord(int portAddress)
-    {
+    public byte[] getIOPortDoubleWord(int portAddress) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -773,8 +765,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-    {
+    public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord) {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -787,8 +778,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public int requestIRQNumber(AbstractModule module)
-    {
+    public int requestIRQNumber(AbstractModule module) {
 
         int irqNumber = -1;
 
@@ -851,8 +841,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public void setIRQ(int irqNumber)
-    {
+    public void setIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " high");
 
@@ -881,8 +870,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public void clearIRQ(int irqNumber)
-    {
+    public void clearIRQ(int irqNumber) {
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
                 + " Attempting to set IRQ line " + irqNumber + " low");
 
@@ -907,8 +895,7 @@ public class PIC extends ModulePIC {
      * @see dioscuri.module.ModulePIC
      */
     @Override
-    public int interruptAcknowledge()
-    {
+    public int interruptAcknowledge() {
 
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
@@ -963,8 +950,7 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupts on the slave PIC
      */
-    private void serviceSlavePIC()
-    {
+    private void serviceSlavePIC() {
         int unmaskedRequests;
         int irq;
         int isr, maxIRQ;
@@ -1039,8 +1025,7 @@ public class PIC extends ModulePIC {
     /**
      * Handle interrupts on the master PIC
      */
-    private void serviceMasterPIC()
-    {
+    private void serviceMasterPIC() {
 
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
         //ModuleMotherboard motherboard = (ModuleMotherboard)super.getExpectedConnections(Type.MOTHERBOARD);
@@ -1118,8 +1103,7 @@ public class PIC extends ModulePIC {
      *
      * @param masterSlave the source of the interrupt
      */
-    private void clearHighestInterrupt(int masterSlave)
-    {
+    private void clearHighestInterrupt(int masterSlave) {
         int irq;
         int lowestPriority;
         int highestPriority;

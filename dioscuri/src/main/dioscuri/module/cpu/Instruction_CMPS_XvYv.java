@@ -65,8 +65,7 @@ public class Instruction_CMPS_XvYv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMPS_XvYv()
-    {
+    public Instruction_CMPS_XvYv() {
         operandWordSize = true;
 
         // Set transition that holds the amount si and di should be altered
@@ -83,8 +82,7 @@ public class Instruction_CMPS_XvYv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMPS_XvYv(CPU processor)
-    {
+    public Instruction_CMPS_XvYv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -99,8 +97,7 @@ public class Instruction_CMPS_XvYv implements Instruction {
      * Increment/decrement both registers depending on DF flag.<BR>
      * Flags modified: CF, OF, SF, ZF, AF, and PF
      */
-    public void execute()
-    {
+    public void execute() {
         // Get values DS:(E)SI and ES:(E)DI; DS segment override is allowed, ES
         // segment isn't.
         if (cpu.segmentOverride) {

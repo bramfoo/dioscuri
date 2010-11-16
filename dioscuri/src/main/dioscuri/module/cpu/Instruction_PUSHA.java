@@ -62,8 +62,7 @@ public class Instruction_PUSHA implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSHA()
-    {
+    public Instruction_PUSHA() {
         tempSP = new byte[2];
     }
 
@@ -72,8 +71,7 @@ public class Instruction_PUSHA implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSHA(CPU processor)
-    {
+    public Instruction_PUSHA(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -86,8 +84,7 @@ public class Instruction_PUSHA implements Instruction {
      * Pushes the words in all general purpose registers onto stack top SS:SP
      * The order of the push is AX, CX, DX, BX, SP, BP, SI, DI
      */
-    public void execute()
-    {
+    public void execute() {
         // Push extra register first, if 32 bit instruction
         if (cpu.doubleWord) {
             logger.log(Level.WARNING, "[" + cpu.getType()

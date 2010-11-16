@@ -60,8 +60,7 @@ public class Instruction_LOOPNE_LOOPNZ_Jb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LOOPNE_LOOPNZ_Jb(CPU processor)
-    {
+    public Instruction_LOOPNE_LOOPNZ_Jb(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -74,8 +73,7 @@ public class Instruction_LOOPNE_LOOPNZ_Jb implements Instruction {
      * Loop while CX is not zero and ZF == 0, performing short jump indicated by
      * immediate signed byte
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // This byte is interpreted signed, so cast to Java byte
         displacement = cpu.getByteFromCode();

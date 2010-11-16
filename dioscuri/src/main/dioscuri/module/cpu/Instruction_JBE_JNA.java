@@ -56,8 +56,7 @@ public class Instruction_JBE_JNA implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JBE_JNA()
-    {
+    public Instruction_JBE_JNA() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JBE_JNA implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JBE_JNA(CPU processor)
-    {
+    public Instruction_JBE_JNA(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_JBE_JNA implements Instruction {
     /**
      * Execute conditional short jump on carry or zero
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

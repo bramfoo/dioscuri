@@ -66,8 +66,7 @@ public class Instruction_MOV_EvGv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_EvGv()
-    {
+    public Instruction_MOV_EvGv() {
     }
 
     /**
@@ -75,8 +74,7 @@ public class Instruction_MOV_EvGv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_EvGv(CPU processor)
-    {
+    public Instruction_MOV_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -89,8 +87,7 @@ public class Instruction_MOV_EvGv implements Instruction {
      * Word-sized copy of memory/register (destination) from register (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get addresByte
         addressByte = cpu.getByteFromCode();

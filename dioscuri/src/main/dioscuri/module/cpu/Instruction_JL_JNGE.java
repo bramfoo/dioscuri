@@ -56,8 +56,7 @@ public class Instruction_JL_JNGE implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JL_JNGE()
-    {
+    public Instruction_JL_JNGE() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JL_JNGE implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JL_JNGE(CPU processor)
-    {
+    public Instruction_JL_JNGE(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_JL_JNGE implements Instruction {
     /**
      * Execute conditional short jump if sign != overflow
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

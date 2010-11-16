@@ -38,16 +38,14 @@ public abstract class SpanningCodeBlock implements CodeBlock {
     /**
      * @return -
      */
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return 0;
     }
 
     /**
      * @return -
      */
-    public int getX86Count()
-    {
+    public int getX86Count() {
         try {
             return lastBlock.getX86Count();
         } catch (NullPointerException e) {
@@ -58,8 +56,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
     // Returns the number of equivalent x86 instructions executed. Negative
     // results indicate an error
 
-    public int execute(Processor cpu)
-    {
+    public int execute(Processor cpu) {
         lastBlock = decode(cpu);
         return lastBlock.execute(cpu);
     }
@@ -75,8 +72,7 @@ public abstract class SpanningCodeBlock implements CodeBlock {
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return true;
     }
 }

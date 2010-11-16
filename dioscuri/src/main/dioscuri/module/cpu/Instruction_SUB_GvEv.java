@@ -70,8 +70,7 @@ public class Instruction_SUB_GvEv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SUB_GvEv()
-    {
+    public Instruction_SUB_GvEv() {
     }
 
     /**
@@ -79,8 +78,7 @@ public class Instruction_SUB_GvEv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SUB_GvEv(CPU processor)
-    {
+    public Instruction_SUB_GvEv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -92,8 +90,7 @@ public class Instruction_SUB_GvEv implements Instruction {
     /**
      * Subtract word in memory/register (source) from register (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

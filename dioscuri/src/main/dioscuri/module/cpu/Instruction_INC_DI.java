@@ -57,8 +57,7 @@ public class Instruction_INC_DI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_DI()
-    {
+    public Instruction_INC_DI() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_INC_DI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_DI(CPU processor)
-    {
+    public Instruction_INC_DI(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_INC_DI implements Instruction {
     /**
      * Increment general register DI
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.di, 0, oldDest, 0, cpu.di.length);
 

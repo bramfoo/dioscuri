@@ -68,8 +68,7 @@ public class Instruction_TEST_EvGv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_TEST_EvGv()
-    {
+    public Instruction_TEST_EvGv() {
     }
 
     /**
@@ -77,8 +76,7 @@ public class Instruction_TEST_EvGv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_TEST_EvGv(CPU processor)
-    {
+    public Instruction_TEST_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -94,8 +92,7 @@ public class Instruction_TEST_EvGv implements Instruction {
      * SF, ZF, and PF are set according to the result;<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

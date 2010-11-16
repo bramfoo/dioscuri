@@ -73,8 +73,7 @@ public class Instruction_ShiftGRP2_EvIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ShiftGRP2_EvIb()
-    {
+    public Instruction_ShiftGRP2_EvIb() {
         bitShift = 0;
         shiftResult = 0;
         carryBit = 0;
@@ -86,8 +85,7 @@ public class Instruction_ShiftGRP2_EvIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ShiftGRP2_EvIb(CPU processor)
-    {
+    public Instruction_ShiftGRP2_EvIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -102,8 +100,7 @@ public class Instruction_ShiftGRP2_EvIb implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Reset sourceValue and eSourceValue (to lose pointer to earlier words)
         sourceValue = new byte[2];
         eSourceValue = new byte[2];

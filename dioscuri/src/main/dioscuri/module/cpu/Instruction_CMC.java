@@ -55,8 +55,7 @@ public class Instruction_CMC implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMC()
-    {
+    public Instruction_CMC() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_CMC implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMC(CPU processor)
-    {
+    public Instruction_CMC(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +75,7 @@ public class Instruction_CMC implements Instruction {
     /**
      * Invert CF
      */
-    public void execute()
-    {
+    public void execute() {
         // Invert carry flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_CF] = !cpu.flags[CPU.REGISTER_FLAGS_CF];
     }

@@ -61,8 +61,7 @@ public class Instruction_CMP_AXIv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMP_AXIv()
-    {
+    public Instruction_CMP_AXIv() {
     }
 
     /**
@@ -70,8 +69,7 @@ public class Instruction_CMP_AXIv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMP_AXIv(CPU processor)
-    {
+    public Instruction_CMP_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_CMP_AXIv implements Instruction {
      * Comparison of immediate word (SUB) with AX.<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute()
-    {
+    public void execute() {
         if (cpu.doubleWord) {
             // 32-bit
             immediateWord = cpu.getWordFromCode();

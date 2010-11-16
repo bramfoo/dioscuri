@@ -54,8 +54,7 @@ public class InitSequence {
     /**
      * Resets all parameters to their default value
      */
-    public void reset()
-    {
+    public void reset() {
         inInitSequence = false;
         numComWordsReq = 0;
         currentComWordExpected = 0;

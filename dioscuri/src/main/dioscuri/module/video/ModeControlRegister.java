@@ -78,8 +78,7 @@ public class ModeControlRegister {
     /**
      * Return variables to default values
      */
-    public void reset()
-    {
+    public void reset() {
         paletteBitsSelect = 0;
         colour8Bit = 0;
         pixelPanningMode = 0;

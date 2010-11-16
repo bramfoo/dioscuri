@@ -55,8 +55,7 @@ public class Instruction_STOSW_YvAX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_STOSW_YvAX()
-    {
+    public Instruction_STOSW_YvAX() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_STOSW_YvAX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_STOSW_YvAX(CPU processor)
-    {
+    public Instruction_STOSW_YvAX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_STOSW_YvAX implements Instruction {
      * Copy word from register AX to ES:DI; update DI register according to flag
      * DF
      */
-    public void execute()
-    {
+    public void execute() {
         // Get word at AX and assign to ES:DI; ES segment override is not
         // allowed
         cpu.setWordToExtra(cpu.di, cpu.ax);

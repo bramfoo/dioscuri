@@ -79,8 +79,7 @@ public interface Module {
          * @return the Type based on a given String, 'strType', or null if
          *         'strType' is not present in the set of enums.
          */
-        public static Type resolveType(String strType)
-        {
+        public static Type resolveType(String strType) {
             try {
                 return Type.valueOf(strType.toUpperCase());
             } catch (Exception e) {

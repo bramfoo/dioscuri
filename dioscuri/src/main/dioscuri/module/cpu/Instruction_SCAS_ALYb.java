@@ -62,8 +62,7 @@ public class Instruction_SCAS_ALYb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SCAS_ALYb()
-    {
+    public Instruction_SCAS_ALYb() {
         operandWordSize = false;
 
         source = 0;
@@ -80,8 +79,7 @@ public class Instruction_SCAS_ALYb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SCAS_ALYb(CPU processor)
-    {
+    public Instruction_SCAS_ALYb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -95,8 +93,7 @@ public class Instruction_SCAS_ALYb implements Instruction {
      * ES:(E)DI is incremented/decremented depending on DF flag.<BR>
      * Flags modified: OF, SF, ZF, AF, PF, and CF.
      */
-    public void execute()
-    {
+    public void execute() {
         // Get byte from ES:DI; no segment override is allowed.
         source = cpu.getByteFromExtra(cpu.di);
 

@@ -63,8 +63,7 @@ public class Instruction_MOVS_XbYb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOVS_XbYb()
-    {
+    public Instruction_MOVS_XbYb() {
         operandWordSize = false;
         source1 = 0;
 
@@ -79,8 +78,7 @@ public class Instruction_MOVS_XbYb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOVS_XbYb(CPU processor)
-    {
+    public Instruction_MOVS_XbYb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -94,8 +92,7 @@ public class Instruction_MOVS_XbYb implements Instruction {
      * both depending on DF flag.<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Move byte at DS:SI to ES:DI; DS segment override is allowed, ES
         // segment isn't.
         if (cpu.segmentOverride) {

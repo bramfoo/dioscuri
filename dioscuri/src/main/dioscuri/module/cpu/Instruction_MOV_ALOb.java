@@ -57,8 +57,7 @@ public class Instruction_MOV_ALOb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_ALOb()
-    {
+    public Instruction_MOV_ALOb() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_MOV_ALOb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_ALOb(CPU processor)
-    {
+    public Instruction_MOV_ALOb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -80,8 +78,7 @@ public class Instruction_MOV_ALOb implements Instruction {
      * Copy byte from DS:DISPL (DISPL given by word following opcode) to
      * register AL
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement within segment
         displ = cpu.getWordFromCode();
 

@@ -16,8 +16,7 @@ public class BootPanel extends AbstractModulePanel {
     final JComboBox boot2 = new JComboBox(choices);
     final JCheckBox floppyCheckDisabled = new JCheckBox();
 
-    BootPanel(GUI parent, Emulator emuConfig)
-    {
+    BootPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.bios = emuConfig.getArchitecture().getModules().getBios().get(0);
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -45,8 +44,7 @@ public class BootPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         bios.getBootdrives().setBootdrive0(boot0.getSelectedItem().toString());
         bios.getBootdrives().setBootdrive1(boot1.getSelectedItem().toString());
         bios.getBootdrives().setBootdrive2(boot2.getSelectedItem().toString());

@@ -58,8 +58,7 @@ public final class TextTransfer implements ClipboardOwner {
     /**
      * @param parent
      */
-    public TextTransfer(GUI parent)
-    {
+    public TextTransfer(GUI parent) {
         gui = parent;
     }
 
@@ -71,8 +70,7 @@ public final class TextTransfer implements ClipboardOwner {
      * @param aClipboard
      * @param aContents
      */
-    public void lostOwnership(Clipboard aClipboard, Transferable aContents)
-    {
+    public void lostOwnership(Clipboard aClipboard, Transferable aContents) {
         // do nothing
     }
 
@@ -82,8 +80,7 @@ public final class TextTransfer implements ClipboardOwner {
      *
      * @param text
      */
-    public void setClipboardContents(String text)
-    {
+    public void setClipboardContents(String text) {
         // Wrap String
         StringSelection stringSelection = new StringSelection(text);
 
@@ -98,8 +95,7 @@ public final class TextTransfer implements ClipboardOwner {
      * @return any text found on the Clipboard; if none found, return an empty
      *         String.
      */
-    public String getClipboardContents()
-    {
+    public String getClipboardContents() {
         String result = "";
         Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 

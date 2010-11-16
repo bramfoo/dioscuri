@@ -32,24 +32,21 @@ package dioscuri.module.cpu32;
  * @author Bart Kiers
  */
 public class RealModeSkeletonBlock extends RealModeTemplateBlock {
-    public int execute(Processor cpu)
-    {
+    public int execute(Processor cpu) {
         return 0;
     }
 
     /**
      * @return -
      */
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return 0;
     }
 
     /**
      * @return -
      */
-    public int getX86Count()
-    {
+    public int getX86Count() {
         return 0;
     }
 }

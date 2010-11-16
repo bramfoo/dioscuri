@@ -54,8 +54,7 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
      *
      * @param fdc
      */
-    public DMA8Handler(FDC fdc)
-    {
+    public DMA8Handler(FDC fdc) {
         this.fdc = fdc;
         super.owner = this.fdc.getType().toString().toLowerCase(); // TODO FIX into enum
     }
@@ -69,8 +68,7 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
      *
      * @param data Byte from memory that is passed to the device for handling
      */
-    public void dma8ReadFromMem(byte data)
-    {
+    public void dma8ReadFromMem(byte data) {
         // DMA read: from memory to I/O
         fdc.setDMAByte(data);
 
@@ -83,8 +81,7 @@ public class DMA8Handler extends dioscuri.module.dma.DMA8Handler {
      *
      * @return Byte from device that will be written to memory
      */
-    public byte dma8WriteToMem()
-    {
+    public byte dma8WriteToMem() {
         // DMA write: from I/O to memory
         // Return value; this is the value at the current index, before the
         // index is incremented

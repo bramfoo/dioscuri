@@ -72,8 +72,7 @@ public class Instruction_SBB_EvGv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SBB_EvGv()
-    {
+    public Instruction_SBB_EvGv() {
     }
 
     /**
@@ -81,8 +80,7 @@ public class Instruction_SBB_EvGv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SBB_EvGv(CPU processor)
-    {
+    public Instruction_SBB_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -95,8 +93,7 @@ public class Instruction_SBB_EvGv implements Instruction {
      * Subtract word in register (source) + CF from memory/register
      * (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Determine value of carry flag before reset
         iCarryFlag = (byte) (cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0);
 

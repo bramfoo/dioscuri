@@ -53,8 +53,7 @@ public abstract class ModuleKeyboard extends AbstractModule implements Addressab
     /**
      *
      */
-    public ModuleKeyboard()
-    {
+    public ModuleKeyboard() {
         super(Module.Type.KEYBOARD,
                 Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.RTC);
     }

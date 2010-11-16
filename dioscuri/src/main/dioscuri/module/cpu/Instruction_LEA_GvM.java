@@ -66,8 +66,7 @@ public class Instruction_LEA_GvM implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LEA_GvM()
-    {
+    public Instruction_LEA_GvM() {
     }
 
     /**
@@ -75,8 +74,7 @@ public class Instruction_LEA_GvM implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LEA_GvM(CPU processor)
-    {
+    public Instruction_LEA_GvM(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -89,8 +87,7 @@ public class Instruction_LEA_GvM implements Instruction {
      * Load effective address computed from second operand (source) to register
      * (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // FIXME: take care of address-size and operand-size attributes
 
         // Get addresByte

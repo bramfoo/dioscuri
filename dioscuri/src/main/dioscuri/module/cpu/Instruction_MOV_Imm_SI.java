@@ -54,8 +54,7 @@ public class Instruction_MOV_Imm_SI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_SI()
-    {
+    public Instruction_MOV_Imm_SI() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_MOV_Imm_SI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_SI(CPU processor)
-    {
+    public Instruction_MOV_Imm_SI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_MOV_Imm_SI implements Instruction {
     /**
      * Copy immediate word to register SI
      */
-    public void execute()
-    {
+    public void execute() {
         cpu.si = cpu.getWordFromCode();
 
         if (cpu.doubleWord) {

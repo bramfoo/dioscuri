@@ -51,8 +51,7 @@ public abstract class ModulePIT extends AbstractModule implements Addressable, U
     /**
      *
      */
-    public ModulePIT()
-    {
+    public ModulePIT() {
         super(Module.Type.PIT,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }

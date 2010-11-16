@@ -121,8 +121,7 @@ public class PIT extends ModulePIT {
      *
      * @param owner
      */
-    public PIT(Emulator owner)
-    {
+    public PIT(Emulator owner) {
 
         // Initialise timing
         updateInterval = -1;
@@ -143,8 +142,7 @@ public class PIT extends ModulePIT {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
@@ -193,8 +191,7 @@ public class PIT extends ModulePIT {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         // Show some status information of this module
         String dump = "";
         String ret = "\r\n";
@@ -236,8 +233,7 @@ public class PIT extends ModulePIT {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return updateInterval;
     }
 
@@ -247,8 +243,7 @@ public class PIT extends ModulePIT {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval)
-    {
+    public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -265,8 +260,7 @@ public class PIT extends ModulePIT {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void update()
-    {
+    public void update() {
         // Send pulse to all counters
         for (int c = 0; c < counters.length; c++) {
             counters[c].clockPulse();
@@ -280,8 +274,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            UnknownPortException
-    {
+            UnknownPortException {
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " I/O read from address 0x"
                 + Integer.toHexString(portAddress));
@@ -332,8 +325,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
         logger.log(Level.INFO, "[" + super.getType() + "]" + " I/O write to 0x"
                 + Integer.toHexString(portAddress) + " = 0x"
                 + Integer.toHexString(data));
@@ -435,8 +427,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -454,8 +445,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -469,8 +459,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -489,8 +478,7 @@ public class PIT extends ModulePIT {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -500,8 +488,7 @@ public class PIT extends ModulePIT {
     /**
      * @param counter
      */
-    protected void raiseIRQ(Counter counter)
-    {
+    protected void raiseIRQ(Counter counter) {
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
     }
@@ -509,8 +496,7 @@ public class PIT extends ModulePIT {
     /**
      * @param counter
      */
-    protected void lowerIRQ(Counter counter)
-    {
+    protected void lowerIRQ(Counter counter) {
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
     }

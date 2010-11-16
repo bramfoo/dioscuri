@@ -218,8 +218,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     private boolean blockComplete;
     private boolean addressModeDecoded;
 
-    public RealModeUDecoder()
-    {
+    public RealModeUDecoder() {
         this.current = new Operation();
         this.waiting = new Operation();
         this.working = new Operation();
@@ -229,8 +228,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param source
      * @return -
      */
-    public InstructionSource decodeReal(ByteSource source)
-    {
+    public InstructionSource decodeReal(ByteSource source) {
         reset();
         this.source = source;
         return this;
@@ -240,8 +238,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param source
      * @return -
      */
-    public InstructionSource decodeVirtual8086(ByteSource source)
-    {
+    public InstructionSource decodeVirtual8086(ByteSource source) {
         reset();
         this.source = source;
         return this;
@@ -253,18 +250,15 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @return -
      */
     public InstructionSource decodeProtected(ByteSource source,
-                                             boolean operandSize)
-    {
+                                             boolean operandSize) {
         return null;
     }
 
-    private void blockFinished()
-    {
+    private void blockFinished() {
         blockComplete = true;
     }
 
-    private void rotate()
-    {
+    private void rotate() {
         Operation temp = current;
         current = waiting;
         waiting = working;
@@ -274,8 +268,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     /**
      * @return -
      */
-    public boolean getNext()
-    {
+    public boolean getNext() {
         decode(); // will put new block in working
         rotate(); // moves buffer around
         if (current.decoded())
@@ -287,8 +280,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
             return getNext();
     }
 
-    public void reset()
-    {
+    public void reset() {
         working.reset();
         waiting.reset();
         current.reset();
@@ -298,29 +290,25 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     /**
      * @return -
      */
-    public int getMicrocode()
-    {
+    public int getMicrocode() {
         return current.getMicrocode();
     }
 
     /**
      * @return -
      */
-    public int getLength()
-    {
+    public int getLength() {
         return current.getLength();
     }
 
     /**
      * @return -
      */
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return current.getX86Length();
     }
 
-    private boolean decodingAddressMode()
-    {
+    private boolean decodingAddressMode() {
         if (addressModeDecoded) {
             return false;
         } else {
@@ -328,8 +316,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void decodeComplete(int position)
-    {
+    private void decodeComplete(int position) {
         if (addressModeDecoded) {
             working.write(MEM_RESET);
             addressModeDecoded = false;
@@ -337,8 +324,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         working.finish(position);
     }
 
-    private void decode()
-    {
+    private void decode() {
         working.reset();
 
         if (blockComplete) {
@@ -367,8 +353,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private int decodeOpcode()
-    {
+    private int decodeOpcode() {
         int opcode = 0;
         int opcodePrefix = 0;
         int prefices = 0;
@@ -592,8 +577,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
             return bytesRead;
     }
 
-    private void writeOperation(int prefices, int opcode, int modrm)
-    {
+    private void writeOperation(int prefices, int opcode, int modrm) {
         switch (opcode) {
             case 0x00: // ADD Eb, Gb
             case 0x01: // ADD Ev, Gv
@@ -2795,8 +2779,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void writeFlags(int prefices, int opcode, int modrm)
-    {
+    private void writeFlags(int prefices, int opcode, int modrm) {
         switch (opcode) {
             case 0x00: // ADD Eb, Gb
             case 0x02: // ADD Gb, Eb
@@ -3562,8 +3545,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     }
 
     private void writeInputOperands(int prefices, int opcode, int modrm,
-                                    int sib, int displacement, long immediate)
-    {
+                                    int sib, int displacement, long immediate) {
         switch (opcode) {
             case 0x00: // ADD Eb, Gb
             case 0x08: // OR Eb, Gb
@@ -5067,8 +5049,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     }
 
     private void writeOutputOperands(int prefices, int opcode, int modrm,
-                                     int sib, int displacement)
-    {
+                                     int sib, int displacement) {
         // Normal One Byte Operation
         switch (opcode) {
             case 0x00: // ADD Eb, Gb
@@ -6086,8 +6067,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private static int operationHasImmediate(int prefices, int opcode, int modrm)
-    {
+    private static int operationHasImmediate(int prefices, int opcode, int modrm) {
         switch (opcode) {
             case 0x04: // ADD AL, Ib
             case 0x0c: // OR AL, Ib
@@ -6228,8 +6208,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     }
 
     private static int operationHasDisplacement(int prefices, int opcode,
-                                                int modrm, int sib)
-    {
+                                                int modrm, int sib) {
         switch (opcode) {
             // modrm things
             case 0x00: // ADD Eb, Gb
@@ -6396,8 +6375,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
 
     }
 
-    private static int modrmHasDisplacement(int prefices, int modrm, int sib)
-    {
+    private static int modrmHasDisplacement(int prefices, int modrm, int sib) {
         if ((prefices & PREFICES_ADDRESS) != 0) {
             // 32 bit address size
             switch (modrm & 0xc0) {
@@ -6440,8 +6418,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param modrm
      * @return -
      */
-    public static boolean isFarJump(int opcode, int modrm)
-    {
+    public static boolean isFarJump(int opcode, int modrm) {
         switch (opcode) {
             case 0x9a: // CALLF Ap
             case 0xca: // RETF Iw
@@ -6473,8 +6450,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param modrm
      * @return -
      */
-    public static boolean isNearJump(int opcode, int modrm)
-    {
+    public static boolean isNearJump(int opcode, int modrm) {
         switch (opcode) {
             case 0x70: // Jcc Jb
             case 0x71:
@@ -6539,8 +6515,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param modrm
      * @return -
      */
-    public static boolean isModeSwitch(int opcode, int modrm)
-    {
+    public static boolean isModeSwitch(int opcode, int modrm) {
         switch (opcode) {
             case 0x0f22: // MOV Cd, Ed
                 return true;
@@ -6559,8 +6534,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param modrm
      * @return -
      */
-    public static boolean isBlockTerminating(int opcode, int modrm)
-    {
+    public static boolean isBlockTerminating(int opcode, int modrm) {
         switch (opcode) {
             case 0xf4: // HLT
                 return true;
@@ -6574,15 +6548,13 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
      * @param modrm
      * @return -
      */
-    public static boolean isJump(int opcode, int modrm)
-    {
+    public static boolean isJump(int opcode, int modrm) {
         return isNearJump(opcode, modrm) || isFarJump(opcode, modrm)
                 || isModeSwitch(opcode, modrm)
                 || isBlockTerminating(opcode, modrm);
     }
 
-    private void store0_Cd(int modrm)
-    {
+    private void store0_Cd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_CR0);
@@ -6601,8 +6573,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Cd(int modrm)
-    {
+    private void load0_Cd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_CR0);
@@ -6621,8 +6592,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Dd(int modrm)
-    {
+    private void store0_Dd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_DR0);
@@ -6647,8 +6617,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Dd(int modrm)
-    {
+    private void load0_Dd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_DR0);
@@ -6673,8 +6642,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Eb(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load0_Eb(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6708,8 +6676,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Eb(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load1_Eb(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6743,8 +6710,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Eb(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store0_Eb(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6778,8 +6744,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Eb(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store1_Eb(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6813,8 +6778,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Ew(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load0_Ew(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6848,8 +6812,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Ew(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store0_Ew(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6883,8 +6846,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Ew(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load1_Ew(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6918,8 +6880,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Ew(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store1_Ew(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6953,8 +6914,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Ed(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load0_Ed(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -6988,8 +6948,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Ed(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store0_Ed(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -7023,8 +6982,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Ed(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load1_Ed(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -7058,8 +7016,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Ed(int prefices, int modrm, int sib, int displacement)
-    {
+    private void store1_Ed(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -7093,8 +7050,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Eq(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load0_Eq(int prefices, int modrm, int sib, int displacement) {
         switch (modrm & 0xc7) {
             default:
                 decodeM(prefices, modrm, sib, displacement);
@@ -7112,8 +7068,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Gb(int modrm)
-    {
+    private void load0_Gb(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_AL);
@@ -7144,8 +7099,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Gb(int modrm)
-    {
+    private void store0_Gb(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_AL);
@@ -7176,8 +7130,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Gb(int modrm)
-    {
+    private void load1_Gb(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD1_AL);
@@ -7208,8 +7161,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Gb(int modrm)
-    {
+    private void store1_Gb(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE1_AL);
@@ -7240,8 +7192,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Gw(int modrm)
-    {
+    private void load0_Gw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_AX);
@@ -7272,8 +7223,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Gw(int modrm)
-    {
+    private void store0_Gw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_AX);
@@ -7304,8 +7254,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Gw(int modrm)
-    {
+    private void load1_Gw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD1_AX);
@@ -7336,8 +7285,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Gw(int modrm)
-    {
+    private void store1_Gw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE1_AX);
@@ -7368,8 +7316,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Gd(int modrm)
-    {
+    private void load0_Gd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_EAX);
@@ -7401,8 +7348,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Gd(int modrm)
-    {
+    private void store0_Gd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_EAX);
@@ -7434,8 +7380,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load1_Gd(int modrm)
-    {
+    private void load1_Gd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD1_EAX);
@@ -7467,8 +7412,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store1_Gd(int modrm)
-    {
+    private void store1_Gd(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE1_EAX);
@@ -7500,8 +7444,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Sw(int modrm)
-    {
+    private void load0_Sw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(LOAD0_ES);
@@ -7526,8 +7469,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Sw(int modrm)
-    {
+    private void store0_Sw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE0_ES);
@@ -7553,8 +7495,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
     }
 
     @SuppressWarnings("unused")
-    private void store1_Sw(int modrm)
-    {
+    private void store1_Sw(int modrm) {
         switch (modrm & 0x38) {
             case 0x00:
                 working.write(STORE1_ES);
@@ -7579,8 +7520,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void decodeO(int prefices, int displacement)
-    {
+    private void decodeO(int prefices, int displacement) {
         switch (prefices & PREFICES_SG) {
             default:
             case PREFICES_DS:
@@ -7616,71 +7556,60 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Ob(int prefices, int displacement)
-    {
+    private void load0_Ob(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD0_MEM_BYTE);
     }
 
-    private void store0_Ob(int prefices, int displacement)
-    {
+    private void store0_Ob(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(STORE0_MEM_BYTE);
     }
 
-    private void load0_Ow(int prefices, int displacement)
-    {
+    private void load0_Ow(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD0_MEM_WORD);
     }
 
-    private void store0_Ow(int prefices, int displacement)
-    {
+    private void store0_Ow(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(STORE0_MEM_WORD);
     }
 
-    private void load0_Od(int prefices, int displacement)
-    {
+    private void load0_Od(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD0_MEM_DWORD);
     }
 
-    private void store0_Od(int prefices, int displacement)
-    {
+    private void store0_Od(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(STORE0_MEM_DWORD);
     }
 
     @SuppressWarnings("unused")
-    private void load1_Ob(int prefices, int displacement)
-    {
+    private void load1_Ob(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_BYTE);
     }
 
     @SuppressWarnings("unused")
-    private void load1_Ow(int prefices, int displacement)
-    {
+    private void load1_Ow(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_WORD);
     }
 
     @SuppressWarnings("unused")
-    private void load1_Od(int prefices, int displacement)
-    {
+    private void load1_Od(int prefices, int displacement) {
         decodeO(prefices, displacement);
         working.write(LOAD1_MEM_DWORD);
     }
 
-    private void load0_M(int prefices, int modrm, int sib, int displacement)
-    {
+    private void load0_M(int prefices, int modrm, int sib, int displacement) {
         decodeM(prefices, modrm, sib, displacement);
         working.write(LOAD0_ADDR);
     }
 
-    private void decodeM(int prefices, int modrm, int sib, int displacement)
-    {
+    private void decodeM(int prefices, int modrm, int sib, int displacement) {
         if (!decodingAddressMode())
             return;
 
@@ -7861,8 +7790,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void decodeSIB(int prefices, int modrm, int sib, int displacement)
-    {
+    private void decodeSIB(int prefices, int modrm, int sib, int displacement) {
         switch (prefices & PREFICES_SG) {
             default:
                 switch (sib & 0x7) {
@@ -8040,8 +7968,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void decodeSegmentPrefix(int prefices)
-    {
+    private void decodeSegmentPrefix(int prefices) {
         switch (prefices & PREFICES_SG) {
             default:
             case PREFICES_DS:
@@ -8065,8 +7992,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void store0_Rd(int modrm)
-    {
+    private void store0_Rd(int modrm) {
         switch (modrm & 0xc7) {
             case 0xc0:
                 working.write(STORE0_EAX);
@@ -8097,8 +8023,7 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         }
     }
 
-    private void load0_Rd(int modrm)
-    {
+    private void load0_Rd(int modrm) {
         switch (modrm & 0xc7) {
             case 0xc0:
                 working.write(LOAD0_EAX);
@@ -8137,13 +8062,11 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
         private boolean decoded;
         private boolean terminal;
 
-        Operation()
-        {
+        Operation() {
             microcodes = new int[10];
         }
 
-        void write(int microcode)
-        {
+        void write(int microcode) {
             try {
                 microcodes[microcodesLength++] = microcode;
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -8154,35 +8077,29 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
             }
         }
 
-        void replace(int offset, int microcode)
-        {
+        void replace(int offset, int microcode) {
             microcodes[offset] = microcode;
         }
 
-        void finish(int x86Length)
-        {
+        void finish(int x86Length) {
             this.x86Length = x86Length;
             decoded = true;
         }
 
-        void makeTerminal()
-        {
+        void makeTerminal() {
             reset();
             terminal = true;
         }
 
-        boolean terminal()
-        {
+        boolean terminal() {
             return terminal;
         }
 
-        boolean decoded()
-        {
+        boolean decoded() {
             return decoded;
         }
 
-        void reset()
-        {
+        void reset() {
             microcodesLength = 0;
             x86Length = 0;
             readOffset = 0;
@@ -8190,26 +8107,22 @@ public final class RealModeUDecoder implements MicrocodeSet, Decoder, Instructio
             terminal = false;
         }
 
-        int getMicrocodeAt(int offset)
-        {
+        int getMicrocodeAt(int offset) {
             return microcodes[offset];
         }
 
-        int getMicrocode()
-        {
+        int getMicrocode() {
             if (readOffset < microcodesLength)
                 return microcodes[readOffset++];
             else
                 throw new IllegalStateException();
         }
 
-        int getLength()
-        {
+        int getLength() {
             return microcodesLength;
         }
 
-        int getX86Length()
-        {
+        int getX86Length() {
             return x86Length;
         }
     }

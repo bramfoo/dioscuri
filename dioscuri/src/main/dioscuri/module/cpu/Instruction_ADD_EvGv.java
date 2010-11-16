@@ -74,8 +74,7 @@ public class Instruction_ADD_EvGv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADD_EvGv()
-    {
+    public Instruction_ADD_EvGv() {
     }
 
     /**
@@ -83,8 +82,7 @@ public class Instruction_ADD_EvGv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADD_EvGv(CPU processor)
-    {
+    public Instruction_ADD_EvGv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -96,8 +94,7 @@ public class Instruction_ADD_EvGv implements Instruction {
     /**
      * Add word in register (source) to memory/register (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

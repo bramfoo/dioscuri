@@ -68,8 +68,7 @@ public class Instruction_ESC_FPU implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ESC_FPU()
-    {
+    public Instruction_ESC_FPU() {
         // Initialise variables
 
         opCode = 0;
@@ -84,8 +83,7 @@ public class Instruction_ESC_FPU implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ESC_FPU(CPU processor)
-    {
+    public Instruction_ESC_FPU(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -98,8 +96,7 @@ public class Instruction_ESC_FPU implements Instruction {
      * Advance IP to next instruction.<BR>
      * NOTE: The actual instruction is not executed!
      */
-    public void execute()
-    {
+    public void execute() {
         // Get opcode of current instruction
         opCode = cpu.codeByte;
 

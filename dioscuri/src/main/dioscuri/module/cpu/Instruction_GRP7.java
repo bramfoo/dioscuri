@@ -82,8 +82,7 @@ public class Instruction_GRP7 implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_GRP7()
-    {
+    public Instruction_GRP7() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -107,8 +106,7 @@ public class Instruction_GRP7 implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_GRP7(CPU processor)
-    {
+    public Instruction_GRP7(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -123,8 +121,7 @@ public class Instruction_GRP7 implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
 
         logger.log(Level.SEVERE, "Instruction_GRP7.execute()");
 

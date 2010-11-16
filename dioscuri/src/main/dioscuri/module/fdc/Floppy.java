@@ -56,8 +56,7 @@ public class Floppy {
     /**
      * Class Constructor
      */
-    public Floppy()
-    {
+    public Floppy() {
         // Initialise variables
         type = 0;
         bytes = null;
@@ -70,8 +69,7 @@ public class Floppy {
      * @param imageFile
      * @throws IOException if file cannot be read (or does not exist)
      */
-    public Floppy(byte type, File imageFile) throws IOException
-    {
+    public Floppy(byte type, File imageFile) throws IOException {
         this();
 
         // Set type of floppydisk
@@ -91,8 +89,7 @@ public class Floppy {
      *
      * @return -
      */
-    protected int getSize()
-    {
+    protected int getSize() {
         return bytes.length;
     }
 
@@ -101,8 +98,7 @@ public class Floppy {
      *
      * @throws IOException if file cannot be read (or does not exist)
      */
-    private void loadImageFromFile() throws IOException
-    {
+    private void loadImageFromFile() throws IOException {
         // Fetch bytes from image file
         // open input stream
         BufferedInputStream bdis = new BufferedInputStream(new DataInputStream(
@@ -121,8 +117,7 @@ public class Floppy {
      *
      * @throws IOException if file cannot be written (or does not exist)
      */
-    protected void storeImageToFile() throws IOException
-    {
+    protected void storeImageToFile() throws IOException {
         // Store bytes to image file
         // Open output stream
         BufferedOutputStream bdos = new BufferedOutputStream(

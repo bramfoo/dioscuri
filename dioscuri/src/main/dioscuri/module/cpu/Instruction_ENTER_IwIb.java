@@ -77,8 +77,7 @@ public class Instruction_ENTER_IwIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ENTER_IwIb()
-    {
+    public Instruction_ENTER_IwIb() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -108,8 +107,7 @@ public class Instruction_ENTER_IwIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ENTER_IwIb(CPU processor)
-    {
+    public Instruction_ENTER_IwIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -122,8 +120,7 @@ public class Instruction_ENTER_IwIb implements Instruction {
      * ENTER - Make Stack Frame for Procedure Parameters.<BR>
      * Takes care of nesting level (0, 1 or higher)
      */
-    public void execute()
-    {
+    public void execute() {
         System.out.println("CPU -> instruction ENTER");
 
         // Get stack-size operand

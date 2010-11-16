@@ -55,8 +55,7 @@ public class Instruction_STC implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_STC()
-    {
+    public Instruction_STC() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_STC implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_STC(CPU processor)
-    {
+    public Instruction_STC(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +75,7 @@ public class Instruction_STC implements Instruction {
     /**
      * Set CF to 1
      */
-    public void execute()
-    {
+    public void execute() {
         // Set direction flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_CF] = true;
     }

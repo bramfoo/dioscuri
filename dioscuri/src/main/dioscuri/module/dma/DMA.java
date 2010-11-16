@@ -176,8 +176,7 @@ public class DMA extends ModuleDMA {
      *
      * @param owner
      */
-    public DMA(Emulator owner)
-    {
+    public DMA(Emulator owner) {
 
         int chanNum, ctrlNum, i; // Counters
 
@@ -233,8 +232,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -307,8 +305,7 @@ public class DMA extends ModuleDMA {
      *
      * @param ctrlNum Number of controller to be reset (0 or 1)
      */
-    void resetController(int ctrlNum)
-    {
+    void resetController(int ctrlNum) {
         // Set entire mask register (default on reset)
         for (int i = 0; i < 4; i++) {
             controller[ctrlNum].mask[i] = 1;
@@ -325,8 +322,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String dump = "";
         String ret = "\r\n";
 
@@ -359,8 +355,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte getIOPortByte(int portAddress) throws UnknownPortException
-    {
+    public byte getIOPortByte(int portAddress) throws UnknownPortException {
         byte returnValue;
         int chanNum;
 
@@ -502,8 +497,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
         int chanNum; // Controller channel number
 
         logger.log(Level.CONFIG, "[" + super.getType() + "]"
@@ -831,8 +825,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.interfaces.Addressable
      */
     @Override
-    public byte[] getIOPortWord(int portAddress) throws UnknownPortException
-    {
+    public byte[] getIOPortWord(int portAddress) throws UnknownPortException {
         byte[] data = new byte[2];
         data[0] = getIOPortByte(portAddress);
         data[1] = getIOPortByte(portAddress);
@@ -847,8 +840,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
         setIOPortByte(portAddress, dataWord[1]);
         setIOPortByte(portAddress, dataWord[0]);
     }
@@ -860,8 +852,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws WriteOnlyPortException
-    {
+            throws WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " -> IN command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -879,8 +870,7 @@ public class DMA extends ModuleDMA {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -893,8 +883,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler)
-    {
+    public boolean registerDMAChannel(int chanNum, DMA8Handler dma8handler) {
         if (chanNum > 3) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA8Channel: invalid channel number: "
@@ -920,8 +909,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler)
-    {
+    public boolean registerDMAChannel(int chanNum, DMA16Handler dma16handler) {
         if (chanNum < 4 || chanNum > 7) {
             logger.log(Level.SEVERE, "[" + super.getType() + "]"
                     + " registerDMA16Channel: invalid channel number: "
@@ -947,8 +935,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public boolean isTerminalCountReached()
-    {
+    public boolean isTerminalCountReached() {
         return terminalCountReached;
     }
 
@@ -958,8 +945,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public void setDMARequest(int chanNum, boolean dmaRequest)
-    {
+    public void setDMARequest(int chanNum, boolean dmaRequest) {
         int dmaFloor, dmaCeiling; // Memory boundaries of DMA request
         int ctrlNum;
 
@@ -1146,8 +1132,7 @@ public class DMA extends ModuleDMA {
      * @param ctrlNum Controller (master [0] /slave [1]) from where the Hold Request
      *                originated
      */
-    private void controlHoldRequest(int ctrlNum)
-    {
+    private void controlHoldRequest(int ctrlNum) {
 
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
 
@@ -1197,8 +1182,7 @@ public class DMA extends ModuleDMA {
      * @see dioscuri.module.ModuleDMA
      */
     @Override
-    public void acknowledgeBusHold()
-    {
+    public void acknowledgeBusHold() {
         int ctrlNum = MASTER_CTRL; // Controller number (master/slave)
         int chanNum; // DMA channel number
         int memoryAddress; // Address in memory data is written to/read from
@@ -1325,8 +1309,7 @@ public class DMA extends ModuleDMA {
      * @throws ModuleException
      */
     private void initiateDMATransfer(int ctrlNum, int chanNum, int memoryAddress)
-            throws ModuleException
-    {
+            throws ModuleException {
 
         ModuleMemory memory = (ModuleMemory) super.getConnection(Module.Type.MEMORY);
 
@@ -1399,22 +1382,19 @@ public class DMA extends ModuleDMA {
      * methods,<BR>
      * as the only use is to prevent other devices from registering on channel 4
      */
-    private void setCascadeChannel()
-    {
+    private void setCascadeChannel() {
         // Extend the DMA16Handler to provide to registerDMAChannel()
         // This class does not implement any of the methods.
         class Cascade16Handler extends DMA16Handler {
             @Override
             // Cascade channel does not support reading
-            public void dma16ReadFromMem(byte[] data)
-            {
+            public void dma16ReadFromMem(byte[] data) {
                 // Do nothing
             }
 
             @Override
             // Casace channel does not support writing
-            public byte[] dma16WriteToMem()
-            {
+            public byte[] dma16WriteToMem() {
                 // Do nothing
                 return null;
             }

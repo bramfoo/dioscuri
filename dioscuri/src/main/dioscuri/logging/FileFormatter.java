@@ -47,8 +47,7 @@ import java.util.logging.LogRecord;
  * @author Bart Kiers
  */
 public class FileFormatter extends Formatter {
-    public String format(LogRecord record)
-    {
+    public String format(LogRecord record) {
         return record.getMillis() + "\t" + record.getLoggerName() + "\t"
                 + record.getLevel() + "\t: " + record.getMessage() + '\n';
     }

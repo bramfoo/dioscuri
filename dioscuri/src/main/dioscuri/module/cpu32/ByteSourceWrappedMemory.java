@@ -39,8 +39,7 @@ public class ByteSourceWrappedMemory implements ByteSource {
      * @param source
      * @param offset
      */
-    public void set(Memory source, int offset)
-    {
+    public void set(Memory source, int offset) {
         this.source = source;
         this.offset = offset;
         startingPosition = offset;
@@ -49,24 +48,21 @@ public class ByteSourceWrappedMemory implements ByteSource {
     /**
      * @return -
      */
-    public Memory getMemory()
-    {
+    public Memory getMemory() {
         return source;
     }
 
     /**
      * @return -
      */
-    public int getOffset()
-    {
+    public int getOffset() {
         return offset;
     }
 
     /**
      * @return -
      */
-    public byte getByte()
-    {
+    public byte getByte() {
         return source.getByte(offset++);
     }
 
@@ -74,8 +70,7 @@ public class ByteSourceWrappedMemory implements ByteSource {
      * @param count
      * @return -
      */
-    public boolean skip(int count)
-    {
+    public boolean skip(int count) {
         if (offset + count >= source.getSize())
             return false;
         offset += count;
@@ -86,8 +81,7 @@ public class ByteSourceWrappedMemory implements ByteSource {
      * @param count
      * @return -
      */
-    public boolean rewind(int count)
-    {
+    public boolean rewind(int count) {
         if (offset - count < startingPosition)
             return false;
         offset -= count;
@@ -97,8 +91,7 @@ public class ByteSourceWrappedMemory implements ByteSource {
     /**
      * @return -
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         offset = startingPosition;
         return true;
     }

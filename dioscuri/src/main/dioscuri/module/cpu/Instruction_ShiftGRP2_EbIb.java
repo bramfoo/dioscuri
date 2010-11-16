@@ -72,8 +72,7 @@ public class Instruction_ShiftGRP2_EbIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ShiftGRP2_EbIb()
-    {
+    public Instruction_ShiftGRP2_EbIb() {
         operandWordSize = false;
 
         addressByte = 0;
@@ -93,8 +92,7 @@ public class Instruction_ShiftGRP2_EbIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ShiftGRP2_EbIb(CPU processor)
-    {
+    public Instruction_ShiftGRP2_EbIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -109,8 +107,7 @@ public class Instruction_ShiftGRP2_EbIb implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Reset sourceValue (to lose pointer to earlier words)
         sourceValue = new byte[2];
 

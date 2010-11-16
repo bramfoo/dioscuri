@@ -78,8 +78,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     private Memory[] readUserIndex, readSupervisorIndex, writeUserIndex,
             writeSupervisorIndex, readIndex, writeIndex;
 
-    public LinearAddressSpace()
-    {
+    public LinearAddressSpace() {
         baseAddress = 0;
         lastAddress = 0;
         pagingDisabled = true;
@@ -103,8 +102,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param output
      * @throws IOException
      */
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
         output.writeBoolean(isSupervisor);
         output.writeBoolean(globalPagesEnabled);
         output.writeBoolean(pagingDisabled);
@@ -130,8 +128,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         dumpMemory(output, writeSupervisorIndex);
     }
 
-    private void dumpMemory(DataOutput output, Memory[] mem) throws IOException
-    {
+    private void dumpMemory(DataOutput output, Memory[] mem) throws IOException {
         long len;
         byte[] temp = new byte[0];
         if (mem == null)
@@ -166,8 +163,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param input
      * @throws IOException
      */
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
         reset();
         isSupervisor = input.readBoolean();
         globalPagesEnabled = input.readBoolean();
@@ -203,8 +199,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     }
 
     private void loadMemory(DataInput input, Memory[] mem, int size)
-            throws IOException
-    {
+            throws IOException {
         long len;
         byte[] temp;
         for (int i = 0; i < size; i++) {
@@ -221,24 +216,21 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
-    private Memory[] getReadIndex()
-    {
+    private Memory[] getReadIndex() {
         if (isSupervisor)
             return (readIndex = readSupervisorIndex = new Memory[INDEX_SIZE]);
         else
             return (readIndex = readUserIndex = new Memory[INDEX_SIZE]);
     }
 
-    private Memory[] getWriteIndex()
-    {
+    private Memory[] getWriteIndex() {
         if (isSupervisor)
             return (writeIndex = writeSupervisorIndex = new Memory[INDEX_SIZE]);
         else
             return (writeIndex = writeUserIndex = new Memory[INDEX_SIZE]);
     }
 
-    private void setReadIndexValue(int index, Memory value)
-    {
+    private void setReadIndexValue(int index, Memory value) {
         try {
             readIndex[index] = value;
         } catch (NullPointerException e) {
@@ -246,8 +238,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
-    private Memory getReadIndexValue(int index)
-    {
+    private Memory getReadIndexValue(int index) {
         try {
             return readIndex[index];
         } catch (NullPointerException e) {
@@ -255,8 +246,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
-    private void setWriteIndexValue(int index, Memory value)
-    {
+    private void setWriteIndexValue(int index, Memory value) {
         try {
             writeIndex[index] = value;
         } catch (NullPointerException e) {
@@ -264,8 +254,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
-    private Memory getWriteIndexValue(int index)
-    {
+    private Memory getWriteIndexValue(int index) {
         try {
             return writeIndex[index];
         } catch (NullPointerException e) {
@@ -276,24 +265,21 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public int getLastWalkedAddress()
-    {
+    public int getLastWalkedAddress() {
         return lastAddress;
     }
 
     /**
      * @return -
      */
-    public boolean isSupervisor()
-    {
+    public boolean isSupervisor() {
         return isSupervisor;
     }
 
     /**
      * @param value
      */
-    public void setSupervisor(boolean value)
-    {
+    public void setSupervisor(boolean value) {
         isSupervisor = value;
         if (isSupervisor) {
             readIndex = readSupervisorIndex;
@@ -307,16 +293,14 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean isPagingEnabled()
-    {
+    public boolean isPagingEnabled() {
         return !pagingDisabled;
     }
 
     /**
      * @param value
      */
-    public void setPagingEnabled(boolean value)
-    {
+    public void setPagingEnabled(boolean value) {
         if (value) {
             if (!((PhysicalAddressSpace) target).getGateA20State())
                 System.err.println("PAGING with GateA20 Masked!!!");
@@ -328,16 +312,14 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @param value
      */
-    public void setPageCacheEnabled(boolean value)
-    {
+    public void setPageCacheEnabled(boolean value) {
         pageCacheEnabled = value;
     }
 
     /**
      * @param value
      */
-    public void setPageSizeExtensionsEnabled(boolean value)
-    {
+    public void setPageSizeExtensionsEnabled(boolean value) {
         pageSizeExtensions = value;
         flush();
     }
@@ -345,16 +327,14 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @param value
      */
-    public void setPageWriteThroughEnabled(boolean value)
-    {
+    public void setPageWriteThroughEnabled(boolean value) {
         // System.err.println("ERR: Write Through Caching enabled for TLBs");
     }
 
     /**
      * @param value
      */
-    public void setGlobalPagesEnabled(boolean value)
-    {
+    public void setGlobalPagesEnabled(boolean value) {
         if (globalPagesEnabled == value)
             return;
 
@@ -365,8 +345,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @param value
      */
-    public void setWriteProtectUserPages(boolean value)
-    {
+    public void setWriteProtectUserPages(boolean value) {
         if (value) {
             for (int i = 0; i < INDEX_SIZE; i++)
                 nullIndex(writeSupervisorIndex, i);
@@ -378,13 +357,11 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean pagingDisabled()
-    {
+    public boolean pagingDisabled() {
         return pagingDisabled;
     }
 
-    public void flush()
-    {
+    public void flush() {
         for (int i = 0; i < INDEX_SIZE; i++) {
             pageFlags[i] = FOUR_K;
         }
@@ -396,8 +373,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         writeSupervisorIndex = null;
     }
 
-    private void partialFlush()
-    {
+    private void partialFlush() {
         if (!globalPagesEnabled) {
             flush();
             return;
@@ -423,8 +399,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          */
     }
 
-    private void nullIndex(Memory[] array, int index)
-    {
+    private void nullIndex(Memory[] array, int index) {
         try {
             array[index] = null;
         } catch (NullPointerException e) {
@@ -434,8 +409,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @param address
      */
-    public void setPageDirectoryBaseAddress(int address)
-    {
+    public void setPageDirectoryBaseAddress(int address) {
         baseAddress = address & 0xFFFFF000;
         partialFlush();
     }
@@ -443,8 +417,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @param offset
      */
-    public void invalidateTLBEntry(int offset)
-    {
+    public void invalidateTLBEntry(int offset) {
         int index = offset >>> INDEX_SHIFT;
         if ((pageFlags[index] & IS_4_M_MASK) == 0) {
             nullIndex(readSupervisorIndex, index);
@@ -468,8 +441,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory validateTLBEntryRead(int offset)
-    {
+    public Memory validateTLBEntryRead(int offset) {
         int idx = offset >>> INDEX_SHIFT;
         if (pagingDisabled) {
             setReadIndexValue(idx, target.getReadMemoryBlockAt(offset));
@@ -596,8 +568,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory validateTLBEntryWrite(int offset)
-    {
+    public Memory validateTLBEntryWrite(int offset) {
         int idx = offset >>> INDEX_SHIFT;
         if (pagingDisabled) {
             setWriteIndexValue(idx, target.getWriteMemoryBlockAt(offset));
@@ -760,8 +731,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory getReadMemoryBlockAt(int offset)
-    {
+    public Memory getReadMemoryBlockAt(int offset) {
         return getReadIndexValue(offset >>> INDEX_SHIFT);
     }
 
@@ -769,13 +739,11 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory getWriteMemoryBlockAt(int offset)
-    {
+    public Memory getWriteMemoryBlockAt(int offset) {
         return getWriteIndexValue(offset >>> INDEX_SHIFT);
     }
 
-    void replaceBlocks(Memory oldBlock, Memory newBlock)
-    {
+    void replaceBlocks(Memory oldBlock, Memory newBlock) {
         try {
             for (int i = 0; i < INDEX_SIZE; i++)
                 if (readUserIndex[i] == oldBlock)
@@ -810,8 +778,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @return -
      */
     @Override
-    public byte getByte(int offset)
-    {
+    public byte getByte(int offset) {
         try {
             return super.getByte(offset);
         } catch (NullPointerException e) {
@@ -826,8 +793,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @return -
      */
     @Override
-    public short getWord(int offset)
-    {
+    public short getWord(int offset) {
         try {
             return super.getWord(offset);
         } catch (NullPointerException e) {
@@ -847,8 +813,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @return -
      */
     @Override
-    public int getDoubleWord(int offset)
-    {
+    public int getDoubleWord(int offset) {
         try {
             return super.getDoubleWord(offset);
         } catch (NullPointerException e) {
@@ -868,8 +833,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param data
      */
     @Override
-    public void setByte(int offset, byte data)
-    {
+    public void setByte(int offset, byte data) {
         try {
             super.setByte(offset, data);
             return;
@@ -885,8 +849,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param data
      */
     @Override
-    public void setWord(int offset, short data)
-    {
+    public void setWord(int offset, short data) {
         try {
             super.setWord(offset, data);
             return;
@@ -907,8 +870,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param data
      */
     @Override
-    public void setDoubleWord(int offset, int data)
-    {
+    public void setDoubleWord(int offset, int data) {
         try {
             super.setDoubleWord(offset, data);
             return;
@@ -924,8 +886,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         }
     }
 
-    public void clear()
-    {
+    public void clear() {
         target.clear();
     }
 
@@ -934,8 +895,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public int execute(Processor cpu, int offset)
-    {
+    public int execute(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
 
         try {
@@ -962,8 +922,7 @@ public final class LinearAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-    {
+    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         Memory memory = getReadMemoryBlockAt(offset);
 
         try {
@@ -988,35 +947,30 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          * @param errorCode
          */
-        public PageFaultWrapper(int errorCode)
-        {
+        public PageFaultWrapper(int errorCode) {
             pageFault = new ProcessorException(Processor.PROC_EXCEPTION_PF,
                     errorCode, true);
         }
 
-        private final void fill()
-        {
+        private final void fill() {
             // pageFault.fillInStackTrace();
         }
 
         /**
          * @return -
          */
-        public ProcessorException getFault()
-        {
+        public ProcessorException getFault() {
             return pageFault;
         }
 
-        public void clear()
-        {
+        public void clear() {
         }
 
         /**
          * @param start
          * @param length
          */
-        public void clear(int start, int length)
-        {
+        public void clear(int start, int length) {
         }
 
         /**
@@ -1026,8 +980,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param len
          */
         public void copyContentsInto(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
             fill();
             throw pageFault;
         }
@@ -1039,8 +992,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param len
          */
         public void copyContentsFrom(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
             fill();
             throw pageFault;
         }
@@ -1048,8 +1000,7 @@ public final class LinearAddressSpace extends AddressSpace implements
         /**
          * @return -
          */
-        public long getSize()
-        {
+        public long getSize() {
             return 0;
         }
 
@@ -1057,8 +1008,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public byte getByte(int offset)
-        {
+        public byte getByte(int offset) {
             fill();
             throw pageFault;
         }
@@ -1067,8 +1017,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public short getWord(int offset)
-        {
+        public short getWord(int offset) {
             fill();
             throw pageFault;
         }
@@ -1077,8 +1026,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int getDoubleWord(int offset)
-        {
+        public int getDoubleWord(int offset) {
             fill();
             throw pageFault;
         }
@@ -1087,8 +1035,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getQuadWord(int offset)
-        {
+        public long getQuadWord(int offset) {
             fill();
             throw pageFault;
         }
@@ -1097,8 +1044,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getLowerDoubleQuadWord(int offset)
-        {
+        public long getLowerDoubleQuadWord(int offset) {
             fill();
             throw pageFault;
         }
@@ -1107,8 +1053,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getUpperDoubleQuadWord(int offset)
-        {
+        public long getUpperDoubleQuadWord(int offset) {
             fill();
             throw pageFault;
         }
@@ -1117,8 +1062,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setByte(int offset, byte data)
-        {
+        public void setByte(int offset, byte data) {
             fill();
             throw pageFault;
         }
@@ -1127,8 +1071,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setWord(int offset, short data)
-        {
+        public void setWord(int offset, short data) {
             fill();
             throw pageFault;
         }
@@ -1137,8 +1080,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setDoubleWord(int offset, int data)
-        {
+        public void setDoubleWord(int offset, int data) {
             fill();
             throw pageFault;
         }
@@ -1147,8 +1089,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setQuadWord(int offset, long data)
-        {
+        public void setQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
@@ -1157,8 +1098,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setLowerDoubleQuadWord(int offset, long data)
-        {
+        public void setLowerDoubleQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
@@ -1167,8 +1107,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setUpperDoubleQuadWord(int offset, long data)
-        {
+        public void setUpperDoubleQuadWord(int offset, long data) {
             fill();
             throw pageFault;
         }
@@ -1178,8 +1117,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int execute(Processor cpu, int offset)
-        {
+        public int execute(Processor cpu, int offset) {
             fill();
             throw pageFault;
         }
@@ -1189,8 +1127,7 @@ public final class LinearAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-        {
+        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             fill();
             throw pageFault;
         }
@@ -1199,8 +1136,7 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         flush();
 
         baseAddress = 0;
@@ -1221,42 +1157,36 @@ public final class LinearAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean updated()
-    {
+    public boolean updated() {
         return target.updated();
     }
 
     /**
      * @param component
      */
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
     }
 
     /**
      * @return -
      */
-    public boolean initialised()
-    {
+    public boolean initialised() {
         return (target != null);
     }
 
     /**
      * @param component
      */
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
         if (component instanceof PhysicalAddressSpace)
             target = (AddressSpace) component;
     }
 
-    public void timerCallback()
-    {
+    public void timerCallback() {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Linear Address Space";
     }
 }

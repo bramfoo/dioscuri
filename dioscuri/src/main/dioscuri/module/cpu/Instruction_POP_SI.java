@@ -54,8 +54,7 @@ public class Instruction_POP_SI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_POP_SI()
-    {
+    public Instruction_POP_SI() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_POP_SI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_POP_SI(CPU processor)
-    {
+    public Instruction_POP_SI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_POP_SI implements Instruction {
     /**
      * This pops the word at stack top SS:SP into SI
      */
-    public void execute()
-    {
+    public void execute() {
         // Get word SS:SP and assign to SI
         cpu.si = cpu.getWordFromStack();
 

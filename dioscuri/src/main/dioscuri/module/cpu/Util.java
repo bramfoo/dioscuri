@@ -91,8 +91,7 @@ public class Util {
 
     // Constructor
 
-    private Util()
-    {
+    private Util() {
         //cf = false;
     }
 
@@ -104,8 +103,7 @@ public class Util {
      * @param data
      * @return -
      */
-    protected static boolean checkParityOfByte(byte data)
-    {
+    protected static boolean checkParityOfByte(byte data) {
         // Extend byte to unsigned int
         int check = data & 0x000000FF;
 
@@ -124,8 +122,7 @@ public class Util {
      * @param carryBit
      * @return sum of both words including possible carry between LSB and MSB
      */
-    protected static byte[] addWords(byte[] word1, byte[] word2, int carryBit)
-    {
+    protected static byte[] addWords(byte[] word1, byte[] word2, int carryBit) {
         byte[] result = new byte[2];
         lowerByteCarry = ((int) word1[CPU.REGISTER_LOW] & 0xFF)
                 + ((int) word2[CPU.REGISTER_LOW] & 0xFF) + carryBit;
@@ -153,8 +150,7 @@ public class Util {
      *         between LSB and MSB
      */
     protected static byte[] subtractWords(byte[] word1, byte[] word2,
-                                          int borrowBit)
-    {
+                                          int borrowBit) {
         byte[] result = new byte[2];
         result[CPU.REGISTER_LOW] = (byte) (word1[CPU.REGISTER_LOW] - (word2[CPU.REGISTER_LOW] + borrowBit));
         result[CPU.REGISTER_HIGH] = (byte) (word1[CPU.REGISTER_HIGH] - word2[CPU.REGISTER_HIGH]);
@@ -177,8 +173,7 @@ public class Util {
      * @return sum of both registers and memory displacement
      */
     protected static byte[] addRegRegDisp(byte[] reg1, byte[] reg2,
-                                          byte[] displacement)
-    {
+                                          byte[] displacement) {
         byte[] result = new byte[2];
         result[CPU.REGISTER_GENERAL_LOW] = (byte) (reg1[CPU.REGISTER_GENERAL_LOW]
                 + reg2[CPU.REGISTER_GENERAL_LOW] + displacement[CPU.REGISTER_GENERAL_LOW]);
@@ -210,8 +205,7 @@ public class Util {
      * @param result
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_AF_ADD(byte input, byte result)
-    {
+    protected static boolean test_AF_ADD(byte input, byte result) {
         // Carry has occurred if result < input
         // E.g. 0000.1111 + 0000.0001 = 0001.0000
         if ((result & 0x0F) < (input & 0x0F)) {
@@ -228,8 +222,7 @@ public class Util {
      * @param result
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_AF_SUB(byte input, byte result)
-    {
+    protected static boolean test_AF_SUB(byte input, byte result) {
         // Borrow has occurred if result > input
         // E.g. 0001.0000 - 0000.0001 = 0000.1111
         if ((result & 0x0F) > (input & 0x0F)) {
@@ -247,8 +240,7 @@ public class Util {
      * @param shifts
      * @return true if carry/borrow occurs, false otherwise
      */
-    protected static boolean test_AF_ShiftLeft(byte input, int shifts)
-    {
+    protected static boolean test_AF_ShiftLeft(byte input, int shifts) {
         // Check if number of shifts is in range of bits in lowest nibble, else
         // no carry happens
         if (shifts > 0 && shifts <= 4) {
@@ -272,8 +264,7 @@ public class Util {
      * @param carry
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_CF_ADD(byte input1, byte input2, int carry)
-    {
+    protected static boolean test_CF_ADD(byte input1, byte input2, int carry) {
         // There is one unsigned case when CF occurs:
         // addition: input1 + input2 + carry > 255
         if ((((int) input1) & 0xFF) + (((int) input2) & 0xFF) + carry > (((int) 0xFF) & 0xFF)) {
@@ -293,8 +284,7 @@ public class Util {
      * @param carry
      * @return true if carry occurs, false otherwise
      */
-    protected static boolean test_CF_ADD(byte[] input1, byte[] input2, int carry)
-    {
+    protected static boolean test_CF_ADD(byte[] input1, byte[] input2, int carry) {
         // There is one unsigned case when CF occurs:
         // addition: input1 + input2 + carry > 0xFFFF
         if (((((int) input1[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8)
@@ -317,8 +307,7 @@ public class Util {
      * @param carry  possible carry bit
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_CF_SUB(byte input1, byte input2, int carry)
-    {
+    protected static boolean test_CF_SUB(byte input1, byte input2, int carry) {
         // There is one unsigned case when CF occurs:
         // subtraction (input1 - (input2 + carry)): input1 + carry < input2
         // if ((((int) input1) & 0xFF) + carry < (((int) input2) & 0xFF))
@@ -339,8 +328,7 @@ public class Util {
      * @param carry
      * @return true if borrow occurs, false otherwise
      */
-    protected static boolean test_CF_SUB(byte[] input1, byte[] input2, int carry)
-    {
+    protected static boolean test_CF_SUB(byte[] input1, byte[] input2, int carry) {
         // There is one unsigned case when CF occurs:
         // subtraction (input1 - (input2 + carry)): input1 < input2 + carry
         if (((((int) input1[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8)
@@ -364,8 +352,7 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte input1, byte input2, byte result,
-                                         int carry)
-    {
+                                         int carry) {
         // There are two signed cases when OF occurs:
         // "input1" + "input2" = "result"
         // (a) (positive) + (positive) = (negative)
@@ -401,8 +388,7 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_ADD(byte[] input1, byte[] input2,
-                                         byte[] result, int carry)
-    {
+                                         byte[] result, int carry) {
         // There are two signed cases when OF occurs:
         // "input1" + "input2" = "result"
         // (a) (positive) + (positive) = (negative)
@@ -445,8 +431,7 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte input1, byte input2, byte result,
-                                         int carry)
-    {
+                                         int carry) {
         // There are two signed cases when OF occurs:
         // "input1" - "input2" = "result"
         // (a) (positive) - (negative) = (negative)
@@ -482,8 +467,7 @@ public class Util {
      * @return true if overflow occurs, false otherwise
      */
     protected static boolean test_OF_SUB(byte[] input1, byte[] input2,
-                                         byte[] result, int carry)
-    {
+                                         byte[] result, int carry) {
         // There are two signed cases when OF occurs:
         // "input1" - "input2" = "result"
         // (a) (positive) - (negative) = (negative)
@@ -520,8 +504,7 @@ public class Util {
      * @param inputByte Byte whose sign determines value of sign-extension
      * @return Byte of value 0x00 if no sign, 0xFF if signed
      */
-    protected static byte signExtend(byte inputByte)
-    {
+    protected static byte signExtend(byte inputByte) {
         // Depending on sign from input byte, return either 0x00 (positive) or
         // 0xFF (negative)
         return (inputByte >> 7) == 0 ? (byte) 0x00 : (byte) 0xFF;
@@ -535,8 +518,7 @@ public class Util {
      * @param booleans
      * @return byte[] containing the converted booleans
      */
-    protected static byte[] booleansToBytes(boolean[] booleans)
-    {
+    protected static byte[] booleansToBytes(boolean[] booleans) {
         int tempValue = 0;
         // Create temporary array of integers
         int[] tempHex = new int[booleans.length / 8]; // Assumes boolean array
@@ -570,8 +552,7 @@ public class Util {
      * @param bytes
      * @return boolean[] containing the converted bytes
      */
-    protected static boolean[] bytesToBooleans(byte[] bytes)
-    {
+    protected static boolean[] bytesToBooleans(byte[] bytes) {
         int tempValue = 0;
         boolean[] booleans = new boolean[bytes.length * 8];
 
@@ -594,8 +575,7 @@ public class Util {
      * @param b
      * @return -
      */
-    protected static String convertByteToString(byte b)
-    {
+    protected static String convertByteToString(byte b) {
         return (Integer.toHexString(0x100 | (b & 0xFF)).substring(1));
     }
 
@@ -603,8 +583,7 @@ public class Util {
      * @param word
      * @return -
      */
-    protected static String convertWordToString(byte[] word)
-    {
+    protected static String convertWordToString(byte[] word) {
         return (Integer.toHexString(0x100 | (word[0] & 0xFF)).substring(1) + Integer
                 .toHexString(0x100 | (word[1] & 0xFF)).substring(1));
     }
@@ -615,8 +594,7 @@ public class Util {
      * @param strValue
      * @return int as byte
      */
-    protected static byte convertStringToByte(String strValue)
-    {
+    protected static byte convertStringToByte(String strValue) {
         // FIXME: Check if correct byte implementation
         // Parse from string to int (hex)
         try {
@@ -640,8 +618,7 @@ public class Util {
      * @param strValue
      * @return byte[] as word
      */
-    protected static byte[] convertStringToWord(String strValue)
-    {
+    protected static byte[] convertStringToWord(String strValue) {
         // Create empty word
         byte[] word = new byte[2];
 
@@ -677,8 +654,7 @@ public class Util {
      * @param val
      * @return -
      */
-    public static int getExponent(double val)
-    {
+    public static int getExponent(double val) {
         return (int) (((Double.doubleToRawLongBits(val) & 0x7ff0000000000000L) >> 52) - 1023L);
     }
 
@@ -686,8 +662,7 @@ public class Util {
      * @param val
      * @return -
      */
-    public static int getExponent(float val)
-    {
+    public static int getExponent(float val) {
         return ((Float.floatToRawIntBits(val) & 0x7f800000) >> 23) - 127;
     }
 
@@ -709,8 +684,7 @@ public class Util {
      * @param i
      * @return -
      */
-    public static double scalb(double d, int i)
-    {
+    public static double scalb(double d, int i) {
         int j = 0;
         char c = '\0';
         double d1 = 0.0;
@@ -737,8 +711,7 @@ public class Util {
      * @param i
      * @return -
      */
-    public static float scalb(float f, int i)
-    {
+    public static float scalb(float f, int i) {
         i = Math.max(Math.min(i, 278), -278);
         return (float) ((double) f * Math.pow(2, i));
     }

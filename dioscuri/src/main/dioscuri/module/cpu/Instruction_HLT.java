@@ -59,8 +59,7 @@ public class Instruction_HLT implements Instruction {
     /**
      * Construct class
      */
-    public Instruction_HLT()
-    {
+    public Instruction_HLT() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_HLT implements Instruction {
      *
      * @param processor
      */
-    public Instruction_HLT(CPU processor)
-    {
+    public Instruction_HLT(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -81,8 +79,7 @@ public class Instruction_HLT implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute()
-    {
+    public void execute() {
         cpu.asyncEvent = false;
         cpu.setShutdown(true);
         cpu.setRunning(false);

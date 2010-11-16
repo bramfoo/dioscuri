@@ -64,8 +64,7 @@ public class Instruction_MOV_GvEv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_GvEv()
-    {
+    public Instruction_MOV_GvEv() {
     }
 
     /**
@@ -73,8 +72,7 @@ public class Instruction_MOV_GvEv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_GvEv(CPU processor)
-    {
+    public Instruction_MOV_GvEv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -87,8 +85,7 @@ public class Instruction_MOV_GvEv implements Instruction {
      * Word-sized copy of register (destination) from memory/register (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

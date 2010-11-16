@@ -6,13 +6,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_CMP_GvEvTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_CMP_GvEvTest() throws Exception {
@@ -22,6 +20,7 @@ public class Instruction_CMP_GvEvTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_CMP_GvEv.execute()'
     */
+
     /**
      *
      */

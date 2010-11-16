@@ -56,8 +56,7 @@ public class Instruction_JMP_nearJv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JMP_nearJv()
-    {
+    public Instruction_JMP_nearJv() {
         displacement = new byte[2];
     }
 
@@ -66,8 +65,7 @@ public class Instruction_JMP_nearJv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JMP_nearJv(CPU processor)
-    {
+    public Instruction_JMP_nearJv(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -80,8 +78,7 @@ public class Instruction_JMP_nearJv implements Instruction {
      * Execute unconditional relative near jump indicated by immediate signed
      * word
      */
-    public void execute()
-    {
+    public void execute() {
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented thrice, so no extra
         // arithmetic necessary

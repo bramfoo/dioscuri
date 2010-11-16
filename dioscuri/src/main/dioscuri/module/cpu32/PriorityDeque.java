@@ -43,55 +43,46 @@ public class PriorityDeque extends AbstractQueue<Object> implements
 
     private transient int modCount = 0;
 
-    public PriorityDeque()
-    {
+    public PriorityDeque() {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
     /**
      * @param initialCapacity
      */
-    public PriorityDeque(int initialCapacity)
-    {
+    public PriorityDeque(int initialCapacity) {
         if (initialCapacity < 1)
             throw new IllegalArgumentException();
         this.queue = new Object[initialCapacity];
     }
 
-    public Iterator<Object> descendingIterator()
-    {
+    public Iterator<Object> descendingIterator() {
         throw new UnsupportedOperationException();
     }
 
-    public Iterator<Object> iterator()
-    {
+    public Iterator<Object> iterator() {
         throw new UnsupportedOperationException();
     }
 
-    public boolean removeLastOccurrence(Object o)
-    {
+    public boolean removeLastOccurrence(Object o) {
         throw new UnsupportedOperationException();
     }
 
-    public boolean removeFirstOccurrence(Object o)
-    {
+    public boolean removeFirstOccurrence(Object o) {
         throw new UnsupportedOperationException();
     }
 
-    public int size()
-    {
+    public int size() {
         return size;
     }
 
     @Override
-    public boolean contains(Object o)
-    {
+    public boolean contains(Object o) {
         return indexOf(o) != -1;
     }
 
     @Override
-    public boolean remove(Object o)
-    {
+    public boolean remove(Object o) {
         int i = indexOf(o);
         if (i == -1)
             return false;
@@ -101,58 +92,47 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         }
     }
 
-    public Object pop()
-    {
+    public Object pop() {
         return removeFirst();
     }
 
-    public void push(Object o)
-    {
+    public void push(Object o) {
         add(o);
     }
 
-    public Object peek()
-    {
+    public Object peek() {
         return peekFirst();
     }
 
-    public Object poll()
-    {
+    public Object poll() {
         return pollFirst();
     }
 
-    public boolean offerLast(Object o)
-    {
+    public boolean offerLast(Object o) {
         return offer(o);
     }
 
-    public boolean offerFirst(Object o)
-    {
+    public boolean offerFirst(Object o) {
         return offer(o);
     }
 
-    public void addLast(Object o)
-    {
+    public void addLast(Object o) {
         add(o);
     }
 
-    public void addFirst(Object o)
-    {
+    public void addFirst(Object o) {
         add(o);
     }
 
-    public Object getFirst()
-    {
+    public Object getFirst() {
         return element();
     }
 
-    public Object removeFirst()
-    {
+    public Object removeFirst() {
         return remove();
     }
 
-    public boolean offer(Object o)
-    {
+    public boolean offer(Object o) {
         if (o == null)
             throw new NullPointerException();
         modCount++;
@@ -169,8 +149,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return true;
     }
 
-    public Object pollFirst()
-    {
+    public Object pollFirst() {
         if (size == 0)
             return null;
         int s = --size;
@@ -186,15 +165,13 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return result;
     }
 
-    public Object peekFirst()
-    {
+    public Object peekFirst() {
         if (size == 0)
             return null;
         return queue[0];
     }
 
-    public Object pollLast()
-    {
+    public Object pollLast() {
         if (size < 2)
             return pollFirst();
 
@@ -210,8 +187,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return result;
     }
 
-    public Object peekLast()
-    {
+    public Object peekLast() {
         if (size == 0)
             return null;
         if (size == 1)
@@ -220,8 +196,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return queue[1];
     }
 
-    public Object getLast()
-    {
+    public Object getLast() {
         Object x = peek();
         if (x != null)
             return x;
@@ -229,8 +204,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
             throw new NoSuchElementException();
     }
 
-    public Object removeLast()
-    {
+    public Object removeLast() {
         Object x = pollLast();
         if (x != null)
             return x;
@@ -238,8 +212,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
             throw new NoSuchElementException();
     }
 
-    private void grow(int minCapacity)
-    {
+    private void grow(int minCapacity) {
         if (minCapacity < 0) // overflow
             throw new OutOfMemoryError();
         int oldCapacity = queue.length;
@@ -257,8 +230,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         queue = newQueue;
     }
 
-    private int indexOf(Object o)
-    {
+    private int indexOf(Object o) {
         if (o != null) {
             for (int i = 0; i < size; i++)
                 if (o.equals(queue[i]))
@@ -267,8 +239,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
         return -1;
     }
 
-    private Object removeAt(int i)
-    {
+    private Object removeAt(int i) {
         assert i >= 0 && i < size;
         modCount++;
         int s = --size;
@@ -291,8 +262,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     }
 
     @SuppressWarnings("unchecked")
-    private int siftUp(int k, Object x)
-    {
+    private int siftUp(int k, Object x) {
         Comparable key = (Comparable) x;
         while (k != 0) {
             int predecessor = findPredecessor(k);
@@ -309,8 +279,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     }
 
     @SuppressWarnings("unchecked")
-    private int siftDown(int k, Object x)
-    {
+    private int siftDown(int k, Object x) {
         Comparable key = (Comparable) x;
         while (k != 1) {
             int successor = findSuccessor(k);
@@ -326,8 +295,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     }
 
     @SuppressWarnings("unchecked")
-    private int findPredecessor(int index)
-    {
+    private int findPredecessor(int index) {
         if (index == 0)
             return 0;
 
@@ -353,8 +321,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     }
 
     @SuppressWarnings("unchecked")
-    private int findSuccessor(int index)
-    {
+    private int findSuccessor(int index) {
         if (index == 1)
             return 1;
 
@@ -385,8 +352,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
      * @param args
      */
     @SuppressWarnings("unchecked")
-    public static final void main(String[] args)
-    {
+    public static final void main(String[] args) {
         Random rndm = new Random();
         PriorityDeque deque = new PriorityDeque();
         List list = new ArrayList();
@@ -448,8 +414,7 @@ public class PriorityDeque extends AbstractQueue<Object> implements
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         Object[] temp = new Object[size];
         System.arraycopy(queue, 0, temp, 0, temp.length);
         return Arrays.toString(temp);

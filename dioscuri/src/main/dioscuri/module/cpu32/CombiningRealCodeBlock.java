@@ -46,8 +46,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
      * @param jumpSize
      */
     public CombiningRealCodeBlock(CodeBlock block0, CodeBlock block1,
-                                  CodeBlock block2, int start, int jumpSize)
-    {
+                                  CodeBlock block2, int start, int jumpSize) {
         this.block0 = block0;
         this.block1 = block1;
         this.block2 = block2;
@@ -64,27 +63,23 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
     /**
      * @return -
      */
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return x86Length;
     }
 
     /**
      * @return -
      */
-    public int getX86Count()
-    {
+    public int getX86Count() {
         return block0.getX86Count() + block1.getX86Count()
                 + block2.getX86Count();
     }
 
-    public void invalidate()
-    {
+    public void invalidate() {
         this.selfModified = true;
     }
 
-    public int execute(Processor cpu)
-    {
+    public int execute(Processor cpu) {
         int count = 0, d = 0;
         int blockEntry = cpu.getInstructionPointer() & ~0xfff;
 
@@ -133,8 +128,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         invalidate();
         return false;
     }
@@ -142,8 +136,7 @@ public class CombiningRealCodeBlock implements RealModeCodeBlock {
     /**
      * @return -
      */
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return "\nBlock0:\n" + block0.getDisplayString() + "\nBlock1:\n"
                 + block1.getDisplayString() + "\nBlock2:\n"
                 + block2.getDisplayString();

@@ -65,8 +65,7 @@ public class Instruction_MOV_GbEb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_GbEb()
-    {
+    public Instruction_MOV_GbEb() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_MOV_GbEb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_GbEb(CPU processor)
-    {
+    public Instruction_MOV_GbEb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -88,8 +86,7 @@ public class Instruction_MOV_GbEb implements Instruction {
      * Byte-sized copy of register (destination) from memory/register (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

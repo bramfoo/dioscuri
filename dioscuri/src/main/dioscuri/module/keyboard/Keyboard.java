@@ -111,8 +111,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * Class constructor
      */
-    public Keyboard(Emulator owner)
-    {
+    public Keyboard(Emulator owner) {
         emu = owner;
 
         // Internal instances
@@ -167,8 +166,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
@@ -231,8 +229,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         try {
             String keyboardDump = "Keyboard status:\n";
 
@@ -254,8 +251,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return updateInterval;
     }
 
@@ -265,8 +261,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval)
-    {
+    public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -285,8 +280,7 @@ public class Keyboard extends ModuleKeyboard {
      * Update device Calls the keyboard controller 'poll' function and raises
      * the IRQs resulting from that call
      */
-    public void update()
-    {
+    public void update() {
         int returnValue;
 
         returnValue = poll();
@@ -310,8 +304,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         byte value;
 
         switch (portAddress) {
@@ -412,8 +405,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public void setIOPortByte(int portAddress, byte value)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -880,8 +872,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -899,8 +890,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -914,8 +904,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " IN command (double word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -934,8 +923,7 @@ public class Keyboard extends ModuleKeyboard {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType() + "]"
                 + " OUT command (double word) to port 0x"
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -945,8 +933,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * @param irqNumber
      */
-    protected void setInterrupt(int irqNumber)
-    {
+    protected void setInterrupt(int irqNumber) {
         // Raise an interrupt at PIC (IRQ 1 or 12)
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
         pic.setIRQ(irqNumber);
@@ -956,8 +943,7 @@ public class Keyboard extends ModuleKeyboard {
     /**
      * @param irqNumber
      */
-    protected void clearInterrupt(int irqNumber)
-    {
+    protected void clearInterrupt(int irqNumber) {
         // Clear interrupt at PIC (IRQ 1 or 12)
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
         pic.clearIRQ(irqNumber);
@@ -972,8 +958,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.module.ModuleKeyboard
      */
     @Override
-    public void generateScancode(KeyEvent keyEvent, int eventType)
-    {
+    public void generateScancode(KeyEvent keyEvent, int eventType) {
         String[] scancode; // Lookup of scancode generated by currently selected
         // set
         int i, parsedInt;
@@ -1090,8 +1075,7 @@ public class Keyboard extends ModuleKeyboard {
      * @return boolean true if module has been reset successfully, false
      *         otherwise
      */
-    private boolean resetKeyboardBuffer(int resetType)
-    {
+    private boolean resetKeyboardBuffer(int resetType) {
         // Clear internal keyboard buffer
         keyboard.internalBuffer.getBuffer().clear();
 
@@ -1124,8 +1108,7 @@ public class Keyboard extends ModuleKeyboard {
      *              0: keyboard clock is disabled, turning the keyboard off<BR>
      *              other: keyboard clock is enabled, turning the keyboard on <BR>
      */
-    private void setKeyboardClock(boolean state)
-    {
+    private void setKeyboardClock(boolean state) {
         byte oldKBDClock;
 
         if (!state) {
@@ -1155,8 +1138,7 @@ public class Keyboard extends ModuleKeyboard {
      *              0: aux device clock is disabled, turning the device off<BR>
      *              other: aux device clock is enabled, turning the device on <BR>
      */
-    private void setAuxClock(boolean state)
-    {
+    private void setAuxClock(boolean state) {
         byte oldAuxClock;
 
         if (!state) {
@@ -1184,8 +1166,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.module.ModuleKeyboard
      */
     @Override
-    public void setTimeOut(byte status)
-    {
+    public void setTimeOut(byte status) {
         keyboard.controller.timeOut = status;
     }
 
@@ -1195,8 +1176,7 @@ public class Keyboard extends ModuleKeyboard {
      * @see dioscuri.module.ModuleKeyboard
      */
     @Override
-    public void enqueueControllerBuffer(byte data, int source)
-    {
+    public void enqueueControllerBuffer(byte data, int source) {
 
         logger.log(Level.INFO, "[" + super.getType() + "]" + " Queueing 0x"
                 + Integer.toHexString(data).toUpperCase()
@@ -1241,8 +1221,7 @@ public class Keyboard extends ModuleKeyboard {
      *
      * @param scancode the data to be added to the end of the queue
      */
-    private void enqueueInternalBuffer(byte scancode)
-    {
+    private void enqueueInternalBuffer(byte scancode) {
         logger.log(Level.INFO, "["
                 + super.getType()
                 + "]"
@@ -1286,8 +1265,7 @@ public class Keyboard extends ModuleKeyboard {
      * <p/>
      * A timer can only be set, not disabled.
      */
-    private void activateTimer()
-    {
+    private void activateTimer() {
         if (keyboard.controller.timerPending == 0) {
             keyboard.controller.timerPending = 1;
         }
@@ -1298,8 +1276,7 @@ public class Keyboard extends ModuleKeyboard {
      * This determines the IRQs to be raised and retrieves character data from
      * the internal keyboard buffer, if available
      */
-    private int poll()
-    {
+    private int poll() {
 
         ModuleMouse mouse = (ModuleMouse) super.getConnection(Module.Type.MOUSE);
 
@@ -1383,8 +1360,7 @@ public class Keyboard extends ModuleKeyboard {
      *
      * @param value the data passed from controller to keyboard <BR>
      */
-    private void dataPortToInternalKB(byte value)
-    {
+    private void dataPortToInternalKB(byte value) {
         logger.log(Level.CONFIG, "["
                 + super.getType()
                 + "]"

@@ -56,8 +56,7 @@ public class Instruction_JNO implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JNO()
-    {
+    public Instruction_JNO() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JNO implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JNO(CPU processor)
-    {
+    public Instruction_JNO(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,8 +74,7 @@ public class Instruction_JNO implements Instruction {
     /**
      * Execute conditional short jump not overflow
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

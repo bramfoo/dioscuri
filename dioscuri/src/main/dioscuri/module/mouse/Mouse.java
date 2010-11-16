@@ -94,8 +94,7 @@ public class Mouse extends ModuleMouse implements UART {
     /**
      * Class constructor
      */
-    public Mouse(Emulator owner)
-    {
+    public Mouse(Emulator owner) {
         // Create mouse buffer
         buffer = new LinkedList<Byte>();
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName() + " -> AbstractModule created successfully.");
@@ -108,8 +107,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // Reset variables
         // TODO: add all vars
         lastMouseCommand = 0;
@@ -128,8 +126,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String keyboardDump = "Mouse status:\n";
 
         return keyboardDump;
@@ -141,8 +138,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void setMouseEnabled(boolean status)
-    {
+    public void setMouseEnabled(boolean status) {
         mouseEnabled = status;
     }
 
@@ -152,8 +148,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void setMouseType(String type)
-    {
+    public void setMouseType(String type) {
 
         ModuleSerialPort serialPort = (ModuleSerialPort) super.getConnection(Module.Type.SERIALPORT);
 
@@ -185,8 +180,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public boolean isBufferEmpty()
-    {
+    public boolean isBufferEmpty() {
         return buffer.isEmpty();
     }
 
@@ -201,8 +195,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void storeBufferData(boolean forceEnqueue)
-    {
+    public void storeBufferData(boolean forceEnqueue) {
 
         byte b1 = (byte) 0x87; // init b1 to: 1000_0111
         byte b2 = (byte) ((this.mouseEvent.getX() / scaleX) - (pointerWidth / 2.0));
@@ -230,8 +223,7 @@ public class Mouse extends ModuleMouse implements UART {
         }
     }
 
-    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4, byte b5)
-    {
+    private boolean enqueueData(byte b1, byte b2, byte b3, byte b4, byte b5) {
         return buffer.offer(b1) && buffer.offer(b2) && buffer.offer(b3) && buffer.offer(b4) && buffer.offer(b5);
     }
 
@@ -241,8 +233,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public byte getDataFromBuffer()
-    {
+    public byte getDataFromBuffer() {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
 
@@ -252,8 +243,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void controlMouse(byte value)
-    {
+    public void controlMouse(byte value) {
 
         ModuleKeyboard keyboard = (ModuleKeyboard) super.getConnection(Module.Type.KEYBOARD);
 
@@ -523,8 +513,7 @@ public class Mouse extends ModuleMouse implements UART {
      * @see dioscuri.module.ModuleMouse
      */
     @Override
-    public void mouseMotion(MouseEvent event)
-    {
+    public void mouseMotion(MouseEvent event) {
 
         this.mouseEvent = event;
         // Check if this is the first mouse motion
@@ -595,8 +584,7 @@ public class Mouse extends ModuleMouse implements UART {
         */
     }
 
-    private byte getStatusByte()
-    {
+    private byte getStatusByte() {
         // top bit is 0 , bit 6 is 1 if remote mode.
         byte status = (byte) ((mouseMode == MOUSE_MODE_REMOTE) ? 0x40 : 0);
         status |= ((mouseEnabled ? 1 : 0) << 5);
@@ -608,8 +596,7 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
 
-    private byte getResolutionByte()
-    {
+    private byte getResolutionByte() {
         byte resolution = 0;
 
         switch (resolutionCpmm) {
@@ -637,20 +624,17 @@ public class Mouse extends ModuleMouse implements UART {
     }
 
     @Override
-    public synchronized boolean isDataAvailable()
-    {
+    public synchronized boolean isDataAvailable() {
         return !(buffer.isEmpty());
     }
 
     @Override
-    public synchronized byte getSerialData()
-    {
+    public synchronized byte getSerialData() {
         return buffer.isEmpty() ? -1 : buffer.poll();
     }
 
     @Override
-    public synchronized void setSerialData(byte data)
-    {
+    public synchronized void setSerialData(byte data) {
         buffer.offer(data);
     }
 }

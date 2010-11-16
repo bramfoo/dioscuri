@@ -65,8 +65,7 @@ public class Instruction_BOUND_GvMa implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_BOUND_GvMa()
-    {
+    public Instruction_BOUND_GvMa() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_BOUND_GvMa implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_BOUND_GvMa(CPU processor)
-    {
+    public Instruction_BOUND_GvMa(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -87,8 +85,7 @@ public class Instruction_BOUND_GvMa implements Instruction {
     /**
      * Check array index against bounds.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

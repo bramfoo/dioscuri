@@ -57,8 +57,7 @@ public class Instruction_DEC_AX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_DEC_AX()
-    {
+    public Instruction_DEC_AX() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_DEC_AX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_DEC_AX(CPU processor)
-    {
+    public Instruction_DEC_AX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_DEC_AX implements Instruction {
     /**
      * Decrement general register AX
      */
-    public void execute()
-    {
+    public void execute() {
         // Store old value
         System.arraycopy(cpu.ax, 0, oldDest, 0, cpu.ax.length);
 

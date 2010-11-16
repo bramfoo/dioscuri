@@ -14,8 +14,7 @@ public class CpuPanel extends AbstractModulePanel {
     final JRadioButton cpu32 = new JRadioButton("32 bit");
     final JTextField mhz = new JTextField();
 
-    CpuPanel(GUI parent, Emulator emuConfig)
-    {
+    CpuPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.cpu = emuConfig.getArchitecture().getModules().getCpu();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -38,8 +37,7 @@ public class CpuPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         cpu.setCpu32Bit(cpu32.isSelected());
         cpu.setSpeedmhz(new BigDecimal(mhz.getText()));
     }

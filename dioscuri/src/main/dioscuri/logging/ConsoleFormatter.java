@@ -47,8 +47,7 @@ import java.util.logging.LogRecord;
  * @author Bart Kiers
  */
 public class ConsoleFormatter extends Formatter {
-    public String format(LogRecord record)
-    {
+    public String format(LogRecord record) {
         return record.getMessage() + '\n';
     }
 

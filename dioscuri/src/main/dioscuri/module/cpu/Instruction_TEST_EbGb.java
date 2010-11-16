@@ -69,8 +69,7 @@ public class Instruction_TEST_EbGb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_TEST_EbGb()
-    {
+    public Instruction_TEST_EbGb() {
         operandWordSize = false;
 
         addressByte = 0;
@@ -89,8 +88,7 @@ public class Instruction_TEST_EbGb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_TEST_EbGb(CPU processor)
-    {
+    public Instruction_TEST_EbGb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -106,8 +104,7 @@ public class Instruction_TEST_EbGb implements Instruction {
      * SF, ZF, and PF are set according to the result;<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

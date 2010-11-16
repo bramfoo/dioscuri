@@ -11,8 +11,7 @@ public class VideoPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Video video;
     final JTextField updateInterval = new JTextField();
 
-    VideoPanel(GUI parent, Emulator emuConfig)
-    {
+    VideoPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.video = emuConfig.getArchitecture().getModules().getVideo();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -25,8 +24,7 @@ public class VideoPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         video.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
     }
 }

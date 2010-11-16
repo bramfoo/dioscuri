@@ -51,8 +51,7 @@ public abstract class ModuleBIOS extends AbstractModule {
     /**
      *
      */
-    public ModuleBIOS()
-    {
+    public ModuleBIOS() {
         super(Module.Type.BIOS /* no expected connections */);
     }
 

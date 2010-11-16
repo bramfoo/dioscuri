@@ -91,8 +91,7 @@ public class AttributeController {
     /**
      * Return variables to default values
      */
-    public void reset()
-    {
+    public void reset() {
         index = 0;
         paletteAddressSource = 1;
         dataAddressFlipFlop = false;

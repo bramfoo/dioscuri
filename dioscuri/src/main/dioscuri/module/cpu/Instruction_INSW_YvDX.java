@@ -66,8 +66,7 @@ public class Instruction_INSW_YvDX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INSW_YvDX()
-    {
+    public Instruction_INSW_YvDX() {
     }
 
     /**
@@ -75,8 +74,7 @@ public class Instruction_INSW_YvDX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INSW_YvDX(CPU processor)
-    {
+    public Instruction_INSW_YvDX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -91,8 +89,7 @@ public class Instruction_INSW_YvDX implements Instruction {
     /**
      * Copy word from I/O port to ES:DI; update DI register according to DF
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;

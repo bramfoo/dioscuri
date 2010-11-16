@@ -56,8 +56,7 @@ public class Instruction_JLE_JNG implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JLE_JNG()
-    {
+    public Instruction_JLE_JNG() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JLE_JNG implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JLE_JNG(CPU processor)
-    {
+    public Instruction_JLE_JNG(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_JLE_JNG implements Instruction {
     /**
      * Execute conditional short jump if zero or sign != overflow
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // This byte is interpreted signed, so cast to Java byte
         // Jump is relative to _next_ instruction, but by the time we change

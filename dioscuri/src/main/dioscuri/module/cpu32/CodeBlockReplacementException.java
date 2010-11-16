@@ -38,8 +38,7 @@ public class CodeBlockReplacementException extends RuntimeException {
     /**
      * @param replacement
      */
-    public CodeBlockReplacementException(CodeBlock replacement)
-    {
+    public CodeBlockReplacementException(CodeBlock replacement) {
         super("CodeBlock replacement trigger exception");
         this.replacement = replacement;
     }
@@ -47,8 +46,7 @@ public class CodeBlockReplacementException extends RuntimeException {
     /**
      * @return -
      */
-    public CodeBlock getReplacement()
-    {
+    public CodeBlock getReplacement() {
         return replacement;
     }
 }

@@ -62,8 +62,7 @@ public class Instruction_INT3 implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INT3()
-    {
+    public Instruction_INT3() {
         operandWordSize = true;
 
         index = 0;
@@ -78,8 +77,7 @@ public class Instruction_INT3 implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INT3(CPU processor)
-    {
+    public Instruction_INT3(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -92,8 +90,7 @@ public class Instruction_INT3 implements Instruction {
      * Call interrupt procedure 3 (trap to debugger) based on the interrupt
      * vector in the IDT.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Set index for IDT to 3
         index = 0x03;

@@ -56,8 +56,7 @@ public class Instruction_SUB_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SUB_ALIb()
-    {
+    public Instruction_SUB_ALIb() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_SUB_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SUB_ALIb(CPU processor)
-    {
+    public Instruction_SUB_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_SUB_ALIb implements Instruction {
     /**
      * Subtract immediate byte from AL
      */
-    public void execute()
-    {
+    public void execute() {
         immediateByte = cpu.getByteFromCode();
 
         // Store initial value of AL

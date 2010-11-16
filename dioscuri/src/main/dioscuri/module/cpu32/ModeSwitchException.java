@@ -48,22 +48,19 @@ public class ModeSwitchException extends RuntimeException {
     /**
      * @param mode
      */
-    public ModeSwitchException(int mode)
-    {
+    public ModeSwitchException(int mode) {
         this.mode = mode;
     }
 
     /**
      * @return -
      */
-    public int getNewMode()
-    {
+    public int getNewMode() {
         return mode;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         if (mode == REAL_MODE)
             return "Switched to REAL mode";
         if (mode == PROTECTED_MODE)

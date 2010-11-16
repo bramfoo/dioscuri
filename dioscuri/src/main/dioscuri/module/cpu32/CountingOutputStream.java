@@ -39,8 +39,7 @@ public class CountingOutputStream extends OutputStream {
     /**
      * @param wraps
      */
-    public CountingOutputStream(OutputStream wraps)
-    {
+    public CountingOutputStream(OutputStream wraps) {
         backing = wraps;
         count = 0;
     }
@@ -48,26 +47,22 @@ public class CountingOutputStream extends OutputStream {
     /**
      * @return -
      */
-    public int position()
-    {
+    public int position() {
         return count;
     }
 
     @Override
-    public void close() throws IOException
-    {
+    public void close() throws IOException {
         backing.close();
     }
 
     @Override
-    public void flush() throws IOException
-    {
+    public void flush() throws IOException {
         backing.flush();
     }
 
     @Override
-    public void write(byte[] b) throws IOException
-    {
+    public void write(byte[] b) throws IOException {
         if ((count + b.length) > 0xffff)
             throw new IllegalStateException("Oversize Method");
 
@@ -76,8 +71,7 @@ public class CountingOutputStream extends OutputStream {
     }
 
     @Override
-    public void write(byte[] b, int off, int len) throws IOException
-    {
+    public void write(byte[] b, int off, int len) throws IOException {
         if ((count + len) > 0xffff)
             throw new IllegalStateException("Oversize Method");
 
@@ -85,8 +79,7 @@ public class CountingOutputStream extends OutputStream {
         count += len;
     }
 
-    public void write(int b) throws IOException
-    {
+    public void write(int b) throws IOException {
         if ((count + 1) > 0xffff)
             throw new IllegalStateException("Oversize Method");
 

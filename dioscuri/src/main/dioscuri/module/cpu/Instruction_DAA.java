@@ -57,8 +57,7 @@ public class Instruction_DAA implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_DAA()
-    {
+    public Instruction_DAA() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_DAA implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_DAA(CPU processor)
-    {
+    public Instruction_DAA(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
 
@@ -81,8 +79,7 @@ public class Instruction_DAA implements Instruction {
      * packed BCD result. The AL register is the implied source and destination
      * operand.
      */
-    public void execute()
-    {
+    public void execute() {
         // Check if AL > 0x09 or AF = 1, adjust AL and set flags
         if (((cpu.ax[CPU.REGISTER_GENERAL_LOW] & 0x0F) > 9)
                 || cpu.flags[CPU.REGISTER_FLAGS_AF]) {

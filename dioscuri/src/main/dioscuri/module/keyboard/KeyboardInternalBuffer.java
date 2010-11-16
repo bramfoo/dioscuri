@@ -64,8 +64,7 @@ public class KeyboardInternalBuffer {
      *
      * @return a List of data elements (as bytes) of this internal buffer.
      */
-    public synchronized List<Byte> getBuffer()
-    {
+    public synchronized List<Byte> getBuffer() {
         return buffer;
     }
 }

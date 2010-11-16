@@ -19,8 +19,7 @@ public class AtaPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Ata ata;
     final java.util.List<HD> hdList;
 
-    AtaPanel(GUI parent, Emulator emuConfig)
-    {
+    AtaPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         super.setLayout(new BorderLayout(5, 5));
 
@@ -44,8 +43,7 @@ public class AtaPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         ata.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
         for (HD hd : hdList) {
             hd.save();
@@ -66,8 +64,7 @@ public class AtaPanel extends AbstractModulePanel {
         final JTextField imageFile = new JTextField();
         final JButton browse = new JButton("browse");
 
-        HD(Emulator.Architecture.Modules.Ata.Harddiskdrive hd)
-        {
+        HD(Emulator.Architecture.Modules.Ata.Harddiskdrive hd) {
 
             this.hd = hd;
 
@@ -85,8 +82,7 @@ public class AtaPanel extends AbstractModulePanel {
 
             imageFile.addFocusListener(new FocusAdapter() {
                 @Override
-                public void focusGained(FocusEvent e)
-                {
+                public void focusGained(FocusEvent e) {
                     imageFile.setCaretPosition(imageFile.getText().length());
                 }
             });
@@ -127,8 +123,7 @@ public class AtaPanel extends AbstractModulePanel {
 
             browse.addActionListener(new ActionListener() {
                 @Override
-                public void actionPerformed(ActionEvent e)
-                {
+                public void actionPerformed(ActionEvent e) {
                     File file = AtaPanel.super.chooseFile();
                     if (file != null) {
                         imageFile.setText(file.getAbsolutePath());
@@ -138,8 +133,7 @@ public class AtaPanel extends AbstractModulePanel {
             });
         }
 
-        void save() throws Exception
-        {
+        void save() throws Exception {
             hd.setEnabled(enabled.isSelected());
             hd.setChannelindex(new BigInteger(channelIndex.getText()));
             hd.setMaster(master.isSelected());

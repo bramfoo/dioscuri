@@ -37,38 +37,33 @@ public abstract class AbstractHardwareComponent implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean initialised()
-    {
+    public boolean initialised() {
         return true;
     }
 
     /**
      * @param component
      */
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
     }
 
     /**
      * @return -
      */
-    public boolean updated()
-    {
+    public boolean updated() {
         return true;
     }
 
     /**
      * @param component
      */
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
     }
 
     /**
      * @return -
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         return true;
     }
 
@@ -76,19 +71,16 @@ public abstract class AbstractHardwareComponent implements HardwareComponent {
      * @param output
      * @throws IOException
      */
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
     }
 
     /**
      * @param input
      * @throws IOException
      */
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
     }
 
-    public void timerCallback()
-    {
+    public void timerCallback() {
     }
 }

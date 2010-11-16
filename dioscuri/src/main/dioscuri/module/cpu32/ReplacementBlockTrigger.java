@@ -38,8 +38,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
     /**
      * @param block
      */
-    public ReplacementBlockTrigger(CodeBlock block)
-    {
+    public ReplacementBlockTrigger(CodeBlock block) {
         replacement = block;
         exception = new CodeBlockReplacementException(block);
     }
@@ -47,32 +46,28 @@ public class ReplacementBlockTrigger implements CodeBlock {
     /**
      * @return -
      */
-    public int getX86Length()
-    {
+    public int getX86Length() {
         return replacement.getX86Length();
     }
 
     /**
      * @return -
      */
-    public int getX86Count()
-    {
+    public int getX86Count() {
         return replacement.getX86Count();
     }
 
     // Returns the number of equivalent x86 instructions executed. Negative
     // results indicate an error
 
-    public int execute(Processor cpu)
-    {
+    public int execute(Processor cpu) {
         throw exception;
     }
 
     /**
      * @return -
      */
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return replacement.getDisplayString();
     }
 
@@ -81,8 +76,7 @@ public class ReplacementBlockTrigger implements CodeBlock {
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 }

@@ -22,8 +22,7 @@ public class BiosPanel extends AbstractModulePanel {
     final JTextField sysBiosStart = new JTextField();
     final JTextField vgaBiosStart = new JTextField();
 
-    BiosPanel(GUI parent, Emulator emuConfig)
-    {
+    BiosPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.bios = emuConfig.getArchitecture().getModules().getBios().get(0);
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -38,15 +37,13 @@ public class BiosPanel extends AbstractModulePanel {
 
         sysBios.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(FocusEvent e)
-            {
+            public void focusGained(FocusEvent e) {
                 sysBios.setCaretPosition(sysBios.getText().length());
             }
         });
         vgaBios.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(FocusEvent e)
-            {
+            public void focusGained(FocusEvent e) {
                 vgaBios.setCaretPosition(vgaBios.getText().length());
             }
         });
@@ -71,8 +68,7 @@ public class BiosPanel extends AbstractModulePanel {
 
         browseSysBios.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
                 if (file != null) {
                     sysBios.setText(file.getAbsolutePath());
@@ -83,8 +79,7 @@ public class BiosPanel extends AbstractModulePanel {
 
         browseVgaBios.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 File file = BiosPanel.super.chooseFile();
                 if (file != null) {
                     vgaBios.setText(file.getAbsolutePath());
@@ -95,8 +90,7 @@ public class BiosPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         bios.setSysbiosfilepath(sysBios.getText());
         bios.setVgabiosfilepath(vgaBios.getText());
         bios.setRamaddresssysbiosstartdec(new BigInteger(sysBiosStart.getText()));

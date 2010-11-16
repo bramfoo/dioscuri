@@ -57,8 +57,7 @@ public class Instruction_DEC_SI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_DEC_SI()
-    {
+    public Instruction_DEC_SI() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_DEC_SI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_DEC_SI(CPU processor)
-    {
+    public Instruction_DEC_SI(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -84,8 +82,7 @@ public class Instruction_DEC_SI implements Instruction {
     /**
      * Decrement general register SI
      */
-    public void execute()
-    {
+    public void execute() {
         // Store old value
         System.arraycopy(cpu.si, 0, oldDest, 0, cpu.si.length);
 

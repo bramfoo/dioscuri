@@ -57,8 +57,7 @@ public class Instruction_LODS_ALXb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LODS_ALXb()
-    {
+    public Instruction_LODS_ALXb() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_LODS_ALXb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LODS_ALXb(CPU processor)
-    {
+    public Instruction_LODS_ALXb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -79,8 +77,7 @@ public class Instruction_LODS_ALXb implements Instruction {
     /**
      * Load byte from DS:SI into AL; update SI
      */
-    public void execute()
-    {
+    public void execute() {
         // Get byte at DS:SI and assign to AL; DS segment override is allowed
         if (cpu.segmentOverride) {
             source = cpu.getByteFromMemorySegment((byte) 0, cpu.si);

@@ -69,8 +69,7 @@ public class TheKeyboard {
      * @return the keyboard controller queue, contains data intended for
      *         keyboard (command bytes).
      */
-    public synchronized List<Byte> getControllerQueue()
-    {
+    public synchronized List<Byte> getControllerQueue() {
         return this.controllerQueue;
     }
 }

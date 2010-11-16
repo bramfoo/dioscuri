@@ -55,16 +55,14 @@ public class FIFObuffer extends ArrayList<Byte> {
     /**
      *
      */
-    public FIFObuffer()
-    {
+    public FIFObuffer() {
         super();
     }
 
     /**
      * @param capacity
      */
-    public FIFObuffer(int capacity)
-    {
+    public FIFObuffer(int capacity) {
         super(capacity);
     }
 
@@ -74,16 +72,14 @@ public class FIFObuffer extends ArrayList<Byte> {
      * @param data
      * @return -
      */
-    public boolean setByte(byte data)
-    {
+    public boolean setByte(byte data) {
         return super.add(Byte.valueOf(data));
     }
 
     /**
      * @return -
      */
-    public byte getByte()
-    {
+    public byte getByte() {
         byte data = ((Byte) super.get(0)).byteValue();
         super.remove(0);
         return data;

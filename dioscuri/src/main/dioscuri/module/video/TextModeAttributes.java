@@ -69,8 +69,7 @@ public class TextModeAttributes {
     /**
      * @return -
      */
-    public short[] getAttributes()
-    {
+    public short[] getAttributes() {
         return new short[]{fullStartAddress, cursorStartLine, cursorEndLine,
                 lineOffset, lineCompare, horizPanning, vertPanning,
                 lineGraphics, splitHorizPanning};

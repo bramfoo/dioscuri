@@ -56,8 +56,7 @@ public class Instruction_JB_JNAE_JC implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JB_JNAE_JC()
-    {
+    public Instruction_JB_JNAE_JC() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JB_JNAE_JC implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JB_JNAE_JC(CPU processor)
-    {
+    public Instruction_JB_JNAE_JC(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_JB_JNAE_JC implements Instruction {
     /**
      * Execute conditional short jump on carry
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time the byte is
         // added to

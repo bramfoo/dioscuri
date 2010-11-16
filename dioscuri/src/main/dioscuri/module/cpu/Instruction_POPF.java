@@ -57,8 +57,7 @@ public class Instruction_POPF implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_POPF()
-    {
+    public Instruction_POPF() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_POPF implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_POPF(CPU processor)
-    {
+    public Instruction_POPF(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -79,8 +77,7 @@ public class Instruction_POPF implements Instruction {
     /**
      * Pop word from stack into FLAGS register.
      */
-    public void execute()
-    {
+    public void execute() {
         // Pop word from stack and convert bytes to booleans
         temp = Util.bytesToBooleans(cpu.getWordFromStack());
 

@@ -57,8 +57,7 @@ public final class Utilities {
      * No need to instantiate this class
      */
 
-    private Utilities()
-    {
+    private Utilities() {
     }
 
     /**
@@ -71,8 +70,7 @@ public final class Utilities {
      *         or absolute <code>path</code> (the parameter)
      * @see Utilities#resolvePathAsFile(String)
      */
-    public static String resolvePathAsString(String path)
-    {
+    public static String resolvePathAsString(String path) {
         File file = resolvePathAsFile(path);
         return file.isFile() ? file.getAbsolutePath() : "";
     }
@@ -89,8 +87,7 @@ public final class Utilities {
      *         constructed and returned
      * @see Utilities#resolvePathAsString(String)
      */
-    public static File resolvePathAsFile(String path)
-    {
+    public static File resolvePathAsFile(String path) {
         if (path == null) {
             path = "";
         }
@@ -117,8 +114,7 @@ public final class Utilities {
      *         are successfully saved in
      *         <code>path</code>, else <code>false</code>
      */
-    public static boolean saveXML(dioscuri.config.Emulator emuObject, String path)
-    {
+    public static boolean saveXML(dioscuri.config.Emulator emuObject, String path) {
         try {
             ConfigController.saveToXML(emuObject, Utilities.resolvePathAsFile(path));
         } catch (Exception e) {

@@ -62,8 +62,7 @@ public class Instruction_SCAS_AXYv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SCAS_AXYv()
-    {
+    public Instruction_SCAS_AXYv() {
         operandWordSize = false;
 
         source = new byte[2];
@@ -80,8 +79,7 @@ public class Instruction_SCAS_AXYv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SCAS_AXYv(CPU processor)
-    {
+    public Instruction_SCAS_AXYv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -95,8 +93,7 @@ public class Instruction_SCAS_AXYv implements Instruction {
      * ES:(E)DI is incremented/decremented depending on DF flag.<BR>
      * Flags modified: OF, SF, ZF, AF, PF, and CF.
      */
-    public void execute()
-    {
+    public void execute() {
         // Get byte from ES:DI; no segment override is allowed.
         source = cpu.getWordFromExtra(cpu.di);
 

@@ -55,8 +55,7 @@ public class Instruction_CLI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CLI()
-    {
+    public Instruction_CLI() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_CLI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CLI(CPU processor)
-    {
+    public Instruction_CLI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +75,7 @@ public class Instruction_CLI implements Instruction {
     /**
      * Set IF to 0
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear interrupt flag in FLAGS register
         cpu.flags[CPU.REGISTER_FLAGS_IF] = false;
     }

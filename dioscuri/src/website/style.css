@@ -186,7 +186,7 @@ a.img_link {
 }
 
 th {
-    border-bottom: double black;  
+    border-bottom: double black;
 }
 
 th, td {
@@ -197,8 +197,8 @@ th, td {
 }
 
 table {
-	border-collapse: separate;
-	border-spacing: 0;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 th.left_cell, td.left_cell {

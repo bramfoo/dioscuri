@@ -57,8 +57,7 @@ public class Instruction_XLAT implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_XLAT()
-    {
+    public Instruction_XLAT() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_XLAT implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_XLAT(CPU processor)
-    {
+    public Instruction_XLAT(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
 
@@ -82,8 +80,7 @@ public class Instruction_XLAT implements Instruction {
     /**
      * Set AL to memory byte DS:[BX + unsigned AL]
      */
-    public void execute()
-    {
+    public void execute() {
         // Set memory location as BX + AL
         memoryReferenceLocation = Util.addWords(cpu.bx, new byte[]{0x00,
                 cpu.ax[CPU.REGISTER_GENERAL_LOW]}, 0);

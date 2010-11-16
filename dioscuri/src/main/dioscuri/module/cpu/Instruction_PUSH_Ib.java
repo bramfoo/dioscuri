@@ -57,8 +57,7 @@ public class Instruction_PUSH_Ib implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSH_Ib()
-    {
+    public Instruction_PUSH_Ib() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_PUSH_Ib implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_Ib(CPU processor)
-    {
+    public Instruction_PUSH_Ib(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -79,8 +77,7 @@ public class Instruction_PUSH_Ib implements Instruction {
     /**
      * Pushes the immediate word onto stack top SS:SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Get immediate byte, complement to word with '0x00' and assign word to
         // SS:SP
         // Not sure if byte should be extended with 0x00 (is undocumented)!!

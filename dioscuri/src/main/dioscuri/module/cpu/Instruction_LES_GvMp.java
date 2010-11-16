@@ -67,8 +67,7 @@ public class Instruction_LES_GvMp implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LES_GvMp()
-    {
+    public Instruction_LES_GvMp() {
         operandWordSize = true;
     }
 
@@ -77,8 +76,7 @@ public class Instruction_LES_GvMp implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LES_GvMp(CPU processor)
-    {
+    public Instruction_LES_GvMp(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -91,8 +89,7 @@ public class Instruction_LES_GvMp implements Instruction {
      * Load ES:r16 or ES:r32 with far pointer from memory m16:16 or m16:32.<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

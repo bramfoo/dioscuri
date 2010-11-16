@@ -91,8 +91,7 @@ public class ParallelPort extends ModuleParallelPort {
      *
      * @param owner
      */
-    public ParallelPort(Emulator owner)
-    {
+    public ParallelPort(Emulator owner) {
         logger.log(Level.INFO, "[" + super.getType() + "] " + getClass().getName()
                 + " -> AbstractModule created successfully.");
     }
@@ -103,8 +102,7 @@ public class ParallelPort extends ModuleParallelPort {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
 
@@ -130,8 +128,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
@@ -177,8 +174,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
@@ -228,8 +224,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -240,8 +235,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
     }
 
     /**
@@ -251,8 +245,7 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -263,7 +256,6 @@ public class ParallelPort extends ModuleParallelPort {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
     }
 }

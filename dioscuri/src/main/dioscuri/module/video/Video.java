@@ -101,8 +101,7 @@ public class Video extends ModuleVideo {
      *
      * @param owner
      */
-    public Video(Emulator owner)
-    {
+    public Video(Emulator owner) {
 
         // Create new videocard
         videocard = new VideoCard();
@@ -127,8 +126,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModuleRTC rtc = (ModuleRTC) super.getConnection(Module.Type.RTC);
@@ -183,8 +181,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return updateInterval;
     }
 
@@ -194,8 +191,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void setUpdateInterval(int interval)
-    {
+    public void setUpdateInterval(int interval) {
         // Check if interval is > 0
         if (interval > 0) {
             updateInterval = interval;
@@ -212,8 +208,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.interfaces.Updateable
      */
     @Override
-    public void update()
-    {
+    public void update() {
 
         ModuleScreen screen = (ModuleScreen) super.getConnection(Module.Type.SCREEN);
 
@@ -656,8 +651,7 @@ public class Video extends ModuleVideo {
      * @param width   The width of the region to be updated, in pixels
      * @param height  The height of the region to be updated, in pixels
      */
-    void setAreaForUpdate(int xOrigin, int yOrigin, int width, int height)
-    {
+    void setAreaForUpdate(int xOrigin, int yOrigin, int width, int height) {
 
         // TODO: xOrigin and yOrigin are always called as 0,0; possibility for
         // optimisation?
@@ -716,8 +710,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
 
         ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
 
@@ -1052,8 +1045,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
 
         ModuleScreen screen = (ModuleScreen) super.getConnection(Module.Type.SCREEN);
 
@@ -1708,8 +1700,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -1720,8 +1711,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
         // Support IO words by redirecting to byte handler
         setIOPortByte(portAddress, (byte) (dataWord[1] & 0xff));
         setIOPortByte(portAddress + 1, (byte) (dataWord[0] & 0xff));
@@ -1734,8 +1724,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            UnknownPortException, WriteOnlyPortException
-    {
+            UnknownPortException, WriteOnlyPortException {
         return null;
     }
 
@@ -1746,8 +1735,7 @@ public class Video extends ModuleVideo {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException, UnknownPortException
-    {
+            throws ModuleException, UnknownPortException {
     }
 
     /**
@@ -1756,8 +1744,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public byte[] getVideoBuffer()
-    {
+    public byte[] getVideoBuffer() {
         return this.videocard.vgaMemory;
     }
 
@@ -1767,8 +1754,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public byte getVideoBufferByte(int index)
-    {
+    public byte getVideoBufferByte(int index) {
         return this.videocard.vgaMemory[index];
     }
 
@@ -1778,8 +1764,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public void setVideoBufferByte(int index, byte data)
-    {
+    public void setVideoBufferByte(int index, byte data) {
         this.videocard.vgaMemory[index] = data;
     }
 
@@ -1789,8 +1774,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public String getVideoBufferCharacters()
-    {
+    public String getVideoBufferCharacters() {
 
         ModuleScreen screen = (ModuleScreen) super.getConnection(Module.Type.SCREEN);
 
@@ -1826,8 +1810,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public byte getTextSnapshot(int index)
-    {
+    public byte getTextSnapshot(int index) {
         return this.videocard.textSnapshot[index];
     }
 
@@ -1837,8 +1820,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public void setTextSnapshot(int index, byte data)
-    {
+    public void setTextSnapshot(int index, byte data) {
         this.videocard.textSnapshot[index] = data;
     }
 
@@ -1848,8 +1830,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public byte getAttributePaletteRegister(int index)
-    {
+    public byte getAttributePaletteRegister(int index) {
         return videocard.attributeController.paletteRegister[index];
     }
 
@@ -1859,8 +1840,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public int[] determineScreenSize()
-    {
+    public int[] determineScreenSize() {
         int heightInPixels, widthInPixels;
         int horizontal, vertical;
 
@@ -1915,8 +1895,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public byte readMode(int address)
-    {
+    public byte readMode(int address) {
         int i; // Counter
         int offset; // Offset in the memory bank
         int[] plane = new int[4]; // Memory address of plane
@@ -2001,8 +1980,7 @@ public class Video extends ModuleVideo {
      * @see dioscuri.module.ModuleVideo
      */
     @Override
-    public void writeMode(int address, byte value)
-    {
+    public void writeMode(int address, byte value) {
 
         ModuleScreen screen = (ModuleScreen) super.getConnection(Module.Type.SCREEN);
 
@@ -2419,16 +2397,14 @@ public class Video extends ModuleVideo {
         /**
          * @return -
          */
-        public boolean isCacheable()
-        {
+        public boolean isCacheable() {
             return false;
         }
 
         /**
          * @return -
          */
-        public boolean isVolatile()
-        {
+        public boolean isVolatile() {
             return true;
         }
 
@@ -2439,8 +2415,7 @@ public class Video extends ModuleVideo {
          * @param len
          */
         public void copyContentsInto(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
             throw new IllegalStateException(
                     "copyContentsInto: Invalid Operation for VGA Card");
         }
@@ -2452,8 +2427,7 @@ public class Video extends ModuleVideo {
          * @param len
          */
         public void copyContentsFrom(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
             throw new IllegalStateException(
                     "copyContentsFrom: Invalid Operation for VGA Card");
         }
@@ -2461,8 +2435,7 @@ public class Video extends ModuleVideo {
         /**
          * @return -
          */
-        public long getSize()
-        {
+        public long getSize() {
             return 0x20000;
         }
 
@@ -2470,8 +2443,7 @@ public class Video extends ModuleVideo {
          * @return -
          */
         @Override
-        public boolean isAllocated()
-        {
+        public boolean isAllocated() {
             return false;
         }
 
@@ -2479,8 +2451,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public byte getByte(int offset)
-        {
+        public byte getByte(int offset) {
             // All functionality already implemented. Just need to call with
             // correct parameters.
             return readMode(offset + 0xA0000);
@@ -2490,8 +2461,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public short getWord(int offset)
-        {
+        public short getWord(int offset) {
             int v = 0xFF & getByte(offset);
             v |= getByte(offset + 1) << 8;
             return (short) v;
@@ -2501,8 +2471,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public int getDoubleWord(int offset)
-        {
+        public int getDoubleWord(int offset) {
             int v = 0xFF & getByte(offset);
             v |= (0xFF & getByte(offset + 1)) << 8;
             v |= (0xFF & getByte(offset + 2)) << 16;
@@ -2514,8 +2483,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public long getQuadWord(int offset)
-        {
+        public long getQuadWord(int offset) {
             long v = 0xFFl & getByte(offset);
             v |= (0xFFl & getByte(offset + 1)) << 8;
             v |= (0xFFl & getByte(offset + 2)) << 16;
@@ -2531,8 +2499,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public long getLowerDoubleQuadWord(int offset)
-        {
+        public long getLowerDoubleQuadWord(int offset) {
             return getQuadWord(offset);
         }
 
@@ -2540,8 +2507,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public long getUpperDoubleQuadWord(int offset)
-        {
+        public long getUpperDoubleQuadWord(int offset) {
             return getQuadWord(offset + 8);
         }
 
@@ -2549,8 +2515,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setByte(int offset, byte data)
-        {
+        public void setByte(int offset, byte data) {
             // All functionality already implemented. Just need to call with
             // correct parameters.
             writeMode(offset + 0xA0000, data);
@@ -2560,8 +2525,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setWord(int offset, short data)
-        {
+        public void setWord(int offset, short data) {
             setByte(offset++, (byte) data);
             data >>>= 8;
             setByte(offset, (byte) data);
@@ -2571,8 +2535,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setDoubleWord(int offset, int data)
-        {
+        public void setDoubleWord(int offset, int data) {
             setByte(offset++, (byte) data);
             data >>>= 8;
             setByte(offset++, (byte) data);
@@ -2586,8 +2549,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setQuadWord(int offset, long data)
-        {
+        public void setQuadWord(int offset, long data) {
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
@@ -2596,8 +2558,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setLowerDoubleQuadWord(int offset, long data)
-        {
+        public void setLowerDoubleQuadWord(int offset, long data) {
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
@@ -2606,15 +2567,13 @@ public class Video extends ModuleVideo {
          * @param offset
          * @param data
          */
-        public void setUpperDoubleQuadWord(int offset, long data)
-        {
+        public void setUpperDoubleQuadWord(int offset, long data) {
             offset += 8;
             setDoubleWord(offset, (int) data);
             setDoubleWord(offset + 4, (int) (data >> 32));
         }
 
-        public void clear()
-        {
+        public void clear() {
             // Do we need this?
             // internalReset();
         }
@@ -2623,8 +2582,7 @@ public class Video extends ModuleVideo {
          * @param start
          * @param length
          */
-        public void clear(int start, int length)
-        {
+        public void clear(int start, int length) {
             clear();
         }
 
@@ -2633,8 +2591,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public int execute(Processor cpu, int offset)
-        {
+        public int execute(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");
         }
 
@@ -2643,8 +2600,7 @@ public class Video extends ModuleVideo {
          * @param offset
          * @return -
          */
-        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-        {
+        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             throw new IllegalStateException("Invalid Operation");
         }
 
@@ -2653,8 +2609,7 @@ public class Video extends ModuleVideo {
     /**
      * @param component
      */
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace)
                 && component.initialised()) {
             ((PhysicalAddressSpace) component).mapMemoryRegion(vidMemConnect,

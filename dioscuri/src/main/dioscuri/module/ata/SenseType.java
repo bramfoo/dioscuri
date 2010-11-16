@@ -59,8 +59,7 @@ public enum SenseType {
      * Constructor
      */
 
-    private SenseType(int theValue)
-    {
+    private SenseType(int theValue) {
         this.value = theValue;
     }
 
@@ -69,8 +68,7 @@ public enum SenseType {
      *
      * @return the value
      */
-    public int getValue()
-    {
+    public int getValue() {
         return this.value;
     }
 

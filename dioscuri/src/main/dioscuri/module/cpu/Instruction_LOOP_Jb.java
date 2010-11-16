@@ -58,8 +58,7 @@ public class Instruction_LOOP_Jb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LOOP_Jb()
-    {
+    public Instruction_LOOP_Jb() {
     }
 
     /**
@@ -67,8 +66,7 @@ public class Instruction_LOOP_Jb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LOOP_Jb(CPU processor)
-    {
+    public Instruction_LOOP_Jb(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -79,8 +77,7 @@ public class Instruction_LOOP_Jb implements Instruction {
      * Loop while CX is not zero, performing short jump indicated by immediate
      * signed byte
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         displacement = cpu.getByteFromCode();
 

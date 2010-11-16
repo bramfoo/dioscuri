@@ -39,8 +39,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param data
      * @param clk
      */
-    public EPROMMemory(byte[] data, Clock clk)
-    {
+    public EPROMMemory(byte[] data, Clock clk) {
         this(data, 0, data.length, clk);
     }
 
@@ -50,8 +49,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param length
      * @param clk
      */
-    public EPROMMemory(byte[] data, int offset, int length, Clock clk)
-    {
+    public EPROMMemory(byte[] data, int offset, int length, Clock clk) {
         this(length, 0, data, offset, length, clk);
     }
 
@@ -64,8 +62,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param clk
      */
     public EPROMMemory(int size, int base, byte[] data, int offset, int length,
-                       Clock clk)
-    {
+                       Clock clk) {
         super(size, clk);
         super.copyContentsFrom(base, data, offset, Math.min(size - base, Math
                 .min(length, data.length - offset)));
@@ -77,8 +74,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param data
      */
     @Override
-    public void setByte(int offset, byte data)
-    {
+    public void setByte(int offset, byte data) {
         System.err.println("Tried to write to EPROM");
     }
 
@@ -87,8 +83,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param data
      */
     @Override
-    public void setWord(int offset, short data)
-    {
+    public void setWord(int offset, short data) {
         System.err.println("Tried to write to EPROM");
     }
 
@@ -97,8 +92,7 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param data
      */
     @Override
-    public void setDoubleWord(int offset, int data)
-    {
+    public void setDoubleWord(int offset, int data) {
         System.err.println("Tried to write to EPROM");
     }
 
@@ -109,21 +103,18 @@ public class EPROMMemory extends LazyCodeBlockMemory {
      * @param len
      */
     @Override
-    public void copyContentsFrom(int address, byte[] buf, int off, int len)
-    {
+    public void copyContentsFrom(int address, byte[] buf, int off, int len) {
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         constructCodeBlocksArray();
     }
 
     /**
      * @return -
      */
-    public boolean isVolatile()
-    {
+    public boolean isVolatile() {
         return false;
     }
 }

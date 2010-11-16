@@ -73,8 +73,7 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ShiftGRP2_Ev1()
-    {
+    public Instruction_ShiftGRP2_Ev1() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -95,8 +94,7 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ShiftGRP2_Ev1(CPU processor)
-    {
+    public Instruction_ShiftGRP2_Ev1(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -111,8 +109,7 @@ public class Instruction_ShiftGRP2_Ev1 implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Reset sourceValue and eSourceValue (to lose pointer to earlier words)
         sourceValue = new byte[2];
         eSourceValue = new byte[2];

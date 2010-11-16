@@ -20,8 +20,7 @@ public class ConfigDialog extends JDialog {
     private final GUI parent;
     private final Map<Module.Type, AbstractModulePanel> moduleMap;
 
-    public ConfigDialog(GUI parent)
-    {
+    public ConfigDialog(GUI parent) {
         super(parent.asJFrame());
         this.parent = parent;
         this.emuConfig = parent.getEmuConfig();
@@ -36,8 +35,7 @@ public class ConfigDialog extends JDialog {
         super.setVisible(true);
     }
 
-    private void loadPanel(JPanel attributesPanel, JList moduleList)
-    {
+    private void loadPanel(JPanel attributesPanel, JList moduleList) {
         attributesPanel.removeAll();
         AbstractModulePanel p = moduleMap.get((Module.Type) moduleList.getSelectedValue());
         attributesPanel.add(p, BorderLayout.NORTH);
@@ -69,8 +67,7 @@ public class ConfigDialog extends JDialog {
         | +----------------------------------------------------+ |
         +--------------------------------------------------------+      
      */
-    private void setupGUI()
-    {
+    private void setupGUI() {
         final JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
         final JPanel attributesPanel = new JPanel(new BorderLayout(5, 5));
@@ -87,8 +84,7 @@ public class ConfigDialog extends JDialog {
         moduleList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         moduleList.addListSelectionListener(new ListSelectionListener() {
             @Override
-            public void valueChanged(ListSelectionEvent e)
-            {
+            public void valueChanged(ListSelectionEvent e) {
                 loadPanel(attributesPanel, moduleList);
             }
         });
@@ -100,15 +96,13 @@ public class ConfigDialog extends JDialog {
         buttonPanel.add(save);
         cancel.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 ConfigDialog.this.dispose();
             }
         });
         save.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 for (AbstractModulePanel p : ConfigDialog.this.moduleMap.values()) {
                     try {
                         p.saveAndWrite();
@@ -124,8 +118,7 @@ public class ConfigDialog extends JDialog {
         super.getContentPane().add(buttonPanel, BorderLayout.SOUTH);
     }
 
-    private void setupModuleMap()
-    {
+    private void setupModuleMap() {
         this.moduleMap.put(Module.Type.ATA, new AtaPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.BIOS, new BiosPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.BOOT, new BootPanel(parent, emuConfig));

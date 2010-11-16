@@ -65,8 +65,7 @@ public class Instruction_2ByteEscape implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_2ByteEscape()
-    {
+    public Instruction_2ByteEscape() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_2ByteEscape implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_2ByteEscape(CPU processor)
-    {
+    public Instruction_2ByteEscape(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -89,8 +87,7 @@ public class Instruction_2ByteEscape implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Retrieve instruction number after escape byte
         instruction = cpu.getByteFromCode();
 

@@ -61,8 +61,7 @@ public enum AscType {
      * Constructor
      */
 
-    private AscType(int theValue)
-    {
+    private AscType(int theValue) {
         this.value = theValue;
     }
 
@@ -71,8 +70,7 @@ public enum AscType {
      *
      * @return the value
      */
-    public int getValue()
-    {
+    public int getValue() {
         return this.value;
     }
 

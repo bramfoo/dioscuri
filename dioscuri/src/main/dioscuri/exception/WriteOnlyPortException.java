@@ -48,8 +48,7 @@ public class WriteOnlyPortException extends Exception {
     /**
      * @param message
      */
-    public WriteOnlyPortException(String message)
-    {
+    public WriteOnlyPortException(String message) {
         super(message);
     }
 }

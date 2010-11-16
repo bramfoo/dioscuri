@@ -52,8 +52,7 @@ public abstract class ModuleSerialPort extends AbstractModule implements Address
     /**
      *
      */
-    public ModuleSerialPort()
-    {
+    public ModuleSerialPort() {
         super(Module.Type.SERIALPORT,
                 Module.Type.MOTHERBOARD, Module.Type.PIC);
     }

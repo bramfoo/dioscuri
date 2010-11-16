@@ -57,8 +57,7 @@ public class Instruction_INC_SP implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_SP()
-    {
+    public Instruction_INC_SP() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_INC_SP implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_SP(CPU processor)
-    {
+    public Instruction_INC_SP(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_INC_SP implements Instruction {
     /**
      * Increment general register SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.sp, 0, oldDest, 0, cpu.sp.length);
 

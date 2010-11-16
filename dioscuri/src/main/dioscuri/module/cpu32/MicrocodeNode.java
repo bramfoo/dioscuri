@@ -44,8 +44,7 @@ public class MicrocodeNode implements MicrocodeSet {
      * @param x86Position
      * @param x86Index
      */
-    public MicrocodeNode(int microcode, int x86Position, int x86Index)
-    {
+    public MicrocodeNode(int microcode, int x86Position, int x86Index) {
         this.x86Index = x86Index;
         this.x86Position = x86Position;
         this.microcode = microcode;
@@ -59,8 +58,7 @@ public class MicrocodeNode implements MicrocodeSet {
      * @param immediate
      */
     public MicrocodeNode(int microcode, int x86Position, int x86Index,
-                         int immediate)
-    {
+                         int immediate) {
         this.x86Index = x86Index;
         this.x86Position = x86Position;
         this.microcode = microcode;
@@ -71,46 +69,40 @@ public class MicrocodeNode implements MicrocodeSet {
     /**
      * @return -
      */
-    public int getMicrocode()
-    {
+    public int getMicrocode() {
         return microcode;
     }
 
     /**
      * @return -
      */
-    public int getX86Index()
-    {
+    public int getX86Index() {
         return x86Index;
     }
 
     /**
      * @return -
      */
-    public int getX86Position()
-    {
+    public int getX86Position() {
         return x86Position;
     }
 
     /**
      * @return -
      */
-    public boolean hasImmediate()
-    {
+    public boolean hasImmediate() {
         return hasImmediate;
     }
 
     /**
      * @return -
      */
-    public int getImmediate()
-    {
+    public int getImmediate() {
         return immediate;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return getName(microcode);
     }
 
@@ -118,8 +110,7 @@ public class MicrocodeNode implements MicrocodeSet {
      * @param microcode
      * @return -
      */
-    public static String getName(int microcode)
-    {
+    public static String getName(int microcode) {
         try {
             return microcodeNames[microcode];
         } catch (Exception e) {
@@ -143,8 +134,7 @@ public class MicrocodeNode implements MicrocodeSet {
         }
     }
 
-    private static boolean hasImmediate(int microcode)
-    {
+    private static boolean hasImmediate(int microcode) {
         switch (microcode) {
             case LOAD0_IB:
             case LOAD0_IW:
@@ -170,8 +160,7 @@ public class MicrocodeNode implements MicrocodeSet {
      * @param source
      * @return -
      */
-    public static MicrocodeNode[] getMicrocodes(InstructionSource source)
-    {
+    public static MicrocodeNode[] getMicrocodes(InstructionSource source) {
         int x86Length = 0, x86Count = 0;
         Vector<MicrocodeNode> buffer = new Vector<MicrocodeNode>();
 

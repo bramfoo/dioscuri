@@ -56,8 +56,7 @@ public class Instruction_JS implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JS()
-    {
+    public Instruction_JS() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_JS implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JS(CPU processor)
-    {
+    public Instruction_JS(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -76,8 +74,7 @@ public class Instruction_JS implements Instruction {
     /**
      * Execute conditional short jump on sign
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement byte (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

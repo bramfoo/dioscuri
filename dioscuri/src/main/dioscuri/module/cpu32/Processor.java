@@ -149,8 +149,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     private boolean started = false;
     public FpuState fpu;
 
-    public Processor()
-    {
+    public Processor() {
         fpu = new FpuState64(this);
         linearMemory = null;
         physicalMemory = null;
@@ -164,8 +163,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param output
      * @throws IOException
      */
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
         output.writeInt(this.eax);
         output.writeInt(this.ebx);
         output.writeInt(this.edx);
@@ -238,8 +236,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param input
      * @throws IOException
      */
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
         eax = input.readInt();
         ebx = input.readInt();
         edx = input.readInt();
@@ -308,8 +305,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         tss = loadSegment(input);
     }
 
-    private Segment loadSegment(DataInput input) throws IOException
-    {
+    private Segment loadSegment(DataInput input) throws IOException {
         // isProtectedMode()
         // alignmentChecking
         int type = input.readInt();
@@ -364,8 +360,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public int getEFlags()
-    {
+    public int getEFlags() {
         int result = 0x2;
         if (getCarryFlag())
             result |= 0x1;
@@ -407,8 +402,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param eflags
      */
-    public void setEFlags(int eflags)
-    {
+    public void setEFlags(int eflags) {
         // TODO: check that there aren't flags which can't be set this way!
         setCarryFlag((eflags & 1) != 0);
         setParityFlag((eflags & (1 << 2)) != 0);
@@ -442,8 +436,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    public void processClock()
-    {
+    public void processClock() {
         System.out.println("JPC CPU called Clock.process()");
         // virtualClock.process();
     }
@@ -451,8 +444,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setCPL(int value)
-    {
+    public void setCPL(int value) {
         currentPrivilegeLevel = value;
         linearMemory.setSupervisor(currentPrivilegeLevel == 0);
         checkAlignmentChecking();
@@ -461,13 +453,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public int getCPL()
-    {
+    public int getCPL() {
         return currentPrivilegeLevel;
     }
 
-    public void reportFPUException()
-    {
+    public void reportFPUException() {
         if ((cr0 & CR0_NUMERIC_ERROR) == 0) {
             System.err.println("Reporting FPU Error Via IRQ#13");
             // interruptController.setIRQ(13, 1);
@@ -479,16 +469,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    public void raiseInterrupt()
-    {
+    public void raiseInterrupt() {
         synchronized (this) {
             interruptFlags |= IFLAGS_HARDWARE_INTERRUPT;
             this.notifyAll();
         }
     }
 
-    public void clearInterrupt()
-    {
+    public void clearInterrupt() {
         interruptFlags &= ~IFLAGS_HARDWARE_INTERRUPT;
     }
 
@@ -497,8 +485,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @return -
      */
     @SuppressWarnings("empty-statement")
-    public boolean waitForInterrupt(long time)
-    {
+    public boolean waitForInterrupt(long time) {
         synchronized (this) {
             if ((interruptFlags & IFLAGS_HARDWARE_INTERRUPT) != 0)
                 return true;
@@ -512,32 +499,28 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    public void requestReset()
-    {
+    public void requestReset() {
         interruptFlags |= IFLAGS_RESET_REQUEST;
     }
 
     /**
      * @return -
      */
-    public int getInterruptFlags()
-    {
+    public int getInterruptFlags() {
         return interruptFlags;
     }
 
     /**
      * @return -
      */
-    public boolean isProtectedMode()
-    {
+    public boolean isProtectedMode() {
         return (cr0 & CR0_PROTECTION_ENABLE) == 1;
     }
 
     /**
      * @return -
      */
-    public boolean isVirtual8086Mode()
-    {
+    public boolean isVirtual8086Mode() {
         return eflagsVirtual8086Mode;
     }
 
@@ -547,8 +530,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setCR0(int value)
-    {
+    public void setCR0(int value) {
         value |= 0x10;
         int changedBits = value ^ cr0;
         if (changedBits == 0)
@@ -602,16 +584,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public int getCR0()
-    {
+    public int getCR0() {
         return cr0;
     }
 
     /**
      * @param value
      */
-    public void setCR3(int value)
-    {
+    public void setCR3(int value) {
         cr3 = value;
         linearMemory
                 .setPageWriteThroughEnabled((value & CR3_PAGE_WRITES_TRANSPARENT) != 0);
@@ -622,32 +602,28 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public int getCR3()
-    {
+    public int getCR3() {
         return cr3;
     }
 
     /**
      * @return -
      */
-    public int getCR2()
-    {
+    public int getCR2() {
         return cr2;
     }
 
     /**
      * @param value
      */
-    public void setCR2(int value)
-    {
+    public void setCR2(int value) {
         cr2 = value;
     }
 
     /**
      * @param value
      */
-    public void setCR4(int value)
-    {
+    public void setCR4(int value) {
         if (cr4 == value)
             return;
 
@@ -680,104 +656,91 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public int getCR4()
-    {
+    public int getCR4() {
         return cr4;
     }
 
     /**
      * @param value
      */
-    public void setDR0(int value)
-    {
+    public void setDR0(int value) {
         dr0 = value;
     }
 
     /**
      * @param value
      */
-    public void setDR1(int value)
-    {
+    public void setDR1(int value) {
         dr1 = value;
     }
 
     /**
      * @param value
      */
-    public void setDR2(int value)
-    {
+    public void setDR2(int value) {
         dr2 = value;
     }
 
     /**
      * @param value
      */
-    public void setDR3(int value)
-    {
+    public void setDR3(int value) {
         dr3 = value;
     }
 
     /**
      * @param value
      */
-    public void setDR6(int value)
-    {
+    public void setDR6(int value) {
         dr6 = value;
     }
 
     /**
      * @param value
      */
-    public void setDR7(int value)
-    {
+    public void setDR7(int value) {
         dr7 = value;
     }
 
     /**
      * @return -
      */
-    public int getDR0()
-    {
+    public int getDR0() {
         return dr0;
     }
 
     /**
      * @return -
      */
-    public int getDR1()
-    {
+    public int getDR1() {
         return dr1;
     }
 
     /**
      * @return -
      */
-    public int getDR2()
-    {
+    public int getDR2() {
         return dr2;
     }
 
     /**
      * @return -
      */
-    public int getDR3()
-    {
+    public int getDR3() {
         return dr3;
     }
 
     /**
      * @return -
      */
-    public int getDR6()
-    {
+    public int getDR6() {
         return dr6;
     }
 
     /**
      * @return -
      */
-    public int getDR7()
-    {
+    public int getDR7() {
         return dr7;
     }
 
@@ -785,8 +748,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param index
      * @return -
      */
-    public long getMSR(int index)
-    {
+    public long getMSR(int index) {
         try {
             return ((Long) modelSpecificRegisters.get(new Integer(index)))
                     .longValue();
@@ -801,13 +763,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param index
      * @param value
      */
-    public void setMSR(int index, long value)
-    {
+    public void setMSR(int index, long value) {
         modelSpecificRegisters.put(new Integer(index), new Long(value));
     }
 
-    private void convertSegmentsToRealMode()
-    {
+    private void convertSegmentsToRealMode() {
         try {
             cs = createRealModeSegment(cs.translateAddressRead(0) >>> 4);
         } catch (ProcessorException e) {
@@ -840,8 +800,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    private void convertSegmentsToProtectedMode()
-    {
+    private void convertSegmentsToProtectedMode() {
         cs.setAddressSpace(linearMemory);
         ds.setAddressSpace(linearMemory);
         ss.setAddressSpace(linearMemory);
@@ -850,8 +809,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         gs.setAddressSpace(linearMemory);
     }
 
-    private void updateAlignmentCheckingInDataSegments()
-    {
+    private void updateAlignmentCheckingInDataSegments() {
         if (alignmentChecking) {
             ds.setAddressSpace(alignmentCheckedMemory);
             ss.setAddressSpace(alignmentCheckedMemory);
@@ -871,8 +829,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param selector
      * @return -
      */
-    public Segment createRealModeSegment(int selector)
-    {
+    public Segment createRealModeSegment(int selector) {
         return SegmentFactory.createRealModeSegment(physicalMemory, selector);
     }
 
@@ -881,8 +838,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param limit
      * @return -
      */
-    public Segment createDescriptorTableSegment(int base, int limit)
-    {
+    public Segment createDescriptorTableSegment(int base, int limit) {
         return SegmentFactory.createDescriptorTableSegment(linearMemory, base,
                 limit);
     }
@@ -890,8 +846,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param segment
      */
-    public void correctAlignmentChecking(Segment segment)
-    {
+    public void correctAlignmentChecking(Segment segment) {
         if (alignmentChecking) {
             if ((segment.getType() & 0x18) == 0x10) // Should make this a data
                 // segment
@@ -903,8 +858,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param segmentSelector
      * @return -
      */
-    public Segment getSegment(int segmentSelector)
-    {
+    public Segment getSegment(int segmentSelector) {
         boolean isSup = linearMemory.isSupervisor();
         try {
             long segmentDescriptor = 0;
@@ -937,8 +891,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param global
      * @return -
      */
-    public Segment getSegment(int segmentSelector, Segment local, Segment global)
-    {
+    public Segment getSegment(int segmentSelector, Segment local, Segment global) {
         boolean isSup = linearMemory.isSupervisor();
         try {
             long segmentDescriptor = 0;
@@ -972,8 +925,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         resetTime = System.currentTimeMillis();
         eax = ebx = ecx = edx = 0;
         edi = esi = ebp = esp = 0;
@@ -1029,8 +981,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public long getClockCount()
-    {
+    public long getClockCount() {
         return (System.currentTimeMillis() - resetTime) * 1000
                 * Processor.CLOCK_SPEED;
     }
@@ -1038,13 +989,11 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public final int getInstructionPointer()
-    {
+    public final int getInstructionPointer() {
         return cs.translateAddressRead(eip);
     }
 
-    public final void processRealModeInterrupts()
-    {
+    public final void processRealModeInterrupts() {
         if (eflagsInterruptEnable) {
 
             if ((interruptFlags & IFLAGS_RESET_REQUEST) != 0) {
@@ -1063,8 +1012,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
 
-    public final void processProtectedModeInterrupts()
-    {
+    public final void processProtectedModeInterrupts() {
         if (eflagsInterruptEnable) {
 
             if ((interruptFlags & IFLAGS_RESET_REQUEST) != 0) {
@@ -1083,8 +1031,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         eflagsInterruptEnable = eflagsInterruptEnableSoon;
     }
 
-    public final void processVirtual8086ModeInterrupts()
-    {
+    public final void processVirtual8086ModeInterrupts() {
         if (eflagsInterruptEnable) {
 
             if ((interruptFlags & IFLAGS_RESET_REQUEST) != 0) {
@@ -1110,14 +1057,12 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param vector
      */
-    public final void handleRealModeException(int vector)
-    {
+    public final void handleRealModeException(int vector) {
         if (vector <= PROC_EXCEPTION_MAX)
             handleRealModeInterrupt(vector);
     }
 
-    private final void handleRealModeInterrupt(int vector)
-    {
+    private final void handleRealModeInterrupt(int vector) {
         // System.out.println("Real Mode execption " +
         // Integer.toHexString(vector));
 
@@ -1165,8 +1110,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param errorCode
      */
     public final void handleProtectedModeException(int vector,
-                                                   boolean hasErrorCode, int errorCode)
-    {
+                                                   boolean hasErrorCode, int errorCode) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1199,8 +1143,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param vector
      */
-    public final void handleSoftProtectedModeInterrupt(int vector)
-    {
+    public final void handleSoftProtectedModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1227,8 +1170,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param vector
      */
-    public final void handleHardProtectedModeInterrupt(int vector)
-    {
+    public final void handleHardProtectedModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1252,8 +1194,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    private final void checkGate(Segment gate, int selector, boolean software)
-    {
+    private final void checkGate(Segment gate, int selector, boolean software) {
         if (software) {
             if (gate.getDPL() < currentPrivilegeLevel)
                 throw new ProcessorException(PROC_EXCEPTION_GP, selector + 2,
@@ -1266,8 +1207,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     private final void followProtectedModeException(int vector,
                                                     boolean hasErrorCode, int errorCode, boolean hardware,
-                                                    boolean software)
-    {
+                                                    boolean software) {
         // System.out.println("protected Mode exception " +
         // Integer.toHexString(vector));
         // System.out.println(Integer.toHexString(cs.getBase()) +":"
@@ -1879,8 +1819,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param errorCode
      */
     public final void handleVirtual8086ModeException(int vector,
-                                                     boolean hasErrorCode, int errorCode)
-    {
+                                                     boolean hasErrorCode, int errorCode) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1913,8 +1852,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param vector
      */
-    public final void handleSoftVirtual8086ModeInterrupt(int vector)
-    {
+    public final void handleSoftVirtual8086ModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1946,8 +1884,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param vector
      */
-    public final void handleHardVirtual8086ModeInterrupt(int vector)
-    {
+    public final void handleHardVirtual8086ModeInterrupt(int vector) {
         int savedESP = esp;
         int savedEIP = eip;
         Segment savedCS = cs;
@@ -1973,8 +1910,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
 
     private final void followVirtual8086ModeException(int vector,
                                                       boolean hasErrorCode, int errorCode, boolean hardware,
-                                                      boolean software)
-    {
+                                                      boolean software) {
         if (vector == PROC_EXCEPTION_PF)
             setCR2(linearMemory.getLastWalkedAddress());
 
@@ -2422,8 +2358,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
         }
     }
 
-    private void checkAlignmentChecking()
-    {
+    private void checkAlignmentChecking() {
         if ((getCPL() == 3) && eflagsAlignmentCheck
                 && ((cr0 & CR0_ALIGNMENT_MASK) != 0)) {
             if (!alignmentChecking) {
@@ -2445,8 +2380,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean initialised()
-    {
+    public boolean initialised() {
         ModulePIC interruptController = (ModulePIC) super.getConnection(Module.Type.PIC);
         boolean result = ((physicalMemory != null) && (linearMemory != null)
                 && (ioports != null) && (interruptController != null)); // &&
@@ -2463,8 +2397,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param component
      */
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
         if (component instanceof LinearAddressSpace) {
             linearMemory = (LinearAddressSpace) component;
             alignmentCheckedMemory = new AlignmentCheckedAddressSpace(
@@ -2490,8 +2423,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getAuxiliaryCarryFlag()
-    {
+    public boolean getAuxiliaryCarryFlag() {
         if (auxiliaryCarryCalculated)
             return eflagsAuxiliaryCarry;
         else {
@@ -2535,8 +2467,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param method
      */
     public void setAuxiliaryCarryFlag(int dataOne, int dataTwo, int dataThree,
-                                      int method)
-    {
+                                      int method) {
         auxiliaryCarryCalculated = false;
         auxiliaryCarryOne = dataOne;
         auxiliaryCarryTwo = dataTwo;
@@ -2549,8 +2480,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataTwo
      * @param method
      */
-    public void setAuxiliaryCarryFlag(int dataOne, int dataTwo, int method)
-    {
+    public void setAuxiliaryCarryFlag(int dataOne, int dataTwo, int method) {
         auxiliaryCarryCalculated = false;
         auxiliaryCarryOne = dataOne;
         auxiliaryCarryTwo = dataTwo;
@@ -2561,8 +2491,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataOne
      * @param method
      */
-    public void setAuxiliaryCarryFlag(int dataOne, int method)
-    {
+    public void setAuxiliaryCarryFlag(int dataOne, int method) {
         auxiliaryCarryCalculated = false;
         auxiliaryCarryOne = dataOne;
         auxiliaryCarryMethod = method;
@@ -2571,8 +2500,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setAuxiliaryCarryFlag(boolean value)
-    {
+    public void setAuxiliaryCarryFlag(boolean value) {
         auxiliaryCarryCalculated = true;
         eflagsAuxiliaryCarry = value;
     }
@@ -2583,8 +2511,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getParityFlag()
-    {
+    public boolean getParityFlag() {
         if (parityCalculated)
             return eflagsParity;
         else
@@ -2597,8 +2524,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setParityFlag(boolean value)
-    {
+    public void setParityFlag(boolean value) {
         parityCalculated = true;
         eflagsParity = value;
     }
@@ -2606,8 +2532,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param data
      */
-    public void setParityFlag(int data)
-    {
+    public void setParityFlag(int data) {
         parityCalculated = false;
         parityOne = data;
     }
@@ -2647,8 +2572,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getOverflowFlag()
-    {
+    public boolean getOverflowFlag() {
         if (overflowCalculated)
             return eflagsOverflow;
         else {
@@ -2723,8 +2647,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setOverflowFlag(boolean value)
-    {
+    public void setOverflowFlag(boolean value) {
         overflowCalculated = true;
         eflagsOverflow = value;
     }
@@ -2733,8 +2656,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataOne
      * @param method
      */
-    public void setOverflowFlag(long dataOne, int method)
-    {
+    public void setOverflowFlag(long dataOne, int method) {
         overflowCalculated = false;
         overflowLong = dataOne;
         overflowMethod = method;
@@ -2744,8 +2666,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataOne
      * @param method
      */
-    public void setOverflowFlag(int dataOne, int method)
-    {
+    public void setOverflowFlag(int dataOne, int method) {
         overflowCalculated = false;
         overflowOne = dataOne;
         overflowMethod = method;
@@ -2756,8 +2677,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataTwo
      * @param method
      */
-    public void setOverflowFlag(int dataOne, int dataTwo, int method)
-    {
+    public void setOverflowFlag(int dataOne, int dataTwo, int method) {
         overflowCalculated = false;
         overflowOne = dataOne;
         overflowTwo = dataTwo;
@@ -2771,8 +2691,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param method
      */
     public void setOverflowFlag(int dataOne, int dataTwo, int dataThree,
-                                int method)
-    {
+                                int method) {
         overflowCalculated = false;
         overflowOne = dataOne;
         overflowTwo = dataTwo;
@@ -2811,8 +2730,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getCarryFlag()
-    {
+    public boolean getCarryFlag() {
         if (carryCalculated)
             return eflagsCarry;
         else {
@@ -2878,8 +2796,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setCarryFlag(boolean value)
-    {
+    public void setCarryFlag(boolean value) {
         carryCalculated = true;
         eflagsCarry = value;
     }
@@ -2888,8 +2805,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataOne
      * @param method
      */
-    public void setCarryFlag(long dataOne, int method)
-    {
+    public void setCarryFlag(long dataOne, int method) {
         carryCalculated = false;
         carryLong = dataOne;
         carryMethod = method;
@@ -2899,8 +2815,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataOne
      * @param method
      */
-    public void setCarryFlag(int dataOne, int method)
-    {
+    public void setCarryFlag(int dataOne, int method) {
         carryCalculated = false;
         carryOne = dataOne;
         carryMethod = method;
@@ -2911,8 +2826,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataTwo
      * @param method
      */
-    public void setCarryFlag(int dataOne, int dataTwo, int method)
-    {
+    public void setCarryFlag(int dataOne, int dataTwo, int method) {
         carryCalculated = false;
         carryOne = dataOne;
         carryTwo = dataTwo;
@@ -2925,8 +2839,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @param dataThree
      * @param method
      */
-    public void setCarryFlag(int dataOne, int dataTwo, int dataThree, int method)
-    {
+    public void setCarryFlag(int dataOne, int dataTwo, int dataThree, int method) {
         carryCalculated = false;
         carryOne = dataOne;
         carryTwo = dataTwo;
@@ -2942,8 +2855,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getZeroFlag()
-    {
+    public boolean getZeroFlag() {
         if (zeroCalculated)
             return eflagsZero;
         else {
@@ -2955,8 +2867,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setZeroFlag(boolean value)
-    {
+    public void setZeroFlag(boolean value) {
         zeroCalculated = true;
         eflagsZero = value;
     }
@@ -2964,8 +2875,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param data
      */
-    public void setZeroFlag(int data)
-    {
+    public void setZeroFlag(int data) {
         zeroCalculated = false;
         zeroOne = data;
     }
@@ -2978,8 +2888,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean getSignFlag()
-    {
+    public boolean getSignFlag() {
         if (signCalculated)
             return eflagsSign;
         else {
@@ -2991,8 +2900,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param value
      */
-    public void setSignFlag(boolean value)
-    {
+    public void setSignFlag(boolean value) {
         signCalculated = true;
         eflagsSign = value;
     }
@@ -3000,8 +2908,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param data
      */
-    public void setSignFlag(int data)
-    {
+    public void setSignFlag(int data) {
         signCalculated = false;
         signOne = data;
     }
@@ -3009,8 +2916,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @return -
      */
-    public boolean updated()
-    {
+    public boolean updated() {
         ModulePIC interruptController = (ModulePIC) super.getConnection(Module.Type.PIC);
         boolean result = (physicalMemory.updated() && linearMemory.updated()
                 && ioports.updated() && interruptController.isConnected());// &&
@@ -3023,16 +2929,14 @@ public class Processor extends ModuleCPU implements HardwareComponent {
     /**
      * @param component
      */
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
         if (component instanceof LinearAddressSpace) {
             alignmentCheckedMemory = new AlignmentCheckedAddressSpace(
                     linearMemory);
         }
     }
 
-    public void timerCallback()
-    {
+    public void timerCallback() {
     }
 
     /**
@@ -3041,8 +2945,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String dumpRegisters()
-    {
+    public String dumpRegisters() {
         return null;
     }
 
@@ -3052,8 +2955,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean getCpuInstructionDebug()
-    {
+    public boolean getCpuInstructionDebug() {
         return false;
     }
 
@@ -3063,8 +2965,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public long getCurrentInstructionNumber()
-    {
+    public long getCurrentInstructionNumber() {
         return 0;
     }
 
@@ -3075,8 +2976,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         return 0;
     }
 
@@ -3087,8 +2987,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress)
-            throws ModuleException, WriteOnlyPortException
-    {
+            throws ModuleException, WriteOnlyPortException {
         return null;
     }
 
@@ -3099,8 +2998,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         return null;
     }
 
@@ -3110,8 +3008,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public int getIPS()
-    {
+    public int getIPS() {
 
         // 5 MHz clock
         return 5 * 1000000;
@@ -3123,8 +3020,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String getNextInstructionInfo()
-    {
+    public String getNextInstructionInfo() {
         return null;
     }
 
@@ -3134,8 +3030,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public String getRegisterHex(int register)
-    {
+    public String getRegisterHex(int register) {
         return null;
     }
 
@@ -3145,8 +3040,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected byte[] getRegisterValue(String registerName)
-    {
+    protected byte[] getRegisterValue(String registerName) {
         return null;
     }
 
@@ -3156,8 +3050,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected void incrementInstructionCounter()
-    {
+    protected void incrementInstructionCounter() {
     }
 
     /**
@@ -3166,8 +3059,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected boolean initInstructionTables()
-    {
+    protected boolean initInstructionTables() {
         return false;
     }
 
@@ -3177,8 +3069,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected boolean initRegisters()
-    {
+    protected boolean initRegisters() {
         return false;
     }
 
@@ -3188,8 +3079,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void interruptRequest(boolean value)
-    {
+    public void interruptRequest(boolean value) {
         if (value) {
             raiseInterrupt();
         } else {
@@ -3204,8 +3094,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean isAbnormalTermination()
-    {
+    public boolean isAbnormalTermination() {
         return false;
     }
 
@@ -3215,8 +3104,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setCpuInstructionDebug(boolean isDebugMode)
-    {
+    public void setCpuInstructionDebug(boolean isDebugMode) {
 
     }
 
@@ -3226,8 +3114,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setHoldRequest(boolean value, Module origin)
-    {
+    public void setHoldRequest(boolean value, Module origin) {
     }
 
     /**
@@ -3237,8 +3124,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public void setIOPortByte(int portAddress, byte value)
-            throws ModuleException
-    {
+            throws ModuleException {
 
     }
 
@@ -3249,8 +3135,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] value)
-            throws ModuleException
-    {
+            throws ModuleException {
 
     }
 
@@ -3261,8 +3146,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] value)
-            throws ModuleException
-    {
+            throws ModuleException {
 
     }
 
@@ -3272,8 +3156,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setIPS(int ips)
-    {
+    public void setIPS(int ips) {
 
     }
 
@@ -3283,8 +3166,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public void setIPS(int ips, int lowestUpdatePeriod)
-    {
+    public void setIPS(int ips, int lowestUpdatePeriod) {
     }
 
     /**
@@ -3293,8 +3175,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected boolean setRegisterValue(String registerName, byte[] value)
-    {
+    protected boolean setRegisterValue(String registerName, byte[] value) {
         return false;
     }
 
@@ -3304,8 +3185,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    protected void setRunning(boolean status)
-    {
+    protected void setRunning(boolean status) {
     }
 
     /**
@@ -3314,8 +3194,7 @@ public class Processor extends ModuleCPU implements HardwareComponent {
      * @see dioscuri.module.ModuleCPU
      */
     @Override
-    public boolean isShutdown()
-    {
+    public boolean isShutdown() {
         return false;
     }
 }

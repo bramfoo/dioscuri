@@ -48,8 +48,7 @@ public class UnknownPortException extends Exception {
     /**
      * @param message
      */
-    public UnknownPortException(String message)
-    {
+    public UnknownPortException(String message) {
         super(message);
     }
 }

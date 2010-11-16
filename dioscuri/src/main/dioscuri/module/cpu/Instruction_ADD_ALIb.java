@@ -56,8 +56,7 @@ public class Instruction_ADD_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADD_ALIb()
-    {
+    public Instruction_ADD_ALIb() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_ADD_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADD_ALIb(CPU processor)
-    {
+    public Instruction_ADD_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -78,8 +76,7 @@ public class Instruction_ADD_ALIb implements Instruction {
     /**
      * Add immediate byte to AL
      */
-    public void execute()
-    {
+    public void execute() {
         immediateByte = cpu.getByteFromCode();
 
         // Copy AL start value for OF test later

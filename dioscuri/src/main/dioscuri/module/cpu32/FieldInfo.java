@@ -55,8 +55,7 @@ public class FieldInfo {
      * @throws IOException
      */
     public FieldInfo(DataInputStream in, ConstantPoolInfo[] pool)
-            throws IOException
-    {
+            throws IOException {
         accessFlags = in.readUnsignedShort();
         nameIndex = in.readUnsignedShort();
         descriptorIndex = in.readUnsignedShort();
@@ -71,8 +70,7 @@ public class FieldInfo {
      * @param out
      * @throws IOException
      */
-    public void write(DataOutputStream out) throws IOException
-    {
+    public void write(DataOutputStream out) throws IOException {
         out.writeShort(accessFlags);
         out.writeShort(nameIndex);
         out.writeShort(descriptorIndex);

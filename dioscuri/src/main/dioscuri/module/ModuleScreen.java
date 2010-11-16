@@ -51,8 +51,7 @@ public abstract class ModuleScreen extends AbstractModule {
     /**
      *
      */
-    public ModuleScreen()
-    {
+    public ModuleScreen() {
         super(Module.Type.SCREEN,
                 Module.Type.VIDEO);
     }

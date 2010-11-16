@@ -7,13 +7,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_MOV_GvEvTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_MOV_GvEvTest() throws Exception {
@@ -23,6 +21,7 @@ public class Instruction_MOV_GvEvTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_MOV_GvEv.execute()'
     */
+
     /**
      *
      */

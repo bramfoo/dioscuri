@@ -59,8 +59,7 @@ public enum ATADriveType {
      *
      * @param theName the name of the drive type
      */
-    private ATADriveType(String theName)
-    {
+    private ATADriveType(String theName) {
         this.name = theName;
     }
 
@@ -70,8 +69,7 @@ public enum ATADriveType {
      * @return the name of the drive type
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return this.name;
     }
 

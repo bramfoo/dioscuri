@@ -38,8 +38,7 @@ public class ConstantPoolSymbol {
     /**
      * @param o
      */
-    public ConstantPoolSymbol(Object o)
-    {
+    public ConstantPoolSymbol(Object o) {
         boolean ok = (o instanceof Class<?>) || (o instanceof Method)
                 || (o instanceof Field) || (o instanceof String)
                 || (o instanceof Integer) || (o instanceof Float)
@@ -54,14 +53,12 @@ public class ConstantPoolSymbol {
     /**
      * @return -
      */
-    public Object poolEntity()
-    {
+    public Object poolEntity() {
         return poolEntity;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "ConstantPoolSymbol[" + poolEntity + "]";
     }
 }

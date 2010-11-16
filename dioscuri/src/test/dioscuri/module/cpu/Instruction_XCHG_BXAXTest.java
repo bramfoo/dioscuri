@@ -6,13 +6,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_XCHG_BXAXTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_XCHG_BXAXTest() throws Exception {
@@ -22,6 +20,7 @@ public class Instruction_XCHG_BXAXTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_XCHG_BXAX.execute()'
     */
+
     /**
      *
      */

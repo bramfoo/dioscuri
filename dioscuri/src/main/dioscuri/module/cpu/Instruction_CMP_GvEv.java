@@ -70,8 +70,7 @@ public class Instruction_CMP_GvEv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMP_GvEv()
-    {
+    public Instruction_CMP_GvEv() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -90,8 +89,7 @@ public class Instruction_CMP_GvEv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMP_GvEv(CPU processor)
-    {
+    public Instruction_CMP_GvEv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -105,8 +103,7 @@ public class Instruction_CMP_GvEv implements Instruction {
      * memory/register (source).<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

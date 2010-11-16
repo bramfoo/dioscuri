@@ -101,8 +101,7 @@ public class RTC extends ModuleRTC {
      *
      * @param owner
      */
-    public RTC(Emulator owner)
-    {
+    public RTC(Emulator owner) {
 
         cmos = new CMOS();
 
@@ -125,8 +124,7 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
 
         ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
         ModulePIC pic = (ModulePIC) super.getConnection(Module.Type.PIC);
@@ -174,8 +172,7 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String cmos_Dump = "Dump of RTC/CMOS registers 0x00 - 0x2F and checksum regs:\n";
         cmos_Dump += "Reg\tVal(hex)\tVal(BCD)\n";
 
@@ -205,23 +202,20 @@ public class RTC extends ModuleRTC {
      *
      * @return int interval in microseconds
      */
-    public int getUpdateInterval()
-    {
+    public int getUpdateInterval() {
         return -1;
     }
 
     /**
      * Defines the interval between subsequent updates
      */
-    public void setUpdateInterval(int interval)
-    {
+    public void setUpdateInterval(int interval) {
     }
 
     /**
      * Update device
      */
-    public void update()
-    {
+    public void update() {
     }
 
     /**
@@ -231,8 +225,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte getIOPortByte(int portAddress) throws UnknownPortException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO read from "
                 + portAddress);
 
@@ -280,8 +273,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortByte(int portAddress, byte data)
-            throws UnknownPortException
-    {
+            throws UnknownPortException {
         logger.log(Level.CONFIG, "[" + super.getType() + "]" + " IO write to "
                 + portAddress + " = " + data);
 
@@ -327,8 +319,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte[] getIOPortWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -346,8 +337,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortWord(int portAddress, byte[] dataWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -361,8 +351,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public byte[] getIOPortDoubleWord(int portAddress) throws ModuleException,
-            WriteOnlyPortException
-    {
+            WriteOnlyPortException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] IN command (double word) from port "
                 + Integer.toHexString(portAddress).toUpperCase() + " received");
@@ -381,8 +370,7 @@ public class RTC extends ModuleRTC {
      */
     @Override
     public void setIOPortDoubleWord(int portAddress, byte[] dataDoubleWord)
-            throws ModuleException
-    {
+            throws ModuleException {
         logger.log(Level.WARNING, "[" + super.getType()
                 + "] OUT command (double word) to port "
                 + Integer.toHexString(portAddress).toUpperCase()
@@ -395,8 +383,7 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public byte getCMOSRegister(int register)
-    {
+    public byte getCMOSRegister(int register) {
         logger.log(Level.CONFIG, "[" + super.getType()
                 + "] Returned CMOS register " + register + ": 0x"
                 + Integer.toHexString(cmos.ram[register]).toUpperCase());
@@ -411,8 +398,7 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public void setCMOSRegister(int register, byte value)
-    {
+    public void setCMOSRegister(int register, byte value) {
         logger.log(Level.CONFIG, "[" + super.getType() + "] Set CMOS register "
                 + register + ": 0x" + Integer.toHexString(value).toUpperCase());
 
@@ -426,8 +412,7 @@ public class RTC extends ModuleRTC {
      * @see dioscuri.module.ModuleRTC
      */
     @Override
-    public void updateClock()
-    {
+    public void updateClock() {
         // Update with one second
         cmos.setClockValue(1);
         logger.log(Level.INFO, "[" + super.getType() + "] CMOS clock updated: "

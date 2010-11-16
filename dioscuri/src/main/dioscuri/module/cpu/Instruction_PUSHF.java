@@ -54,8 +54,7 @@ public class Instruction_PUSHF implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSHF()
-    {
+    public Instruction_PUSHF() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_PUSHF implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSHF(CPU processor)
-    {
+    public Instruction_PUSHF(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_PUSHF implements Instruction {
     /**
      * Transfer FLAGS register onto stack top SS:SP
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Push EFLAGS first, if 32 bit instruction
         if (cpu.doubleWord) {

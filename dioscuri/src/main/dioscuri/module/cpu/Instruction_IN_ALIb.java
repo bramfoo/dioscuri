@@ -65,8 +65,7 @@ public class Instruction_IN_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_IN_ALIb()
-    {
+    public Instruction_IN_ALIb() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_IN_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_IN_ALIb(CPU processor)
-    {
+    public Instruction_IN_ALIb(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -87,8 +85,7 @@ public class Instruction_IN_ALIb implements Instruction {
     /**
      * Input byte from I/O port address indicated by immediate byte into AL
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Fetch immediate byte from memory and convert to unsigned integer,
         // to prevent lookup table out of bounds

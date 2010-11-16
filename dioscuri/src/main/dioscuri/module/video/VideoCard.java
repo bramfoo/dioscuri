@@ -142,8 +142,7 @@ public class VideoCard {
     // Constructor
     // Initialises Pixel array
 
-    public VideoCard()
-    {
+    public VideoCard() {
         Arrays.fill(pixels, new Pixel());
     }
 
@@ -156,8 +155,7 @@ public class VideoCard {
      * @param ytile Location of y tile
      * @param value True or false reflecting whether this tile has been updated
      */
-    final protected void setTileUpdate(int xtile, int ytile, boolean value)
-    {
+    final protected void setTileUpdate(int xtile, int ytile, boolean value) {
         if (((xtile) < X_NUM_TILES) && ((ytile) < Y_NUM_TILES))
             vgaTileUpdated[(xtile)][(ytile)] = value;
     }
@@ -169,8 +167,7 @@ public class VideoCard {
      * @param ytile Location of y tile
      * @return True or false reflecting whether this tile has been updated
      */
-    final protected boolean getTileUpdate(int xtile, int ytile)
-    {
+    final protected boolean getTileUpdate(int xtile, int ytile) {
         return ((((xtile) < X_NUM_TILES) && ((ytile) < Y_NUM_TILES)) ? vgaTileUpdated[xtile][ytile]
                 : false);
     }
@@ -178,8 +175,7 @@ public class VideoCard {
     /**
      * Return variables to default values
      */
-    public void reset()
-    {
+    public void reset() {
         miscOutputRegister.reset();
         sequencer.reset();
         graphicsController.reset();

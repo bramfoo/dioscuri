@@ -59,8 +59,7 @@ public class Instruction_ADC_AXIv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADC_AXIv()
-    {
+    public Instruction_ADC_AXIv() {
         immediateWord = new byte[2];
         oldDest = new byte[2];
         iCarryFlag = 0;
@@ -73,8 +72,7 @@ public class Instruction_ADC_AXIv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADC_AXIv(CPU processor)
-    {
+    public Instruction_ADC_AXIv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -86,8 +84,7 @@ public class Instruction_ADC_AXIv implements Instruction {
     /**
      * Add (immediate word + CF) to AX
      */
-    public void execute()
-    {
+    public void execute() {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

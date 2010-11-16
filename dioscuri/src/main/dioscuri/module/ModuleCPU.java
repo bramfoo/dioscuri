@@ -50,8 +50,7 @@ public abstract class ModuleCPU extends AbstractModule implements Addressable {
     /**
      *
      */
-    public ModuleCPU()
-    {
+    public ModuleCPU() {
         super(Module.Type.CPU,
                 Module.Type.MEMORY, Module.Type.MOTHERBOARD, Module.Type.PIC, Module.Type.CLOCK);
     }

@@ -47,8 +47,7 @@ public abstract class AbstractMemory extends Memory {
      */
     public abstract void setByte(int offset, byte data);
 
-    public void clear()
-    {
+    public void clear() {
         for (int i = 0; i < getSize(); i++)
             setByte(i, (byte) 0);
     }
@@ -57,8 +56,7 @@ public abstract class AbstractMemory extends Memory {
      * @param start
      * @param length
      */
-    public void clear(int start, int length)
-    {
+    public void clear(int start, int length) {
         int limit = start + length;
         if (limit > getSize())
             throw new ArrayIndexOutOfBoundsException(
@@ -73,8 +71,7 @@ public abstract class AbstractMemory extends Memory {
      * @param off
      * @param len
      */
-    public void copyContentsInto(int address, byte[] buffer, int off, int len)
-    {
+    public void copyContentsInto(int address, byte[] buffer, int off, int len) {
         for (int i = off; i < off + len; i++, address++)
             buffer[i] = getByte(address);
     }
@@ -85,8 +82,7 @@ public abstract class AbstractMemory extends Memory {
      * @param off
      * @param len
      */
-    public void copyContentsFrom(int address, byte[] buffer, int off, int len)
-    {
+    public void copyContentsFrom(int address, byte[] buffer, int off, int len) {
         for (int i = off; i < off + len; i++, address++)
             setByte(address, buffer[i]);
     }
@@ -95,8 +91,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    protected final short getWordInBytes(int offset)
-    {
+    protected final short getWordInBytes(int offset) {
         int result = 0xFF & getByte(offset + 1);
         result <<= 8;
         result |= (0xFF & getByte(offset));
@@ -107,8 +102,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    protected final int getDoubleWordInBytes(int offset)
-    {
+    protected final int getDoubleWordInBytes(int offset) {
         int result = 0xFFFF & getWordInBytes(offset + 2);
         result <<= 16;
         result |= (0xFFFF & getWordInBytes(offset));
@@ -119,8 +113,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    protected final long getQuadWordInBytes(int offset)
-    {
+    protected final long getQuadWordInBytes(int offset) {
         long result = 0xFFFFFFFFl & getDoubleWordInBytes(offset + 4);
         result <<= 32;
         result |= (0xFFFFFFFFl & getDoubleWordInBytes(offset));
@@ -131,8 +124,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    public short getWord(int offset)
-    {
+    public short getWord(int offset) {
         return getWordInBytes(offset);
     }
 
@@ -140,8 +132,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    public int getDoubleWord(int offset)
-    {
+    public int getDoubleWord(int offset) {
         return getDoubleWordInBytes(offset);
     }
 
@@ -149,8 +140,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    public long getQuadWord(int offset)
-    {
+    public long getQuadWord(int offset) {
         return getQuadWordInBytes(offset);
     }
 
@@ -158,8 +148,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    public long getLowerDoubleQuadWord(int offset)
-    {
+    public long getLowerDoubleQuadWord(int offset) {
         return getQuadWordInBytes(offset);
     }
 
@@ -167,8 +156,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @return -
      */
-    public long getUpperDoubleQuadWord(int offset)
-    {
+    public long getUpperDoubleQuadWord(int offset) {
         return getQuadWordInBytes(offset + 8);
     }
 
@@ -176,8 +164,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    protected final void setWordInBytes(int offset, short data)
-    {
+    protected final void setWordInBytes(int offset, short data) {
         setByte(offset, (byte) data);
         offset++;
         setByte(offset, (byte) (data >> 8));
@@ -187,8 +174,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    protected final void setDoubleWordInBytes(int offset, int data)
-    {
+    protected final void setDoubleWordInBytes(int offset, int data) {
         setByte(offset, (byte) data);
         offset++;
         data >>= 8;
@@ -205,8 +191,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    protected final void setQuadWordInBytes(int offset, long data)
-    {
+    protected final void setQuadWordInBytes(int offset, long data) {
         setDoubleWordInBytes(offset, (int) data);
         setDoubleWordInBytes(offset + 4, (int) (data >> 32));
     }
@@ -215,8 +200,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    public void setWord(int offset, short data)
-    {
+    public void setWord(int offset, short data) {
         setWordInBytes(offset, data);
     }
 
@@ -224,8 +208,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    public void setDoubleWord(int offset, int data)
-    {
+    public void setDoubleWord(int offset, int data) {
         setDoubleWordInBytes(offset, data);
     }
 
@@ -233,8 +216,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    public void setQuadWord(int offset, long data)
-    {
+    public void setQuadWord(int offset, long data) {
         setQuadWordInBytes(offset, data);
     }
 
@@ -242,8 +224,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    public void setLowerDoubleQuadWord(int offset, long data)
-    {
+    public void setLowerDoubleQuadWord(int offset, long data) {
         setQuadWordInBytes(offset, data);
     }
 
@@ -251,8 +232,7 @@ public abstract class AbstractMemory extends Memory {
      * @param offset
      * @param data
      */
-    public void setUpperDoubleQuadWord(int offset, long data)
-    {
+    public void setUpperDoubleQuadWord(int offset, long data) {
         setQuadWordInBytes(offset + 8, data);
     }
 
@@ -261,8 +241,7 @@ public abstract class AbstractMemory extends Memory {
      * @param src
      * @return -
      */
-    public static final short getWord(int offset, byte[] src)
-    {
+    public static final short getWord(int offset, byte[] src) {
         return (short) ((0xFF & src[offset]) | (0xFF00 & (src[offset + 1] << 8)));
     }
 
@@ -271,8 +250,7 @@ public abstract class AbstractMemory extends Memory {
      * @param src
      * @return -
      */
-    public static final int getDoubleWord(int offset, byte[] src)
-    {
+    public static final int getDoubleWord(int offset, byte[] src) {
         return (0xFFFF & getWord(offset, src))
                 | (0xFFFF0000 & (getWord(offset + 2, src) << 16));
     }
@@ -281,8 +259,7 @@ public abstract class AbstractMemory extends Memory {
      * @param target
      * @param value
      */
-    public static final void clearArray(Object[] target, Object value)
-    {
+    public static final void clearArray(Object[] target, Object value) {
         if (target == null)
             return;
 
@@ -294,8 +271,7 @@ public abstract class AbstractMemory extends Memory {
      * @param target
      * @param value
      */
-    public static final void clearArray(byte[] target, byte value)
-    {
+    public static final void clearArray(byte[] target, byte value) {
         if (target == null)
             return;
 

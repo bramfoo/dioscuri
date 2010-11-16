@@ -68,8 +68,7 @@ public class Instruction_ADC_GbEb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADC_GbEb()
-    {
+    public Instruction_ADC_GbEb() {
     }
 
     /**
@@ -77,8 +76,7 @@ public class Instruction_ADC_GbEb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADC_GbEb(CPU processor)
-    {
+    public Instruction_ADC_GbEb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -90,8 +88,7 @@ public class Instruction_ADC_GbEb implements Instruction {
     /**
      * Add byte in memory/register (source) + CF to register (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Determine value of carry flag before reset
         iCarryFlag = cpu.flags[CPU.REGISTER_FLAGS_CF] ? 1 : 0;
 

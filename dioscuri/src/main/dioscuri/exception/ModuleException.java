@@ -48,8 +48,7 @@ public class ModuleException extends Exception {
     /**
      * @param message
      */
-    public ModuleException(String message)
-    {
+    public ModuleException(String message) {
         super(message);
     }
 }

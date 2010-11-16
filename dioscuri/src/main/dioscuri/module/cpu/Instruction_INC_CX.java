@@ -57,8 +57,7 @@ public class Instruction_INC_CX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INC_CX()
-    {
+    public Instruction_INC_CX() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_INC_CX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INC_CX(CPU processor)
-    {
+    public Instruction_INC_CX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_INC_CX implements Instruction {
     /**
      * Increment general register CX
      */
-    public void execute()
-    {
+    public void execute() {
         // Make copy of old value
         System.arraycopy(cpu.cx, 0, oldDest, 0, cpu.cx.length);
 

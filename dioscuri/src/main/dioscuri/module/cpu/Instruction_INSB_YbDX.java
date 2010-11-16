@@ -65,8 +65,7 @@ public class Instruction_INSB_YbDX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INSB_YbDX()
-    {
+    public Instruction_INSB_YbDX() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_INSB_YbDX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INSB_YbDX(CPU processor)
-    {
+    public Instruction_INSB_YbDX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -90,8 +88,7 @@ public class Instruction_INSB_YbDX implements Instruction {
     /**
      * Copy byte from I/O port to ES:DI; update DI register according to DF
      */
-    public void execute()
-    {
+    public void execute() {
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;
         portAddress = (((((int) cpu.dx[CPU.REGISTER_GENERAL_HIGH]) & 0xFF) << 8) + (((int) cpu.dx[CPU.REGISTER_GENERAL_LOW]) & 0xFF));

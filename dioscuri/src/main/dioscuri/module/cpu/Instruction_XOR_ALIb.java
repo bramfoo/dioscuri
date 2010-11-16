@@ -54,8 +54,7 @@ public class Instruction_XOR_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_XOR_ALIb()
-    {
+    public Instruction_XOR_ALIb() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_XOR_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_XOR_ALIb(CPU processor)
-    {
+    public Instruction_XOR_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -77,8 +75,7 @@ public class Instruction_XOR_ALIb implements Instruction {
      * Logical XOR of immediate byte and AL.<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;

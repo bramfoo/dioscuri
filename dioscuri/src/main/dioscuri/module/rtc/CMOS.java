@@ -237,8 +237,7 @@ public class CMOS {
     /**
      * Class constructor
      */
-    public CMOS()
-    {
+    public CMOS() {
         // Create RAM array
         ram = new byte[CMOS_SIZE];
 
@@ -283,8 +282,7 @@ public class CMOS {
     /**
      * @param systemTime
      */
-    protected void reset(boolean systemTime)
-    {
+    protected void reset(boolean systemTime) {
         // Check if custom time should be used; system time has already been set
         // as default.
         if (!systemTime) {
@@ -324,8 +322,7 @@ public class CMOS {
      * Bytes 0x00-0x0F and 0x30-0x33 are omitted.<BR>
      * Stores the result in CHECKSUM_HIGH_BYTE and CHECKSUM_LOW_BYTE
      */
-    private void checksum()
-    {
+    private void checksum() {
         int checksum = 0;
         for (int reg = 0x10; reg <= 0x2D; reg++) {
             checksum += ram[reg];
@@ -344,8 +341,7 @@ public class CMOS {
      * @param decimalValue
      * @return byte containing the BCD value of decimal
      */
-    protected byte decToBcd(int decimalValue)
-    {
+    protected byte decToBcd(int decimalValue) {
         return (byte) ((16 * ((decimalValue / 10) % 10)) + (decimalValue % 10));
     }
 
@@ -356,8 +352,7 @@ public class CMOS {
      * @param bcdValue
      * @return int containing the decimal value of bcd
      */
-    protected int bcdToDec(byte bcdValue)
-    {
+    protected int bcdToDec(byte bcdValue) {
         // Convert BCD-byte into decimal value
         return (((bcdValue >> 4) & 0x0F) * 10) + (bcdValue & 0x0F);
     }
@@ -367,8 +362,7 @@ public class CMOS {
      *
      * @return String
      */
-    protected String getClockValue()
-    {
+    protected String getClockValue() {
         return "" + bcdToDec(ram[CMOS.RTC_HOURS]) + ":"
                 + bcdToDec(ram[CMOS.RTC_MINUTES]) + ":"
                 + bcdToDec(ram[CMOS.RTC_SECONDS]) + " "
@@ -382,8 +376,7 @@ public class CMOS {
      *
      * @param seconds Number of seconds to update the clock
      */
-    protected void setClockValue(int seconds)
-    {
+    protected void setClockValue(int seconds) {
         calendar.add(Calendar.SECOND, seconds);
 
         // Write values to RAM array

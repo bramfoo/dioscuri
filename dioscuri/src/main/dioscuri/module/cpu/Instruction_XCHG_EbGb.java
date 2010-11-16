@@ -69,8 +69,7 @@ public class Instruction_XCHG_EbGb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_XCHG_EbGb()
-    {
+    public Instruction_XCHG_EbGb() {
     }
 
     /**
@@ -78,8 +77,7 @@ public class Instruction_XCHG_EbGb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_XCHG_EbGb(CPU processor)
-    {
+    public Instruction_XCHG_EbGb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -93,8 +91,7 @@ public class Instruction_XCHG_EbGb implements Instruction {
      * (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get addresByte
         addressByte = cpu.getByteFromCode();

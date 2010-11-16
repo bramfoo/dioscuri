@@ -56,8 +56,7 @@ public class Instruction_TEST_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_TEST_ALIb()
-    {
+    public Instruction_TEST_ALIb() {
     }
 
     /**
@@ -65,8 +64,7 @@ public class Instruction_TEST_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_TEST_ALIb(CPU processor)
-    {
+    public Instruction_TEST_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -81,8 +79,7 @@ public class Instruction_TEST_ALIb implements Instruction {
      * SF, ZF, and PF are set according to the result;<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;

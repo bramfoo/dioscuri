@@ -45,8 +45,7 @@ public class ProtectedModeExceptionHandler extends ExceptionHandler {
      * @param stateMap
      */
     public ProtectedModeExceptionHandler(int lastX86Position,
-                                         ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
-    {
+                                         ProtectedModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
         super(lastX86Position, initialNode, stateMap);
     }
 
@@ -56,8 +55,7 @@ public class ProtectedModeExceptionHandler extends ExceptionHandler {
      * @throws IOException
      */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
-                                       ClassFile cf) throws IOException
-    {
+                                       ClassFile cf) throws IOException {
         // update eip?
 
         byteCodes.write(JavaOpcode.ALOAD_1); // cpu, e

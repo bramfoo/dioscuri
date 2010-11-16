@@ -54,8 +54,7 @@ public class Instruction_POP_CX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_POP_CX()
-    {
+    public Instruction_POP_CX() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_POP_CX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_POP_CX(CPU processor)
-    {
+    public Instruction_POP_CX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_POP_CX implements Instruction {
     /**
      * This pops the word at stack top SS:SP into CX
      */
-    public void execute()
-    {
+    public void execute() {
         // Get word SS:SP and assign to CX
         cpu.cx = cpu.getWordFromStack();
 

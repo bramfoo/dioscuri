@@ -66,8 +66,7 @@ public abstract class ConstantPoolInfo {
      * @throws IOException
      */
     public static ConstantPoolInfo construct(DataInputStream in)
-            throws IOException
-    {
+            throws IOException {
         int tag = in.readUnsignedByte();
         switch (tag) {
             case CLASS:
@@ -100,14 +99,12 @@ public abstract class ConstantPoolInfo {
         private final int nameIndex;
         private final int hashCode;
 
-        ClassInfo(DataInputStream in) throws IOException
-        {
+        ClassInfo(DataInputStream in) throws IOException {
             nameIndex = in.readUnsignedShort();
             hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
         }
 
-        ClassInfo(int val)
-        {
+        ClassInfo(int val) {
             nameIndex = val;
             hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37);
         }
@@ -115,16 +112,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return CLASS;
         }
 
         /**
          * @return -
          */
-        public int getNameIndex()
-        {
+        public int getNameIndex() {
             return nameIndex;
         }
 
@@ -132,20 +127,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(CLASS);
             out.writeShort(nameIndex);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -156,8 +148,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Class_info : name=" + getNameIndex();
         }
     }
@@ -167,47 +158,40 @@ public abstract class ConstantPoolInfo {
         private final int nameAndTypeIndex;
         private final int hashCode;
 
-        RefInfo(DataInputStream in) throws IOException
-        {
+        RefInfo(DataInputStream in) throws IOException {
             classIndex = in.readUnsignedShort();
             nameAndTypeIndex = in.readUnsignedShort();
             hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37)
                     ^ (nameAndTypeIndex * 41);
         }
 
-        RefInfo(int classIndex, int nameAndTypeIndex)
-        {
+        RefInfo(int classIndex, int nameAndTypeIndex) {
             this.classIndex = classIndex;
             this.nameAndTypeIndex = nameAndTypeIndex;
             hashCode = (this.getClass().hashCode() * 31) ^ (classIndex * 37)
                     ^ (nameAndTypeIndex * 41);
         }
 
-        public int getClassIndex()
-        {
+        public int getClassIndex() {
             return classIndex;
         }
 
-        public int getNameAndTypeIndex()
-        {
+        public int getNameAndTypeIndex() {
             return nameAndTypeIndex;
         }
 
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(getTag());
             out.writeShort(classIndex);
             out.writeShort(nameAndTypeIndex);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -224,67 +208,57 @@ public abstract class ConstantPoolInfo {
     }
 
     public static class FieldRefInfo extends RefInfo {
-        FieldRefInfo(DataInputStream in) throws IOException
-        {
+        FieldRefInfo(DataInputStream in) throws IOException {
             super(in);
         }
 
-        FieldRefInfo(int classIndex, int nameAndTypeIndex)
-        {
+        FieldRefInfo(int classIndex, int nameAndTypeIndex) {
             super(classIndex, nameAndTypeIndex);
         }
 
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return FIELDREF;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_FieldRef_info : class=" + getClassIndex()
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
     public static class MethodRefInfo extends RefInfo {
-        MethodRefInfo(DataInputStream in) throws IOException
-        {
+        MethodRefInfo(DataInputStream in) throws IOException {
             super(in);
         }
 
-        MethodRefInfo(int classIndex, int nameAndTypeIndex)
-        {
+        MethodRefInfo(int classIndex, int nameAndTypeIndex) {
             super(classIndex, nameAndTypeIndex);
         }
 
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return METHODREF;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_MethodRef_info : class=" + getClassIndex()
                     + " : nameandtype=" + getNameAndTypeIndex();
         }
     }
 
     public static class InterfaceMethodRefInfo extends MethodRefInfo {
-        InterfaceMethodRefInfo(DataInputStream in) throws IOException
-        {
+        InterfaceMethodRefInfo(DataInputStream in) throws IOException {
             super(in);
         }
 
-        InterfaceMethodRefInfo(int classIndex, int nameAndTypeIndex)
-        {
+        InterfaceMethodRefInfo(int classIndex, int nameAndTypeIndex) {
             super(classIndex, nameAndTypeIndex);
         }
 
@@ -292,14 +266,12 @@ public abstract class ConstantPoolInfo {
          * @return -
          */
         @Override
-        public int getTag()
-        {
+        public int getTag() {
             return INTERFACEMETHODREF;
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_InterfaceMethodRef_info : class="
                     + getClassIndex() + " : nameandtype="
                     + getNameAndTypeIndex();
@@ -310,14 +282,12 @@ public abstract class ConstantPoolInfo {
         private final int stringIndex;
         private final int hashCode;
 
-        StringInfo(DataInputStream in) throws IOException
-        {
+        StringInfo(DataInputStream in) throws IOException {
             stringIndex = in.readUnsignedShort();
             hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
         }
 
-        StringInfo(int val)
-        {
+        StringInfo(int val) {
             stringIndex = val;
             hashCode = (this.getClass().hashCode() * 31) ^ (stringIndex * 37);
         }
@@ -325,16 +295,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return STRING;
         }
 
         /**
          * @return -
          */
-        public int getStringIndex()
-        {
+        public int getStringIndex() {
             return stringIndex;
         }
 
@@ -342,20 +310,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(STRING);
             out.writeShort(stringIndex);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -366,8 +331,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_String_info : string=" + getStringIndex();
         }
     }
@@ -376,14 +340,12 @@ public abstract class ConstantPoolInfo {
         private final int bytes;
         private final int hashCode;
 
-        IntegerInfo(DataInputStream in) throws IOException
-        {
+        IntegerInfo(DataInputStream in) throws IOException {
             bytes = in.readInt();
             hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
         }
 
-        IntegerInfo(int val)
-        {
+        IntegerInfo(int val) {
             bytes = val;
             hashCode = (this.getClass().hashCode() * 31) ^ (bytes * 37);
         }
@@ -391,16 +353,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return INTEGER;
         }
 
         /**
          * @return -
          */
-        public int getBytes()
-        {
+        public int getBytes() {
             return bytes;
         }
 
@@ -408,20 +368,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(INTEGER);
             out.writeInt(bytes);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -432,8 +389,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Integer_info : value=" + getBytes();
         }
     }
@@ -442,15 +398,13 @@ public abstract class ConstantPoolInfo {
         private final float bytes;
         private final int hashCode;
 
-        FloatInfo(DataInputStream in) throws IOException
-        {
+        FloatInfo(DataInputStream in) throws IOException {
             bytes = in.readFloat();
             hashCode = (this.getClass().hashCode() * 31)
                     ^ (Float.floatToRawIntBits(bytes) * 37);
         }
 
-        FloatInfo(float val)
-        {
+        FloatInfo(float val) {
             bytes = val;
             hashCode = (this.getClass().hashCode() * 31)
                     ^ (Float.floatToRawIntBits(bytes) * 37);
@@ -459,16 +413,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return FLOAT;
         }
 
         /**
          * @return -
          */
-        public float getBytes()
-        {
+        public float getBytes() {
             return bytes;
         }
 
@@ -476,20 +428,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(FLOAT);
             out.writeFloat(bytes);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -500,8 +449,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Float_info : value=" + getBytes();
         }
     }
@@ -510,15 +458,13 @@ public abstract class ConstantPoolInfo {
         private final long bytes;
         private final int hashCode;
 
-        LongInfo(DataInputStream in) throws IOException
-        {
+        LongInfo(DataInputStream in) throws IOException {
             bytes = in.readLong();
             hashCode = (this.getClass().hashCode() * 31) ^ (((int) bytes) * 37)
                     ^ (((int) (bytes >>> 32)) * 41);
         }
 
-        LongInfo(long val)
-        {
+        LongInfo(long val) {
             bytes = val;
             hashCode = (this.getClass().hashCode() * 31) ^ (((int) bytes) * 37)
                     ^ (((int) (bytes >>> 32)) * 41);
@@ -527,16 +473,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return LONG;
         }
 
         /**
          * @return -
          */
-        public long getBytes()
-        {
+        public long getBytes() {
             return bytes;
         }
 
@@ -544,20 +488,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(LONG);
             out.writeLong(bytes);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -568,8 +509,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Long_info : value=" + getBytes();
         }
     }
@@ -578,8 +518,7 @@ public abstract class ConstantPoolInfo {
         private final double bytes;
         private final int hashCode;
 
-        DoubleInfo(DataInputStream in) throws IOException
-        {
+        DoubleInfo(DataInputStream in) throws IOException {
             bytes = in.readDouble();
             long longBytes = Double.doubleToRawLongBits(bytes);
             hashCode = (this.getClass().hashCode() * 31)
@@ -587,8 +526,7 @@ public abstract class ConstantPoolInfo {
                     ^ (((int) (longBytes >>> 32)) * 41);
         }
 
-        DoubleInfo(double val)
-        {
+        DoubleInfo(double val) {
             bytes = val;
             long longBytes = Double.doubleToRawLongBits(bytes);
             hashCode = (this.getClass().hashCode() * 31)
@@ -599,16 +537,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return DOUBLE;
         }
 
         /**
          * @return -
          */
-        public double getBytes()
-        {
+        public double getBytes() {
             return bytes;
         }
 
@@ -616,20 +552,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(DOUBLE);
             out.writeDouble(bytes);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -640,8 +573,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Double_info : value=" + getBytes();
         }
     }
@@ -651,16 +583,14 @@ public abstract class ConstantPoolInfo {
         private final int descriptorIndex;
         private final int hashCode;
 
-        NameAndTypeInfo(DataInputStream in) throws IOException
-        {
+        NameAndTypeInfo(DataInputStream in) throws IOException {
             nameIndex = in.readUnsignedShort();
             descriptorIndex = in.readUnsignedShort();
             hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37)
                     ^ (descriptorIndex * 41);
         }
 
-        NameAndTypeInfo(int nameIndex, int descriptorIndex)
-        {
+        NameAndTypeInfo(int nameIndex, int descriptorIndex) {
             this.nameIndex = nameIndex;
             this.descriptorIndex = descriptorIndex;
             hashCode = (this.getClass().hashCode() * 31) ^ (nameIndex * 37)
@@ -670,24 +600,21 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return NAMEANDTYPE;
         }
 
         /**
          * @return -
          */
-        public int getNameIndex()
-        {
+        public int getNameIndex() {
             return nameIndex;
         }
 
         /**
          * @return -
          */
-        public int getDescriptorIndex()
-        {
+        public int getDescriptorIndex() {
             return descriptorIndex;
         }
 
@@ -695,21 +622,18 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(NAMEANDTYPE);
             out.writeShort(nameIndex);
             out.writeShort(descriptorIndex);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -722,8 +646,7 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_NameAndType_info : descriptor="
                     + getDescriptorIndex() + " : name=" + getNameIndex();
         }
@@ -733,15 +656,13 @@ public abstract class ConstantPoolInfo {
         private final String bytes;
         private final int hashCode;
 
-        Utf8Info(DataInputStream in) throws IOException
-        {
+        Utf8Info(DataInputStream in) throws IOException {
             bytes = in.readUTF();
             hashCode = (this.getClass().hashCode() * 31)
                     ^ (bytes.hashCode() * 37);
         }
 
-        Utf8Info(String val)
-        {
+        Utf8Info(String val) {
             bytes = val;
             hashCode = (this.getClass().hashCode() * 31)
                     ^ (bytes.hashCode() * 37);
@@ -750,16 +671,14 @@ public abstract class ConstantPoolInfo {
         /**
          * @return -
          */
-        public int getTag()
-        {
+        public int getTag() {
             return UTF8;
         }
 
         /**
          * @return -
          */
-        public String getBytes()
-        {
+        public String getBytes() {
             return bytes;
         }
 
@@ -767,20 +686,17 @@ public abstract class ConstantPoolInfo {
          * @param out
          * @throws IOException
          */
-        public void write(DataOutputStream out) throws IOException
-        {
+        public void write(DataOutputStream out) throws IOException {
             out.writeByte(UTF8);
             out.writeUTF(bytes);
         }
 
         @Override
-        public int hashCode()
-        {
+        public int hashCode() {
             return hashCode;
         }
 
-        public boolean equals(Object obj)
-        {
+        public boolean equals(Object obj) {
             if (obj == this)
                 return true;
 
@@ -791,15 +707,13 @@ public abstract class ConstantPoolInfo {
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return "CONSTANT_Utf8_info : value=" + getBytes();
         }
     }
 
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int hash = 3;
         return hash;
     }

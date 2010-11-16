@@ -64,8 +64,7 @@ public class IO {
     /**
      * Class constructor
      */
-    public IO()
-    {
+    public IO() {
         cmd = null;
         prevCmd = null;
         cmdPointer = 0;
@@ -82,8 +81,7 @@ public class IO {
      * @return byte[] byte array containing machinecode
      * @throws IOException
      */
-    public byte[] importBinaryStream(String filename) throws IOException
-    {
+    public byte[] importBinaryStream(String filename) throws IOException {
         // open input stream
         BufferedInputStream bdis = new BufferedInputStream(new DataInputStream(
                 new FileInputStream(new File(filename))));
@@ -106,8 +104,7 @@ public class IO {
      * @throws IOException
      */
     public void exportBinaryStream(String filename, String data)
-            throws IOException
-    {
+            throws IOException {
         // open output stream
         DataOutputStream dos = new DataOutputStream(new FileOutputStream(
                 new File(filename)));
@@ -124,8 +121,7 @@ public class IO {
      *
      * @return string containing input line
      */
-    public String getInput()
-    {
+    public String getInput() {
         // Read input string, return array of words
         BufferedReader stdin = new BufferedReader(new InputStreamReader(
                 System.in));
@@ -143,8 +139,7 @@ public class IO {
      *
      * @param string
      */
-    public void setOutput(String string)
-    {
+    public void setOutput(String string) {
         System.out.println(string);
     }
 
@@ -154,8 +149,7 @@ public class IO {
      *
      * @return -
      */
-    public int getCommand()
-    {
+    public int getCommand() {
         // Declare returnCommand
         int returnCommand = -1;
         arguments = null;
@@ -338,16 +332,14 @@ public class IO {
      *
      * @return string[] with arguments
      */
-    public String[] getArguments()
-    {
+    public String[] getArguments() {
         return arguments;
     }
 
     /**
      * Shows help information of emulator to output
      */
-    void showHelp()
-    {
+    void showHelp() {
         // Show helpfile
         logger.log(Level.SEVERE, this.toString());
     }
@@ -358,8 +350,7 @@ public class IO {
      * @return string with help information
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         // String of this class
         String info = "Emulator help" + "\r\n";
         info += "--------------------------------------------------------------------------------------------------"

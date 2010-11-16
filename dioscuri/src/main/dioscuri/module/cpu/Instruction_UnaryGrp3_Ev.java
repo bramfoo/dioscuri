@@ -83,8 +83,7 @@ public class Instruction_UnaryGrp3_Ev implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_UnaryGrp3_Ev()
-    {
+    public Instruction_UnaryGrp3_Ev() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -109,8 +108,7 @@ public class Instruction_UnaryGrp3_Ev implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_UnaryGrp3_Ev(CPU processor)
-    {
+    public Instruction_UnaryGrp3_Ev(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -125,8 +123,7 @@ public class Instruction_UnaryGrp3_Ev implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Clear sourceValue for previous pointers
         sourceValue = new byte[2];
         sourceValue2 = new byte[2];

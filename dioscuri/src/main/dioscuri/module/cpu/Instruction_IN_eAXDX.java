@@ -65,8 +65,7 @@ public class Instruction_IN_eAXDX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_IN_eAXDX()
-    {
+    public Instruction_IN_eAXDX() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_IN_eAXDX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_IN_eAXDX(CPU processor)
-    {
+    public Instruction_IN_eAXDX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -87,8 +85,7 @@ public class Instruction_IN_eAXDX implements Instruction {
     /**
      * Input word/doubleword from I/O port address specified by DX into eAX
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Convert value in DX to unsigned integer to prevent lookup table out
         // of bounds;

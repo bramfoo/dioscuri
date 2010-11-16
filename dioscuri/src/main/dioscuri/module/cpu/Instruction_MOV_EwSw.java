@@ -65,8 +65,7 @@ public class Instruction_MOV_EwSw implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_EwSw()
-    {
+    public Instruction_MOV_EwSw() {
     }
 
     /**
@@ -74,8 +73,7 @@ public class Instruction_MOV_EwSw implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_EwSw(CPU processor)
-    {
+    public Instruction_MOV_EwSw(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -88,8 +86,7 @@ public class Instruction_MOV_EwSw implements Instruction {
      * Word-sized copy of memory/register (destination) from register (source).<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get addresByte
         addressByte = cpu.getByteFromCode();

@@ -40,8 +40,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
     /**
      * @param clk
      */
-    public OptimisedCompiler(Clock clk)
-    {
+    public OptimisedCompiler(Clock clk) {
         this.clock = clk;
     }
 
@@ -49,8 +48,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
      * @param source
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source)
-    {
+    public RealModeCodeBlock getRealModeCodeBlock(InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];
@@ -66,8 +64,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlock(
-            InstructionSource source)
-    {
+            InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];
@@ -83,8 +80,7 @@ public class OptimisedCompiler extends AbstractBasicCompiler {
      * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
-            InstructionSource source)
-    {
+            InstructionSource source) {
         buildCodeBlockBuffers(source);
 
         int[] newMicrocodes = new int[bufferOffset];

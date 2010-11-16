@@ -147,8 +147,7 @@ public class Screen extends ModuleScreen {
      *
      * @param owner
      */
-    public Screen(Emulator owner)
-    {
+    public Screen(Emulator owner) {
 
         // Create an initial (temporary) colourmodel, filled with black
         Arrays.fill(palette[RED], (byte) 0);
@@ -187,8 +186,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // Set screen size and internal image
         this.setScreenSize(screenWidth, screenHeight);
 
@@ -202,8 +200,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String dump = "";
         String ret = "\r\n";
 
@@ -224,8 +221,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public JPanel getScreen()
-    {
+    public JPanel getScreen() {
         return screenPanel;
     }
 
@@ -235,8 +231,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenRows()
-    {
+    public int getScreenRows() {
         return textRows;
     }
 
@@ -246,8 +241,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenColumns()
-    {
+    public int getScreenColumns() {
         return textColumns;
     }
 
@@ -257,8 +251,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenWidth()
-    {
+    public int getScreenWidth() {
         return screenWidth;
     }
 
@@ -268,8 +261,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public int getScreenHeight()
-    {
+    public int getScreenHeight() {
         return screenHeight;
     }
 
@@ -279,8 +271,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void setScreenSize(int width, int height)
-    {
+    public void setScreenSize(int width, int height) {
         // Update image size
         this.setImage(width, height);
 
@@ -301,8 +292,7 @@ public class Screen extends ModuleScreen {
      */
     @Override
     public void updateScreenSize(int newWidth, int newHeight, int newFontWidth,
-                                 int newFontHeight)
-    {
+                                 int newFontHeight) {
         logger.log(Level.INFO, "[" + super.getType() + "]"
                 + " call to updateScreenSize() w/ fonts");
 
@@ -326,8 +316,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void clearScreen()
-    {
+    public void clearScreen() {
         // "I see a red door and I want it painted black; No colours anymore I want them to turn black"
         byte[] pixelArray = new byte[image.getWidth() * image.getHeight()];
         Arrays.fill(pixelArray, (byte) 0);
@@ -348,8 +337,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public boolean setPaletteColour(byte index, int red, int green, int blue)
-    {
+    public boolean setPaletteColour(byte index, int red, int green, int blue) {
         // Assure byte is within array bounds
         int indx = index & 0xFF;
 
@@ -377,8 +365,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void setByteInCodePage(int index, byte data)
-    {
+    public void setByteInCodePage(int index, byte data) {
         // Set data
         codePage[index] = data;
 
@@ -396,8 +383,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void updateCodePage(int start)
-    {
+    public void updateCodePage(int start) {
         // The assumption here is that data is always copied from video memory,
         // which is hardcoded below
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
@@ -415,8 +401,7 @@ public class Screen extends ModuleScreen {
      */
     @Override
     public void updateText(int oldText, int newText, long cursorXPos,
-                           long cursorYPos, short[] textModeAttribs, int numberRows)
-    {
+                           long cursorYPos, short[] textModeAttribs, int numberRows) {
 
         ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
 
@@ -727,8 +712,7 @@ public class Screen extends ModuleScreen {
      * @see dioscuri.module.ModuleScreen
      */
     @Override
-    public void updateGraphicsTile(byte[] tile, int x0, int y0)
-    {
+    public void updateGraphicsTile(byte[] tile, int x0, int y0) {
 
         int x, y, y_size;
 
@@ -758,8 +742,7 @@ public class Screen extends ModuleScreen {
      * @param width  Width of the image in pixels
      * @param height Height of the image in pixels
      */
-    private void setImage(int width, int height)
-    {
+    private void setImage(int width, int height) {
         // Create a data buffer using the byte buffer of pixel data.
         pixels = new byte[width * height];
         Arrays.fill(pixels, (byte) 0);
@@ -786,8 +769,7 @@ public class Screen extends ModuleScreen {
     /**
      * Refresh the on-screen image
      */
-    private void updateImage()
-    {
+    private void updateImage() {
         image = new BufferedImage(colourModel, raster, false, null);
         screenPanel.setImage(image);
     }
@@ -796,8 +778,7 @@ public class Screen extends ModuleScreen {
      * Update the colourModel used in the image. Do this after the palette
      * values have been changed
      */
-    private void updatePalette()
-    {
+    private void updatePalette() {
         colourModel = new IndexColorModel(8, 256, palette[RED], palette[GREEN],
                 palette[BLUE]);
         // This requires the image to be redrawn on the canvas to reflect
@@ -808,8 +789,7 @@ public class Screen extends ModuleScreen {
     /**
      * Create character images from code page 437 hex values
      */
-    private void createCodePage437Images()
-    {
+    private void createCodePage437Images() {
         // Default code page 437 values
         int fntWidth = 8;
         int fntHeight = 16;
@@ -845,8 +825,7 @@ public class Screen extends ModuleScreen {
      * @param fontHeight Height of the character in pixels
      */
     private void updateFontImage(int index, int[] fontData, int fontWidth,
-                                 int fontHeight)
-    {
+                                 int fontHeight) {
         int bits = 8;
         int[] pixelArray = new int[fontWidth * fontHeight * bits];
 

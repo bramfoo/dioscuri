@@ -51,8 +51,7 @@ public abstract class ModuleMouse extends AbstractModule {
     /**
      *
      */
-    public ModuleMouse()
-    {
+    public ModuleMouse() {
         super(Module.Type.MOUSE,
                 Module.Type.KEYBOARD, Module.Type.SERIALPORT);
     }

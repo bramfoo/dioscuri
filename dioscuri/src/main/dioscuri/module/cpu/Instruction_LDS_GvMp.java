@@ -67,8 +67,7 @@ public class Instruction_LDS_GvMp implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_LDS_GvMp()
-    {
+    public Instruction_LDS_GvMp() {
         operandWordSize = true;
     }
 
@@ -77,8 +76,7 @@ public class Instruction_LDS_GvMp implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_LDS_GvMp(CPU processor)
-    {
+    public Instruction_LDS_GvMp(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -91,8 +89,7 @@ public class Instruction_LDS_GvMp implements Instruction {
      * Load DS:r16 or DS:r32 with far pointer from memory m16:16 or m16:32.<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

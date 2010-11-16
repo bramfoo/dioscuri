@@ -45,8 +45,7 @@ public class RealModeExceptionHandler extends ExceptionHandler {
      * @param stateMap
      */
     public RealModeExceptionHandler(int lastX86Position,
-                                    RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap)
-    {
+                                    RealModeRPNNode initialNode, Map<Integer, RPNNode> stateMap) {
         super(lastX86Position, initialNode, stateMap);
     }
 
@@ -56,8 +55,7 @@ public class RealModeExceptionHandler extends ExceptionHandler {
      * @throws IOException
      */
     protected void writeHandlerRoutine(CountingOutputStream byteCodes,
-                                       ClassFile cf) throws IOException
-    {
+                                       ClassFile cf) throws IOException {
         byteCodes.write(JavaOpcode.INVOKEVIRTUAL);
         try {
             int cpIndex = cf.addToConstantPool(ProcessorException.class

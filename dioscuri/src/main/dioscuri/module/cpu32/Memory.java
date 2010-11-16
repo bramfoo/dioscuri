@@ -62,8 +62,7 @@ public abstract class Memory implements ByteArray {
     /**
      * @return -
      */
-    public boolean isAllocated()
-    {
+    public boolean isAllocated() {
         return true;
     }
 

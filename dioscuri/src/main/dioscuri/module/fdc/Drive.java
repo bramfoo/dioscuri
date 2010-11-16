@@ -116,8 +116,7 @@ public class Drive {
         private final int sectors;
         private final int value; // TODO find what that value represents + add a getter when found
 
-        private FloppyType(byte id, int tracks, int heads, int sectorsPerTrack, int sectors, int value)
-        {
+        private FloppyType(byte id, int tracks, int heads, int sectorsPerTrack, int sectors, int value) {
             this.id = id;
             this.tracks = tracks;
             this.heads = heads;
@@ -126,28 +125,23 @@ public class Drive {
             this.value = value;
         }
 
-        public byte getId()
-        {
+        public byte getId() {
             return id;
         }
 
-        public int getTracks()
-        {
+        public int getTracks() {
             return tracks;
         }
 
-        public int getHeads()
-        {
+        public int getHeads() {
             return heads;
         }
 
-        public int getSectorsPerTrack()
-        {
+        public int getSectorsPerTrack() {
             return sectorsPerTrack;
         }
 
-        public int getSectors()
-        {
+        public int getSectors() {
             return sectors;
         }
 
@@ -155,8 +149,7 @@ public class Drive {
          * @param floppyType
          * @return -
          */
-        public static FloppyType fromId(byte id)
-        {
+        public static FloppyType fromId(byte id) {
             FloppyType result = TYPE_NONE; // default to none
             for (FloppyType type : values()) {
                 if (type.getId() == id) {
@@ -175,8 +168,7 @@ public class Drive {
     /**
      * Drive
      */
-    public Drive()
-    {
+    public Drive() {
         // Initialise drive parameters
         driveType = 0;
         eot = 0;
@@ -206,8 +198,7 @@ public class Drive {
      *
      * @return -
      */
-    protected boolean reset()
-    {
+    protected boolean reset() {
         // Reset registers
         dir |= 0x80;
 
@@ -224,8 +215,7 @@ public class Drive {
      *
      * @return boolean true if drive contains a floppy, false otherwise
      */
-    protected boolean containsFloppy()
-    {
+    protected boolean containsFloppy() {
         return (floppy != null);
     }
 
@@ -234,8 +224,7 @@ public class Drive {
      *
      * @return int drive type
      */
-    protected int getDriveType()
-    {
+    protected int getDriveType() {
         return driveType;
     }
 
@@ -244,8 +233,7 @@ public class Drive {
      *
      * @param type
      */
-    protected void setDriveType(byte type)
-    {
+    protected void setDriveType(byte type) {
         driveType = type;
     }
 
@@ -254,8 +242,7 @@ public class Drive {
      *
      * @param state
      */
-    protected void setMotor(boolean state)
-    {
+    protected void setMotor(boolean state) {
         motorRunning = state;
     }
 
@@ -264,8 +251,7 @@ public class Drive {
      *
      * @return boolean true if motor is running, false otherwise
      */
-    protected boolean isMotorRunning()
-    {
+    protected boolean isMotorRunning() {
         return motorRunning;
     }
 
@@ -274,8 +260,7 @@ public class Drive {
      *
      * @return int type of floppy
      */
-    protected int getFloppyType()
-    {
+    protected int getFloppyType() {
         return floppyType;
     }
 
@@ -284,8 +269,7 @@ public class Drive {
      *
      * @return int size of floppy, or -1 if no floppy available
      */
-    protected int getFloppySize()
-    {
+    protected int getFloppySize() {
         if (this.containsFloppy()) {
             return floppy.getSize();
         }
@@ -301,8 +285,7 @@ public class Drive {
      * @throws StorageDeviceException
      */
     protected void insertFloppy(byte floppyType, File imageFile,
-                                boolean writeProtected) throws StorageDeviceException
-    {
+                                boolean writeProtected) throws StorageDeviceException {
         try {
             // Create new virtual floppy
             floppy = new Floppy(floppyType, imageFile);
@@ -350,8 +333,7 @@ public class Drive {
      *
      * @throws StorageDeviceException
      */
-    protected void ejectFloppy() throws StorageDeviceException
-    {
+    protected void ejectFloppy() throws StorageDeviceException {
         try {
             // Store all data from floppy to image
             floppy.storeImageToFile();
@@ -382,8 +364,7 @@ public class Drive {
      * @throws StorageDeviceException
      */
     protected void readData(int offset, int totalBytes, byte[] floppyBuffer)
-            throws StorageDeviceException
-    {
+            throws StorageDeviceException {
         // Copy bytes from floppy to buffer
         if (this.containsFloppy()) {
             // Check if full amount of bytes can be read
@@ -430,8 +411,7 @@ public class Drive {
      * @throws StorageDeviceException
      */
     protected void writeData(int offset, int totalBytes, byte[] floppyBuffer)
-            throws StorageDeviceException
-    {
+            throws StorageDeviceException {
         // Copy bytes from buffer to floppy
         if (this.containsFloppy() && !writeProtected) {
             System.arraycopy(floppyBuffer, 0, floppy.bytes, offset, totalBytes);
@@ -448,8 +428,7 @@ public class Drive {
      * Increment current sector Note: also takes care of multitrack disks and
      * cylinder position
      */
-    protected void incrementSector()
-    {
+    protected void incrementSector() {
         // Sector will be updated after data transfer is ready
         sector++;
         if ((sector > eot) || (sector > sectorsPerTrack)) {
@@ -482,8 +461,7 @@ public class Drive {
     /**
      * Reset change line Updates DIR on bit 7
      */
-    protected void resetChangeline()
-    {
+    protected void resetChangeline() {
         if (this.containsFloppy()) {
             // Swap b7 of DIR value:
             // b7: 0=diskette is present and has not been changed
@@ -496,8 +474,7 @@ public class Drive {
      * Get String representation of this class
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         String driveInfo, floppyInfo, ret, tab;
 
         ret = "\r\n";

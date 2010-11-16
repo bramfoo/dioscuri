@@ -55,8 +55,7 @@ public final class Constants {
     /**
      * Private c-tor: no need to instantiate this class.
      */
-    private Constants()
-    {
+    private Constants() {
     }
 
     /**
@@ -66,8 +65,7 @@ public final class Constants {
      * @return the directory, or a the location of the JAR file from
      *         which Dioscuri is launched, as a java.io.File object.
      */
-    private static File findRoot()
-    {
+    private static File findRoot() {
         try {
             // URLDecoder.decode(...) is used, otherwise special "html" character like spaces are
             // displayed as '%20' 

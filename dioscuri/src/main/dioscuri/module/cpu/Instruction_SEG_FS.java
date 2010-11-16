@@ -57,8 +57,7 @@ public class Instruction_SEG_FS implements Instruction {
     /**
      * Construct class
      */
-    public Instruction_SEG_FS()
-    {
+    public Instruction_SEG_FS() {
     }
 
     /**
@@ -66,8 +65,7 @@ public class Instruction_SEG_FS implements Instruction {
      *
      * @param processor
      */
-    public Instruction_SEG_FS(CPU processor)
-    {
+    public Instruction_SEG_FS(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -81,8 +79,7 @@ public class Instruction_SEG_FS implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // FS and GS are undefined for the 80186. So do nothing here,
         // which is likely to lead to disastrous results...
         throw new CPUInstructionException(

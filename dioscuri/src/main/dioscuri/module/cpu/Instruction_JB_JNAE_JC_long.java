@@ -56,8 +56,7 @@ public class Instruction_JB_JNAE_JC_long implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_JB_JNAE_JC_long()
-    {
+    public Instruction_JB_JNAE_JC_long() {
         displacement = new byte[2];
     }
 
@@ -66,8 +65,7 @@ public class Instruction_JB_JNAE_JC_long implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_JB_JNAE_JC_long(CPU processor)
-    {
+    public Instruction_JB_JNAE_JC_long(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -79,8 +77,7 @@ public class Instruction_JB_JNAE_JC_long implements Instruction {
     /**
      * Execute conditional long jump on carry
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement word (immediate)
         // Jump is relative to _next_ instruction, but by the time we change
         // the IP, it has already been incremented twice, so no extra arithmetic

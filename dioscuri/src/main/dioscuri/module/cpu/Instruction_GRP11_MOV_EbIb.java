@@ -71,8 +71,7 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_GRP11_MOV_EbIb()
-    {
+    public Instruction_GRP11_MOV_EbIb() {
         operandWordSize = false;
 
         addressByte = 0;
@@ -90,8 +89,7 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_GRP11_MOV_EbIb(CPU processor)
-    {
+    public Instruction_GRP11_MOV_EbIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -105,8 +103,7 @@ public class Instruction_GRP11_MOV_EbIb implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

@@ -73,8 +73,7 @@ public class Instruction_OUTS_DXXb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OUTS_DXXb()
-    {
+    public Instruction_OUTS_DXXb() {
     }
 
     /**
@@ -82,8 +81,7 @@ public class Instruction_OUTS_DXXb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OUTS_DXXb(CPU processor)
-    {
+    public Instruction_OUTS_DXXb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -99,8 +97,7 @@ public class Instruction_OUTS_DXXb implements Instruction {
      * Output word from DS:SI to I/O port (specified in DX); update SI register
      * according to DF.
      */
-    public void execute()
-    {
+    public void execute() {
 
         // Get port address from DX; convert this to unsigned integer to prevent
         // lookup table out of bounds;

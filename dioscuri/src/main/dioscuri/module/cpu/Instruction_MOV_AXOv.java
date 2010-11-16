@@ -59,8 +59,7 @@ public class Instruction_MOV_AXOv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_AXOv()
-    {
+    public Instruction_MOV_AXOv() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_MOV_AXOv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_AXOv(CPU processor)
-    {
+    public Instruction_MOV_AXOv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_MOV_AXOv implements Instruction {
      * Copy word from DS:DISPL (DISPL given by word following opcode) to
      * register AX
      */
-    public void execute()
-    {
+    public void execute() {
         // Get displacement within segment
         // Honour Intel little-endian: first byte is LSB, followed by MSB. Order
         // array [MSB, LSB]

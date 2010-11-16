@@ -54,8 +54,7 @@ public class Instruction_MOV_Imm_DI implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_DI()
-    {
+    public Instruction_MOV_Imm_DI() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_MOV_Imm_DI implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_DI(CPU processor)
-    {
+    public Instruction_MOV_Imm_DI(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_MOV_Imm_DI implements Instruction {
     /**
      * Copy immediate word to register DI
      */
-    public void execute()
-    {
+    public void execute() {
         cpu.di = cpu.getWordFromCode();
 
         if (cpu.doubleWord) {

@@ -64,8 +64,7 @@ public class Instruction_OR_GvEv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_OR_GvEv()
-    {
+    public Instruction_OR_GvEv() {
     }
 
     /**
@@ -73,8 +72,7 @@ public class Instruction_OR_GvEv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_OR_GvEv(CPU processor)
-    {
+    public Instruction_OR_GvEv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -87,8 +85,7 @@ public class Instruction_OR_GvEv implements Instruction {
      * Logical OR of memory/register (destination) and register (source).<BR>
      * OF and CF are cleared. AF is undefined.
      */
-    public void execute()
-    {
+    public void execute() {
         // Clear appropriate flags
         cpu.flags[CPU.REGISTER_FLAGS_OF] = false;
         cpu.flags[CPU.REGISTER_FLAGS_CF] = false;

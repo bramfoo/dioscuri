@@ -55,8 +55,7 @@ public class CodeBlockManager {
     /**
      * @param clk
      */
-    public CodeBlockManager(Clock clk)
-    {
+    public CodeBlockManager(Clock clk) {
         this.clock = clk;
 
         byteSource = new ByteSourceWrappedMemory();
@@ -100,8 +99,7 @@ public class CodeBlockManager {
 
     class CompositeFactory implements CodeBlockFactory {
         private RealModeCodeBlock tryFactory(CodeBlockFactory ff,
-                                             ByteSource source, RealModeCodeBlock spanningBlock)
-        {
+                                             ByteSource source, RealModeCodeBlock spanningBlock) {
             try {
                 return ff.getRealModeCodeBlock(source);
             } catch (ArrayIndexOutOfBoundsException e) {
@@ -111,8 +109,7 @@ public class CodeBlockManager {
             }
         }
 
-        public RealModeCodeBlock getRealModeCodeBlock(ByteSource source)
-        {
+        public RealModeCodeBlock getRealModeCodeBlock(ByteSource source) {
             RealModeCodeBlock block = tryFactory(compilingRealModeChain,
                     source, spanningRealMode);
             if (block != null)
@@ -124,21 +121,18 @@ public class CodeBlockManager {
         }
 
         public ProtectedModeCodeBlock getProtectedModeCodeBlock(
-                ByteSource source, boolean operandSize)
-        {
+                ByteSource source, boolean operandSize) {
             return null;
         }
 
         public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlock(
-                ByteSource source)
-        {
+                ByteSource source) {
             return null;
         }
     }
 
     private RealModeCodeBlock tryRealModeFactory(CodeBlockFactory ff,
-                                                 Memory memory, int offset, SpanningRealModeCodeBlock spanningBlock)
-    {
+                                                 Memory memory, int offset, SpanningRealModeCodeBlock spanningBlock) {
         try {
             byteSource.set(memory, offset & AddressSpace.BLOCK_MASK);
             return ff.getRealModeCodeBlock(byteSource);
@@ -151,8 +145,7 @@ public class CodeBlockManager {
 
     private ProtectedModeCodeBlock tryProtectedModeFactory(CodeBlockFactory ff,
                                                            Memory memory, int offset, boolean operandSizeFlag,
-                                                           SpanningProtectedModeCodeBlock spanningBlock)
-    {
+                                                           SpanningProtectedModeCodeBlock spanningBlock) {
         try {
             byteSource.set(memory, offset & AddressSpace.BLOCK_MASK);
             return ff.getProtectedModeCodeBlock(byteSource, operandSizeFlag);
@@ -165,8 +158,7 @@ public class CodeBlockManager {
 
     private Virtual8086ModeCodeBlock tryVirtual8086ModeFactory(
             CodeBlockFactory ff, Memory memory, int offset,
-            SpanningVirtual8086ModeCodeBlock spanningBlock)
-    {
+            SpanningVirtual8086ModeCodeBlock spanningBlock) {
         try {
             byteSource.set(memory, offset & AddressSpace.BLOCK_MASK);
             return ff.getVirtual8086ModeCodeBlock(byteSource);
@@ -182,8 +174,7 @@ public class CodeBlockManager {
      * @param offset
      * @return -
      */
-    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset)
-    {
+    public RealModeCodeBlock getRealModeCodeBlockAt(Memory memory, int offset) {
         RealModeCodeBlock block = null;
 
         if ((block = combiner.getRealModeCodeBlockAt(memory, offset)) == null)
@@ -207,8 +198,7 @@ public class CodeBlockManager {
      * @return -
      */
     public ProtectedModeCodeBlock getProtectedModeCodeBlockAt(Memory memory,
-                                                              int offset, boolean operandSizeFlag)
-    {
+                                                              int offset, boolean operandSizeFlag) {
         ProtectedModeCodeBlock block = null;
 
         if ((block = tryProtectedModeFactory(compilingProtectedModeChain,
@@ -228,8 +218,7 @@ public class CodeBlockManager {
      * @return -
      */
     public Virtual8086ModeCodeBlock getVirtual8086ModeCodeBlockAt(
-            Memory memory, int offset)
-    {
+            Memory memory, int offset) {
         Virtual8086ModeCodeBlock block = null;
 
         if ((block = tryVirtual8086ModeFactory(virtual8086ModeChain, memory,
@@ -241,8 +230,7 @@ public class CodeBlockManager {
         return block;
     }
 
-    public void dispose()
-    {
+    public void dispose() {
         if (bgc != null)
             bgc.stop();
         bgc = null;

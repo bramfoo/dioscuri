@@ -45,8 +45,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param image
      * @param clk
      */
-    public VGABIOS(byte[] image, Clock clk)
-    {
+    public VGABIOS(byte[] image, Clock clk) {
         loaded = false;
         ioportRegistered = false;
         this.clock = clk;
@@ -59,8 +58,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param imagefile
      * @throws IOException
      */
-    public VGABIOS(String imagefile) throws IOException
-    {
+    public VGABIOS(String imagefile) throws IOException {
         InputStream in = null;
         try {
             ByteArrayOutputStream bout = new ByteArrayOutputStream();
@@ -87,8 +85,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @throws IOException
      */
     @Override
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
         output.writeInt(imageData.length);
         output.write(imageData);
     }
@@ -98,8 +95,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @throws IOException
      */
     @Override
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
         int len = input.readInt();
         imageData = new byte[len];
         input.readFully(imageData, 0, len);
@@ -108,8 +104,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
     /**
      * @return -
      */
-    public int[] ioPortsRequested()
-    {
+    public int[] ioPortsRequested() {
         return new int[]{0x500, 0x501, 0x502, 0x503};
     }
 
@@ -117,8 +112,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @return -
      */
-    public int ioPortReadByte(int address)
-    {
+    public int ioPortReadByte(int address) {
         return 0xff;
     }
 
@@ -126,8 +120,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @return -
      */
-    public int ioPortReadWord(int address)
-    {
+    public int ioPortReadWord(int address) {
         return 0xffff;
     }
 
@@ -135,8 +128,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @return -
      */
-    public int ioPortReadLong(int address)
-    {
+    public int ioPortReadLong(int address) {
         return (int) 0xffffffff;
     }
 
@@ -144,8 +136,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @param data
      */
-    public void ioPortWriteByte(int address, int data)
-    {
+    public void ioPortWriteByte(int address, int data) {
         switch (address) {
             /* LGPL VGA-BIOS Messages */
             case 0x500:
@@ -165,8 +156,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @param data
      */
-    public void ioPortWriteWord(int address, int data)
-    {
+    public void ioPortWriteWord(int address, int data) {
         switch (address) {
             /* Bochs BIOS Messages */
             case 0x501:
@@ -180,15 +170,13 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param address
      * @param data
      */
-    public void ioPortWriteLong(int address, int data)
-    {
+    public void ioPortWriteLong(int address, int data) {
     }
 
     /**
      * @param physicalAddress
      */
-    public void load(PhysicalAddressSpace physicalAddress)
-    {
+    public void load(PhysicalAddressSpace physicalAddress) {
         int blockSize = AddressSpace.BLOCK_SIZE;
         int len = ((imageData.length - 1) / blockSize + 1) * blockSize;
 
@@ -202,8 +190,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
     /**
      * @return -
      */
-    public byte[] getImage()
-    {
+    public byte[] getImage() {
         return (byte[]) imageData.clone();
     }
 
@@ -211,8 +198,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @return -
      */
     @Override
-    public boolean updated()
-    {
+    public boolean updated() {
         return (loaded && ioportRegistered);
     }
 
@@ -220,8 +206,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param component
      */
     @Override
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace) && component.updated()) {
             this.load((PhysicalAddressSpace) component);
             loaded = true;
@@ -237,8 +222,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @return -
      */
     @Override
-    public boolean initialised()
-    {
+    public boolean initialised() {
         return (loaded && ioportRegistered);
     }
 
@@ -246,8 +230,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @param component
      */
     @Override
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
         if ((component instanceof PhysicalAddressSpace)
                 && component.initialised()) {
             this.load((PhysicalAddressSpace) component);
@@ -263,8 +246,7 @@ public class VGABIOS extends AbstractHardwareComponent implements IOPortCapable 
      * @return -
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         ioportRegistered = false;
         loaded = false;
         return true;

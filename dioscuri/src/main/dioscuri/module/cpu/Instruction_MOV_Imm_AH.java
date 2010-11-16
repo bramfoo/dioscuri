@@ -54,8 +54,7 @@ public class Instruction_MOV_Imm_AH implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOV_Imm_AH()
-    {
+    public Instruction_MOV_Imm_AH() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_MOV_Imm_AH implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOV_Imm_AH(CPU processor)
-    {
+    public Instruction_MOV_Imm_AH(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_MOV_Imm_AH implements Instruction {
     /**
      * Copy immediate byte to register AH
      */
-    public void execute()
-    {
+    public void execute() {
         // Put next byte into AH
         cpu.ax[CPU.REGISTER_GENERAL_HIGH] = cpu.getByteFromCode();
     }

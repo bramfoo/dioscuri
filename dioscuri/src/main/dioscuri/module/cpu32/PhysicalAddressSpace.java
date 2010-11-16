@@ -69,8 +69,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
 
     private LinearAddressSpace linearAddr;
 
-    public PhysicalAddressSpace()
-    {
+    public PhysicalAddressSpace() {
         mappedRegionCount = 0;
 
         quickNonA20MaskedIndex = new Memory[QUICK_INDEX_SIZE];
@@ -84,8 +83,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         setGateA20State(false);
     }
 
-    private void dumpMemory(DataOutput output, Memory[] mem) throws IOException
-    {
+    private void dumpMemory(DataOutput output, Memory[] mem) throws IOException {
         long len;
         byte[] temp = new byte[0];
         for (int i = 0; i < mem.length; i++) {
@@ -111,8 +109,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     }
 
     private void dumpLotsOfMemory(DataOutput output, Memory[][] mem)
-            throws IOException
-    {
+            throws IOException {
         output.writeInt(mem.length);
         for (int i = 0; i < mem.length; i++) {
             if (mem[i] == null)
@@ -127,8 +124,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param output
      * @throws IOException
      */
-    public void dumpState(DataOutput output) throws IOException
-    {
+    public void dumpState(DataOutput output) throws IOException {
         output.writeBoolean(gateA20MaskState);
         output.writeInt(mappedRegionCount);
 
@@ -150,8 +146,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     }
 
     private void loadMemory(DataInput input, Memory[] mem, int size)
-            throws IOException
-    {
+            throws IOException {
         long len;
         byte[] temp;
         for (int i = 0; i < size; i++) {
@@ -165,8 +160,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     }
 
     private void loadLotsOfMemory(DataInput input, Memory[][] mem)
-            throws IOException
-    {
+            throws IOException {
         int width = input.readInt();
         int len = 0;
         // mem = new Memory[width][];
@@ -179,8 +173,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param input
      * @throws IOException
      */
-    public void loadState(DataInput input) throws IOException
-    {
+    public void loadState(DataInput input) throws IOException {
         clearArray(quickA20MaskedIndex, UNCONNECTED);
         clearArray(quickNonA20MaskedIndex, UNCONNECTED);
         clearArray(quickIndex, UNCONNECTED);
@@ -212,8 +205,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      * @param value
      */
-    public void setGateA20State(boolean value)
-    {
+    public void setGateA20State(boolean value) {
         gateA20MaskState = value;
         if (value) {
             quickIndex = quickNonA20MaskedIndex;
@@ -230,16 +222,14 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean getGateA20State()
-    {
+    public boolean getGateA20State() {
         return gateA20MaskState;
     }
 
     /**
      * @return -
      */
-    public int getAllocatedBufferSize()
-    {
+    public int getAllocatedBufferSize() {
         return mappedRegionCount * BLOCK_SIZE;
     }
 
@@ -247,8 +237,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory getReadMemoryBlockAt(int offset)
-    {
+    public Memory getReadMemoryBlockAt(int offset) {
         return getMemoryBlockAt(offset);
     }
 
@@ -256,8 +245,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public Memory getWriteMemoryBlockAt(int offset)
-    {
+    public Memory getWriteMemoryBlockAt(int offset) {
         return getMemoryBlockAt(offset);
     }
 
@@ -266,8 +254,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public int execute(Processor cpu, int offset)
-    {
+    public int execute(Processor cpu, int offset) {
         return getReadMemoryBlockAt(offset).execute(cpu,
                 offset & AddressSpace.BLOCK_MASK);
     }
@@ -277,16 +264,14 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param offset
      * @return -
      */
-    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-    {
+    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         CodeBlock block = getReadMemoryBlockAt(offset).decodeCodeBlockAt(cpu,
                 offset & AddressSpace.BLOCK_MASK);
         return block;
 
     }
 
-    void replaceBlocks(Memory oldBlock, Memory newBlock)
-    {
+    void replaceBlocks(Memory oldBlock, Memory newBlock) {
         for (int i = 0; i < quickA20MaskedIndex.length; i++)
             if (quickA20MaskedIndex[i] == oldBlock)
                 quickA20MaskedIndex[i] = newBlock;
@@ -320,8 +305,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         private Memory memory;
         private int baseAddress;
 
-        MapWrapper(Memory mem, int base)
-        {
+        MapWrapper(Memory mem, int base) {
             baseAddress = base;
             memory = mem;
         }
@@ -329,13 +313,11 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          * @return -
          */
-        public long getSize()
-        {
+        public long getSize() {
             return BLOCK_SIZE;
         }
 
-        public void clear()
-        {
+        public void clear() {
             memory.clear(baseAddress, (int) getSize());
         }
 
@@ -343,8 +325,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param start
          * @param length
          */
-        public void clear(int start, int length)
-        {
+        public void clear(int start, int length) {
             if (start + length > getSize())
                 throw new ArrayIndexOutOfBoundsException(
                         "Attempt to clear outside of memory bounds");
@@ -358,8 +339,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param off
          * @param len
          */
-        public void copyContentsInto(int offset, byte[] buffer, int off, int len)
-        {
+        public void copyContentsInto(int offset, byte[] buffer, int off, int len) {
             offset = baseAddress | offset;
             memory.copyContentsInto(offset, buffer, off, len);
         }
@@ -370,8 +350,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param off
          * @param len
          */
-        public void copyContentsFrom(int offset, byte[] buffer, int off, int len)
-        {
+        public void copyContentsFrom(int offset, byte[] buffer, int off, int len) {
             offset = baseAddress | offset;
             memory.copyContentsFrom(offset, buffer, off, len);
         }
@@ -380,8 +359,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public byte getByte(int offset)
-        {
+        public byte getByte(int offset) {
             offset = baseAddress | offset;
             return memory.getByte(offset);
         }
@@ -390,8 +368,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public short getWord(int offset)
-        {
+        public short getWord(int offset) {
             offset = baseAddress | offset;
             return memory.getWord(offset);
         }
@@ -400,8 +377,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int getDoubleWord(int offset)
-        {
+        public int getDoubleWord(int offset) {
             offset = baseAddress | offset;
             return memory.getDoubleWord(offset);
         }
@@ -410,8 +386,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getQuadWord(int offset)
-        {
+        public long getQuadWord(int offset) {
             offset = baseAddress | offset;
             return memory.getQuadWord(offset);
         }
@@ -420,8 +395,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getLowerDoubleQuadWord(int offset)
-        {
+        public long getLowerDoubleQuadWord(int offset) {
             offset = baseAddress | offset;
             return memory.getQuadWord(offset);
         }
@@ -430,8 +404,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getUpperDoubleQuadWord(int offset)
-        {
+        public long getUpperDoubleQuadWord(int offset) {
             offset += 8;
             offset = baseAddress | offset;
             return memory.getQuadWord(offset);
@@ -441,8 +414,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setByte(int offset, byte data)
-        {
+        public void setByte(int offset, byte data) {
             offset = baseAddress | offset;
             memory.setByte(offset, data);
         }
@@ -451,8 +423,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setWord(int offset, short data)
-        {
+        public void setWord(int offset, short data) {
             offset = baseAddress | offset;
             memory.setWord(offset, data);
         }
@@ -461,8 +432,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setDoubleWord(int offset, int data)
-        {
+        public void setDoubleWord(int offset, int data) {
             offset = baseAddress | offset;
             memory.setDoubleWord(offset, data);
         }
@@ -471,8 +441,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setQuadWord(int offset, long data)
-        {
+        public void setQuadWord(int offset, long data) {
             offset = baseAddress | offset;
             memory.setQuadWord(offset, data);
         }
@@ -481,8 +450,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setLowerDoubleQuadWord(int offset, long data)
-        {
+        public void setLowerDoubleQuadWord(int offset, long data) {
             offset = baseAddress | offset;
             memory.setQuadWord(offset, data);
         }
@@ -491,8 +459,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setUpperDoubleQuadWord(int offset, long data)
-        {
+        public void setUpperDoubleQuadWord(int offset, long data) {
             offset += 8;
             offset = baseAddress | offset;
             memory.setQuadWord(offset, data);
@@ -503,8 +470,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int execute(Processor cpu, int offset)
-        {
+        public int execute(Processor cpu, int offset) {
             offset = baseAddress | offset;
             return memory.execute(cpu, offset);
         }
@@ -514,8 +480,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-        {
+        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             offset = baseAddress | offset;
             CodeBlock block = memory.decodeCodeBlockAt(cpu, offset);
             if (block != null)
@@ -526,8 +491,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         }
     }
 
-    public void clear()
-    {
+    public void clear() {
         for (int i = 0; i < quickNonA20MaskedIndex.length; i++)
             quickNonA20MaskedIndex[i].clear();
 
@@ -549,8 +513,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param start
      * @param length
      */
-    public void unmap(int start, int length)
-    {
+    public void unmap(int start, int length) {
         if ((start % BLOCK_SIZE) != 0)
             throw new IllegalStateException(
                     "Cannot deallocate memory starting at "
@@ -574,8 +537,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param start
      * @param length
      */
-    public void mapMemoryRegion(Memory underlying, int start, int length)
-    {
+    public void mapMemoryRegion(Memory underlying, int start, int length) {
         if (underlying.getSize() < length)
             throw new IllegalStateException("Underlying memory (length="
                     + underlying.getSize()
@@ -604,8 +566,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
      * @param start
      * @param block
      */
-    public void allocateMemory(int start, Memory block)
-    {
+    public void allocateMemory(int start, Memory block) {
         if ((start % BLOCK_SIZE) != 0)
             throw new IllegalStateException(
                     "Cannot allocate memory starting at "
@@ -624,16 +585,14 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     }
 
     public static final class UnconnectedMemoryBlock extends Memory {
-        public void clear()
-        {
+        public void clear() {
         }
 
         /**
          * @param start
          * @param length
          */
-        public void clear(int start, int length)
-        {
+        public void clear(int start, int length) {
         }
 
         /**
@@ -643,8 +602,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param len
          */
         public void copyContentsInto(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
         }
 
         /**
@@ -654,8 +612,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param len
          */
         public void copyContentsFrom(int address, byte[] buffer, int off,
-                                     int len)
-        {
+                                     int len) {
             len = Math.min(BLOCK_SIZE - address, Math.min(buffer.length - off,
                     len));
             for (int i = off; i < len; i++)
@@ -665,8 +622,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         /**
          * @return -
          */
-        public long getSize()
-        {
+        public long getSize() {
             return BLOCK_SIZE;
         }
 
@@ -674,8 +630,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public byte getByte(int offset)
-        {
+        public byte getByte(int offset) {
             return (byte) 0xFF;
         }
 
@@ -683,8 +638,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public short getWord(int offset)
-        {
+        public short getWord(int offset) {
             return (short) 0xFFFF;
         }
 
@@ -692,8 +646,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int getDoubleWord(int offset)
-        {
+        public int getDoubleWord(int offset) {
             return 0xFFFFFFFF;
         }
 
@@ -701,8 +654,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getQuadWord(int offset)
-        {
+        public long getQuadWord(int offset) {
             return -1l;
         }
 
@@ -710,8 +662,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getLowerDoubleQuadWord(int offset)
-        {
+        public long getLowerDoubleQuadWord(int offset) {
             return -1l;
         }
 
@@ -719,8 +670,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public long getUpperDoubleQuadWord(int offset)
-        {
+        public long getUpperDoubleQuadWord(int offset) {
             return -1l;
         }
 
@@ -728,48 +678,42 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @param data
          */
-        public void setByte(int offset, byte data)
-        {
+        public void setByte(int offset, byte data) {
         }
 
         /**
          * @param offset
          * @param data
          */
-        public void setWord(int offset, short data)
-        {
+        public void setWord(int offset, short data) {
         }
 
         /**
          * @param offset
          * @param data
          */
-        public void setDoubleWord(int offset, int data)
-        {
+        public void setDoubleWord(int offset, int data) {
         }
 
         /**
          * @param offset
          * @param data
          */
-        public void setQuadWord(int offset, long data)
-        {
+        public void setQuadWord(int offset, long data) {
         }
 
         /**
          * @param offset
          * @param data
          */
-        public void setLowerDoubleQuadWord(int offset, long data)
-        {
+        public void setLowerDoubleQuadWord(int offset, long data) {
         }
 
         /**
          * @param offset
          * @param data
          */
-        public void setUpperDoubleQuadWord(int offset, long data)
-        {
+        public void setUpperDoubleQuadWord(int offset, long data) {
         }
 
         /**
@@ -777,8 +721,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public int execute(Processor cpu, int offset)
-        {
+        public int execute(Processor cpu, int offset) {
             throw new IllegalStateException(
                     "Trying to execute in Unconnected Block @ 0x"
                             + Integer.toHexString(offset));
@@ -789,8 +732,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
          * @param offset
          * @return -
          */
-        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-        {
+        public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
             throw new IllegalStateException(
                     "Trying to execute in Unconnected Block @ 0x"
                             + Integer.toHexString(offset));
@@ -800,8 +742,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean reset()
-    {
+    public boolean reset() {
         clear();
         setGateA20State(false);
         linearAddr = null;
@@ -812,43 +753,37 @@ public final class PhysicalAddressSpace extends AddressSpace implements
     /**
      * @return -
      */
-    public boolean updated()
-    {
+    public boolean updated() {
         return true;
     }
 
     /**
      * @param component
      */
-    public void updateComponent(HardwareComponent component)
-    {
+    public void updateComponent(HardwareComponent component) {
     }
 
     /**
      * @return -
      */
-    public boolean initialised()
-    {
+    public boolean initialised() {
         return (linearAddr != null);
     }
 
     /**
      * @param component
      */
-    public void acceptComponent(HardwareComponent component)
-    {
+    public void acceptComponent(HardwareComponent component) {
         if (component instanceof LinearAddressSpace)
             linearAddr = (LinearAddressSpace) component;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "Physical Address Bus";
     }
 
-    private Memory getMemoryBlockAt(int i)
-    {
+    private Memory getMemoryBlockAt(int i) {
         try {
             return quickIndex[i >>> INDEX_SHIFT];
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -861,8 +796,7 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         }
     }
 
-    private void setMemoryBlockAt(int i, Memory b)
-    {
+    private void setMemoryBlockAt(int i, Memory b) {
         try {
             int idx = i >>> INDEX_SHIFT;
             quickNonA20MaskedIndex[idx] = b;
@@ -903,7 +837,6 @@ public final class PhysicalAddressSpace extends AddressSpace implements
         }
     }
 
-    public void timerCallback()
-    {
+    public void timerCallback() {
     }
 }

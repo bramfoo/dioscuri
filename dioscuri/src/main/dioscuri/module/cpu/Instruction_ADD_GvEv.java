@@ -69,8 +69,7 @@ public class Instruction_ADD_GvEv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_ADD_GvEv()
-    {
+    public Instruction_ADD_GvEv() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -91,8 +90,7 @@ public class Instruction_ADD_GvEv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_ADD_GvEv(CPU processor)
-    {
+    public Instruction_ADD_GvEv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -104,8 +102,7 @@ public class Instruction_ADD_GvEv implements Instruction {
     /**
      * Add word in memory/register (source) to register (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

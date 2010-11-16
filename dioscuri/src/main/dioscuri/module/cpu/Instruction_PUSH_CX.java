@@ -54,8 +54,7 @@ public class Instruction_PUSH_CX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_PUSH_CX()
-    {
+    public Instruction_PUSH_CX() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_PUSH_CX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_PUSH_CX(CPU processor)
-    {
+    public Instruction_PUSH_CX(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_PUSH_CX implements Instruction {
     /**
      * This pushes the word in CX onto stack top SS:SP
      */
-    public void execute()
-    {
+    public void execute() {
         // Push extra register first, if 32 bit instruction
         // Double word will be stored as [cx[LSB][MSB] ecx[LSB][MSB]] because
         // stack is counting backwards in memory

@@ -13,7 +13,6 @@ import java.io.FileInputStream;
 import java.util.logging.Logger;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public abstract class AbstractInstructionTest {
@@ -49,8 +48,8 @@ public abstract class AbstractInstructionTest {
         emu.emuConfig = ConfigController.loadFromXML(new File(Constants.DEFAULT_CONFIG_XML));
         emu.moduleConfig = emu.emuConfig.getArchitecture().getModules();
         emu.setupEmu();
-        mem = (Memory)emu.getModule(Module.Type.MEMORY);
-        cpu = (CPU)emu.getModule(Module.Type.CPU);
+        mem = (Memory) emu.getModule(Module.Type.MEMORY);
+        cpu = (CPU) emu.getModule(Module.Type.CPU);
         cpu.setDebugMode(true);
 
         // load the assembly test in an InputStream

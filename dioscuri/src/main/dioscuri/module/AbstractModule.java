@@ -73,8 +73,7 @@ public abstract class AbstractModule implements Module {
      *                            is supposed to be connected to when
      *                            the emulation process starts.
      */
-    public AbstractModule(Type type, Type... expectedConnections)
-    {
+    public AbstractModule(Type type, Type... expectedConnections) {
 
         if (type == null) {
             throw new NullPointerException("The type of class " +
@@ -101,8 +100,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final Module getConnection(Type type)
-    {
+    public final Module getConnection(Type type) {
         return connections.get(type);
     }
 
@@ -112,8 +110,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final Map<Type, Module> getConnections()
-    {
+    public final Map<Type, Module> getConnections() {
         return connections;
     }
 
@@ -123,8 +120,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final boolean getDebugMode()
-    {
+    public final boolean getDebugMode() {
         return this.debugMode;
     }
 
@@ -138,8 +134,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         return "No getDump() method provided for " + getType();
     }
 
@@ -149,8 +144,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final Type[] getExpectedConnections()
-    {
+    public final Type[] getExpectedConnections() {
         return this.connections.keySet().toArray(new Type[this.connections.size()]);
     }
 
@@ -160,8 +154,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final Type getType()
-    {
+    public final Type getType() {
         return this.type;
     }
 
@@ -171,8 +164,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final boolean isConnected()
-    {
+    public final boolean isConnected() {
         for (Map.Entry<Type, Module> entry : this.connections.entrySet()) {
             if (entry.getValue() == null) {
                 return false;
@@ -195,8 +187,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final boolean setConnection(Module module)
-    {
+    public final boolean setConnection(Module module) {
         if (module == null) {
             logger.log(Level.SEVERE, "m == null");
             return false;
@@ -217,8 +208,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public final void setDebugMode(boolean status)
-    {
+    public final void setDebugMode(boolean status) {
         this.debugMode = status;
     }
 
@@ -232,8 +222,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public void start()
-    {
+    public void start() {
         // ...
     }
 
@@ -247,8 +236,7 @@ public abstract class AbstractModule implements Module {
      * @see dioscuri.interfaces.Module
      */
     @Override
-    public void stop()
-    {
+    public void stop() {
         // ...
     }
 }

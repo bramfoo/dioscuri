@@ -84,8 +84,7 @@ public class BIOS extends ModuleBIOS {
      *
      * @param owner
      */
-    public BIOS(Emulator owner)
-    {
+    public BIOS(Emulator owner) {
 
         // Create new empty bios roms
         systemROM = new byte[SYSTEMBIOS_ROM_SIZE];
@@ -104,8 +103,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public boolean reset()
-    {
+    public boolean reset() {
         // Reset particular CMOS settings?
         logger.log(Level.CONFIG, "[" + super.getType() + "] AbstractModule has been reset.");
         return true;
@@ -117,8 +115,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.AbstractModule
      */
     @Override
-    public String getDump()
-    {
+    public String getDump() {
         String dump = "";
         String ret = "\r\n";
         String tab = "\t";
@@ -164,8 +161,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public byte[] getSystemBIOS()
-    {
+    public byte[] getSystemBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[SYSTEMBIOS_ROM_SIZE];
 
@@ -183,8 +179,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public boolean setSystemBIOS(byte[] biosCode) throws ModuleException
-    {
+    public boolean setSystemBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 64 KB max
         if (biosCode.length == SYSTEMBIOS_ROM_SIZE) {
             try {
@@ -214,8 +209,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public byte[] getVideoBIOS()
-    {
+    public byte[] getVideoBIOS() {
         // Make a copy of ROM
         byte[] biosCode = new byte[VIDEOBIOS_ROM_SIZE];
 
@@ -233,8 +227,7 @@ public class BIOS extends ModuleBIOS {
      * @see dioscuri.module.ModuleBIOS
      */
     @Override
-    public boolean setVideoBIOS(byte[] biosCode) throws ModuleException
-    {
+    public boolean setVideoBIOS(byte[] biosCode) throws ModuleException {
         // Check if BIOS code complies to 32 KB max
         if (biosCode.length == VIDEOBIOS_ROM_SIZE) {
             try {

@@ -61,8 +61,7 @@ public class Instruction_IRET implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_IRET()
-    {
+    public Instruction_IRET() {
         operandWordSize = true;
 
         newCS = new byte[2];
@@ -75,8 +74,7 @@ public class Instruction_IRET implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_IRET(CPU processor)
-    {
+    public Instruction_IRET(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -89,8 +87,7 @@ public class Instruction_IRET implements Instruction {
      * Returns from an interrupt or exception handler and restores IP, CS and
      * flags.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Pop IP, CS and flags in reverse order as they were pushed (i.e. by
         // INT instruction)
 

@@ -54,8 +54,7 @@ public class Instruction_SEG_ES implements Instruction {
     /**
      * Construct class
      */
-    public Instruction_SEG_ES()
-    {
+    public Instruction_SEG_ES() {
     }
 
     /**
@@ -63,8 +62,7 @@ public class Instruction_SEG_ES implements Instruction {
      *
      * @param processor
      */
-    public Instruction_SEG_ES(CPU processor)
-    {
+    public Instruction_SEG_ES(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -76,8 +74,7 @@ public class Instruction_SEG_ES implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute()
-    {
+    public void execute() {
         // Let CPU know this is an instruction prefix
         cpu.prefixInstruction = 0x26;
 

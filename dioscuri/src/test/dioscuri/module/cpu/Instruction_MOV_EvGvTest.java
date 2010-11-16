@@ -6,13 +6,11 @@ import org.junit.Test;
 import static org.junit.Assert.assertFalse;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_MOV_EvGvTest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_MOV_EvGvTest() throws Exception {
@@ -22,6 +20,7 @@ public class Instruction_MOV_EvGvTest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_MOV_EvGv.execute()'
     */
+
     /**
      *
      */

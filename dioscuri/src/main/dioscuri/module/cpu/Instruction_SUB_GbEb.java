@@ -66,8 +66,7 @@ public class Instruction_SUB_GbEb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_SUB_GbEb()
-    {
+    public Instruction_SUB_GbEb() {
     }
 
     /**
@@ -75,8 +74,7 @@ public class Instruction_SUB_GbEb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_SUB_GbEb(CPU processor)
-    {
+    public Instruction_SUB_GbEb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -88,8 +86,7 @@ public class Instruction_SUB_GbEb implements Instruction {
     /**
      * Subtract byte in memory/register (source) from register (destination).<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

@@ -64,8 +64,7 @@ public class Instruction_MOVS_XvYv implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_MOVS_XvYv()
-    {
+    public Instruction_MOVS_XvYv() {
         operandWordSize = false;
 
         source1 = new byte[2];
@@ -81,8 +80,7 @@ public class Instruction_MOVS_XvYv implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_MOVS_XvYv(CPU processor)
-    {
+    public Instruction_MOVS_XvYv(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -96,8 +94,7 @@ public class Instruction_MOVS_XvYv implements Instruction {
      * increment/decrement both depending on DF flag.<BR>
      * Flags modified: none
      */
-    public void execute()
-    {
+    public void execute() {
         if (cpu.doubleWord) {
             // 32-bit
             // Move doubleword at DS:eSI to ES:eDI; DS segment override is

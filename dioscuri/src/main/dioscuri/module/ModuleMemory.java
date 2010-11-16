@@ -50,8 +50,7 @@ public abstract class ModuleMemory extends AbstractModule {
     /**
      *
      */
-    public ModuleMemory()
-    {
+    public ModuleMemory() {
         super(Module.Type.MEMORY,
                 Module.Type.VIDEO, Module.Type.CPU, Module.Type.MOTHERBOARD);
     }

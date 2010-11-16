@@ -59,8 +59,7 @@ public class Instruction_CMP_ALIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_CMP_ALIb()
-    {
+    public Instruction_CMP_ALIb() {
     }
 
     /**
@@ -68,8 +67,7 @@ public class Instruction_CMP_ALIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_CMP_ALIb(CPU processor)
-    {
+    public Instruction_CMP_ALIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -82,8 +80,7 @@ public class Instruction_CMP_ALIb implements Instruction {
      * Comparison of immediate byte (SUB) with AL.<BR>
      * Does not update any registers, only sets appropriate flags.
      */
-    public void execute()
-    {
+    public void execute() {
         immediateByte = cpu.getByteFromCode();
 
         // Subtract immediate byte from register AL

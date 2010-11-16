@@ -70,8 +70,7 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_IMUL_GvEvIb()
-    {
+    public Instruction_IMUL_GvEvIb() {
         operandWordSize = true;
 
         addressByte = 0;
@@ -93,8 +92,7 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_IMUL_GvEvIb(CPU processor)
-    {
+    public Instruction_IMUL_GvEvIb(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -109,8 +107,7 @@ public class Instruction_IMUL_GvEvIb implements Instruction {
      * 3=second source<BR>
      * Flags modified: CF, OF. Flags SF, ZF, AF, and PF are undefined
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

@@ -46,8 +46,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      * @param size
      */
-    public LazyMemory(int size)
-    {
+    public LazyMemory(int size) {
         this.size = size;
         buffer = null;
     }
@@ -56,8 +55,7 @@ public class LazyMemory extends AbstractMemory {
      * @param size
      * @param clk
      */
-    public LazyMemory(int size, Clock clk)
-    {
+    public LazyMemory(int size, Clock clk) {
         this.size = size;
         buffer = null;
         this.clock = clk;
@@ -66,8 +64,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      * @param data
      */
-    public LazyMemory(byte[] data)
-    {
+    public LazyMemory(byte[] data) {
         this.size = data.length;
         buffer = data;
     }
@@ -75,13 +72,11 @@ public class LazyMemory extends AbstractMemory {
     /**
      * @return -
      */
-    public boolean isCacheable()
-    {
+    public boolean isCacheable() {
         return true;
     }
 
-    private final void allocateBuffer()
-    {
+    private final void allocateBuffer() {
         if (buffer == null) {
             buffer = new byte[size];
             allocated = true;
@@ -95,8 +90,7 @@ public class LazyMemory extends AbstractMemory {
      * @param len
      */
     @Override
-    public void copyContentsInto(int address, byte[] buf, int off, int len)
-    {
+    public void copyContentsInto(int address, byte[] buf, int off, int len) {
         try {
             System.arraycopy(buffer, address, buf, off, len);
         } catch (NullPointerException e) {
@@ -112,8 +106,7 @@ public class LazyMemory extends AbstractMemory {
      * @param len
      */
     @Override
-    public void copyContentsFrom(int address, byte[] buf, int off, int len)
-    {
+    public void copyContentsFrom(int address, byte[] buf, int off, int len) {
         try {
             System.arraycopy(buf, off, buffer, address, len);
         } catch (NullPointerException e) {
@@ -125,8 +118,7 @@ public class LazyMemory extends AbstractMemory {
     /**
      * @return -
      */
-    public long getSize()
-    {
+    public long getSize() {
         return size;
     }
 
@@ -134,8 +126,7 @@ public class LazyMemory extends AbstractMemory {
      * @return -
      */
     @Override
-    public boolean isAllocated()
-    {
+    public boolean isAllocated() {
         return allocated;
     }
 
@@ -143,8 +134,7 @@ public class LazyMemory extends AbstractMemory {
      * @param offset
      * @return -
      */
-    public byte getByte(int offset)
-    {
+    public byte getByte(int offset) {
         try {
             return buffer[offset];
         } catch (NullPointerException e) {
@@ -157,8 +147,7 @@ public class LazyMemory extends AbstractMemory {
      * @param offset
      * @param data
      */
-    public void setByte(int offset, byte data)
-    {
+    public void setByte(int offset, byte data) {
         try {
             buffer[offset] = data;
         } catch (NullPointerException e) {
@@ -172,8 +161,7 @@ public class LazyMemory extends AbstractMemory {
      * @return -
      */
     @Override
-    public short getWord(int offset)
-    {
+    public short getWord(int offset) {
         try {
             int result = 0xFF & buffer[offset];
             offset++;
@@ -193,8 +181,7 @@ public class LazyMemory extends AbstractMemory {
      * @return -
      */
     @Override
-    public int getDoubleWord(int offset)
-    {
+    public int getDoubleWord(int offset) {
         try {
             int result = 0xFF & buffer[offset];
             offset++;
@@ -222,8 +209,7 @@ public class LazyMemory extends AbstractMemory {
      * @param data
      */
     @Override
-    public void setWord(int offset, short data)
-    {
+    public void setWord(int offset, short data) {
         try {
             buffer[offset] = (byte) data;
             offset++;
@@ -241,8 +227,7 @@ public class LazyMemory extends AbstractMemory {
      * @param data
      */
     @Override
-    public void setDoubleWord(int offset, int data)
-    {
+    public void setDoubleWord(int offset, int data) {
         try {
             buffer[offset] = (byte) data;
             offset++;
@@ -270,8 +255,7 @@ public class LazyMemory extends AbstractMemory {
     }
 
     @Override
-    public void clear()
-    {
+    public void clear() {
         buffer = null;
     }
 
@@ -280,8 +264,7 @@ public class LazyMemory extends AbstractMemory {
      * @param offset
      * @return -
      */
-    public int execute(Processor cpu, int offset)
-    {
+    public int execute(Processor cpu, int offset) {
         return convertMemory(cpu).execute(cpu, offset);
     }
 
@@ -290,14 +273,12 @@ public class LazyMemory extends AbstractMemory {
      * @param offset
      * @return -
      */
-    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset)
-    {
+    public CodeBlock decodeCodeBlockAt(Processor cpu, int offset) {
         CodeBlock block = convertMemory(cpu).decodeCodeBlockAt(cpu, offset);
         return block;
     }
 
-    private LazyCodeBlockMemory convertMemory(Processor cpu)
-    {
+    private LazyCodeBlockMemory convertMemory(Processor cpu) {
         LazyCodeBlockMemory newMemory = new LazyCodeBlockMemory(this, clock);
         cpu.physicalMemory.replaceBlocks(this, newMemory);
         cpu.linearMemory.replaceBlocks(this, newMemory);
@@ -305,8 +286,7 @@ public class LazyMemory extends AbstractMemory {
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "LazyMemory[" + getSize() + "] {Allocated=" + (buffer != null)
                 + "}";
     }

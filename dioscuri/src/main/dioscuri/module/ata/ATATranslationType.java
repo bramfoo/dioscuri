@@ -61,8 +61,7 @@ public enum ATATranslationType {
      *
      * @param theName the name of the translation type
      */
-    private ATATranslationType(String theName)
-    {
+    private ATATranslationType(String theName) {
         this.name = theName;
     }
 
@@ -72,8 +71,7 @@ public enum ATATranslationType {
      * @return the name of the translation type
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return this.name;
     }

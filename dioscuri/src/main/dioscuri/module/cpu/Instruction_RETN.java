@@ -55,8 +55,7 @@ public class Instruction_RETN implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_RETN()
-    {
+    public Instruction_RETN() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_RETN implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_RETN(CPU processor)
-    {
+    public Instruction_RETN(CPU processor) {
         // Create reference to cpu class
         cpu = processor;
     }
@@ -75,8 +73,7 @@ public class Instruction_RETN implements Instruction {
     /**
      * Transfer control to return address located at top stack
      */
-    public void execute()
-    {
+    public void execute() {
         // Pop instruction pointer (offset) from top of stack into IP register
         cpu.ip = cpu.getWordFromStack();
     }

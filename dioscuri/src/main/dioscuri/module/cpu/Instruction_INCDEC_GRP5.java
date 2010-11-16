@@ -81,8 +81,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_INCDEC_GRP5()
-    {
+    public Instruction_INCDEC_GRP5() {
         // Initialise variables
         operandWordSize = true;
 
@@ -109,8 +108,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_INCDEC_GRP5(CPU processor)
-    {
+    public Instruction_INCDEC_GRP5(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -123,8 +121,7 @@ public class Instruction_INCDEC_GRP5 implements Instruction {
      * Execute any of the following Immediate Group 5 instructions: INC, DEC,
      * CALLN, CALLF, JMPN, JMPF, PUSH.<BR>
      */
-    public void execute()
-    {
+    public void execute() {
         // Get addresByte
         addressByte = cpu.getByteFromCode();
 

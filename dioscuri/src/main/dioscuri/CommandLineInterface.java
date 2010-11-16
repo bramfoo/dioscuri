@@ -75,8 +75,7 @@ public class CommandLineInterface {
      * @param parameters the parameters to be parsed
      * @throws Exception when there are invalid parameters
      */
-    public CommandLineInterface(String... parameters) throws Exception
-    {
+    public CommandLineInterface(String... parameters) throws Exception {
 
         initOptions();
         parse(parameters);
@@ -206,8 +205,7 @@ public class CommandLineInterface {
      * load the config file
      */
 
-    private void loadConfigFile() throws Exception
-    {
+    private void loadConfigFile() throws Exception {
         File config = Utilities.resolvePathAsFile(configFilePath);
         emuConfig = ConfigController.loadFromXML(config);
     }
@@ -216,8 +214,7 @@ public class CommandLineInterface {
      * initialize the options
      */
 
-    private void initOptions()
-    {
+    private void initOptions() {
         commandLineOptions = new Options();
 
 /* ? */
@@ -271,8 +268,7 @@ public class CommandLineInterface {
      * parse the parameters
      */
 
-    private void parse(String[] parameters) throws ParseException
-    {
+    private void parse(String[] parameters) throws ParseException {
         CommandLineParser parser = new PosixParser();
         commandLine = parser.parse(commandLineOptions, parameters);
     }

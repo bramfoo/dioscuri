@@ -11,8 +11,7 @@ public class PitPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Pit pit;
     final JTextField clockRate = new JTextField();
 
-    PitPanel(GUI parent, Emulator emuConfig)
-    {
+    PitPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.pit = emuConfig.getArchitecture().getModules().getPit();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -25,8 +24,7 @@ public class PitPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         pit.setClockrate(new BigInteger(clockRate.getText()));
     }
 }

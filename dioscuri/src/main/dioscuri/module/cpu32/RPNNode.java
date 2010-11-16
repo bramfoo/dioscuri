@@ -54,8 +54,7 @@ public abstract class RPNNode {
      * @param id
      * @param parent
      */
-    public RPNNode(int id, MicrocodeNode parent)
-    {
+    public RPNNode(int id, MicrocodeNode parent) {
         this.id = id;
         this.parent = parent;
 
@@ -85,48 +84,42 @@ public abstract class RPNNode {
     /**
      * @return -
      */
-    public int getX86Index()
-    {
+    public int getX86Index() {
         return parent.getX86Index();
     }
 
     /**
      * @return -
      */
-    public int getX86Position()
-    {
+    public int getX86Position() {
         return parent.getX86Position();
     }
 
     /**
      * @return -
      */
-    public int getImmediate()
-    {
+    public int getImmediate() {
         return parent.getImmediate();
     }
 
     /**
      * @return -
      */
-    public boolean hasImmediate()
-    {
+    public boolean hasImmediate() {
         return parent.hasImmediate();
     }
 
     /**
      * @return -
      */
-    public int getID()
-    {
+    public int getID() {
         return id;
     }
 
     /**
      * @return -
      */
-    public int getMicrocode()
-    {
+    public int getMicrocode() {
         if (parent == null)
             return -1;
 
@@ -136,16 +129,14 @@ public abstract class RPNNode {
     /**
      * @return -
      */
-    public boolean hasLinks()
-    {
+    public boolean hasLinks() {
         return argLinks.size() > 0;
     }
 
     /**
      * @param link
      */
-    public void linkTo(RPNNode link)
-    {
+    public void linkTo(RPNNode link) {
         argLinks.add(link);
     }
 
@@ -153,8 +144,7 @@ public abstract class RPNNode {
      * @param index
      * @return -
      */
-    public int markSubtrees(int index)
-    {
+    public int markSubtrees(int index) {
         useCount++;
         if ((id != FASTCompiler.PROCESSOR_ELEMENT_MEMORYWRITE)
                 && (id != FASTCompiler.PROCESSOR_ELEMENT_IOPORTWRITE)
@@ -179,16 +169,14 @@ public abstract class RPNNode {
     /**
      * @param handler
      */
-    public void attachExceptionHandler(ExceptionHandler handler)
-    {
+    public void attachExceptionHandler(ExceptionHandler handler) {
         exceptionHandler = handler;
     }
 
     /**
      * @param indent
      */
-    public void print(String indent)
-    {
+    public void print(String indent) {
         System.out.println(indent + "[" + id + "] by "
                 + MicrocodeNode.getName(getMicrocode()) + "  {" + count
                 + " used " + useCount + "}");
@@ -200,8 +188,7 @@ public abstract class RPNNode {
         System.out.println(indent + "}");
     }
 
-    public void print()
-    {
+    public void print() {
         print("");
     }
 
@@ -212,8 +199,7 @@ public abstract class RPNNode {
      * @throws IOException
      */
     public static void writeBytecodes(CountingOutputStream output,
-                                      ClassFile cf, Object[] bytecodes) throws IOException
-    {
+                                      ClassFile cf, Object[] bytecodes) throws IOException {
         int lastByte = -1;
         for (int i = 0; i < bytecodes.length; i++) {
             Object o = bytecodes[i];
@@ -258,8 +244,7 @@ public abstract class RPNNode {
      * @throws IOException
      */
     public void write(CountingOutputStream output, ClassFile cf,
-                      boolean leaveResultOnStack) throws IOException
-    {
+                      boolean leaveResultOnStack) throws IOException {
         reset = false;
         writeCount++;
         try {
@@ -369,8 +354,7 @@ public abstract class RPNNode {
      * @throws IOException
      */
     public void writeExceptionCleanup(CountingOutputStream output,
-                                      ClassFile cf, boolean leaveResultOnStack) throws IOException
-    {
+                                      ClassFile cf, boolean leaveResultOnStack) throws IOException {
         reset = false;
         writeCount++;
 
@@ -463,8 +447,7 @@ public abstract class RPNNode {
     /**
      * @param location
      */
-    public void reset(int location)
-    {
+    public void reset(int location) {
         if (reset)
             return;
         reset = true;

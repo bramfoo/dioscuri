@@ -153,8 +153,7 @@ public enum ATACommand {
      * @param theAddress the address associated with the command
      * @param theName    the name of the command
      */
-    private ATACommand(byte theAddress, String theName)
-    {
+    private ATACommand(byte theAddress, String theName) {
         this.address = theAddress;
         this.name = theName;
     }
@@ -165,8 +164,7 @@ public enum ATACommand {
      * @param portAddress the port address
      * @return the command corresponding to the address
      */
-    public static ATACommand getCommand(int portAddress)
-    {
+    public static ATACommand getCommand(int portAddress) {
         ATACommand command = null;
 
         for (ATACommand cmd : values()) {
@@ -185,8 +183,7 @@ public enum ATACommand {
      * @return the string name of the command
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
 
         return this.name;
     }
@@ -196,8 +193,7 @@ public enum ATACommand {
      *
      * @return the name of the command
      */
-    public String getName()
-    {
+    public String getName() {
 
         return this.name;
     }
@@ -207,8 +203,7 @@ public enum ATACommand {
      *
      * @return the address
      */
-    public int getAddress()
-    {
+    public int getAddress() {
         return this.address;
     }
 

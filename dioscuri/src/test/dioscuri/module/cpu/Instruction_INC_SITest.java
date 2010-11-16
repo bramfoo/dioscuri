@@ -6,13 +6,11 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author Bram Lohman\n@author Bart Kiers
  */
 public class Instruction_INC_SITest extends AbstractInstructionTest {
 
     /**
-     *
      * @throws Exception
      */
     public Instruction_INC_SITest() throws Exception {
@@ -22,6 +20,7 @@ public class Instruction_INC_SITest extends AbstractInstructionTest {
     /*
     * Test method for 'com.tessella.emulator.module.cpu.Instruction_DEC_SI.execute()'
     */
+
     /**
      *
      */

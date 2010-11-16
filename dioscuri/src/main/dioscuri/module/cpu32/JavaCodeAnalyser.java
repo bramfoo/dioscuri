@@ -38,8 +38,7 @@ public class JavaCodeAnalyser {
      * @param cf
      * @return -
      */
-    public static int getMaxStackDepth(int[] code, int start, ClassFile cf)
-    {
+    public static int getMaxStackDepth(int[] code, int start, ClassFile cf) {
         // Note this algorithm only works when jumps are forwards only!!
         int[] delta = new int[code.length];
         for (int i = 0; i < delta.length; i++)
@@ -128,8 +127,7 @@ public class JavaCodeAnalyser {
      * @param code
      * @return -
      */
-    public static int getMaxLocalVariables(int[] code)
-    {
+    public static int getMaxLocalVariables(int[] code) {
         int currentMax = 0;
         int varAccess = 0;
 
@@ -146,8 +144,7 @@ public class JavaCodeAnalyser {
     }
 
     private static int calcStackDeltaFromConstPool(int[] code, int i,
-                                                   ClassFile classFile)
-    {
+                                                   ClassFile classFile) {
         int opcode = code[i];
         int cpIndex = (code[i + 1] << 8) | (code[i + 2]);
 

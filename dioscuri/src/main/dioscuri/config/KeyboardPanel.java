@@ -11,8 +11,7 @@ public class KeyboardPanel extends AbstractModulePanel {
     final Emulator.Architecture.Modules.Keyboard keyboard;
     final JTextField updateInterval = new JTextField();
 
-    KeyboardPanel(GUI parent, Emulator emuConfig)
-    {
+    KeyboardPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.keyboard = emuConfig.getArchitecture().getModules().getKeyboard();
         super.setLayout(new GridLayout(0, 3, 5, 5));
@@ -25,8 +24,7 @@ public class KeyboardPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         keyboard.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
     }
 }

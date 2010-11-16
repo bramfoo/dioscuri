@@ -55,8 +55,7 @@ public class Instruction_XCHG_CXAX implements Instruction {
     /**
      * Class constructor
      */
-    public Instruction_XCHG_CXAX()
-    {
+    public Instruction_XCHG_CXAX() {
     }
 
     /**
@@ -64,8 +63,7 @@ public class Instruction_XCHG_CXAX implements Instruction {
      *
      * @param processor Reference to CPU class
      */
-    public Instruction_XCHG_CXAX(CPU processor)
-    {
+    public Instruction_XCHG_CXAX(CPU processor) {
         // this();
 
         // Create reference to cpu class
@@ -80,8 +78,7 @@ public class Instruction_XCHG_CXAX implements Instruction {
     /**
      * Execute instruction
      */
-    public void execute()
-    {
+    public void execute() {
         // Swap registers, using temp as a go-between
         System.arraycopy(cpu.cx, 0, temp, 0, cpu.cx.length);
         System.arraycopy(cpu.ax, 0, cpu.cx, 0, cpu.ax.length);

@@ -287,8 +287,7 @@ public class JavaOpcode {
      * @param value
      * @return -
      */
-    public static String toString(int value)
-    {
+    public static String toString(int value) {
         return opcodes[value];
     }
 
@@ -296,8 +295,7 @@ public class JavaOpcode {
      * @param code
      * @return -
      */
-    public static boolean isBranchInstruction(int code)
-    {
+    public static boolean isBranchInstruction(int code) {
         switch (code) {
             case IFEQ:
             case IFNE:
@@ -331,8 +329,7 @@ public class JavaOpcode {
      * @param code
      * @return -
      */
-    public static boolean isReturn(int code)
-    {
+    public static boolean isReturn(int code) {
         switch (code) {
             case IRETURN:
             case LRETURN:
@@ -352,8 +349,7 @@ public class JavaOpcode {
      * @param i
      * @return -
      */
-    public static int getJumpOffset(int[] code, int i)
-    {
+    public static int getJumpOffset(int[] code, int i) {
         switch (code[i]) {
             case IFEQ:
             case IFNE:
@@ -396,8 +392,7 @@ public class JavaOpcode {
      * @param i
      * @return -
      */
-    public static int getStackDelta(int[] code, int i)
-    {
+    public static int getStackDelta(int[] code, int i) {
         switch (code[i]) {
             case AALOAD:
                 return -1;
@@ -817,8 +812,7 @@ public class JavaOpcode {
      * @param i
      * @return -
      */
-    public static int getLocalVariableAccess(int[] code, int i)
-    {
+    public static int getLocalVariableAccess(int[] code, int i) {
         switch (code[i]) {
             case ALOAD:
                 return code[i + 1];
@@ -933,8 +927,7 @@ public class JavaOpcode {
      * @param code
      * @return -
      */
-    public static int getConstantPoolIndexSize(int code)
-    {
+    public static int getConstantPoolIndexSize(int code) {
         switch (code) {
             case LDC:
                 return 1;
@@ -966,8 +959,7 @@ public class JavaOpcode {
      * @param i
      * @return -
      */
-    public static int getOpcodeLength(int[] code, int i)
-    {
+    public static int getOpcodeLength(int[] code, int i) {
         switch (code[i]) {
             case AALOAD:
             case AASTORE:
@@ -1188,8 +1180,7 @@ public class JavaOpcode {
         }
     }
 
-    private static int getLookupSwitchLength(int[] code, int i)
-    {
+    private static int getLookupSwitchLength(int[] code, int i) {
         int initPosition = i;
         // skip the zeros
         for (i = (initPosition + 1); i < (initPosition + 5); i++)
@@ -1207,8 +1198,7 @@ public class JavaOpcode {
         return i - initPosition;
     }
 
-    private static int getTableSwitchLength(int[] code, int i)
-    {
+    private static int getTableSwitchLength(int[] code, int i) {
         int initPosition = i;
         // skip the zeros
         for (i = (initPosition + 1); i < (initPosition + 4); i++)

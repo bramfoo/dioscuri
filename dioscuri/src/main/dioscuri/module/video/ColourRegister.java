@@ -75,8 +75,7 @@ public class ColourRegister {
     /**
      * Return variables to default values
      */
-    public void reset()
-    {
+    public void reset() {
         pixelMask = (byte) 0xFF;
         dacState = 0x01;
 

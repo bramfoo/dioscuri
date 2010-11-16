@@ -59,8 +59,7 @@ public abstract class ProtectedModeTemplateBlock implements
     /**
      * @return -
      */
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return getClass().getName();
     }
 
@@ -69,14 +68,12 @@ public abstract class ProtectedModeTemplateBlock implements
      * @param endAddress
      * @return -
      */
-    public boolean handleMemoryRegionChange(int startAddress, int endAddress)
-    {
+    public boolean handleMemoryRegionChange(int startAddress, int endAddress) {
         return false;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "ByteCodeCompiled ProtectedModeUBlock";
     }
 }

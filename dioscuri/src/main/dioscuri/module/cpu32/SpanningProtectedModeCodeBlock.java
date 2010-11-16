@@ -41,8 +41,7 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
     /**
      * @param factories
      */
-    public SpanningProtectedModeCodeBlock(CodeBlockFactory[] factories)
-    {
+    public SpanningProtectedModeCodeBlock(CodeBlockFactory[] factories) {
         this.factories = factories;
     }
 
@@ -50,8 +49,7 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
      * @param cpu
      * @return -
      */
-    protected CodeBlock decode(Processor cpu)
-    {
+    protected CodeBlock decode(Processor cpu) {
         ProtectedModeCodeBlock block = null;
         AddressSpace memory = cpu.linearMemory;
         int address = cpu.getInstructionPointer();
@@ -71,8 +69,7 @@ public class SpanningProtectedModeCodeBlock extends SpanningCodeBlock implements
     /**
      * @return -
      */
-    public String getDisplayString()
-    {
+    public String getDisplayString() {
         return "Spanning Protected Mode CodeBlock";
     }
 }

@@ -28,8 +28,7 @@ public class FdcPanel extends AbstractModulePanel {
     final JTextField imageFile = new JTextField();
     final JButton browse = new JButton("browse");
 
-    FdcPanel(GUI parent, Emulator emuConfig)
-    {
+    FdcPanel(GUI parent, Emulator emuConfig) {
         super(parent, emuConfig);
         this.fdc = emuConfig.getArchitecture().getModules().getFdc();
         this.floppy = emuConfig.getArchitecture().getModules().getFdc().getFloppy().get(0);
@@ -47,8 +46,7 @@ public class FdcPanel extends AbstractModulePanel {
 
         imageFile.addFocusListener(new FocusAdapter() {
             @Override
-            public void focusGained(FocusEvent e)
-            {
+            public void focusGained(FocusEvent e) {
                 imageFile.setCaretPosition(imageFile.getText().length());
             }
         });
@@ -83,8 +81,7 @@ public class FdcPanel extends AbstractModulePanel {
 
         browse.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e)
-            {
+            public void actionPerformed(ActionEvent e) {
                 File file = FdcPanel.super.chooseFile();
                 if (file != null) {
                     imageFile.setText(file.getAbsolutePath());
@@ -95,8 +92,7 @@ public class FdcPanel extends AbstractModulePanel {
     }
 
     @Override
-    void save() throws Exception
-    {
+    void save() throws Exception {
         fdc.setUpdateintervalmicrosecs(new BigInteger(updateInterval.getText()));
         floppy.setEnabled(enabled.isSelected());
         floppy.setInserted(inserted.isSelected());

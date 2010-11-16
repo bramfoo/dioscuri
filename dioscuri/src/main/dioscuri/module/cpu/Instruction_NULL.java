@@ -61,8 +61,7 @@ public class Instruction_NULL implements Instruction {
     /**
      * Construct class
      */
-    public Instruction_NULL()
-    {
+    public Instruction_NULL() {
     }
 
     /**
@@ -70,8 +69,7 @@ public class Instruction_NULL implements Instruction {
      *
      * @param processor
      */
-    public Instruction_NULL(CPU processor)
-    {
+    public Instruction_NULL(CPU processor) {
         this();
 
         // Create reference to cpu class
@@ -85,8 +83,7 @@ public class Instruction_NULL implements Instruction {
      *
      * @throws CPUInstructionException
      */
-    public void execute() throws CPUInstructionException
-    {
+    public void execute() throws CPUInstructionException {
         // Throw exception for illegal nnn bits
         // byte b1 = (byte) (cpu.getByteFromCode() & 0xFF); // Target
         // instruction

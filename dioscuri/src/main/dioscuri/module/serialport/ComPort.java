@@ -185,8 +185,7 @@ public class ComPort {
 
     // constructor
 
-    public ComPort()
-    {
+    public ComPort() {
         uartDevice = null;
 
         rbr = 0;
@@ -202,8 +201,7 @@ public class ComPort {
     /**
      *
      */
-    public void reset()
-    {
+    public void reset() {
         // Reset all internal COM parameters
         // Reset registers
 
