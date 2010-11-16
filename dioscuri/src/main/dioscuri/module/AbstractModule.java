@@ -59,7 +59,7 @@ public abstract class AbstractModule implements Module {
      */
     protected final Type type;
 
-    // maps the Type's and AbstractModule's this MOdule is supposed to be connected to
+    // maps the Type's and AbstractModule's this Module is supposed to be connected to
     private final Map<Module.Type, Module> connections;
 
     // flag to keep track of we're in debug mode or not

@@ -895,14 +895,12 @@ public class Emulator implements Runnable {
         for (int i = 0; i < modules.size(); i++) {
             if (!(modules.getModule(i).isConnected())) {
                 isConnected = false;
-                logger.log(Level.SEVERE, "[emu] Could not connect module: "
+                logger.log(Level.INFO, "[emu] Could not connect module: "
                         + modules.getModule(i).getType() + ".");
             }
         }
         if (!isConnected) {
-            logger
-                    .log(Level.SEVERE,
-                            "[emu] Not all modules are connected. Emulator may be unstable.");
+            logger.log(Level.INFO, "[emu] Not all modules are connected. Emulator may be unstable.");
             result &= false;
         } else {
             logger.log(Level.INFO,
