@@ -1,1 +1,1 @@
-java -jar  Dioscuri-0.6.0.jar $@
+java -jar  Dioscuri-0.7.0.jar $@

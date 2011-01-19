@@ -1,10 +1,18 @@
 Changelog Dioscuri - Modular emulator for Digital Preservation
 ==============================================================
-Date            : 23 September 2010
+Date            : 19 January 2011
 Organisations   : Koninklijke Bibliotheek,
                   Nationaal Archief of the Netherlands,
                   Tessella Support Services plc.
 Projects        : Dioscuri project, Planets, KEEP
+
+0.7.0 : 19-01-2011
+-------------------------------------------------------
+- Implemented VNC support. Dioscuri can now act as a VNC server so that
+  it can be operated from other host(s) (credits: Evgeni Genev).
+- Fixed some small hot-spots that showed up after profiling version 0.6.0
+- changed some of the logging settings that were popping up too many
+  warnings after the redesign from 0.6.0
 
 0.6.0 : 23-09-2010
 -------------------------------------------------------

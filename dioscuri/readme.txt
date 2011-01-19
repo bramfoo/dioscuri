@@ -1,6 +1,6 @@
 Dioscuri user instructions - Modular emulator for Digital Preservation
 ======================================================================
-Date             : 23 September 2010
+Date             : 19 January 2010
 Organisations    : Koninklijke Bibliotheek,
                    Nationaal Archief of the Netherlands
                    Tessella Support Services plc.

@@ -38,6 +38,7 @@ public class VncPanel extends AbstractModulePanel {
         super.add(new JLabel());
 
         super.add(new JLabel("password"));
+        password.setEditable(false);
         super.add(password);
         super.add(new JLabel());
     }

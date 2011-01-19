@@ -1056,10 +1056,11 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
                 infoPanel.add(new JLabel(TAB + TAB + "    " + name + ":" + tcpPort));
             }
 
+            infoPanel.add(new JLabel(TAB+"using 'password' (without the single quotes) as the password."));
             infoPanel.add(new JLabel(TAB+""));
             infoPanel.add(new JLabel(TAB+""));
             infoPanel.add(new JLabel(TAB+""));
-
+            
             // Start emulation process
             emu = new Emulator(this);
             new Thread(emu).start();

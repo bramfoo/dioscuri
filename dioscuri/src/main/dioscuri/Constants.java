@@ -97,12 +97,12 @@ public final class Constants {
     /**
      * the version of Dioscuri
      */
-    public static final String EMULATOR_VERSION = "0.6.0";
+    public static final String EMULATOR_VERSION = "0.7.0";
 
     /**
      * the release date (<code>MMMM, YYYY</code>)
      */
-    public static final String EMULATOR_DATE = "September, 2010";
+    public static final String EMULATOR_DATE = "January, 2011";
 
     /**
      * institutions participating (or participated) in the development of Dioscuri
