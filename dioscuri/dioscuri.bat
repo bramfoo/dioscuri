@@ -1,1 +1,1 @@
-java -jar  Dioscuri-0.6.0.jar %*
+java -Xmx1024m -jar Dioscuri-0.6.0.jar %*

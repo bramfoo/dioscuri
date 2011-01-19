@@ -94,6 +94,10 @@ public class DynamicAllocationMemory extends ModuleMemory {
     private boolean watchValue;
     private int watchAddress;
 
+    private ModuleVideo video = null;
+    private ModuleCPU cpu = null;
+    private ModuleMotherboard motherboard = null;
+
     // Constructors
 
     /**
@@ -202,9 +206,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     @Override
     public byte getByte(int address) {
 
-        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        if(video == null) {
+            video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+            cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+            motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        }
 
         // Mask 20th address bit
         address &= A20mask;
@@ -262,9 +268,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     @Override
     public void setByte(int address, byte value) {
 
-        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        if(video == null) {
+            video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+            cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+            motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        }
 
         // logger.log(Level.SEVERE, "[" + super.getType() + "]" + " setByte(" +
         // address + ", " + value + ")");
@@ -323,9 +331,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     @Override
     public byte[] getWord(int address) {
 
-        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        if(video == null) {
+            video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+            cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+            motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        }
 
         // Mask 20th address bit
         address &= A20mask;
@@ -389,9 +399,11 @@ public class DynamicAllocationMemory extends ModuleMemory {
     @Override
     public void setWord(int address, byte[] value) {
 
-        ModuleVideo video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
-        ModuleCPU cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
-        ModuleMotherboard motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        if(video == null) {
+            video = (ModuleVideo) super.getConnection(Module.Type.VIDEO);
+            cpu = (ModuleCPU) super.getConnection(Module.Type.CPU);
+            motherboard = (ModuleMotherboard) super.getConnection(Module.Type.MOTHERBOARD);
+        }
 
         // Mask 20th address bit
         address &= A20mask;
