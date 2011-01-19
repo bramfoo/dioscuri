@@ -70,7 +70,8 @@ public interface Module {
         RTC,
         SCREEN,
         SERIALPORT,
-        VIDEO;
+        VIDEO,
+        VNC;
 
         /**
          * Returns the Type based on a given String.

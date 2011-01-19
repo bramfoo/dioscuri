@@ -129,5 +129,6 @@ public class ConfigDialog extends JDialog {
         this.moduleMap.put(Module.Type.MEMORY, new MemoryPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.PIT, new PitPanel(parent, emuConfig));
         this.moduleMap.put(Module.Type.VIDEO, new VideoPanel(parent, emuConfig));
+        this.moduleMap.put(Module.Type.VNC, new VncPanel(parent, emuConfig));
     }
 }

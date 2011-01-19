@@ -58,6 +58,9 @@ import java.net.URL;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import gnu.rfb.server.*;
+import gnu.vnc.WebServer;
+import dioscuri.vnc.*;
 
 /**
  * Graphical User Interface for emulator.
@@ -131,6 +134,10 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
 
     // command line parsing options
     CommandLineInterface cli;
+
+    // VNC
+    private RFBHost rfbHost;
+    VNCTopFrame vncTopFrame;
 
     // Constructors
 
@@ -692,17 +699,26 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
      *
      * @param e
      */
-    public void actionPerformed(ActionEvent e) {
+    public void actionPerformed(ActionEvent e)
+    {
         JComponent c = (JComponent) e.getSource();
         if (c == (JComponent) miEmulatorStart) {
-            // Start emulation process
-            emu = new Emulator(this);
-            new Thread(emu).start();
-            this.updateGUI(EMU_PROCESS_START);
+            this.loadConfigFile();
+            boolean vncEnabled = emuConfig.getArchitecture().getModules().getVnc().isEnabled();
+            if (vncEnabled)
+                this.startVncServer();
+            else {
+                // Start emulation process
+                emu = new Emulator(this);
+                new Thread(emu).start();
+                this.updateGUI(EMU_PROCESS_START);
+            }
         } else if (c == (JComponent) miEmulatorStop) {
             // Stop emulation process
             emu.stop();
             this.setMouseDisabled();
+            if (this.rfbHost != null)
+                this.stopVncServer();
             this.updateGUI(EMU_PROCESS_STOP);
         } else if (c == (JComponent) miEmulatorReset) {
             // Reset emulation process
@@ -961,6 +977,124 @@ public class DioscuriFrame extends JFrame implements GUI, ActionListener, KeyLis
             emu.setActive(false);
         }
         System.exit(0);
+    }
+
+    /**
+     * Start the VNC Server
+     */
+    private void startVncServer()
+    {
+        //variables
+        int vncPort = Integer.parseInt(emuConfig.getArchitecture().getModules().getVnc().getPort().toString());
+        String vncPassword = emuConfig.getArchitecture().getModules().getVnc().getPassword();
+        int tcpPort = 5900+vncPort;
+        String vncClassName = "VNCTopFrame";
+
+        JLabel label = null;
+
+        boolean portAvail = VNCUtil.available(tcpPort);
+        if (!portAvail)
+        {
+            label = new JLabel("Port " + (tcpPort) + " occupied. Please choose another port!");
+            JOptionPane.showMessageDialog(this, label);
+        }
+        else
+        {
+            RFBAuthenticator vncAuthenticator = new DefaultRFBAuthenticator(vncPassword);
+            try
+            {
+                this.rfbHost = new RFBHost(vncPort, vncClassName, VNCTopFrame.class, vncAuthenticator);
+                new WebServer( vncPort, vncClassName, screenPane.getWidth(), screenPane.getHeight() );
+            }
+            catch( NoSuchMethodException ex )
+            {
+                System.out.println( "  Unsupported class: " + vncClassName );
+                Logger.getLogger(VNCUtil.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            // wait for the SharedServer initialization
+            this.vncTopFrame = null;
+            while (vncTopFrame == null)
+            {
+                vncTopFrame = (VNCTopFrame)rfbHost.getSharedServer();
+                try {
+                    Thread.sleep(20);
+                } catch (InterruptedException event) {
+                    event.printStackTrace();
+                }
+            }
+
+            // attach the screenPane to the vncTopFrame
+            // TODO: reattach the screenPane on stop
+            vncTopFrame.setInternalFrame(screenPane, this, mouseHandler);
+
+            // change the title of the emulator
+            this.setTitle(Constants.EMULATOR_NAME + " -= VNC Mode =-");
+
+            // add a text to alert, that the emulator runs in VNC mode
+            JPanel infoPanel = new JPanel(new GridLayout(0, 1));
+            infoPanel.setPreferredSize(new Dimension(200, 100));
+
+            final String TAB = "             ";
+            infoPanel.add(new JLabel(""));
+            infoPanel.add(new JLabel(""));
+            infoPanel.add(new JLabel(""));
+            infoPanel.add(new JLabel(TAB+"Emulator is in VNC mode listening on port: " + tcpPort));
+            infoPanel.add(new JLabel(TAB+"Connect to this VNC session by pointing a VNC viewer to:"));
+
+            String ip = VNCUtil.getHostIP();
+            String name = VNCUtil.getHostName();
+
+            if(ip != null) {
+                infoPanel.add(new JLabel(TAB + TAB + "    " + ip + ":" + tcpPort));
+            }
+
+            if(name != null) {
+                if(ip != null) {
+                    infoPanel.add(new JLabel(TAB + TAB + "or"));
+                }
+                infoPanel.add(new JLabel(TAB + TAB + "    " + name + ":" + tcpPort));
+            }
+
+            infoPanel.add(new JLabel(TAB+""));
+            infoPanel.add(new JLabel(TAB+""));
+            infoPanel.add(new JLabel(TAB+""));
+
+            // Start emulation process
+            emu = new Emulator(this);
+            new Thread(emu).start();
+            this.updateGUI(EMU_PROCESS_START);
+            
+            // Attach the fakeScreenPane with the info to the DioscuriFrame
+            JScrollPane fakeScreenPane = new JScrollPane(infoPanel);
+            fakeScreenPane.setSize(200,100);
+            this.getContentPane().add(fakeScreenPane, BorderLayout.CENTER);
+        }
+    }
+
+    /**
+     * stop the VNC server
+     */
+    private void stopVncServer ()
+    {
+        this.getContentPane().add(this.screenPane);
+        this.rfbHost.stop();
+        this.rfbHost = null;
+    }
+
+    /*
+     * load the config file
+     */
+
+    private void loadConfigFile() {
+        if (emuConfig == null) {
+            File config = new File(this.configFilePath);
+            try {
+                emuConfig = ConfigController.loadFromXML(config);
+            } catch (Exception ex) {
+                logger.log(Level.SEVERE, "[GUI] Config file not readable: " + ex.toString());
+            }
+        }
     }
 
     /**

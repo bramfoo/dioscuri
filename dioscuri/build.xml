@@ -4,24 +4,24 @@
 /*
  * $Revision$ $Date$ $Author$
  *
- * Copyright (C) 2007-2009  National Library of the Netherlands, 
- *                          Nationaal Archief of the Netherlands, 
+ * Copyright (C) 2007-2009  National Library of the Netherlands,
+ *                          Nationaal Archief of the Netherlands,
  *                          Planets
  *                          KEEP
- * 
+ *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
  * as published by the Free Software Foundation; either version 2
  * of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, 
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA  02110-1301, USA.
  *
  * For more information about this project, visit
@@ -30,14 +30,14 @@
  *   jrvanderhoeven at users.sourceforge.net
  *   blohman at users.sourceforge.net
  *   bkiers at users.sourceforge.net
- * 
+ *
  * Developed by:
  *   Nationaal Archief               <www.nationaalarchief.nl>
  *   Koninklijke Bibliotheek         <www.kb.nl>
  *   Tessella Support Services plc   <www.tessella.com>
  *   Planets                         <www.planets-project.eu>
  *   KEEP                            <www.keep-project.eu>
- * 
+ *
  * Project Title: DIOSCURI
  */
 -->
@@ -84,7 +84,7 @@
     <target name="clean" description="Clean the build tree">
     	<delete includeemptydirs="true">
     		<fileset dir="${gen-src.dir}" includes="**/*"/>
-    	</delete>	 
+    	</delete>
         <delete dir="${build.dir}" quiet="true"/>
 		<delete>
 		    <fileset dir="${log.dir}" includes="**/emulator*.txt" excludes="**/emulator0.txt"/>
@@ -129,7 +129,7 @@
 				<attribute name="Built-By" value="KEEP project"/>
 				<attribute name="Built-On" value="${TODAY}"/>
 				<attribute name="Main-Class" value="${main-class}"/>
-				<attribute name="Class-Path" value="libs/jaxb-api.jar libs/jaxb-impl.jar libs/commons-cli-1.2.jar"/>
+				<attribute name="Class-Path" value="libs/jaxb-api.jar libs/jaxb-impl.jar libs/commons-cli-1.2.jar libs/vncj-lgpl.jar"/>
 			</manifest>
         </jar>
     </target>
@@ -143,7 +143,7 @@
 		<zip destfile="${build.dir}/${ant.project.name}-${version}.zip">
 			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<zipfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
-			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
+			<zipfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar,**/vncj-lgpl.jar" />
 			<zipfileset dir="${images.dir}/bios" excludes="**/*.img" prefix="images/bios"/>
             <zipfileset dir="${images.dir}/floppy/FreeDOS" excludes="**/*.img" prefix="images/floppy/FreeDOS"/>
 			<zipfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
@@ -154,7 +154,7 @@
     	<tar destfile="${build.dir}/${ant.project.name}-${version}.tar.gz" compression="gzip">
 			<fileset dir="${jar.dir}" includes="*.jar"/>
 			<tarfileset dir="${config.dir}" prefix="config" includes="**/DioscuriConfig.xsd, **/DioscuriConfig.xml, **/logging.properties, **/*.gif"/>
-			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar" />
+			<tarfileset dir="${libs.dir}" prefix="libs" includes="**/activation.jar,**/jaxb-api.jar,**/jaxb-impl.jar,**/jsr173_1.0_api.jar,**/commons-cli-1.2.jar,**/vncj-lgpl.jar" />
     		<zipfileset dir="${images.dir}/bios" excludes="**/*.img" prefix="images/bios"/>
             <zipfileset dir="${images.dir}/floppy/FreeDOS" excludes="**/*.img" prefix="images/floppy/FreeDOS"/>
 			<tarfileset dir="${log.dir}" includes="emulator0.txt" prefix="log"/>
@@ -164,7 +164,7 @@
 		</tar>
 
         <move file="DioscuriConfig.xml" tofile="${config.dir}/DioscuriConfig.xml"/>
-        
+
 	</target>
 
     <!-- Execute the jar file -->
