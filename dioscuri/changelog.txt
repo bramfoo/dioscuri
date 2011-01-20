@@ -8,8 +8,11 @@ Projects        : Dioscuri project, Planets, KEEP
 
 0.7.0 : 19-01-2011
 -------------------------------------------------------
-- Implemented VNC support. Dioscuri can now act as a VNC server so that
-  it can be operated from other host(s) (credits: Evgeni Genev).
+- implemented VNC support. Dioscuri can now act as a VNC server so that it can be
+  operated from other host(s) (credits: Evgeni Genev). Tested with the VNC client
+  from TightVNC (http://www.tightvnc.com) which has native Windows 
+  and Linux support and also a Java based client that could be used on a Mac with
+  a JRE.<
 - Fixed some small hot-spots that showed up after profiling version 0.6.0
 - changed some of the logging settings that were popping up too many
   warnings after the redesign from 0.6.0
